@@ -1,5 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
+@class OFScheduledEvent;
 @class SNDisclosableView;
 @class SNDisclosureButton;
 @class SMMSourcesOutlineView;
@@ -41,6 +42,9 @@
     NSArray *displayedMessages;
     BOOL sendWindowFrameChangesToDocument;
     NSDate *nextSysExAnimateDate;
+    BOOL messagesNeedScrollToBottom;
+    NSDate *nextMessagesRefreshDate;
+    OFScheduledEvent *nextMessagesRefreshEvent;
 }
 
 - (id)init;
@@ -59,15 +63,14 @@
 // Other API
 
 - (void)synchronizeInterface;
-    // Calls each of the following
-- (void)synchronizeMessages;
+    // Calls each of the following:
+
+- (void)synchronizeMessagesWithScrollToBottom:(BOOL)shouldScrollToBottom;
 - (void)synchronizeSources;
 - (void)synchronizeSourcesShown;
 - (void)synchronizeMaxMessageCount;
 - (void)synchronizeFilterControls;
 - (void)synchronizeFilterShown;
-
-- (void)scrollToLastMessage;
 
 - (void)couldNotFindSourcesNamed:(NSArray *)sourceNames;
 

@@ -21,6 +21,9 @@
 - (void)setWindowFrameFromDocument;
 - (void)updateDocumentWindowFrameDescription;
 
+- (void)refreshMessagesTableView;
+- (void)refreshMessagesTableViewFromScheduledEvent;
+
 - (void)showSysExProgressIndicator;
 - (void)hideSysExProgressIndicator;
 
@@ -37,6 +40,8 @@
 
 static NSString *kFromString = nil;
 static NSString *kToString = nil;
+
+static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
 
 
 + (void)didLoad
@@ -87,6 +92,15 @@ static NSString *kToString = nil;
 
     [nextSysExAnimateDate release];
     nextSysExAnimateDate = nil;
+
+    [nextMessagesRefreshDate release];
+    nextMessagesRefreshDate = nil;
+
+    if (nextMessagesRefreshEvent) {
+        [[OFScheduler mainScheduler] abortEvent:nextMessagesRefreshEvent];
+        [nextMessagesRefreshEvent release];
+        nextMessagesRefreshEvent = nil;
+    }
 
     [super dealloc];
 }
@@ -255,7 +269,7 @@ static NSString *kToString = nil;
 
 - (void)synchronizeInterface;
 {
-    [self synchronizeMessages];
+    [self synchronizeMessagesWithScrollToBottom:NO];
     [self synchronizeSources];
     [self synchronizeSourcesShown];
     [self synchronizeMaxMessageCount];
@@ -263,16 +277,27 @@ static NSString *kToString = nil;
     [self synchronizeFilterShown];
 }
 
-- (void)synchronizeMessages;
+- (void)synchronizeMessagesWithScrollToBottom:(BOOL)shouldScrollToBottom
 {
-    NSArray *newMessages;
+    // Reloading the NSTableView can be excruciatingly slow, and if messages are coming in quickly,
+    // we will hog a lot of CPU. So we make sure that we don't do it too often.
 
-    newMessages = [[self document] savedMessages];
+    if (shouldScrollToBottom)
+        messagesNeedScrollToBottom = YES;
 
-    [displayedMessages release];
-    displayedMessages = [newMessages retain];
-
-    [messagesTableView reloadData];
+    if (nextMessagesRefreshEvent) {
+        // We're going to refresh soon, so don't do anything now.
+        return;
+    }
+    
+    if (!nextMessagesRefreshDate || [[NSDate date] isAfterDate:nextMessagesRefreshDate]) {
+        // Refresh right away, since we haven't recently.
+        [self refreshMessagesTableView];
+    } else {
+        // We have refreshed recently.
+        // Schedule an event to make us refresh when we are next allowed to do so.
+        nextMessagesRefreshEvent = [[[OFScheduler mainScheduler] scheduleSelector:@selector(refreshMessagesTableViewFromScheduledEvent) onObject:self atDate:nextMessagesRefreshDate] retain];
+    }
 }
 
 - (void)synchronizeSources;
@@ -357,12 +382,6 @@ static NSString *kToString = nil;
 - (void)synchronizeFilterShown;
 {
     [self synchronizeDisclosableView:filterDisclosableView button:filterDisclosureButton withIsShown:[[self document] isFilterShown]];
-}
-
-- (void)scrollToLastMessage;
-{
-    if ([displayedMessages count] > 0)
-        [messagesTableView scrollRowToVisible:[displayedMessages count] - 1];
 }
 
 - (void)couldNotFindSourcesNamed:(NSArray *)sourceNames;
@@ -647,6 +666,38 @@ static NSString *kToString = nil;
         frameDescription = [[self window] stringWithSavedFrame];
         [[self document] setWindowFrameDescription:frameDescription];
     }
+}
+
+- (void)refreshMessagesTableView
+{
+    NSArray *newMessages;
+ 
+    newMessages = [[self document] savedMessages];
+
+    [displayedMessages release];
+    displayedMessages = [newMessages retain];
+    
+    [messagesTableView reloadData];
+
+    if (messagesNeedScrollToBottom) {
+        unsigned int messageCount = [displayedMessages count];
+        if (messageCount > 0)
+            [messagesTableView scrollRowToVisible:messageCount - 1];
+
+        messagesNeedScrollToBottom = NO;
+    }
+
+    // Figure out when we should next be allowed to refresh.
+    [nextMessagesRefreshDate release];
+    nextMessagesRefreshDate = [[NSDate alloc] initWithTimeIntervalSinceNow:kMinimumMessagesRefreshDelay];
+}
+
+- (void)refreshMessagesTableViewFromScheduledEvent
+{
+    [nextMessagesRefreshEvent release];
+    nextMessagesRefreshEvent = nil;
+
+    [self refreshMessagesTableView];
 }
 
 - (void)showSysExProgressIndicator;

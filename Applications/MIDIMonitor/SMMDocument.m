@@ -21,8 +21,7 @@
 - (void)autoselectSources;
 
 - (void)historyDidChange:(NSNotification *)notification;
-- (void)mainThreadSynchronizeMessages;
-- (void)mainThreadScrollToLastMessage;
+- (void)mainThreadSynchronizeMessagesWithScroll:(BOOL)shouldScroll;
 
 - (void)readingSysEx:(NSNotification *)notification;
 - (void)mainThreadReadingSysEx;
@@ -505,27 +504,28 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
 
 - (void)historyDidChange:(NSNotification *)notification;
 {
-    // NOTE This is happening in the MIDI thread
+    // NOTE This can happen in the MIDI thread (for normal MIDI input) or in the main thread (if the "clear" button is used) or in the spy's listener thread (for spying input).
 
-    [self queueSelectorOnce:@selector(mainThreadSynchronizeMessages)];
+    BOOL shouldScroll;
 
-    if ([[[notification userInfo] objectForKey:SMMessageHistoryWereMessagesAdded] boolValue])
-        [self queueSelectorOnce:@selector(mainThreadScrollToLastMessage)];
+    shouldScroll = [[[notification userInfo] objectForKey:SMMessageHistoryWereMessagesAdded] boolValue];
+    [self mainThreadPerformSelectorOnce:@selector(mainThreadSynchronizeMessagesWithScroll:) withBool:shouldScroll];
 }
 
-- (void)mainThreadSynchronizeMessages;
-{    
-    [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeMessages)];
-}
-
-- (void)mainThreadScrollToLastMessage;
+- (void)mainThreadSynchronizeMessagesWithScroll:(BOOL)shouldScroll
 {
-    [[self windowControllers] makeObjectsPerformSelector:@selector(scrollToLastMessage)];
+    NSArray *windowControllers;
+    unsigned int windowControllerIndex;
+
+    windowControllers = [self windowControllers];
+    windowControllerIndex = [windowControllers count];
+    while (windowControllerIndex--)
+        [[windowControllers objectAtIndex:windowControllerIndex] synchronizeMessagesWithScrollToBottom:shouldScroll];
 }
 
 - (void)readingSysEx:(NSNotification *)notification;
 {
-    // NOTE This is happening in the MIDI thread
+    // NOTE This can happen in the MIDI thread (for normal MIDI input) or in the spy's listener thread (for spying input).
 
     sysExBytesRead = [[[notification userInfo] objectForKey:@"length"] unsignedIntValue];
     [self queueSelectorOnce:@selector(mainThreadReadingSysEx)];
@@ -539,7 +539,7 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
 
 - (void)doneReadingSysEx:(NSNotification *)notification;
 {
-    // NOTE This is happening in the MIDI thread
+    // NOTE This can happen in the MIDI thread (for normal MIDI input) or in the spy's listener thread (for spying input).
     NSNumber *number;
 
     number = [[notification userInfo] objectForKey:@"length"];
