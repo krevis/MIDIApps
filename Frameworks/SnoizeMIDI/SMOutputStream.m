@@ -156,7 +156,7 @@ static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
                 unsigned int dataRemaining;
                 BOOL isFirstPacket = YES;
 
-                messageData = [[message otherData] bytes];
+                messageData = [message otherDataBuffer];
                 dataRemaining = dataSize;
 
                 while (dataRemaining > 0) {
@@ -208,7 +208,7 @@ static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
     packet->length = dataSize;
     packet->data[0] = [message statusByte];
     if (dataSize > 1)
-        memcpy(&packet->data[1], [[message otherData] bytes], dataSize - 1);
+        memcpy(&packet->data[1], [message otherDataBuffer], dataSize - 1);
 
     packetList->numPackets++;
 }
@@ -280,13 +280,15 @@ const unsigned int maxPacketSize = 65535;
             if (messagePacketIndex == 0) {	
                 // First packet needs special copying of status byte
                 packet->data[0] = [message statusByte];
-                if (packet->length > 1)
+                if (packet->length > 1) {
                     memcpy(&packet->data[1], messageData, packet->length - 1);
+                    messageData += packet->length - 1;
+                }
             } else {
                 memcpy(&packet->data[0], messageData, packet->length);
+                messageData += packet->length;
             }
             
-            messageData += packet->length;
             remainingLength -= packet->length;
 
             packet = MIDIPacketNext(packet);
