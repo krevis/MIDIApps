@@ -32,6 +32,10 @@
 + (SMMIDIObject *)objectWithObjectRef:(MIDIObjectRef)anObjectRef;
     // NOTE: All of these methods do nothing in the base class. They work for subclasses of SMMIDIObject only.
 
+// Generate a new unique ID
+
++ (MIDIUniqueID)generateNewUniqueID;
+
 // Single object creation and accessors
 
 - (id)initWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(unsigned int)anOrdinal;
@@ -43,8 +47,8 @@
 // Specific property access
 
 - (MIDIUniqueID)uniqueID;
-- (void)setUniqueID:(MIDIUniqueID)value;
-    // Does not raise on error, so check the value again afterwards if necessary
+- (BOOL)setUniqueID:(MIDIUniqueID)value;
+    // Returns whether or not the set succeeded
 
 - (NSString *)name;
 - (void)setName:(NSString *)value;
@@ -75,9 +79,6 @@
 - (void)invalidateCachedProperties;
     // Call this to force this object to throw away any properties it may have cached.
     // Subclasses may want to override this.
-
-- (void)updateUniqueID;
-    // Call this if you believe this object's unique ID may have changed.
 
 - (void)propertyDidChange:(NSString *)propertyName;
     // Called when a property of this object changes. Subclasses may override (be sure to call super's implementation).

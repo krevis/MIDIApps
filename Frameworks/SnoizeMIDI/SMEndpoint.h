@@ -24,10 +24,6 @@
     NSString *cachedModelName;
 }
 
-//+ (MIDIUniqueID)generateNewUniqueID;
-// TODO this is only used by SysExLibrarian on virtual endpoints; see about making this less general
-// (it should probably go on SMMIDIObject instead of here)
-
 // Implemented only on subclasses of SMEndpoint
 + (ItemCount)endpointCountForEntity:(MIDIEntityRef)entity;
 + (MIDIEndpointRef)endpointRefAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
@@ -92,6 +88,7 @@
 + (SMSourceEndpoint *)sourceEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
 
 + (SMSourceEndpoint *)createVirtualSourceEndpointWithName:(NSString *)newName uniqueID:(MIDIUniqueID)newUniqueID;
+    // If newUniqueID is 0, we'll use the unique ID that CoreMIDI generates for us
 
 @end
 
@@ -106,6 +103,7 @@
 + (SMDestinationEndpoint *)destinationEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
 
 + (SMDestinationEndpoint *)createVirtualDestinationEndpointWithName:(NSString *)endpointName readProc:(MIDIReadProc)readProc readProcRefCon:(void *)readProcRefCon uniqueID:(MIDIUniqueID)newUniqueID;
+    // If newUniqueID is 0, we'll use the unique ID that CoreMIDI generates for us
 
 + (void)flushOutputForAllDestinationEndpoints;
 - (void)flushOutput;

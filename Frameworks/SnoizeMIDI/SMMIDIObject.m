@@ -4,6 +4,7 @@
 #import <OmniFoundation/OmniFoundation.h>
 
 #import "SMClient.h"
+#import "SMEndpoint.h"
 #import "SMMIDIObject-Private.h"
 
 
@@ -17,6 +18,8 @@ static int midiObjectOrdinalComparator(id object1, id object2, void *context);
 + (void)midiClientCreated:(NSNotification *)notification;
 + (NSSet *)leafSubclasses;
 + (Class)subclassForObjectType:(MIDIObjectType)objectType;
+
++ (BOOL)isUniqueIDInUse:(MIDIUniqueID)proposedUniqueID;
 
 + (void)midiObjectPropertyChanged:(NSNotification *)notification;
 + (void)midiObjectWasAdded:(NSNotification *)notification;
@@ -32,6 +35,8 @@ static int midiObjectOrdinalComparator(id object1, id object2, void *context);
 + (void)refreshObjectOrdinals;
 
 + (void)midiSetupChanged:(NSNotification *)notification;
+
+- (void)updateUniqueID;
 
 - (void)postRemovedNotification;
 - (void)postReplacedNotificationWithReplacement:(SMMIDIObject *)replacement;
@@ -156,6 +161,29 @@ NSString *SMMIDIObjectReplacement = @"SMMIDIObjectReplacement";
         return nil;
 }
 
+//
+// Generate a new unique ID
+//
+
++ (MIDIUniqueID)generateNewUniqueID;
+{
+    static MIDIUniqueID sequence = 0;
+    MIDIUniqueID proposed;
+    BOOL foundUnique = NO;
+
+    while (!foundUnique) {
+        // We could get fancy, but just using the current time is likely to work just fine.
+        // Add a sequence number in case this method is called more than once within a second.
+        proposed = time(NULL);
+        proposed += sequence;
+        sequence++;
+
+        // Make sure this uniqueID is not in use, just in case.
+        foundUnique = ![self isUniqueIDInUse:proposed];
+    }
+
+    return proposed;
+}
 
 //
 // Single object creation and accessors
@@ -203,22 +231,20 @@ NSString *SMMIDIObjectReplacement = @"SMMIDIObjectReplacement";
     return uniqueID;
 }
 
-- (void)setUniqueID:(MIDIUniqueID)value;
+- (BOOL)setUniqueID:(MIDIUniqueID)value;
 {
-    OSStatus status;
-
     if (value == uniqueID)
-        return;
+        return YES;
 
     [self checkIfPropertySetIsAllowed];
 
-    status = MIDIObjectSetIntegerProperty(objectRef, kMIDIPropertyUniqueID, value);
-    if (status) {
-        // Ignore failure... not sure if this is the right thing to do or not.
-    }
+    MIDIObjectSetIntegerProperty(objectRef, kMIDIPropertyUniqueID, value);
+    // Ignore the error code. We're going to check if our change stuck, either way.
 
     // Refresh our idea of the unique ID since it may or may not have changed
     [self updateUniqueID];
+
+    return (uniqueID == value);
 }
 
 - (NSString *)name;
@@ -327,17 +353,8 @@ NSString *SMMIDIObjectReplacement = @"SMMIDIObjectReplacement";
     flags.hasCachedName = NO;
 }
 
-// TODO see if this still needs to be public
-- (void)updateUniqueID;
-{
-    if (noErr != MIDIObjectGetIntegerProperty(objectRef, kMIDIPropertyUniqueID, &uniqueID))
-        uniqueID = 0;
-}
-
 - (void)propertyDidChange:(NSString *)propertyName;
 {
-    // TODO I am kind of worried about this... will we still get this notification if WE are the ones who changed the values? Probably.... and that will cause us to do more work than really necessary.
-    
     if ([propertyName isEqualToString:(NSString *)kMIDIPropertyName]) {
         flags.hasCachedName = NO;
     } else if ([propertyName isEqualToString:(NSString *)kMIDIPropertyUniqueID]) {
@@ -503,6 +520,43 @@ static NSMapTable *classToObjectsMapTable = NULL;
 }
 
 //
+// Unique IDs
+//
+
++ (BOOL)isUniqueIDInUse:(MIDIUniqueID)proposedUniqueID;
+#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_2
+{
+    MIDIObjectRef object = NULL;
+    MIDIObjectType type;
+
+    MIDIObjectFindByUniqueID(proposedUniqueID, &object, &type);
+    return (object != NULL);
+}
+#else
+{
+    static BOOL lookedForFunction = NO;
+    static OSStatus (*midiObjectFindByUniqueIDFuncPtr)(MIDIUniqueID, MIDIObjectRef *, MIDIObjectType *) = NULL;
+
+    if (!lookedForFunction) {
+        midiObjectFindByUniqueIDFuncPtr = [[SMClient sharedClient] coreMIDIFunctionNamed:@"MIDIObjectFindByUniqueID"];
+        lookedForFunction = YES;
+    }
+
+    if (midiObjectFindByUniqueIDFuncPtr) {
+        MIDIObjectRef object;
+        MIDIObjectType type;
+
+        midiObjectFindByUniqueIDFuncPtr(proposedUniqueID, &object, &type);
+        return (object != NULL);
+    } else {
+        // This search is not as complete as it could be, but it'll have to do.
+        // We're only going to set unique IDs on virtual endpoints, anyway.
+        return ([SMSourceEndpoint sourceEndpointWithUniqueID:proposedUniqueID] != nil || [SMDestinationEndpoint destinationEndpointWithUniqueID:proposedUniqueID] != nil);
+    }
+}
+#endif
+
+//
 // Notifications that objects have changed
 //
 
@@ -621,6 +675,12 @@ static NSMapTable *classToObjectsMapTable = NULL;
     OBASSERT(self != [SMMIDIObject class]);
 
     [self refreshAllObjects];
+}
+
+- (void)updateUniqueID;
+{
+    if (noErr != MIDIObjectGetIntegerProperty(objectRef, kMIDIPropertyUniqueID, &uniqueID))
+        uniqueID = 0;
 }
 
 - (void)postRemovedNotification;

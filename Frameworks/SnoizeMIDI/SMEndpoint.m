@@ -42,28 +42,6 @@ typedef struct EndpointUniqueNamesFlags {
 NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 
 
-/* TODO
-+ (MIDIUniqueID)generateNewUniqueID;
-{
-    MIDIUniqueID proposed;
-    static MIDIUniqueID sequence = 0;
-
-    while (1) {
-        // We could get fancy, but just using the current time is likely to work just fine.
-        // Add a sequence number in case this method is called more than once within a second.
-        proposed = time(NULL);
-        proposed += sequence;
-        sequence++;
-
-        // Make sure this uniqueID is not in use, just in case
-        if ([SMSourceEndpoint sourceEndpointWithUniqueID:proposed] == nil && [SMDestinationEndpoint destinationEndpointWithUniqueID:proposed] == nil)
-            break;
-    }
-
-    return proposed;
-}
-*/
-
 + (ItemCount)endpointCountForEntity:(MIDIEntityRef)entity;
 {
     OBRequestConcreteImplementation(self, _cmd);
@@ -681,7 +659,17 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
     }
 
     [endpoint setIsOwnedByThisProcess];
-    [endpoint setUniqueID:newUniqueID];
+
+    if (newUniqueID != 0)
+        [endpoint setUniqueID:newUniqueID];
+    if ([endpoint uniqueID] == 0) {
+        // CoreMIDI didn't assign a unique ID to this endpoint, so we should generate one ourself
+        BOOL success = NO;
+
+        while (!success)
+            success = [endpoint setUniqueID:[SMMIDIObject generateNewUniqueID]];
+    }
+    
     [endpoint setManufacturerName:@"Snoize"];
 
     // Do this before the last modification, so one setup change notification will still happen
@@ -791,7 +779,17 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
     }
     
     [endpoint setIsOwnedByThisProcess];
-    [endpoint setUniqueID:newUniqueID];
+
+    if (newUniqueID != 0) 
+        [endpoint setUniqueID:newUniqueID];
+    if ([endpoint uniqueID] == 0) {
+        // CoreMIDI didn't assign a unique ID to this endpoint, so we should generate one ourself
+        BOOL success = NO;
+
+        while (!success) 
+            success = [endpoint setUniqueID:[SMMIDIObject generateNewUniqueID]];
+    }
+
     [endpoint setManufacturerName:@"Snoize"];
 
     // Do this before the last modification, so one setup change notification will still happen

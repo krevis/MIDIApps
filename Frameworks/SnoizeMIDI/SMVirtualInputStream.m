@@ -32,7 +32,7 @@
         return nil;
 
     endpointName = [[[SMClient sharedClient] name] retain];
-//    uniqueID = [SMEndpoint generateNewUniqueID];  // TODO
+    uniqueID = 0;	// Let CoreMIDI assign a unique ID to the virtual endpoint when it is created
 
     inputStreamSource = [[SMSimpleInputStreamSource alloc] initWithName:endpointName];
 
@@ -57,16 +57,18 @@
     [super dealloc];
 }
 
-- (SInt32)uniqueID;
+- (MIDIUniqueID)uniqueID;
 {
     return uniqueID;
 }
 
-- (void)setUniqueID:(SInt32)value;
+- (void)setUniqueID:(MIDIUniqueID)value;
 {
     uniqueID = value;
-    if (endpoint)
-        [endpoint setUniqueID:value];
+    if (endpoint) {
+        if (![endpoint setUniqueID:value])
+            uniqueID = [endpoint uniqueID];	// we tried to change the unique ID, but failed
+    }
 }
 
 - (NSString *)virtualEndpointName;
@@ -173,10 +175,14 @@
 - (void)createEndpoint;
 {
     endpoint = [[SMDestinationEndpoint createVirtualDestinationEndpointWithName:endpointName readProc:[self midiReadProc] readProcRefCon:self uniqueID:uniqueID] retain];
-    if (endpoint)
+    if (endpoint) {
         [parser setOriginatingEndpoint:endpoint];
 
-    // TODO We are failing silently if the endpoint can't be created. I'm not sure that's a good idea.
+        // We requested a specific uniqueID earlier, but we might not have gotten it.
+        // We have to update our idea of what it is, regardless.
+        uniqueID = [endpoint uniqueID];
+        OBASSERT(uniqueID != 0);
+    }
 }
 
 - (void)disposeEndpoint;

@@ -15,13 +15,13 @@
 {
     SMDestinationEndpoint *endpoint;
     NSString *endpointName;
-    SInt32 uniqueID;
+    MIDIUniqueID uniqueID;
     SMSimpleInputStreamSource *inputStreamSource;
     SMMessageParser *parser;
 }
 
-- (SInt32)uniqueID;
-- (void)setUniqueID:(SInt32)value;
+- (MIDIUniqueID)uniqueID;
+- (void)setUniqueID:(MIDIUniqueID)value;
 
 - (NSString *)virtualEndpointName;
 - (void)setVirtualEndpointName:(NSString *)value;
