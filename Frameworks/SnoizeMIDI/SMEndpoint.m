@@ -24,7 +24,8 @@ typedef struct EndpointUniqueNamesFlags {
 + (ItemCount)endpointCountForEntity:(MIDIEntityRef)entity;
 + (MIDIEndpointRef)endpointAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
 
-+ (void)reloadEndpoints;
+// TODO this is old
+//+ (void)reloadEndpoints;
 
 + (BOOL)doEndpointsHaveUniqueNames;
 + (BOOL)haveEndpointsAlwaysHadUniqueNames;
@@ -423,10 +424,10 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 // New methods
 //
 
+// TODO revisit of course
+/*
 + (void)reloadEndpoints;
 {
-    // TODO revisit of course
-    /*
     NSMapTable **mapTablePtr;
     NSMapTable *oldMapTable, *newMapTable;
     ItemCount endpointIndex, endpointCount;
@@ -503,8 +504,8 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 
     if ([addedEndpoints count] > 0)
         [[NSNotificationCenter defaultCenter] postNotificationName:SMEndpointsAppearedNotification object:addedEndpoints];
-     */
 }
+*/
 
 + (BOOL)doEndpointsHaveUniqueNames;
 {
@@ -761,7 +762,6 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
 
 + (SMSourceEndpoint *)createVirtualSourceEndpointWithName:(NSString *)newName uniqueID:(MIDIUniqueID)newUniqueID;
 {
-    /* TODO revisit
     SMClient *client;
     OSStatus status;
     MIDIEndpointRef newEndpointRef;
@@ -779,12 +779,18 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
     if (status)
         return nil;
 
-    [self reloadEndpoints];
-
+    // We want to get at the SMSourceEndpoint immediately.
+    // CoreMIDI will send us a notification that something was added, and then we will create an SMSourceEndpoint.
+    // However, those notifications are posted in the run loop's main mode, and we don't want to wait for it to be run.
+    // So we need to manually add the new endpoint, now.
+    [self immediatelyAddObjectWithObjectRef:newEndpointRef];
+    
     // And try to get the new endpoint
     endpoint = [SMSourceEndpoint sourceEndpointWithEndpointRef:newEndpointRef];
-    if (!endpoint) 
+    if (!endpoint) {
+        NSLog(@"%@ couldn't find its virtual endpoint after it was created", NSStringFromClass(self));
         return nil;
+    }
 
     [endpoint setIsOwnedByThisProcess];
     [endpoint setUniqueID:newUniqueID];
@@ -796,8 +802,6 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
     [endpoint setModelName:[client name]];
 
     return endpoint;
-    */
-    return nil;
 }
 
 @end
@@ -871,7 +875,6 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
 
 + (SMDestinationEndpoint *)createVirtualDestinationEndpointWithName:(NSString *)endpointName readProc:(MIDIReadProc)readProc readProcRefCon:(void *)readProcRefCon uniqueID:(MIDIUniqueID)newUniqueID
 {
-    /* TODO revisit
     SMClient *client;
     OSStatus status;
     MIDIEndpointRef newEndpointRef;
@@ -889,12 +892,18 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
     if (status)
         return nil;
 
-    [self reloadEndpoints];
+    // We want to get at the SMSourceEndpoint immediately.
+    // CoreMIDI will send us a notification that something was added, and then we will create an SMSourceEndpoint.
+    // However, those notifications are posted in the run loop's main mode, and we don't want to wait for it to be run.
+    // So we need to manually add the new endpoint, now.
+    [self immediatelyAddObjectWithObjectRef:newEndpointRef];
 
     endpoint = [SMDestinationEndpoint destinationEndpointWithEndpointRef:newEndpointRef];
-    if (!endpoint)
+    if (!endpoint) {
+        NSLog(@"%@ couldn't find its virtual endpoint after it was created", NSStringFromClass(self));
         return nil;
-
+    }
+    
     [endpoint setIsOwnedByThisProcess];
     [endpoint setUniqueID:newUniqueID];
     [endpoint setManufacturerName:@"Snoize"];
@@ -905,8 +914,6 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
     [endpoint setModelName:[client name]];
 
     return endpoint;
-    */
-    return nil;
 }
 
 @end

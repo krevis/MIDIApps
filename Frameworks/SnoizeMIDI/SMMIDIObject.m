@@ -40,6 +40,7 @@ static int midiObjectOrdinalComparator(id object1, id object2, void *context);
 @implementation SMMIDIObject
 
 // This really belongs in the Private category, but +didLoad won't get called if it's in a category. Strange but true.
+// NOTE That was fixed in OmniBase recently, but the fixed version seems to rely on private API, so I didn't make the change in my copy of OmniBase.
 + (void)didLoad
 {
     [self privateDidLoad];
@@ -67,6 +68,18 @@ static int midiObjectOrdinalComparator(id object1, id object2, void *context);
     return NULL;        
 }
 
+//
+// For use by subclasses only
+//
+
++ (void)immediatelyAddObjectWithObjectRef:(MIDIObjectRef)anObjectRef;
+{
+    // Use a default ordinal to start
+    [self addObjectWithObjectRef:anObjectRef ordinal:0];
+
+    // Any of the objects' ordinals may have changed, so refresh them
+    [self refreshObjectOrdinals];    
+}
 
 //
 // Accessors for all objects of this type
@@ -511,13 +524,11 @@ static NSMapTable *classToObjectsMapTable = NULL;
     objectType = [[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChildType] intValue];
 
     subclass = [self subclassForObjectType:objectType];
-    if (!subclass)
-        return;
-
-    // Use a default ordinal to start
-    [subclass addObjectWithObjectRef:ref ordinal:0];
-    // Any of the objects' ordinals may have changed, so refresh them
-    [subclass refreshObjectOrdinals];
+    if (subclass) {
+        // We might already have this object. Check and see.
+        if (![subclass objectWithObjectRef:ref])
+            [subclass immediatelyAddObjectWithObjectRef:ref];
+    }
 }
 
 + (void)midiObjectWasRemoved:(NSNotification *)notification;

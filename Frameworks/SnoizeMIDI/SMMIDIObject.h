@@ -23,6 +23,10 @@
 + (MIDIObjectRef)midiObjectAtIndex:(ItemCount)index;
     // Returns the MIDIObjectRef with this index
 
+// Subclasses may use this method to immediately cause a new object to be created from a MIDIObjectRef
+// (instead of doing it when CoreMIDI sends a notification).
++ (void)immediatelyAddObjectWithObjectRef:(MIDIObjectRef)anObjectRef;
+
 // Accessors for all objects of this type
 
 + (NSArray *)allObjects;
