@@ -74,7 +74,7 @@ static SSEMainWindowController *controller;
 - (void)awakeFromNib
 {
     [[self window] setFrameAutosaveName:[self windowNibName]];
-    [[self window] registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
+    [libraryTableView registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
 }
 
 - (void)windowDidLoad
@@ -328,52 +328,6 @@ static SSEMainWindowController *controller;
     [self _autosaveWindowFrame];
 }
 
-- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender;
-{
-    NSPasteboard *pasteboard;
-
-    pasteboard = [sender draggingPasteboard];
-    if ([[pasteboard types] indexOfObjectIdenticalTo:NSFilenamesPboardType] != NSNotFound) {
-        NSArray *filePaths;
-
-        filePaths = [pasteboard propertyListForType:NSFilenamesPboardType];
-        if ([self _areAnyDraggedFilesAcceptable:filePaths]) {
-            [libraryTableView setDrawsDraggingHighlight:YES];
-            return NSDragOperationGeneric;
-        }
-    }        
-
-    return NSDragOperationNone;
-}
-
-- (void)draggingExited:(id <NSDraggingInfo>)sender;
-{
-    [libraryTableView setDrawsDraggingHighlight:NO];
-}
-
-- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender;
-{
-    NSPasteboard *pasteboard;
-
-    pasteboard = [sender draggingPasteboard];
-    if ([[pasteboard types] indexOfObjectIdenticalTo:NSFilenamesPboardType] != NSNotFound) {
-        NSArray *filePaths;
-
-        filePaths = [pasteboard propertyListForType:NSFilenamesPboardType];
-        [self performSelector:@selector(_dragFilesIntoLibrary:) withObject:filePaths afterDelay:0.1];
-            // Let the drag finish before we start importing
-
-        return YES;
-    }
-
-    return NO;
-}
-
-- (void)concludeDragOperation:(id <NSDraggingInfo>)sender;
-{
-    [libraryTableView setDrawsDraggingHighlight:NO];
-}
-
 //
 // NSTableView data source
 //
@@ -419,9 +373,43 @@ static SSEMainWindowController *controller;
 // SSETableView data source
 //
 
-- (void)tableView:(NSTableView *)tableView deleteRows:(NSArray *)rows;
+- (void)tableView:(SSETableView *)tableView deleteRows:(NSArray *)rows;
 {
     [self delete:tableView];
+}
+
+- (NSDragOperation)tableView:(SSETableView *)tableView draggingEntered:(id <NSDraggingInfo>)sender;
+{
+    NSPasteboard *pasteboard;
+
+    pasteboard = [sender draggingPasteboard];
+    if ([[pasteboard types] indexOfObjectIdenticalTo:NSFilenamesPboardType] != NSNotFound) {
+        NSArray *filePaths;
+
+        filePaths = [pasteboard propertyListForType:NSFilenamesPboardType];
+        if ([self _areAnyDraggedFilesAcceptable:filePaths])
+            return NSDragOperationGeneric;
+    }
+
+    return NSDragOperationNone;
+}
+
+- (BOOL)tableView:(SSETableView *)tableView performDragOperation:(id <NSDraggingInfo>)sender;
+{
+    NSPasteboard *pasteboard;
+
+    pasteboard = [sender draggingPasteboard];
+    if ([[pasteboard types] indexOfObjectIdenticalTo:NSFilenamesPboardType] != NSNotFound) {
+        NSArray *filePaths;
+
+        filePaths = [pasteboard propertyListForType:NSFilenamesPboardType];
+        [self performSelector:@selector(_dragFilesIntoLibrary:) withObject:filePaths afterDelay:0.1];
+            // Let the drag finish before we start importing
+
+        return YES;
+    }
+
+    return NO;
 }
 
 //
@@ -631,6 +619,8 @@ static SSEMainWindowController *controller;
     // If we finish before the scheduled event, then cancel it.
     // Should provide a cancel button on the sheet.
     // We are going to have to do the actual import in another thread, which could be a little scary.
+    // Or we can keep a list of things to do and do them, one at a time, in the main thread... which is sort of a pain,
+    // but each one of them individually should not take too long.
 
     startDate = [NSDate date];
 

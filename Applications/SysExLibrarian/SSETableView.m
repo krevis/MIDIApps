@@ -5,6 +5,8 @@
 
 - (void)_deleteSelectedRows;
 
+- (void)_setDrawsDraggingHighlight:(BOOL)value;
+
 @end
 
 
@@ -17,6 +19,7 @@
 
     flags.shouldEditNextItemWhenEditingEnds = NO;
     flags.dataSourceCanDeleteRows = NO;
+    flags.dataSourceCanDrag = NO;
     flags.drawsDraggingHighlight = NO;
 
     return self;
@@ -29,6 +32,7 @@
 
     flags.shouldEditNextItemWhenEditingEnds = NO;
     flags.dataSourceCanDeleteRows = NO;
+    flags.dataSourceCanDrag = NO;
     flags.drawsDraggingHighlight = NO;
     
     return self;
@@ -37,7 +41,9 @@
 - (void)setDataSource:(id)aSource;
 {
     [super setDataSource:aSource];
-    flags.dataSourceCanDeleteRows = [[self dataSource] respondsToSelector:@selector(tableView:deleteRows:)];
+    
+    flags.dataSourceCanDeleteRows = [aSource respondsToSelector:@selector(tableView:deleteRows:)];
+    flags.dataSourceCanDrag = ([aSource respondsToSelector:@selector(tableView:draggingEntered:)] && [aSource respondsToSelector:@selector(tableView:performDragOperation:)]);
 }
 
 - (BOOL)shouldEditNextItemWhenEditingEnds;
@@ -50,20 +56,9 @@
     flags.shouldEditNextItemWhenEditingEnds = value;
 }
 
-- (BOOL)drawsDraggingHighlight;
-{
-    return flags.drawsDraggingHighlight;
-}
-
-- (void)setDrawsDraggingHighlight:(BOOL)value;
-{
-    if (value != flags.drawsDraggingHighlight) {
-        flags.drawsDraggingHighlight = value;
-        [self setNeedsDisplay:YES];
-    }
-}
-
+//
 // NSTableView overrides
+//
 
 - (void)textDidEndEditing:(NSNotification *)notification;
 {
@@ -122,6 +117,51 @@
     [self _deleteSelectedRows];
 }
 
+//
+// Dragging
+//
+
+- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender;
+{
+    if (flags.dataSourceCanDrag)
+        draggingOperation = [[self dataSource] tableView:self draggingEntered:sender];
+    else
+        draggingOperation = NSDragOperationNone;
+
+    if (draggingOperation != NSDragOperationNone)
+        [self _setDrawsDraggingHighlight:YES];
+
+    return draggingOperation;
+}
+
+- (NSDragOperation)draggingUpdated:(id <NSDraggingInfo>)sender;
+{
+    return draggingOperation;
+}
+
+- (void)draggingExited:(id <NSDraggingInfo>)sender;
+{
+    [self _setDrawsDraggingHighlight:NO];
+}
+
+- (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender;
+{
+    return YES;
+}
+
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender;
+{
+    if (flags.dataSourceCanDrag)
+        return [[self dataSource] tableView:self performDragOperation:sender];
+    else
+        return NO;
+}
+
+- (void)concludeDragOperation:(id <NSDraggingInfo>)sender;
+{
+    [self _setDrawsDraggingHighlight:NO];
+}
+
 @end
 
 
@@ -134,6 +174,14 @@
 
         selectedRows = [[self selectedRowEnumerator] allObjects];
         [[self dataSource] tableView:self deleteRows:selectedRows];
+    }
+}
+
+- (void)_setDrawsDraggingHighlight:(BOOL)value;
+{
+    if (value != flags.drawsDraggingHighlight) {
+        flags.drawsDraggingHighlight = value;
+        [self setNeedsDisplay:YES];
     }
 }
 
