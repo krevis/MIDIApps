@@ -50,7 +50,7 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     center = [NSNotificationCenter defaultCenter];
 
     stream = [[SMPortOrVirtualInputStream alloc] init];
-    [center addObserver:self selector:@selector(_streamEndpointWasRemoved:) name:SMPortOrVirtualStreamEndpointWasRemoved object:stream];
+    [center addObserver:self selector:@selector(_streamEndpointWasRemoved:) name:SMPortOrVirtualStreamEndpointWasRemovedNotification object:stream];
     [center addObserver:self selector:@selector(_readingSysEx:) name:SMInputStreamReadingSysExNotification object:stream];
     [center addObserver:self selector:@selector(_doneReadingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:stream];
     [stream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"MIDIMonitor", [self bundle], "title of popup menu item for virtual destination")];
