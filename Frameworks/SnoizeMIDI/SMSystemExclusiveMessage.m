@@ -11,9 +11,15 @@
 
 @interface SMSystemExclusiveMessage (Private)
 
++ (NSArray *)systemExclusiveMessagesInSMFData:(NSData *)smfData;
 static UInt32 readVariableLengthFieldFromSMF(const Byte **pPtr, const Byte *end);
 
++ (NSData *)smfDataForSystemExclusiveMessages:(NSArray *)messages;
+static Byte lengthOfVariableLengthFieldForValue(UInt32 value);
+static void writeVariableLengthFieldIntoSMF(Byte **pPtr, const UInt32 value);
+
 + (NSArray *)systemExclusiveMessagesInDataBuffer:(const Byte *)buffer withLength:(unsigned int)byteCount;
+
 - (NSData *)dataByAddingStartByte:(NSData *)someData;
 
 @end
@@ -35,167 +41,6 @@ static UInt32 readVariableLengthFieldFromSMF(const Byte **pPtr, const Byte *end)
 {
     return [self systemExclusiveMessagesInDataBuffer:[someData bytes] withLength:[someData length]];
 }
-
-+ (NSArray *)systemExclusiveMessagesInStandardMIDIFile:(NSString *)path;
-{
-    NSData *smfData;
-    unsigned int smfDataLength;
-    const Byte *p, *end;
-    UInt32 chunkSize;
-    NSMutableArray *messages;
-    NSMutableData *readingSysexData = nil;
-
-    messages = [NSMutableArray array];
-
-    smfData = [NSData dataWithContentsOfFile:path];
-    if (!smfData)
-        goto done;
-
-    smfDataLength = [smfData length];
-    if (smfDataLength < 0x16)	// definitely too small
-        goto done;
-
-    p = [smfData bytes];
-    end = p + smfDataLength;
-
-    // Read the header chunk
-    if (CFSwapInt32BigToHost(*(const UInt32 *)p) != 'MThd')
-        goto done;
-    p += 4;
-    chunkSize = CFSwapInt32BigToHost(*(const UInt32 *)p);	// should be 6, but that could conceivably change, so don't hard-code it
-    p += 4;
-    p += chunkSize;
-    if (p >= end)
-        goto done;
-
-    // Read track chunks
-    while (p < end) {
-        const Byte *trackChunkEnd;
-        Byte runningStatusEventSize;
-
-        if (end - p < 8)
-            goto done;
-        if (CFSwapInt32BigToHost(*(const UInt32 *)p) != 'MTrk')
-            goto done;
-        p += 4;
-        chunkSize = CFSwapInt32BigToHost(*(const UInt32 *)p);
-        p += 4;
-        trackChunkEnd = p + chunkSize;
-        if (trackChunkEnd > end)
-            goto done;	// this track is supposedly bigger than the file is... unlikely.
-        
-        // Read each event in the track
-        runningStatusEventSize = 0;
-        while (p < trackChunkEnd) {
-            Byte eventType;
-            Byte topNibble;
-
-            // Get the delta-time for this event. We don't really care what it is.
-            (void)readVariableLengthFieldFromSMF(&p, trackChunkEnd);
-            if (p >= trackChunkEnd)
-                goto done;
-
-            eventType = *p++;
-            if (p >= trackChunkEnd)
-                goto done;
-            
-            topNibble = (eventType & 0xF0) >> 4;
-            if (topNibble < 0x8) {
-                if (runningStatusEventSize) {
-                    // This event omits the event type byte; "running status" indicates that we use the last encountered event type.
-                    // We actually only remembered the offset that we need to skip. (We have already skipped over one byte.)
-                    p += (runningStatusEventSize - 1);
-                } else {
-                    // Malformed file -- this shouldn't happen.
-                    NSLog(@"Bad data in standard MIDI file: at offset 0x%08x, got byte 0x%02x when we expected >= 0x80", p - 1 - (const Byte*)[smfData bytes], eventType);
-                    goto done;
-                }
-
-            } else if (topNibble < 0xF) {
-                // This is a channel event. There may be 1 or 2 more bytes of data, which we can skip.
-                // Also, the file may use "running status" after this point, so remember how big these events are.
-                if (topNibble == 0x0C || topNibble == 0x0D)	// program change or channel aftertouch
-                    runningStatusEventSize = 1;
-                else
-                    runningStatusEventSize = 2;
-                p += runningStatusEventSize;
-
-            } else {
-                // This is a meta event or sysex event.
-                runningStatusEventSize = 0;
-                if (eventType == 0xFF) {
-                    UInt32 eventSize;
-                    
-                    // The next byte is a meta event type. Skip it.
-                    p++;
-                    if (p >= trackChunkEnd)
-                        goto done;
-
-                    // Now read a variable-length value, which is the number of bytes in this event.
-                    eventSize = readVariableLengthFieldFromSMF(&p, trackChunkEnd);
-                    if (p > trackChunkEnd)	// Hitting the end of the track chunk is OK here
-                        goto done;
-
-                    // And skip the rest of the event.
-                    p += eventSize;
-
-                } else if (eventType == 0xF0 || eventType == 0xF7) {
-                    // Sysex event (start or continuation).
-                    UInt32 sysexSize;
-                    const Byte *sysexEnd;
-                    BOOL isCompleteMessage;
-
-                    // Read a variable-length value, which is the number of bytes in this event.
-                    sysexSize = readVariableLengthFieldFromSMF(&p, trackChunkEnd);
-                    if (p >= trackChunkEnd)
-                        goto done;
-
-                    sysexEnd = p + sysexSize;
-                    if (sysexEnd > trackChunkEnd)
-                        goto done;
-
-                    // Does the sysex data have a trailing 0xF7? If so, then this message is complete.
-                    // If not, then we expect one or more sysex continuation events later in this track.
-                    isCompleteMessage = (*(sysexEnd - 1) == 0xF7);
-                    if (isCompleteMessage)
-                        sysexSize--;	// Don't include the trailing 0xF7
-
-                    if (eventType == 0xF0) {
-                        // Starting a sysex message.
-                        readingSysexData = [NSMutableData dataWithBytes:p length:sysexSize];
-                    } else {
-                        // Continuing a sysex message.
-                        if (readingSysexData) {
-                            [readingSysexData appendBytes:p length:sysexSize];
-                        } else {
-                            // We should have had a starting-sysex event earlier, but we didn't. So just skip this stuff.
-                            // (It is using the 0xF7 as an 'escape' for other random MIDI data.)
-                        }
-                    }
-                    
-                    if (isCompleteMessage && readingSysexData) {
-                        SMSystemExclusiveMessage *message;
-
-                        message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:readingSysexData];
-                        [messages addObject:message];
-                        readingSysexData = nil;
-                    }
-
-                    p = sysexEnd;
-
-                } else {
-                    // Malformed file -- this shouldn't happen.
-                    NSLog(@"Bad data in standard MIDI file: got byte 0x%02x which is an unknown event type", eventType);
-                    goto done;
-                }
-            }
-        }
-    }
-    
-done:
-    return messages;
-}
-
 
 + (NSData *)dataForSystemExclusiveMessages:(NSArray *)messages;
 #if SLOW_WAY
@@ -258,116 +103,26 @@ done:
 }
 #endif
 
++ (NSArray *)systemExclusiveMessagesInStandardMIDIFile:(NSString *)path;
+{
+    NSData *smfData;
+
+    smfData = [NSData dataWithContentsOfFile:path];
+    if (smfData)
+        return [self systemExclusiveMessagesInSMFData:smfData];
+    else
+        return [NSArray array];
+}
+
 + (BOOL)writeSystemExclusiveMessages:(NSArray *)messages toStandardMIDIFile:(NSString *)path;
 {
-    // TODO change this to just return some data instead of writing to file -- higher levels can deal with the file stuff
-    OSStatus status;
-    MusicSequence sequence;
-    BOOL success = NO;
-//    NSData *smfData = nil;
-    FSSpec fsSpec;
+    NSData *smfData;
 
-    // TODO This basically doesn't work at all, because MusicSequenceSaveSMF() is completely broken on 10.1.
-    // Reported as bug #2840253; supposedly fixed on 10.2 (testing it).
-
-    {
-        FSRef fsRef;
-        Boolean isDirectory;
-        FSCatalogInfo fsCatalogInfo;
-        Str255 pascalFileName;
-
-        NSLog(@"getting FSRef for path: %@", [path stringByDeletingLastPathComponent]);
-        status = FSPathMakeRef([[path stringByDeletingLastPathComponent] fileSystemRepresentation], &fsRef, &isDirectory);
-        if (status != noErr || !isDirectory)
-            return NO;
-
-        status = FSGetCatalogInfo(&fsRef, kFSCatInfoNodeID, &fsCatalogInfo, NULL, &fsSpec, NULL);
-        if (status != noErr)
-            return NO;
-        {
-            CFStringRef stringName;
-
-            NSLog(@"fsSpec has vRefNum %d, parID %d", (int)fsSpec.vRefNum, fsSpec.parID);
-            stringName = CFStringCreateWithPascalString(kCFAllocatorDefault, fsSpec.name, kCFStringEncodingUTF8);
-            NSLog(@"name: %@", stringName);
-            NSLog(@"catalog info has node id: %d", fsCatalogInfo.nodeID);
-        }
-        //    NSLog(@"fsSpec has vRefNum %h, parID %d, name %@", fsSpec.vRefNum, fsSpec.parID, CFStringCreateWithPascalString(kCFAllocatorDefault, fsSpec.name, kCFStringEncodingMacRoman));
-
-        NSLog(@"going on with file: %@", [path lastPathComponent]);
-        if (!CFStringGetPascalString((CFStringRef)[path lastPathComponent], pascalFileName, 256, kCFStringEncodingUTF8))
-            return NO;
-        status = FSMakeFSSpec(fsSpec.vRefNum, fsCatalogInfo.nodeID, pascalFileName, &fsSpec);
-        if (status != fnfErr)
-            return NO;
-        {
-            CFStringRef stringName;
-
-            NSLog(@"fsSpec has vRefNum %d, parID %d", (int)fsSpec.vRefNum, fsSpec.parID);
-            stringName = CFStringCreateWithPascalString(kCFAllocatorDefault, fsSpec.name, kCFStringEncodingUTF8);
-            NSLog(@"name: %@", stringName);
-        }
-        //    NSLog(@"fsSpec has vRefNum %h, parID %d, name %@", fsSpec.vRefNum, fsSpec.parID, CFStringCreateWithPascalString(NULL, fsSpec.name, kCFStringEncodingMacRoman));
-    }        
-    
-    status = NewMusicSequence(&sequence);
-    if (status == noErr) {
-        MusicTrack track;
-        
-        status = MusicSequenceNewTrack(sequence, &track);
-        if (status == noErr) {
-            unsigned int messageIndex, messageCount;
-            MusicTimeStamp eventTimeStamp = 0;
-
-            messageCount = [messages count];
-            for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {
-                NSData *messageData;
-                unsigned int messageDataLength;
-                MIDIRawData *midiRawData;
-
-                messageData = [[messages objectAtIndex:messageIndex] fullMessageData];
-                messageDataLength = [messageData length];
-                midiRawData = malloc(sizeof(UInt32) + messageDataLength);
-                midiRawData->length = messageDataLength;
-                [messageData getBytes:midiRawData->data];
-
-                status = MusicTrackNewMIDIRawDataEvent(track, eventTimeStamp, midiRawData);
-                if (status != noErr) {
-                    NSLog(@"MusicTrackNewMIDIRawDataEvent: error %ld", status);
-                    // TODO error out of this whole operation
-                }
-
-                free(midiRawData);
-                eventTimeStamp += 1.0;
-                    // TODO should be the approx. duration of this sysex data at the sequence's tempo
-                    // unclear if this is in beats or seconds (probably beats)
-                    // also add on some time between messages (say 150ms or more, or round up to next bar)
-            }
-            
-/*            status = MusicSequenceSaveSMFData(sequence, (CFDataRef *)&smfData, 0);
-            if (status != noErr)
-                NSLog(@"MusicSequenceSaveSMFData returned err: %ld", status);
-
-            if (smfData)
-                NSLog(@"retain count of SMF data is originally %ld", [smfData retainCount]);
-            [smfData retain]; */
-
-            status = MusicSequenceSaveSMF(sequence, &fsSpec, 0);
-            if (status != noErr)
-                NSLog(@"MusicSequenceSaveSMF returned err: %ld", status);
-        }
-
-        DisposeMusicSequence(sequence);
-    }
-
-    /*
-    if (smfData) {
-        success = [smfData writeToFile:path atomically:YES];
-        [smfData release];
-    }
-     */
-
-    return success;
+    smfData = [self smfDataForSystemExclusiveMessages:messages];
+    if (smfData)
+        return [smfData writeToFile:path atomically:YES];
+    else
+        return NO;
 }
 
 
@@ -556,6 +311,161 @@ done:
 
 @implementation SMSystemExclusiveMessage (Private)
 
++ (NSArray *)systemExclusiveMessagesInSMFData:(NSData *)smfData;
+{
+    unsigned int smfDataLength;
+    const Byte *p, *end;
+    UInt32 chunkSize;
+    NSMutableArray *messages;
+    NSMutableData *readingSysexData = nil;
+
+    messages = [NSMutableArray array];
+
+    smfDataLength = [smfData length];
+    if (smfDataLength < 0x16)	// definitely too small
+        goto done;
+
+    p = [smfData bytes];
+    end = p + smfDataLength;
+
+    // Read the header chunk
+    if (CFSwapInt32BigToHost(*(const UInt32 *)p) != 'MThd')
+        goto done;
+    p += 4;
+    chunkSize = CFSwapInt32BigToHost(*(const UInt32 *)p);	// should be 6, but that could conceivably change, so don't hard-code it
+    p += 4;
+    p += chunkSize;
+    if (p >= end)
+        goto done;
+
+    // Read track chunks
+    while (p < end) {
+        const Byte *trackChunkEnd;
+        Byte runningStatusEventSize;
+
+        if (end - p < 8)
+            goto done;
+        if (CFSwapInt32BigToHost(*(const UInt32 *)p) != 'MTrk')
+            goto done;
+        p += 4;
+        chunkSize = CFSwapInt32BigToHost(*(const UInt32 *)p);
+        p += 4;
+        trackChunkEnd = p + chunkSize;
+        if (trackChunkEnd > end)
+            goto done;	// this track is supposedly bigger than the file is... unlikely.
+
+        // Read each event in the track
+        runningStatusEventSize = 0;
+        while (p < trackChunkEnd) {
+            Byte eventType;
+            Byte topNibble;
+
+            // Get the delta-time for this event. We don't really care what it is.
+            (void)readVariableLengthFieldFromSMF(&p, trackChunkEnd);
+            if (p >= trackChunkEnd)
+                goto done;
+
+            eventType = *p++;
+            if (p >= trackChunkEnd)
+                goto done;
+
+            topNibble = (eventType & 0xF0) >> 4;
+            if (topNibble < 0x8) {
+                if (runningStatusEventSize) {
+                    // This event omits the event type byte; "running status" indicates that we use the last encountered event type.
+                    // We actually only remembered the offset that we need to skip. (We have already skipped over one byte.)
+                    p += (runningStatusEventSize - 1);
+                } else {
+                    // Malformed file -- this shouldn't happen.
+                    NSLog(@"Bad data in standard MIDI file: at offset 0x%08x, got byte 0x%02x when we expected >= 0x80", p - 1 - (const Byte*)[smfData bytes], eventType);
+                    goto done;
+                }
+
+            } else if (topNibble < 0xF) {
+                // This is a channel event. There may be 1 or 2 more bytes of data, which we can skip.
+                // Also, the file may use "running status" after this point, so remember how big these events are.
+                if (topNibble == 0x0C || topNibble == 0x0D)	// program change or channel aftertouch
+                    runningStatusEventSize = 1;
+                else
+                    runningStatusEventSize = 2;
+                p += runningStatusEventSize;
+
+            } else {
+                // This is a meta event or sysex event.
+                runningStatusEventSize = 0;
+                if (eventType == 0xFF) {
+                    UInt32 eventSize;
+
+                    // The next byte is a meta event type. Skip it.
+                    p++;
+                    if (p >= trackChunkEnd)
+                        goto done;
+
+                    // Now read a variable-length value, which is the number of bytes in this event.
+                    eventSize = readVariableLengthFieldFromSMF(&p, trackChunkEnd);
+                    if (p > trackChunkEnd)	// Hitting the end of the track chunk is OK here
+                        goto done;
+
+                    // And skip the rest of the event.
+                    p += eventSize;
+
+                } else if (eventType == 0xF0 || eventType == 0xF7) {
+                    // Sysex event (start or continuation).
+                    UInt32 sysexSize;
+                    const Byte *sysexEnd;
+                    BOOL isCompleteMessage;
+
+                    // Read a variable-length value, which is the number of bytes in this event.
+                    sysexSize = readVariableLengthFieldFromSMF(&p, trackChunkEnd);
+                    if (p >= trackChunkEnd)
+                        goto done;
+
+                    sysexEnd = p + sysexSize;
+                    if (sysexEnd > trackChunkEnd)
+                        goto done;
+
+                    // Does the sysex data have a trailing 0xF7? If so, then this message is complete.
+                    // If not, then we expect one or more sysex continuation events later in this track.
+                    isCompleteMessage = (*(sysexEnd - 1) == 0xF7);
+                    if (isCompleteMessage)
+                        sysexSize--;	// Don't include the trailing 0xF7
+
+                    if (eventType == 0xF0) {
+                        // Starting a sysex message.
+                        readingSysexData = [NSMutableData dataWithBytes:p length:sysexSize];
+                    } else {
+                        // Continuing a sysex message.
+                        if (readingSysexData) {
+                            [readingSysexData appendBytes:p length:sysexSize];
+                        } else {
+                            // We should have had a starting-sysex event earlier, but we didn't. So just skip this stuff.
+                            // (It is using the 0xF7 as an 'escape' for other random MIDI data.)
+                        }
+                    }
+
+                    if (isCompleteMessage && readingSysexData) {
+                        SMSystemExclusiveMessage *message;
+
+                        message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:readingSysexData];
+                        [messages addObject:message];
+                        readingSysexData = nil;
+                    }
+
+                    p = sysexEnd;
+
+                } else {
+                    // Malformed file -- this shouldn't happen.
+                    NSLog(@"Bad data in standard MIDI file: got byte 0x%02x which is an unknown event type", eventType);
+                    goto done;
+                }
+            }
+        }
+    }
+
+done:
+        return messages;
+}
+
 UInt32 readVariableLengthFieldFromSMF(const Byte **pPtr, const Byte *end)
 {
     const Byte *p = *pPtr;
@@ -578,6 +488,128 @@ UInt32 readVariableLengthFieldFromSMF(const Byte **pPtr, const Byte *end)
 
     *pPtr = p;
     return value;
+}
+
++ (NSData *)smfDataForSystemExclusiveMessages:(NSArray *)messages;
+{
+    const Byte smfHeader[] = {
+        // SMF header chunk 'MThd' : Type 1 file with 2 tracks and 480 ppqn
+        0x4d, 0x54, 0x68, 0x64, 0x00, 0x00, 0x00, 0x06, 0x00, 0x01, 0x00, 0x02, 0x01, 0xe0,
+        // Track chunk 'MTrk': establishes time signature and tempo
+        0x4d, 0x54, 0x72, 0x6b,  0x00, 0x00, 0x00, 0x13, 0x00, 0xff, 0x58, 0x04, 0x04, 0x02, 0x18, 0x08, 0x00, 0xff, 0x51, 0x03, 0x07, 0xa1, 0x20, 0x00, 0xff, 0x2f, 0x00,
+        // Beginning of track chunk 'MTrk' for our event data
+        0x4d, 0x54, 0x72, 0x6b
+    };
+    const Byte endOfTrackEvent[] = { 0x00, 0xff, 0x2f, 0x00 };
+    const UInt32 tickOffsetBetweenMessages = 500;
+
+    NSMutableData *smfData;
+    UInt32 smfDataLength;
+    UInt32 trackLength;
+    unsigned int messageIndex, messageCount;
+    Byte *p;
+
+    messageCount = [messages count];
+
+    smfDataLength = sizeof(smfHeader);
+    smfDataLength += 4;	// for track length UInt32
+    trackLength = 0;
+    
+    for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {
+        SMSystemExclusiveMessage *message;
+        UInt32 tickOffset;
+        UInt32 messageLength;
+
+        message = [messages objectAtIndex:messageIndex];
+        messageLength = [message otherDataLength];	// without 0xF0, with 0xF7
+
+        if (messageIndex == 0)
+            tickOffset = 0;
+        else
+            tickOffset = tickOffsetBetweenMessages;
+        trackLength += lengthOfVariableLengthFieldForValue(tickOffset);
+        
+        trackLength++;		// for sysex event type (0xF0)
+        trackLength += lengthOfVariableLengthFieldForValue(messageLength);	// for sysex length
+        trackLength += messageLength;		// for sysex data
+    }
+    trackLength += sizeof(endOfTrackEvent);
+    smfDataLength += trackLength;
+
+    smfData = [NSMutableData dataWithLength:smfDataLength];
+    p = [smfData mutableBytes];
+
+    // Write out SMF header and track header (constant)
+    memcpy(p, smfHeader, sizeof(smfHeader));
+    p += sizeof(smfHeader);
+
+    // Write out total length of this track (as UInt32 big endian)
+    *(UInt32 *)p = CFSwapInt32HostToBig(trackLength);
+    p += 4;
+    
+    // for each message:
+    for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {
+        SMSystemExclusiveMessage *message;
+        UInt32 tickOffset;
+        UInt32 messageLength;
+
+        message = [messages objectAtIndex:messageIndex];
+        messageLength = [message otherDataLength];	// without 0xF0, with 0xF7
+
+        // write out varlength offset (0 for 1st msg, 500 for laster messages)
+        if (messageIndex == 0)
+            tickOffset = 0;
+        else
+            tickOffset = tickOffsetBetweenMessages;
+        writeVariableLengthFieldIntoSMF(&p, tickOffset);
+            
+        // write out 0xF0 (start of sysex)
+        *p++ = 0xF0;
+
+        // write out varlength sysex size
+        writeVariableLengthFieldIntoSMF(&p, messageLength);
+        
+        // write out sysex, with 0xF7 ending
+        memcpy(p, [message otherDataBuffer], messageLength);
+        p += messageLength;
+    }
+
+    // write out end-of-track event
+    memcpy(p, endOfTrackEvent, sizeof(endOfTrackEvent));
+    p += sizeof(endOfTrackEvent);
+
+    // We're done!
+    return smfData;
+}
+
+Byte lengthOfVariableLengthFieldForValue(UInt32 value)
+{
+    Byte length = 0;
+
+    if (value >= (1 << 21))
+        length++;
+    if (value >= (1 << 14))
+        length++;
+    if (value >= (1 << 7))
+        length++;
+    length++;
+
+    return length;
+}
+
+void writeVariableLengthFieldIntoSMF(Byte **pPtr, const UInt32 value)
+{
+    Byte *p = *pPtr;
+
+    if (value >= (1 << 21))
+        *p++ = (Byte)((value >> 21) & 0x7F) | 0x80;
+    if (value >= (1 << 14))
+        *p++ = (Byte)((value >> 14) & 0x7F) | 0x80;
+    if (value >= (1 << 7))
+        *p++ = (Byte)((value >> 7) & 0x7F) | 0x80;
+    *p++ = ((Byte)value & 0x7F);
+
+    *pPtr = p;
 }
 
 

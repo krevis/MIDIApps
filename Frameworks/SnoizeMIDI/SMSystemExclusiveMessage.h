@@ -24,10 +24,11 @@
     // data should NOT include the starting 0xF0 or the ending 0xF7 (EOX)
 
 + (NSArray *)systemExclusiveMessagesInData:(NSData *)someData;
-+ (NSArray *)systemExclusiveMessagesInStandardMIDIFile:(NSString *)path;
-
 + (NSData *)dataForSystemExclusiveMessages:(NSArray *)messages;
+
++ (NSArray *)systemExclusiveMessagesInStandardMIDIFile:(NSString *)path;
 + (BOOL)writeSystemExclusiveMessages:(NSArray *)messages toStandardMIDIFile:(NSString *)path;
+
 
     // Data without the starting 0xF0 or the ending 0xF7 (if any)
 - (NSData *)data;
