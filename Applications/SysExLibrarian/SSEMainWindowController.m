@@ -12,6 +12,8 @@
 
 @interface SSEMainWindowController (Private)
 
+- (BOOL)_finishEditingResultsInError;
+
 - (void)_synchronizeDestinationPopUpWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 - (void)_synchronizeDestinationToolbarMenuWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 
@@ -194,6 +196,9 @@ static SSEMainWindowController *controller;
 {
     NSOpenPanel *openPanel;
 
+    if ([self _finishEditingResultsInError])
+        return;
+    
     openPanel = [NSOpenPanel openPanel];
     [openPanel setAllowsMultipleSelection:YES];
 
@@ -202,6 +207,9 @@ static SSEMainWindowController *controller;
 
 - (IBAction)delete:(id)sender;
 {
+    if ([self _finishEditingResultsInError])
+        return;
+
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SSEShowWarningOnDelete]) {
         [doNotWarnOnDeleteAgainCheckbox setIntValue:0];
         [[NSApplication sharedApplication] beginSheet:deleteWarningSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_deleteWarningSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
@@ -212,6 +220,9 @@ static SSEMainWindowController *controller;
 
 - (IBAction)recordOne:(id)sender;
 {
+    if ([self _finishEditingResultsInError])
+        return;
+
     [self _updateSingleSysExReadIndicatorWithMessageCount:0 bytesRead:0 totalBytesRead:0];
 
     [[NSApplication sharedApplication] beginSheet:recordSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];    
@@ -221,6 +232,9 @@ static SSEMainWindowController *controller;
 
 - (IBAction)recordMultiple:(id)sender;
 {
+    if ([self _finishEditingResultsInError])
+        return;
+
     [self _updateMultipleSysExReadIndicatorWithMessageCount:0 bytesRead:0 totalBytesRead:0];
 
     [[NSApplication sharedApplication] beginSheet:recordMultipleSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
@@ -232,6 +246,9 @@ static SSEMainWindowController *controller;
 {
     NSArray *selectedEntries;
     unsigned int entryCount, entryIndex;
+
+    if ([self _finishEditingResultsInError])
+        return;
 
     selectedEntries = [self _selectedEntries];
 
@@ -254,7 +271,10 @@ static SSEMainWindowController *controller;
 {
     NSArray *selectedEntries;
     NSString *path;
-    
+
+    [self finishEditingInWindow];
+        // We don't care if there is an error, go on anyway
+
     selectedEntries = [self _selectedEntries];
     OBASSERT([selectedEntries count] == 1);
 
@@ -265,8 +285,13 @@ static SSEMainWindowController *controller;
 
 - (IBAction)rename:(id)sender;
 {
-    // TODO need to handle case when we are already renaming something
-    [libraryTableView editColumn:0 row:[libraryTableView selectedRow] withEvent:nil select:YES];
+    if ([libraryTableView editedRow] >= 0) {
+        // We are already editing the table view, so don't do anything
+    } else  {
+        [self finishEditingInWindow];  // In case we are editing something else
+        
+        [libraryTableView editColumn:0 row:[libraryTableView selectedRow] withEvent:nil select:YES];
+    }
 }
 
 - (IBAction)cancelRecordSheet:(id)sender;
@@ -547,6 +572,12 @@ static SSEMainWindowController *controller;
 
 
 @implementation SSEMainWindowController (Private)
+
+- (BOOL)_finishEditingResultsInError;
+{
+    [self finishEditingInWindow];
+    return ([[self window] attachedSheet] != nil);
+}
 
 - (void)_synchronizeDestinationPopUpWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 {
