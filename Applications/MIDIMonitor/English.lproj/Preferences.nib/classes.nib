@@ -4,6 +4,7 @@
         {
             ACTIONS = {
                 changeAlwaysSaveSysExWithEOX = id; 
+                changeAskBeforeClosingModifiedWindow = id; 
                 changeAutoSelectOrdinarySources = id; 
                 changeAutoSelectSpyingDestinations = id; 
                 changeAutoSelectVirtualDestination = id; 
@@ -17,6 +18,7 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 alwaysSaveSysExWithEOXMatrix = NSMatrix; 
+                askBeforeClosingModifiedWindowCheckbox = NSButton; 
                 autoSelectOrdinarySourcesCheckbox = NSButton; 
                 autoSelectSpyingDestinationsCheckbox = NSButton; 
                 autoSelectVirtualDestinationCheckbox = NSButton; 
@@ -27,6 +29,11 @@
                 tabView = NSTabView; 
                 timeFormatMatrix = NSMatrix; 
             }; 
+            SUPERCLASS = SMMWindowController; 
+        }, 
+        {
+            CLASS = SMMWindowController; 
+            LANGUAGE = ObjC; 
             SUPERCLASS = NSWindowController; 
         }
     ); 

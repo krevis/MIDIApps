@@ -375,6 +375,8 @@
 		<dict>
 			<key>defaultsDictionary</key>
 			<dict>
+				<key>SMMAskBeforeClosingModifiedWindow</key>
+				<true/>
 				<key>SMMAutoSelectFirstSource</key>
 				<true/>
 				<key>SMMAutoSelectOrdinarySources</key>

@@ -39,6 +39,7 @@ NSString *SMMAutoSelectFirstSourceInNewDocumentPreferenceKey = @"SMMAutoSelectFi
 NSString *SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey = @"SMMAutoSelectOrdinarySources";
 NSString *SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey = @"SMMAutoSelectVirtualDestination";
 NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoSelectSpyingDestinations";
+NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosingModifiedWindow";
 
 
 - (id)init
@@ -245,6 +246,16 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
     [super setFileName:fileName];
 
     [self updateVirtualEndpointName];
+}
+
+- (void)canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
+{
+    if ([[OFPreference preferenceForKey:SMMAskBeforeClosingModifiedWindowPreferenceKey] boolValue]) {
+        [super canCloseDocumentWithDelegate:delegate shouldCloseSelector:shouldCloseSelector contextInfo:contextInfo];
+    } else {
+        // Tell the delgate to close now, regardless of what the document's dirty flag may be
+        objc_msgSend(delegate, shouldCloseSelector, self, YES /*yes, close now*/, contextInfo);        
+    }
 }
 
 

@@ -15,6 +15,7 @@
     IBOutlet NSButton *autoSelectVirtualDestinationCheckbox;
     IBOutlet NSButton *autoSelectSpyingDestinationsCheckbox;
     IBOutlet NSButton *openWindowsForNewSourcesCheckbox;
+    IBOutlet NSButton *askBeforeClosingModifiedWindowCheckbox;
     IBOutlet NSMatrix *alwaysSaveSysExWithEOXMatrix;
 
     OFPreference *timeFormatPreference;
@@ -25,6 +26,7 @@
     OFPreference *autoSelectVirtualDestinationPreference;
     OFPreference *autoSelectSpyingDestinationsPreference;
     OFPreference *openWindowsForNewSourcesPreference;
+    OFPreference *askBeforeClosingModifiedWindowPreference;
     OFPreference *alwaysSaveSysExWithEOXPreference;
 }
 
@@ -40,6 +42,7 @@
 - (IBAction)changeAutoSelectVirtualDestination:(id)sender;
 - (IBAction)changeAutoSelectSpyingDestinations:(id)sender;
 - (IBAction)changeOpenWindowsForNewSources:(id)sender;
+- (IBAction)changeAskBeforeClosingModifiedWindow:(id)sender;
 - (IBAction)changeAlwaysSaveSysExWithEOX:(id)sender;
 
 @end

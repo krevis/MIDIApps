@@ -7,6 +7,7 @@
 
 #import "SMMAppController.h"
 #import "SMMDocument.h"
+#import "SMMMonitorWindowController.h"
 #import "SMMSysExWindowController.h"
 
 
@@ -48,6 +49,7 @@ static SMMPreferencesWindowController *controller;
     autoSelectSpyingDestinationsPreference = [[OFPreference preferenceForKey:SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey] retain];
     openWindowsForNewSourcesPreference = [[OFPreference preferenceForKey:SMMOpenWindowsForNewSourcesPreferenceKey] retain];
 
+    askBeforeClosingModifiedWindowPreference = [[OFPreference preferenceForKey:SMMAskBeforeClosingModifiedWindowPreferenceKey] retain];
     alwaysSaveSysExWithEOXPreference = [[OFPreference preferenceForKey:SMMSaveSysExWithEOXAlwaysPreferenceKey] retain];
     
     return self;
@@ -69,6 +71,7 @@ static SMMPreferencesWindowController *controller;
     [autoSelectVirtualDestinationPreference release];
     [autoSelectSpyingDestinationsPreference release];
     [openWindowsForNewSourcesPreference release];
+    [askBeforeClosingModifiedWindowPreference release];
     [alwaysSaveSysExWithEOXPreference release];
     
     [super dealloc];
@@ -91,6 +94,7 @@ static SMMPreferencesWindowController *controller;
     [autoSelectSpyingDestinationsCheckbox setIntValue:[autoSelectSpyingDestinationsPreference boolValue]];
     [openWindowsForNewSourcesCheckbox setIntValue:[openWindowsForNewSourcesPreference boolValue]];
 
+    [askBeforeClosingModifiedWindowCheckbox setIntValue:[askBeforeClosingModifiedWindowPreference boolValue]];
     [alwaysSaveSysExWithEOXMatrix selectCellWithTag:[alwaysSaveSysExWithEOXPreference boolValue]];
 }
 
@@ -148,6 +152,12 @@ static SMMPreferencesWindowController *controller;
 - (IBAction)changeOpenWindowsForNewSources:(id)sender;
 {
     [openWindowsForNewSourcesPreference setBoolValue:[sender intValue]];
+    [self synchronizeDefaults];
+}
+
+- (IBAction)changeAskBeforeClosingModifiedWindow:(id)sender;
+{
+    [askBeforeClosingModifiedWindowPreference setBoolValue:[sender intValue]];
     [self synchronizeDefaults];
 }
 
