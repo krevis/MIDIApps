@@ -18,6 +18,7 @@
 	<key>ExportClasses</key>
 	<array>
 		<string>SNDisclosableView</string>
+		<string>SNDisclosureButton</string>
 	</array>
 
 		<!-- a list of images names exported from palette to IB -->
