@@ -25,8 +25,8 @@
 
 - (BOOL)finishEditingResultsInError;
 
-- (void)synchronizeDestinationPopUpWithDestinations:(NSArray *)destinations currentDestination:(id <SSEOutputStreamDestination>)currentDestination;
-- (void)synchronizeDestinationToolbarMenuWithDestinations:(NSArray *)destinations currentDestination:(id <SSEOutputStreamDestination>)currentDestination;
+- (void)synchronizeDestinationPopUpWithDestinationGroups:(NSArray *)groupedDestinations currentDestination:(id <SSEOutputStreamDestination>)currentDestination;
+- (void)synchronizeDestinationToolbarMenuWithDestinationGroups:(NSArray *)groupedDestinations currentDestination:(id <SSEOutputStreamDestination>)currentDestination;
 - (NSString *)titleForDestination:(id <SSEOutputStreamDestination>)destination;
 
 - (void)libraryDidChange:(NSNotification *)notification;
@@ -326,14 +326,22 @@ static SSEMainWindowController *controller = nil;
 
 - (void)synchronizeDestinations;
 {
-    NSArray *destinations;
+    NSMutableArray *groupedDestinations;
+    unsigned int groupIndex;
     id <SSEOutputStreamDestination> currentDestination;
 
-    destinations = [midiController destinations];
+    // Remove empty groups from groupedDestinations
+    groupedDestinations = [NSMutableArray arrayWithArray:[midiController groupedDestinations]];
+    groupIndex = [groupedDestinations count];
+    while (groupIndex--) {
+        if ([[groupedDestinations objectAtIndex:groupIndex] count] == 0)
+            [groupedDestinations removeObjectAtIndex:groupIndex];        
+    }
+
     currentDestination = [midiController selectedDestination];
 
-    [self synchronizeDestinationPopUpWithDestinations:destinations currentDestination:currentDestination];
-    [self synchronizeDestinationToolbarMenuWithDestinations:destinations currentDestination:currentDestination];
+    [self synchronizeDestinationPopUpWithDestinationGroups:groupedDestinations currentDestination:currentDestination];
+    [self synchronizeDestinationToolbarMenuWithDestinationGroups:groupedDestinations currentDestination:currentDestination];
 }
 
 - (void)synchronizeLibrarySortIndicator;
@@ -592,40 +600,41 @@ static SSEMainWindowController *controller = nil;
 // Destination selections (popup and toolbar menu)
 //
 
-- (void)synchronizeDestinationPopUpWithDestinations:(NSArray *)destinations currentDestination:(id <SSEOutputStreamDestination>)currentDestination;
+- (void)synchronizeDestinationPopUpWithDestinationGroups:(NSArray *)groupedDestinations currentDestination:(id <SSEOutputStreamDestination>)currentDestination;
 {
     BOOL wasAutodisplay;
-    unsigned int count, index;
+    unsigned int groupCount, groupIndex;
     BOOL found = NO;
-    BOOL addedSeparatorBetweenPortAndVirtual = NO;
-    
+
     // The pop up button redraws whenever it's changed, so turn off autodisplay to stop the blinkiness
     wasAutodisplay = [[self window] isAutodisplay];
     [[self window] setAutodisplay:NO];
 
     [destinationPopUpButton removeAllItems];
 
-    count = [destinations count];
-    for (index = 0; index < count; index++) {
-        id <SSEOutputStreamDestination> destination;
-        NSString *title;
+    groupCount = [groupedDestinations count];
+    for (groupIndex = 0; groupIndex < groupCount; groupIndex++) {
+        NSArray *dests;
+        unsigned int destIndex, destCount;
 
-        destination = [destinations objectAtIndex:index];
+        dests = [groupedDestinations objectAtIndex:groupIndex];
+        destCount = [dests count];
 
-        // TODO do this better
-        if (!addedSeparatorBetweenPortAndVirtual && ![destination isKindOfClass:[SMDestinationEndpoint class]]) {
-            if (index > 0)
-                [destinationPopUpButton addSeparatorItem];
-            addedSeparatorBetweenPortAndVirtual = YES;
-        }
-
-        title = [self titleForDestination:destination];
-        [destinationPopUpButton addItemWithTitle:title representedObject:destination];
-
-        if (!found && (destination == currentDestination)) {
-            [destinationPopUpButton selectItemAtIndex:[destinationPopUpButton numberOfItems] - 1];
-            // Don't use index because it may be off by one (because of the separator item)
-            found = YES;
+        if (groupIndex > 0)
+            [destinationPopUpButton addSeparatorItem];
+        
+        for (destIndex = 0; destIndex < destCount; destIndex++) {
+            id <SSEOutputStreamDestination> destination;
+            NSString *title;
+    
+            destination = [dests objectAtIndex:destIndex];            
+            title = [self titleForDestination:destination];
+            [destinationPopUpButton addItemWithTitle:title representedObject:destination];
+    
+            if (!found && (destination == currentDestination)) {
+                [destinationPopUpButton selectItemAtIndex:[destinationPopUpButton numberOfItems] - 1];
+                found = YES;
+            }
         }
     }
 
@@ -638,7 +647,7 @@ static SSEMainWindowController *controller = nil;
     [[self window] setAutodisplay:wasAutodisplay];
 }
 
-- (void)synchronizeDestinationToolbarMenuWithDestinations:(NSArray *)destinations currentDestination:(id <SSEOutputStreamDestination>)currentDestination;
+- (void)synchronizeDestinationToolbarMenuWithDestinationGroups:(NSArray *)groupedDestinations currentDestination:(id <SSEOutputStreamDestination>)currentDestination;
 {
     // Set the title to "Destination: <Whatever>"
     // Then set up the submenu items
@@ -646,9 +655,9 @@ static SSEMainWindowController *controller = nil;
     NSString *selectedDestinationTitle;
     NSString *topTitle;
     NSMenu *submenu;
-    unsigned int count, index;
+    unsigned int submenuIndex;
+    unsigned int groupCount, groupIndex;
     BOOL found = NO;
-    BOOL addedSeparatorBetweenPortAndVirtual = NO;
     
     topMenuItem = [nonretainedDestinationToolbarItem menuFormRepresentation];
 
@@ -660,35 +669,39 @@ static SSEMainWindowController *controller = nil;
     [topMenuItem setTitle:topTitle];
 
     submenu = [topMenuItem submenu];
-    index = [submenu numberOfItems];
-    while (index--)
-        [submenu removeItemAtIndex:index];
+    submenuIndex = [submenu numberOfItems];
+    while (submenuIndex--)
+        [submenu removeItemAtIndex:submenuIndex];
 
-    count = [destinations count];
-    for (index = 0; index < count; index++) {
-        id <SSEOutputStreamDestination> destination;
-        NSString *title;
-        NSMenuItem *menuItem;
+    groupCount = [groupedDestinations count];
+    for (groupIndex = 0; groupIndex < groupCount; groupIndex++) {
+        NSArray *dests;
+        unsigned int destIndex, destCount;
 
-        destination = [destinations objectAtIndex:index];
+        dests = [groupedDestinations objectAtIndex:groupIndex];
+        destCount = [dests count];
 
-        // TODO do this better
-        if (!addedSeparatorBetweenPortAndVirtual && ![destination isKindOfClass:[SMDestinationEndpoint class]]) {
-            if (index > 0)
-                [submenu addItem:[NSMenuItem separatorItem]];
-            addedSeparatorBetweenPortAndVirtual = YES;
+        if (groupIndex > 0)
+            [submenu addItem:[NSMenuItem separatorItem]];
+
+        for (destIndex = 0; destIndex < destCount; destIndex++) {
+            id <SSEOutputStreamDestination> destination;
+            NSString *title;
+            NSMenuItem *menuItem;
+
+            destination = [dests objectAtIndex:destIndex];
+
+            title = [self titleForDestination:destination];
+            menuItem = [submenu addItemWithTitle:title action:@selector(selectDestinationFromMenuItem:) keyEquivalent:@""];
+            [menuItem setRepresentedObject:destination];
+            [menuItem setTarget:self];
+    
+            if (!found && (destination == currentDestination)) {
+                [menuItem setState:NSOnState];
+                found = YES;
+            }
         }
-
-        title = [self titleForDestination:destination];
-        menuItem = [submenu addItemWithTitle:title action:@selector(selectDestinationFromMenuItem:) keyEquivalent:@""];
-        [menuItem setRepresentedObject:destination];
-        [menuItem setTarget:self];
-
-        if (!found && (destination == currentDestination)) {
-            [menuItem setState:NSOnState];
-            found = YES;
-        }
-    }
+    }        
 
     // Workaround to get the toolbar item to refresh after we change the title of the menu item
     [topMenuItem retain];
@@ -705,7 +718,7 @@ static SSEMainWindowController *controller = nil;
     title = [destination outputStreamDestinationName];
     externalDeviceNames = [destination outputStreamDestinationExternalDeviceNames];
     if ([externalDeviceNames count] > 0)
-        title = [NSString stringWithFormat:@"%@ (%@)", title, [externalDeviceNames componentsJoinedByString:@", "]];
+        title = [[title stringByAppendingString:[NSString emdashString]] stringByAppendingString:[externalDeviceNames componentsJoinedByString:@", "]];
 
     return title;
 }

@@ -40,6 +40,7 @@
 - (id)initWithWindowController:(SSEMainWindowController *)mainWindowController;
 
 - (NSArray *)destinations;
+- (NSArray *)groupedDestinations;
 - (id <SSEOutputStreamDestination>)selectedDestination;
 - (void)setSelectedDestination:(id <SSEOutputStreamDestination>)destination;
 

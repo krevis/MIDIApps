@@ -146,6 +146,11 @@ NSString *SSEMIDIControllerSendFinishedNotification = @"SSEMIDIControllerSendFin
     return [outputStream destinations];
 }
 
+- (NSArray *)groupedDestinations;
+{
+    return [outputStream groupedDestinations];
+}
+
 - (id <SSEOutputStreamDestination>)selectedDestination;
 {
     return [outputStream selectedDestination];

@@ -24,11 +24,13 @@
 }
 
 - (NSArray *)destinations;
+- (NSArray *)groupedDestinations;
+    // Returns an array of arrays. Each of the 2nd level arrays contains destinations that are of the same kind.
+    // (That is, the first array has destinations for the port stream, the second array has destinations for the virtual stream, etc.)
+
 - (id <SSEOutputStreamDestination>)selectedDestination;
 - (void)setSelectedDestination:(id <SSEOutputStreamDestination>)aDestination;
 
-// TODO see if we can get rid of these
-- (void)setVirtualEndpointName:(NSString *)newName;
 - (void)setVirtualDisplayName:(NSString *)newName;
 
 - (NSDictionary *)persistentSettings;
@@ -37,7 +39,6 @@
 
 - (id)stream;
     // Returns the actual stream in use (either virtualStream or portStream)
-
 
     // Methods which are passed on to the relevant stream:
 

@@ -65,9 +65,30 @@ NSString *SSECombinationOutputStreamEndpointDisappearedNotification = @"SSECombi
 
 - (NSArray *)destinations;
 {
-    return [[SMDestinationEndpoint destinationEndpoints] arrayByAddingObject:virtualStreamDestination];
-    // TODO may want to pull out destination endpoints that are owned by this process
-    // TODO may want to return these things, grouped (array of arrays)
+    // Collapse the groups into a flat list
+    NSArray *groups;
+    unsigned int groupIndex, groupCount;
+    NSArray *results = nil;
+
+    groups = [self groupedDestinations];
+    groupCount = [groups count];
+    for (groupIndex = 0; groupIndex < groupCount; groupIndex++) {
+        NSArray *groupDestinations = [groups objectAtIndex:groupIndex];
+        if (!results)
+            results = groupDestinations;
+        else
+            results = [results arrayByAddingObjectsFromArray:groupDestinations];        
+    }
+
+    return results;    
+}
+
+- (NSArray *)groupedDestinations;
+{
+    return [NSArray arrayWithObjects:
+        [SMDestinationEndpoint destinationEndpoints],
+        [NSArray arrayWithObject:virtualStreamDestination],
+        nil];
 }
 
 - (id <SSEOutputStreamDestination>)selectedDestination;
@@ -92,18 +113,6 @@ NSString *SSECombinationOutputStreamEndpointDisappearedNotification = @"SSECombi
         [self removePortStream];
         [self removeVirtualStream];
     }
-}
-
-
-- (void)setVirtualEndpointName:(NSString *)newName;
-{
-    if (virtualEndpointName == newName || [virtualEndpointName isEqualToString:newName])
-        return;
-        
-    [virtualEndpointName release];
-    virtualEndpointName = [newName retain];
-    
-    [[virtualStream endpoint] setName:virtualEndpointName];
 }
 
 - (void)setVirtualDisplayName:(NSString *)newName;
