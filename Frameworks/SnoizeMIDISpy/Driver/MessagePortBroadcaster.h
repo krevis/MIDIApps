@@ -22,6 +22,8 @@ public:
 
     void Broadcast(CFDataRef data, SInt32 channel);
 
+    class MessagePortBroadcasterException { };
+    
 private:
     friend CFDataRef	LocalMessagePortCallBack(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info);
 

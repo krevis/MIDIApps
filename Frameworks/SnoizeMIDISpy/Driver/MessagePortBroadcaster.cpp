@@ -19,7 +19,7 @@ MessagePortBroadcaster::MessagePortBroadcaster(CFStringRef broadcasterName, Mess
 {
     CFMessagePortContext messagePortContext = { 0, (void *)this, NULL, NULL, NULL };
 
-    #if DEBUG
+    #if 1 || DEBUG
         fprintf(stderr, "MessagePortBroadcaster: creating\n");
     #endif
         
@@ -28,25 +28,75 @@ MessagePortBroadcaster::MessagePortBroadcaster(CFStringRef broadcasterName, Mess
     if (!broadcasterName)
         broadcasterName = CFSTR("Unknown Broadcaster");
     mBroadcasterName = CFStringCreateCopy(kCFAllocatorDefault, broadcasterName);
+    if (!mBroadcasterName)
+        goto abort;
 
     // Create a local port for remote listeners to talk to us with
+    #if 1 || DEBUG
+        fprintf(stderr, "MessagePortBroadcaster: creating local port\n");
+    #endif
     mLocalPort = CFMessagePortCreateLocal(kCFAllocatorDefault, mBroadcasterName, LocalMessagePortCallBack, &messagePortContext, FALSE);
+    if (!mLocalPort) {
+        #if 1 || DEBUG
+            fprintf(stderr, "MessagePortBroadcaster: couldn't create local port!\n");
+        #endif
+        goto abort;
+    }
 
     // And add it to the current run loop
     mRunLoopSource = CFMessagePortCreateRunLoopSource(kCFAllocatorDefault, mLocalPort, 0);
+    if (!mRunLoopSource) {
+        #if 1 || DEBUG
+            fprintf(stderr, "MessagePortBroadcaster: couldn't create run loop source for local port!\n");
+        #endif        
+        goto abort;
+    }
     CFRunLoopAddSource(CFRunLoopGetCurrent(), mRunLoopSource, kCFRunLoopDefaultMode);
 
     // Create structures to keep track of our listeners
     mListenersByIdentifier = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
     mIdentifiersByListener = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, NULL);
     mListenerArraysByChannel = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
+    if (!mListenersByIdentifier || !mIdentifiersByListener || !mListenerArraysByChannel) {
+        #if 1 || DEBUG
+            fprintf(stderr, "MessagePortBroadcaster: couldn't create a listener dictionary!\n");
+        #endif
+        goto abort;        
+    }
 
     pthread_mutex_init(&mListenerStructuresMutex, NULL);
+
+    return;
+
+abort:
+    if (mListenerArraysByChannel)
+        CFRelease(mListenerArraysByChannel);
+
+    if (mIdentifiersByListener)
+        CFRelease(mIdentifiersByListener);
+
+    if (mListenersByIdentifier)
+        CFRelease(mListenersByIdentifier);
+
+    if (mRunLoopSource) {
+        CFRunLoopSourceInvalidate(mRunLoopSource);
+        CFRelease(mRunLoopSource);
+    }
+
+    if (mLocalPort) {
+        CFMessagePortInvalidate(mLocalPort);
+        CFRelease(mLocalPort);
+    }
+    
+    if (mBroadcasterName)
+        CFRelease(mBroadcasterName);
+
+    throw MessagePortBroadcasterException();
 }
 
 MessagePortBroadcaster::~MessagePortBroadcaster()
 {
-    #if DEBUG
+    #if 1 || DEBUG
         fprintf(stderr, "MessagePortBroadcaster: destroying\n");
     #endif
 
@@ -78,7 +128,8 @@ MessagePortBroadcaster::~MessagePortBroadcaster()
         CFRelease(mLocalPort);
     }
 
-    CFRelease(mBroadcasterName);    
+    if (mBroadcasterName)
+        CFRelease(mBroadcasterName);    
 }
 
 void MessagePortBroadcaster::Broadcast(CFDataRef data, SInt32 channel)

@@ -12,8 +12,15 @@
 extern "C" void *NewSpyingMIDIDriver(CFAllocatorRef allocator, CFUUIDRef typeID) 
 {
     if (CFEqual(typeID, kMIDIDriverTypeID)) {
-        SpyingMIDIDriver *result = new SpyingMIDIDriver;
-        return result->Self();
+        try {
+            SpyingMIDIDriver *result = new SpyingMIDIDriver;
+            return result->Self();
+        } catch (...) {
+            #if 1 || DEBUG
+                fprintf(stderr, "MIDI Monitor driver: an exception was raised, so the driver is not being instantiated\n");
+            #endif
+            return NULL;
+        }
     } else {
         return NULL;
     }
@@ -36,9 +43,10 @@ SpyingMIDIDriver::SpyingMIDIDriver() :
         fprintf(stderr, "SpyingMIDIDriver: Creating\n");
     #endif
 
-    pthread_mutex_init(&mEndpointDictionaryMutex, NULL);
-            
     mBroadcaster = new MessagePortBroadcaster(CFSTR("Spying MIDI Driver"), this);
+    // NOTE This might raise an exception; we let it propagate upwards.
+
+    pthread_mutex_init(&mEndpointDictionaryMutex, NULL);
 
     CheckCoreMIDIVersion();
 }
@@ -53,7 +61,6 @@ SpyingMIDIDriver::~SpyingMIDIDriver()
     
     delete mBroadcaster;
 }
-
 
 OSStatus SpyingMIDIDriver::Monitor(MIDIEndpointRef destination, const MIDIPacketList *packetList)
 {
