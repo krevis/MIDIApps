@@ -6,6 +6,7 @@
 {
     BOOL shouldOpenUntitledDocument;
     MIDISpyClientRef midiSpyClient;
+    NSMutableSet* newSources;
 }
 
 - (IBAction)showPreferences:(id)sender;

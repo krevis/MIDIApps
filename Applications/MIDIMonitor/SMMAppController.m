@@ -13,6 +13,7 @@
 @interface SMMAppController (Private)
 
 - (void)sourceEndpointsAppeared:(NSNotification *)notification;
+- (void)openWindowForNewSources;
 
 @end
 
@@ -201,21 +202,32 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 
 - (void)sourceEndpointsAppeared:(NSNotification *)notification;
 {
-    NSArray *endpoints;
-    NSSet *endpointSet;
+    if ([[OFPreference preferenceForKey:SMMOpenWindowsForNewSourcesPreferenceKey] boolValue])
+    {
+        NSArray *endpoints;
+
+        endpoints = [[notification userInfo] objectForKey:SMMIDIObjectsThatAppeared];
+
+        if (!newSources) {
+            newSources = [[NSMutableSet alloc] init];
+            [self performSelector:@selector(openWindowForNewSources) withObject: nil afterDelay:0.1 inModes:[NSArray arrayWithObject:NSDefaultRunLoopMode]];
+        }
+        [newSources addObjectsFromArray:endpoints];
+    }
+}
+
+- (void) openWindowForNewSources
+{
     SMMDocument *document;
 
-    if (![[OFPreference preferenceForKey:SMMOpenWindowsForNewSourcesPreferenceKey] boolValue])
-        return;
-
-    endpoints = [[notification userInfo] objectForKey:SMMIDIObjectsThatAppeared];
-    endpointSet = [NSSet setWithArray:endpoints];
-
     document = [[NSDocumentController sharedDocumentController] openUntitledDocumentOfType:@"MIDI Monitor Document" display:NO];
-    [document setSelectedInputSources:endpointSet];
+    [document setSelectedInputSources:newSources];
     [document showWindows];
     [document setAreSourcesShown:YES];
-    [document revealInputSources:endpointSet];
+    [document revealInputSources:newSources];
+
+    [newSources release];
+    newSources = nil;
 }
 
 @end
