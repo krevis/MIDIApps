@@ -3,6 +3,7 @@
 //
 
 #import "SMClient.h"
+#import "SMMIDIObject.h"
 
 
 @interface SMClient (Private)
@@ -49,6 +50,10 @@ static SMClient *sharedClient = nil;
 {
     if (!sharedClient) {
         sharedClient = [[self alloc] init];
+        
+        // make sure SMMIDIObject is listening for the notification below
+        [SMMIDIObject class];   // provokes +[SMMIDIObject initialize] if necessary
+        
         if (sharedClient)
             [[NSNotificationCenter defaultCenter] postNotificationName:SMClientCreatedInternalNotification object:sharedClient];
     }
