@@ -184,6 +184,7 @@
 		2A37F4AFFDCFA73011CA2CEA = {
 			children = (
 				2A37F4B0FDCFA73011CA2CEA,
+				F547DDD90318496E01000164,
 			);
 			isa = PBXGroup;
 			name = "Other Sources";
@@ -296,10 +297,12 @@
 				INSTALL_PATH = /Users/Shared/krevis/InstalledProducts;
 				LIBRARY_SEARCH_PATHS = "";
 				OPTIMIZATION_CFLAGS = "-O3";
-				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
+				PRECOMPILE_PREFIX_HEADER = YES;
+				PREFIX_HEADER = PrecompHeader.h;
 				PRODUCT_NAME = "MIDI Monitor";
 				SECTORDER_FLAGS = "";
+				USE_GCC3_PFE_SUPPORT = YES;
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas -Wparentheses";
 				WRAPPER_EXTENSION = app;
 			};
@@ -404,6 +407,7 @@
 				F57F62910261D5A701000164,
 				F55462290263619E01000164,
 				F5DCBE9002E6064E01000164,
+				F547DDDA0318496E01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -670,6 +674,17 @@
 		};
 		F5460C1402E319C101000164 = {
 			fileRef = F5460C1302E319C101000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F547DDD90318496E01000164 = {
+			isa = PBXFileReference;
+			path = PrecompHeader.h;
+			refType = 4;
+		};
+		F547DDDA0318496E01000164 = {
+			fileRef = F547DDD90318496E01000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
