@@ -8,7 +8,7 @@
 class SpyingMIDIDriver : public MIDIDriver, public MessagePortBroadcasterDelegate {
 public:
     SpyingMIDIDriver();
-    ~SpyingMIDIDriver();
+    virtual ~SpyingMIDIDriver();
 
     // MIDIDriver overrides
     virtual OSStatus Start(MIDIDeviceListRef devList);
