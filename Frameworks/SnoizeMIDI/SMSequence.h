@@ -14,7 +14,7 @@
 @interface SMSequence : OFObject
 {
     NSMutableArray *notes;
-    NSLock *notesLock;
+    NSRecursiveLock *notesLock;
 }
 
 - (NSArray *)notes;
@@ -23,5 +23,10 @@
 
 - (NSArray *)notesStartingFromBeat:(Float64)startBeat toBeat:(Float64)endBeat;
     // Returns notes which start in the interval (startBeat, endBeat]
+
+- (Float64)startBeat;
+    // Returns the position of the first note. If there are no notes, returns 0.
+- (Float64)endBeat;
+    // Returns the endPosition of the last note. If there are no notes, returns 0.
 
 @end
