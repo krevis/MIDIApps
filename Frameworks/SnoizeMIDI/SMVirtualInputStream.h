@@ -6,6 +6,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreMIDI/CoreMIDI.h>
 
+@class SMSimpleInputStreamSource;
 @class SMMessageParser;
 @class SMDestinationEndpoint;
 
@@ -13,11 +14,15 @@
 @interface SMVirtualInputStream : SMInputStream
 {
     SMDestinationEndpoint *endpoint;
+    NSString *name;
+    SInt32 uniqueID;
+    SMSimpleInputStreamSource *inputStreamSource;
     SMMessageParser *parser;
 }
 
-- (id)initWithName:(NSString *)name uniqueID:(SInt32)uniqueID;
-
 - (SMDestinationEndpoint *)endpoint;
+
+- (BOOL)isActive;
+- (void)setIsActive:(BOOL)value;
 
 @end

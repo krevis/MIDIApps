@@ -6,6 +6,8 @@
 
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
+
+#import "SMEndpoint.h"
 #import "SMHostTime.h"
 
 
@@ -312,11 +314,18 @@ static NSDateFormatter *timeStampDateFormatter;
     return nil;
 }
 
+- (void)dealloc;
+{
+    [sourceEndpoint release];
+    [super dealloc];
+}
+
 - (id)copyWithZone:(NSZone *)zone;
 {
     SMMessage *newMessage;
     
     newMessage = [[[self class] allocWithZone:zone] initWithTimeStamp:timeStamp statusByte:statusByte];
+    [newMessage setSourceEndpoint:sourceEndpoint];
     return newMessage;
 }
 
@@ -374,6 +383,18 @@ static NSDateFormatter *timeStampDateFormatter;
         return nil;
 }
 
+- (SMSourceEndpoint *)sourceEndpoint;
+{
+    return sourceEndpoint;
+}
+
+- (void)setSourceEndpoint:(SMSourceEndpoint *)value;
+{
+    if (sourceEndpoint != value) {
+        [sourceEndpoint release];
+        sourceEndpoint = [value retain];
+    }
+}
 
 //
 // Display methods

@@ -158,7 +158,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     status = MIDIObjectSetIntegerProperty(endpointRef, kMIDIPropertyUniqueID, value);
     if (status) {
         // [NSException raise:NSGenericException format:@"Couldn't set endpoint's unique ID: error %ld", status];
-        // TODO Don't raise an exception here; this may be impossible in systems after 10.1.2.
+        // TODO Don't raise an exception here; this may be impossible in systems after 10.1.3.
     }
 
     // Refresh our idea of the unique ID since it may or may not have changed
@@ -167,6 +167,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 
 - (NSString *)name;
 {
+    // TODO we should cache this (and the manufacturer and model name)
     return [self _stringForProperty:kMIDIPropertyName];
 }
 
@@ -695,6 +696,12 @@ static NSMapTable *sourceEndpointRefToSMEndpointMapTable = NULL;
 + (SMSourceEndpoint *)sourceEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
 {
     return (SMSourceEndpoint *)[self _endpointForEndpointRef:anEndpointRef];
+}
+
+
+- (NSString *)inputStreamSourceName;
+{
+    return [self shortName];
 }
 
 @end

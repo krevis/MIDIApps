@@ -19,11 +19,7 @@
 - (NSArray *)endpoints;
 - (void)addEndpoint:(SMSourceEndpoint *)endpoint;
 - (void)removeEndpoint:(SMSourceEndpoint *)endpoint;
-
-// These are present for compatibility only (from when we only listened to one source).
-// TODO remove these eventually
-- (void)setEndpoint:(SMSourceEndpoint *)endpoint;
-- (SMSourceEndpoint *)endpoint;
+- (void)setEndpoints:(NSArray *)newEndpoints;
 
 @end
 

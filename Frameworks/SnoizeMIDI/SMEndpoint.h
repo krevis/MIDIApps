@@ -5,6 +5,7 @@
 #import <OmniFoundation/OFObject.h>
 #import <Foundation/Foundation.h>
 #import <CoreMIDI/CoreMIDI.h>
+#import <SnoizeMIDI/SMInputStreamSource.h>
 
 
 @interface SMEndpoint : OFObject
@@ -61,13 +62,16 @@
 @end
 
 
-@interface SMSourceEndpoint : SMEndpoint
+@interface SMSourceEndpoint : SMEndpoint <SMInputStreamSource>
 {
 }
 
 + (NSArray *)sourceEndpoints;
 + (SMSourceEndpoint *)sourceEndpointWithUniqueID:(SInt32)uniqueID;
 + (SMSourceEndpoint *)sourceEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
+
+// SMInputStreamSource protocol
+- (NSString *)inputStreamSourceName;
 
 @end
 

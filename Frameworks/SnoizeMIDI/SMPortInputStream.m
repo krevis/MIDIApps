@@ -8,6 +8,7 @@
 #import <OmniFoundation/OmniFoundation.h>
 
 #import "SMClient.h"
+#import "SMInputStreamSource.h"
 #import "SMEndpoint.h"
 #import "SMMessageParser.h"
 
@@ -117,27 +118,27 @@ DEFINE_NSSTRING(SMPortInputStreamEndpointDisappeared);
     [endpoints removeObjectIdenticalTo:endpoint];
 }
 
-// TODO for compatibility only -- get rid of these
-- (void)setEndpoint:(SMSourceEndpoint *)endpoint;
+- (void)setEndpoints:(NSArray *)newEndpoints;
 {
-    NSArray *currentEndpoints;
+    NSMutableArray *endpointsToRemove;
+    NSMutableArray *endpointsToAdd;
     unsigned int index;
 
-    currentEndpoints = [NSArray arrayWithArray:endpoints];
-    index = [currentEndpoints count];
-    while (index--) {
-        [self removeEndpoint:[currentEndpoints objectAtIndex:index]];
-    }
+    // remove (endpoints - newEndpoints)
+    endpointsToRemove = [NSMutableArray arrayWithArray:endpoints];
+    [endpointsToRemove removeIdenticalObjectsFromArray:newEndpoints];
 
-    [self addEndpoint:endpoint];
-}
+    // add (newEndpoints - endpoints)
+    endpointsToAdd = [NSMutableArray arrayWithArray:newEndpoints];
+    [endpointsToAdd removeIdenticalObjectsFromArray:endpoints];
 
-- (SMSourceEndpoint *)endpoint;
-{
-    if ([endpoints count] > 0)
-        return [endpoints objectAtIndex:0];
-    else
-        return nil;
+    index = [endpointsToRemove count];
+    while (index--)
+        [self removeEndpoint:[endpointsToRemove objectAtIndex:index]];
+
+    index = [endpointsToAdd count];
+    while (index--)
+        [self addEndpoint:[endpointsToAdd objectAtIndex:index]];    
 }
 
 
@@ -153,6 +154,21 @@ DEFINE_NSSTRING(SMPortInputStreamEndpointDisappeared);
 - (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;
 {
     return (SMMessageParser *)refCon;
+}
+
+- (NSArray *)inputSources;
+{
+    return [SMSourceEndpoint sourceEndpoints];
+}
+
+- (NSArray *)selectedInputSources;
+{
+    return [self endpoints];
+}
+
+- (void)setSelectedInputSources:(NSArray *)sources;
+{
+    [self setEndpoints:sources];
 }
 
 @end

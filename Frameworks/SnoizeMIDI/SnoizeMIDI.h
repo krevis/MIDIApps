@@ -6,6 +6,7 @@
 #import <SnoizeMIDI/SMEndpoint.h>
 #import <SnoizeMIDI/SMHostTime.h>
 #import <SnoizeMIDI/SMInputStream.h>
+#import <SnoizeMIDI/SMInputStreamSource.h>
 #import <SnoizeMIDI/SMMessage.h>
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 #import <SnoizeMIDI/SMMessageFilter.h>
@@ -19,7 +20,7 @@
 #import <SnoizeMIDI/SMPeriodicTimer.h>
 #import <SnoizeMIDI/SMPortInputStream.h>
 #import <SnoizeMIDI/SMPortOrVirtualStream.h>
-#import <SnoizeMIDI/SMPortOrVirtualInputStream.h>
+//#import <SnoizeMIDI/SMPortOrVirtualInputStream.h>	// TODO remove
 #import <SnoizeMIDI/SMPortOrVirtualOutputStream.h>
 #import <SnoizeMIDI/SMPortOutputStream.h>
 #import <SnoizeMIDI/SMSysExSendRequest.h>

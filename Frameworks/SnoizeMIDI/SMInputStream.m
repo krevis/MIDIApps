@@ -116,6 +116,24 @@ DEFINE_NSSTRING(SMInputStreamDoneReadingSysExNotification);
     return nil;
 }
 
+- (NSArray *)inputSources;
+{
+    OBRequestConcreteImplementation(self, _cmd);
+    return nil;
+}
+
+- (NSArray *)selectedInputSources;
+{
+    OBRequestConcreteImplementation(self, _cmd);
+    return nil;
+}
+
+- (void)setSelectedInputSources:(NSArray *)sources;
+{
+    OBRequestConcreteImplementation(self, _cmd);
+    return;
+}
+
 //
 // Parser delegate
 //

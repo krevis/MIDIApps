@@ -9,25 +9,116 @@
 
 #import "SMClient.h"
 #import "SMEndpoint.h"
+#import "SMInputStreamSource.h"
 #import "SMMessageParser.h"
+
+
+@interface SMVirtualInputStream (Private)
+
+- (void)_createEndpoint;
+- (void)_disposeEndpoint;
+
+@end
 
 
 @implementation SMVirtualInputStream
 
-- (id)initWithName:(NSString *)name uniqueID:(SInt32)uniqueID;
+- (id)init;
+{
+    if (!(self = [super init]))
+        return nil;
+
+    name = [[[SMClient sharedClient] name] retain];
+    uniqueID = [SMEndpoint generateNewUniqueID];
+
+    inputStreamSource = [[SMSimpleInputStreamSource alloc] initWithName:name];
+
+    parser = [[self newParser] retain];
+
+    return self;
+}
+
+- (void)dealloc;
+{
+    [self setIsActive:NO];
+
+    [inputStreamSource release];
+    inputStreamSource = nil;
+    
+    [parser release];
+    parser = nil;
+
+    [super dealloc];
+}
+
+- (SMDestinationEndpoint *)endpoint;
+{
+    return endpoint;
+}
+
+- (BOOL)isActive;
+{
+    return (endpoint != nil);
+}
+
+- (void)setIsActive:(BOOL)value;
+{
+    if (value && !endpoint)
+        [self _createEndpoint];
+    else if (!value && endpoint)
+        [self _disposeEndpoint];
+
+    OBASSERT([self isActive] == value);
+}
+
+
+//
+// SMInputStream subclass
+//
+
+- (NSArray *)parsers;
+{
+    return [NSArray arrayWithObject:parser];
+}
+
+- (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;
+{
+    // refCon is ignored, since it only applies to connections created with MIDIPortConnectSource()
+    return parser;
+}
+
+- (NSArray *)inputSources;
+{
+    return [NSArray arrayWithObject:inputStreamSource];
+}
+
+- (NSArray *)selectedInputSources;
+{
+    if ([self isActive])
+        return [self inputSources];
+    else
+        return [NSArray array];
+}
+
+- (void)setSelectedInputSources:(NSArray *)sources;
+{
+    [self setIsActive:(sources && [sources indexOfObjectIdenticalTo:inputStreamSource] != NSNotFound)];
+}
+
+@end
+
+
+@implementation SMVirtualInputStream (Private)
+
+- (void)_createEndpoint;
 {
     SMClient *client;
     OSStatus status;
     MIDIEndpointRef endpointRef;
     BOOL wasPostingExternalNotification;
 
-    if (!(self = [super init]))
-        return nil;
-
-    parser = [[self newParser] retain];
-    
     client = [SMClient sharedClient];
-        
+
     // We are going to be making a lot of changes, so turn off external notifications
     // for a while (until we're done).  Internal notifications are still necessary and aren't very slow.
     wasPostingExternalNotification = [client postsExternalSetupChangeNotification];
@@ -53,42 +144,17 @@
     [client setPostsExternalSetupChangeNotification:wasPostingExternalNotification];
 
     [endpoint setModelName:[client name]];
-
-    return self;
 }
 
-- (void)dealloc;
+- (void)_disposeEndpoint;
 {
-    if (endpoint)
-        MIDIEndpointDispose([endpoint endpointRef]);
+    OBASSERT(endpoint != nil);
+    if (!endpoint)
+        return;
 
+    MIDIEndpointDispose([endpoint endpointRef]);
     [endpoint release];
     endpoint = nil;
-
-    [parser release];
-    parser = nil;
-
-    [super dealloc];
-}
-
-- (SMDestinationEndpoint *)endpoint;
-{
-    return endpoint;
-}
-
-//
-// SMInputStream subclass
-//
-
-- (NSArray *)parsers;
-{
-    return [NSArray arrayWithObject:parser];
-}
-
-- (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;
-{
-    // refCon is ignored, since it only applies to connections created with MIDIPortConnectSource()
-    return parser;
 }
 
 @end

@@ -6,6 +6,8 @@
 #import <Foundation/Foundation.h>
 #import <CoreMIDI/CoreMIDI.h>
 
+@class SMSourceEndpoint;
+
 
 typedef enum _SMMessageType {
     SMMessageTypeUnknown 		= 0,
@@ -84,6 +86,7 @@ extern NSString *SMTimeFormatPreferenceKey;
 {
     MIDITimeStamp timeStamp;
     Byte statusByte;
+    SMSourceEndpoint *sourceEndpoint;	// TODO we don't really want this
 }
 
 + (NSString *)formatNoteNumber:(Byte)noteNumber;
@@ -123,6 +126,9 @@ extern NSString *SMTimeFormatPreferenceKey;
     // May return NULL, indicating no additional data
 - (NSData *)otherData;
     // May return nil, indicating no additional data
+
+- (SMSourceEndpoint *)sourceEndpoint;
+- (void)setSourceEndpoint:(SMSourceEndpoint *)value;
 
 // Display methods
 

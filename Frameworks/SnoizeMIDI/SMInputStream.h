@@ -33,6 +33,10 @@
 - (NSArray *)parsers;
 - (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;
 
+- (NSArray *)inputSources;
+- (NSArray *)selectedInputSources;
+- (void)setSelectedInputSources:(NSArray *)sources;
+
 @end
 
 // Notifications
