@@ -6,6 +6,8 @@
 	<integer>2</integer>
 	<key>SMMAskBeforeClosingModifiedWindow</key>
 	<true/>
+    <key>SMMAutoSelectFirstSource</key>  <!-- obsolete, compatibility only -->
+    <true/>
 	<key>SMMAutoSelectOrdinarySources</key>
 	<true/>
 	<key>SMMAutoSelectSpyingDestinations</key>
