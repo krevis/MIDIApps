@@ -30,7 +30,7 @@ static unsigned int bytesPerRow()
 {
     unsigned int dataLength, rowLength;
     
-    dataLength = [aMessage otherDataLength];        
+    dataLength = [[aMessage receivedData] length];
     rowLength = bytesPerRow();
     return (dataLength / rowLength) + ((dataLength % rowLength) ? 1 : 0);
 }
@@ -81,7 +81,7 @@ static unsigned int bytesPerRow()
     NSData *data;
     unsigned int dataLength, rowLength;
     
-    data = [message otherData];
+    data = [message receivedData];
     dataLength = [data length];
 
     if (offset > dataLength)
