@@ -75,6 +75,9 @@ if [[ $DO_CLEAN -eq 1 ]] ; then
 	cd ${SnoizeFrameworkSource}/SnoizeMIDISpy
 	pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE clean || (echo "Build failed!"; exit 1)
 
+	cd ${SnoizeFrameworkSource}/DisclosableView
+	pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE clean || (echo "Build failed!"; exit 1)
+
 	cd ${SnoizeAppSource}/MIDIMonitor
 	pbxbuild -buildstyle $APP_BUILDSTYLE clean || (echo "Build failed!"; exit 1)
 
@@ -99,6 +102,9 @@ cd ${SnoizeFrameworkSource}/SnoizeMIDI
 pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE $BUILD_ACTION || (echo "Build failed!"; exit 1)
 
 cd ${SnoizeFrameworkSource}/SnoizeMIDISpy
+pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE $BUILD_ACTION || (echo "Build failed!"; exit 1)
+
+cd ${SnoizeFrameworkSource}/DisclosableView
 pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE $BUILD_ACTION || (echo "Build failed!"; exit 1)
 
 cd ${SnoizeAppSource}/MIDIMonitor
@@ -134,6 +140,7 @@ if [[ $DO_INSTALL -eq 1 ]]; then
 	redo_prebinding -e "$PWD" ../Frameworks/OmniFoundation.framework/Versions/Current/OmniFoundation
 	redo_prebinding -e "$PWD" ../Frameworks/SnoizeMIDI.framework/Versions/Current/SnoizeMIDI
 	redo_prebinding -e "$PWD" ../Frameworks/SnoizeMIDISpy.framework/Versions/Current/SnoizeMIDISpy
+	redo_prebinding -e "$PWD" ../Frameworks/DisclosableView.framework/Versions/Current/DisclosableView
 	redo_prebinding -e "$PWD" "./$APP_EXECUTABLE_NAME"
 fi
 
