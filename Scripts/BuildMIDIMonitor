@@ -133,6 +133,8 @@ if [[ $DO_INSTALL -eq 1 ]]; then
 	find . -name 'Headers' -exec rm -rf {} \; -prune
 	# We don't need non-English localizations right now
 	find . -name \*.lproj \! -name English.lproj -exec rm -rf {} \; -prune
+	# I don't trust the new keyedobjects nibs yet... IB is too flaky.
+	find . -name keyedobjects.nib -type f -exec rm -f {} \;
 fi
 
 #
