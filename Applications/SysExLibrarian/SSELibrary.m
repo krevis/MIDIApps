@@ -31,8 +31,8 @@
 
 @implementation SSELibrary
 
-DEFINE_NSSTRING(SSELibraryDidChangeNotification);
-DEFINE_NSSTRING(SSELibraryEntryWillBeRemovedNotification);
+NSString *SSELibraryDidChangeNotification = @"SSELibraryDidChangeNotification";
+NSString *SSELibraryEntryWillBeRemovedNotification = @"SSELibraryEntryWillBeRemovedNotification";
 
 NSString *SSELibraryFileDirectoryAliasPreferenceKey = @"SSELibraryFileDirectoryAlias";
 NSString *SSELibraryFileDirectoryPathPreferenceKey = @"SSELibraryFileDirectoryPath";

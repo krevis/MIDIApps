@@ -25,9 +25,9 @@
 
 @implementation SSEPreferencesWindowController
 
-DEFINE_NSSTRING(SSEDisplayPreferenceChangedNotification);
-DEFINE_NSSTRING(SSESysExSendPreferenceChangedNotification);
-DEFINE_NSSTRING(SSESysExReceivePreferenceChangedNotification);
+NSString *SSEDisplayPreferenceChangedNotification = @"SSEDisplayPreferenceChangedNotification";
+NSString *SSESysExSendPreferenceChangedNotification = @"SSESysExSendPreferenceChangedNotification";
+NSString *SSESysExReceivePreferenceChangedNotification = @"SSESysExReceivePreferenceChangedNotification";
 
 
 static SSEPreferencesWindowController *controller = nil;

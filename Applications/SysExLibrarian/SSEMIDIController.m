@@ -43,10 +43,10 @@ NSString *SSEHasShownSysExWorkaroundWarningPreferenceKey = @"SSEHasShownSysExWor
 NSString *SSESysExReadTimeOutPreferenceKey = @"SSESysExReadTimeOut";
 NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey = @"SSESysExIntervalBetweenSentMessages";
 
-DEFINE_NSSTRING(SSEMIDIControllerReadStatusChangedNotification);
-DEFINE_NSSTRING(SSEMIDIControllerReadFinishedNotification);
-DEFINE_NSSTRING(SSEMIDIControllerSendWillStartNotification);
-DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
+NSString *SSEMIDIControllerReadStatusChangedNotification = @"SSEMIDIControllerReadStatusChangedNotification";
+NSString *SSEMIDIControllerReadFinishedNotification = @"SSEMIDIControllerReadFinishedNotification";
+NSString *SSEMIDIControllerSendWillStartNotification = @"SSEMIDIControllerSendWillStartNotification";
+NSString *SSEMIDIControllerSendFinishedNotification = @"SSEMIDIControllerSendFinishedNotification";
 
 
 - (id)initWithWindowController:(SSEMainWindowController *)mainWindowController;

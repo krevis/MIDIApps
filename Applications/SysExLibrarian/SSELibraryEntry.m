@@ -27,7 +27,7 @@
 
 @implementation SSELibraryEntry
 
-DEFINE_NSSTRING(SSELibraryEntryNameDidChangeNotification);
+NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidChangeNotification";
 
 
 - (id)initWithLibrary:(SSELibrary *)library;
