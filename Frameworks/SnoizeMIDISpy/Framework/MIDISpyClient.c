@@ -1,6 +1,7 @@
 #include "MIDISpyClient.h"
 
 #include <Carbon/Carbon.h>
+#include <pthread.h>
 
 #include "MIDISpyShared.h"
 
@@ -14,6 +15,7 @@ typedef struct __MIDISpyClient
     CFMessagePortRef driverPort;
     CFMessagePortRef localPort;
     CFRunLoopSourceRef runLoopSource;
+    CFRunLoopRef listenerThreadRunLoop;
     UInt32 clientIdentifier;
     CFMutableArrayRef ports;
     CFMutableDictionaryRef endpointConnections;
@@ -56,6 +58,9 @@ void InitializeConstantStrings(void)
 //
 // Private function declarations
 //
+
+static void SpawnListenerThread(MIDISpyClientRef clientRef);
+static void *RunListenerThread(void *refCon);
 
 static void ReceiveMIDINotification(const MIDINotification *message, void *refCon);
 static void RebuildEndpointUniqueIDDictionary();
@@ -143,14 +148,14 @@ OSStatus MIDISpyClientCreate(MIDISpyClientRef *outClientRefPtr)
         if (!clientRef->localPort) {
             debug_string("MIDISpyClientCreate: CFMessagePortCreateLocal failed!");
         } else {
-            // Add the local port to the current run loop, in common modes
+            // Create a new thread which listens on the local port
             clientRef->runLoopSource = CFMessagePortCreateRunLoopSource(kCFAllocatorDefault, clientRef->localPort, 0);
 
             if (!clientRef->runLoopSource) {
                 debug_string("MIDISpyClientCreate: CFMessagePortCreateRunLoopSource failed!");
             } else {
-                CFRunLoopAddSource(CFRunLoopGetCurrent(), clientRef->runLoopSource, kCFRunLoopCommonModes);
-    
+                SpawnListenerThread(clientRef);
+
                 // And now tell the spying driver to add us as a listener. Don't wait for a response.
                 sendStatus = CFMessagePortSendRequest(driverPort, kSpyingMIDIDriverAddListenerMessageID, identifierData, 300, 0, NULL, NULL);
                 if (sendStatus != kCFMessagePortSuccess) {
@@ -180,44 +185,6 @@ OSStatus MIDISpyClientCreate(MIDISpyClientRef *outClientRefPtr)
 }
 
 
-OSStatus MIDISpyClientInvalidate(MIDISpyClientRef clientRef)
-{
-    // NOTE
-    // Why is this a separately callable function from MIDISpyClientDispose()?
-    // Because we need to invalidate our local port BEFORE the regular MIDIClient ports get invalidated
-    // (which happens automatically when the app dies, or when MIDIClientDispose() is called).
-    // Why is that?
-    // Because the MIDIServer has a bug: if the internal MIDIClient that our driver uses gets disposed of
-    // after all of the external MIDIClients, the MIDIServer process keeps running (even though it should terminate).
-    // So, we invalidate our local port, causing the driver's remote port to get invalidated, causing the driver
-    // to dispose of its MIDIClient.
-    // Sigh!
-    
-    if (!clientRef)
-        return paramErr;
-
-    if (clientRef->runLoopSource) {
-        CFRunLoopSourceInvalidate(clientRef->runLoopSource);
-        CFRelease(clientRef->runLoopSource);
-        clientRef->runLoopSource = NULL;
-    }
-
-    if (clientRef->localPort) {
-        CFMessagePortInvalidate(clientRef->localPort);
-        CFRelease(clientRef->localPort);
-        clientRef->localPort = NULL;
-    }
-
-    if (clientRef->driverPort) {
-        CFMessagePortInvalidate(clientRef->driverPort);
-        CFRelease(clientRef->driverPort);
-        clientRef->driverPort = NULL;
-    }
-
-    return noErr;
-}
-
-
 OSStatus MIDISpyClientDispose(MIDISpyClientRef clientRef)
 {
     if (!clientRef)
@@ -241,7 +208,28 @@ OSStatus MIDISpyClientDispose(MIDISpyClientRef clientRef)
         CFRelease(clientRef->endpointConnections);
     }
 
-    MIDISpyClientInvalidate(clientRef);
+    if (clientRef->runLoopSource) {
+        CFRunLoopSourceInvalidate(clientRef->runLoopSource);
+        CFRelease(clientRef->runLoopSource);
+        clientRef->runLoopSource = NULL;
+    }
+
+    if (clientRef->listenerThreadRunLoop) {
+        CFRunLoopStop(clientRef->listenerThreadRunLoop);
+        clientRef->listenerThreadRunLoop = NULL;
+    }
+
+    if (clientRef->localPort) {
+        CFMessagePortInvalidate(clientRef->localPort);
+        CFRelease(clientRef->localPort);
+        clientRef->localPort = NULL;
+    }
+
+    if (clientRef->driverPort) {
+        CFMessagePortInvalidate(clientRef->driverPort);
+        CFRelease(clientRef->driverPort);
+        clientRef->driverPort = NULL;
+    }
     
     free(clientRef);
     return noErr;
@@ -359,6 +347,29 @@ OSStatus MIDISpyPortDisconnectDestination(MIDISpyPortRef spyPortRef, MIDIEndpoin
 //
 // Private functions
 //
+
+// Listener thread
+
+void SpawnListenerThread(MIDISpyClientRef clientRef)
+{
+    pthread_t thread;
+    int result;
+
+    result = pthread_create(&thread, NULL, RunListenerThread, clientRef);
+}
+
+void *RunListenerThread(void *refCon)
+{
+    MIDISpyClientRef clientRef = (MIDISpyClientRef)refCon;
+
+    clientRef->listenerThreadRunLoop = CFRunLoopGetCurrent();
+    CFRunLoopAddSource(clientRef->listenerThreadRunLoop, clientRef->runLoopSource, kCFRunLoopCommonModes);
+
+    CFRunLoopRun();
+
+    return NULL;
+}
+
 
 // Keeping track of endpoints
 
