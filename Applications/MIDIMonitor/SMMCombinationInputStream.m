@@ -35,10 +35,16 @@
         return nil;
 
     center = [NSNotificationCenter defaultCenter];
-    
-    portInputStream = [[SMPortInputStream alloc] init];
-    [portInputStream setMessageDestination:self];
-    [self observeNotificationsWithCenter:center object:portInputStream];
+
+    NS_DURING {
+        portInputStream = [[SMPortInputStream alloc] init];
+    } NS_HANDLER {
+        portInputStream = nil;
+    } NS_ENDHANDLER;
+    if (portInputStream) {
+        [portInputStream setMessageDestination:self];
+        [self observeNotificationsWithCenter:center object:portInputStream];
+    }
 
     virtualInputStream = [[SMVirtualInputStream alloc] init];
     [virtualInputStream setMessageDestination:self];
@@ -115,7 +121,8 @@
         groupedInputSources = [[NSArray alloc] initWithObjects:portGroup, virtualGroup, spyingGroup, nil];
     }
 
-    [[groupedInputSources objectAtIndex:0] setObject:[portInputStream inputSources] forKey:@"sources"];
+    if (portInputStream)
+        [[groupedInputSources objectAtIndex:0] setObject:[portInputStream inputSources] forKey:@"sources"];
     [[groupedInputSources objectAtIndex:1] setObject:[virtualInputStream inputSources] forKey:@"sources"];
     if (spyingInputStream)
         [[groupedInputSources objectAtIndex:2] setObject:[spyingInputStream inputSources] forKey:@"sources"];
@@ -129,7 +136,8 @@
 
     inputSources = [NSMutableSet set];
 
-    [inputSources unionSet:[portInputStream selectedInputSources]];
+    if (portInputStream)
+        [inputSources unionSet:[portInputStream selectedInputSources]];
     [inputSources unionSet:[virtualInputStream selectedInputSources]];
     if (spyingInputStream)
         [inputSources unionSet:[spyingInputStream selectedInputSources]];
@@ -141,8 +149,9 @@
 {
     if (!inputSources)
         inputSources = [NSSet set];
-    
-    [portInputStream setSelectedInputSources:[self intersectionOfSet:inputSources andArray:[portInputStream inputSources]]];
+
+    if (portInputStream)
+        [portInputStream setSelectedInputSources:[self intersectionOfSet:inputSources andArray:[portInputStream inputSources]]];
     [virtualInputStream setSelectedInputSources:[self intersectionOfSet:inputSources andArray:[virtualInputStream inputSources]]];
     if (spyingInputStream)
         [spyingInputStream setSelectedInputSources:[self intersectionOfSet:inputSources andArray:[spyingInputStream inputSources]]];
