@@ -181,21 +181,22 @@ NSString *SSESysExFileExtension = @"syx";
     newFilePath = [[[self fileDirectoryPath] stringByAppendingPathComponent:newFileName] stringByAppendingPathExtension:SSESysExFileExtension];
     newFilePath = [fileManager uniqueFilenameFromName:newFilePath];
 
-    NS_DURING {
-        [fileManager createPathToFile:newFilePath attributes:nil];
-    } NS_HANDLER {
-        // TODO the above will raise if it fails; need to handle that
-        NS_VALUERETURN(nil, SSELibraryEntry*);
-    } NS_ENDHANDLER;
+    [fileManager createPathToFile:newFilePath attributes:nil];
+    // NOTE This will raise an NSGenericException if it fails
 
     newFileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
         [NSNumber numberWithUnsignedLong:SSESysExFileTypeCode], NSFileHFSTypeCode,
         [NSNumber numberWithUnsignedLong:SSEApplicationCreatorCode], NSFileHFSCreatorCode,
         [NSNumber numberWithBool:YES], NSFileExtensionHidden, nil];
 
-    if ([fileManager atomicallyCreateFileAtPath:newFilePath contents:sysexData attributes:newFileAttributes])
+    if ([fileManager atomicallyCreateFileAtPath:newFilePath contents:sysexData attributes:newFileAttributes]) {
         entry = [self addEntryForFile:newFilePath];
-    // TODO once again, need to handle the case when this fails
+        // TODO This is somewhat inefficient since we will write out the file and then immediately read it in again to get the messages.
+    } else {
+        [NSException raise:NSGenericException format:@"Couldn't create the file %@", newFilePath];
+    }
+
+    OBASSERT(entry != nil);
 
     return entry;
 }

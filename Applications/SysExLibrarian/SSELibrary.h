@@ -33,7 +33,9 @@ typedef enum _SSELibraryFileType {
 - (NSArray *)entries;
 
 - (SSELibraryEntry *)addEntryForFile:(NSString *)filePath;
+    // NOTE: This will return nil, and add no entry, if no messages are in the file
 - (SSELibraryEntry *)addNewEntryWithData:(NSData *)sysexData;
+    // NOTE: This method will raise an exception on failure
 
 - (void)removeEntry:(SSELibraryEntry *)entry;
 

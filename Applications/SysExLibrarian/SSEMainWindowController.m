@@ -409,22 +409,43 @@ static SSEMainWindowController *controller;
         [progressUpdateEvent invoke];
 
     // Close the sheet, after a little bit of a delay (makes it look nicer)
-    [[NSApplication sharedApplication] performSelector:@selector(endSheet:) withObject:[[self window] attachedSheet] afterDelay:0.5];
+    [NSApp performSelector:@selector(endSheet:) withObject:[[self window] attachedSheet] afterDelay:0.5];
 }
 
 - (void)addReadMessagesToLibrary;
 {
     NSData *allSysexData;
+    SSELibraryEntry *entry = nil;
+    NSString *exceptionReason = nil;
 
     allSysexData = [SMSystemExclusiveMessage dataForSystemExclusiveMessages:[midiController messages]];
-    if (allSysexData) {
-        SSELibraryEntry *entry;
-
+    if (!allSysexData)
+        return;	// No messages, no data, nothing to do
+    
+    NS_DURING {
         entry = [library addNewEntryWithData:allSysexData];
-        // TODO If this fails for some reason, nil will be returned; need to show some UI in that case
+    } NS_HANDLER {
+        exceptionReason = [[[localException reason] retain] autorelease];
+    } NS_ENDHANDLER;
+
+    if (entry) {
         [self synchronizeLibrary];
-        if (entry)
-            [self _selectAndScrollToEntries:[NSArray arrayWithObject:entry]];
+        [self _selectAndScrollToEntries:[NSArray arrayWithObject:entry]];
+    } else {
+        NSWindow *attachedSheet;
+        
+        if (!exceptionReason)
+            exceptionReason = @"Unknown error";   // NOTE I don't see how this could happen, but let's handle it...
+
+        // We need to get rid of the sheet right away, instead of after the delay (see -stopSysExReadIndicator).
+        if ((attachedSheet = [[self window] attachedSheet])) {
+            [NSObject cancelPreviousPerformRequestsWithTarget:NSApp selector:@selector(endSheet:) object:attachedSheet];
+            [NSApp endSheet:attachedSheet];
+        }
+
+        // Now we can start another sheet.
+        OBASSERT([[self window] attachedSheet] == nil);
+        NSBeginAlertSheet(@"Error", nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"The file could not be created.\n%@", exceptionReason);
     }
 }
 
