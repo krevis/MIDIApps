@@ -99,14 +99,14 @@
     noteCount = [notes count];
     if (noteCount == 0) {
         [notesLock unlock];
-        return nil;
+        return [NSArray array];
     }
 
     firstNotePosition = [[notes objectAtIndex:0] position];
     lastNotePosition = [[notes lastObject] position];
     if (endBeat <= firstNotePosition || startBeat > lastNotePosition) {
         [notesLock unlock];
-        return nil;
+        return [NSArray array];
     }
 
     startBeat = MAX(firstNotePosition, startBeat);
