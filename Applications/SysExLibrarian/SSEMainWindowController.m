@@ -26,6 +26,8 @@
 - (void)_updatePlayProgressAndRepeat;
 - (void)_updatePlayProgress;
 
+- (void)_addFilesToLibrary:(NSArray *)filePaths;
+
 @end
 
 
@@ -68,6 +70,7 @@ static SSEMainWindowController *controller;
 - (void)awakeFromNib
 {
     [[self window] setFrameAutosaveName:[self windowNibName]];
+    [[self window] registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
 }
 
 - (void)windowDidLoad
@@ -321,6 +324,53 @@ static SSEMainWindowController *controller;
     [self _autosaveWindowFrame];
 }
 
+- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender;
+{
+    NSLog(@"draggingEntered");
+
+    // TODO need to highlight window
+    // TODO need to check what kinds of operations are OK
+    
+    return NSDragOperationCopy;
+}
+
+- (void)draggingExited:(id <NSDraggingInfo>)sender;
+{
+    // TODO need to un-highlight window
+
+    NSLog(@"draggingExited");    
+}
+
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender;
+{
+    NSPasteboard *pasteboard;
+    
+    NSLog(@"performDragOperation");
+
+    pasteboard = [sender draggingPasteboard];
+    if ([[pasteboard types] indexOfObjectIdenticalTo:NSFilenamesPboardType] != NSNotFound) {
+        NSArray *filenames;
+
+        filenames = [pasteboard propertyListForType:NSFilenamesPboardType];
+        NSLog(@"filenames: %@", filenames);
+
+        // TODO if a filename is a directory, need to process all files within it
+        // TODO need to filter out files which are unacceptable
+        
+        [self _addFilesToLibrary:filenames];
+        
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (void)concludeDragOperation:(id <NSDraggingInfo>)sender;
+{
+    // TODO need to un-highlight window
+    NSLog(@"concludeDragOperation");
+}
+
 //
 // NSTableView data source
 //
@@ -361,11 +411,6 @@ static SSEMainWindowController *controller;
 
     [self synchronizeLibrary];
 }
-
-    // TODO add drag and drop support
-//- (BOOL)tableView:(NSTableView *)tv writeRows:(NSArray*)rows toPasteboard:(NSPasteboard*)pboard;
-//- (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row proposedDropOperation:(NSTableViewDropOperation)op;
-//- (BOOL)tableView:(NSTableView*)tv acceptDrop:(id <NSDraggingInfo>)info row:(int)row dropOperation:(NSTableViewDropOperation)op;
 
 //
 // SSETableView data source
@@ -450,21 +495,8 @@ static SSEMainWindowController *controller;
 
 - (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
 {
-    NSArray *filePaths;
-    unsigned int fileIndex, fileCount;
-
-    if (returnCode != NSOKButton)
-        return;
-
-    filePaths = [openPanel filenames];
-    fileCount = [filePaths count];
-    for (fileIndex = 0; fileIndex < fileCount; fileIndex++) {
-        [library addEntryForFile:[filePaths objectAtIndex:fileIndex]];
-    }
-
-    [self synchronizeInterface];
-
-    // TODO we ought to select the new entry (the first one if there are more than one) and scroll to it
+    if (returnCode == NSOKButton)
+        [self _addFilesToLibrary:[openPanel filenames]];
 }
 
 - (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
@@ -556,6 +588,20 @@ static SSEMainWindowController *controller;
     }
         // TODO localize all of the above
     [playProgressMessageField setStringValue:message];
+}
+
+- (void)_addFilesToLibrary:(NSArray *)filePaths;
+{
+    unsigned int fileIndex, fileCount;
+
+    fileCount = [filePaths count];
+    for (fileIndex = 0; fileIndex < fileCount; fileIndex++) {
+        [library addEntryForFile:[filePaths objectAtIndex:fileIndex]];
+    }
+
+    [self synchronizeInterface];
+
+    // TODO we ought to select the new entry (the first one if there are more than one) and scroll to it
 }
 
 @end
