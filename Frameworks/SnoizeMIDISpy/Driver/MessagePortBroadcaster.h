@@ -20,20 +20,25 @@ public:
                                 MessagePortBroadcaster(CFStringRef broadcasterName, MessagePortBroadcasterDelegate *delegate);
     virtual 		~MessagePortBroadcaster();
 
-    void		Broadcast(CFDataRef dataToBroadcast);
+    void		Broadcast(CFDataRef data, SInt32 channel);
 
-    CFDataRef		NextSequenceNumber();
-    void		AddListener(CFDataRef listenerSequenceNumberData);
-
-    bool		HasListeners();
+    CFDataRef		NextListenerIdentifier();
+    void		AddListener(CFDataRef listenerIdentifierData);
+    void		ChangeListenerChannelStatus(CFDataRef messageData, Boolean shouldAdd);
     
+    void		RemoveListenerWithRemotePort(CFMessagePortRef remotePort);
+
 private:
-    MessagePortBroadcasterDelegate *mDelegate;
-    CFStringRef		mBroadcasterName;
-    CFMessagePortRef	mListenerRegistrationLocalPort;
-    CFRunLoopSourceRef	mListenerRegistrationRunLoopSource;
-    CFMutableArrayRef	mListenerRemotePorts;
-    UInt32			mListenerSequenceNumber;
+    MessagePortBroadcasterDelegate	*mDelegate;
+    CFStringRef				mBroadcasterName;
+    CFMessagePortRef			mLocalPort;
+    CFRunLoopSourceRef			mRunLoopSource;
+    UInt32					mNextListenerIdentifier;
+
+    CFMutableDictionaryRef		mListenersByIdentifier;
+    CFMutableDictionaryRef		mIdentifiersByListener;
+    CFMutableDictionaryRef		mListenerArraysByChannel;
+    pthread_mutex_t				mListenerStructuresMutex;
 };
 
 #endif // __MessagePortBroadcaster_h__

@@ -1,6 +1,6 @@
 #include "SpyingMIDIDriver.h"
 #include "MessagePortBroadcaster.h"
-#include "MessageQueue.h"
+#include <pthread.h>
 
 #define kFactoryUUID CFUUIDGetConstantUUIDWithBytes(NULL, 0x4F, 0xA1, 0x3C, 0x6B, 0x2D, 0x94, 0x11, 0xD6, 0x8C, 0x2F, 0x00, 0x0A, 0x27, 0xB4, 0x96, 0x5C)
 // 4FA13C6B-2D94-11D6-8C2F-000A27B4965C
@@ -27,13 +27,17 @@ SpyingMIDIDriver::SpyingMIDIDriver() :
     MIDIDriver(kFactoryUUID),
     MessagePortBroadcasterDelegate(),
     mNeedsMonitorPointerWorkaround(false),
-    mMessagePortBroadcaster(NULL)
+    mBroadcaster(NULL),
+    mMIDIClientRef(NULL),
+    mEndpointRefToUniqueIDDictionary(NULL)
 {
 #if DEBUG
     fprintf(stderr, "SpyingMIDIDriver: Creating\n");
 #endif
 
-    mMessagePortBroadcaster = new MessagePortBroadcaster(CFSTR("Spying MIDI Driver"), this);
+    pthread_mutex_init(&mEndpointDictionaryMutex, NULL);
+            
+    mBroadcaster = new MessagePortBroadcaster(CFSTR("Spying MIDI Driver"), this);
 
     CheckCoreMIDIVersion();
 }
@@ -44,34 +48,42 @@ SpyingMIDIDriver::~SpyingMIDIDriver()
     fprintf(stderr, "SpyingMIDIDriver: Deleting\n");
 #endif
 
-    delete mMessagePortBroadcaster;
+    pthread_mutex_destroy(&mEndpointDictionaryMutex);
+    
+    delete mBroadcaster;
 }
 
 // __________________________________________________________________________________________________
 
 extern "C" {
-    static void processDataFromMessageQueue(CFDataRef dataFromQueue, void *refCon);   
+    static void midiClientNotificationProc(const MIDINotification *message, void *refCon);
 }
 
 
 OSStatus SpyingMIDIDriver::Start(MIDIDeviceListRef devList)
 {
-    CreateMessageQueue(processDataFromMessageQueue, this);
-    
+#if DEBUG
+    fprintf(stderr, "SpyingMIDIDriver: starting\n");
+#endif
+
     return noErr;    
 }
 
 OSStatus SpyingMIDIDriver::Stop()
 {
+#if DEBUG
+    fprintf(stderr, "SpyingMIDIDriver: stopping\n");
+#endif
+    
     EnableMonitoring(FALSE);
-    DestroyMessageQueue();
 
     return noErr;
 }
 
 OSStatus SpyingMIDIDriver::Monitor(MIDIEndpointRef destination, const MIDIPacketList *packetList)
 {
-    CFDataRef packagedData;
+    SInt32 endpointUniqueID;
+    CFDataRef dataToBroadcast;
 
     if (mNeedsMonitorPointerWorkaround) {
         // Under 10.1.3 and earlier, we are really given a pointer to a MIDIEndpointRef, not the MIDIEndpointRef itself.
@@ -94,10 +106,17 @@ OSStatus SpyingMIDIDriver::Monitor(MIDIEndpointRef destination, const MIDIPacket
     }
 #endif
 
-    packagedData = PackageMonitoredDataForMessageQueue(destination, packetList);
-    AddToMessageQueue(packagedData);
-    CFRelease(packagedData);
-    // processDataFromMessageQueue(packagedData, self) will happen in the main thread
+    // Look up the unique ID for this destination. Lock around this in case we are modifying the endpoint dictionary in the main thread.
+    pthread_mutex_lock(&mEndpointDictionaryMutex);
+    endpointUniqueID = (SInt32)CFDictionaryGetValue(mEndpointRefToUniqueIDDictionary, destination);
+    pthread_mutex_unlock(&mEndpointDictionaryMutex);
+
+    // Then package up the data (packet list and uniqueID) and broadcast it.
+    dataToBroadcast = PackageMonitoredDataForBroadcast(packetList, endpointUniqueID);
+    if (dataToBroadcast) {
+        mBroadcaster->Broadcast(dataToBroadcast, endpointUniqueID);
+        CFRelease(dataToBroadcast);
+    }
         
     return noErr;
 }
@@ -131,10 +150,65 @@ void SpyingMIDIDriver::CheckCoreMIDIVersion()
     }   
 }
 
+void SpyingMIDIDriver::CreateMIDIClient()
+{
+    OSStatus status;
+
+#if DEBUG
+    fprintf(stderr, "SpyingMIDIDriver: creating MIDI client\n");
+#endif
+    
+    status = MIDIClientCreate(CFSTR("Spying MIDI Driver"), midiClientNotificationProc, this, &mMIDIClientRef);
+    if (status != noErr) {
+#if DEBUG
+        fprintf(stderr, "Spy driver: MIDIClientCreate() returned error: %ld\n", status);
+#endif
+    }    
+}
+
+void SpyingMIDIDriver::DisposeMIDIClient()
+{
+    OSStatus status;
+
+    if (!mMIDIClientRef)
+        return;
+    
+#if DEBUG
+    fprintf(stderr, "SpyingMIDIDriver: disposing MIDI client\n");
+#endif
+    
+    status = MIDIClientDispose(mMIDIClientRef);
+    if (status != noErr) {
+#if DEBUG
+        fprintf(stderr, "Spy driver: MIDIClientDispose() returned error: %ld\n", status);
+#endif
+    }
+
+    mMIDIClientRef = NULL;
+}
+
+
+void midiClientNotificationProc(const MIDINotification *message, void *refCon)
+{
+#if DEBUG
+    fprintf(stderr, "Spy driver: notification proc called\n");
+#endif
+
+    ((SpyingMIDIDriver *)refCon)->RebuildEndpointUniqueIDMappings();
+}
+
+
 void SpyingMIDIDriver::EnableMonitoring(Boolean enabled)
 {
     OSStatus status;
 
+    if (enabled) {
+        CreateMIDIClient();
+        RebuildEndpointUniqueIDMappings();
+    } else {        
+        DisposeMIDIClient();
+    }
+    
     status = MIDIDriverEnableMonitoring(Self(), enabled);
 #if DEBUG && 1
     if (status == noErr)
@@ -142,21 +216,6 @@ void SpyingMIDIDriver::EnableMonitoring(Boolean enabled)
     else
         fprintf(stderr, "SpyingMIDIDriver: MIDIDriverEnableMonitoring(%d) failed: %ld\n", enabled, status);
 #endif
-}
-
-CFDataRef SpyingMIDIDriver::PackageMonitoredDataForMessageQueue(MIDIEndpointRef endpointRef, const MIDIPacketList *packetList)
-{
-    CFMutableDataRef data;
-    UInt32 packetListLength, dataLength;
-
-    packetListLength = SizeOfPacketList(packetList);
-    dataLength = sizeof(MIDIEndpointRef) + packetListLength;
-
-    data = CFDataCreateMutable(kCFAllocatorDefault, dataLength);
-    CFDataAppendBytes(data, (const UInt8 *)&endpointRef, sizeof(MIDIEndpointRef));
-    CFDataAppendBytes(data, (const UInt8 *)packetList, packetListLength);
-
-    return data;
 }
 
 UInt32 SpyingMIDIDriver::SizeOfPacketList(const MIDIPacketList *packetList)
@@ -178,60 +237,54 @@ UInt32 SpyingMIDIDriver::SizeOfPacketList(const MIDIPacketList *packetList)
     return packetListSize;
 }
 
-static void processDataFromMessageQueue(CFDataRef dataFromQueue, void *refCon)
-{
-    const UInt8 *dataBytes;
-    MIDIEndpointRef destination;
-    const MIDIPacketList *packetList;
-
-    // Unpackage the data
-    dataBytes = CFDataGetBytePtr(dataFromQueue);
-    destination = *(MIDIEndpointRef *)dataBytes;
-    packetList = (const MIDIPacketList *)(dataBytes + sizeof(MIDIEndpointRef));
-
-    ((SpyingMIDIDriver *)refCon)->MonitorInMainThread(destination, packetList);
-}
-
-void SpyingMIDIDriver::MonitorInMainThread(MIDIEndpointRef destination, const MIDIPacketList *packetList)
-{
-    OSStatus status;
-    SInt32 endpointUniqueID = 0;
-    CFDataRef dataToBroadcast = NULL;
-    
-    status = MIDIObjectGetIntegerProperty(destination, kMIDIPropertyUniqueID, &endpointUniqueID);
-    if (status != noErr) {
-#if DEBUG
-        fprintf(stderr, "SpyingMIDIDriver: MIDIObjectGetIntegerProperty failed: %ld\n", status);
-#endif
-    }
-
-#if DEBUG && 0
-    fprintf(stderr, "got data for destination %p with unique ID %ld\n", (void *)destination, endpointUniqueID);
-#endif
-
-    // TODO Need to change the way this broadcaster works.  We should only broadcast to those clients
-    // who are interested in this particular endpoint (uniqueID).
-    
-    dataToBroadcast = PackageMonitoredDataForBroadcast(packetList, endpointUniqueID);
-    if (dataToBroadcast) {
-        mMessagePortBroadcaster->Broadcast(dataToBroadcast);
-        CFRelease(dataToBroadcast);
-    }
-}
-
 CFDataRef SpyingMIDIDriver::PackageMonitoredDataForBroadcast(const MIDIPacketList *packetList, SInt32 endpointUniqueID)
 {
     UInt32 packetListSize, totalSize;
     CFMutableDataRef data;
+    UInt8 *dataBuffer;
 
     packetListSize = SizeOfPacketList(packetList);
     totalSize = packetListSize + sizeof(SInt32);
     
     data = CFDataCreateMutable(kCFAllocatorDefault, totalSize);
-    if (data) {
-        CFDataAppendBytes(data, (const UInt8 *)&endpointUniqueID, sizeof(SInt32));
-        CFDataAppendBytes(data, (const UInt8 *)packetList, packetListSize);
+    CFDataSetLength(data, totalSize);
+    dataBuffer = CFDataGetMutableBytePtr(data);
+    if (dataBuffer) {
+        *(SInt32 *)dataBuffer = endpointUniqueID;
+        memcpy(dataBuffer + sizeof(SInt32), packetList, packetListSize);
     }
 
     return data;
 }
+
+void SpyingMIDIDriver::RebuildEndpointUniqueIDMappings()
+{
+    CFMutableDictionaryRef newDictionary;
+    ItemCount destinationCount, destinationIndex;
+    
+    destinationCount = MIDIGetNumberOfDestinations();
+
+    newDictionary = CFDictionaryCreateMutable(kCFAllocatorDefault, destinationCount, NULL, NULL);
+    
+    for (destinationIndex = 0; destinationIndex < destinationCount; destinationIndex++) {
+        MIDIEndpointRef endpointRef;
+
+        endpointRef = MIDIGetDestination(destinationIndex);
+        if (endpointRef) {
+            SInt32 uniqueID;
+
+            if (noErr == MIDIObjectGetIntegerProperty(endpointRef, kMIDIPropertyUniqueID, &uniqueID)) {
+                CFDictionaryAddValue(newDictionary, (void *)endpointRef, (void *)uniqueID);                
+            }
+        }
+    }
+
+    pthread_mutex_lock(&mEndpointDictionaryMutex);
+    
+    if (mEndpointRefToUniqueIDDictionary)
+        CFRelease(mEndpointRefToUniqueIDDictionary);
+    mEndpointRefToUniqueIDDictionary = newDictionary;
+
+    pthread_mutex_unlock(&mEndpointDictionaryMutex);
+}
+

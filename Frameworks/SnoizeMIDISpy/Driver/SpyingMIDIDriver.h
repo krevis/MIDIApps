@@ -19,17 +19,22 @@ public:
     virtual void 	BroadcasterListenerCountChanged(MessagePortBroadcaster *broadcaster, bool hasListeners);
     
     // This needs to be public in order to call it from a C callback. Annoying.
-    void 		MonitorInMainThread(MIDIEndpointRef destination, const MIDIPacketList *packetList);
+    // TODO Can we make it a friend instead?
+    void		RebuildEndpointUniqueIDMappings();
 
 private:
     void		CheckCoreMIDIVersion();
+    void		CreateMIDIClient();
+    void		DisposeMIDIClient();
     void		EnableMonitoring(Boolean enable);
-    CFDataRef		PackageMonitoredDataForMessageQueue(MIDIEndpointRef endpointRef, const MIDIPacketList *packetList);
     UInt32		SizeOfPacketList(const MIDIPacketList *packetList);
     CFDataRef 	PackageMonitoredDataForBroadcast(const MIDIPacketList *packetList, SInt32 endpointUniqueID);
     
     bool 				mNeedsMonitorPointerWorkaround;
-    MessagePortBroadcaster	*mMessagePortBroadcaster;
+    MessagePortBroadcaster	*mBroadcaster;
+    MIDIClientRef			mMIDIClientRef;
+    CFMutableDictionaryRef	mEndpointRefToUniqueIDDictionary;
+    pthread_mutex_t			mEndpointDictionaryMutex;
 };
 
 #endif // __SpyingMIDIDriver_h__
