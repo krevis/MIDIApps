@@ -34,6 +34,8 @@
 
     endpoint = [[SMSourceEndpoint sourceEndpointWithEndpointRef:endpointRef] retain];
     if (!endpoint) {
+        // NOTE If you see this fire, it is probably because we are being called in the middle of handling a MIDI setup change notification.
+        // Don't do that.
         [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't find the virtual source endpoint after creating it", @"SnoizeMIDI", [self bundle], "exception if we can't find an SMSourceEndpoint after calling MIDISourceCreate")];
     }
 
