@@ -155,6 +155,7 @@
     [self finishEditingInWindow];
 
     // It is possible that something caused by -finishEditingInWindow has caused a sheet to open; we shouldn't close the window in that case, because it really confuses the app (and makes it impossible to quit).
+    // (Also: As of 10.1.3, we can get here if someone option-clicks on the close button of a different window, even if this window has a sheet up at the time.)
     if ([[self window] attachedSheet])
         return NO;
     
