@@ -51,8 +51,12 @@
 - (NSString *)modelName;
 - (void)setModelName:(NSString *)value;
 
-- (NSString *)shortName;
+- (NSString *)uniqueName;
     // If all endpoints of the same kind (source or destination) have unique names,
+    // returns -name. Otherwise, returns -longName.
+
+- (NSString *)alwaysUniqueName;
+    // If all endpoints of the same kind (source or destination) have ALWAYS had unique names,
     // returns -name. Otherwise, returns -longName.
 
 - (NSString *)longName;

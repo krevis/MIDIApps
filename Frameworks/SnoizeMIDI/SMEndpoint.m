@@ -12,6 +12,11 @@
 
 @interface SMEndpoint (Private)
 
+typedef struct EndpointUniqueNamesFlags {
+    unsigned int areNamesUnique:1;
+    unsigned int haveNamesAlwaysBeenUnique:1;
+} EndpointUniqueNamesFlags;
+
 + (void)_earlyMIDISetup;
 + (void)_midiClientCreated:(NSNotification *)notification;
 + (void)_midiSetupChanged:(NSNotification *)notification;
@@ -30,6 +35,8 @@
 + (SMEndpoint *)_endpointForEndpointRef:(MIDIEndpointRef)anEndpointRef;
 
 + (BOOL)_doEndpointsHaveUniqueNames;
++ (BOOL)_haveEndpointsAlwaysHadUniqueNames;
++ (void)_checkForUniqueNames;
 
 - (void)_updateUniqueID;
 - (void)_invalidateCachedProperties;
@@ -248,12 +255,20 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     }
 }
 
-- (NSString *)shortName;
+- (NSString *)uniqueName;
 {
     if ([[self class] _doEndpointsHaveUniqueNames])
         return [self name];
     else
         return [self longName];
+}
+
+- (NSString *)alwaysUniqueName;
+{
+    if ([[self class] _haveEndpointsAlwaysHadUniqueNames])
+        return [self name];
+    else
+        return [self longName];    
 }
 
 - (NSString *)longName;
@@ -332,6 +347,12 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 }
 
 + (NSMapTable **)_endpointMapTablePtr;
+{
+    OBRequestConcreteImplementation(self, _cmd);
+    return NULL;
+}
+
++ (EndpointUniqueNamesFlags *)_endpointUniqueNamesFlagsPtr;
 {
     OBRequestConcreteImplementation(self, _cmd);
     return NULL;
@@ -426,6 +447,9 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     // Make the new group of endpoints invalidate their cached properties (names and such).
     [[self _allEndpoints] makeObjectsPerformSelector:@selector(_invalidateCachedProperties)];
 
+    // And check if the names are unique or not
+    [self _checkForUniqueNames];
+
     // Now everything is in place for the new regime. Have the endpoints post notifications of their change in status.
     [removedEndpoints makeObjectsPerformSelector:@selector(_postRemovedNotification)];
 
@@ -509,14 +533,30 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 
 + (BOOL)_doEndpointsHaveUniqueNames;
 {
+    return [self _endpointUniqueNamesFlagsPtr]->areNamesUnique;
+}
+
++ (BOOL)_haveEndpointsAlwaysHadUniqueNames;
+{
+    return [self _endpointUniqueNamesFlagsPtr]->haveNamesAlwaysBeenUnique;
+}
+
++ (void)_checkForUniqueNames;
+{
     NSArray *endpoints;
     NSArray *nameArray, *nameSet;
-    
+    BOOL areNamesUnique;
+    struct EndpointUniqueNamesFlags *flagsPtr;
+
     endpoints = [self _allEndpoints];
     nameArray = [endpoints arrayByPerformingSelector:@selector(name)];
     nameSet = [NSSet setWithArray:nameArray];
 
-    return ([nameArray count] == [nameSet count]);
+    areNamesUnique = ([nameArray count] == [nameSet count]);
+
+    flagsPtr = [self _endpointUniqueNamesFlagsPtr];
+    flagsPtr->areNamesUnique = areNamesUnique;
+    flagsPtr->haveNamesAlwaysBeenUnique = flagsPtr->haveNamesAlwaysBeenUnique && areNamesUnique;
 }
 
 - (void)_updateUniqueID;
@@ -732,6 +772,7 @@ static int endpointOrdinalComparator(id object1, id object2, void *context)
 @implementation SMSourceEndpoint
 
 static NSMapTable *sourceEndpointRefToSMEndpointMapTable = NULL;
+static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
 
 + (void)didLoad
 {
@@ -741,6 +782,11 @@ static NSMapTable *sourceEndpointRefToSMEndpointMapTable = NULL;
 + (NSMapTable **)_endpointMapTablePtr;
 {
     return &sourceEndpointRefToSMEndpointMapTable;
+}
+
++ (EndpointUniqueNamesFlags *)_endpointUniqueNamesFlagsPtr;
+{
+    return &sourceEndpointUniqueNamesFlags;
 }
 
 + (ItemCount)_endpointCount;
@@ -787,7 +833,7 @@ static NSMapTable *sourceEndpointRefToSMEndpointMapTable = NULL;
 
 - (NSString *)inputStreamSourceName;
 {
-    return [self shortName];
+    return [self uniqueName];
 }
 
 - (NSNumber *)inputStreamSourceUniqueID;
@@ -801,6 +847,7 @@ static NSMapTable *sourceEndpointRefToSMEndpointMapTable = NULL;
 @implementation SMDestinationEndpoint
 
 static NSMapTable *destinationEndpointRefToSMEndpointMapTable = NULL;
+static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES };
 
 + (void)didLoad
 {
@@ -810,6 +857,11 @@ static NSMapTable *destinationEndpointRefToSMEndpointMapTable = NULL;
 + (NSMapTable **)_endpointMapTablePtr;
 {
     return &destinationEndpointRefToSMEndpointMapTable;
+}
+
++ (EndpointUniqueNamesFlags *)_endpointUniqueNamesFlagsPtr;
+{
+    return &destinationEndpointUniqueNamesFlags;
 }
 
 + (ItemCount)_endpointCount;
