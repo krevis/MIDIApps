@@ -148,6 +148,9 @@ static int midiObjectOrdinalComparator(id object1, id object2, void *context);
 {
     NSMapTable *mapTable;
 
+    if (anObjectRef == NULL)
+        return nil;
+    
     mapTable = [self midiObjectMapTable];
     OBASSERT(mapTable);
 

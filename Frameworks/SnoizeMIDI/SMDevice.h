@@ -7,6 +7,9 @@
 #import <CoreMIDI/CoreMIDI.h>
 #import <SnoizeMIDI/SMMIDIObject.h>
 
+@class SMSourceEndpoint;
+@class SMDestinationEndpoint;
+
 
 @interface SMDevice : SMMIDIObject
 {
@@ -21,5 +24,11 @@
 - (NSString *)manufacturerName;
 - (NSString *)modelName;
 - (NSString *)pathToImageFile;
+
+- (SInt32)singleRealtimeEntityIndex;
+    // returns -1 if this property does not exist on the device
+- (SMSourceEndpoint *)singleRealtimeSourceEndpoint;
+- (SMDestinationEndpoint *)singleRealtimeDestinationEndpoint;
+    // return nil if the device supports separate realtime messages for any entity
 
 @end

@@ -8,26 +8,29 @@
 #import <SnoizeMIDI/SMInputStreamSource.h>
 #import <SnoizeMIDI/SMMIDIObject.h>
 
+@class SMDevice;
+
 
 @interface SMEndpoint : SMMIDIObject <SMInputStreamSource>
 {
     MIDIDeviceRef deviceRef;
     struct {
         unsigned int hasLookedForDevice:1;
-        unsigned int hasCachedName:1;
         unsigned int hasCachedManufacturerName:1;
         unsigned int hasCachedModelName:1;
-        unsigned int hasCachedDeviceName:1;
     } endpointFlags;
 
     NSString *cachedManufacturerName;
     NSString *cachedModelName;
-    NSString *cachedDeviceName;
 }
 
 //+ (MIDIUniqueID)generateNewUniqueID;
 // TODO this is only used by SysExLibrarian on virtual endpoints; see about making this less general
 // (it should probably go on SMMIDIObject instead of here)
+
+// Implemented only on subclasses of SMEndpoint
++ (ItemCount)endpointCountForEntity:(MIDIEntityRef)entity;
++ (MIDIEndpointRef)endpointRefAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
 
 - (MIDIEndpointRef)endpointRef;
 
@@ -67,6 +70,9 @@
 - (NSArray *)uniqueIDsOfConnectedThings;
     // may be external devices, endpoints, or who knows what
 - (NSArray *)connectedExternalDevices;
+
+- (SMDevice *)device;
+    // may return nil if this endpoint is virtual
 
 // SMInputStreamSource protocol
 - (NSString *)inputStreamSourceName;

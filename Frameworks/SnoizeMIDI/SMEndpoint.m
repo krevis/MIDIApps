@@ -10,6 +10,7 @@
 #include <AvailabilityMacros.h>
 
 #import "SMClient.h"
+#import "SMDevice.h"
 #import "SMExternalDevice.h"
 
 
@@ -21,8 +22,6 @@ typedef struct EndpointUniqueNamesFlags {
 } EndpointUniqueNamesFlags;
 
 + (EndpointUniqueNamesFlags *)endpointUniqueNamesFlagsPtr;
-+ (ItemCount)endpointCountForEntity:(MIDIEntityRef)entity;
-+ (MIDIEndpointRef)endpointAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
 
 // TODO this is old
 //+ (void)reloadEndpoints;
@@ -32,9 +31,7 @@ typedef struct EndpointUniqueNamesFlags {
 + (void)checkForUniqueNames;
 
 - (MIDIDeviceRef)findDevice;
-- (MIDIDeviceRef)device;
-- (NSString *)deviceName;
-- (NSString *)deviceStringForProperty:(CFStringRef)property;
+- (MIDIDeviceRef)deviceRef;
 
 - (SInt32)ownerPID;
 - (void)setOwnerPID:(SInt32)value;
@@ -77,6 +74,19 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 }
 */
 
++ (ItemCount)endpointCountForEntity:(MIDIEntityRef)entity;
+{
+    OBRequestConcreteImplementation(self, _cmd);
+    return 0;
+}
+
++ (MIDIEndpointRef)endpointRefAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
+{
+    OBRequestConcreteImplementation(self, _cmd);
+    return NULL;
+}
+
+
 - (id)initWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(unsigned int)anOrdinal
 {
     if (!(self = [super initWithObjectRef:anObjectRef ordinal:anOrdinal]))
@@ -89,7 +99,6 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
     // Nothing has been cached yet 
     endpointFlags.hasCachedManufacturerName = NO;
     endpointFlags.hasCachedModelName = NO;
-    endpointFlags.hasCachedDeviceName = NO;
     
     return self;
 }
@@ -102,8 +111,6 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
     cachedManufacturerName = nil;
     [cachedModelName release];
     cachedModelName = nil;
-    [cachedDeviceName release];
-    cachedDeviceName = nil;
 
     [super dealloc];
 }
@@ -126,7 +133,6 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
     endpointFlags.hasLookedForDevice = NO;
     endpointFlags.hasCachedManufacturerName = NO;
     endpointFlags.hasCachedModelName = NO;
-    endpointFlags.hasCachedDeviceName = NO;
 }
 
 - (void)propertyDidChange:(NSString *)propertyName;
@@ -154,7 +160,7 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 - (BOOL)isVirtual;
 {
     // We are virtual if we have no device
-    return ([self device] == NULL);
+    return ([self deviceRef] == NULL);
 }
 
 - (BOOL)isOwnedByThisProcess;
@@ -196,7 +202,7 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
         // (This bug is fixed in 10.1.5, with CoreMIDI framework version 15.5.)
         if ([[SMClient sharedClient] coreMIDIFrameworkVersion] < 0x15508000) {
             if (!cachedManufacturerName)
-                cachedManufacturerName = [self deviceStringForProperty:kMIDIPropertyManufacturer];
+                cachedManufacturerName = [[self device] manufacturerName];
         }
 
         [cachedManufacturerName retain];
@@ -259,7 +265,7 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
     if ([self isVirtual]) {
         modelOrDeviceName = [self modelName];
     } else {
-        modelOrDeviceName = [self deviceName];
+        modelOrDeviceName = [[self device] name];
     }
     
     if (modelOrDeviceName && [modelOrDeviceName length] > 0)
@@ -374,6 +380,11 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
     return externalDevices;
 }
 
+- (SMDevice *)device;
+{
+    return [SMDevice deviceWithDeviceRef:[self deviceRef]];
+}
+
 //
 // SMInputStreamSource protocol
 //
@@ -403,18 +414,6 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 //
 
 + (EndpointUniqueNamesFlags *)endpointUniqueNamesFlagsPtr;
-{
-    OBRequestConcreteImplementation(self, _cmd);
-    return NULL;
-}
-
-+ (ItemCount)endpointCountForEntity:(MIDIEntityRef)entity;
-{
-    OBRequestConcreteImplementation(self, _cmd);
-    return 0;
-}
-
-+ (MIDIEndpointRef)endpointAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
 {
     OBRequestConcreteImplementation(self, _cmd);
     return NULL;
@@ -603,7 +602,7 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
                 for (endpointIndex = 0; endpointIndex < endpointCount; endpointIndex++) {
                     MIDIEndpointRef thisEndpoint;
                     
-                    thisEndpoint = [[self class] endpointAtIndex:endpointIndex forEntity:entity];
+                    thisEndpoint = [[self class] endpointRefAtIndex:endpointIndex forEntity:entity];
                     if (thisEndpoint == (MIDIEndpointRef)objectRef) {
                         // Found it!
                         return device;
@@ -618,7 +617,7 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 }
 #endif
 
-- (MIDIDeviceRef)device;
+- (MIDIDeviceRef)deviceRef;
 {
     if (!endpointFlags.hasLookedForDevice) {
         deviceRef = [self findDevice];
@@ -626,30 +625,6 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
     }
 
     return deviceRef;
-}
-
-- (NSString *)deviceName;
-{
-    if (!endpointFlags.hasCachedDeviceName) {
-        [cachedDeviceName release];
-        cachedDeviceName = [[self deviceStringForProperty:kMIDIPropertyName] retain];
-
-        endpointFlags.hasCachedDeviceName = YES;        
-    }
-    
-    return cachedDeviceName;
-}
-
-- (NSString *)deviceStringForProperty:(CFStringRef)property;
-{
-    MIDIDeviceRef device;
-    NSString *string;
-
-    device = [self device];
-    if (device && (noErr == MIDIObjectGetStringProperty(device, property, (CFStringRef *)&string)))
-        return [string autorelease];
-    else
-        return nil;
 }
 
 - (SInt32)ownerPID;
@@ -731,7 +706,7 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
     return MIDIEntityGetNumberOfSources(entity);
 }
 
-+ (MIDIEndpointRef)endpointAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
++ (MIDIEndpointRef)endpointRefAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
 {
     return MIDIEntityGetSource(entity, index);
 }
@@ -844,7 +819,7 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
     return MIDIEntityGetNumberOfDestinations(entity);
 }
 
-+ (MIDIEndpointRef)endpointAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
++ (MIDIEndpointRef)endpointRefAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
 {
     return MIDIEntityGetDestination(entity, index);
 }
