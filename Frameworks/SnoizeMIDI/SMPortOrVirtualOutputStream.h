@@ -20,6 +20,7 @@
 - (void)setSendsSysExAsynchronously:(BOOL)value;
     // If YES, then use MIDISendSysex() to send sysex messages. Otherwise, use plain old MIDI packets.
     // (This can only work on port streams, not virtual ones.)
+- (BOOL)canSendSysExAsynchronously;
 
 - (void)cancelPendingSysExSendRequests;
 - (SMSysExSendRequest *)currentSysExSendRequest;

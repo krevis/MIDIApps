@@ -52,6 +52,11 @@
         [[self stream] setSendsSysExAsynchronously:value];    
 }
 
+- (BOOL)canSendSysExAsynchronously;
+{
+    return ([self stream] == portStream);
+}
+
 - (void)cancelPendingSysExSendRequests;
 {
     if ([[self stream] respondsToSelector:@selector(cancelPendingSysExSendRequests)])
