@@ -29,7 +29,8 @@
 
 @implementation SSEMIDIController
 
-DEFINE_NSSTRING(SSESelectedDestination);
+NSString *SSESelectedDestinationPreferenceKey = @"SSESelectedDestination";
+NSString *SSEHasShownSysExWorkaroundWarningPreferenceKey = @"SSEHasShownSysExWorkaroundWarning";
 
 
 - (id)init
@@ -37,8 +38,6 @@ DEFINE_NSSTRING(SSESelectedDestination);
     NSNotificationCenter *center;
     NSArray *sources;
     unsigned int sourceIndex;
-    NSDictionary *destinationSettings;
-    BOOL didSetDestinationFromDefaults;
 
     if (!(self = [super init]))
         return nil;
@@ -78,18 +77,6 @@ DEFINE_NSSTRING(SSESelectedDestination);
     
     [center addObserver:self selector:@selector(_midiSetupDidChange:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
 
-    didSetDestinationFromDefaults = NO;
-    destinationSettings = [[OFPreference preferenceForKey:SSESelectedDestination] dictionaryValue];
-    if (destinationSettings) {
-        NSString *missingDestinationName;
-
-        missingDestinationName = [outputStream takePersistentSettings:destinationSettings];
-        if (!missingDestinationName)
-            didSetDestinationFromDefaults = YES;
-    }
-    if (!didSetDestinationFromDefaults)
-        [self _selectFirstAvailableDestination];
-
     return self;
 }
 
@@ -109,6 +96,27 @@ DEFINE_NSSTRING(SSESelectedDestination);
     sendNextMessageEvent = nil;
 
     [super dealloc];
+}
+
+- (void)awakeFromNib;
+{
+    // We do this now instead of in -init, because we may need to use our outlet to the windowController.
+
+    BOOL didSetDestinationFromDefaults;
+    NSDictionary *destinationSettings;
+
+    didSetDestinationFromDefaults = NO;
+    destinationSettings = [[OFPreference preferenceForKey:SSESelectedDestinationPreferenceKey] dictionaryValue];
+    if (destinationSettings) {
+        NSString *missingDestinationName;
+
+        missingDestinationName = [outputStream takePersistentSettings:destinationSettings];
+        if (!missingDestinationName)
+            didSetDestinationFromDefaults = YES;
+    }
+
+    if (!didSetDestinationFromDefaults)
+        [self _selectFirstAvailableDestination];
 }
 
 //
@@ -143,7 +151,13 @@ DEFINE_NSSTRING(SSESelectedDestination);
 
     [windowController synchronizeDestinations];
 
-    [[OFPreference preferenceForKey:SSESelectedDestination] setDictionaryValue:[outputStream persistentSettings]];
+    [[OFPreference preferenceForKey:SSESelectedDestinationPreferenceKey] setDictionaryValue:[outputStream persistentSettings]];
+
+    if ([(SMEndpoint *)[description objectForKey:@"endpoint"] needsSysExWorkaround]) {
+        if ([[OFPreference preferenceForKey:SSEHasShownSysExWorkaroundWarningPreferenceKey] boolValue] == NO) {
+            [windowController showSysExWorkaroundWarning];
+        }
+    }
 }
 
 - (NSTimeInterval)pauseTimeBetweenMessages;

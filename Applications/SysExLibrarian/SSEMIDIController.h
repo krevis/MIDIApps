@@ -64,4 +64,5 @@
 @end
 
 // Preferences keys
-extern NSString *SSESelectedDestination;
+extern NSString *SSESelectedDestinationPreferenceKey;
+extern NSString *SSEHasShownSysExWorkaroundWarningPreferenceKey;

@@ -101,6 +101,8 @@ static SSEMainWindowController *controller;
     sortColumnIdentifier = @"name";
     isSortAscending = YES;
 
+    showSysExWarningWhenShowingWindow = NO;
+
     return self;
 }
 
@@ -164,6 +166,16 @@ static SSEMainWindowController *controller;
     [submenu release];
     [toolbarItem setMenuFormRepresentation:menuItem];
     [menuItem release];
+}
+
+- (IBAction)showWindow:(id)sender;
+{
+    [super showWindow:sender];
+
+    if (showSysExWarningWhenShowingWindow) {
+        [self showSysExWorkaroundWarning];
+        showSysExWarningWhenShowingWindow = NO;
+    }
 }
 
 //
@@ -493,6 +505,27 @@ static SSEMainWindowController *controller;
     // probably because it tries to smoothly animate to that state. The only way I have found to show the maximum value is to just
     // wait a little while for the animation to finish. This looks nice, too.
     [[NSApplication sharedApplication] performSelector:@selector(endSheet:) withObject:playSheetWindow afterDelay:0.5];    
+}
+
+//
+// SysEx workaround warning
+//
+
+- (void)showSysExWorkaroundWarning;
+{    
+    if (![[self window] isVisible]) {
+        showSysExWarningWhenShowingWindow = YES;
+        return;
+    }
+    
+    OBASSERT([[self window] attachedSheet] == nil);
+    if ([[self window] attachedSheet])
+        return;
+
+    NSBeginAlertSheet(@"Warning", nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"The driver for this MIDIMAN device has problems sending SysEx messages. SysEx Librarian will attempt to work around the problems, but please be warned that you may still experience unpredictable hangs or crashes, and sending large amounts of data will be slow.\n\nPlease check the manufacturer's web site to see if an updated driver is available.");
+
+    [[OFPreference preferenceForKey:SSEHasShownSysExWorkaroundWarningPreferenceKey] setBoolValue:YES];
+    [[NSUserDefaults standardUserDefaults] autoSynchronize];
 }
 
 @end

@@ -389,6 +389,8 @@
 			<dict>
 				<key>SSEAbbreviateFileSizesInLibraryTableView</key>
 				<true/>
+				<key>SSEHasShownSysExWorkaroundWarning</key>
+				<false/>
 				<key>SSEShowWarningOnDelete</key>
 				<true/>
 				<key>SSEShowWarningOnImport</key>

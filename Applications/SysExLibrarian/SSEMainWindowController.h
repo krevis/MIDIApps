@@ -58,6 +58,7 @@
     BOOL isSortAscending;
     NSMutableArray *entriesWithMissingFiles;
     NSToolbarItem *nonretainedDestinationToolbarItem;
+    BOOL showSysExWarningWhenShowingWindow;
 }
 
 + (SSEMainWindowController *)mainWindowController;
@@ -102,6 +103,8 @@
 
 - (void)showSysExSendStatus;
 - (void)hideSysExSendStatusWithSuccess:(BOOL)success;
+
+- (void)showSysExWorkaroundWarning;
 
 @end
 
