@@ -13,12 +13,8 @@
 #import <SnoizeMIDI/SMMessageFilter.h>
 #import <SnoizeMIDI/SMMessageHistory.h>
 #import <SnoizeMIDI/SMMessageMult.h>
-#import <SnoizeMIDI/SMSequence.h>
-#import <SnoizeMIDI/SMSequenceNote.h>
-#import <SnoizeMIDI/SMSequenceRunner.h>
 #import <SnoizeMIDI/SMOutputStream.h>
 #import <SnoizeMIDI/SMMessageParser.h>
-#import <SnoizeMIDI/SMPeriodicTimer.h>
 #import <SnoizeMIDI/SMPortInputStream.h>
 #import <SnoizeMIDI/SMPortOrVirtualStream.h>
 #import <SnoizeMIDI/SMPortOrVirtualOutputStream.h>

@@ -200,17 +200,11 @@
 				F561536D01C2418301000164,
 				F565B6F401E15D0B01000164,
 				F560977201E564B401000164,
-				F558450D021E15F801000164,
-				F558450E021E15F801000164,
 				F540F195022133F901000164,
 				F5ADD9F8023189AE01000164,
 				F55C9C1A0244DE3401000164,
 				F55C9C1E0244F91B01000164,
-				F506401A02ECBB1C01000164,
-				F506401C02ECBB1C01000164,
-				F506401902ECBB1C01000164,
 				F5DAB1E6030DE98E01000164,
-				F59FB8EE030E048501000164,
 				F547E05403184DAA01000164,
 			);
 			isa = PBXHeadersBuildPhase;
@@ -253,11 +247,6 @@
 				F5ADD9F9023189AE01000164,
 				F55C9C1D0244F30F01000164,
 				F55C9C1F0244F91B01000164,
-				F5AB5EE002F0DEAB01000164,
-				F5AB5EE102F0DEAB01000164,
-				F5AB5EE202F0DEAB01000164,
-				F5AB5EE302F0DEAB01000164,
-				F5AB5EE402F0DEAB01000164,
 				F5DAB1E7030DE98E01000164,
 			);
 			isa = PBXSourcesBuildPhase;
@@ -330,7 +319,6 @@
 				F561536201C240C501000164,
 				F556F67F01E1C21A01000164,
 				F561536F01C2442F01000164,
-				F584CFEB01CB6BD201000164,
 			);
 			isa = PBXGroup;
 			name = Source;
@@ -375,29 +363,6 @@
 //F52
 //F53
 //F54
-		F506401902ECBB1C01000164 = {
-			fileRef = F5A066FC02E83B3D01000164;
-			isa = PBXBuildFile;
-			settings = {
-				ATTRIBUTES = (
-				);
-			};
-		};
-		F506401A02ECBB1C01000164 = {
-			fileRef = F584CFF601CB85F901000164;
-			isa = PBXBuildFile;
-			settings = {
-				ATTRIBUTES = (
-					Public,
-				);
-			};
-		};
-		F506401C02ECBB1C01000164 = {
-			fileRef = F564774801D6D9E001000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		F53BB49D015D4AC001000164 = {
 			isa = PBXFileReference;
 			path = SMEndpoint.h;
@@ -664,16 +629,6 @@
 			path = SMPortOrVirtualStream.m;
 			refType = 4;
 		};
-		F557390A01CE7E8801000164 = {
-			isa = PBXFileReference;
-			path = SMPeriodicTimer.h;
-			refType = 4;
-		};
-		F557390B01CE7E8801000164 = {
-			isa = PBXFileReference;
-			path = SMPeriodicTimer.m;
-			refType = 4;
-		};
 		F557E37201BEC38401000164 = {
 			isa = PBXFileReference;
 			path = SMVirtualOutputStream.h;
@@ -697,24 +652,6 @@
 			fileRef = F557E37301BEC38401000164;
 			isa = PBXBuildFile;
 			settings = {
-			};
-		};
-		F558450D021E15F801000164 = {
-			fileRef = F584CFEC01CB6BF101000164;
-			isa = PBXBuildFile;
-			settings = {
-				ATTRIBUTES = (
-					Public,
-				);
-			};
-		};
-		F558450E021E15F801000164 = {
-			fileRef = F557390A01CE7E8801000164;
-			isa = PBXBuildFile;
-			settings = {
-				ATTRIBUTES = (
-					Public,
-				);
 			};
 		};
 		F55A2B04016443EF01000164 = {
@@ -1005,11 +942,6 @@
 			settings = {
 			};
 		};
-		F564774801D6D9E001000164 = {
-			isa = PBXFileReference;
-			path = "SMSequenceNote-Internal.h";
-			refType = 4;
-		};
 		F565B6F201E15D0B01000164 = {
 			isa = PBXFileReference;
 			path = SMPortOrVirtualOutputStream.h;
@@ -1118,54 +1050,6 @@
 			settings = {
 			};
 		};
-		F584CFEB01CB6BD201000164 = {
-			children = (
-				F557390A01CE7E8801000164,
-				F557390B01CE7E8801000164,
-				F584CFEC01CB6BF101000164,
-				F584CFED01CB6BF101000164,
-				F564774801D6D9E001000164,
-				F584CFF001CB7BA801000164,
-				F584CFF101CB7BA801000164,
-				F584CFF601CB85F901000164,
-				F584CFF701CB85F901000164,
-				F5A066FC02E83B3D01000164,
-				F5A066FD02E83B3D01000164,
-			);
-			isa = PBXGroup;
-			name = "Sequencing (Experimental)";
-			refType = 4;
-		};
-		F584CFEC01CB6BF101000164 = {
-			isa = PBXFileReference;
-			path = SMSequenceNote.h;
-			refType = 4;
-		};
-		F584CFED01CB6BF101000164 = {
-			isa = PBXFileReference;
-			path = SMSequenceNote.m;
-			refType = 4;
-		};
-		F584CFF001CB7BA801000164 = {
-			isa = PBXFileReference;
-			path = SMSequence.h;
-			refType = 4;
-		};
-		F584CFF101CB7BA801000164 = {
-			isa = PBXFileReference;
-			path = SMSequence.m;
-			refType = 4;
-		};
-		F584CFF601CB85F901000164 = {
-			isa = PBXFileReference;
-			path = SMSequenceRunner.h;
-			refType = 4;
-		};
-		F584CFF701CB85F901000164 = {
-			isa = PBXFileReference;
-			path = SMSequenceRunner.m;
-			refType = 4;
-		};
 		F58C3E8901B5F8F001000164 = {
 			isa = PBXFileReference;
 			path = SMPortInputStream.h;
@@ -1255,55 +1139,6 @@
 		};
 		F58C3E9A01B60AD801000164 = {
 			fileRef = F58C3E9101B605C301000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F59FB8EE030E048501000164 = {
-			fileRef = F584CFF001CB7BA801000164;
-			isa = PBXBuildFile;
-			settings = {
-				ATTRIBUTES = (
-					Public,
-				);
-			};
-		};
-		F5A066FC02E83B3D01000164 = {
-			isa = PBXFileReference;
-			path = SMPlayingNote.h;
-			refType = 4;
-		};
-		F5A066FD02E83B3D01000164 = {
-			isa = PBXFileReference;
-			path = SMPlayingNote.m;
-			refType = 4;
-		};
-		F5AB5EE002F0DEAB01000164 = {
-			fileRef = F557390B01CE7E8801000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F5AB5EE102F0DEAB01000164 = {
-			fileRef = F584CFED01CB6BF101000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F5AB5EE202F0DEAB01000164 = {
-			fileRef = F584CFF101CB7BA801000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F5AB5EE302F0DEAB01000164 = {
-			fileRef = F584CFF701CB85F901000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F5AB5EE402F0DEAB01000164 = {
-			fileRef = F5A066FD02E83B3D01000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
