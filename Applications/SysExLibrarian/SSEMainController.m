@@ -406,6 +406,7 @@
             if (listenToMultipleMessages == NO)  {
                 listeningToMessages = NO;
                 [windowController stopSysExReadIndicator];
+                [windowController addReadMessagesToLibrary];
                 break;
             }
         }

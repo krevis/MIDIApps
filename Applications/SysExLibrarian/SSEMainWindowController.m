@@ -153,6 +153,7 @@ static SSEMainWindowController *controller;
 {
     [mainController doneWithMultipleMessageListen];
     [[NSApplication sharedApplication] endSheet:recordMultipleSheetWindow];
+    [self addReadMessagesToLibrary];
 }
 
 - (IBAction)cancelPlaySheet:(id)sender;
@@ -214,6 +215,21 @@ static SSEMainWindowController *controller;
 
     // Close the sheet, after a little bit of a delay (makes it look nicer)
     [[NSApplication sharedApplication] performSelector:@selector(endSheet:) withObject:[[self window] attachedSheet] afterDelay:0.5];
+}
+
+- (void)addReadMessagesToLibrary;
+{
+    NSData *allSysexData;
+
+    allSysexData = [SMSystemExclusiveMessage dataForSystemExclusiveMessages:[mainController messages]];
+    if (allSysexData) {
+        SSELibraryEntry *entry;
+
+        entry = [library addNewEntryWithData:allSysexData];
+        // TODO then select the row for this entry
+
+        [self synchronizeLibrary];
+    }
 }
 
 //

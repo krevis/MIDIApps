@@ -73,7 +73,7 @@
 
 - (NSString *)name;
 {
-    return [path lastPathComponent];
+    return [[NSFileManager defaultManager] displayNameAtPath:[self _realPath]];
 }
 
 - (NSArray *)messages;
@@ -105,7 +105,8 @@
 {
     // TODO this might be a partial path, or alias, or something
     // return the real path on the real filesystem
-    // This is completely wrong as it stands
+    // This is completely wrong as it stands... need to get the file directory for real, not the default
+
     if ([path isAbsolutePath])
         return path;
     else

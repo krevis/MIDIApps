@@ -56,7 +56,7 @@
     return entries;
 }
 
-- (void)addEntryForFile:(NSString *)filePath;
+- (SSELibraryEntry *)addEntryForFile:(NSString *)filePath;
 {
     SSELibraryEntry *entry;
 
@@ -67,6 +67,27 @@
 
     flags.isDirty = YES;
     [self autosave];
+
+    return entry;
+}
+
+- (SSELibraryEntry *)addNewEntryWithData:(NSData *)sysexData;
+{
+    NSString *newFilePath;
+    SSELibraryEntry *entry = nil;
+
+    // TODO what name?  attach the date, perhaps?
+    // TODO also get the file directory for real, not the default
+    newFilePath = [[SSELibrary defaultFileDirectory] stringByAppendingPathComponent:@"New SysEx File.syx"];
+    newFilePath = [[NSFileManager defaultManager] uniqueFilenameFromName:newFilePath];
+
+    // TODO maybe need to create the path to this file
+    // TODO should maybe also hide the extension on this file
+    
+    if ([sysexData writeToFile:newFilePath atomically:YES])
+        entry = [self addEntryForFile:newFilePath];
+
+    return entry;
 }
 
 - (void)autosave;

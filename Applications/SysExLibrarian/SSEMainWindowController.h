@@ -68,6 +68,7 @@
 
 - (void)updateSysExReadIndicator;
 - (void)stopSysExReadIndicator;
+- (void)addReadMessagesToLibrary;
 
 - (void)showSysExSendStatus;
 - (void)hideSysExSendStatusWithSuccess:(BOOL)success;

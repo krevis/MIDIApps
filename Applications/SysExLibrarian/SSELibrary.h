@@ -17,7 +17,8 @@
 
 - (NSArray *)entries;
 
-- (void)addEntryForFile:(NSString *)filePath;
+- (SSELibraryEntry *)addEntryForFile:(NSString *)filePath;
+- (SSELibraryEntry *)addNewEntryWithData:(NSData *)sysexData;
 
 - (void)autosave;
 - (void)save;
