@@ -23,9 +23,6 @@
 
 @implementation SMPortInputStream
 
-DEFINE_NSSTRING(SMPortInputStreamEndpointDisappeared);
-
-
 - (id)init;
 {
     OSStatus status;
@@ -182,12 +179,12 @@ DEFINE_NSSTRING(SMPortInputStreamEndpointDisappeared);
 {
     SMSourceEndpoint *endpoint;
 
-    endpoint = [notification object];
+    endpoint = [[[notification object] retain] autorelease];
     OBASSERT([endpoints indexOfObjectIdenticalTo:endpoint] != NSNotFound);
 
     [self removeEndpoint:endpoint];
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMPortInputStreamEndpointDisappeared object:self];
+    [self postSelectedInputStreamSourceDisappearedNotification:endpoint];
 }
 
 - (void)_endpointWasReplaced:(NSNotification *)notification;

@@ -22,8 +22,3 @@
 - (void)setEndpoints:(NSArray *)newEndpoints;
 
 @end
-
-// Notifications
-
-extern NSString *SMPortInputStreamEndpointDisappeared;
-    // Sent if one of the stream's source endpoints goes away

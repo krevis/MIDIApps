@@ -6,6 +6,7 @@
 #import <CoreMIDI/CoreMIDI.h>
 #import <Foundation/Foundation.h>
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
+#import <SnoizeMIDI/SMInputStreamSource.h>
 
 @class SMEndpoint;
 @class SMMessageParser;
@@ -33,6 +34,7 @@
 // For subclasses only
 - (MIDIReadProc)midiReadProc;
 - (SMMessageParser *)newParserWithOriginatingEndpoint:(SMEndpoint *)originatingEndpoint;
+- (void)postSelectedInputStreamSourceDisappearedNotification:(id<SMInputStreamSource>)source;
 
 // For subclasses to implement
 - (NSArray *)parsers;
@@ -50,3 +52,5 @@ extern NSString *SMInputStreamReadingSysExNotification;
 extern NSString *SMInputStreamDoneReadingSysExNotification;
     // contains key @"length" with NSNumber (unsigned int) indicating size of data read
     // contains key @"valid" with NSNumber (BOOL) indicating whether sysex ended properly or not
+extern NSString *SMInputStreamSelectedInputSourceDisappearedNotification;
+    // contains key @"source" with id<SMInputStreamSource> which disappeared
