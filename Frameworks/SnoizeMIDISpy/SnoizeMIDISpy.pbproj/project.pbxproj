@@ -3,24 +3,27 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 38;
+	objectVersion = 39;
 	objects = {
 		014CEA440018CDF011CA2923 = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "\U0001-DDEBUG";
+				ZERO_LINK = YES;
 			};
 			isa = PBXBuildStyle;
 			name = Development;
 		};
 		014CEA450018CDF011CA2923 = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ZERO_LINK = NO;
 			};
 			isa = PBXBuildStyle;
 			name = Deployment;
@@ -44,11 +47,14 @@
 			name = Products;
 			path = Framework;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		034768E0FF38A50411DB9C8B = {
-			isa = PBXFrameworkReference;
+			explicitFileType = wrapper.framework;
+			isa = PBXFileReference;
 			path = SnoizeMIDISpy.framework;
 			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 //030
 //031
@@ -61,6 +67,8 @@
 //083
 //084
 		0867D690FE84028FC02AAC07 = {
+			buildSettings = {
+			};
 			buildStyles = (
 				014CEA440018CDF011CA2923,
 				014CEA450018CDF011CA2923,
@@ -86,6 +94,7 @@
 			isa = PBXGroup;
 			name = MIDISpy;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		0867D69AFE84028FC02AAC07 = {
 			children = (
@@ -96,6 +105,7 @@
 			name = "External Frameworks and Libraries";
 			path = "";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		0867D69CFE84028FC02AAC07 = {
 			buildPhases = (
@@ -209,6 +219,7 @@
 			name = Resources;
 			path = "";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		089C1666FE841158C02AAC07 = {
 			children = (
@@ -217,13 +228,16 @@
 			isa = PBXVariantGroup;
 			name = InfoPlist.strings;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		089C1667FE841158C02AAC07 = {
 			fileEncoding = 10;
 			isa = PBXFileReference;
+			lastKnownFileType = text.plist.strings;
 			name = English;
 			path = English.lproj/InfoPlist.strings;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		089C1668FE841158C02AAC07 = {
 			fileRef = 089C1666FE841158C02AAC07;
@@ -245,12 +259,15 @@
 			name = Source;
 			path = "";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		08FB77B4FE84181DC02AAC07 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
 			path = MIDISpyClient.c;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		08FB77B5FE84181DC02AAC07 = {
 			fileRef = 08FB77B4FE84181DC02AAC07;
@@ -279,6 +296,7 @@
 			isa = PBXGroup;
 			name = "Linked Frameworks";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		1058C7B2FEA5585E11CA2CBB = {
 			children = (
@@ -286,12 +304,30 @@
 			isa = PBXGroup;
 			name = "Other Frameworks";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 //100
 //101
 //102
 //103
 //104
+//160
+//161
+//162
+//163
+//164
+		16F20D6B06EA882400D9C507 = {
+			containerPortal = 0867D690FE84028FC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = F540CCA7023F40E701000164;
+			remoteInfo = SpyingMIDIDriver;
+		};
+//160
+//161
+//162
+//163
+//164
 //F50
 //F51
 //F52
@@ -300,8 +336,10 @@
 		F53956EE0256D06A01000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = MIDISpyShared.h;
 			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		F53956EF0256D06A01000164 = {
 			fileRef = F53956EE0256D06A01000164;
@@ -324,6 +362,7 @@
 			isa = PBXGroup;
 			path = Driver;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F540CCA5023F40E701000164 = {
 			children = (
@@ -334,11 +373,14 @@
 			isa = PBXGroup;
 			path = Framework;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F540CCA6023F40E701000164 = {
-			isa = PBXBundleReference;
+			explicitFileType = wrapper.cfbundle;
+			isa = PBXFileReference;
 			path = "MIDI Monitor.plugin";
 			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		F540CCA7023F40E701000164 = {
 			buildPhases = (
@@ -456,56 +498,74 @@
 		F540CCAD023F41B101000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = MIDIDriverClass.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F540CCAE023F41B101000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			path = MIDIDriver.cpp;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F540CCAF023F41B101000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = SpyingMIDIDriver.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F540CCB0023F41B101000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			path = SpyingMIDIDriver.cpp;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F540CCB1023F41B101000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = MessagePortBroadcaster.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F540CCB2023F41B101000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			path = MessagePortBroadcaster.cpp;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F540CCB3023F41B101000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = MessageQueue.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F540CCB4023F41B101000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
 			path = MessageQueue.c;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F540CCB5023F41B101000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.exports;
 			path = SpyingMIDIDriver.exp;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F540CCB6023F41B101000164 = {
 			fileRef = F540CCB1023F41B101000164;
@@ -557,6 +617,7 @@
 			name = Source;
 			path = "";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F540CCC0023F42EA01000164 = {
 			children = (
@@ -565,6 +626,7 @@
 			isa = PBXGroup;
 			name = Other;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F540CCC1023F42EA01000164 = {
 			children = (
@@ -574,6 +636,7 @@
 			isa = PBXGroup;
 			name = "External Frameworks and Libraries";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F540CCC2023F42EA01000164 = {
 			children = (
@@ -583,18 +646,23 @@
 			isa = PBXGroup;
 			name = "Linked Frameworks";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F540CCC3023F42EA01000164 = {
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
 			name = CoreFoundation.framework;
 			path = /System/Library/Frameworks/CoreFoundation.framework;
 			refType = 0;
+			sourceTree = "<absolute>";
 		};
 		F540CCC4023F42EA01000164 = {
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
 			name = CoreMIDIServer.framework;
 			path = /System/Library/Frameworks/CoreMIDIServer.framework;
 			refType = 0;
+			sourceTree = "<absolute>";
 		};
 		F540CCC5023F42EA01000164 = {
 			children = (
@@ -604,12 +672,15 @@
 			name = "Other Frameworks";
 			path = "";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F540CCC6023F42EA01000164 = {
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
 			name = CoreMIDI.framework;
 			path = /System/Library/Frameworks/CoreMIDI.framework;
 			refType = 0;
+			sourceTree = "<absolute>";
 		};
 		F540CCC7023F42EA01000164 = {
 			fileRef = F540CCC3023F42EA01000164;
@@ -626,14 +697,18 @@
 		F551C2DB032756AF01000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
 			path = FSCopyObject.c;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F551C2DC032756AF01000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = FSCopyObject.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F551C2DD032756AF01000164 = {
 			fileRef = F551C2DB032756AF01000164;
@@ -648,10 +723,12 @@
 			};
 		};
 		F56214910240BADA01000164 = {
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
 			name = Carbon.framework;
 			path = /System/Library/Frameworks/Carbon.framework;
 			refType = 0;
+			sourceTree = "<absolute>";
 		};
 		F56214920240BADA01000164 = {
 			fileRef = F56214910240BADA01000164;
@@ -678,6 +755,7 @@
 		F56214950240DB0501000164 = {
 			isa = PBXTargetDependency;
 			target = F540CCA7023F40E701000164;
+			targetProxy = 16F20D6B06EA882400D9C507;
 		};
 		F58A918802E90E5E01000164 = {
 			fileRef = F540CCB3023F41B101000164;
@@ -699,12 +777,15 @@
 			isa = PBXGroup;
 			name = "Apple driver code";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F5B4DD94025DA04101000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
 			path = MIDISpyDriverInstallation.c;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F5B4DD95025DA04101000164 = {
 			fileRef = F5B4DD94025DA04101000164;
@@ -715,8 +796,10 @@
 		F5B4DD96025DA07801000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = MIDISpyDriverInstallation.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F5B4DD97025DA07801000164 = {
 			fileRef = F5B4DD96025DA07801000164;
@@ -728,10 +811,12 @@
 			};
 		};
 		F5BCCEC1023F47DC01000164 = {
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
 			name = CoreFoundation.framework;
 			path = /System/Library/Frameworks/CoreFoundation.framework;
 			refType = 0;
+			sourceTree = "<absolute>";
 		};
 		F5BCCEC2023F47DC01000164 = {
 			fileRef = F5BCCEC1023F47DC01000164;
@@ -742,8 +827,10 @@
 		F5BCCEC3023F486D01000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = MIDISpyClient.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F5BCCEC4023F486D01000164 = {
 			fileRef = F5BCCEC3023F486D01000164;
@@ -755,10 +842,12 @@
 			};
 		};
 		F5BCCEC5023F4AE501000164 = {
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
 			name = CoreMIDI.framework;
 			path = /System/Library/Frameworks/CoreMIDI.framework;
 			refType = 0;
+			sourceTree = "<absolute>";
 		};
 		F5BCCEC6023F4AE501000164 = {
 			fileRef = F5BCCEC5023F4AE501000164;
@@ -767,8 +856,6 @@
 			};
 		};
 		F5BCCEC7023F613D01000164 = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				INSTALL_PATH = "@executable_path/../Frameworks";
@@ -780,8 +867,10 @@
 		F5BCCEC8023F631901000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = SnoizeMIDISpy.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F5BCCEC9023F631901000164 = {
 			fileRef = F5BCCEC8023F631901000164;
