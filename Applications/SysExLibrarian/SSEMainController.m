@@ -52,7 +52,7 @@
     [center addObserver:self selector:@selector(_willStartSendingSysEx:) name:SMPortOutputStreamWillStartSysExSendNotification object:outputStream];
     [center addObserver:self selector:@selector(_doneSendingSysEx:) name:SMPortOutputStreamFinishedSysExSendNotification object:outputStream];
     [outputStream setIgnoresTimeStamps:YES];
-//    [outputStream setSendsSysExAsynchronously:YES];	// TODO frob this  ... sending synchronously seems faster
+    [outputStream setSendsSysExAsynchronously:YES];	// TODO frob this  ... sending synchronously seems faster
     [outputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a source for other programs", @"SysExLibrarian", [self bundle], "title of popup menu item for virtual source")];
     [outputStream setVirtualEndpointName:@"SysEx Librarian"];	// TODO get this from somewhere
     
@@ -170,10 +170,9 @@
         [outputStream takeMIDIMessages:[NSArray arrayWithObject:sysExMessage]];
 }
 
-- (SMSysExSendRequest *)currentSendRequest;
+- (unsigned int)sysExBytesSent;
 {
-    return currentSendRequest;
-    // TODO we probably don't want this... instead the windowController should ask for the specific info it needs
+    return [currentSendRequest bytesSent];
 }
 
 - (void)cancelPlayingSysExMessage;
@@ -291,7 +290,7 @@
     currentSendRequest = [[[notification userInfo] objectForKey:@"sendRequest"] retain];
 //    if ([currentSendRequest totalBytes] >= 3125) {  //  TODO...
         // This send will probably take a second or more, so let's show the status as it goes out.
-        [windowController showSysExSendStatus];
+        [windowController showSysExSendStatusWithBytesToSend:[currentSendRequest totalBytes]];
 //    }
 }
 

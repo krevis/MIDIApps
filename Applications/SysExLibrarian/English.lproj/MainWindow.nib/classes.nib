@@ -9,6 +9,7 @@
         }, 
         {
             ACTIONS = {
+                cancelPlaySheet = id; 
                 cancelRecordSheet = id; 
                 delete = id; 
                 open = id; 
@@ -23,6 +24,9 @@
             OUTLETS = {
                 destinationPopUpButton = NSPopUpButton; 
                 mainController = SSEMainController; 
+                playProgressField = NSTextField; 
+                playProgressIndicator = NSProgressIndicator; 
+                playSheetWindow = NSWindow; 
                 recordProgressField = NSTextField; 
                 recordProgressIndicator = NSProgressIndicator; 
                 recordSheetTabView = NSTabView; 

@@ -34,7 +34,7 @@
 - (void)cancelSysExMessageWait;
 
 - (void)playSysExMessage;
-- (SMSysExSendRequest *)currentSendRequest;
+- (unsigned int)sysExBytesSent;
 - (void)cancelPlayingSysExMessage;
 
 @end

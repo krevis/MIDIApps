@@ -14,6 +14,9 @@
 - (void)_synchronizePopUpButton:(NSPopUpButton *)popUpButton withDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 
 - (void)_recordSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)_playSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+
+- (void)_updatePlayProgress;
 
 @end
 
@@ -126,6 +129,12 @@ static SSEMainWindowController *controller;
     [[NSApplication sharedApplication] endSheet:recordSheetWindow returnCode:NSRunAbortedResponse];
 }
 
+- (IBAction)cancelPlaySheet:(id)sender;
+{
+    [mainController cancelPlayingSysExMessage];
+    [[NSApplication sharedApplication] endSheet:playSheetWindow returnCode:NSRunAbortedResponse];
+}
+
 //
 // Other API
 //
@@ -169,16 +178,21 @@ static SSEMainWindowController *controller;
     [[NSApplication sharedApplication] endSheet:recordSheetWindow returnCode:NSRunStoppedResponse];
 }
 
-- (void)showSysExSendStatus;
+- (void)showSysExSendStatusWithBytesToSend:(unsigned int)bytesToSend;
 {
-    // TODO
-    // show sheet
+    [playProgressIndicator setMinValue:0.0];
+    [playProgressIndicator setMaxValue:bytesToSend];
+
+    [self _updatePlayProgress];
+    [[NSApplication sharedApplication] beginSheet:playSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_playSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
 - (void)hideSysExSendStatus;
 {
-    // TODO
-    // end sheet
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_updatePlayProgress) object:nil];
+    [self _updatePlayProgress];
+
+    [[NSApplication sharedApplication] endSheet:playSheetWindow returnCode:NSRunStoppedResponse];
 }
 
 @end
@@ -277,6 +291,24 @@ static SSEMainWindowController *controller;
     }
 
     [sheet orderOut:nil];
+}
+
+- (void)_playSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+{
+    // At this point, we don't really care how this sheet ended
+    [sheet orderOut:nil];
+}
+
+- (void)_updatePlayProgress;
+{
+    unsigned int bytesSent;
+
+    bytesSent = [mainController sysExBytesSent];
+    [playProgressIndicator setDoubleValue:bytesSent];
+    [playProgressField setStringValue:[@"Sent " stringByAppendingString:[NSString abbreviatedStringForBytes:bytesSent]]];
+    // TODO localize
+
+    [self performSelector:_cmd withObject:nil afterDelay:[playProgressIndicator animationDelay]];
 }
 
 @end

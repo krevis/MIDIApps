@@ -15,6 +15,10 @@
     IBOutlet NSProgressIndicator *recordProgressIndicator;
     IBOutlet NSTextField *recordProgressField;
 
+    IBOutlet NSWindow *playSheetWindow;
+    IBOutlet NSProgressIndicator *playProgressIndicator;
+    IBOutlet NSTextField *playProgressField;
+
     // Transient data
     NSDate *nextSysExAnimateDate;
 }
@@ -33,6 +37,7 @@
 - (IBAction)play:(id)sender;
 
 - (IBAction)cancelRecordSheet:(id)sender;
+- (IBAction)cancelPlaySheet:(id)sender;
 
 // Other API
 
@@ -44,7 +49,7 @@
 - (void)updateSysExReadIndicatorWithBytes:(unsigned int)bytesRead;
 - (void)stopSysExReadIndicatorWithBytes:(unsigned int)bytesRead;
 
-- (void)showSysExSendStatus;
+- (void)showSysExSendStatusWithBytesToSend:(unsigned int)bytesToSend;
 - (void)hideSysExSendStatus;
 
 @end
