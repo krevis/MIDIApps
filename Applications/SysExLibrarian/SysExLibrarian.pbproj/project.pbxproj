@@ -267,7 +267,6 @@
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /Users/Shared/krevis/InstalledProducts;
 				LIBRARY_SEARCH_PATHS = "";
-				OPTIMIZATION_CFLAGS = "-O3";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PRECOMPILE_PREFIX_HEADER = YES;
