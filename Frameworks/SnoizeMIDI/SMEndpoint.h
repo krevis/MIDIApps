@@ -11,6 +11,7 @@
     struct {
         unsigned int hasLookedForDevice:1;
     } flags;
+    unsigned int ordinal;
 }
 
 + (SInt32)generateNewUniqueID;

@@ -19,6 +19,7 @@
 
 + (void)_reloadMapTable;
 + (NSArray *)_allEndpoints;
++ (NSArray *)_allEndpointsSortedByOrdinal;
 + (SMEndpoint *)_endpointMatchingUniqueID:(SInt32)uniqueID;
 + (SMEndpoint *)_endpointForEndpointRef:(MIDIEndpointRef)anEndpointRef;
 
@@ -37,6 +38,10 @@
 
 - (SInt32)_integerForProperty:(CFStringRef)property;
 - (void)_setInteger:(SInt32)value forProperty:(CFStringRef)property;
+
+- (void)_setOrdinal:(unsigned int)value;
+- (unsigned int)_ordinal;
+static int endpointOrdinalComparator(id endpoint1, id endpoint2, void *context);
 
 - (void)_checkIfPropertySetIsAllowed;
 
@@ -304,11 +309,14 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
             [removedEndpoints removeObjectIdenticalTo:endpoint];
             // It's possible that its uniqueID changed, though.
             [endpoint _updateUniqueID];
+            // And its ordinal may also have changed...
+            [endpoint _setOrdinal:endpointIndex];
         } else {
             SMEndpoint *replacedEndpoint;
 
             // This endpointRef did not previously exist, so create a new endpoint for it.
             endpoint = [[[self alloc] initWithEndpointRef:anEndpointRef] autorelease];
+            [endpoint _setOrdinal:endpointIndex];
             
             // If the new endpoint has the same uniqueID as an old endpoint, remember it.
             if ((replacedEndpoint = [self _endpointMatchingUniqueID:[endpoint uniqueID]])) {
@@ -340,8 +348,6 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 
 + (NSArray *)_allEndpoints;
 {
-    // TODO Should we sort the endpoints? (by name? unique ID?)
-
     NSMapTable **mapTablePtr;
 
     mapTablePtr = [self _endpointMapTablePtr];
@@ -351,6 +357,11 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
         return NSAllMapTableValues(*mapTablePtr);
     else
         return nil;
+}
+
++ (NSArray *)_allEndpointsSortedByOrdinal;
+{
+    return [[self _allEndpoints] sortedArrayUsingFunction:endpointOrdinalComparator context:NULL];
 }
 
 + (SMEndpoint *)_endpointMatchingUniqueID:(SInt32)aUniqueID;
@@ -531,6 +542,31 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     }
 }
 
+- (void)_setOrdinal:(unsigned int)value;
+{
+    ordinal = value;
+}
+
+- (unsigned int)_ordinal;
+{
+    return ordinal;
+}
+
+static int endpointOrdinalComparator(id object1, id object2, void *context)
+{
+    unsigned int ordinal1, ordinal2;
+
+    ordinal1 = [object1 _ordinal];
+    ordinal2 = [object2 _ordinal];
+        
+    if (ordinal1 > ordinal2)
+        return NSOrderedDescending;
+    else if (ordinal1 == ordinal2)
+        return NSOrderedSame;
+    else
+        return NSOrderedAscending;
+}
+
 - (void)_checkIfPropertySetIsAllowed;
 {
     if (![self isOwnedByThisProcess]) {
@@ -597,7 +633,7 @@ static NSMapTable *sourceEndpointRefToSMEndpointMapTable = NULL;
 
 + (NSArray *)sourceEndpoints;
 {
-    return [self _allEndpoints];
+    return [self _allEndpointsSortedByOrdinal];
 }
 
 + (SMSourceEndpoint *)sourceEndpointWithUniqueID:(SInt32)aUniqueID;
@@ -650,7 +686,7 @@ static NSMapTable *destinationEndpointRefToSMEndpointMapTable = NULL;
 
 + (NSArray *)destinationEndpoints;
 {
-    return [self _allEndpoints];
+    return [self _allEndpointsSortedByOrdinal];
 }
 
 + (SMDestinationEndpoint *)destinationEndpointWithUniqueID:(SInt32)aUniqueID;
