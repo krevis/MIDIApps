@@ -2,21 +2,25 @@
 #
 # Script to build the release version of the MIDI Monitor application.
 
-# Display commands as they happen -- useful for debugging
-# setopt XTRACE
+# Display commands as they happen -- useful for debugging:
+#setopt XTRACE
 
+# build output directory -- change this to whatever you like
+BUILD_OUTPUT_DIR=${HOME}/MIDIMonitorBuild
+
+# the built copy of the app will be put here:
+INSTALL_DIRECTORY=${BUILD_OUTPUT_DIR}/InstalledProducts
+# the build products will be put here:
+INSTALL_BUILD_DIRECTORY=${BUILD_OUTPUT_DIR}/InstallBuild
+# the name of the app
+APP_EXECUTABLE_NAME="MIDI Monitor"
+APP_WRAPPER_NAME="${APP_EXECUTABLE_NAME}.app"
+
+# find the source for the frameworks and the app itself
 ThisScriptDir=`dirname ${PWD}/$0`
-
 SourceRoot=${ThisScriptDir}/..
 SnoizeFrameworkSource=${SourceRoot}/Frameworks
 SnoizeAppSource=${SourceRoot}/Applications
-
-
-PUBLIC=/Users/Shared
-INSTALL_DIRECTORY=$PUBLIC/$USER/InstalledProducts
-INSTALL_BUILD_DIRECTORY=$PUBLIC/$USER/InstallBuild
-APP_EXECUTABLE_NAME="MIDI Monitor"
-APP_WRAPPER_NAME="${APP_EXECUTABLE_NAME}.app"
 
 #
 # Process arguments
@@ -86,32 +90,18 @@ cd ${SnoizeFrameworkSource}/DisclosableView
 xcodebuild -buildstyle $FRAMEWORK_BUILDSTYLE INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
 
 cd ${SnoizeAppSource}/MIDIMonitor
-xcodebuild -buildstyle $APP_BUILDSTYLE DSTROOT=/ INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
+xcodebuild -buildstyle $APP_BUILDSTYLE $BUILD_ACTION DSTROOT=/ INSTALL_PATH=$INSTALL_DIRECTORY INSTALL_MODE_FLAG=go-w,a+rX  $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
 	# NOTE: We are relying on the app's project having an INSTALL_PATH
-	# set to $INSTALL_DIRECTORY. For some reason, if it is set to nothing in the project,
-	# setting it here will not cause the install to happen.
+	# set to a non-empty value. For some reason, if the project does not
+	# specify a value for INSTALL_PATH, setting it on the command line
+	# will not cause the install to happen.
 	#
 	# INSTALL_MODE_FLAG is normally a-w,a+rX.
 	# We change it so the files are still writeable by the owner (us)
-	# so we can modify them later
+	# so we can modify them later.
 
 #
-# Then remove extra junk from the app and frameworks
-#
-
-if [[ $DO_INSTALL -eq 1 ]]; then
-	cd "$INSTALL_DIRECTORY/$APP_WRAPPER_NAME" || {echo "Couldn't cd to installed app!"; exit 1}
-	# Nobody needs the headers
-	find . -name 'Headers' -exec rm -rf {} \; -prune
-	# We don't need non-English localizations right now
-	find . -name \*.lproj \! -name English.lproj -exec rm -rf {} \; -prune
-	# I don't trust the new keyedobjects nibs yet... IB is too flaky.
-	# (commenting this out, it's probably time to switch to the new scheme)
-	# find . -name keyedobjects.nib -type f -exec rm -f {} \;
-fi
-
-#
-# Then update prebinding. The frameworks' timestamps have changed since they were linked against,
+# Then update prebinding. The frameworks' timestamps have changed since they were linked against (since they were copied afterwards),
 # so their prebinding will be disabled unless we do this.
 #
 
