@@ -44,8 +44,7 @@ static SMMPreferencesWindowController *controller;
     noteFormatPreference = [[OFPreference preferenceForKey:SMNoteFormatPreferenceKey] retain];
     controllerFormatPreference = [[OFPreference preferenceForKey:SMControllerFormatPreferenceKey] retain];
     dataFormatPreference = [[OFPreference preferenceForKey:SMDataFormatPreferenceKey] retain];
-    autoSelectFirstSourceInNewDocumentPreference = [[OFPreference preferenceForKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey] retain];
-    autoSelectFirstSourceIfSourceDisappearsPreference = [[OFPreference preferenceForKey:SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey] retain];
+    autoSelectOrdinarySourcesInNewDocumentPreference = [[OFPreference preferenceForKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey] retain];
     openWindowsForNewSourcesPreference = [[OFPreference preferenceForKey:SMMOpenWindowsForNewSourcesPreferenceKey] retain];
     alwaysSaveSysExWithEOXPreference = [[OFPreference preferenceForKey:SMMSaveSysExWithEOXAlwaysPreferenceKey] retain];
     
@@ -64,8 +63,7 @@ static SMMPreferencesWindowController *controller;
     [noteFormatPreference release];
     [controllerFormatPreference release];
     [dataFormatPreference release];
-    [autoSelectFirstSourceInNewDocumentPreference release];
-    [autoSelectFirstSourceIfSourceDisappearsPreference release];
+    [autoSelectOrdinarySourcesInNewDocumentPreference release];
     [openWindowsForNewSourcesPreference release];
     [alwaysSaveSysExWithEOXPreference release];
     
@@ -85,8 +83,7 @@ static SMMPreferencesWindowController *controller;
     [noteFormatMatrix selectCellWithTag:[noteFormatPreference integerValue]];
     [controllerFormatMatrix selectCellWithTag:[controllerFormatPreference integerValue]];
     [dataFormatMatrix selectCellWithTag:[dataFormatPreference integerValue]];
-    [autoSelectFirstSourceInNewDocumentMatrix selectCellWithTag:[autoSelectFirstSourceInNewDocumentPreference boolValue]];
-    [autoSelectFirstSourceIfSourceDisappearsCheckbox setIntValue:[autoSelectFirstSourceIfSourceDisappearsPreference boolValue]];
+    [autoSelectOrdinarySourcesInNewDocumentMatrix selectCellWithTag:[autoSelectOrdinarySourcesInNewDocumentPreference boolValue]];
     [openWindowsForNewSourcesCheckbox setIntValue:[openWindowsForNewSourcesPreference boolValue]];
     [alwaysSaveSysExWithEOXMatrix selectCellWithTag:[alwaysSaveSysExWithEOXPreference boolValue]];
 }
@@ -124,15 +121,9 @@ static SMMPreferencesWindowController *controller;
     [self _sendDisplayPreferenceChangedNotification];
 }
 
-- (IBAction)changeAutoSelectFirstSourceInNewDocument:(id)sender;
+- (IBAction)changeAutoSelectOrdinarySourcesInNewDocument:(id)sender;
 {
-    [autoSelectFirstSourceInNewDocumentPreference setBoolValue:[[sender selectedCell] tag]];
-    [self _synchronizeDefaults];
-}
-
-- (IBAction)changeAutoSelectFirstSourceIfSourceDisappears:(id)sender;
-{
-    [autoSelectFirstSourceIfSourceDisappearsPreference setBoolValue:[sender intValue]];
+    [autoSelectOrdinarySourcesInNewDocumentPreference setBoolValue:[[sender selectedCell] tag]];
     [self _synchronizeDefaults];
 }
 

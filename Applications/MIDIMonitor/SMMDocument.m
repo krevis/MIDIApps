@@ -18,10 +18,7 @@
 
 - (void)_updateVirtualEndpointName;
 
-- (void)_streamSourceDisappeared:(NSNotification *)notification;
-
-- (void)_selectFirstAvailableSourceWhenPossible;
-- (void)_selectFirstAvailableSource;
+- (void)_selectAllOrdinarySources;
 
 - (void)_historyDidChange:(NSNotification *)notification;
 - (void)_mainThreadSynchronizeMessages;
@@ -39,12 +36,14 @@
 @implementation SMMDocument
 
 NSString *SMMAutoSelectFirstSourceInNewDocumentPreferenceKey = @"SMMAutoSelectFirstSource";
-NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSelectFirstSourceIfSourceDisappears";
+    // NOTE: The above is obsolete; it's included only for compatibility
+NSString *SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey = @"SMMAutoSelectOrdinarySources";
 
 
 - (id)init
 {
     NSNotificationCenter *center;
+    OFPreference *oldAutoSelectPref, *autoSelectPref;
 
     if (!(self = [super init]))
         return nil;
@@ -52,7 +51,6 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     center = [NSNotificationCenter defaultCenter];
 
     stream = [[SMMCombinationInputStream alloc] init];
-    [center addObserver:self selector:@selector(_streamSourceDisappeared:) name:SMInputStreamSelectedInputSourceDisappearedNotification object:stream];
     [center addObserver:self selector:@selector(_readingSysEx:) name:SMInputStreamReadingSysExNotification object:stream];
     [center addObserver:self selector:@selector(_doneReadingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:stream];
     [self _updateVirtualEndpointName];
@@ -74,9 +72,17 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
 
     [center addObserver:self selector:@selector(_midiSetupDidChange:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
 
-    if ([[OFPreference preferenceForKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey] boolValue]) {
-        [self _selectFirstAvailableSource];
+    oldAutoSelectPref = [OFPreference preferenceForKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey];
+    autoSelectPref = [OFPreference preferenceForKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey];
+
+    // If the user changed the value of this old obsolete preference, bring its value forward to our new preference
+    if ([oldAutoSelectPref hasNonDefaultValue]) {
+        [autoSelectPref setBoolValue:[oldAutoSelectPref boolValue]];
+        [oldAutoSelectPref restoreDefaultValue];
     }
+
+    if ([autoSelectPref boolValue])
+        [self _selectAllOrdinarySources];
 
     [self updateChangeCount:NSChangeCleared];
 
@@ -273,9 +279,7 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     [stream setSelectedInputSources:inputSources];
 
     [(SMMDocument *)[[self undoManager] prepareWithInvocationTarget:self] setSelectedInputSources:oldInputSources];
-    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Source", @"MIDIMonitor", [self bundle], "change source undo action")];
-        // TODO change this name since there can now be multiple sources
-        // TODO and think about what happens if we undo back to a state where there were input sources that no longer exist
+    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Selected Sources", @"MIDIMonitor", [self bundle], "change source undo action")];
 
     listenToMIDISetupChanges = savedListenFlag;
 
@@ -478,41 +482,18 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     [stream setVirtualEndpointName:endpointName];
 }
 
-- (void)_streamSourceDisappeared:(NSNotification *)notification;
+- (void)_selectAllOrdinarySources;
 {
-    // TODO rethink this
-    /*
-    if ([[OFPreference preferenceForKey:SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey] boolValue]) {
-        [self _selectFirstAvailableSourceWhenPossible];
-    }
-     */
-}
+    NSArray *sourcesArray;
+    NSSet *sourcesSet;
 
-- (void)_selectFirstAvailableSourceWhenPossible;
-{
-    // NOTE: We may be handling a MIDI change notification right now. We might want to select a virtual source
-    // but an SMVirtualInputStream can't be created in the middle of handling this notification, so do it later.
+    sourcesArray = [[[self groupedInputSources] objectAtIndex:0] objectForKey:@"sources"];
+    if (sourcesArray)
+        sourcesSet = [NSSet setWithArray:sourcesArray];
+    else
+        sourcesSet = [NSSet set];
 
-    if ([[SMClient sharedClient] isHandlingSetupChange]) {
-        [self performSelector:_cmd withObject:nil afterDelay:0.1];
-        // NOTE Delay longer than 0 is a tradeoff; it means there's a brief window when no source will be selected.
-        // A delay of 0 means that we'll get called many times (about 20 in practice) before the setup change is finished.
-    } else {
-        [self _selectFirstAvailableSource];
-    }
-}
-
-- (void)_selectFirstAvailableSource;
-{
-    // TODO  We probably want the combination input stream to choose the 1st selected port
-/*
-    NSArray *descriptions;
-
-    descriptions = [stream endpointDescriptions];
-    if ([descriptions count] > 0) {
-        [self setSourceDescription:[descriptions objectAtIndex:0]];
-    }
- */
+    [self setSelectedInputSources:sourcesSet];
 }
 
 - (void)_historyDidChange:(NSNotification *)notification;

@@ -23,7 +23,7 @@
 }
 
 - (NSArray *)groupedInputSources;
-    // Returns an array of arrays; each is a list of valid source descriptions for each input stream
+    // Returns an array of dictionaries; each has a string for key @"name" and an array of source descriptions for key @"sources"
 - (NSSet *)selectedInputSources;
 - (void)setSelectedInputSources:(NSSet *)inputSources;
 
@@ -53,5 +53,4 @@
 @end
 
 // Preference keys
-extern NSString *SMMAutoSelectFirstSourceInNewDocumentPreferenceKey;
-extern NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey;
+extern NSString *SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey;

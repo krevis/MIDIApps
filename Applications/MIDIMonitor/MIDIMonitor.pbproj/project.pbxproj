@@ -371,8 +371,8 @@
 			<dict>
 				<key>SMMAutoSelectFirstSource</key>
 				<true/>
-				<key>SMMAutoSelectFirstSourceIfSourceDisappears</key>
-				<false/>
+				<key>SMMAutoSelectOrdinarySources</key>
+				<true/>
 				<key>SMMOpenWindowsForNewSources</key>
 				<false/>
 				<key>SMMSaveSysExWithEOXAlways</key>

@@ -4,8 +4,7 @@
         {
             ACTIONS = {
                 changeAlwaysSaveSysExWithEOX = id; 
-                changeAutoSelectFirstSourceIfSourceDisappears = id; 
-                changeAutoSelectFirstSourceInNewDocument = id; 
+                changeAutoSelectOrdinarySourcesInNewDocument = id; 
                 changeControllerFormat = id; 
                 changeDataFormat = id; 
                 changeNoteFormat = id; 
@@ -16,8 +15,7 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 alwaysSaveSysExWithEOXMatrix = NSMatrix; 
-                autoSelectFirstSourceIfSourceDisappearsCheckbox = NSButton; 
-                autoSelectFirstSourceInNewDocumentMatrix = NSMatrix; 
+                autoSelectOrdinarySourcesInNewDocumentMatrix = NSMatrix; 
                 controllerFormatMatrix = NSMatrix; 
                 dataFormatMatrix = NSMatrix; 
                 noteFormatMatrix = NSMatrix; 

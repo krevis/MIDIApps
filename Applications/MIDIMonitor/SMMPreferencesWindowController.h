@@ -9,8 +9,7 @@
     IBOutlet NSMatrix *noteFormatMatrix;
     IBOutlet NSMatrix *controllerFormatMatrix;
     IBOutlet NSMatrix *dataFormatMatrix;
-    IBOutlet NSMatrix *autoSelectFirstSourceInNewDocumentMatrix;
-    IBOutlet NSButton *autoSelectFirstSourceIfSourceDisappearsCheckbox;
+    IBOutlet NSMatrix *autoSelectOrdinarySourcesInNewDocumentMatrix;
     IBOutlet NSButton *openWindowsForNewSourcesCheckbox;
     IBOutlet NSMatrix *alwaysSaveSysExWithEOXMatrix;
 
@@ -18,8 +17,7 @@
     OFPreference *noteFormatPreference;
     OFPreference *controllerFormatPreference;
     OFPreference *dataFormatPreference;
-    OFPreference *autoSelectFirstSourceInNewDocumentPreference;
-    OFPreference *autoSelectFirstSourceIfSourceDisappearsPreference;
+    OFPreference *autoSelectOrdinarySourcesInNewDocumentPreference;
     OFPreference *openWindowsForNewSourcesPreference;
     OFPreference *alwaysSaveSysExWithEOXPreference;
 }
@@ -32,8 +30,7 @@
 - (IBAction)changeNoteFormat:(id)sender;
 - (IBAction)changeControllerFormat:(id)sender;
 - (IBAction)changeDataFormat:(id)sender;
-- (IBAction)changeAutoSelectFirstSourceInNewDocument:(id)sender;
-- (IBAction)changeAutoSelectFirstSourceIfSourceDisappears:(id)sender;
+- (IBAction)changeAutoSelectOrdinarySourcesInNewDocument:(id)sender;
 - (IBAction)changeOpenWindowsForNewSources:(id)sender;
 - (IBAction)changeAlwaysSaveSysExWithEOX:(id)sender;
 

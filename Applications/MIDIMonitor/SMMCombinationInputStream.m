@@ -141,6 +141,9 @@ static NSString *spyingGroupName = nil;
 
 - (void)setSelectedInputSources:(NSSet *)inputSources;
 {
+    if (!inputSources)
+        inputSources = [NSSet set];
+    
     [portInputStream setSelectedInputSources:[self _intersectionOfSet:inputSources andArray:[portInputStream inputSources]]];
     [virtualInputStream setSelectedInputSources:[self _intersectionOfSet:inputSources andArray:[virtualInputStream inputSources]]];
     if (spyingInputStream)
