@@ -132,6 +132,28 @@ static SSEMainWindowController *controller;
 }
 
 //
+// Action validation
+//
+
+- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)theItem;
+{
+    SEL action;
+
+    action = [theItem action];
+
+    if (action == @selector(play:))
+        return ([libraryTableView numberOfSelectedRows] > 0);
+    else if (action == @selector(delete:))
+        return ([libraryTableView numberOfSelectedRows] > 0);
+    else if (action == @selector(showFileInFinder:))
+        return ([libraryTableView numberOfSelectedRows] == 1);
+    else if (action == @selector(rename:))
+        return ([libraryTableView numberOfSelectedRows] == 1);
+    else
+        return [super validateUserInterfaceItem:theItem];
+}
+
+//
 // Actions
 //
 
@@ -258,7 +280,6 @@ static SSEMainWindowController *controller;
     [self synchronizeDestinations];
     [self synchronizeLibrarySortIndicator];
     [self synchronizeLibrary];
-    [self synchronizeButtons];
 }
 
 - (void)synchronizeDestinations;
@@ -289,30 +310,6 @@ static SSEMainWindowController *controller;
     
     [libraryTableView reloadData];
     [self _selectAndScrollToEntries:selectedEntries];
-}
-
-- (void)synchronizeButtons;
-{
-    int numberOfSelectedRows;
-
-    numberOfSelectedRows = [libraryTableView numberOfSelectedRows];
-    
-    [playButton setEnabled:(numberOfSelectedRows > 0)];
-    [deleteButton setEnabled:(numberOfSelectedRows > 0)];
-    [showFileButton setEnabled:(numberOfSelectedRows == 1)];
-    [renameButton setEnabled:(numberOfSelectedRows == 1)];
-}
-
-- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)theItem;
-{
-    SEL action;
-
-    action = [theItem action];
-
-    if (action == @selector(play:))
-        return ([libraryTableView numberOfSelectedRows] > 0);
-    else
-        return [super validateUserInterfaceItem:theItem];
 }
 
 //
@@ -475,11 +472,6 @@ static SSEMainWindowController *controller;
 //
 // NSTableView delegate
 //
-
-- (void)tableViewSelectionDidChange:(NSNotification *)notification;
-{
-    [self synchronizeButtons];
-}
 
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(int)row;
 {

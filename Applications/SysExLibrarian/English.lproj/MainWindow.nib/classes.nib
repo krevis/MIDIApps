@@ -26,7 +26,6 @@
             CLASS = SSEMainWindowController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
-                deleteButton = NSButton; 
                 deleteLibraryFilesWarningSheetWindow = NSPanel; 
                 deleteWarningSheetWindow = NSPanel; 
                 destinationPopUpButton = NSPopUpButton; 
@@ -39,7 +38,6 @@
                 importWarningSheetWindow = NSPanel; 
                 libraryTableView = SSETableView; 
                 midiController = SSEMIDIController; 
-                playButton = NSButton; 
                 playProgressBytesField = NSTextField; 
                 playProgressIndicator = NSProgressIndicator; 
                 playProgressMessageField = NSTextField; 
@@ -54,12 +52,16 @@
                 recordProgressIndicator = NSProgressIndicator; 
                 recordProgressMessageField = NSTextField; 
                 recordSheetWindow = NSPanel; 
-                renameButton = NSButton; 
-                showFileButton = NSButton; 
             }; 
-            SUPERCLASS = NSWindowController; 
+            SUPERCLASS = SSEWindowController; 
         }, 
-        {CLASS = SSETableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }
+        {CLASS = SSETableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {CLASS = SSEValidatingButton; LANGUAGE = ObjC; SUPERCLASS = NSButton; }, 
+        {
+            CLASS = SSEWindowController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }
     ); 
     IBVersion = 1; 
 }

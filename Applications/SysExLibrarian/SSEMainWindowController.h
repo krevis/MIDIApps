@@ -14,11 +14,6 @@
 
     IBOutlet SSETableView *libraryTableView;
 
-    IBOutlet NSButton *playButton;
-    IBOutlet NSButton *deleteButton;
-    IBOutlet NSButton *showFileButton;
-    IBOutlet NSButton *renameButton;
-    
     IBOutlet NSPanel *recordSheetWindow;
     IBOutlet NSProgressIndicator *recordProgressIndicator;
     IBOutlet NSTextField *recordProgressMessageField;
@@ -93,7 +88,6 @@
 - (void)synchronizeDestinations;
 - (void)synchronizeLibrarySortIndicator;
 - (void)synchronizeLibrary;
-- (void)synchronizeButtons;
 
 - (void)updateSysExReadIndicator;
 - (void)stopSysExReadIndicator;
