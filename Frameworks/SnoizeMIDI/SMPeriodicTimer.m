@@ -93,7 +93,7 @@ static const UInt64 sliceTimeNanoseconds = 10.0e-3 * 1.0e9;	// 10 ms
     NSAutoreleasePool *pool;
     UInt64 sliceTime;
     BOOL started = NO;
-    UInt64 processEndTime;
+    UInt64 processEndTime = 0;
 
     pool = [[NSAutoreleasePool alloc] init];
 
