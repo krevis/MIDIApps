@@ -93,9 +93,15 @@
 <li><a href="http://www.evolution.co.uk/">Evolution keyboards</a> (some older models may require a patch&mdash;see the web site)
 </ul>
 
-<P>Note: Sending SysEx does <i>not</i> work well with MIDIMAN's drivers. The original driver could be made to send SysEx, but will sometimes hang the whole machine for a few seconds, or just plain crash. The newer driver (as of 20 February 2002) will send small SysEx messages correctly, but longer messages cause it to stop sending any output at all.  Until the driver is fixed there is nothing SysEx Librarian, or any application, can do about this. If this bothers you, contact MIDIMAN's tech support and let them know you want a driver that works.
-
 <P>If you have a device hooked up, and the proper driver, but you don't see it in the menu, you may be running into a problem with the Classic environment. Classic tends to grab USB devices for its own exclusive use, and doesn't let programs on the native Mac OS X side get to them. Try shutting down Classic and starting SysEx Librarian again. (If SysEx Librarian is started first, and is running when Classic starts, you will not encounter this problem.)
+
+<P>Notes on specific interfaces and drivers:
+
+<ul>
+<li>Sending SysEx does not work well with MIDIMAN's drivers. The original driver could be made to send SysEx, but will sometimes hang the whole machine for a few seconds, or just plain crash. The newer driver (as of 20 February 2002) will send small SysEx messages correctly, but longer messages cause it to stop sending any output at all.  Until the driver is fixed there is nothing SysEx Librarian, or any application, can do about this.
+<p>
+<li>The <a href="http://www.edirol.com/products/info/um1s.html">Edirol UM-1S</a> apparently has problems sending more than 256 bytes of sysex data. After every 256 bytes of data, 2 bytes will be dropped. (This is with driver version 1.0.0, as of July 2002. Other Edirol interfaces using the same driver may also have this problem; I don't know if it's limited to the UM-1S.)  Again, there's not much that SysEx Librarian can do about this until the driver is fixed.
+</ul>
 
 <P>Having other problems? Please let me know and I'll try to help find a solution.  SysEx Librarian is a young program, and there are a lot of very weird MIDI devices out there that it hasn't yet been tested with.  I want to get it working as well as possible, but I can't do that unless you tell me about problems that you encounter.
 
