@@ -19,7 +19,6 @@
                 recordMultiple = id; 
                 recordOne = id; 
                 selectDestination = id; 
-                selectSource = id; 
             }; 
             CLASS = SSEMainWindowController; 
             LANGUAGE = ObjC; 
@@ -47,7 +46,6 @@
                 recordProgressIndicator = NSProgressIndicator; 
                 recordProgressMessageField = NSTextField; 
                 recordSheetWindow = NSWindow; 
-                sourcePopUpButton = NSPopUpButton; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 

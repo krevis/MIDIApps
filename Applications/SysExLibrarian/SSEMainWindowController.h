@@ -10,7 +10,6 @@
 {
     IBOutlet SSEMIDIController *midiController;
 
-    IBOutlet NSPopUpButton *sourcePopUpButton;
     IBOutlet NSPopUpButton *destinationPopUpButton;
 
     IBOutlet SSETableView *libraryTableView;
@@ -59,7 +58,6 @@
 
 // Actions
 
-- (IBAction)selectSource:(id)sender;
 - (IBAction)selectDestination:(id)sender;
 
 - (IBAction)open:(id)sender;
@@ -78,7 +76,6 @@
 
 - (void)synchronizeInterface;
     // Calls each of the following
-- (void)synchronizeSources;
 - (void)synchronizeDestinations;
 - (void)synchronizeLibrarySortIndicator;
 - (void)synchronizeLibrary;

@@ -10,7 +10,7 @@
     IBOutlet SSEMainWindowController *windowController;
 
     // MIDI processing
-    SMPortOrVirtualInputStream *inputStream;
+    SMPortInputStream *inputStream;
     SMPortOrVirtualOutputStream *outputStream;
         
     // Transient data
@@ -34,10 +34,6 @@
     OFScheduledEvent *sendNextMessageEvent;
     BOOL sendCancelled;
 }
-
-- (NSArray *)sourceDescriptions;
-- (NSDictionary *)sourceDescription;
-- (void)setSourceDescription:(NSDictionary *)sourceDescription;
 
 - (NSArray *)destinationDescriptions;
 - (NSDictionary *)destinationDescription;

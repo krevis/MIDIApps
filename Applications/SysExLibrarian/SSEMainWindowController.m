@@ -115,11 +115,6 @@ static SSEMainWindowController *controller;
 // Actions
 //
 
-- (IBAction)selectSource:(id)sender;
-{
-    [midiController setSourceDescription:[(NSMenuItem *)[sender selectedItem] representedObject]];
-}
-
 - (IBAction)selectDestination:(id)sender;
 {
     [midiController setDestinationDescription:[(NSMenuItem *)[sender selectedItem] representedObject]];
@@ -230,17 +225,11 @@ static SSEMainWindowController *controller;
 
 - (void)synchronizeInterface;
 {
-    [self synchronizeSources];
     [self synchronizeDestinations];
     [self synchronizeLibrarySortIndicator];
     [self synchronizeLibrary];
     [self synchronizePlayButton];
     [self synchronizeDeleteButton];
-}
-
-- (void)synchronizeSources;
-{
-    [self _synchronizePopUpButton:sourcePopUpButton withDescriptions:[midiController sourceDescriptions] currentDescription:[midiController sourceDescription]];
 }
 
 - (void)synchronizeDestinations;

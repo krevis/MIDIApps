@@ -10,10 +10,9 @@
 
 - (void)_midiSetupDidChange:(NSNotification *)notification;
 
-- (void)_inputStreamEndpointDisappeared:(NSNotification *)notification;
+- (void)_endpointAppeared:(NSNotification *)notification;
 - (void)_outputStreamEndpointDisappeared:(NSNotification *)notification;
 
-- (void)_selectFirstAvailableSource;
 - (void)_selectFirstAvailableDestination;
 
 - (void)_startListening;
@@ -32,19 +31,22 @@
 - (id)init
 {
     NSNotificationCenter *center;
+    NSArray *sources;
+    unsigned int sourceIndex;
 
     if (!(self = [super init]))
         return nil;
 
     center = [NSNotificationCenter defaultCenter];
 
-    inputStream = [[SMPortOrVirtualInputStream alloc] init];
-    [center addObserver:self selector:@selector(_inputStreamEndpointDisappeared:) name:SMPortOrVirtualStreamEndpointDisappearedNotification object:inputStream];
+    inputStream = [[SMPortInputStream alloc] init];
     [center addObserver:self selector:@selector(_readingSysEx:) name:SMInputStreamReadingSysExNotification object:inputStream];
     [center addObserver:self selector:@selector(_readingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:inputStream];
-    [inputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"SysExLibrarian", [self bundle], "title of popup menu item for virtual destination")];
-    [inputStream setVirtualEndpointName:@"SysEx Librarian"];	// TODO get this from somewhere
     [inputStream setMessageDestination:self];
+    sources = [SMSourceEndpoint sourceEndpoints];
+    sourceIndex = [sources count];
+    while (sourceIndex--)
+        [inputStream addEndpoint:[sources objectAtIndex:sourceIndex]];
 
     outputStream = [[SMPortOrVirtualOutputStream alloc] init];
     [center addObserver:self selector:@selector(_outputStreamEndpointDisappeared:) name:SMPortOrVirtualStreamEndpointDisappearedNotification object:outputStream];
@@ -54,6 +56,8 @@
     [outputStream setSendsSysExAsynchronously:YES];
     [outputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a source for other programs", @"SysExLibrarian", [self bundle], "title of popup menu item for virtual source")];
     [outputStream setVirtualEndpointName:@"SysEx Librarian"];	// TODO get this from somewhere
+
+    [center addObserver:self selector:@selector(_endpointAppeared:) name:SMEndpointAppearedNotification object:nil];
     
     listenToMIDISetupChanges = YES;
 
@@ -69,8 +73,7 @@
     
     [center addObserver:self selector:@selector(_midiSetupDidChange:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
 
-    // TODO should get selected source and dest from preferences
-    [self _selectFirstAvailableSource];
+    // TODO should get selected dest from preferences
     [self _selectFirstAvailableDestination];
 
     return self;
@@ -97,38 +100,6 @@
 //
 // API for SSEMainWindowController
 //
-
-- (NSArray *)sourceDescriptions;
-{
-    return [inputStream endpointDescriptions];
-}
-
-- (NSDictionary *)sourceDescription;
-{
-    return [inputStream endpointDescription];
-}
-
-- (void)setSourceDescription:(NSDictionary *)description;
-{
-    NSDictionary *oldDescription;
-    BOOL savedListenFlag;
-
-    oldDescription = [self sourceDescription];
-    if (oldDescription == description || [oldDescription isEqual:description])
-        return;
-
-    savedListenFlag = listenToMIDISetupChanges;
-    listenToMIDISetupChanges = NO;
-
-    [inputStream setEndpointDescription:description];
-    // TODO we don't have an undo manager yet
-//    [[[self undoManager] prepareWithInvocationTarget:self] setSourceDescription:oldDescription];
-//    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Source", @"SysExLibrarian", [self bundle], "change source undo action")];
-
-    listenToMIDISetupChanges = savedListenFlag;
-
-    [windowController synchronizeSources];
-}
 
 - (NSArray *)destinationDescriptions;
 {
@@ -322,30 +293,23 @@
 - (void)_midiSetupDidChange:(NSNotification *)notification;
 {
     if (listenToMIDISetupChanges) {
-        [windowController synchronizeSources];
         [windowController synchronizeDestinations];
     }
 }
 
-- (void)_inputStreamEndpointDisappeared:(NSNotification *)notification;
+- (void)_endpointAppeared:(NSNotification *)notification;
 {
-    // TODO should print a message?
-    [self _selectFirstAvailableSource];
+    SMEndpoint *endpoint;
+
+    endpoint = [notification object];
+    if ([endpoint isKindOfClass:[SMSourceEndpoint class]])
+        [inputStream addEndpoint:(SMSourceEndpoint *)endpoint];
 }
 
 - (void)_outputStreamEndpointDisappeared:(NSNotification *)notification;
 {
     // TODO should print a message?
     [self _selectFirstAvailableDestination];
-}
-
-- (void)_selectFirstAvailableSource;
-{
-    NSArray *descriptions;
-
-    descriptions = [inputStream endpointDescriptions];
-    if ([descriptions count] > 0)
-        [inputStream setEndpointDescription:[descriptions objectAtIndex:0]];
 }
 
 - (void)_selectFirstAvailableDestination;
