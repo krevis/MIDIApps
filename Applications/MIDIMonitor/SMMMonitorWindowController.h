@@ -23,6 +23,7 @@
     IBOutlet NSButton *realTimeCheckBox;
     IBOutlet NSMatrix *realTimeMatrix;
     IBOutlet NSButton *systemExclusiveCheckBox;
+    IBOutlet NSButton *invalidCheckBox;
     IBOutlet NSMatrix *channelRadioButtons;
     IBOutlet NSTextField *oneChannelField;
     NSArray *filterCheckboxes;

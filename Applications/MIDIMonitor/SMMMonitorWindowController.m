@@ -129,7 +129,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
     [[sourcesOutlineView tableColumnWithIdentifier:@"name"] setDataCell:textFieldCell];
     [textFieldCell release];
     
-    filterCheckboxes = [[NSArray alloc] initWithObjects:voiceMessagesCheckBox, systemCommonCheckBox, realTimeCheckBox, systemExclusiveCheckBox, nil];
+    filterCheckboxes = [[NSArray alloc] initWithObjects:voiceMessagesCheckBox, systemCommonCheckBox, realTimeCheckBox, systemExclusiveCheckBox, invalidCheckBox, nil];
     filterMatrixCells = [[[[voiceMessagesMatrix cells] arrayByAddingObjectsFromArray:[systemCommonMatrix cells]] arrayByAddingObjectsFromArray:[realTimeMatrix cells]] retain];
 
     [voiceMessagesCheckBox setAllowsMixedState:YES];

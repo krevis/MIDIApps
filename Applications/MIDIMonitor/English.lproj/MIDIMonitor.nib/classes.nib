@@ -14,9 +14,11 @@
                 changeFilter = id; 
                 changeFilterFromMatrix = id; 
                 clearMessages = id; 
+                copy = id; 
                 setChannel = id; 
                 setChannelRadioButton = id; 
                 setMaximumMessageCount = id; 
+                showDetailsOfSelectedMessages = id; 
                 showSelectedMessageDetails = id; 
                 toggleFilterShown = id; 
                 toggleSourcesShown = id; 
@@ -28,6 +30,7 @@
                 clearButton = NSButton; 
                 filterDisclosableView = SNDisclosableView; 
                 filterDisclosureButton = SNDisclosureButton; 
+                invalidCheckBox = NSButton; 
                 maxMessageCountField = NSTextField; 
                 messagesTableView = NSTableView; 
                 oneChannelField = NSTextField; 
