@@ -110,15 +110,6 @@
 @end
 
 
-// Notifications
-
-extern NSString *SMEndpointsAppearedNotification;
-    // object is an array of endpoints
-extern NSString *SMEndpointDisappearedNotification;
-extern NSString *SMEndpointWasReplacedNotification;
-    // userInfo contains new endpoint under key SMEndpointReplacement
-extern NSString *SMEndpointReplacement;
-
 // MIDI property keys
 
 extern NSString *SMEndpointPropertyOwnerPID;

@@ -5,6 +5,7 @@
 #import "SMDevice.h"
 #import "SMClient.h"
 #import "SMEndpoint.h"
+#import "SMMIDIObject-Private.h"
 
 
 @interface SMDevice (Private)
@@ -42,11 +43,12 @@
 - (void)propertyDidChange:(NSString *)propertyName;
 {
     if ([propertyName isEqualToString:(NSString *)kMIDIPropertyOffline]) {
-        // TODO When this device goes online or offline, its endpoints do too.
-        // So we need this device to know what its entities and endpoints are so it can do what it needs to do with them.
-        // (although going online won't help...)
-        // Or we can just reload all endpoints and suck it up.
-        
+        // This device just went offline or online. We need to refresh its endpoints.
+        // (If it went online, we didn't previously have its endpoints in our list.)
+
+        // NOTE This is really an overly blunt approach, but what the hell.
+        [SMSourceEndpoint refreshAllObjects];
+        [SMDestinationEndpoint refreshAllObjects];        
     }
 
     [super propertyDidChange:propertyName];

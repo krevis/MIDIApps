@@ -12,6 +12,7 @@
 #import "SMClient.h"
 #import "SMDevice.h"
 #import "SMExternalDevice.h"
+#import "SMMIDIObject-Private.h"
 
 
 @interface SMEndpoint (Private)
@@ -23,9 +24,6 @@ typedef struct EndpointUniqueNamesFlags {
 
 + (EndpointUniqueNamesFlags *)endpointUniqueNamesFlagsPtr;
 
-// TODO this is old
-//+ (void)reloadEndpoints;
-
 + (BOOL)doEndpointsHaveUniqueNames;
 + (BOOL)haveEndpointsAlwaysHadUniqueNames;
 + (void)checkForUniqueNames;
@@ -36,18 +34,10 @@ typedef struct EndpointUniqueNamesFlags {
 - (SInt32)ownerPID;
 - (void)setOwnerPID:(SInt32)value;
 
-- (void)postRemovedNotification;
-- (void)postReplacedNotificationWithReplacement:(SMEndpoint *)replacement;
-
 @end
 
 
 @implementation SMEndpoint
-
-NSString *SMEndpointsAppearedNotification = @"SMEndpointsAppearedNotification";
-NSString *SMEndpointDisappearedNotification = @"SMEndpointDisappearedNotification";
-NSString *SMEndpointWasReplacedNotification = @"SMEndpointWasReplacedNotification";
-NSString *SMEndpointReplacement = @"SMEndpointReplacement";
 
 NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 
@@ -410,6 +400,31 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 @implementation SMEndpoint (Private)
 
 //
+// Overrides of SMMIDIObject methods
+//
+
++ (void)initialMIDISetup
+{
+    [super initialMIDISetup];
+    [self checkForUniqueNames];
+}
+
++ (void)refreshAllObjects
+{
+    [super refreshAllObjects];
+    [self checkForUniqueNames];
+}
+
++ (SMMIDIObject *)immediatelyAddObjectWithObjectRef:(MIDIObjectRef)anObjectRef;
+{
+    SMMIDIObject *object;
+
+    object = [super immediatelyAddObjectWithObjectRef:anObjectRef];
+    [self checkForUniqueNames];
+    return object;
+}
+
+//
 // Methods to be implemented in subclasses
 //
 
@@ -422,89 +437,6 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 //
 // New methods
 //
-
-// TODO revisit of course
-/*
-+ (void)reloadEndpoints;
-{
-    NSMapTable **mapTablePtr;
-    NSMapTable *oldMapTable, *newMapTable;
-    ItemCount endpointIndex, endpointCount;
-    NSMutableArray *removedEndpoints, *replacedEndpoints, *replacementEndpoints, *addedEndpoints;
-
-    endpointCount = [self endpointCount];
-
-    mapTablePtr = [self endpointMapTablePtr];
-    OBASSERT(mapTablePtr != NULL);
-    oldMapTable = *mapTablePtr;
-    newMapTable = NSCreateMapTable(NSNonOwnedPointerMapKeyCallBacks, NSObjectMapValueCallBacks, endpointCount);    
-
-    // We start out assuming all endpoints have been removed, none have been replaced.
-    // As we find out otherwise, we remove some endpoints from removedEndpoints,
-    // and add some to replacedEndpoints.
-    removedEndpoints = [NSMutableArray arrayWithArray:[self allEndpoints]];
-    replacedEndpoints = [NSMutableArray array];
-    replacementEndpoints = [NSMutableArray array];
-    addedEndpoints = [NSMutableArray array];
-
-    // Iterate through the new endpointRefs.
-    for (endpointIndex = 0; endpointIndex < endpointCount; endpointIndex++) {
-        MIDIEndpointRef anEndpointRef;
-        SMEndpoint *endpoint;
-
-        anEndpointRef = [self endpointAtIndex:endpointIndex];
-        if (anEndpointRef == NULL)
-            continue;
-        
-        if ((endpoint = [self endpointForEndpointRef:anEndpointRef])) {
-            // This endpointRef existed previously.
-            [removedEndpoints removeObjectIdenticalTo:endpoint];
-            // It's possible that its uniqueID changed, though.
-            [endpoint updateUniqueID];
-            // And its ordinal may also have changed...
-            [endpoint setOrdinal:endpointIndex];
-        } else {
-            SMEndpoint *replacedEndpoint;
-
-            // This endpointRef did not previously exist, so create a new endpoint for it.
-            endpoint = [[[self alloc] initWithEndpointRef:anEndpointRef] autorelease];
-            [endpoint setOrdinal:endpointIndex];
-            
-            // If the new endpoint has the same uniqueID as an old endpoint, remember it.
-            if ((replacedEndpoint = [self endpointMatchingUniqueID:[endpoint uniqueID]])) {
-                [replacedEndpoints addObject:replacedEndpoint];
-                [replacementEndpoints addObject:endpoint];
-                [removedEndpoints removeObjectIdenticalTo:replacedEndpoint];
-            } else {
-                [addedEndpoints addObject:endpoint];
-            }
-        }
-
-        NSMapInsert(newMapTable, anEndpointRef, endpoint);
-    }
-    
-    if (oldMapTable)
-        NSFreeMapTable(oldMapTable);
-    *mapTablePtr = newMapTable;
-
-    // Make the new group of endpoints invalidate their cached properties (names and such).
-    [[self allEndpoints] makeObjectsPerformSelector:@selector(invalidateCachedProperties)];
-
-    // And check if the names are unique or not
-    [self checkForUniqueNames];
-
-    // Now everything is in place for the new regime. Have the endpoints post notifications of their change in status.
-    [removedEndpoints makeObjectsPerformSelector:@selector(postRemovedNotification)];
-
-    endpointIndex = [replacedEndpoints count];
-    while (endpointIndex--) {
-        [[replacedEndpoints objectAtIndex:endpointIndex] postReplacedNotificationWithReplacement:[replacementEndpoints objectAtIndex:endpointIndex]];
-    }
-
-    if ([addedEndpoints count] > 0)
-        [[NSNotificationCenter defaultCenter] postNotificationName:SMEndpointsAppearedNotification object:addedEndpoints];
-}
-*/
 
 + (BOOL)doEndpointsHaveUniqueNames;
 {
@@ -650,22 +582,6 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
     }
 }
 
-// TODO revisit
-- (void)postRemovedNotification;
-{
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMEndpointDisappearedNotification object:self];
-}
-
-// TODO revisit
-- (void)postReplacedNotificationWithReplacement:(SMEndpoint *)replacement;
-{
-    NSDictionary *userInfo;
-    
-    OBASSERT(replacement != NULL);
-    userInfo = [NSDictionary dictionaryWithObjectsAndKeys:replacement, SMEndpointReplacement, nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMEndpointWasReplacedNotification object:self userInfo:userInfo];
-}
-
 @end
 
 
@@ -758,10 +674,7 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
     // CoreMIDI will send us a notification that something was added, and then we will create an SMSourceEndpoint.
     // However, those notifications are posted in the run loop's main mode, and we don't want to wait for it to be run.
     // So we need to manually add the new endpoint, now.
-    [self immediatelyAddObjectWithObjectRef:newEndpointRef];
-    
-    // And try to get the new endpoint
-    endpoint = [SMSourceEndpoint sourceEndpointWithEndpointRef:newEndpointRef];
+    endpoint = (SMSourceEndpoint *)[self immediatelyAddObjectWithObjectRef:newEndpointRef];
     if (!endpoint) {
         NSLog(@"%@ couldn't find its virtual endpoint after it was created", NSStringFromClass(self));
         return nil;
@@ -871,9 +784,7 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
     // CoreMIDI will send us a notification that something was added, and then we will create an SMSourceEndpoint.
     // However, those notifications are posted in the run loop's main mode, and we don't want to wait for it to be run.
     // So we need to manually add the new endpoint, now.
-    [self immediatelyAddObjectWithObjectRef:newEndpointRef];
-
-    endpoint = [SMDestinationEndpoint destinationEndpointWithEndpointRef:newEndpointRef];
+    endpoint = (SMDestinationEndpoint *)[self immediatelyAddObjectWithObjectRef:newEndpointRef];
     if (!endpoint) {
         NSLog(@"%@ couldn't find its virtual endpoint after it was created", NSStringFromClass(self));
         return nil;

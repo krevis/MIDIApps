@@ -204,6 +204,7 @@
 				F547E05403184DAA01000164,
 				F5F915F1032A465A01000164,
 				F57A4EEC0354B9FC01000164,
+				F57A51AF0354D62F01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1011,6 +1012,20 @@
 			fileRef = F51DC1190328B28901000164;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		F57A51AE0354D62F01000164 = {
+			isa = PBXFileReference;
+			path = "SMMIDIObject-Private.h";
+			refType = 4;
+		};
+		F57A51AF0354D62F01000164 = {
+			fileRef = F57A51AE0354D62F01000164;
+			isa = PBXBuildFile;
+			settings = {
 			};
 		};
 		F58C3E8901B5F8F001000164 = {
@@ -1171,6 +1186,7 @@
 			children = (
 				F51DC1190328B28901000164,
 				F51DC11A0328B28901000164,
+				F57A51AE0354D62F01000164,
 				F5F915EF032A465A01000164,
 				F5F915F0032A465A01000164,
 				F53BB49D015D4AC001000164,
@@ -1196,6 +1212,9 @@
 			fileRef = F5F915EF032A465A01000164;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F5F915F2032A465A01000164 = {

@@ -6,15 +6,6 @@
 #import "SMClient.h"
 
 
-/* TODO all this should be obsolete
-@interface SMExternalDevice (Private)
-
-+ (void)reloadExternalDevices;
-
-@end
-*/
-
-
 @implementation SMExternalDevice
 
 //
@@ -92,72 +83,3 @@
 #endif
 
 @end
-
-
-/* TODO all this should be obsolete
-@implementation SMExternalDevice (Private)
-
-+ (void)reloadExternalDevices
-{
-    NSMapTable *oldMapTable, *newMapTable;
-    ItemCount extDeviceCount, extDeviceIndex;
-    NSMutableArray *removedDevices, *replacedDevices, *replacementDevices, *addedDevices;
-
-    extDeviceCount = MIDIGetNumberOfExternalDevices();
-
-    oldMapTable = staticExternalDevicesMapTable;
-    newMapTable = NSCreateMapTable(NSNonOwnedPointerMapKeyCallBacks, NSObjectMapValueCallBacks, extDeviceCount);
-
-    // We start out assuming all external devices have been removed, and none have been replaced.
-    // As we find out otherwise, we remove some devices from removedDevices, and add some
-    // to replacedDevices.
-    removedDevices = [NSMutableArray arrayWithArray:[self externalDevices]];
-    replacedDevices = [NSMutableArray array];
-    replacementDevices = [NSMutableArray array];
-    addedDevices = [NSMutableArray array];
-
-    // Iterate through the new list of external devices.
-    for (extDeviceIndex = 0; extDeviceIndex < extDeviceCount; extDeviceIndex++) {
-        MIDIDeviceRef aDeviceRef;
-        SMExternalDevice *extDevice;
-
-        aDeviceRef = MIDIGetExternalDevice(extDeviceIndex);
-        if (aDeviceRef == NULL)
-            continue;
-
-        if ((extDevice = [self externalDeviceWithDeviceRef:aDeviceRef])) {
-            // This device existed previously.
-            [removedDevices removeObjectIdenticalTo:extDevice];
-            // It's possible that its uniqueID changed, though.
-            [extDevice updateUniqueID];
-            // And its ordinal may also have changed...
-            [extDevice setOrdinal:extDeviceIndex];
-        } else {
-            SMExternalDevice *replacedDevice;
-
-            // This MIDIDeviceRef did not previously exist, so create a new ext. device for it.
-            extDevice = [[[self alloc] initWithDeviceRef:aDeviceRef] autorelease];
-            [extDevice setOrdinal:extDeviceIndex];
-
-            // If the new ext. device has the same uniqueID as an old ext. device, remember it.
-            if ((replacedDevice = [self externalDeviceWithUniqueID:[extDevice uniqueID]])) {
-                [replacedDevices addObject:replacedDevice];
-                [replacementDevices addObject:extDevice];
-                [removedDevices removeObjectIdenticalTo:replacedDevice];
-            } else {
-                [addedDevices addObject:extDevice];
-            }
-        }
-
-        NSMapInsert(newMapTable, aDeviceRef, extDevice);
-    }
-
-    if (oldMapTable)
-        NSFreeMapTable(oldMapTable);
-    staticExternalDevicesMapTable = newMapTable;
-
-    // TODO post notifications etc (see SMEndpoint version)
-}
-
-@end
-*/

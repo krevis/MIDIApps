@@ -4,13 +4,14 @@
 #import <OmniFoundation/OmniFoundation.h>
 
 #import "SMClient.h"
+#import "SMMIDIObject-Private.h"
 
 
 @interface SMMIDIObject (Private)
 
 static int midiObjectOrdinalComparator(id object1, id object2, void *context);
 
-// Methods used by SMMIDIObject itself, not subclasses
+// Methods to be used on SMMIDIObject itself, not subclasses
 
 + (void)privateDidLoad;
 + (void)midiClientCreated:(NSNotification *)notification;
@@ -21,23 +22,31 @@ static int midiObjectOrdinalComparator(id object1, id object2, void *context);
 + (void)midiObjectWasAdded:(NSNotification *)notification;
 + (void)midiObjectWasRemoved:(NSNotification *)notification;
 
-// Methods to be used in SMMIDIObject subclasses
+// Methods to be used on subclasses of SMMIDIObject, not SMMIDIObject itself
 
 + (NSMapTable *)midiObjectMapTable;
 
-+ (void)initialMIDISetup;
-
-+ (void)addObjectWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(unsigned int)anOrdinal;
++ (SMMIDIObject *)addObjectWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(unsigned int)anOrdinal;
 + (void)removeObjectWithObjectRef:(MIDIObjectRef)anObjectRef;
 
 + (void)refreshObjectOrdinals;
 
 + (void)midiSetupChanged:(NSNotification *)notification;
 
+- (void)postRemovedNotification;
+- (void)postReplacedNotificationWithReplacement:(SMMIDIObject *)replacement;
+
 @end
 
 
 @implementation SMMIDIObject
+
+NSString *SMMIDIObjectsAppearedNotification = @"SMMIDIObjectsAppearedNotification";
+NSString *SMMIDIObjectsThatAppeared = @"SMMIDIObjectsThatAppeared";
+NSString *SMMIDIObjectDisappearedNotification = @"SMMIDIObjectDisappearedNotification";
+NSString *SMMIDIObjectWasReplacedNotification = @"SMMIDIObjectWasReplacedNotification";
+NSString *SMMIDIObjectReplacement = @"SMMIDIObjectReplacement";
+
 
 // This really belongs in the Private category, but +didLoad won't get called if it's in a category. Strange but true.
 // NOTE That was fixed in OmniBase recently, but the fixed version seems to rely on private API, so I didn't make the change in my copy of OmniBase.
@@ -66,19 +75,6 @@ static int midiObjectOrdinalComparator(id object1, id object2, void *context);
 {
     OBRequestConcreteImplementation(self, _cmd);
     return NULL;        
-}
-
-//
-// For use by subclasses only
-//
-
-+ (void)immediatelyAddObjectWithObjectRef:(MIDIObjectRef)anObjectRef;
-{
-    // Use a default ordinal to start
-    [self addObjectWithObjectRef:anObjectRef ordinal:0];
-
-    // Any of the objects' ordinals may have changed, so refresh them
-    [self refreshObjectOrdinals];    
 }
 
 //
@@ -245,6 +241,17 @@ static int midiObjectOrdinalComparator(id object1, id object2, void *context);
     }
 }
 
+- (BOOL)isOffline;
+{
+    return [self integerForProperty:kMIDIPropertyOffline];
+}
+
+- (BOOL)isOnline;
+{
+    return ![self isOffline];
+}
+
+
 //
 // General property access
 //
@@ -329,7 +336,7 @@ static int midiObjectOrdinalComparator(id object1, id object2, void *context);
 
 - (void)propertyDidChange:(NSString *)propertyName;
 {
-    // TODO I am kind of worried about this... will we still get this notification if WE are the ones who changed the values?
+    // TODO I am kind of worried about this... will we still get this notification if WE are the ones who changed the values? Probably.... and that will cause us to do more work than really necessary.
     
     if ([propertyName isEqualToString:(NSString *)kMIDIPropertyName]) {
         flags.hasCachedName = NO;
@@ -415,57 +422,61 @@ static NSMapTable *classToObjectsMapTable = NULL;
     }    
 }
 
-// TODO this is expensive -- need to look through over 700 classes. Do this only once if at all possible.
 + (NSSet *)leafSubclasses;
 {
-    int numClasses, newNumClasses;
-    Class *classes;
-    int classIndex;
-    NSMutableSet *knownSubclasses;
-    NSMutableSet *leafSubclasses;
-    NSEnumerator *enumerator;
-    NSValue *aClassValue;
-
-    OBASSERT(self == [SMMIDIObject class]);
-
-    // Get the whole list of classes
-    numClasses = 0;
-    newNumClasses = objc_getClassList(NULL, 0);
-    classes = NULL;
-    while (numClasses < newNumClasses) {
-        numClasses = newNumClasses;
-        classes = realloc(classes, sizeof(Class) * numClasses);
-        newNumClasses = objc_getClassList(classes, numClasses);
-    }
-
-    // For each class:
-    //    if it is a subclass of this class, add it to knownSubclasses
-    knownSubclasses = [NSMutableSet set];
-    for (classIndex = 0; classIndex < numClasses; classIndex++) {
-        Class aClass = classes[classIndex];
-
-        if (aClass != self && OBClassIsSubclassOfClass(aClass, self))
-            [knownSubclasses addObject:[NSValue valueWithPointer:aClass]];
-    }
-
-    free(classes);
-
-    // copy knownSubclasses to leaves
-    leafSubclasses = [NSMutableSet setWithSet:knownSubclasses];
-
-    // Then for each class in knownSubclasses,
-    //    if its superclass is in knownSubclasses
-    //       remove that superclass from leaves
-    enumerator = [knownSubclasses objectEnumerator];
-    while ((aClassValue = [enumerator nextObject])) {
-        Class aClass = [aClassValue pointerValue];
-        NSValue *superclassValue = [NSValue valueWithPointer:aClass->super_class];
-        if ([knownSubclasses containsObject:superclassValue])
-            [leafSubclasses removeObject:superclassValue];
-    }
+    static NSMutableSet *sLeafSubclasses = nil;
     
-    // End: we are left with the correct set of leaves.
-    return leafSubclasses;
+    // This is expensive -- we need to look through over 700 classes--so we do it only once.
+    if (!sLeafSubclasses) {
+        int numClasses, newNumClasses;
+        Class *classes;
+        int classIndex;
+        NSMutableSet *knownSubclasses;
+        NSEnumerator *enumerator;
+        NSValue *aClassValue;
+    
+        OBASSERT(self == [SMMIDIObject class]);
+
+        // Get the whole list of classes
+        numClasses = 0;
+        newNumClasses = objc_getClassList(NULL, 0);
+        classes = NULL;
+        while (numClasses < newNumClasses) {
+            numClasses = newNumClasses;
+            classes = realloc(classes, sizeof(Class) * numClasses);
+            newNumClasses = objc_getClassList(classes, numClasses);
+        }
+    
+        // For each class:
+        //    if it is a subclass of this class, add it to knownSubclasses
+        knownSubclasses = [NSMutableSet set];
+        for (classIndex = 0; classIndex < numClasses; classIndex++) {
+            Class aClass = classes[classIndex];
+    
+            if (aClass != self && OBClassIsSubclassOfClass(aClass, self))
+                [knownSubclasses addObject:[NSValue valueWithPointer:aClass]];
+        }
+    
+        free(classes);
+    
+        // copy knownSubclasses to leaves
+        sLeafSubclasses = [[NSMutableSet alloc] initWithSet:knownSubclasses];
+    
+        // Then for each class in knownSubclasses,
+        //    if its superclass is in knownSubclasses
+        //       remove that superclass from leaves
+        enumerator = [knownSubclasses objectEnumerator];
+        while ((aClassValue = [enumerator nextObject])) {
+            Class aClass = [aClassValue pointerValue];
+            NSValue *superclassValue = [NSValue valueWithPointer:aClass->super_class];
+            if ([knownSubclasses containsObject:superclassValue])
+                [sLeafSubclasses removeObject:superclassValue];
+        }
+        
+        // End: we are left with the correct set of leaves.
+    }
+
+    return sLeafSubclasses;
 }
 
 + (Class)subclassForObjectType:(MIDIObjectType)objectType
@@ -553,7 +564,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
 }
 
 //
-// Methods to be used in SMMIDIObject subclasses only
+// Methods to be used on subclasses of SMMIDIObject, not SMMIDIObject itself
 //
 
 + (NSMapTable *)midiObjectMapTable;
@@ -563,31 +574,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
     return NSMapGet(classToObjectsMapTable, self);
 }
 
-+ (void)initialMIDISetup;
-{
-    ItemCount objectIndex, objectCount;
-    NSMapTable *newMapTable;
-
-    OBASSERT(self != [SMMIDIObject class]);
-
-    objectCount = [self midiObjectCount];
-
-    newMapTable = NSCreateMapTable(NSNonOwnedPointerMapKeyCallBacks, NSObjectMapValueCallBacks, objectCount);
-    NSMapInsertKnownAbsent(classToObjectsMapTable, self, newMapTable);
-
-    // Iterate through the new MIDIObjectRefs and add a wrapper object for each
-    for (objectIndex = 0; objectIndex < objectCount; objectIndex++) {
-        MIDIObjectRef anObjectRef;
-
-        anObjectRef = [self midiObjectAtIndex:objectIndex];
-        if (anObjectRef == NULL)
-            continue;
-
-        [self addObjectWithObjectRef:anObjectRef ordinal:objectIndex];
-    }
-}
-
-+ (void)addObjectWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(unsigned int)anOrdinal;
++ (SMMIDIObject *)addObjectWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(unsigned int)anOrdinal;
 {
     SMMIDIObject *object;
 
@@ -602,6 +589,8 @@ static NSMapTable *classToObjectsMapTable = NULL;
         NSMapInsertKnownAbsent(mapTable, anObjectRef, object);
         [object release];
     }
+
+    return object;
 }
 
 + (void)removeObjectWithObjectRef:(MIDIObjectRef)anObjectRef;
@@ -631,10 +620,149 @@ static NSMapTable *classToObjectsMapTable = NULL;
 {
     OBASSERT(self != [SMMIDIObject class]);
 
-    // TODO
-    // Figure out how this should work... similar to what we used to do.
+    [self refreshAllObjects];
+}
 
-    // Also, on all surviving objects, we need to invalidate cached properties.
+- (void)postRemovedNotification;
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectDisappearedNotification object:self];
+}
+
+- (void)postReplacedNotificationWithReplacement:(SMMIDIObject *)replacement;
+{
+    NSDictionary *userInfo;
+
+    OBASSERT(replacement != NULL);
+    userInfo = [NSDictionary dictionaryWithObject:replacement forKey:SMMIDIObjectReplacement];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectWasReplacedNotification object:self userInfo:userInfo];
+}
+
+@end
+
+
+@implementation SMMIDIObject (FrameworkPrivate)
+
+//
+// Methods which should rightly be private to this file only, but need to be called
+// by other SMMIDIObject subclasses.
+// Declared in SMMIDIObject-Private.h.
+
++ (void)initialMIDISetup;
+{
+    ItemCount objectIndex, objectCount;
+    NSMapTable *newMapTable;
+
+    OBASSERT(self != [SMMIDIObject class]);
+
+    objectCount = [self midiObjectCount];
+
+    newMapTable = NSCreateMapTable(NSNonOwnedPointerMapKeyCallBacks, NSObjectMapValueCallBacks, objectCount);
+    NSMapInsertKnownAbsent(classToObjectsMapTable, self, newMapTable);
+
+    // Iterate through the new MIDIObjectRefs and add a wrapper object for each
+    for (objectIndex = 0; objectIndex < objectCount; objectIndex++) {
+        MIDIObjectRef anObjectRef;
+
+        anObjectRef = [self midiObjectAtIndex:objectIndex];
+        if (anObjectRef == NULL)
+            continue;
+
+        [self addObjectWithObjectRef:anObjectRef ordinal:objectIndex];
+    }
+}
+
++ (SMMIDIObject *)immediatelyAddObjectWithObjectRef:(MIDIObjectRef)anObjectRef;
+{
+    SMMIDIObject *theObject;
+
+    // Use a default ordinal to start
+    theObject = [self addObjectWithObjectRef:anObjectRef ordinal:0];
+    // Any of the objects' ordinals may have changed, so refresh them
+    [self refreshObjectOrdinals];
+
+    return theObject;
+}
+
++ (void)refreshAllObjects;
+{
+    NSMapTable *oldMapTable, *newMapTable;
+    ItemCount objectIndex, objectCount;
+    NSMutableArray *removedObjects, *replacedObjects, *replacementObjects, *addedObjects;
+
+    OBASSERT(self != [SMMIDIObject class]);
+
+    objectCount = [self midiObjectCount];
+
+    oldMapTable = [self midiObjectMapTable];
+    newMapTable = NSCreateMapTable(NSNonOwnedPointerMapKeyCallBacks, NSObjectMapValueCallBacks, objectCount);
+
+    // We start out assuming all objects have been removed, none have been replaced.
+    // As we find out otherwise, we remove some endpoints from removedObjects,
+    // and add some to replacedObjects.
+    removedObjects = [NSMutableArray arrayWithArray:[self allObjects]];
+    replacedObjects = [NSMutableArray array];
+    replacementObjects = [NSMutableArray array];
+    addedObjects = [NSMutableArray array];
+
+    // Iterate through the new objectRefs.
+    for (objectIndex = 0; objectIndex < objectCount; objectIndex++) {
+        MIDIObjectRef anObjectRef;
+        SMMIDIObject *object;
+
+        anObjectRef = [self midiObjectAtIndex:objectIndex];
+        if (anObjectRef == NULL)
+            continue;
+
+        if ((object = [self objectWithObjectRef:anObjectRef])) {
+            // This objectRef existed previously.
+            [removedObjects removeObjectIdenticalTo:object];
+            // It's possible that its uniqueID changed, though.
+            [object updateUniqueID];
+            // And its ordinal may also have changed.
+            [object setOrdinal:objectIndex];
+        } else {
+            SMMIDIObject *replacedObject;
+
+            // This objectRef did not previously exist, so create a new object for it.
+            // (Don't add it to the map table, though.)
+            object = [[[self alloc] initWithObjectRef:anObjectRef ordinal:objectIndex] autorelease];
+            if (object) {
+                // If the new object has the same uniqueID as an old object, remember it.
+                if ((replacedObject = [self objectWithUniqueID:[object uniqueID]])) {
+                    [replacedObjects addObject:replacedObject];
+                    [replacementObjects addObject:object];
+                    [removedObjects removeObjectIdenticalTo:replacedObjects];
+                } else {
+                    [addedObjects addObject:object];
+                }
+            }
+        }
+
+        if (object)
+            NSMapInsert(newMapTable, anObjectRef, object);
+    }
+
+    // Now replace the old set of objects with the new one.
+    if (oldMapTable)
+        NSFreeMapTable(oldMapTable);
+    NSMapInsert(classToObjectsMapTable, self, newMapTable);
+
+    // Make the new group of objects invalidate their cached properties (names and such).
+    [[self allObjects] makeObjectsPerformSelector:@selector(invalidateCachedProperties)];
+
+    // Now everything is in place for the new regime. Have the objects post notifications of their change in status.
+    [removedObjects makeObjectsPerformSelector:@selector(postRemovedNotification)];
+
+    objectIndex = [replacedObjects count];
+    while (objectIndex--)
+        [[replacedObjects objectAtIndex:objectIndex] postReplacedNotificationWithReplacement:[replacementObjects objectAtIndex:objectIndex]];
+
+    if ([addedObjects count] > 0) {
+        NSDictionary *userInfo;
+
+        userInfo = [NSDictionary dictionaryWithObject:addedObjects forKey:SMMIDIObjectsThatAppeared];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectsAppearedNotification object:self userInfo:userInfo];
+    }
 }
 
 @end

@@ -84,16 +84,16 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
     center = [NSNotificationCenter defaultCenter];
 
     if (endpoint) {
-        [center removeObserver:self name:SMEndpointDisappearedNotification object:endpoint];
-        [center removeObserver:self name:SMEndpointWasReplacedNotification object:endpoint];
+        [center removeObserver:self name:SMMIDIObjectDisappearedNotification object:endpoint];
+        [center removeObserver:self name:SMMIDIObjectWasReplacedNotification object:endpoint];
     }
     
     [endpoint release];
     endpoint = [newEndpoint retain];
     
     if (endpoint) {
-        [center addObserver:self selector:@selector(endpointDisappeared:) name:SMEndpointDisappearedNotification object:endpoint];
-        [center addObserver:self selector:@selector(endpointWasReplaced:) name:SMEndpointWasReplacedNotification object:endpoint];
+        [center addObserver:self selector:@selector(endpointDisappeared:) name:SMMIDIObjectDisappearedNotification object:endpoint];
+        [center addObserver:self selector:@selector(endpointWasReplaced:) name:SMMIDIObjectWasReplacedNotification object:endpoint];
     }
 }
 
@@ -179,7 +179,7 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
 
     OBASSERT([notification object] == endpoint);
 
-    newEndpoint = [[notification userInfo] objectForKey:SMEndpointReplacement];
+    newEndpoint = [[notification userInfo] objectForKey:SMMIDIObjectReplacement];
     [self setEndpoint:newEndpoint];
 }
 
