@@ -199,6 +199,10 @@
 {
     NSString *fileType;
 
+    if (!filePath || [filePath length] == 0) {
+        return SSELibraryFileTypeUnknown;
+    }
+    
     fileType = [filePath pathExtension];
     if (!fileType || [fileType length] == 0) {
         fileType = NSHFSTypeOfFile(filePath);

@@ -413,13 +413,25 @@ static SSEMainWindowController *controller;
 }
 
 //
-// NSTableView notifications
+// NSTableView delegate
 //
 
 - (void)tableViewSelectionDidChange:(NSNotification *)notification;
 {
     [self synchronizePlayButton];
     [self synchronizeDeleteButton];
+}
+
+- (void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(int)row;
+{
+    if ([[tableColumn identifier] isEqualToString:@"name"]) {
+        SSELibraryEntry *entry;
+        NSColor *color;
+        
+        entry = [[library entries] objectAtIndex:row];
+        color = [entry isFilePresent] ? [NSColor blackColor] : [NSColor redColor];
+        [cell setTextColor:color];
+    }
 }
 
 @end

@@ -16,6 +16,7 @@
     NSString *manufacturerName;
     NSNumber *sizeNumber;
     NSNumber *messageCountNumber;
+    BOOL isFilePresent;
 }
 
 - (id)initWithLibrary:(SSELibrary *)library;
@@ -39,5 +40,6 @@
 - (NSString *)manufacturerName;
 - (unsigned int)size;
 - (unsigned int)messageCount;
+- (BOOL)isFilePresent;
 
 @end

@@ -27,6 +27,7 @@
         return nil;
 
     nonretainedLibrary = library;
+    isFilePresent = NO;
     
     return self;
 }
@@ -117,9 +118,12 @@
 
 - (NSString *)path;
 {
-    return [alias fullPath];
-    // TODO this will return nil if the file can't be found.
-    // users of this class will want to check that, and ask the user to find the file
+    NSString *path;
+    
+    path = [alias fullPath];
+    isFilePresent = (path != nil);
+
+    return path;
 }
 
 - (void)setPath:(NSString *)value;
@@ -132,6 +136,8 @@
         alias = [[BDAlias alloc] initWithPath:value];
 
         [nonretainedLibrary noteEntryChanged];
+
+        isFilePresent = [[NSFileManager defaultManager] fileExistsAtPath:value];
     }
 }
 
@@ -161,6 +167,7 @@
 
     if (!newName)
         newName = @"Unknown";
+        // TODO do we really want this when the file isn't present?
         // TODO localize
 
     [self setName:newName];
@@ -173,6 +180,9 @@
     NSArray *messages;
 
     path = [self path];
+    if (!path)
+        return nil;
+
     fileType = [nonretainedLibrary typeOfFileAtPath:path];
 
     if (fileType == SSELibraryFileTypeStandardMIDI) {
@@ -208,6 +218,11 @@
 - (unsigned int)messageCount;
 {
     return [messageCountNumber unsignedIntValue];
+}
+
+- (BOOL)isFilePresent;
+{
+    return isFilePresent;
 }
 
 @end
