@@ -224,6 +224,12 @@ DEFINE_NSSTRING(SSELibraryEntryNameDidChangeNotification);
     }
 #endif
 
+    // Path separator idiocy:
+    // The Finder does not allow the ':' character in file names -- it beeps and changes it to '-'. So we do the same.
+    // We always need to change '/' to a different character, since (as far as I know) there is no way of escaping the '/' character from NSFileManager calls. It gets changed to ":" in the Finder for all file systems, so let's just do that. (Note that the character will still display as '/'!)
+    modifiedNewFileName = [modifiedNewFileName stringByReplacingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@":"] withString:@"-"];
+    modifiedNewFileName = [modifiedNewFileName stringByReplacingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/"] withString:@":"];
+
     newPath = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:modifiedNewFileName];
 
     fileManager = [NSFileManager defaultManager];
@@ -243,6 +249,11 @@ DEFINE_NSSTRING(SSELibraryEntryNameDidChangeNotification);
         // It is no big deal if this fails
     }
 
+    if (success) {
+        [self setPath:newPath];	// Update our alias to the file
+        [self setNameFromFile];	// Make sure we are consistent with the Finder
+    }
+    
     return success;
 }
 

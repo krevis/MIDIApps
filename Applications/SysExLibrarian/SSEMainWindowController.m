@@ -581,9 +581,7 @@ static SSEMainWindowController *controller;
         return;
     
     entry = [sortedLibraryEntries objectAtIndex:row];
-    if ([entry renameFileTo:newName]) {
-        [entry setName:newName];
-    } else {
+    if (![entry renameFileTo:newName]) {
         NSBeginAlertSheet(@"Error", nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"The file for this item could not be renamed.");
     }
     
