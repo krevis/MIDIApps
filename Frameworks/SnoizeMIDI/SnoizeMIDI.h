@@ -20,7 +20,6 @@
 #import <SnoizeMIDI/SMPeriodicTimer.h>
 #import <SnoizeMIDI/SMPortInputStream.h>
 #import <SnoizeMIDI/SMPortOrVirtualStream.h>
-//#import <SnoizeMIDI/SMPortOrVirtualInputStream.h>	// TODO remove
 #import <SnoizeMIDI/SMPortOrVirtualOutputStream.h>
 #import <SnoizeMIDI/SMPortOutputStream.h>
 #import <SnoizeMIDI/SMSysExSendRequest.h>

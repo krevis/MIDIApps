@@ -257,8 +257,8 @@
 				F53D4A90015A950D01000164,
 				F53D4A93015A953401000164,
 				F53D4A94015A953401000164,
-				F56B1FC401F0F66D01000164,
 				F56B1FC601F1006301000164,
+				F56333CD0253E6A401000164,
 			);
 			isa = PBXFrameworksBuildPhase;
 			name = "Frameworks & Libraries";
@@ -599,8 +599,6 @@
 		};
 		F556F67F01E1C21A01000164 = {
 			children = (
-				F556F68001E1C21A01000164,
-				F556F68101E1C21A01000164,
 				F58C3E9401B606CB01000164,
 				F56435D501BDE8B701000164,
 			);
@@ -775,16 +773,6 @@
 			settings = {
 			};
 		};
-		F561534A01C187BC01000164 = {
-			isa = PBXFileReference;
-			path = SMPortOrVirtualInputStream.h;
-			refType = 4;
-		};
-		F561534B01C187BC01000164 = {
-			isa = PBXFileReference;
-			path = SMPortOrVirtualInputStream.m;
-			refType = 4;
-		};
 		F561535E01C23FE001000164 = {
 			isa = PBXFileReference;
 			path = SMVoiceMessage.h;
@@ -915,6 +903,12 @@
 			name = Processors;
 			refType = 4;
 		};
+		F56333CD0253E6A401000164 = {
+			fileRef = F56B1FC301F0F66D01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		F56435D501BDE8B701000164 = {
 			children = (
 				F56435D601BDE8B701000164,
@@ -923,6 +917,8 @@
 				F56435D901BDE8B701000164,
 				F557E37201BEC38401000164,
 				F557E37301BEC38401000164,
+				F556F68001E1C21A01000164,
+				F556F68101E1C21A01000164,
 				F565B6F201E15D0B01000164,
 				F565B6F301E15D0B01000164,
 				F560977001E564B401000164,
@@ -1020,12 +1016,6 @@
 			name = AudioToolbox.framework;
 			path = /System/Library/Frameworks/AudioToolbox.framework;
 			refType = 0;
-		};
-		F56B1FC401F0F66D01000164 = {
-			fileRef = F56B1FC301F0F66D01000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		F56B1FC501F1006301000164 = {
 			isa = PBXFrameworkReference;
@@ -1203,8 +1193,6 @@
 				F58C3E8A01B5F8F001000164,
 				F58C3E9001B605C301000164,
 				F58C3E9101B605C301000164,
-				F561534A01C187BC01000164,
-				F561534B01C187BC01000164,
 			);
 			isa = PBXGroup;
 			name = "Input Streams";
