@@ -16,7 +16,7 @@ extern "C" void *NewSpyingMIDIDriver(CFAllocatorRef allocator, CFUUIDRef typeID)
             SpyingMIDIDriver *result = new SpyingMIDIDriver;
             return result->Self();
         } catch (...) {
-            #if 1 || DEBUG
+            #if DEBUG
                 fprintf(stderr, "MIDI Monitor driver: an exception was raised, so the driver is not being instantiated\n");
             #endif
             return NULL;

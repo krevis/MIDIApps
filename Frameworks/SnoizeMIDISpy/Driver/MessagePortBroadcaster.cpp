@@ -19,7 +19,7 @@ MessagePortBroadcaster::MessagePortBroadcaster(CFStringRef broadcasterName, Mess
 {
     CFMessagePortContext messagePortContext = { 0, (void *)this, NULL, NULL, NULL };
 
-    #if 1 || DEBUG
+    #if DEBUG
         fprintf(stderr, "MessagePortBroadcaster: creating\n");
     #endif
         
@@ -32,12 +32,12 @@ MessagePortBroadcaster::MessagePortBroadcaster(CFStringRef broadcasterName, Mess
         goto abort;
 
     // Create a local port for remote listeners to talk to us with
-    #if 1 || DEBUG
+    #if DEBUG
         fprintf(stderr, "MessagePortBroadcaster: creating local port\n");
     #endif
     mLocalPort = CFMessagePortCreateLocal(kCFAllocatorDefault, mBroadcasterName, LocalMessagePortCallBack, &messagePortContext, FALSE);
     if (!mLocalPort) {
-        #if 1 || DEBUG
+        #if DEBUG
             fprintf(stderr, "MessagePortBroadcaster: couldn't create local port!\n");
         #endif
         goto abort;
@@ -46,7 +46,7 @@ MessagePortBroadcaster::MessagePortBroadcaster(CFStringRef broadcasterName, Mess
     // And add it to the current run loop
     mRunLoopSource = CFMessagePortCreateRunLoopSource(kCFAllocatorDefault, mLocalPort, 0);
     if (!mRunLoopSource) {
-        #if 1 || DEBUG
+        #if DEBUG
             fprintf(stderr, "MessagePortBroadcaster: couldn't create run loop source for local port!\n");
         #endif        
         goto abort;
@@ -58,7 +58,7 @@ MessagePortBroadcaster::MessagePortBroadcaster(CFStringRef broadcasterName, Mess
     mIdentifiersByListener = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, NULL);
     mListenerArraysByChannel = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
     if (!mListenersByIdentifier || !mIdentifiersByListener || !mListenerArraysByChannel) {
-        #if 1 || DEBUG
+        #if DEBUG
             fprintf(stderr, "MessagePortBroadcaster: couldn't create a listener dictionary!\n");
         #endif
         goto abort;        
@@ -96,7 +96,7 @@ abort:
 
 MessagePortBroadcaster::~MessagePortBroadcaster()
 {
-    #if 1 || DEBUG
+    #if DEBUG
         fprintf(stderr, "MessagePortBroadcaster: destroying\n");
     #endif
 
