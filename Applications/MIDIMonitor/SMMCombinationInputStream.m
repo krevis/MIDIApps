@@ -29,6 +29,7 @@
 - (id)init;
 {
     NSNotificationCenter *center;
+    MIDISpyClientRef spyClient; 
     
     if (!(self = [super init]))
         return nil;
@@ -44,8 +45,8 @@
     [virtualInputStream setMessageDestination:self];
     [self _observeSysExNotificationsWithCenter:center object:virtualInputStream];
 
-    if ([[NSApp delegate] shouldUseMIDISpy]) {
-        spyingInputStream = [[SMMSpyingInputStream alloc] init];
+    if ((spyClient = [[NSApp delegate] midiSpyClient])) {
+        spyingInputStream = [[SMMSpyingInputStream alloc] initWithMIDISpyClient:spyClient];
         if (spyingInputStream) {
             [spyingInputStream setMessageDestination:self];
             [self _observeSysExNotificationsWithCenter:center object:spyingInputStream];        
