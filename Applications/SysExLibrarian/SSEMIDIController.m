@@ -10,8 +10,8 @@
 
 - (void)_midiSetupDidChange:(NSNotification *)notification;
 
-- (void)_inputStreamEndpointWasRemoved:(NSNotification *)notification;
-- (void)_outputStreamEndpointWasRemoved:(NSNotification *)notification;
+- (void)_inputStreamEndpointDisappeared:(NSNotification *)notification;
+- (void)_outputStreamEndpointDisappeared:(NSNotification *)notification;
 
 - (void)_selectFirstAvailableSource;
 - (void)_selectFirstAvailableDestination;
@@ -39,7 +39,7 @@
     center = [NSNotificationCenter defaultCenter];
 
     inputStream = [[SMPortOrVirtualInputStream alloc] init];
-    [center addObserver:self selector:@selector(_inputStreamEndpointWasRemoved:) name:SMPortOrVirtualStreamEndpointWasRemovedNotification object:inputStream];
+    [center addObserver:self selector:@selector(_inputStreamEndpointDisappeared:) name:SMPortOrVirtualStreamEndpointDisappearedNotification object:inputStream];
     [center addObserver:self selector:@selector(_readingSysEx:) name:SMInputStreamReadingSysExNotification object:inputStream];
     [center addObserver:self selector:@selector(_readingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:inputStream];
     [inputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"SysExLibrarian", [self bundle], "title of popup menu item for virtual destination")];
@@ -47,7 +47,7 @@
     [inputStream setMessageDestination:self];
 
     outputStream = [[SMPortOrVirtualOutputStream alloc] init];
-    [center addObserver:self selector:@selector(_outputStreamEndpointWasRemoved:) name:SMPortOrVirtualStreamEndpointWasRemovedNotification object:outputStream];
+    [center addObserver:self selector:@selector(_outputStreamEndpointDisappeared:) name:SMPortOrVirtualStreamEndpointDisappearedNotification object:outputStream];
     [center addObserver:self selector:@selector(_willStartSendingSysEx:) name:SMPortOutputStreamWillStartSysExSendNotification object:outputStream];
     [center addObserver:self selector:@selector(_doneSendingSysEx:) name:SMPortOutputStreamFinishedSysExSendNotification object:outputStream];
     [outputStream setIgnoresTimeStamps:YES];
@@ -327,13 +327,13 @@
     }
 }
 
-- (void)_inputStreamEndpointWasRemoved:(NSNotification *)notification;
+- (void)_inputStreamEndpointDisappeared:(NSNotification *)notification;
 {
     // TODO should print a message?
     [self _selectFirstAvailableSource];
 }
 
-- (void)_outputStreamEndpointWasRemoved:(NSNotification *)notification;
+- (void)_outputStreamEndpointDisappeared:(NSNotification *)notification;
 {
     // TODO should print a message?
     [self _selectFirstAvailableDestination];
