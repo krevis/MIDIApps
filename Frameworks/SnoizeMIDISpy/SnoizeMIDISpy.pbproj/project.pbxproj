@@ -407,7 +407,6 @@
 				F540CCB9023F41B101000164,
 				F540CCB8023F41B101000164,
 				F540CCB6023F41B101000164,
-				F540CCB7023F41B101000164,
 				F53956EF0256D06A01000164,
 			);
 			isa = PBXHeadersBuildPhase;
@@ -426,7 +425,6 @@
 				F540CCBE023F41B101000164,
 				F540CCBC023F41B101000164,
 				F540CCBA023F41B101000164,
-				F540CCBB023F41B101000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -498,12 +496,6 @@
 			settings = {
 			};
 		};
-		F540CCB7023F41B101000164 = {
-			fileRef = F540CCB3023F41B101000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		F540CCB8023F41B101000164 = {
 			fileRef = F540CCAF023F41B101000164;
 			isa = PBXBuildFile;
@@ -518,12 +510,6 @@
 		};
 		F540CCBA023F41B101000164 = {
 			fileRef = F540CCB2023F41B101000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F540CCBB023F41B101000164 = {
-			fileRef = F540CCB4023F41B101000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
