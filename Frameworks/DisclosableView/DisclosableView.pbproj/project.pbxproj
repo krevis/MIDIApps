@@ -112,7 +112,7 @@
 				FRAMEWORK_SEARCH_PATHS = "";
 				FRAMEWORK_VERSION = A;
 				HEADER_SEARCH_PATHS = "";
-				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				INSTALL_PATH = /Library/Frameworks;
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-image_base 0x3B000000";
@@ -125,7 +125,7 @@
 			);
 			isa = PBXFrameworkTarget;
 			name = DisclosableView;
-			productInstallPath = "$(HOME)/Library/Frameworks";
+			productInstallPath = /Library/Frameworks;
 			productName = DisclosableView;
 			productReference = 034768E0FF38A50411DB9C8B;
 			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
