@@ -22,7 +22,7 @@
 + (ItemCount)_endpointCountForEntity:(MIDIEntityRef)entity;
 + (MIDIEndpointRef)_endpointAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
 
-+ (void)_reloadMapTable;
++ (void)_reloadEndpoints;
 + (NSArray *)_allEndpoints;
 + (NSArray *)_allEndpointsSortedByOrdinal;
 + (SMEndpoint *)_endpointMatchingUniqueID:(SInt32)uniqueID;
@@ -31,6 +31,8 @@
 + (BOOL)_doEndpointsHaveUniqueNames;
 
 - (void)_updateUniqueID;
+- (void)_invalidateCachedProperties;
+
 - (MIDIDeviceRef)_findDevice;
 - (MIDIDeviceRef)_device;
 - (NSString *)_deviceName;
@@ -103,11 +105,26 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     deviceRef = NULL;
     flags.hasLookedForDevice = NO;
 
+    // Nothing has been cached yet 
+    flags.hasCachedName = NO;
+    flags.hasCachedManufacturerName = NO;
+    flags.hasCachedModelName = NO;
+    flags.hasCachedDeviceName = NO;
+
     return self;
 }
 
 - (void)dealloc;
 {
+    [cachedName release];
+    cachedName = nil;
+    [cachedManufacturerName release];
+    cachedManufacturerName = nil;
+    [cachedModelName release];
+    cachedModelName = nil;
+    [cachedDeviceName release];
+    cachedDeviceName = nil;
+
     [super dealloc];
 }
 
@@ -167,44 +184,67 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 
 - (NSString *)name;
 {
-    // TODO we should cache this (and the manufacturer and model name)
-    return [self _stringForProperty:kMIDIPropertyName];
+    if (!flags.hasCachedName) {
+        [cachedName release];
+        cachedName = [[self _stringForProperty:kMIDIPropertyName] retain];
+        flags.hasCachedName = YES;
+    }
+    
+    return cachedName;
 }
 
 - (void)setName:(NSString *)value;
 {
-    if (![value isEqualToString:[self name]])
+    if (![value isEqualToString:[self name]]) {
         [self _setString:value forProperty:kMIDIPropertyName];
+        flags.hasCachedName = NO;
+    }
 }
 
 - (NSString *)manufacturerName;
 {
-    // NOTE This fails sometimes on 10.1.3 and earlier (see bug #2865704).
-    // So we fall back to asking for the device's manufacturer name if necessary.
-    NSString *manufacturerName;
+    if (!flags.hasCachedManufacturerName) {
+        [cachedManufacturerName release];
 
-    if ((manufacturerName = [self _stringForProperty:kMIDIPropertyManufacturer])) {
-        return manufacturerName;
-    } else {
-        return [self _deviceStringForProperty:kMIDIPropertyManufacturer];
+        cachedManufacturerName = [self _stringForProperty:kMIDIPropertyManufacturer];
+        // NOTE This fails sometimes on 10.1.3 and earlier (see bug #2865704).
+        // So we fall back to asking for the device's manufacturer name if necessary.        
+        if (!cachedManufacturerName)
+            cachedManufacturerName = [self _deviceStringForProperty:kMIDIPropertyManufacturer];
+
+        [cachedManufacturerName retain];
+        flags.hasCachedManufacturerName = YES;        
     }
+
+    return cachedManufacturerName;
 }
 
 - (void)setManufacturerName:(NSString *)value;
 {
-    if (![value isEqualToString:[self manufacturerName]])
+    if (![value isEqualToString:[self manufacturerName]]) {
         [self _setString:value forProperty:kMIDIPropertyManufacturer];
+        flags.hasCachedManufacturerName = NO;
+    }
 }
 
 - (NSString *)modelName;
 {
-    return [self _stringForProperty:kMIDIPropertyModel];
+    if (!flags.hasCachedModelName) {
+        [cachedModelName release];
+        cachedModelName = [[self _stringForProperty:kMIDIPropertyModel] retain];
+
+        flags.hasCachedModelName = YES;
+    }
+
+    return cachedModelName;
 }
 
 - (void)setModelName:(NSString *)value;
 {
-    if (![value isEqualToString:[self modelName]])
+    if (![value isEqualToString:[self modelName]]) {
         [self _setString:value forProperty:kMIDIPropertyModel];
+        flags.hasCachedModelName = NO;
+    }
 }
 
 - (NSString *)shortName;
@@ -287,7 +327,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 
 + (void)_midiSetupChanged:(NSNotification *)notification
 {
-    [self _reloadMapTable];
+    [self _reloadEndpoints];
 }
 
 + (NSMapTable **)_endpointMapTablePtr;
@@ -320,7 +360,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     return NULL;
 }
 
-+ (void)_reloadMapTable;
++ (void)_reloadEndpoints;
 {
     NSMapTable **mapTablePtr;
     NSMapTable *oldMapTable, *newMapTable;
@@ -381,6 +421,9 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     if (oldMapTable)
         NSFreeMapTable(oldMapTable);
     *mapTablePtr = newMapTable;
+
+    // Make the new group of endpoints invalidate their cached properties (names and such).
+    [[self _allEndpoints] makeObjectsPerformSelector:@selector(_invalidateCachedProperties)];
 
     // Now everything is in place for the new regime. Have the endpoints post notifications of their change in status.
     [removedEndpoints makeObjectsPerformSelector:@selector(_postRemovedNotification)];
@@ -460,6 +503,15 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
         uniqueID = 0;
 }
 
+- (void)_invalidateCachedProperties;
+{
+    flags.hasLookedForDevice = NO;
+    flags.hasCachedName = NO;
+    flags.hasCachedManufacturerName = NO;
+    flags.hasCachedModelName = NO;
+    flags.hasCachedDeviceName = NO;
+}
+
 - (MIDIDeviceRef)_findDevice;
 {
     // Walk the device/entity/endpoint tree, looking for the device which has our endpointRef.
@@ -510,7 +562,14 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 
 - (NSString *)_deviceName;
 {
-    return [self _deviceStringForProperty:kMIDIPropertyName];
+    if (!flags.hasCachedDeviceName) {
+        [cachedDeviceName release];
+        cachedDeviceName = [[self _deviceStringForProperty:kMIDIPropertyName] retain];
+
+        flags.hasCachedDeviceName = YES;        
+    }
+    
+    return cachedDeviceName;
 }
 
 - (NSString *)_deviceStringForProperty:(CFStringRef)property;

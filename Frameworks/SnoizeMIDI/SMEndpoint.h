@@ -15,8 +15,17 @@
     MIDIDeviceRef deviceRef;
     struct {
         unsigned int hasLookedForDevice:1;
+        unsigned int hasCachedName:1;
+        unsigned int hasCachedManufacturerName:1;
+        unsigned int hasCachedModelName:1;
+        unsigned int hasCachedDeviceName:1;
     } flags;
     unsigned int ordinal;
+
+    NSString *cachedName;
+    NSString *cachedManufacturerName;
+    NSString *cachedModelName;
+    NSString *cachedDeviceName;
 }
 
 + (SInt32)generateNewUniqueID;
