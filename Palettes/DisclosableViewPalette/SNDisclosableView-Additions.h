@@ -11,5 +11,4 @@
 
 @interface SNDisclosableView (IBPaletteAdditions)
 
-
 @end

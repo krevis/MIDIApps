@@ -9,6 +9,7 @@
 #import "SNDisclosableView-Additions.h"
 #import <InterfaceBuilder/IBViewAdditions.h>
 #import <InterfaceBuilder/IBObjectAdditions.h>
+#import <InterfaceBuilder/IBApplicationAdditions.h>
 
 
 @interface NSView (UndocumentedIBAdditions)
@@ -19,6 +20,53 @@
 
 
 @implementation SNDisclosableView (IBPaletteAdditions)
+
+- (void)drawRect:(NSRect)rect;
+{
+    // Draw differently since we are running in IB.    
+
+    if (![NSApp isTestingInterface] && [[self subviews] count] == 0) {
+        // Try to duplicate the way that NSCustomView draws in IB, when it has no subviews.
+        NSRect bounds;
+        NSFont *font;
+        float lineHeight;
+        NSRect centeredCellFrame;
+        
+        // Draw the groove around the outside:
+        bounds = [self bounds];
+        NSDrawGroove(bounds, rect);
+
+        // Clear the inside (leaving room for the groove):
+        bounds = NSInsetRect(bounds, 2.0, 2.0);
+        [[NSColor clearColor] set];
+        NSRectFill(bounds);
+        // and draw over it with translucent gray.
+        [[NSColor colorWithDeviceWhite:0.5530 alpha:0.5] set];
+            // NOTE This seems to give the same result that NSCustomView does, but of course it's not coded like this.
+            // IB apparently uses [NSColor colorUsingColorSpaceName:[NSColor IBDefaultSelectionColor]]
+            // (and may then set alpha on it... not sure)
+        NSRectFillUsingOperation(bounds, NSCompositeSourceOver);
+
+        // Now draw the name of the class.
+        // The text is one line, centered vertically in our bounds,
+        font = [NSFont boldSystemFontOfSize:[NSFont systemFontSize]];
+        lineHeight = [font defaultLineHeightForFont];
+        centeredCellFrame = NSMakeRect(bounds.origin.x, bounds.origin.y + floor((bounds.size.height - lineHeight) / 2.0), bounds.size.width, lineHeight);
+
+        if (NSIntersectsRect(rect, centeredCellFrame)) {
+            NSTextFieldCell *cell;
+
+            cell = [[NSTextFieldCell alloc] initTextCell:NSStringFromClass([self class])];
+            [cell setFont:font];
+            [cell setAlignment:NSCenterTextAlignment];
+            [cell setTextColor:[NSColor whiteColor]];                
+            [cell drawWithFrame:centeredCellFrame inView:self];
+            [cell release];
+        }
+    } else {
+        [super drawRect:rect];
+    }
+}
 
 - (BOOL)ibIsContainer
 {
@@ -52,61 +100,15 @@
     return YES;
 }
 
-/*
 - (BOOL)editorHandlesCaches
 {
     return YES;
     // The default NSView implementation returns NO, which seems wrong. If we leave it as NO,
     // when editing in IB, our subviews will not get erased when they are moved around.
 }
-*/
 
-/*
- - (void)ibPreCache;
- - (void)ibPostCache;
- - (void)ibPreCacheSubviews;
- - (void)ibPostCacheSubviews;
-*/ 
-
-/*
-- (NSString*)ibWidgetType;
-{
-    NSString *value = [super ibWidgetType];
-    NSLog(@"ibWidgetType: super: %@", value);
-    {
-        id object = [[[NSClassFromString(@"NSCustomView") alloc] init] autorelease];
-        NSString *value2 = [object ibWidgetType];
-        NSLog(@"ibWidgetType: NSCustomView (%@): %@", object, value2);
-    }
-    {
-        id object = [[[NSClassFromString(@"NSBox") alloc] init] autorelease];
-        NSString *value2 = [object ibWidgetType];
-        NSLog(@"ibWidgetType: NSBox (%@): %@", object, value2);
-    }
-    return @"Box";
-//    return value;
-}
-*/
-/*
-- (NSString *)editorClassName;
-{
-    NSString *value = [super editorClassName];
-    NSLog(@"editorClassName is %@", value);
-
-    {
-        id object = [[NSClassFromString(@"NSCustomView") alloc] init];
-        value = [object editorClassName];
-        NSLog(@"object (%@) editorClassName = %@", object, value);
-    }
-    
-    return value;
-}
-*/
-
-- (void)editSelf:(NSEvent *)theEvent in:(NSView<IBEditors>*)viewEditor;
-{
-    NSLog(@"editing self; view editor is %@", viewEditor);
-    [super editSelf:theEvent in:viewEditor];
-}
+// TODO When we resize this view in IB, its subviews may also get moved.
+// The editors for NSCustomView and NSBox do not do this (because it's kind of annoying).
+// I haven't yet figured out how to fix this, though.
 
 @end
