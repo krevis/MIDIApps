@@ -35,6 +35,8 @@ typedef struct EndpointUniqueNamesFlags {
 - (SInt32)ownerPID;
 - (void)setOwnerPID:(SInt32)value;
 
+- (MIDIDeviceRef)getDeviceRefFromConnectedUniqueID:(MIDIUniqueID)connectedUniqueID;
+
 @end
 
 
@@ -365,11 +367,12 @@ static BOOL sRefreshAllObjectsDisabled = NO;
     
     for (uniqueIDIndex = 0; uniqueIDIndex < uniqueIDCount; uniqueIDIndex++) {
         MIDIUniqueID aUniqueID = [[uniqueIDs objectAtIndex:uniqueIDIndex] intValue];
-        SMExternalDevice *extDevice;
-
-        extDevice = [SMExternalDevice externalDeviceWithUniqueID:aUniqueID];
-        if (extDevice)
-            [externalDevices addObject:extDevice];
+        MIDIDeviceRef aDeviceRef = [self getDeviceRefFromConnectedUniqueID:aUniqueID];
+        if (aDeviceRef) {
+            SMExternalDevice *extDevice = [SMExternalDevice externalDeviceWithDeviceRef:aDeviceRef];
+            if (extDevice)
+                [externalDevices addObject:extDevice];
+        }
     }    
 
     return externalDevices;
@@ -558,6 +561,49 @@ static BOOL sRefreshAllObjectsDisabled = NO;
     if (status) {
         [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't set owner PID on endpoint: error %ld", @"SnoizeMIDI", SMBundleForObject(self), "exception with OSStatus if setting endpoint's owner PID fails"), status];
     }
+}
+
+- (MIDIDeviceRef)getDeviceRefFromConnectedUniqueID:(MIDIUniqueID)connectedUniqueID
+{
+    MIDIObjectRef connectedObjectRef;
+    MIDIObjectType connectedObjectType;
+    OSStatus err;
+    MIDIDeviceRef returnDeviceRef = NULL;
+    BOOL done = NO;
+    
+    err = MIDIObjectFindByUniqueID(connectedUniqueID, &connectedObjectRef, &connectedObjectType);
+    connectedObjectType &= ~kMIDIObjectType_ExternalMask;
+    
+    while (err == noErr && !done)
+    {
+        switch (connectedObjectType) {
+            case kMIDIObjectType_Device:
+                // we've got the device already
+                returnDeviceRef = (MIDIDeviceRef)connectedObjectRef;
+                done = YES;
+                break;
+            
+            case kMIDIObjectType_Entity:
+                // get the entity's device
+                connectedObjectType = kMIDIObjectType_Device;
+                err = MIDIEntityGetDevice((MIDIEntityRef)connectedObjectRef, (MIDIDeviceRef*)&connectedObjectRef);
+                break;
+                
+            case kMIDIObjectType_Destination:
+            case kMIDIObjectType_Source:
+                // Get the endpoint's entity
+                connectedObjectType = kMIDIObjectType_Entity;
+                err = MIDIEndpointGetEntity((MIDIEndpointRef)connectedObjectRef, (MIDIEntityRef*)&connectedObjectRef);                
+                break;
+                
+            default:
+                // give up
+                done = YES;
+                break;
+        }        
+    }
+    
+    return returnDeviceRef;
 }
 
 @end
