@@ -126,8 +126,8 @@ static NSMutableArray *controllers = nil;
 
 - (void)windowWillClose:(NSNotification *)notification;
 {
+    [[self retain] autorelease];
     [controllers removeObjectIdenticalTo:self];
-    // NOTE We've now been released and probably deallocated! Don't do anything else!
 }
 
 @end
