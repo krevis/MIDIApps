@@ -158,7 +158,9 @@
     NSString *modifiedNewFileName;
     NSString *newPath;
     BOOL shouldHideExtension = NO;
-    int rc;
+    BOOL shouldShowExtension = NO;
+    NSFileManager *fileManager;
+    BOOL success = NO;
 
     path = [self path];
     if (!path)
@@ -179,20 +181,27 @@
             if ([newExtension isEqualToString:extension]) {
                 // The extensions are the same, so use the new name as it is.
                 modifiedNewFileName = newFileName;
+                // But show the extension, since the user explicitly stated it.
+                shouldShowExtension = YES;
             } else {
                 // The extensions are different. Just tack the old extension on to the new name.
                 modifiedNewFileName = [newFileName stringByAppendingPathExtension:extension];
+                // And make sure the extension is hidden in the filesystem.
+                shouldHideExtension = YES;
+                // TODO In this case, we really should ask the user if they really want to change the extension, or not,
+                // and then do what they tell us.
             }
         } else {
             // The new file name has no extension, so add the old one on.
+            modifiedNewFileName = [newFileName stringByAppendingPathExtension:extension];
             // We also want to hide the extension from the user, so it looks like the new name was granted.
             shouldHideExtension = YES;
-            modifiedNewFileName = [newFileName stringByAppendingPathExtension:extension];
         }
     } else {
         // The old file name had no extension, so just accept the new name as it is.
         modifiedNewFileName = newFileName;    
     }
+    OBASSERT((shouldShowExtension && shouldHideExtension) == NO);    // We can't do both!
 
     // TODO We should do something like the code below (not sure if it's correct):
 #if 0    
@@ -211,21 +220,24 @@
 
     newPath = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:modifiedNewFileName];
 
-    if ([newPath isEqualToString:path])
-        return YES;
+    fileManager = [NSFileManager defaultManager];
     
-    if ([[NSFileManager defaultManager] fileExistsAtPath:newPath])
-        return NO;
+    if ([newPath isEqualToString:path])
+        success = YES;
+    else if ([fileManager fileExistsAtPath:newPath])
+        success = NO;
+    else
+        success = [fileManager movePath:path toPath:newPath handler:nil];
 
-    rc = rename([path fileSystemRepresentation], [newPath fileSystemRepresentation]);
-    if (rc == 0) {
-        if (shouldHideExtension) {
-            [[NSFileManager defaultManager] changeFileAttributes:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:NSFileExtensionHidden] atPath:newPath];
-        }
-        return YES;
-    } else {
-        return NO;
+    if (success && (shouldHideExtension || shouldShowExtension)) {
+        NSDictionary *attributes;
+
+        attributes = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:shouldHideExtension] forKey:NSFileExtensionHidden];
+        [fileManager changeFileAttributes:attributes atPath:newPath];
+        // It is no big deal if this fails
     }
+
+    return success;
 }
 
 - (NSArray *)messages;
