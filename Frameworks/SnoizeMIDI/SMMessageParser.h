@@ -11,6 +11,8 @@
     NSMutableData *readingSysExData;
     NSLock *readingSysExLock;
     MIDITimeStamp startSysExTimeStamp;
+    NSTimer *sysExTimeOutTimer;
+    NSTimeInterval sysExTimeOut;
     
     id<SMMessageDestination> nonretainedMessageDestination;
     id nonretainedDelegate;
@@ -21,6 +23,9 @@
 
 - (id)delegate;
 - (void)setDelegate:(id)value;
+
+- (NSTimeInterval)sysExTimeOut;
+- (void)setSysExTimeOut:(NSTimeInterval)value;
 
 - (void)takePacketList:(const MIDIPacketList *)packetList;
 

@@ -14,6 +14,9 @@
 
 - (NSArray *)_messagesForPacket:(const MIDIPacket *)packet;
 
+- (SMSystemExclusiveMessage *)_finishSysExMessageWithValidEnd:(BOOL)isEndValid;
+- (void)_sysExTimedOut;
+
 @end
 
 
@@ -25,6 +28,7 @@
         return nil;
 
     readingSysExLock = [[NSLock alloc] init];
+    sysExTimeOut = 1.0;	// seconds
     
     return self;
 }
@@ -35,6 +39,8 @@
     readingSysExData = nil;
     [readingSysExLock release];
     readingSysExLock = nil;
+    [sysExTimeOutTimer release];
+    sysExTimeOutTimer = nil;
     
     nonretainedMessageDestination = nil;
 
@@ -61,17 +67,32 @@
     nonretainedDelegate = value;
 }
 
+- (NSTimeInterval)sysExTimeOut;
+{
+    return sysExTimeOut;
+}
+
+- (void)setSysExTimeOut:(NSTimeInterval)value;
+{
+    sysExTimeOut = value;
+}
+
 - (void)takePacketList:(const MIDIPacketList *)packetList;
 {
-    // NOTE: This function is called in a separate, "high-priority" thread.
+    // NOTE: This function is called in a separate, "high-priority" thread provided by CoreMIDI.
     // All downstream processing will also be done in this thread, until someone jumps it into another.
 
     NSMutableArray *messages = nil;
     unsigned int packetCount;
     const MIDIPacket *packet;
 
+    if (sysExTimeOutTimer) {
+        [sysExTimeOutTimer invalidate];
+        [sysExTimeOutTimer release];
+        sysExTimeOutTimer = nil;
+    }
+    
     packetCount = packetList->numPackets;
-
     packet = packetList->packet;
     while (packetCount--) {
         NSArray *messagesForPacket;
@@ -89,6 +110,20 @@
 
     if (messages)
         [nonretainedMessageDestination takeMIDIMessages:messages];
+
+    if (readingSysExData) {
+        CFRunLoopRef runLoop;
+        CFStringRef mode;
+
+        // Add a timer to this thread's run loop, and make it fire in the current run loop mode.
+        
+        sysExTimeOutTimer = [[NSTimer timerWithTimeInterval:sysExTimeOut target:self selector:@selector(_sysExTimedOut) userInfo:nil repeats:NO] retain];
+
+        runLoop = CFRunLoopGetCurrent();
+        mode = CFRunLoopCopyCurrentMode(runLoop);
+        CFRunLoopAddTimer(runLoop, (CFRunLoopTimerRef)sysExTimeOutTimer, mode);
+        CFRelease(mode);
+    }
 }
 
 - (BOOL)cancelReceivingSysExMessage;
@@ -182,22 +217,8 @@
                     // Skip this byte -- it is invalid
                 }
             } else {
-                if (readingSysExData) {
-                    [readingSysExLock lock];
-                    if (readingSysExData) {
-                        // NOTE: If we want, we could refuse sysex messages that don't end in 0xF7.
-                        // The MIDI spec says that messages should end with this byte, but apparently that is not always the case in practice.
-                        BOOL wasValidEOX = (byte == 0xF7);
-    
-                        message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:startSysExTimeStamp data:readingSysExData];
-                        [(SMSystemExclusiveMessage *)message setWasReceivedWithEOX:wasValidEOX];
-                        [nonretainedDelegate parser:self finishedReadingSysExMessage:(SMSystemExclusiveMessage *)message];
-    
-                        [readingSysExData release];
-                        readingSysExData = nil;
-                    }
-                    [readingSysExLock unlock];
-                }
+                if (readingSysExData)
+                    message = [self _finishSysExMessageWithValidEnd:(byte == 0xF7)];
 
                 pendingMessageStatus = byte;
                 pendingDataLength = 0;
@@ -267,6 +288,42 @@
     }
 
     return messages;
+}
+
+- (SMSystemExclusiveMessage *)_finishSysExMessageWithValidEnd:(BOOL)isEndValid;
+{
+    SMSystemExclusiveMessage *message = nil;
+
+    // NOTE: If we want, we could refuse sysex messages that don't end in 0xF7.
+    // The MIDI spec says that messages should end with this byte, but apparently that is not always the case in practice.
+
+    [readingSysExLock lock];
+    if (readingSysExData) {
+        message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:startSysExTimeStamp data:readingSysExData];
+        
+        [readingSysExData release];
+        readingSysExData = nil;
+    }
+    [readingSysExLock unlock];
+
+    if (message) {
+        [message setWasReceivedWithEOX:isEndValid];
+        [nonretainedDelegate parser:self finishedReadingSysExMessage:message];
+    }
+
+    return message;
+}
+
+- (void)_sysExTimedOut;
+{
+    SMSystemExclusiveMessage *message = nil;
+
+    [sysExTimeOutTimer release];
+    sysExTimeOutTimer = nil;
+
+    message = [self _finishSysExMessageWithValidEnd:NO];
+    if (message)
+        [nonretainedMessageDestination takeMIDIMessages:[NSArray arrayWithObject:message]];
 }
 
 @end
