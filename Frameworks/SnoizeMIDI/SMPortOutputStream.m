@@ -45,6 +45,7 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
     portFlags.sendsSysExAsynchronously = NO;
 
     sysExSendRequests = [[NSMutableArray alloc] init];
+    endpoints = [[NSMutableSet alloc] init];
 
     status = MIDIOutputPortCreate([[SMClient sharedClient] midiClient], (CFStringRef)@"Output port",  &outputPort);
     if (status != noErr) {
@@ -61,7 +62,8 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
     MIDIPortDispose(outputPort);
     outputPort = NULL;
 
-    [self setEndpoint:nil];
+    [endpoints release];
+    endpoints = nil;
 
     [sysExSendRequests release];
     sysExSendRequests = nil;    
@@ -69,32 +71,42 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
     [super dealloc];
 }
 
-- (SMDestinationEndpoint *)endpoint;
+- (NSSet *)endpoints;
 {
-    return endpoint;
+    return endpoints;
 }
 
-- (void)setEndpoint:(SMDestinationEndpoint *)newEndpoint;
+- (void)setEndpoints:(NSSet *)newEndpoints;
 {
     NSNotificationCenter *center;
+    NSMutableSet *removedEndpoints, *addedEndpoints;
+    NSEnumerator *enumerator;
+    SMDestinationEndpoint *endpoint;
 
-    if (endpoint == newEndpoint)
+    if (!newEndpoints)
+        newEndpoints = [NSSet set];
+
+    if ([endpoints isEqual:newEndpoints])
         return;
-
+        
     center = [NSNotificationCenter defaultCenter];
 
-    if (endpoint) {
-        [center removeObserver:self name:SMMIDIObjectDisappearedNotification object:endpoint];
-        [center removeObserver:self name:SMMIDIObjectWasReplacedNotification object:endpoint];
-    }
-    
-    [endpoint release];
-    endpoint = [newEndpoint retain];
-    
-    if (endpoint) {
+    removedEndpoints = [NSMutableSet setWithSet:endpoints];
+    [removedEndpoints minusSet:newEndpoints];
+    enumerator = [removedEndpoints objectEnumerator];
+    while ((endpoint = [enumerator nextObject]))
+        [center removeObserver:self name:nil object:endpoint];
+
+    addedEndpoints = [NSMutableSet setWithSet:newEndpoints];
+    [addedEndpoints minusSet:endpoints];
+    enumerator = [addedEndpoints objectEnumerator];
+    while ((endpoint = [enumerator nextObject])) {
         [center addObserver:self selector:@selector(endpointDisappeared:) name:SMMIDIObjectDisappearedNotification object:endpoint];
         [center addObserver:self selector:@selector(endpointWasReplaced:) name:SMMIDIObjectWasReplacedNotification object:endpoint];
     }
+                                
+    [endpoints release];
+    endpoints = [newEndpoints retain];        
 }
 
 - (BOOL)sendsSysExAsynchronously;
@@ -112,12 +124,9 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
     [sysExSendRequests makeObjectsPerformSelector:@selector(cancel)];
 }
 
-- (SMSysExSendRequest *)currentSysExSendRequest;
+- (NSArray *)pendingSysExSendRequests;
 {
-    if ([sysExSendRequests count] > 0)
-        return [sysExSendRequests objectAtIndex:0];
-    else
-        return nil;
+    return [NSArray arrayWithArray:sysExSendRequests];
 }
 
 //
@@ -147,15 +156,23 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
 
 - (void)sendMIDIPacketList:(MIDIPacketList *)packetList;
 {
-    MIDIEndpointRef endpointRef;
-    OSStatus status;
+    NSEnumerator *enumerator;
+    SMDestinationEndpoint *endpoint;
 
-    if (!(endpointRef = [endpoint endpointRef]))
-        return;
+    enumerator = [endpoints objectEnumerator];
+    while ((endpoint = [enumerator nextObject])) {
+        MIDIEndpointRef endpointRef;
+        OSStatus status;
 
-    status = MIDISend(outputPort, endpointRef, packetList);
-    if (status) {
-        NSLog(@"MIDISend(%p, %p, %p) returned error: %ld", outputPort, endpointRef, packetList, status);
+        if (!(endpointRef = [endpoint endpointRef]))
+            continue;
+    
+        status = MIDISend(outputPort, endpointRef, packetList);
+        if (status) {
+#if DEBUG
+            NSLog(@"MIDISend(%p, %p, %p) returned error: %ld", outputPort, endpointRef, packetList, status);
+#endif
+        }
     }
 }
 
@@ -166,21 +183,32 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
 
 - (void)endpointDisappeared:(NSNotification *)notification;
 {
-    OBASSERT([notification object] == endpoint);
+    SMDestinationEndpoint *endpoint = [notification object];
+    NSMutableSet *newEndpoints;
 
-    [self setEndpoint:nil];
-    
+    OBASSERT([endpoints containsObject:endpoint]);
+
+    newEndpoints = [NSMutableSet setWithSet:endpoints];
+    [newEndpoints removeObject:endpoint];
+    [self setEndpoints:newEndpoints];
+
     [[NSNotificationCenter defaultCenter] postNotificationName:SMPortOutputStreamEndpointDisappearedNotification object:self];
 }
 
 - (void)endpointWasReplaced:(NSNotification *)notification;
 {
+    SMDestinationEndpoint *endpoint = [notification object];
     SMDestinationEndpoint *newEndpoint;
+    NSMutableSet *newEndpoints;
 
-    OBASSERT([notification object] == endpoint);
+    OBASSERT([endpoints containsObject:endpoint]);
 
     newEndpoint = [[notification userInfo] objectForKey:SMMIDIObjectReplacement];
-    [self setEndpoint:newEndpoint];
+
+    newEndpoints = [NSMutableSet setWithSet:endpoints];
+    [newEndpoints removeObject:endpoint];
+    [newEndpoints addObject:newEndpoint];
+    [self setEndpoints:newEndpoints];    
 }
 
 - (void)splitMessages:(NSArray *)messages intoCurrentSysex:(NSArray **)sysExMessagesPtr andNormal:(NSArray **)normalMessagesPtr;
@@ -216,25 +244,28 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
 
 - (void)sendSysExMessagesAsynchronously:(NSArray *)messages;
 {
-    MIDIEndpointRef endpointRef;
     unsigned int messageCount, messageIndex;
-
-    if (!(endpointRef = [[self endpoint] endpointRef]))
-        return;
 
     messageCount = [messages count];
     for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {
         SMSystemExclusiveMessage *message;
-        SMSysExSendRequest *sendRequest;
+        NSEnumerator *enumerator;
+        SMDestinationEndpoint *endpoint;
 
         message = [messages objectAtIndex:messageIndex];
-        sendRequest = [SMSysExSendRequest sysExSendRequestWithMessage:message endpoint:[self endpoint]];
-        [sysExSendRequests addObject:sendRequest];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sysExSendRequestFinished:) name:SMSysExSendRequestFinishedNotification object:sendRequest];
 
-        [[NSNotificationCenter defaultCenter] postNotificationName:SMPortOutputStreamWillStartSysExSendNotification object:self userInfo:[NSDictionary dictionaryWithObject:sendRequest forKey:@"sendRequest"]];
+        enumerator = [endpoints objectEnumerator];
+        while ((endpoint = [enumerator nextObject])) {
+            SMSysExSendRequest *sendRequest;
 
-        [sendRequest send];
+            sendRequest = [SMSysExSendRequest sysExSendRequestWithMessage:message endpoint:endpoint];
+            [sysExSendRequests addObject:sendRequest];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sysExSendRequestFinished:) name:SMSysExSendRequestFinishedNotification object:sendRequest];
+
+            [[NSNotificationCenter defaultCenter] postNotificationName:SMPortOutputStreamWillStartSysExSendNotification object:self userInfo:[NSDictionary dictionaryWithObject:sendRequest forKey:@"sendRequest"]];
+
+            [sendRequest send];
+        }
     }
 }
 
@@ -243,7 +274,7 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
     SMSysExSendRequest *sendRequest;
 
     sendRequest = [notification object];
-    OBASSERT(sendRequest == [self currentSysExSendRequest]);
+    OBASSERT([sysExSendRequests containsObject:sendRequest]);
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:sendRequest];
     [sendRequest retain];

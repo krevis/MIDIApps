@@ -17,12 +17,12 @@
     } portFlags;
 
     MIDIPortRef outputPort;
-    SMDestinationEndpoint *endpoint;
+    NSMutableSet *endpoints;
     NSMutableArray *sysExSendRequests;
 }
 
-- (SMDestinationEndpoint *)endpoint;
-- (void)setEndpoint:(SMDestinationEndpoint *)newEndpoint;
+- (NSSet *)endpoints;
+- (void)setEndpoints:(NSSet *)newEndpoints;
 
 - (BOOL)sendsSysExAsynchronously;
 - (void)setSendsSysExAsynchronously:(BOOL)value;
@@ -31,7 +31,7 @@
     // Otherwise, use plain old MIDI packets.
 
 - (void)cancelPendingSysExSendRequests;
-- (SMSysExSendRequest *)currentSysExSendRequest;
+- (NSArray *)pendingSysExSendRequests;
 
 @end
 
