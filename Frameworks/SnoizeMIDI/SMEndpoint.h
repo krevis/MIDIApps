@@ -53,6 +53,9 @@
 - (void)setAdvanceScheduleTime:(SInt32)newValue;
     // Value is in milliseconds
 
+- (BOOL)needsSysExWorkaround;
+    // Returns YES if the endpoint is provided by the broken MIDIMAN driver, which can't send more than 3 bytes of sysex at once
+
 @end
 
 

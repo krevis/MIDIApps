@@ -232,6 +232,19 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     [self _setInteger:newValue forProperty:kMIDIPropertyAdvanceScheduleTimeMuSec];
 }
 
+- (BOOL)needsSysExWorkaround;
+{
+    // Returns YES if the endpoint is provided by the broken MIDIMAN driver, which can't send more than 3 bytes of sysex at once.
+    //
+    // Unfortunately we don't have a really good way of identifying this broken driver -- there isn't an obvious version number
+    // that we can get through CoreMIDI.
+    // (We could use the string property kMIDIPropertyDriverOwner, go through the possible MIDI Drivers directories,
+    // track down the bundle, and get the CFBundleVersion out of it...)
+    // But these drivers also unnecessarily put "MIDIMAN MIDISPORT " at the beginning of each endpoint name, which will
+    // probably be fixed whenever they are next released.
+
+    return ([[self manufacturerName] isEqualToString:@"MIDIMAN"] && [[self name] hasPrefix:@"MIDIMAN "]);
+}
 
 @end
 
