@@ -211,6 +211,7 @@
 				089C165FFE840EACC02AAC07,
 				F561AFAA0208780001000164,
 				F561AFAB0208780001000164,
+				F57D1E5902122FA501000164,
 			);
 			isa = PBXGroup;
 			name = Resources;
@@ -341,7 +342,7 @@
 	<key>CFBundleExecutable</key>
 	<string>SysEx Librarian</string>
 	<key>CFBundleIconFile</key>
-	<string></string>
+	<string>SysExLibrarian.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.snoize.SysExLibrarian</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -401,6 +402,7 @@
 				F559F91001DEFA9701000164,
 				F561AFAC0208780001000164,
 				F561AFAD0208780001000164,
+				F57D1E5A02122FA501000164,
 			);
 			isa = PBXResourcesBuildPhase;
 			name = "Bundle Resources";
@@ -789,6 +791,17 @@
 		};
 		F565B6F101E1567501000164 = {
 			fileRef = F565B6EF01E1567501000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F57D1E5902122FA501000164 = {
+			isa = PBXFileReference;
+			path = SysExLibrarian.icns;
+			refType = 4;
+		};
+		F57D1E5A02122FA501000164 = {
+			fileRef = F57D1E5902122FA501000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
