@@ -1,0 +1,13 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {hide = id; show = id; toggleDisclosure = id; }; 
+            CLASS = SNDisclosableView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSView; 
+        }, 
+        {CLASS = SNDisclosableViewPalette; LANGUAGE = ObjC; SUPERCLASS = IBPalette; }
+    ); 
+    IBVersion = 1; 
+}
