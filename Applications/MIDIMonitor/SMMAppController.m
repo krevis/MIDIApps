@@ -5,7 +5,6 @@
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
-#import <SnoizeMIDISpy/SnoizeMIDISpy.h>
 
 #import "SMMDocument.h"
 #import "SMMPreferencesWindowController.h"
@@ -14,9 +13,6 @@
 @interface SMMAppController (Private)
 
 - (void)_endpointAppeared:(NSNotification *)notification;
-
-- (void)_connectToSpyingMIDIDriver;
-- (void)_spiedOnMIDIWithUniqueID:(SInt32)endpointUniqueID name:(NSString *)endpointName packetList:(const MIDIPacketList *)packetList;
 
 @end
 
@@ -51,10 +47,6 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
     // Listen for new endpoints. Don't do this earlier--we only are interested in ones
     // that appear after we've been launched.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_endpointAppeared:) name:SMEndpointAppearedNotification object:nil];
-
-    // TODO temporary
-    // hook up with the spying MIDI driver, if possible
-    [self _connectToSpyingMIDIDriver];
 }
 
 - (IBAction)showPreferences:(id)sender;
@@ -139,25 +131,6 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
             [document showWindows];
         }
     }
-}
-
-// TODO Temporary testing
-
-static MIDISpyClientRef midiSpyClient = NULL;
-
-void midiSpyCallBack(SInt32 endpointUniqueID, CFStringRef endpointName, const MIDIPacketList *packetList, void *refCon)
-{
-    [(SMMAppController *)refCon _spiedOnMIDIWithUniqueID:endpointUniqueID name:(NSString *)endpointName packetList:packetList];
-}
-
-- (void)_connectToSpyingMIDIDriver;
-{
-    midiSpyClient = MIDISpyClientCreate(midiSpyCallBack, self);
-}
-
-- (void)_spiedOnMIDIWithUniqueID:(SInt32)endpointUniqueID name:(NSString *)endpointName packetList:(const MIDIPacketList *)packetList;
-{
-    NSLog(@"spied on midi with unique ID %ld, name %@, number of packets %lu", endpointUniqueID, endpointName, packetList->numPackets);
 }
 
 @end
