@@ -12,6 +12,7 @@
 
 // Toolbar
 - (void)_loadToolbarNamed:(NSString *)toolbarName;
+- (NSDictionary *)_toolbarPropertyListWithName:(NSString *)toolbarName;
 
 @end
 
@@ -75,6 +76,11 @@
     [self _loadToolbarNamed:[self windowNibName]]; // Might fail; that's OK
 }
 
+- (void)speciallyInitializeToolbarItem:(NSToolbarItem *)toolbarItem;
+{
+    // Subclasses should override to do something special to this item (like set up a view).
+}
+
 //
 // UI validation
 //
@@ -104,18 +110,6 @@
 
     [[self undoManager] endUndoGrouping];
 }
-
-- (NSDictionary *)toolbarPropertyListWithName:(NSString *)toolbarName;
-{
-    NSString *toolbarFilePath;
-
-    toolbarFilePath = [[NSBundle mainBundle] pathForResource:toolbarName ofType:@"toolbar"];
-    if (!toolbarFilePath)
-        return nil;
-
-    return [NSDictionary dictionaryWithContentsOfFile:toolbarFilePath];
-}
-
 
 //
 // Undo-related
@@ -197,14 +191,19 @@
     return allowedToolbarItems;
 }
 
-- (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)fla;
+- (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag;
 {
     NSToolbarItem *toolbarItem;
+    NSDictionary *itemInfoDictionary;
 
     toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier] autorelease];
     [toolbarItem setLabel:itemIdentifier];
     [toolbarItem setEnabled:YES];
-    [toolbarItem takeValuesFromDictionary:[toolbarItemInfo objectForKey:itemIdentifier] target:self];
+    itemInfoDictionary = [toolbarItemInfo objectForKey:itemIdentifier];
+    [toolbarItem takeValuesFromDictionary:itemInfoDictionary target:self];
+
+    if ([itemInfoDictionary objectForKey:@"needsSpecialInitialization"])
+        [self speciallyInitializeToolbarItem:toolbarItem];
 
     return toolbarItem;
 }
@@ -243,7 +242,7 @@
     NSDictionary *toolbarPropertyList;
     NSToolbar *toolbar;
 
-    toolbarPropertyList = [self toolbarPropertyListWithName:toolbarName];
+    toolbarPropertyList = [self _toolbarPropertyListWithName:toolbarName];
     // If we have no plist specifying a toolbar, then don't add one to the window.
     if (!toolbarPropertyList)
         return;
@@ -258,10 +257,21 @@
 
     toolbar = [[NSToolbar alloc] initWithIdentifier:toolbarName];
     [toolbar setAllowsUserCustomization:NO];
-    [toolbar setAutosavesConfiguration:NO];
+    [toolbar setAutosavesConfiguration:YES];
     [toolbar setDelegate:self];
     [[self window] setToolbar:toolbar];
     [toolbar release];
+}
+
+- (NSDictionary *)_toolbarPropertyListWithName:(NSString *)toolbarName;
+{
+    NSString *toolbarFilePath;
+
+    toolbarFilePath = [[NSBundle mainBundle] pathForResource:toolbarName ofType:@"toolbar"];
+    if (!toolbarFilePath)
+        return nil;
+
+    return [NSDictionary dictionaryWithContentsOfFile:toolbarFilePath];
 }
 
 @end

@@ -4,7 +4,7 @@
         NSToolbarFlexibleSpaceItem, NSToolbarSeparatorItem, NSToolbarSpaceItem
     );
     defaultItemIdentifiers = (
-        Play, NSToolbarSpaceItem, DestinationPopup , NSToolbarFlexibleSpaceItem, RecordOne, RecordMany
+        Play, NSToolbarSpaceItem, DestinationPopup, NSToolbarSpaceItem, RecordOne, RecordMany
     );
     itemInfoByIdentifier = {
         Play = {
@@ -29,10 +29,11 @@
             toolTip = "Record one or more SysEx messages";
         };
         DestinationPopup = {
-            imageName = "ToolbarPlaceholder";
+            action = "selectDestination:";
             label = "Destination";
             paletteLabel = "";
-            toolTip = "TODO Need to fill this in";
+            toolTip = "Where to send SysEx data";
+            needsSpecialInitialization = YES;
         };
     };
 }

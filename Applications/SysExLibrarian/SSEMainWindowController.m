@@ -131,6 +131,21 @@ static SSEMainWindowController *controller;
     [self synchronizeInterface];
 }
 
+- (void)speciallyInitializeToolbarItem:(NSToolbarItem *)toolbarItem;
+{
+    float height;
+
+    [toolbarItem setView:destinationPopUpButton];
+
+    height = NSHeight([destinationPopUpButton frame]);
+    [toolbarItem setMinSize:NSMakeSize(80, height)];
+    [toolbarItem setMaxSize:NSMakeSize(1000, height)];
+
+    // TODO Need to do this: [toolbarItem setMenuFormRepresentation:]
+    // Should be a menu item w/title "Destination: <destination name>", with submenu items for each destination
+    // (and need to change that menu item's title when destination is changed, too)
+}
+
 //
 // Action validation
 //
