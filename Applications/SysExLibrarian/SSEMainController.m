@@ -21,8 +21,10 @@
 - (void)_midiSetupDidChange:(NSNotification *)notification;
 
 - (void)_inputStreamEndpointWasRemoved:(NSNotification *)notification;
+- (void)_outputStreamEndpointWasRemoved:(NSNotification *)notification;
 
 - (void)_selectFirstAvailableSource;
+- (void)_selectFirstAvailableDestination;
 
 - (void)_readingSysEx:(NSNotification *)notification;
 - (void)_mainThreadReadingSysEx;
@@ -52,6 +54,11 @@
     [inputStream setVirtualEndpointName:@"SysEx Librarian"];	// TODO get this from somewhere
     [inputStream setMessageDestination:self];
 
+    outputStream = [[SMPortOrVirtualOutputStream alloc] init];
+    [center addObserver:self selector:@selector(_outputStreamEndpointWasRemoved:) name:SMPortOrVirtualOutputStreamEndpointWasRemoved object:outputStream];
+    [outputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a source for other programs", @"SysExLibrarian", [self bundle], "title of popup menu item for virtual source")];
+    [outputStream setVirtualEndpointName:@"SysEx Librarian"];	// TODO get this from somewhere
+    
     listenToMIDISetupChanges = YES;
     sysExBytesRead = 0;
 
@@ -59,7 +66,7 @@
 
     // TODO should get selected source and dest from preferences
     [self _selectFirstAvailableSource];
-//    [self _selectFirstAvailableDestination];
+    [self _selectFirstAvailableDestination];
 
     return self;
 }
@@ -70,6 +77,8 @@
 
     [inputStream release];
     inputStream = nil;
+    [outputStream release];
+    outputStream = nil;
 
     [super dealloc];
 }
@@ -110,6 +119,38 @@
     [windowController synchronizeSources];
 }
 
+- (NSArray *)destinationDescriptions;
+{
+    return [outputStream destinationDescriptions];
+}
+
+- (NSDictionary *)destinationDescription;
+{
+    return [outputStream destinationDescription];
+}
+
+- (void)setDestinationDescription:(NSDictionary *)description;
+{
+    NSDictionary *oldDescription;
+    BOOL savedListenFlag;
+
+    oldDescription = [self destinationDescription];
+    if (oldDescription == description || [oldDescription isEqual:description])
+        return;
+
+    savedListenFlag = listenToMIDISetupChanges;
+    listenToMIDISetupChanges = NO;
+
+    [outputStream setDestinationDescription:description];
+    // TODO we don't have an undo manager yet
+    //    [[[self undoManager] prepareWithInvocationTarget:self] setSourceDescription:oldDescription];
+    //    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Source", @"SysExLibrarian", [self bundle], "change source undo action")];
+
+    listenToMIDISetupChanges = savedListenFlag;
+
+    [windowController synchronizeDestinations];
+}
+
 //
 // SMMessageDestination protocol
 //
@@ -137,6 +178,12 @@
     [self _selectFirstAvailableSource];
 }
 
+- (void)_outputStreamEndpointWasRemoved:(NSNotification *)notification;
+{
+    // TODO should print a message?
+    [self _selectFirstAvailableDestination];
+}
+
 - (void)_selectFirstAvailableSource;
 {
     NSArray *descriptions;
@@ -144,6 +191,15 @@
     descriptions = [inputStream sourceDescriptions];
     if ([descriptions count] > 0)
         [inputStream setSourceDescription:[descriptions objectAtIndex:0]];
+}
+
+- (void)_selectFirstAvailableDestination;
+{
+    NSArray *descriptions;
+
+    descriptions = [outputStream destinationDescriptions];
+    if ([descriptions count] > 0)
+        [outputStream setDestinationDescription:[descriptions objectAtIndex:0]];
 }
 
 - (void)_readingSysEx:(NSNotification *)notification;

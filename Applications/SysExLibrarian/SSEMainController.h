@@ -11,7 +11,7 @@
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 
 @class NSArray, NSDictionary;
-@class SMPortOrVirtualInputStream;
+@class SMPortOrVirtualInputStream, SMPortOrVirtualOutputStream;
 @class SSEMainWindowController;
 
 @interface SSEMainController : NSObject <SMMessageDestination>
@@ -20,7 +20,7 @@
 
     // MIDI processing
     SMPortOrVirtualInputStream *inputStream;
-    // TODO need output stream too
+    SMPortOrVirtualOutputStream *outputStream;
     
     // Transient data
     BOOL listenToMIDISetupChanges;
@@ -30,5 +30,9 @@
 - (NSArray *)sourceDescriptions;
 - (NSDictionary *)sourceDescription;
 - (void)setSourceDescription:(NSDictionary *)sourceDescription;
+
+- (NSArray *)destinationDescriptions;
+- (NSDictionary *)destinationDescription;
+- (void)setDestinationDescription:(NSDictionary *)destinationDescription;
 
 @end

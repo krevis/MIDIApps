@@ -73,6 +73,11 @@ static SSEMainWindowController *controller;
     [mainController setSourceDescription:[(NSMenuItem *)[sender selectedItem] representedObject]];
 }
 
+- (IBAction)selectDestination:(id)sender;
+{
+    [mainController setDestinationDescription:[(NSMenuItem *)[sender selectedItem] representedObject]];
+}
+
 //
 // Other API
 //
@@ -80,6 +85,7 @@ static SSEMainWindowController *controller;
 - (void)synchronizeInterface;
 {
     [self synchronizeSources];
+    [self synchronizeDestinations];
     // TODO more of course
 }
 
@@ -129,6 +135,51 @@ static SSEMainWindowController *controller;
     [[self window] setAutodisplay:wasAutodisplay];
 }
 
+- (void)synchronizeDestinations;
+{
+    NSDictionary *currentDescription;
+    BOOL wasAutodisplay;
+    NSArray *descriptions;
+    unsigned int sourceCount, sourceIndex;
+    BOOL foundDestination = NO;
+    BOOL addedSeparatorBetweenPortAndVirtual = NO;
+
+    currentDescription = [mainController destinationDescription];
+
+    // The pop up button redraws whenever it's changed, so turn off autodisplay to stop the blinkiness
+    wasAutodisplay = [[self window] isAutodisplay];
+    [[self window] setAutodisplay:NO];
+
+    [destinationPopUpButton removeAllItems];
+
+    descriptions = [mainController destinationDescriptions];
+    sourceCount = [descriptions count];
+    for (sourceIndex = 0; sourceIndex < sourceCount; sourceIndex++) {
+        NSDictionary *description;
+
+        description = [descriptions objectAtIndex:sourceIndex];
+        if (!addedSeparatorBetweenPortAndVirtual && [description objectForKey:@"endpoint"] == nil) {
+            if (sourceIndex > 0)
+                [destinationPopUpButton addSeparatorItem];
+            addedSeparatorBetweenPortAndVirtual = YES;
+        }
+        [destinationPopUpButton addItemWithTitle:[description objectForKey:@"name"] representedObject:description];
+
+        if (!foundDestination && [description isEqual:currentDescription]) {
+            [destinationPopUpButton selectItemAtIndex:[destinationPopUpButton numberOfItems] - 1];
+            // Don't use sourceIndex because it may be off by one (because of the separator item)
+            foundDestination = YES;
+        }
+    }
+
+    if (!foundDestination)
+        [destinationPopUpButton selectItem:nil];
+
+    // ...and turn autodisplay on again
+    if (wasAutodisplay)
+        [[self window] displayIfNeeded];
+    [[self window] setAutodisplay:wasAutodisplay];
+}
 
 @end
 

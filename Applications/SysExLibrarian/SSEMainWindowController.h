@@ -17,7 +17,7 @@
     IBOutlet SSEMainController *mainController;
 
     IBOutlet NSPopUpButton *sourcePopUpButton;
-
+    IBOutlet NSPopUpButton *destinationPopUpButton;
 }
 
 + (SSEMainWindowController *)mainWindowController;
@@ -25,11 +25,13 @@
 // Actions
 
 - (IBAction)selectSource:(id)sender;
+- (IBAction)selectDestination:(id)sender;
 
 // Other API
 
 - (void)synchronizeInterface;
     // Calls each of the following
 - (void)synchronizeSources;
+- (void)synchronizeDestinations;
 
 @end

@@ -8,10 +8,14 @@
             SUPERCLASS = NSObject; 
         }, 
         {
-            ACTIONS = {selectSource = id; }; 
+            ACTIONS = {selectDestination = id; selectSource = id; }; 
             CLASS = SSEMainWindowController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {mainController = SSEMainController; sourcePopUpButton = NSPopUpButton; }; 
+            OUTLETS = {
+                destinationPopUpButton = NSPopUpButton; 
+                mainController = SSEMainController; 
+                sourcePopUpButton = NSPopUpButton; 
+            }; 
             SUPERCLASS = NSWindowController; 
         }
     ); 
