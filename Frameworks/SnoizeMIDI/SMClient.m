@@ -211,27 +211,51 @@ static void getMIDINotification(const MIDINotification *message, void *refCon)
 
     switch (message->messageID) {
         case kMIDIMsgSetupChanged:	// The only notification in 10.1 and earlier
+#if DEBUG
+            NSLog(@"setup changed");
+#endif
             [client midiSetupChanged];
             break;
 
         case kMIDIMsgObjectAdded:	// Added in 10.2
+#if DEBUG
+            NSLog(@"object added");
+#endif
+            [client midiObjectAddedOrRemoved:(const MIDIObjectAddRemoveNotification *)message];
+            break;
+
         case kMIDIMsgObjectRemoved:	// Added in 10.2
+#if DEBUG
+            NSLog(@"object removed");
+#endif
             [client midiObjectAddedOrRemoved:(const MIDIObjectAddRemoveNotification *)message];
             break;
 
         case kMIDIMsgPropertyChanged:	// Added in 10.2
+#if DEBUG
+            NSLog(@"property changed");
+#endif
             [client midiObjectPropertyChanged:(const MIDIObjectPropertyChangeNotification *)message];
             break;
 
         case kMIDIMsgThruConnectionsChanged:	// Added in 10.2
+#if DEBUG
+            NSLog(@"thru connections changed");
+#endif
             [client midiThruConnectionsChanged:message];
             break;
 
         case kMIDIMsgSerialPortOwnerChanged:	// Added in 10.2
+#if DEBUG
+            NSLog(@"serial port owner changed");
+#endif
             [client serialPortOwnerChanged:message];
             break;
             
         default:
+#if DEBUG
+            NSLog(@"unknown notification: %d", message->messageID);
+#endif
             [client broadcastUnknownMIDINotification:message];
             break;
     }
