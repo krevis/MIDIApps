@@ -134,7 +134,7 @@
 
     *bytes = 0xF0;
     [data getBytes:bytes+1];
-    *(bytes + length) = 0xF7;
+    *(bytes + length + 1) = 0xF7;
 
     return fullMessageData;
 }

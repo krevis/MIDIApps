@@ -29,7 +29,7 @@ DEFINE_NSSTRING(SMSysExSendRequestFinishedNotification);
     if (![super init])
         return nil;
 
-    OBASSERT(message != nil);
+    OBASSERT(aMessage != nil);
     
     message = [aMessage retain];
     fullMessageData = [[message fullMessageData] retain];
@@ -122,7 +122,11 @@ DEFINE_NSSTRING(SMSysExSendRequestFinishedNotification);
 
 void sysexCompletionProc(MIDISysexSendRequest *request)
 {
+    NSAutoreleasePool *pool;
+
+    pool = [[NSAutoreleasePool alloc] init];    
     [(SMSysExSendRequest *)(request->completionRefCon) _completionProc];
+    [pool release];
 }
 
 - (void)_completionProc;

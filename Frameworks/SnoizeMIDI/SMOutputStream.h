@@ -22,7 +22,8 @@
 
 - (BOOL)sendsSysExAsynchronously;
 - (void)setSendsSysExAsynchronously:(BOOL)value;
-    // If YES, then use MIDISendSysex() to send sysex messages. Otherwise, use plain old MIDISend().
+    // If YES, then use MIDISendSysex() to send sysex messages. Otherwise, use plain old MIDI packets.
+    // TODO Does this actually work with virtual output streams? I doubt it... need to test.
 
 - (MIDITimeStamp)sendImmediatelyTimeStamp;
     // Returns 0 in the base class. Subclasses may override if necessary.
