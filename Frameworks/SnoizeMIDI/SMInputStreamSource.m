@@ -35,4 +35,12 @@
     return nil;
 }
 
+- (void)setName:(NSString *)value;
+{
+    if (name != value) {
+        [name release];
+        name = [value copy];
+    }
+}
+
 @end

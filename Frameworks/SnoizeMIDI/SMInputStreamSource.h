@@ -25,4 +25,6 @@
 - (NSNumber *)inputStreamSourceUniqueID;
     // just returns nil
 
+- (void)setName:(NSString *)value;
+
 @end
