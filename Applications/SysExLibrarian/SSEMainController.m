@@ -161,7 +161,7 @@
 - (void)cancelSysExMessageWait;
 {
     waitingForSysExMessage = NO;
-    // TODO need to tell the input stream to stop listening to this message
+    [inputStream cancelReceivingSysExMessage];
 }
 
 - (void)playSysExMessage;
