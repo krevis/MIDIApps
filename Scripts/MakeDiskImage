@@ -16,8 +16,9 @@ IMAGE_FILE_NAME="$2"
 READ_ME_FILE_PATH="$3"
 VOLUME_NAME=$APP_EXECUTABLE_NAME
 
-# TODO This stupid Finder is broken as of 10.1.1
 DO_APPLESCRIPT=1
+# NOTE The Finder is broken in 10.1 and can't position things properly in a window using AppleScript.
+if [[ `uname -r` == "5.5" ]] { DO_APPLESCRIPT=0 }
 
 echo "Building disk image"
 
