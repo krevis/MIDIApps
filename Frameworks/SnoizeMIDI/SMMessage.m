@@ -51,11 +51,11 @@ static NSDateFormatter *timeStampDateFormatter;
         case SMNoteFormatHexadecimal:
             return [NSString stringWithFormat:@"$%02X", noteNumber];
 
-        case SMNoteFormatStandardName:
+        case SMNoteFormatNameMiddleC3:
             // Middle C ==  60 == "C3", so base == 0 == "C-2"
             return _formatNoteNumberWithBaseOctave(noteNumber, -2);
 
-        case SMNoteFormatYamahaName:
+        case SMNoteFormatNameMiddleC4:
             // Middle C == 60 == "C2", so base == 0 == "C-1" 
             return _formatNoteNumberWithBaseOctave(noteNumber, -1);
     }

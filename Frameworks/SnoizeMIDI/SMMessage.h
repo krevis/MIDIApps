@@ -46,8 +46,8 @@ typedef enum _SMMessageType {
 typedef enum _SMNoteFormattingOption {
     SMNoteFormatDecimal = 0,
     SMNoteFormatHexadecimal = 1,
-    SMNoteFormatStandardName = 2,	// Middle C = 60 decimal = C3
-    SMNoteFormatYamahaName = 3	// Middle C = 60 decimal = C4
+    SMNoteFormatNameMiddleC3 = 2,	// Middle C = 60 decimal = C3, aka "Yamaha"
+    SMNoteFormatNameMiddleC4 = 3	// Middle C = 60 decimal = C4, aka "Roland"
 } SMNoteFormattingOption;
 
 typedef enum _SMControllerFormattingOption {
