@@ -61,7 +61,7 @@
 
 - (void)scrollToLastMessage;
 
-- (void)couldNotFindSourceNamed:(NSString *)sourceName;
+- (void)couldNotFindSourcesNamed:(NSArray *)sourceNames;
 
 - (void)updateSysExReadIndicatorWithBytes:(NSNumber *)bytesReadNumber;
 - (void)stopSysExReadIndicatorWithBytes:(NSNumber *)bytesReadNumber;

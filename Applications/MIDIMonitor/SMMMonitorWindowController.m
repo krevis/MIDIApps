@@ -128,17 +128,18 @@
     SMMDocument *document;
     id source;
     NSArray *selectedSources;
+    NSArray *newSelectedSources;
 
-    source = [(NSMenuItem *)[sender selectedItem] representedObject];
-    NSLog(@"selected source: %@ (%@)", source, [source inputStreamSourceName]);
-    
+    source = [(NSMenuItem *)[sender selectedItem] representedObject];    
     document = [self document];
     selectedSources = [document selectedInputSources];
-    if ([selectedSources indexOfObject:source] == NSNotFound) {
-        [document setSelectedInputSources:[selectedSources arrayByAddingObject:source]];
-    } else {
-        [document setSelectedInputSources:[selectedSources arrayByRemovingObjectIdenticalTo:source]];        
-    }
+
+    if ([selectedSources indexOfObject:source] == NSNotFound)
+        newSelectedSources = [selectedSources arrayByAddingObject:source];
+    else
+        newSelectedSources = [selectedSources arrayByRemovingObjectIdenticalTo:source];
+
+    [document setSelectedInputSources:newSelectedSources];
 }
 
 - (IBAction)clearMessages:(id)sender;
@@ -376,14 +377,41 @@
         [messagesTableView scrollRowToVisible:[displayedMessages count] - 1];
 }
 
-- (void)couldNotFindSourceNamed:(NSString *)sourceName;
+- (void)couldNotFindSourcesNamed:(NSArray *)sourceNames;
 {
     NSString *title, *message;
-    
-    title = NSLocalizedStringFromTableInBundle(@"Missing Source", @"MIDIMonitor", [self bundle], "if document's source is missing, title of sheet");    
-    message = NSLocalizedStringFromTableInBundle(@"The source named \"%@\" could not be found.", @"MIDIMonitor", [self bundle], "if document's source is missing, message in sheet (with source name)");
+    unsigned int sourceNamesCount;
 
-    NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, message, sourceName);
+    sourceNamesCount = [sourceNames count];
+
+    if (sourceNamesCount == 0) {
+        return;
+    } else if (sourceNamesCount == 1) {
+        NSString *messageFormat;
+        
+        title = NSLocalizedStringFromTableInBundle(@"Missing Source", @"MIDIMonitor", [self bundle], "if document's source is missing, title of sheet");    
+        messageFormat = NSLocalizedStringFromTableInBundle(@"The source named \"%@\" could not be found.", @"MIDIMonitor", [self bundle], "if document's source is missing, message in sheet (with source name)");
+        message = [NSString stringWithFormat:messageFormat, [sourceNames objectAtIndex:0]];
+    } else {
+        NSMutableArray *sourceNamesInQuotes;
+        unsigned int sourceNamesIndex;
+        NSString *concatenatedSourceNames;
+        NSString *messageFormat;
+        
+        title = NSLocalizedStringFromTableInBundle(@"Missing Sources", @"MIDIMonitor", [self bundle], "if more than one of document's sources are missing, title of sheet");
+
+        sourceNamesInQuotes = [NSMutableArray arrayWithCapacity:sourceNamesCount];
+        for (sourceNamesIndex = 0; sourceNamesIndex < sourceNamesCount; sourceNamesIndex++)
+            [sourceNamesInQuotes addObject:[NSString stringWithFormat:@"\"%@\"", [sourceNames objectAtIndex:sourceNamesIndex]]];
+
+        concatenatedSourceNames = [sourceNamesInQuotes componentsJoinedByCommaAndAnd];
+        
+        messageFormat = NSLocalizedStringFromTableInBundle(@"The sources named %@ could not be found.", @"MIDIMonitor", [self bundle], "if more than one of document's sources are missing, message in sheet (with source names)");
+
+        message = [NSString stringWithFormat:messageFormat, concatenatedSourceNames];        
+    }
+
+    NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"%@", message);
 }
 
 - (void)updateSysExReadIndicatorWithBytes:(NSNumber *)bytesReadNumber;
@@ -446,7 +474,6 @@
     } else if ([identifier isEqualToString:@"source"]) {
         return [[message originatingEndpoint] shortName];
         // TODO we should indicate if name is a regular source, or spying on a destination
-        // TODO this could fail if the endpoint has disappeared since the message was created. Need to cache this value, or fix it in SMEndpoint?
     } else if ([identifier isEqualToString:@"type"]) {
         return [message typeForDisplay];
     } else if ([identifier isEqualToString:@"channel"]) {

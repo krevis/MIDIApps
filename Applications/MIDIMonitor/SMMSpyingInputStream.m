@@ -10,11 +10,8 @@
 
 @interface SMMSpyingInputStream (Private)
 
-- (void)endpointAppeared:(NSNotification *)notification;
 - (void)endpointDisappeared:(NSNotification *)notification;
 - (void)endpointWasReplaced:(NSNotification *)notification;
-
-- (void)addEndpointToMapTable:(SMDestinationEndpoint *)endpoint withParser:(SMMessageParser *)parser;
 
 static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName, const MIDIPacketList *packetList, void *refCon);
 
@@ -25,46 +22,125 @@ static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName,
 
 - (id)init;
 {
-    NSArray *destinationEndpoints;
-    unsigned int destinationEndpointCount, destinationEndpointIndex;
-    
     if (!(self = [super init]))
         return nil;
 
-    inputStreamSource = [[SMSimpleInputStreamSource alloc] initWithName:@"Spy on computer output"];
-    // TODO better name
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endpointAppeared:) name:SMEndpointAppearedNotification object:nil];
-
-    endpointToParserMapTable = NSCreateMapTable(NSNonOwnedPointerMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
-
-    destinationEndpoints = [SMDestinationEndpoint destinationEndpoints];
-    destinationEndpointCount = [destinationEndpoints count];
-    for (destinationEndpointIndex = 0; destinationEndpointIndex < destinationEndpointCount; destinationEndpointIndex++) {
-        SMDestinationEndpoint *endpoint;
-        SMMessageParser *parser;
-
-        endpoint = [destinationEndpoints objectAtIndex:destinationEndpointIndex];
-        parser = [self newParserWithOriginatingEndpoint:endpoint];
-        [self addEndpointToMapTable:endpoint withParser:parser];
+    spyClient = MIDISpyClientCreate(spyClientCallBack, self);
+    if (!spyClient) {
+        [self release];
+        return nil;
     }
+    
+    endpoints = [[NSMutableArray alloc] init];
+
+    parsersForEndpoints = NSCreateMapTable(NSNonRetainedObjectMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
 
     return self;
 }
 
 - (void)dealloc;
 {
-    [self setIsActive:NO];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
-    [inputStreamSource release];
-    inputStreamSource = nil;
+    if (spyClient)
+        MIDISpyClientDispose(spyClient);
+    spyClient = NULL;
 
-    NSFreeMapTable(endpointToParserMapTable);
-    endpointToParserMapTable = NULL;
+    [endpoints release];
+    endpoints = nil;
+
+    NSFreeMapTable(parsersForEndpoints);
+    parsersForEndpoints = NULL;
 
     [super dealloc];
 }
+
+- (NSArray *)endpoints;
+{
+    return [NSArray arrayWithArray:endpoints];
+}
+
+- (void)addEndpoint:(SMDestinationEndpoint *)endpoint;
+{
+    SMMessageParser *parser;
+    NSNotificationCenter *center;
+
+    if (!endpoint)
+        return;
+
+    if ([endpoints indexOfObjectIdenticalTo:endpoint] != NSNotFound)
+        return;
+
+    parser = [self newParserWithOriginatingEndpoint:endpoint];
+
+    // TODO hook up spying client
+    /*
+    status = MIDIPortConnectSource(inputPort, [endpoint endpointRef], parser);
+    if (status != noErr) {
+        NSLog(@"Error from MIDIPortConnectSource: %d", status);
+        return;
+    }
+     */
+
+    NSMapInsert(parsersForEndpoints, endpoint, parser);
+
+    center = [NSNotificationCenter defaultCenter];
+    [center addObserver:self selector:@selector(_endpointDisappeared:) name:SMEndpointDisappearedNotification object:endpoint];
+    [center addObserver:self selector:@selector(_endpointWasReplaced:) name:SMEndpointWasReplacedNotification object:endpoint];
+
+    [endpoints addObject:endpoint];
+}
+
+- (void)removeEndpoint:(SMDestinationEndpoint *)endpoint;
+{
+    NSNotificationCenter *center;
+
+    if (!endpoint)
+        return;
+
+    if ([endpoints indexOfObjectIdenticalTo:endpoint] == NSNotFound)
+        return;
+
+    // TODO disconnect w/spying client
+    /*
+    status = MIDIPortDisconnectSource(inputPort, [endpoint endpointRef]);
+    if (status != noErr) {
+        // An error can happen in normal circumstances (if the endpoint has disappeared), so ignore it.
+    }
+     */
+
+    NSMapRemove(parsersForEndpoints, endpoint);
+
+    center = [NSNotificationCenter defaultCenter];
+    [center removeObserver:self name:SMEndpointDisappearedNotification object:endpoint];
+    [center removeObserver:self name:SMEndpointWasReplacedNotification object:endpoint];
+
+    [endpoints removeObjectIdenticalTo:endpoint];
+}
+
+- (void)setEndpoints:(NSArray *)newEndpoints;
+{
+    NSMutableArray *endpointsToRemove;
+    NSMutableArray *endpointsToAdd;
+    unsigned int index;
+
+    // remove (endpoints - newEndpoints)
+    endpointsToRemove = [NSMutableArray arrayWithArray:endpoints];
+    [endpointsToRemove removeIdenticalObjectsFromArray:newEndpoints];
+
+    // add (newEndpoints - endpoints)
+    endpointsToAdd = [NSMutableArray arrayWithArray:newEndpoints];
+    [endpointsToAdd removeIdenticalObjectsFromArray:endpoints];
+
+    index = [endpointsToRemove count];
+    while (index--)
+        [self removeEndpoint:[endpointsToRemove objectAtIndex:index]];
+
+    index = [endpointsToAdd count];
+    while (index--)
+        [self addEndpoint:[endpointsToAdd objectAtIndex:index]];
+}
+
 
 //
 // SMInputStream subclass
@@ -72,60 +148,38 @@ static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName,
 
 - (NSArray *)parsers;
 {
-    if (endpointToParserMapTable)
-        return NSAllMapTableValues(endpointToParserMapTable);
-    else
-        return nil;
+    return NSAllMapTableValues(parsersForEndpoints);
 }
 
 - (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;
 {
     // In our case, the "refCon" is really a destination endpoint
-    if (endpointToParserMapTable)
-        return NSMapGet(endpointToParserMapTable, refCon);
-    else
-        return nil;
+    return NSMapGet(parsersForEndpoints, refCon);
 }
 
 - (NSArray *)inputSources;
 {
-    return [NSArray arrayWithObject:inputStreamSource];
-    // TODO it would be nice to be able to spy on endpoints selectively, not just all of them at once...
-    // we would need to return an object for each destination endpoint here, and keep an array of the selected ones
+    NSMutableArray *inputSources;
+    unsigned int inputSourceIndex;
+
+    inputSources = [NSMutableArray arrayWithArray:[SMDestinationEndpoint destinationEndpoints]];
+    inputSourceIndex = [inputSources count];
+    while (inputSourceIndex--) {
+        if ([[inputSources objectAtIndex:inputSourceIndex] isOwnedByThisProcess])
+            [inputSources removeObjectAtIndex:inputSourceIndex];        
+    }
+
+    return inputSources;
 }
 
 - (NSArray *)selectedInputSources;
 {
-    if ([self isActive])
-        return [self inputSources];
-    else
-        return [NSArray array];
+    return [self endpoints];
 }
 
 - (void)setSelectedInputSources:(NSArray *)sources;
 {
-    [self setIsActive:(sources && [sources indexOfObjectIdenticalTo:inputStreamSource] != NSNotFound)];
-}
-
-//
-// Other methods
-//
-
-- (BOOL)isActive;
-{
-    return (spyClient != NULL);
-}
-
-- (void)setIsActive:(BOOL)value;
-{
-    if (value && !spyClient) {
-        spyClient = MIDISpyClientCreate(spyClientCallBack, self);
-    } else if (!value && spyClient) {
-        MIDISpyClientDispose(spyClient);
-        spyClient = NULL;
-    }
-
-    OBASSERT([self isActive] == value);
+    [self setEndpoints:sources];
 }
 
 @end
@@ -133,54 +187,30 @@ static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName,
 
 @implementation SMMSpyingInputStream (Private)
 
-- (void)endpointAppeared:(NSNotification *)notification;
-{
-    SMEndpoint *endpoint;
-
-    endpoint = [notification object];
-    if ([endpoint isKindOfClass:[SMDestinationEndpoint class]]) {
-        SMMessageParser *parser;
-
-        parser = [self newParserWithOriginatingEndpoint:endpoint];
-        [self addEndpointToMapTable:(SMDestinationEndpoint *)endpoint withParser:parser];
-    }
-}
-
 - (void)endpointDisappeared:(NSNotification *)notification;
 {
     SMDestinationEndpoint *endpoint;
 
     endpoint = [notification object];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:endpoint];
+    OBASSERT([endpoints indexOfObjectIdenticalTo:endpoint] != NSNotFound);
 
-    NSMapRemove(endpointToParserMapTable, endpoint);
-    // TODO and clean up anything which might be in progress?
+    [self removeEndpoint:endpoint];
+
+    // TODO need to post a notification?
+    //[[NSNotificationCenter defaultCenter] postNotificationName:SMPortInputStreamEndpointDisappeared object:self];
 }
 
 - (void)endpointWasReplaced:(NSNotification *)notification;
 {
     SMDestinationEndpoint *oldEndpoint, *newEndpoint;
-    SMMessageParser *parser;
 
     oldEndpoint = [notification object];
+    OBASSERT([endpoints indexOfObjectIdenticalTo:oldEndpoint] != NSNotFound);
+
     newEndpoint = [[notification userInfo] objectForKey:SMEndpointReplacement];
 
-    parser = NSMapGet(endpointToParserMapTable, oldEndpoint);
-    [parser retain];
-    NSMapRemove(endpointToParserMapTable, oldEndpoint);
-    [self addEndpointToMapTable:newEndpoint withParser:parser];
-    [parser setOriginatingEndpoint:newEndpoint];
-    [parser release];
-
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:oldEndpoint];
-}
-
-- (void)addEndpointToMapTable:(SMDestinationEndpoint *)endpoint withParser:(SMMessageParser *)parser;
-{
-    NSMapInsert(endpointToParserMapTable, endpoint, parser);
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endpointDisappeared:) name:SMEndpointDisappearedNotification object:endpoint];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endpointWasReplaced:) name:SMEndpointWasReplacedNotification object:endpoint];    
+    [self removeEndpoint:oldEndpoint];
+    [self addEndpoint:newEndpoint];
 }
 
 
@@ -192,5 +222,8 @@ static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName,
         [[(SMMSpyingInputStream *)refCon parserForSourceConnectionRefCon:destinationEndpoint] takePacketList:packetList];
     }
 }
+
+// TODO
+// Also... we should make the communication channel to the spy driver only pass the MIDI data for endpoints that we are interested in, not all of them.
 
 @end

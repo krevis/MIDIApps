@@ -169,6 +169,8 @@
 				F562148E02408B2D01000164,
 				F55C9C140244CE3701000164,
 				F55C9C150244CE3701000164,
+				F54A343D02553A3301000164,
+				F54A343E02553A3301000164,
 			);
 			isa = PBXGroup;
 			name = Classes;
@@ -402,6 +404,7 @@
 				F56E05CC0206BAB401000164,
 				F562148F02408B2D01000164,
 				F55C9C160244CE3701000164,
+				F54A343F02553A3301000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -445,6 +448,7 @@
 				F56E05CD0206BAB401000164,
 				F562149002408B2D01000164,
 				F55C9C170244CE3701000164,
+				F54A344002553A3301000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -655,6 +659,28 @@
 		};
 		F53D4ABC015AAB7E01000164 = {
 			fileRef = F53D4ABA015AAB7E01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F54A343D02553A3301000164 = {
+			isa = PBXFileReference;
+			path = "SMDestinationEndpoint-Additions.h";
+			refType = 4;
+		};
+		F54A343E02553A3301000164 = {
+			isa = PBXFileReference;
+			path = "SMDestinationEndpoint-Additions.m";
+			refType = 4;
+		};
+		F54A343F02553A3301000164 = {
+			fileRef = F54A343D02553A3301000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F54A344002553A3301000164 = {
+			fileRef = F54A343E02553A3301000164;
 			isa = PBXBuildFile;
 			settings = {
 			};

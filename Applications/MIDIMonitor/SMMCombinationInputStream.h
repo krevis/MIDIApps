@@ -32,4 +32,4 @@
 @end
 
 // Notifications
-// TODO will repost notifications from its streams, with self as object
+// This class will repost notifications from its streams, with self as object.

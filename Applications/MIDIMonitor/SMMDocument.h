@@ -17,7 +17,7 @@
 
     // Transient data
     BOOL listenToMIDISetupChanges;
-    NSString *missingSourceName;
+    NSArray *missingSourceNames;
     unsigned int sysExBytesRead;
 }
 

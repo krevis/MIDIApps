@@ -9,10 +9,13 @@
 @interface SMMSpyingInputStream : SMInputStream
 {
     MIDISpyClientRef spyClient;
-    NSMapTable *endpointToParserMapTable;    SMSimpleInputStreamSource *inputStreamSource;
+    NSMutableArray *endpoints;
+    NSMapTable *parsersForEndpoints;
 }
 
-- (BOOL)isActive;
-- (void)setIsActive:(BOOL)value;
+- (NSArray *)endpoints;
+- (void)addEndpoint:(SMDestinationEndpoint *)endpoint;
+- (void)removeEndpoint:(SMDestinationEndpoint *)endpoint;
+- (void)setEndpoints:(NSArray *)newEndpoints;
 
 @end

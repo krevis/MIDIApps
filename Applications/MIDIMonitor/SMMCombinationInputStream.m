@@ -4,7 +4,10 @@
 
 #import "SMMCombinationInputStream.h"
 
+#import <OmniBase/OmniBase.h>
+#import <OmniFoundation/OmniFoundation.h>
 #import "SMMSpyingInputStream.h"
+
 
 @interface SMMCombinationInputStream (Private)
 
@@ -13,6 +16,8 @@
 - (void)_repostNotification:(NSNotification *)notification;
 
 - (NSArray *)_objectsFromArray:(NSArray *)array1 inArray:(NSArray *)array2;
+
+- (void)_makeInputStream:(SMInputStream *)stream takePersistentSettings:(id)settings addingMissingNamesToArray:(NSMutableArray *)missingNames;
 
 @end
 
@@ -39,8 +44,10 @@
     [self _observeSysExNotificationsWithCenter:center object:virtualInputStream];
 
     spyingInputStream = [[SMMSpyingInputStream alloc] init];
-    [spyingInputStream setMessageDestination:self];
-    [self _observeSysExNotificationsWithCenter:center object:spyingInputStream];
+    if (spyingInputStream) {
+        [spyingInputStream setMessageDestination:self];
+        [self _observeSysExNotificationsWithCenter:center object:spyingInputStream];        
+    }
 
     return self;
 }
@@ -88,7 +95,8 @@
 
     [groupedInputSources addObject:[portInputStream inputSources]];
     [groupedInputSources addObject:[virtualInputStream inputSources]];
-    [groupedInputSources addObject:[spyingInputStream inputSources]];
+    if (spyingInputStream)
+        [groupedInputSources addObject:[spyingInputStream inputSources]];
 
     // TODO It might be nice to cache this... see if it makes any difference really.
 
@@ -103,7 +111,8 @@
 
     [inputSources addObjectsFromArray:[portInputStream selectedInputSources]];
     [inputSources addObjectsFromArray:[virtualInputStream selectedInputSources]];
-    [inputSources addObjectsFromArray:[spyingInputStream selectedInputSources]];
+    if (spyingInputStream)
+        [inputSources addObjectsFromArray:[spyingInputStream selectedInputSources]];
 
     return inputSources;
 }
@@ -112,20 +121,78 @@
 {
     [portInputStream setSelectedInputSources:[self _objectsFromArray:inputSources inArray:[portInputStream inputSources]]];
     [virtualInputStream setSelectedInputSources:[self _objectsFromArray:inputSources inArray:[virtualInputStream inputSources]]];
-    [spyingInputStream setSelectedInputSources:[self _objectsFromArray:inputSources inArray:[spyingInputStream inputSources]]];
+    if (spyingInputStream)
+        [spyingInputStream setSelectedInputSources:[self _objectsFromArray:inputSources inArray:[spyingInputStream inputSources]]];
 }
 
 - (NSDictionary *)persistentSettings;
 {
-    // TODO
-    return nil;
+    NSMutableDictionary *persistentSettings;
+    id streamSettings;
+
+    persistentSettings = [NSMutableDictionary dictionary];
+
+    if ((streamSettings = [portInputStream persistentSettings]))
+        [persistentSettings setObject:streamSettings forKey:@"portInputStream"];
+    if ((streamSettings = [virtualInputStream persistentSettings]))
+        [persistentSettings setObject:streamSettings forKey:@"virtualInputStream"];
+    if ((streamSettings = [spyingInputStream persistentSettings]))
+        [persistentSettings setObject:streamSettings forKey:@"spyingInputStream"];
+
+    if ([persistentSettings count] > 0)
+        return persistentSettings;
+    else
+        return nil;
 }
 
 - (NSArray *)takePersistentSettings:(NSDictionary *)settings;
 {
     // If any endpoints couldn't be found, their names are returned
-    // TODO
-    return nil;
+    NSMutableArray *missingNames;
+    NSNumber *oldStyleUniqueID;
+
+    missingNames = [NSMutableArray array];
+
+    // Clear out the current input sources
+    [self setSelectedInputSources:[NSArray array]];
+
+    if ((oldStyleUniqueID = [settings objectForKey:@"portEndpointUniqueID"])) {
+        // This is an old-style document, specifiying an endpoint for the port input stream.
+        // We may have an endpoint name under key @"portEndpointName"
+        NSString *sourceEndpointName;
+        SMSourceEndpoint *sourceEndpoint;
+
+        sourceEndpointName = [settings objectForKey:@"portEndpointName"];
+        
+        sourceEndpoint = [SMSourceEndpoint sourceEndpointWithUniqueID:[oldStyleUniqueID intValue]];
+        if (!sourceEndpoint && sourceEndpointName)
+            sourceEndpoint = [SMSourceEndpoint sourceEndpointWithName:sourceEndpointName];
+
+        if (sourceEndpoint) {
+            [portInputStream addEndpoint:sourceEndpoint];
+        } else {
+            if (!sourceEndpointName)
+                sourceEndpointName = NSLocalizedStringFromTableInBundle(@"Unknown", @"MIDIMonitor", [self bundle], "name of missing endpoint if not specified in document");
+            [missingNames addObject:sourceEndpointName];
+        }
+        
+    } else if ((oldStyleUniqueID = [settings objectForKey:@"virtualEndpointUniqueID"])) {
+        // This is an old-style document, specifiying to use a virtual input stream.
+        [virtualInputStream setUniqueID:[oldStyleUniqueID intValue]];
+        [virtualInputStream setIsActive:YES];
+
+    } else {
+        // This is a current-style document        
+        [self _makeInputStream:portInputStream takePersistentSettings:[settings objectForKey:@"portInputStream"] addingMissingNamesToArray:missingNames];
+        [self _makeInputStream:virtualInputStream takePersistentSettings:[settings objectForKey:@"virtualInputStream"] addingMissingNamesToArray:missingNames];
+        if (spyingInputStream)
+            [self _makeInputStream:spyingInputStream takePersistentSettings:[settings objectForKey:@"spyingInputStream"] addingMissingNamesToArray:missingNames];
+    }
+    
+    if ([missingNames count] > 0)
+        return missingNames;
+    else
+        return nil;
 }
 
 @end
@@ -151,6 +218,18 @@
     set = [NSMutableSet setWithArray:array1];
     [set intersectSet:[NSSet setWithArray:array2]];
     return [set allObjects];    
+}
+
+- (void)_makeInputStream:(SMInputStream *)stream takePersistentSettings:(id)settings addingMissingNamesToArray:(NSMutableArray *)missingNames;
+{
+    NSArray *streamMissingNames;
+
+    if (!settings)
+        return;
+
+    streamMissingNames = [stream takePersistentSettings:settings];
+    if (streamMissingNames)
+        [missingNames addObjectsFromArray:streamMissingNames];
 }
 
 @end

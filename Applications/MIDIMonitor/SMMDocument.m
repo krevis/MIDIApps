@@ -69,7 +69,7 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
 
     isFilterShown = NO;
     listenToMIDISetupChanges = YES;
-    missingSourceName = nil;
+    missingSourceNames = nil;
     sysExBytesRead = 0;
 
     [center addObserver:self selector:@selector(_midiSetupDidChange:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
@@ -93,8 +93,8 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     messageFilter = nil;
     [windowFrameDescription release];
     windowFrameDescription = nil;
-    [missingSourceName release];
-    missingSourceName = nil;
+    [missingSourceNames release];
+    missingSourceNames = nil;
     [history release];
     history = nil;
 
@@ -114,10 +114,10 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
 {
     [super showWindows];
 
-    if (missingSourceName) {
-        [[self windowControllers] makeObjectsPerformSelector:@selector(couldNotFindSourceNamed:) withObject:missingSourceName];
-        [missingSourceName release];
-        missingSourceName = nil;
+    if (missingSourceNames) {
+        [[self windowControllers] makeObjectsPerformSelector:@selector(couldNotFindSourcesNamed:) withObject:missingSourceNames];
+        [missingSourceNames release];
+        missingSourceNames = nil;
     }
 }
 
@@ -184,12 +184,11 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     }
 
     if (streamSettings) {
-        [missingSourceName release];
-        missingSourceName = [[stream takePersistentSettings:streamSettings] retain];
+        [missingSourceNames release];
+        missingSourceNames = [[stream takePersistentSettings:streamSettings] retain];
         [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeSources)];
     } else {
-        // TODO anything to do here?
-        // [self setSourceDescription:nil];
+        [self setSelectedInputSources:[NSArray array]];
     }
     
     if ((number = [dict objectForKey:@"maxMessageCount"]))
