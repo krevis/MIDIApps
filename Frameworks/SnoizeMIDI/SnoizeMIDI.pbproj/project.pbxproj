@@ -201,6 +201,7 @@
 				F584CFF801CB85F901000164,
 				F557390C01CE7E8801000164,
 				F564774901D6D9E001000164,
+				F565B6F401E15D0B01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -241,6 +242,7 @@
 				F584CFF301CB7BA801000164,
 				F584CFF901CB85F901000164,
 				F557390D01CE7E8801000164,
+				F565B6F501E15D0B01000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -812,6 +814,8 @@
 				F56435D901BDE8B701000164,
 				F557E37201BEC38401000164,
 				F557E37301BEC38401000164,
+				F565B6F201E15D0B01000164,
+				F565B6F301E15D0B01000164,
 			);
 			isa = PBXGroup;
 			name = "Output Streams";
@@ -874,6 +878,28 @@
 		};
 		F564774901D6D9E001000164 = {
 			fileRef = F564774801D6D9E001000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F565B6F201E15D0B01000164 = {
+			isa = PBXFileReference;
+			path = SMPortOrVirtualOutputStream.h;
+			refType = 4;
+		};
+		F565B6F301E15D0B01000164 = {
+			isa = PBXFileReference;
+			path = SMPortOrVirtualOutputStream.m;
+			refType = 4;
+		};
+		F565B6F401E15D0B01000164 = {
+			fileRef = F565B6F201E15D0B01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F565B6F501E15D0B01000164 = {
+			fileRef = F565B6F301E15D0B01000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
