@@ -48,13 +48,15 @@ DEFINE_NSSTRING(SMPortInputStreamEndpointDisappeared);
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
-    MIDIPortDispose(inputPort);
+    if (inputPort)
+        MIDIPortDispose(inputPort);
     inputPort = NULL;
 
     [endpoints release];
     endpoints = nil;
 
     NSFreeMapTable(parsersForEndpoints);
+    parsersForEndpoints = NULL;
     
     [super dealloc];
 }
