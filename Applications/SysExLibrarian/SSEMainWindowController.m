@@ -27,6 +27,8 @@
 - (void)_updatePlayProgressAndRepeat;
 - (void)_updatePlayProgress;
 
+- (BOOL)_areAnyDraggedFilesAcceptable:(NSArray *)filePaths;
+- (void)_dragFilesIntoLibrary:(NSArray *)filePaths;
 - (NSArray *)_expandAndFilterDraggedFiles:(NSArray *)filePaths;
 - (void)_addFilesToLibrary:(NSArray *)filePaths;
 
@@ -328,48 +330,47 @@ static SSEMainWindowController *controller;
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender;
 {
-    // TODO need to highlight window
-    // TODO need to check what kinds of operations are OK
+    NSPasteboard *pasteboard;
 
-    [libraryTableView setDrawsDraggingHighlight:YES];
-    
-    return NSDragOperationCopy;
+    pasteboard = [sender draggingPasteboard];
+    if ([[pasteboard types] indexOfObjectIdenticalTo:NSFilenamesPboardType] != NSNotFound) {
+        NSArray *filePaths;
+
+        filePaths = [pasteboard propertyListForType:NSFilenamesPboardType];
+        if ([self _areAnyDraggedFilesAcceptable:filePaths]) {
+            [libraryTableView setDrawsDraggingHighlight:YES];
+            return NSDragOperationGeneric;
+        }
+    }        
+
+    return NSDragOperationNone;
 }
 
 - (void)draggingExited:(id <NSDraggingInfo>)sender;
 {
-    // TODO need to un-highlight window
-
     [libraryTableView setDrawsDraggingHighlight:NO];
-
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender;
 {
     NSPasteboard *pasteboard;
-    
+
     pasteboard = [sender draggingPasteboard];
     if ([[pasteboard types] indexOfObjectIdenticalTo:NSFilenamesPboardType] != NSNotFound) {
-        NSArray *filenames;
+        NSArray *filePaths;
 
-        filenames = [self _expandAndFilterDraggedFiles:[pasteboard propertyListForType:NSFilenamesPboardType]];
-        if ([filenames count] > 0) {
-            [self _addFilesToLibrary:filenames];
-            return YES;
-        }
+        filePaths = [pasteboard propertyListForType:NSFilenamesPboardType];
+        [self performSelector:@selector(_dragFilesIntoLibrary:) withObject:filePaths afterDelay:0.1];
+            // Let the drag finish before we start importing
 
-        // TODO we could do this when dragging enters--and if no acceptable files, don't allow the drag
-        // (can we write the files to the pasteboard, or otherwise keep them around, so we don't have to refilter again?)
-        // However, this could take a while if a big directory has been dragged on us... too long, and the drag will time out.
-        // Probably we should save the real work until -concludeDragOperation.
+        return YES;
     }
-    
+
     return NO;
 }
 
 - (void)concludeDragOperation:(id <NSDraggingInfo>)sender;
 {
-    // TODO need to un-highlight window
     [libraryTableView setDrawsDraggingHighlight:NO];
 }
 
@@ -592,6 +593,59 @@ static SSEMainWindowController *controller;
     [playProgressMessageField setStringValue:message];
 }
 
+- (BOOL)_areAnyDraggedFilesAcceptable:(NSArray *)filePaths;
+{
+    NSFileManager *fileManager;
+    unsigned int fileIndex, fileCount;
+
+    fileManager = [NSFileManager defaultManager];
+
+    fileCount = [filePaths count];
+    for (fileIndex = 0; fileIndex < fileCount; fileIndex++) {
+        NSString *filePath;
+        BOOL isDirectory;
+
+        filePath = [filePaths objectAtIndex:fileIndex];
+        if ([fileManager fileExistsAtPath:filePath isDirectory:&isDirectory] == NO)
+            continue;
+
+        if (isDirectory)
+            return YES;
+
+        if ([fileManager isReadableFileAtPath:filePath] && [library typeOfFileAtPath:filePath] != SSELibraryFileTypeUnknown)
+            return YES;
+    }
+
+    return NO;
+}
+
+- (void)_dragFilesIntoLibrary:(NSArray *)filePaths;
+{
+    NSDate *startDate, *expandedDate, *finishedDate;
+
+    NSLog(@"starting import");
+    // TODO could pull up a sheet or something to show progress
+    // What we should do:  Set a timer or scheduled event to happen in a second or two.
+    // If it fires, then open a sheet showing our current status.
+    // (Could be "reading filesystem" with indeterminate progress bar --  or "importing N of M: file.mid" with determinate progress bar)
+    // If we finish before the scheduled event, then cancel it.
+    // Should provide a cancel button on the sheet.
+    // We are going to have to do the actual import in another thread, which could be a little scary.
+
+    startDate = [NSDate date];
+
+    filePaths = [self _expandAndFilterDraggedFiles:filePaths];
+    expandedDate = [NSDate date];
+
+    if ([filePaths count] > 0)
+        [self _addFilesToLibrary:filePaths];
+
+    finishedDate = [NSDate date];
+
+    NSLog(@"time to expand: %g", [expandedDate timeIntervalSinceDate:startDate]);
+    NSLog(@"time to finish: %g", [finishedDate timeIntervalSinceDate:expandedDate]);
+}
+
 - (NSArray *)_expandAndFilterDraggedFiles:(NSArray *)filePaths;
 {
     NSFileManager *fileManager;
@@ -632,19 +686,48 @@ static SSEMainWindowController *controller;
     return acceptableFilePaths;
 }
 
-
 - (void)_addFilesToLibrary:(NSArray *)filePaths;
 {
     unsigned int fileIndex, fileCount;
+    NSMutableArray *addedEntries;
+    unsigned int entryCount;
+
+    // Add the files to the library, keeping track of the successful ones.    
+    addedEntries = [NSMutableArray array];
 
     fileCount = [filePaths count];
     for (fileIndex = 0; fileIndex < fileCount; fileIndex++) {
-        [library addEntryForFile:[filePaths objectAtIndex:fileIndex]];
+        SSELibraryEntry *addedEntry;
+        
+        addedEntry = [library addEntryForFile:[filePaths objectAtIndex:fileIndex]];
+        if (addedEntry)
+            [addedEntries addObject:addedEntry];
     }
 
+    // Redisplay the UI    
     [self synchronizeInterface];
 
-    // TODO we ought to select the new entry (the first one if there are more than one) and scroll to it
+    // And select and scroll to the new items in the table view
+    entryCount = [addedEntries count];
+    if (entryCount  > 0) {
+        NSArray *entries;
+        unsigned int entryIndex;
+
+        entries = [library entries];
+
+        for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+            unsigned int row;
+
+            row = [entries indexOfObjectIdenticalTo:[addedEntries objectAtIndex:entryIndex]];
+
+            if (entryIndex == 0) {
+                [libraryTableView selectRow:row byExtendingSelection:NO];
+                [libraryTableView scrollRowToVisible:row];
+            } else {
+                [libraryTableView selectRow:row byExtendingSelection:YES];                
+            }
+        }
+    }
 }
 
 @end

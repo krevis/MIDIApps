@@ -86,14 +86,26 @@
 - (SSELibraryEntry *)addEntryForFile:(NSString *)filePath;
 {
     SSELibraryEntry *entry;
+    BOOL wasDirty;
+
+    // Setting the entry path and name will cause us to be notified of a change, and we'll autosave.
+    // However, the add might not succeed--if it doesn't, make sure our dirty flag isn't set if it shouldn't be.
+
+    wasDirty = flags.isDirty;
 
     entry = [[SSELibraryEntry alloc] initWithLibrary:self];
     [entry setPath:filePath];
-    [entry setNameFromFile];
-    [entries addObject:entry];
-    [entry release];
 
-    // Setting the entry path and name will cause us to be notified of a change, and we'll autosave.
+    if ([[entry messages] count] > 0) {
+        [entry setNameFromFile];
+        [entries addObject:entry];
+        [entry release];
+    } else {
+        [entry release];
+        entry = nil;
+        if (!wasDirty)
+            flags.isDirty = NO;
+    }
     
     return entry;
 }
