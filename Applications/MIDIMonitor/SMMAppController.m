@@ -25,7 +25,7 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 {
     BOOL shouldUseMIDISpy;
     SInt32 spyStatus;
-    OSStatus status;
+    NSString *midiSpyErrorMessage = nil;
     
     // Make sure we go multithreaded, and that our scheduler starts up
     [OFScheduler mainScheduler];
@@ -39,32 +39,48 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
             shouldUseMIDISpy = YES;
             break;
 
-        case kMIDISpyDriverInstallationFailed:
         case kMIDISpyDriverCouldNotRemoveOldDriver:
+            midiSpyErrorMessage = NSLocalizedStringFromTableInBundle(@"TODO", @"MIDIMonitor", [self bundle], "error message if old MIDI spy driver could not be removed");
+            break;
+
+        case kMIDISpyDriverInstallationFailed:
         default:
-            // TODO We need to report this error later on
+            midiSpyErrorMessage = NSLocalizedStringFromTableInBundle(@"TODO", @"MIDIMonitor", [self bundle], "error message if MIDI spy driver installation fails");
             break;
     }
 
     // Initialize CoreMIDI while the app's icon is still bouncing, so we don't have a large pause after it stops bouncing
     // but before the app's window opens.  (CoreMIDI needs to find and possibly start its server process, which can take a while.)
     if ([SMClient sharedClient] == nil) {
+        NSString *title, *message, *quit;
+        
         shouldOpenUntitledDocument = NO;
-        NSRunCriticalAlertPanel(@"Error", @"%@", @"Quit", nil, nil, @"There was a problem initializing the MIDI system. To try to fix this, log out and log back in, or restart the computer.");
+
+        title = NSLocalizedStringFromTableInBundle(@"Error", @"MIDIMonitor", [self bundle], "title of error alert");
+        message = NSLocalizedStringFromTableInBundle(@"There was a problem initializing the MIDI system. To try to fix this, log out and log back in, or restart the computer.", @"MIDIMonitor", [self bundle], "error message if MIDI initialization fails");
+        quit = NSLocalizedStringFromTableInBundle(@"Quit", @"MIDIMonitor", [self bundle], "title of quit button");
+
+        NSRunCriticalAlertPanel(title, message, quit, nil, nil);
         [NSApp terminate:nil];
     } else {
         shouldOpenUntitledDocument = YES;        
     }
 
     if (shouldUseMIDISpy) {
+        OSStatus status;
+        
         // Create our client for spying on MIDI output.
         status = MIDISpyClientCreate(&midiSpyClient);
         if (status != noErr) {
-#if DEBUG
-            NSLog(@"Couldn't create a MIDI spy client: error %ld", status);
-#endif
-            // TODO We need to report this error, too
+            midiSpyErrorMessage = NSLocalizedStringFromTableInBundle(@"TODO", @"MIDIMonitor", [self bundle], "error message if MIDI spy client creation fails");
         }
+    }
+
+    if (midiSpyErrorMessage) {
+        NSString *title;
+
+        title = NSLocalizedStringFromTableInBundle(@"Warning", @"MIDIMonitor", [self bundle], "title of warning alert");
+        NSRunAlertPanel(title, midiSpyErrorMessage, nil, nil, nil);
     }    
 }
 
@@ -115,7 +131,7 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
     
     path = [[self bundle] pathForResource:@"docs" ofType:@"htmld"];
     if (path) {
-        path = [path stringByAppendingString:@"/index.html"];
+        path = [path stringByAppendingPathComponent:@"index.html"];
         if (![[NSWorkspace sharedWorkspace] openFile:path]) {
             message = NSLocalizedStringFromTableInBundle(@"The help file could not be opened.", @"MIDIMonitor", [self bundle], "error message if opening the help file fails");
         }
@@ -133,15 +149,15 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 
 - (IBAction)restartMIDI:(id)sender;
 {
-    OSStatus err;
+    OSStatus status;
 
-    err = MIDIRestart();
-    if (err) {
+    status = MIDIRestart();
+    if (status) {
         NSString *message, *title;
 
         message = NSLocalizedStringFromTableInBundle(@"Restarting MIDI resulted in an unexpected error (%d).", @"MIDIMonitor", [self bundle], "error message if MIDIRestart() fails");
         title = NSLocalizedStringFromTableInBundle(@"MIDI Error", @"MIDIMonitor", [self bundle], "title of MIDI error panel");
-        NSRunAlertPanel(title, message, nil, nil, nil, err);        
+        NSRunAlertPanel(title, message, nil, nil, nil, status);        
     }
 }
 
@@ -191,7 +207,7 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
         [document setSelectedInputSources:sourceEndpointSet];
         [document showWindows];
         [document setAreSourcesShown:YES];
-        // TODO it would be cool to have the Sources section of the outline view reveal itself and perhaps scroll to the first of the new sources!
+        [document revealInputSources:sourceEndpointSet];
     }
 }
 
