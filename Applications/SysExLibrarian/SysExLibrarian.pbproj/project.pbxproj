@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 34;
+	objectVersion = 38;
 	objects = {
 		080E96DAFE201CDB7F000001 = {
 			fileRef = 2A37F4B6FDCFA73011CA2CEA;
@@ -282,8 +282,8 @@
 			productName = SysExLibrarian;
 			productReference = 1758732AFF379DA111CA2CBB;
 			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<!DOCTYPE plist SYSTEM \"file://localhost/System/Library/DTDs/PropertyList.dtd\">
-<plist version=\"0.9\">
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
@@ -424,6 +424,7 @@
 				F5DFAC8502F7715701000164,
 			);
 			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		2A37F4C9FDCFA73011CA2CEA = {
 			buildActionMask = 2147483647;
@@ -454,6 +455,7 @@
 				F5C54B9D030C6F9E01000164,
 			);
 			isa = PBXResourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		2A37F4CEFDCFA73011CA2CEA = {
 			buildActionMask = 2147483647;
@@ -483,6 +485,7 @@
 				F5DFAC8602F7715701000164,
 			);
 			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		2A37F4D0FDCFA73011CA2CEA = {
 			fileRef = 2A37F4B0FDCFA73011CA2CEA;
@@ -504,6 +507,7 @@
 				F5DFAC1A02F73DF801000164,
 			);
 			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 //2A0
 //2A1
@@ -977,6 +981,7 @@
 				F54750C6021F8C2701000164,
 			);
 			isa = PBXCopyFilesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 1;
 		};
 		F54750C4021F8C2701000164 = {
 			fileRef = F559F8FC01DEC12201000164;
@@ -1549,6 +1554,7 @@
 			refType = 4;
 		};
 		F5D90FE5021630C101000164 = {
+			includeInIndex = 0;
 			isa = PBXFolderReference;
 			name = English;
 			path = English.lproj/docs.htmld;
