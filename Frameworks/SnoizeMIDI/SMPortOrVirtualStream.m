@@ -22,6 +22,8 @@
 - (NSDictionary *)_descriptionForVirtual;
 - (NSDictionary *)_descriptionForEndpoint:(SMEndpoint *)endpoint;
 
+- (SMEndpoint *)_endpointWithName:(NSString *)name;
+
 - (void)_selectEndpoint:(SMEndpoint *)endpoint;
 
 @end
@@ -173,11 +175,16 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
             NSString *endpointName;
         
             endpointName = [settings objectForKey:@"portEndpointName"];
-            if (!endpointName) {
-                endpointName = NSLocalizedStringFromTableInBundle(@"Unknown", @"MIDIMonitor", [self bundle], "name of missing endpoint if not specified in document");
+            if (endpointName) {
+                // Maybe an endpoint with this name still exists, but with a different unique ID.
+                endpoint = [self _endpointWithName:endpointName];
+                if (endpoint)
+                    [self _selectEndpoint:endpoint];
+                else
+                    return endpointName;
+            } else {
+                return NSLocalizedStringFromTableInBundle(@"Unknown", @"MIDIMonitor", [self bundle], "name of missing endpoint if not specified in document");
             }
-
-            return endpointName;
         }
     } else if ((number = [settings objectForKey:@"virtualEndpointUniqueID"])) {
         [self _removeVirtualStream];
@@ -299,6 +306,24 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
         return [NSDictionary dictionaryWithObjectsAndKeys:endpoint, @"endpoint", [endpoint shortName], @"name", nil];
     else
         return nil;
+}
+
+- (SMEndpoint *)_endpointWithName:(NSString *)name;
+{
+    NSArray *allEndpoints;
+    unsigned int endpointIndex;
+
+    allEndpoints = [self allEndpoints];
+    endpointIndex = [allEndpoints count];
+    while (endpointIndex--) {
+        SMEndpoint *endpoint;
+
+        endpoint = [allEndpoints objectAtIndex:endpointIndex];
+        if ([[endpoint name] isEqualToString:name])
+            return endpoint;
+    }
+
+    return nil;
 }
  
 - (void)_selectEndpoint:(SMEndpoint *)endpoint;
