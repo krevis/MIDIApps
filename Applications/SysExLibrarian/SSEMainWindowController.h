@@ -107,3 +107,4 @@
 // Preferences keys
 extern NSString *SSEShowWarningOnDelete;
 extern NSString *SSEShowWarningOnImport;
+extern NSString *SSEAbbreviateFileSizesInLibraryTableView;

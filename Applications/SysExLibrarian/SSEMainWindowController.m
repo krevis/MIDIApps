@@ -67,6 +67,7 @@
 
 DEFINE_NSSTRING(SSEShowWarningOnDelete);
 DEFINE_NSSTRING(SSEShowWarningOnImport);
+DEFINE_NSSTRING(SSEAbbreviateFileSizesInLibraryTableView);
 
 static SSEMainWindowController *controller;
 
@@ -507,17 +508,23 @@ static SSEMainWindowController *controller;
     entry = [sortedLibraryEntries objectAtIndex:row];
     identifier = [tableColumn identifier];
 
-    if ([identifier isEqualToString:@"name"])
+    if ([identifier isEqualToString:@"name"]) {
         return [entry name];
-    else if ([identifier isEqualToString:@"manufacturer"])
+    } else if ([identifier isEqualToString:@"manufacturer"]) {
         return [entry manufacturer];
-    else if ([identifier isEqualToString:@"size"])
-//        return [NSNumber numberWithUnsignedInt:[entry size]];   // TODO make a pref for showing abbreviated vs. full bytes
-        return [NSString abbreviatedStringForBytes:[[entry size] unsignedIntValue]];
-    else if ([identifier isEqualToString:@"messageCount"])
+    } else if ([identifier isEqualToString:@"size"]) {
+        NSNumber *entrySize;
+
+        entrySize = [entry size];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SSEAbbreviateFileSizesInLibraryTableView])
+            return [NSString abbreviatedStringForBytes:[entrySize unsignedIntValue]];
+        else
+            return [entrySize stringValue];
+    } else if ([identifier isEqualToString:@"messageCount"]) {
         return [entry messageCount];
-    else
+    } else {
         return nil;
+    }
 }
 
 - (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(int)row;

@@ -382,6 +382,8 @@
 		<dict>
 			<key>defaultsDictionary</key>
 			<dict>
+				<key>SSEAbbreviateFileSizesInLibraryTableView</key>
+				<true/>
 				<key>SSEShowWarningOnDelete</key>
 				<true/>
 				<key>SSEShowWarningOnImport</key>
