@@ -1,12 +1,17 @@
 #!/bin/zsh
 #
-# Script to make the disk image for the MIDI Monitor application.
+# Script to make a disk image for an application.
+#
+# Arguments:
+#	Application executable name (without .app extension)
+#	Disk image file name
+#
 
 PUBLIC=/Users/Shared
 INSTALL_DIRECTORY=$PUBLIC/$USER/InstalledProducts
-APP_EXECUTABLE_NAME="MIDI Monitor"
+APP_EXECUTABLE_NAME="$1"
 APP_WRAPPER_NAME="${APP_EXECUTABLE_NAME}.app"
-IMAGE_FILE_NAME="MIDIMonitor"
+IMAGE_FILE_NAME="$2"
 VOLUME_NAME=$APP_EXECUTABLE_NAME
 
 # TODO This stupid Finder is broken as of 10.1.1
@@ -76,7 +81,7 @@ if [[ $DO_APPLESCRIPT -eq 1 ]] ; then
 
 else
 	echo "Set up the window's view options and icon position."
-	echo "(Set DO_APPLESCRIPT to 1 in ImageMIDIMonitor to do this automatically, if they ever fix the Finder bugs.)"
+	echo "(Set DO_APPLESCRIPT to 1 in MakeDiskImage to do this automatically, if they ever fix the Finder bugs.)"
 	echo "Then press return to continue."
 	read
 fi
