@@ -64,6 +64,7 @@
 - (void)awakeFromNib
 {
     [[self window] setFrameAutosaveName:[self windowNibName]];
+    [[self window] setExcludedFromWindowsMenu:YES];
 }
 
 - (void)windowDidLoad;
@@ -159,12 +160,6 @@
         return NO;
     
     return YES;
-}
-
-- (void)windowWillClose:(NSNotification *)notification;
-{
-    // Let's go away after a little while
-    [self autorelease];
 }
 
 - (void)windowDidResize:(NSNotification *)notification;

@@ -201,6 +201,7 @@
 		2A37F4B8FDCFA73011CA2CEA = {
 			children = (
 				2A37F4B9FDCFA73011CA2CEA,
+				F5D90FD1021628DF01000164,
 				2A37F4B6FDCFA73011CA2CEA,
 				F559F90A01DEC5E001000164,
 				F559F90F01DEFA9701000164,
@@ -350,18 +351,26 @@
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>SysEx Librarian</string>
+	<key>CFBundleGetInfoString</key>
+	<string>1.0b1, Copyright 2002 Kurt Revis</string>
 	<key>CFBundleIconFile</key>
 	<string>SysExLibrarian.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.snoize.SysExLibrarian</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>SysEx Librarian</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0b1</string>
 	<key>CFBundleSignature</key>
 	<string>SnSX</string>
 	<key>CFBundleVersion</key>
-	<string>0.1</string>
+	<string>1.0b1</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2002 Kurt Revis</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
@@ -422,6 +431,7 @@
 				F5875278021531EF01000164,
 				F59F89CF02154ADE01000164,
 				F59F89D102154AFF01000164,
+				F5D90FD3021628DF01000164,
 			);
 			isa = PBXResourcesBuildPhase;
 			name = "Bundle Resources";
@@ -1031,6 +1041,27 @@
 		};
 		F59F89D102154AFF01000164 = {
 			fileRef = F59F89D002154AFF01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5D90FD1021628DF01000164 = {
+			children = (
+				F5D90FD2021628DF01000164,
+			);
+			isa = PBXVariantGroup;
+			name = Credits.html;
+			path = "";
+			refType = 4;
+		};
+		F5D90FD2021628DF01000164 = {
+			isa = PBXFileReference;
+			name = English;
+			path = English.lproj/Credits.html;
+			refType = 4;
+		};
+		F5D90FD3021628DF01000164 = {
+			fileRef = F5D90FD1021628DF01000164;
 			isa = PBXBuildFile;
 			settings = {
 			};

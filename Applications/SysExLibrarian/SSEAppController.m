@@ -32,6 +32,21 @@
     return NO;
 }
 
+- (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag;
+{
+    if (flag) {
+        NSWindow *mainWindow;
+
+        mainWindow = [[SSEMainWindowController mainWindowController] window];
+        if (mainWindow && [mainWindow isMiniaturized])
+            [mainWindow deminiaturize:nil];
+    } else {
+        [self showMainWindow:nil];
+    }
+
+    return NO;
+}
+
 //
 // Actions
 //
@@ -67,6 +82,15 @@
 - (IBAction)showMainWindow:(id)sender;
 {
     [[SSEMainWindowController mainWindowController] showWindow:nil];
+}
+
+- (IBAction)showMainWindowAndAddToLibrary:(id)sender;
+{
+    SSEMainWindowController *controller;
+
+    controller = [SSEMainWindowController mainWindowController];
+    [controller showWindow:nil];
+    [controller addToLibrary:sender];
 }
 
 @end
