@@ -34,53 +34,252 @@
     return [self systemExclusiveMessagesInDataBuffer:[someData bytes] withLength:[someData length]];
 }
 
-+ (NSArray *)systemExclusiveMessagesInStandardMIDIFile:(NSString *)path;
+
+// TODO make static declaration
+UInt32 readVariableLengthField(const Byte **pPtr, const Byte *end)
 {
+    const Byte *p = *pPtr;
+    UInt32 value = 0;
+    BOOL keepGoing = YES;
+    
+    while (p < end && keepGoing) {
+        Byte byte;
+
+        value <<= 7;
+        
+        byte = *p++;
+        if (byte & 0x80)
+            byte &= 0x7F;
+        else
+            keepGoing = NO;
+
+        value += byte;
+    }
+
+    *pPtr = p;
+    return value;
+}
+
++ (NSArray *)systemExclusiveMessagesInStandardMIDIFile:(NSString *)path;
+#if 1
+{
+    NSData *smfData;
+    unsigned int smfDataLength;
+    const Byte *p, *end;
+    UInt32 chunkSize;
     NSMutableArray *messages;
-    FSRef fsRef;
+    NSMutableData *readingSysexData = nil;
+
+    messages = [NSMutableArray array];
+
+    smfData = [NSData dataWithContentsOfFile:path];
+    if (!smfData)
+        goto done;
+
+    smfDataLength = [smfData length];
+    if (smfDataLength < 0x16)	// definitely too small
+        goto done;
+
+    p = [smfData bytes];
+    end = p + smfDataLength;
+
+    // Read the header chunk
+    if (CFSwapInt32BigToHost(*(const UInt32 *)p) != 'MThd')
+        goto done;
+    p += 4;
+    chunkSize = CFSwapInt32BigToHost(*(const UInt32 *)p);	// should be 6, but this could conceivably change
+    p += 4;
+    p += chunkSize;
+    if (p >= end)
+        goto done;
+
+    // Read track chunks
+    while (p < end) {
+        const Byte *trackChunkEnd;
+        Byte runningStatusEventSize;
+
+        if (end - p < 8)
+            goto done;
+        if (CFSwapInt32BigToHost(*(const UInt32 *)p) != 'MTrk')
+            goto done;
+        p += 4;
+        chunkSize = CFSwapInt32BigToHost(*(const UInt32 *)p);
+        p += 4;
+        trackChunkEnd = p + chunkSize;
+        if (trackChunkEnd > end)
+            goto done;
+        
+        // Read each event in the track
+        runningStatusEventSize = 0;
+        while (p < trackChunkEnd) {
+            Byte eventType;
+            Byte topNibble;
+
+            // Get the delta-time for this event. We don't really care what it is.
+            (void)readVariableLengthField(&p, trackChunkEnd);
+            if (p >= trackChunkEnd)
+                goto done;
+
+            eventType = *p++;
+            if (p >= trackChunkEnd)
+                goto done;
+            
+            topNibble = (eventType & 0xF0) >> 4;
+            if (topNibble < 0x8) {
+                if (runningStatusEventSize) {
+                    // This event omits the event type byte; "running status" indicates that we use the last encountered event type.
+                    // We actually only remembered the offset that we need to skip. (We have already skipped over one byte.)
+                    p += (runningStatusEventSize - 1);
+                } else {
+                    // Malformed file -- this shouldn't happen.
+                    // What to do? TODO
+                    NSLog(@"Bad data in standard MIDI file: got byte 0x%02x when we expected >= 0x80", eventType);
+                    goto done;
+                }
+
+            } else if (topNibble < 0xF) {
+                // This is a channel event. There may be 1 or 2 more bytes of data, which we can skip.
+                // Also, the file may use "running status" after this point, so remember how big these events are.
+                if (topNibble == 0x0C || topNibble == 0x0D)	// program change or channel aftertouch
+                    runningStatusEventSize = 1;
+                else
+                    runningStatusEventSize = 2;
+                p += runningStatusEventSize;
+
+            } else {
+                // This is a meta event or sysex event.
+                runningStatusEventSize = 0;
+                if (eventType == 0xFF) {
+                    UInt32 eventSize;
+                    
+                    // The next byte is a meta event type. Skip it.
+                    p++;
+                    if (p >= trackChunkEnd)
+                        goto done;
+
+                    // Now read a variable-length value, which is the number of bytes in this event.
+                    eventSize = readVariableLengthField(&p, trackChunkEnd);
+                    if (p > trackChunkEnd)	// Hitting the end of the track chunk is OK here
+                        goto done;
+
+                    // And skip the rest of the event.
+                    p += eventSize;
+
+                } else if (eventType == 0xF0 || eventType == 0xF7) {
+                    // Sysex event (start or continuation).
+                    UInt32 sysexSize;
+                    const Byte *sysexEnd;
+                    BOOL isCompleteMessage;
+
+                    // Read a variable-length value, which is the number of bytes in this event.
+                    sysexSize = readVariableLengthField(&p, trackChunkEnd);
+                    if (p >= trackChunkEnd)
+                        goto done;
+
+                    sysexEnd = p + sysexSize;
+                    if (sysexEnd > trackChunkEnd)
+                        goto done;
+
+                    // Does the sysex data have a trailing 0xF7? If so, then this message is complete.
+                    // If not, then we expect one or more sysex continuation events later in this track.
+                    isCompleteMessage = (*(sysexEnd - 1) == 0xF7);
+                    if (isCompleteMessage)
+                        sysexSize--;	// Don't include the trailing 0xF7
+
+                    if (eventType == 0xF0) {
+                        // Starting a sysex message.
+                        readingSysexData = [NSMutableData dataWithBytes:p length:sysexSize];
+                    } else {
+                        // Continuing a sysex message.
+                        if (readingSysexData) {
+                            [readingSysexData appendBytes:p length:sysexSize];
+                        } else {
+                            // We should have had a starting-sysex event earlier, but we didn't. So just skip this stuff.
+                            // (It is using the 0xF7 as an 'escape' for other random MIDI data.)
+                        }
+                    }
+                    
+                    if (isCompleteMessage && readingSysexData) {
+                        SMSystemExclusiveMessage *message;
+
+                        message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:readingSysexData];
+                        [messages addObject:message];
+                        readingSysexData = nil;
+                    }
+
+                    p = sysexEnd;
+
+                } else {
+                    // Malformed file -- this shouldn't happen.
+                    // What to do? TODO
+                    NSLog(@"Bad data in standard MIDI file: got byte 0x%02x which is an unknown event type", eventType);
+                    goto done;
+                }
+            }
+        }
+    }
+    
+done:
+    return messages;
+}
+#else
+{
     FSSpec fsSpec;
+    NSMutableArray *messages;
     OSStatus status;
     MusicSequence sequence;
 
-    status = FSPathMakeRef([path fileSystemRepresentation], &fsRef, NULL);
-    if (status != noErr)
-        return nil;
-    status = FSGetCatalogInfo(&fsRef, kFSCatInfoNone, NULL, NULL, &fsSpec, NULL);
-    if (status != noErr)
-        return nil;
+    {
+        FSRef fsRef;
+        
+        status = FSPathMakeRef([path fileSystemRepresentation], &fsRef, NULL);
+        if (noErr == status)
+            status = FSGetCatalogInfo(&fsRef, kFSCatInfoNone, NULL, NULL, &fsSpec, NULL);
+
+        if (status != noErr)
+            return [NSArray array];
+    }
 
     messages = [NSMutableArray array];
 
     status = NewMusicSequence(&sequence);
     if (status == noErr) {
         status = MusicSequenceLoadSMF(sequence, &fsSpec);
+        if (status)
+            NSLog(@"MusicSequenceLoadSMF returns err: %ld", status);
         if (status == noErr) {
             UInt32 trackCount, trackIndex;
             
             MusicSequenceGetTrackCount(sequence, &trackCount);
+            NSLog(@"got number of tracks: %lu", trackCount);
             for (trackIndex = 0; trackIndex < trackCount; trackIndex++) {
                 MusicTrack track;
                 MusicEventIterator iterator;
-                Boolean hasNextEvent;
-    
+                Boolean hasCurrentEvent;
+
+                NSLog(@"getting track %lu", trackIndex + 1);
                 MusicSequenceGetIndTrack(sequence, trackIndex, &track);        
                 NewMusicEventIterator(track, &iterator);
 
-                while (MusicEventIteratorHasNextEvent(iterator, &hasNextEvent), hasNextEvent) {
+                MusicEventIteratorHasNextEvent(iterator, &hasCurrentEvent);
+                while (hasCurrentEvent) {
                     MusicEventType eventType;
                     UInt32 eventDataSize;
                     Byte *eventData;
 
-                    MusicEventIteratorGetEventInfo(iterator, NULL, &eventType, (void **)&eventData, &eventDataSize);
+                    MusicEventIteratorGetEventInfo(iterator, NULL, &eventType, (const void **)&eventData, &eventDataSize);
+                    NSLog(@"'got event type: %lu size: %lu", eventType, eventDataSize);
                     if (eventType == kMusicEventType_MIDIRawData) {
                         NSArray *eventMessages;
 
                         eventMessages = [self systemExclusiveMessagesInDataBuffer:eventData withLength:eventDataSize];
+                        NSLog(@"got sysex messages: %@", eventMessages);
                         if (eventMessages)
                             [messages addObjectsFromArray:eventMessages];
                     }
 
                     MusicEventIteratorNextEvent(iterator);
+                    MusicEventIteratorHasNextEvent(iterator, &hasCurrentEvent);
                 }
 
                 DisposeMusicEventIterator(iterator);
@@ -89,6 +288,8 @@
 
         // Dispose of all the tracks in the sequence. We shouldn't have to do this (DisposeMusicSequence should do it)
         // but apparently we have to. This works around bug #2848166.
+        // TODO reevaluate if this is still necessary on 10.2
+#if 0
         {
             UInt32 trackCount;
 
@@ -101,12 +302,14 @@
                 }
             }
         }
+#endif
 
         DisposeMusicSequence(sequence);
     }
     
-    return messages;    
+    return messages;
 }
+#endif
 
 + (NSData *)dataForSystemExclusiveMessages:(NSArray *)messages;
 #if SLOW_WAY
@@ -171,63 +374,59 @@
 
 + (BOOL)writeSystemExclusiveMessages:(NSArray *)messages toStandardMIDIFile:(NSString *)path;
 {
-    FSRef fsRef;
-    Boolean isDirectory;
-    FSSpec fsSpec;
-    FSCatalogInfo fsCatalogInfo;
-    Str255 pascalFileName;
+    // TODO change this to just return some data instead of writing to file -- higher levels can deal with the file stuff
     OSStatus status;
     MusicSequence sequence;
     BOOL success = NO;
+//    NSData *smfData = nil;
+    FSSpec fsSpec;
 
-    // TODO This basically doesn't work at all, because MusicSequenceSaveSMF() is completely broken.
-    // Reported as bug #2840253.
-    
-    NSLog(@"getting FSRef for path: %@", [path stringByDeletingLastPathComponent]);
-    status = FSPathMakeRef([[path stringByDeletingLastPathComponent] fileSystemRepresentation], &fsRef, &isDirectory);
-    if (status != noErr || !isDirectory)
-        return NO;
+    // TODO This basically doesn't work at all, because MusicSequenceSaveSMF() is completely broken on 10.1.
+    // Reported as bug #2840253; supposedly fixed on 10.2 (testing it).
 
-    status = FSGetCatalogInfo(&fsRef, kFSCatInfoNodeID, &fsCatalogInfo, NULL, &fsSpec, NULL);
-    if (status != noErr)
-        return NO;
     {
-        CFStringRef stringName;
+        FSRef fsRef;
+        Boolean isDirectory;
+        FSCatalogInfo fsCatalogInfo;
+        Str255 pascalFileName;
 
-        NSLog(@"fsSpec has vRefNum %d, parID %d", (int)fsSpec.vRefNum, fsSpec.parID);
-        stringName = CFStringCreateWithPascalString(kCFAllocatorDefault, fsSpec.name, kCFStringEncodingUTF8);
-        NSLog(@"name: %@", stringName);
-        NSLog(@"catalog info has node id: %d", fsCatalogInfo.nodeID);
-    }
-//    NSLog(@"fsSpec has vRefNum %h, parID %d, name %@", fsSpec.vRefNum, fsSpec.parID, CFStringCreateWithPascalString(kCFAllocatorDefault, fsSpec.name, kCFStringEncodingMacRoman));
+        NSLog(@"getting FSRef for path: %@", [path stringByDeletingLastPathComponent]);
+        status = FSPathMakeRef([[path stringByDeletingLastPathComponent] fileSystemRepresentation], &fsRef, &isDirectory);
+        if (status != noErr || !isDirectory)
+            return NO;
 
-    NSLog(@"going on with file: %@", [path lastPathComponent]);
-    if (!CFStringGetPascalString((CFStringRef)[path lastPathComponent], pascalFileName, 256, kCFStringEncodingUTF8))
-        return NO;
-    status = FSMakeFSSpec(fsSpec.vRefNum, fsCatalogInfo.nodeID, pascalFileName, &fsSpec);
-    if (status != fnfErr)
-        return NO;
-    {
-        CFStringRef stringName;
+        status = FSGetCatalogInfo(&fsRef, kFSCatInfoNodeID, &fsCatalogInfo, NULL, &fsSpec, NULL);
+        if (status != noErr)
+            return NO;
+        {
+            CFStringRef stringName;
 
-        NSLog(@"fsSpec has vRefNum %d, parID %d", (int)fsSpec.vRefNum, fsSpec.parID);
-        stringName = CFStringCreateWithPascalString(kCFAllocatorDefault, fsSpec.name, kCFStringEncodingUTF8);
-        NSLog(@"name: %@", stringName);
-    }
-    //    NSLog(@"fsSpec has vRefNum %h, parID %d, name %@", fsSpec.vRefNum, fsSpec.parID, CFStringCreateWithPascalString(NULL, fsSpec.name, kCFStringEncodingMacRoman));
+            NSLog(@"fsSpec has vRefNum %d, parID %d", (int)fsSpec.vRefNum, fsSpec.parID);
+            stringName = CFStringCreateWithPascalString(kCFAllocatorDefault, fsSpec.name, kCFStringEncodingUTF8);
+            NSLog(@"name: %@", stringName);
+            NSLog(@"catalog info has node id: %d", fsCatalogInfo.nodeID);
+        }
+        //    NSLog(@"fsSpec has vRefNum %h, parID %d, name %@", fsSpec.vRefNum, fsSpec.parID, CFStringCreateWithPascalString(kCFAllocatorDefault, fsSpec.name, kCFStringEncodingMacRoman));
+
+        NSLog(@"going on with file: %@", [path lastPathComponent]);
+        if (!CFStringGetPascalString((CFStringRef)[path lastPathComponent], pascalFileName, 256, kCFStringEncodingUTF8))
+            return NO;
+        status = FSMakeFSSpec(fsSpec.vRefNum, fsCatalogInfo.nodeID, pascalFileName, &fsSpec);
+        if (status != fnfErr)
+            return NO;
+        {
+            CFStringRef stringName;
+
+            NSLog(@"fsSpec has vRefNum %d, parID %d", (int)fsSpec.vRefNum, fsSpec.parID);
+            stringName = CFStringCreateWithPascalString(kCFAllocatorDefault, fsSpec.name, kCFStringEncodingUTF8);
+            NSLog(@"name: %@", stringName);
+        }
+        //    NSLog(@"fsSpec has vRefNum %h, parID %d, name %@", fsSpec.vRefNum, fsSpec.parID, CFStringCreateWithPascalString(NULL, fsSpec.name, kCFStringEncodingMacRoman));
+    }        
     
-    // TODO maybe support an "atomically", or overwrite the file, or something
-
     status = NewMusicSequence(&sequence);
     if (status == noErr) {
         MusicTrack track;
-
-        {
-            UInt32 trackCount;
-
-            status = MusicSequenceGetTrackCount(sequence, &trackCount);
-            NSLog(@"status: %ld track count: %lu", status, trackCount);
-        }
         
         status = MusicSequenceNewTrack(sequence, &track);
         if (status == noErr) {
@@ -246,31 +445,41 @@
                 midiRawData->length = messageDataLength;
                 [messageData getBytes:midiRawData->data];
 
-                NSLog(@"adding raw data event with length: %u", messageDataLength);
-                
                 status = MusicTrackNewMIDIRawDataEvent(track, eventTimeStamp, midiRawData);
-                if (status != noErr)
+                if (status != noErr) {
                     NSLog(@"MusicTrackNewMIDIRawDataEvent: error %ld", status);
+                    // TODO error out of this whole operation
+                }
 
                 free(midiRawData);
-                eventTimeStamp += 1.0; // TODO should be the approx. duration of this sysex data at the sequence's tempo
+                eventTimeStamp += 1.0;
+                    // TODO should be the approx. duration of this sysex data at the sequence's tempo
                     // unclear if this is in beats or seconds (probably beats)
                     // also add on some time between messages (say 150ms or more, or round up to next bar)
             }
-
-            // TODO Apparently we need to create the file first, then save to it... seems like a bug.
-            status = FSpCreate(&fsSpec, '????', '????', smSystemScript);
-            if (status != noErr) {
-                NSLog(@"FSpCreate failed: %ld", status);
-            }
             
+/*            status = MusicSequenceSaveSMFData(sequence, (CFDataRef *)&smfData, 0);
+            if (status != noErr)
+                NSLog(@"MusicSequenceSaveSMFData returned err: %ld", status);
+
+            if (smfData)
+                NSLog(@"retain count of SMF data is originally %ld", [smfData retainCount]);
+            [smfData retain]; */
+
             status = MusicSequenceSaveSMF(sequence, &fsSpec, 0);
-            if (status == noErr)
-                success = YES;
+            if (status != noErr)
+                NSLog(@"MusicSequenceSaveSMF returned err: %ld", status);
         }
 
         DisposeMusicSequence(sequence);
     }
+
+    /*
+    if (smfData) {
+        success = [smfData writeToFile:path atomically:YES];
+        [smfData release];
+    }
+     */
 
     return success;
 }
