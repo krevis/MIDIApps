@@ -121,7 +121,8 @@ if [[ $DO_INSTALL -eq 1 ]]; then
 	# We don't need non-English localizations right now
 	find . -name \*.lproj \! -name English.lproj -exec rm -rf {} \; -prune
 	# I don't trust the new keyedobjects nibs yet... IB is too flaky.
-	find . -name keyedobjects.nib -type f -exec rm -f {} \;
+	# (commenting this out, it's probably time to switch to the new scheme)
+	# find . -name keyedobjects.nib -type f -exec rm -f {} \;
 fi
 
 #

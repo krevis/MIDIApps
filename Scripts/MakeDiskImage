@@ -52,10 +52,10 @@ shift array
 MOUNTPOINT="$array"
 
 # Make the volume's root directory automatically open when mounted
-if [ -x /usr/local/bin/makeDirectoryAutoOpen ]; then
-   /usr/local/bin/makeDirectoryAutoOpen -folder "$MOUNTPOINT"
+if [ -x `which makeDirectoryAutoOpen` ]; then
+   makeDirectoryAutoOpen -folder "$MOUNTPOINT"
 else
-   echo "    *** Couldn't find /usr/local/bin/makeDirectoryAutoOpen, so not running it"
+   echo "    *** Couldn't find makeDirectoryAutoOpen, so not running it"
 fi
 
 # Copy the app into the mounted filesystem
@@ -85,7 +85,7 @@ if [[ $DO_APPLESCRIPT -eq 1 ]] ; then
 		set arrangement of theOptions to not arranged
 
 		-- Set the window size/position and the icon position
-		set bounds of theWindow to {100, 100, 422, 280}
+		set bounds of theWindow to {100, 100, 422, 290}
 		set position of theApp to {80, 71}
 		set position of theReadMe to {240, 71}
 	end tell
@@ -100,8 +100,8 @@ fi
 
 # Eject the disk
 echo "    Ejecting..."
-#hdiutil eject $DRIVE   # This doesn't give the Finder a chance to sync...
-osascript -e "tell application \"Finder\" to eject disk \"$VOLUME_NAME\""
+#osascript -e "tell application \"Finder\" to eject disk \"$VOLUME_NAME\""
+hdiutil eject $DRIVE   # This doesn't give the Finder a chance to sync... not true anymore though
 
 # Convert the image to a UDIF compressed image 
 echo "    Compressing..."
