@@ -33,6 +33,7 @@
 - (NSString *)name;
 - (void)setName:(NSString *)value;
 - (void)setNameFromFile;
+- (BOOL)renameFileTo:(NSString *)newFileName;
 
 - (NSArray *)messages;
 

@@ -175,8 +175,7 @@ NSString *SSESysExFileExtension = @"syx";
 
     fileManager = [NSFileManager defaultManager];
     
-    // TODO what name?  attach the date, perhaps?
-    newFileName = @"New SysEx File";
+    newFileName = @"Untitled";
     newFilePath = [[[self fileDirectoryPath] stringByAppendingPathComponent:newFileName] stringByAppendingPathExtension:SSESysExFileExtension];
     newFilePath = [fileManager uniqueFilenameFromName:newFilePath];
 

@@ -430,12 +430,21 @@ static SSEMainWindowController *controller;
 
 - (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(int)row;
 {
+    NSString *newName = (NSString *)object;
     SSELibraryEntry *entry;
 
+    if (!newName || [newName length] == 0)
+        return;
+    
     entry = [sortedLibraryEntries objectAtIndex:row];
-    if ([object isKindOfClass:[NSString class]])
-        [entry setName:object];
-
+    if ([entry isFilePresentIgnoringCachedValue]) {
+        if ([entry renameFileTo:newName]) {
+            [entry setName:newName];
+        } else {
+            NSBeginAlertSheet(@"Error", nil, nil, nil, [self window], self, @selector(_sheetDidEnd:returnCode:contextInfo:), NULL, NULL, @"The file for this item could not be renamed to \"%@\".", newName);
+        }
+    }
+    
     [self synchronizeLibrary];
 }
 
@@ -502,6 +511,14 @@ static SSEMainWindowController *controller;
 
     [self synchronizeLibrarySortIndicator];
     [self synchronizeLibrary];
+}
+
+- (BOOL)tableView:(NSTableView *)tableView shouldEditTableColumn:(NSTableColumn *)tableColumn row:(int)row;
+{
+    SSELibraryEntry *entry;
+
+    entry = [sortedLibraryEntries objectAtIndex:row];
+    return ([entry isFilePresent]);
 }
 
 @end

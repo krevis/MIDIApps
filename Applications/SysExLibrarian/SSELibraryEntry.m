@@ -128,7 +128,6 @@
 
 - (void)setName:(NSString *)value;
 {
-    // TODO should we also rename the file that the alias points to? maybe...
     if (name != value) {
         [name release];
         name = [value retain];
@@ -151,6 +150,84 @@
         // TODO localize
 
     [self setName:newName];
+}
+
+- (BOOL)renameFileTo:(NSString *)newFileName;
+{
+    NSString *path;
+    NSString *fileName;
+    NSString *extension;
+    NSString *modifiedNewFileName;
+    NSString *newPath;
+    BOOL shouldHideExtension = NO;
+    int rc;
+
+    path = [self path];
+    if (!path)
+        return NO;
+
+    fileName = [path lastPathComponent];
+    extension = [fileName pathExtension];
+
+    // Calculate the new file name, keeping the same extension as before.
+    // TODO Is that really exactly what we want?
+    if (extension && [extension length] > 0) {
+        // The old file name had an extension. We need to make sure the new name has the same extension.
+        NSString *newExtension;
+        
+        newExtension = [newFileName pathExtension];
+        if (newExtension && [newExtension length] > 0) {
+            // Both the old and new file names have extensions.
+            if ([newExtension isEqualToString:extension]) {
+                // The extensions are the same, so use the new name as it is.
+                modifiedNewFileName = newFileName;
+            } else {
+                // The extensions are different. Just tack the old extension on to the new name.
+                modifiedNewFileName = [newFileName stringByAppendingPathExtension:extension];
+            }
+        } else {
+            // The new file name has no extension, so add the old one on.
+            // We also want to hide the extension from the user, so it looks like the new name was granted.
+            shouldHideExtension = YES;
+            modifiedNewFileName = [newFileName stringByAppendingPathExtension:extension];
+        }
+    } else {
+        // The old file name had no extension, so just accept the new name as it is.
+        modifiedNewFileName = newFileName;    
+    }
+
+    // TODO We should do something like the code below (not sure if it's correct):
+#if 0    
+    // Limit new file name to 255 unicode characters, because that's all HFS+ will allow.
+    // NOTE Yes, we should be taking into account the actual filesystem, which might not be HFS+.
+    if ([modifiedNewFileName length] > 255) {
+        NSString *withoutExtension;
+        NSString *newExtension;
+
+        withoutExtension = [modifiedNewFileName stringByDeletingPathExtension];
+        newExtension =  [modifiedNewFileName pathExtension];
+        withoutExtension = [withoutExtension substringToIndex:(255 - [newExtension length] - 1)];
+        modifiedNewFileName = [withoutExtension stringByAppendingPathExtension:newExtension];        
+    }
+#endif
+
+    newPath = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:modifiedNewFileName];
+
+    if ([newPath isEqualToString:path])
+        return YES;
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:newPath])
+        return NO;
+
+    rc = rename([path fileSystemRepresentation], [newPath fileSystemRepresentation]);
+    if (rc == 0) {
+        if (shouldHideExtension) {
+            [[NSFileManager defaultManager] changeFileAttributes:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:NSFileExtensionHidden] atPath:newPath];
+        }
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 - (NSArray *)messages;
