@@ -7,8 +7,12 @@
 {
     IBOutlet NSMatrix *sizeFormatMatrix;
     IBOutlet NSTextField *sysExFolderPathField;
+    IBOutlet NSSlider *sysExReadTimeOutSlider;
+    IBOutlet NSSlider *sysExIntervalBetweenSentMessagesSlider;
 
     OFPreference *sizeFormatPreference;
+    OFPreference *readTimeOutPreference;
+    OFPreference *intervalBetweenSentMessagesPreference;
 }
 
 + (SSEPreferencesWindowController *)preferencesWindowController;
@@ -17,8 +21,12 @@
 
 - (IBAction)changeSizeFormat:(id)sender;
 - (IBAction)changeSysExFolder:(id)sender;
+- (IBAction)changeReadTimeOut:(id)sender;
+- (IBAction)changeIntervalBetweenSentMessages:(id)sender;
 
 @end
 
 // Notifications
 extern NSString *SSEDisplayPreferenceChangedNotification;
+extern NSString *SSESysExSendPreferenceChangedNotification;
+extern NSString *SSESysExReceivePreferenceChangedNotification;

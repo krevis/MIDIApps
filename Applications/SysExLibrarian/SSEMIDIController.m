@@ -4,11 +4,14 @@
 #import <OmniFoundation/OmniFoundation.h>
 
 #import "SSEMainWindowController.h"
+#import "SSEPreferencesWindowController.h"
 
 
 @interface SSEMIDIController (Private)
 
 - (void)_midiSetupDidChange:(NSNotification *)notification;
+- (void)_sendPreferenceDidChange:(NSNotification *)notification;
+- (void)_receivePreferenceDidChange:(NSNotification *)notification;
 
 - (void)_endpointAppeared:(NSNotification *)notification;
 - (void)_outputStreamEndpointDisappeared:(NSNotification *)notification;
@@ -31,6 +34,8 @@
 
 NSString *SSESelectedDestinationPreferenceKey = @"SSESelectedDestination";
 NSString *SSEHasShownSysExWorkaroundWarningPreferenceKey = @"SSEHasShownSysExWorkaroundWarning";
+NSString *SSESysExReadTimeOutPreferenceKey = @"SSESysExReadTimeOut";
+NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey = @"SSESysExIntervalBetweenSentMessages";
 
 
 - (id)init
@@ -68,14 +73,19 @@ NSString *SSEHasShownSysExWorkaroundWarningPreferenceKey = @"SSEHasShownSysExWor
     messages = [[NSMutableArray alloc] init];    
     messageBytesRead = 0;
     totalBytesRead = 0;
-    
+
     listeningToMessages = NO;
     listenToMultipleMessages = NO;
 
-    pauseTimeBetweenMessages = 0.150;	// 150 ms
     sendProgressLock = [[NSLock alloc] init];
     
     [center addObserver:self selector:@selector(_midiSetupDidChange:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
+
+    [self _sendPreferenceDidChange:nil];
+    [center addObserver:self selector:@selector(_sendPreferenceDidChange:) name:SSESysExSendPreferenceChangedNotification object:nil];
+
+    [self _receivePreferenceDidChange:nil];
+    [center addObserver:self selector:@selector(_receivePreferenceDidChange:) name:SSESysExReceivePreferenceChangedNotification object:nil];
 
     return self;
 }
@@ -158,16 +168,6 @@ NSString *SSEHasShownSysExWorkaroundWarningPreferenceKey = @"SSEHasShownSysExWor
             [windowController showSysExWorkaroundWarning];
         }
     }
-}
-
-- (NSTimeInterval)pauseTimeBetweenMessages;
-{
-    return pauseTimeBetweenMessages;
-}
-
-- (void)setPauseTimeBetweenMessages:(NSTimeInterval)value;
-{
-    pauseTimeBetweenMessages = value;
 }
 
 - (NSArray *)messages;
@@ -322,6 +322,19 @@ NSString *SSEHasShownSysExWorkaroundWarningPreferenceKey = @"SSEHasShownSysExWor
     if (listenToMIDISetupChanges) {
         [windowController synchronizeDestinations];
     }
+}
+
+- (void)_sendPreferenceDidChange:(NSNotification *)notification;
+{
+    pauseTimeBetweenMessages = (double)[[OFPreference preferenceForKey:SSESysExIntervalBetweenSentMessagesPreferenceKey] integerValue] / 1000.0;
+}
+
+- (void)_receivePreferenceDidChange:(NSNotification *)notification;
+{
+    double sysExReadTimeOut;
+
+    sysExReadTimeOut = (double)[[OFPreference preferenceForKey:SSESysExReadTimeOutPreferenceKey] integerValue] / 1000.0;
+    [inputStream setSysExTimeOut:sysExReadTimeOut];
 }
 
 - (void)_endpointAppeared:(NSNotification *)notification;

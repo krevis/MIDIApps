@@ -17,7 +17,7 @@
     BOOL listenToMIDISetupChanges;
     NSMutableArray *messages;
     
-    // ... for listening for sysex 
+    // ... for listening for sysex
     BOOL listeningToMessages;
     BOOL listenToMultipleMessages;
     unsigned int messageBytesRead;
@@ -38,9 +38,6 @@
 - (NSArray *)destinationDescriptions;
 - (NSDictionary *)destinationDescription;
 - (void)setDestinationDescription:(NSDictionary *)destinationDescription;
-
-- (NSTimeInterval)pauseTimeBetweenMessages;
-- (void)setPauseTimeBetweenMessages:(NSTimeInterval)value;
 
 - (NSArray *)messages;
 - (void)setMessages:(NSArray *)value;
@@ -66,3 +63,5 @@
 // Preferences keys
 extern NSString *SSESelectedDestinationPreferenceKey;
 extern NSString *SSEHasShownSysExWorkaroundWarningPreferenceKey;
+extern NSString *SSESysExReadTimeOutPreferenceKey;
+extern NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey;

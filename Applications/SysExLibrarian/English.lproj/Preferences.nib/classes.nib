@@ -2,10 +2,20 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            ACTIONS = {changeSizeFormat = id; changeSysExFolder = id; }; 
+            ACTIONS = {
+                changeIntervalBetweenSentMessages = id; 
+                changeReadTimeOut = id; 
+                changeSizeFormat = id; 
+                changeSysExFolder = id; 
+            }; 
             CLASS = SSEPreferencesWindowController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {sizeFormatMatrix = NSMatrix; sysExFolderPathField = NSTextField; }; 
+            OUTLETS = {
+                sizeFormatMatrix = NSMatrix; 
+                sysExFolderPathField = NSTextField; 
+                sysExIntervalBetweenSentMessagesSlider = NSSlider; 
+                sysExReadTimeOutSlider = NSSlider; 
+            }; 
             SUPERCLASS = SSEWindowController; 
         }, 
         {
