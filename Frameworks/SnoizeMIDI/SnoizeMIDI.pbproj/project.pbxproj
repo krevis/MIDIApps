@@ -64,6 +64,7 @@
 				014CEA450018CDF011CA2923,
 				F5E4BDD0018FCA6301000164,
 			);
+			hasScannedForEncodings = 1;
 			isa = PBXProject;
 			mainGroup = 0867D691FE84028FC02AAC07;
 			productRefGroup = 034768DFFF38A50411DB9C8B;
@@ -171,7 +172,6 @@
 </dict>
 </plist>
 ";
-			shouldUseHeadermap = 1;
 		};
 		0867D69DFE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
@@ -361,11 +361,13 @@
 //F53
 //F54
 		F51DC1190328B28901000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMIDIObject.h;
 			refType = 4;
 		};
 		F51DC11A0328B28901000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMIDIObject.m;
 			refType = 4;
@@ -377,11 +379,13 @@
 			};
 		};
 		F53BB49D015D4AC001000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMEndpoint.h;
 			refType = 4;
 		};
 		F53BB49E015D4AC001000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMEndpoint.m;
 			refType = 4;
@@ -411,6 +415,7 @@
 			refType = 4;
 		};
 		F53BB4B2015D9A5D01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			name = English;
 			path = English.lproj/SnoizeMIDI.strings;
@@ -441,46 +446,55 @@
 			};
 		};
 		F53D4A95015A960601000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMClient.h;
 			refType = 4;
 		};
 		F53D4A96015A960601000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMClient.m;
 			refType = 4;
 		};
 		F53D4A97015A960601000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMessage.h;
 			refType = 4;
 		};
 		F53D4A98015A960601000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMessage.m;
 			refType = 4;
 		};
 		F53D4A99015A960601000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMessageDestinationProtocol.h;
 			refType = 4;
 		};
 		F53D4A9A015A960601000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMessageFilter.h;
 			refType = 4;
 		};
 		F53D4A9B015A960601000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMessageFilter.m;
 			refType = 4;
 		};
 		F53D4A9C015A960601000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMessageParser.h;
 			refType = 4;
 		};
 		F53D4A9D015A960601000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMessageParser.m;
 			refType = 4;
@@ -555,6 +569,7 @@
 			};
 		};
 		F53D4AB3015AA95101000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SnoizeMIDI.h;
 			refType = 4;
@@ -569,11 +584,13 @@
 			};
 		};
 		F540F193022133F901000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMWorkaroundSysExSendRequest.h;
 			refType = 4;
 		};
 		F540F194022133F901000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMWorkaroundSysExSendRequest.m;
 			refType = 4;
@@ -591,6 +608,7 @@
 			};
 		};
 		F547E05303184DAA01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = PrecompHeader.h;
 			refType = 4;
@@ -612,11 +630,13 @@
 			refType = 4;
 		};
 		F557E37201BEC38401000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMVirtualOutputStream.h;
 			refType = 4;
 		};
 		F557E37301BEC38401000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMVirtualOutputStream.m;
 			refType = 4;
@@ -646,6 +666,7 @@
 			refType = 4;
 		};
 		F55A2B05016443EF01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			name = ControllerNames.plist;
 			path = English.lproj/ControllerNames.plist;
@@ -658,6 +679,7 @@
 			};
 		};
 		F55C9C180244DE3401000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMInputStreamSource.h;
 			refType = 4;
@@ -672,6 +694,7 @@
 			};
 		};
 		F55C9C1C0244F30F01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMInputStreamSource.m;
 			refType = 4;
@@ -683,11 +706,13 @@
 			};
 		};
 		F560977001E564B401000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMSysExSendRequest.h;
 			refType = 4;
 		};
 		F560977101E564B401000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMSysExSendRequest.m;
 			refType = 4;
@@ -708,11 +733,13 @@
 			};
 		};
 		F561535E01C23FE001000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMVoiceMessage.h;
 			refType = 4;
 		};
 		F561535F01C23FE001000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMVoiceMessage.m;
 			refType = 4;
@@ -750,11 +777,13 @@
 			refType = 4;
 		};
 		F561536301C240C501000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMSystemCommonMessage.h;
 			refType = 4;
 		};
 		F561536401C240C501000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMSystemCommonMessage.m;
 			refType = 4;
@@ -775,11 +804,13 @@
 			};
 		};
 		F561536701C2411D01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMSystemRealTimeMessage.h;
 			refType = 4;
 		};
 		F561536801C2411D01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMSystemRealTimeMessage.m;
 			refType = 4;
@@ -800,11 +831,13 @@
 			};
 		};
 		F561536B01C2418301000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMSystemExclusiveMessage.h;
 			refType = 4;
 		};
 		F561536C01C2418301000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMSystemExclusiveMessage.m;
 			refType = 4;
@@ -856,21 +889,25 @@
 			refType = 4;
 		};
 		F56435D601BDE8B701000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMOutputStream.h;
 			refType = 4;
 		};
 		F56435D701BDE8B701000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMOutputStream.m;
 			refType = 4;
 		};
 		F56435D801BDE8B701000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMPortOutputStream.h;
 			refType = 4;
 		};
 		F56435D901BDE8B701000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMPortOutputStream.m;
 			refType = 4;
@@ -918,11 +955,13 @@
 			};
 		};
 		F574637701C02E4601000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMessageMult.h;
 			refType = 4;
 		};
 		F574637801C02E4601000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMessageMult.m;
 			refType = 4;
@@ -943,11 +982,13 @@
 			};
 		};
 		F574638101C043DE01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMessageHistory.h;
 			refType = 4;
 		};
 		F574638201C043DE01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMessageHistory.m;
 			refType = 4;
@@ -977,6 +1018,7 @@
 			refType = 4;
 		};
 		F57722BD0166F16D01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			name = English;
 			path = English.lproj/ManufacturerNames.plist;
@@ -998,6 +1040,7 @@
 			};
 		};
 		F57A51AE0354D62F01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = "SMMIDIObject-Private.h";
 			refType = 4;
@@ -1009,11 +1052,13 @@
 			};
 		};
 		F587D6CDC5B0447501527BD6 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = VirtualRingBuffer.h;
 			refType = 4;
 		};
 		F587D6CEC5B0447501527BD6 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = VirtualRingBuffer.m;
 			refType = 4;
@@ -1031,11 +1076,13 @@
 			};
 		};
 		F58C3E8901B5F8F001000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMPortInputStream.h;
 			refType = 4;
 		};
 		F58C3E8A01B5F8F001000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMPortInputStream.m;
 			refType = 4;
@@ -1056,11 +1103,13 @@
 			};
 		};
 		F58C3E9001B605C301000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMVirtualInputStream.h;
 			refType = 4;
 		};
 		F58C3E9101B605C301000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMVirtualInputStream.m;
 			refType = 4;
@@ -1088,11 +1137,13 @@
 			refType = 4;
 		};
 		F58C3E9501B606CB01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMInputStream.h;
 			refType = 4;
 		};
 		F58C3E9601B606CB01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMInputStream.m;
 			refType = 4;
@@ -1128,11 +1179,13 @@
 			};
 		};
 		F5920EC203850B7E01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = MessageQueue.c;
 			refType = 4;
 		};
 		F5920EC303850B7E01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = MessageQueue.h;
 			refType = 4;
@@ -1144,11 +1197,13 @@
 			};
 		};
 		F5ADD9F6023189AE01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMHostTime.h;
 			refType = 4;
 		};
 		F5ADD9F7023189AE01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMHostTime.m;
 			refType = 4;
@@ -1169,11 +1224,13 @@
 			};
 		};
 		F5DAB1E4030DE98E01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMExternalDevice.h;
 			refType = 4;
 		};
 		F5DAB1E5030DE98E01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMExternalDevice.m;
 			refType = 4;
@@ -1194,11 +1251,13 @@
 			};
 		};
 		F5DCD52C039EF3B001000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMUtilities.h;
 			refType = 4;
 		};
 		F5DCD52D039EF3B001000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMUtilities.m;
 			refType = 4;
@@ -1224,21 +1283,25 @@
 			refType = 4;
 		};
 		F5DCD534039EFE1B01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = "NSArray-SMExtensions.h";
 			refType = 4;
 		};
 		F5DCD535039EFE1B01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = "NSArray-SMExtensions.m";
 			refType = 4;
 		};
 		F5DCD539039F007801000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = "NSData-SMExtensions.h";
 			refType = 4;
 		};
 		F5DCD53A039F007801000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = "NSData-SMExtensions.m";
 			refType = 4;
@@ -1271,11 +1334,13 @@
 			refType = 4;
 		};
 		F5F915EF032A465A01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMDevice.h;
 			refType = 4;
 		};
 		F5F915F0032A465A01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMDevice.m;
 			refType = 4;
