@@ -14,6 +14,7 @@
 
 - (void)sendWillStart:(NSNotification *)notification;
 - (void)sendFinished:(NSNotification *)notification;
+- (void)sendFinishedImmediately:(NSNotification *)notification;
 
 - (void)updateProgressAndRepeat;
 - (void)updateProgress;
@@ -29,6 +30,9 @@
 {
     if (!(self = [super init]))
         return nil;
+
+    OBASSERT(mainWindowController != nil);
+    OBASSERT(midiController != nil);
 
     nonretainedMainWindowController = mainWindowController;
     nonretainedMIDIController = midiController;
@@ -60,11 +64,13 @@
 //
 
 - (void)playMessages:(NSArray *)messages;
-{
+{    
     [self observeMIDIController];
 
     [nonretainedMIDIController setMessages:messages];
     [nonretainedMIDIController sendMessages];
+    // This may send the messages immediately; if it does, it will post a notification and our -sendFinishedImmediately: will be called.
+    // Otherwise, we expect a notifications so that -sendWillStart: will be called.
 }
 
 //
@@ -74,7 +80,7 @@
 - (IBAction)cancelPlaying:(id)sender;
 {
     [nonretainedMIDIController cancelSendingMessages];
-    // SSEMIDIControllerSendFinishedNotification will get sent soon; it will end the sheet
+    // SSEMIDIControllerSendFinishedNotification will get sent soon; it will call our -sendFinished: and thus end the sheet
 }
 
 @end
@@ -86,12 +92,14 @@
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendWillStart:) name:SSEMIDIControllerSendWillStartNotification object:nonretainedMIDIController];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendFinished:) name:SSEMIDIControllerSendFinishedNotification object:nonretainedMIDIController];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendFinishedImmediately:) name:SSEMIDIControllerSendFinishedImmediatelyNotification object:nonretainedMIDIController];
 }
 
 - (void)stopObservingMIDIController;
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:SSEMIDIControllerSendWillStartNotification object:nonretainedMIDIController];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:SSEMIDIControllerSendFinishedNotification object:nonretainedMIDIController];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:SSEMIDIControllerSendFinishedImmediatelyNotification object:nonretainedMIDIController];
 }
 
 - (void)sendWillStart:(NSNotification *)notification;
@@ -102,6 +110,8 @@
     [progressIndicator setDoubleValue:0.0];
     [nonretainedMIDIController getMessageCount:NULL messageIndex:NULL bytesToSend:&bytesToSend bytesSent:NULL];
     [progressIndicator setMaxValue:bytesToSend];
+
+    OBASSERT(progressUpdateEvent == nil);
 
     [self updateProgressAndRepeat];
 
@@ -130,6 +140,13 @@
     [NSApp performSelector:@selector(endSheet:) withObject:sheetWindow afterDelay:0.5];
 
     [self stopObservingMIDIController];
+}
+
+- (void)sendFinishedImmediately:(NSNotification *)notification;
+{
+    OBASSERT(progressUpdateEvent == nil);
+    
+    [self stopObservingMIDIController];    
 }
 
 - (void)updateProgressAndRepeat;

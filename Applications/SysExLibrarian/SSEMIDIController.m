@@ -48,6 +48,7 @@ NSString *SSEMIDIControllerReadStatusChangedNotification = @"SSEMIDIControllerRe
 NSString *SSEMIDIControllerReadFinishedNotification = @"SSEMIDIControllerReadFinishedNotification";
 NSString *SSEMIDIControllerSendWillStartNotification = @"SSEMIDIControllerSendWillStartNotification";
 NSString *SSEMIDIControllerSendFinishedNotification = @"SSEMIDIControllerSendFinishedNotification";
+NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIControllerSendFinishedImmediatelyNotification";
 
 
 - (id)initWithWindowController:(SSEMainWindowController *)mainWindowController;
@@ -196,7 +197,7 @@ NSString *SSEMIDIControllerSendFinishedNotification = @"SSEMIDIControllerSendFin
     
     if (value != messages) {
         [messages release];
-        messages = [[NSMutableArray alloc] initWithArray:value];
+        messages = [value copy];
     }
 }
 
@@ -263,6 +264,9 @@ NSString *SSEMIDIControllerSendFinishedNotification = @"SSEMIDIControllerSendFin
     if (![outputStream canSendSysExAsynchronously]) {
         // Just dump all the messages out at once
         [outputStream takeMIDIMessages:messages];
+        // And we're done
+        [[NSNotificationCenter defaultCenter] postNotificationName:SSEMIDIControllerSendFinishedImmediatelyNotification object:self];
+        [self setMessages:nil];
         return;
     }
 
@@ -525,6 +529,9 @@ static MIDITimeStamp pauseStartTimeStamp = 0;
 - (void)finishedSendingMessagesWithSuccess:(BOOL)success;
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:SSEMIDIControllerSendFinishedNotification object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:success] forKey:@"success"]];
+
+    // Now we are done with the messages and can get rid of them
+    [self setMessages:nil];
 }
 
 @end
