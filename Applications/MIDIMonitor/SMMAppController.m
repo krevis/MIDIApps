@@ -78,6 +78,17 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_endpointAppeared:) name:SMEndpointAppearedNotification object:nil];
 }
 
+- (void)applicationWillTerminate:(NSNotification *)notification;
+{
+    if (midiSpyClient) {
+        // Just invalidate the client, so the driver loses track of it (and thus gets rid of its internal MIDIClient if necessary).
+        // But don't dispose of the client, since we may still have outstanding MIDISpyPorts in documents, and trying to dispose of
+        // them after the MIDISpyClient is gone is a bad idea.
+        MIDISpyClientInvalidate(midiSpyClient);
+        midiSpyClient = NULL;
+    }
+}
+
 - (IBAction)showPreferences:(id)sender;
 {
     [[SMMPreferencesWindowController preferencesWindowController] showWindow:nil];
