@@ -403,6 +403,7 @@
 				F57F628C0261C8FC01000164,
 				F57F62910261D5A701000164,
 				F55462290263619E01000164,
+				F5DCBE9002E6064E01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -446,6 +447,7 @@
 				F57F628D0261C8FC01000164,
 				F57F62920261D5A701000164,
 				F554622A0263619E01000164,
+				F5DCBE9102E6064E01000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -855,6 +857,8 @@
 				F57F62900261D5A701000164,
 				F55462270263619E01000164,
 				F55462280263619E01000164,
+				F5DCBE8E02E6064E01000164,
+				F5DCBE8F02E6064E01000164,
 			);
 			isa = PBXGroup;
 			name = "Cocoa Extensions";
@@ -979,6 +983,28 @@
 		};
 		F5BCCECB023F644901000164 = {
 			fileRef = F5BCCECA023F644901000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5DCBE8E02E6064E01000164 = {
+			isa = PBXFileReference;
+			path = SMMWindowController.h;
+			refType = 4;
+		};
+		F5DCBE8F02E6064E01000164 = {
+			isa = PBXFileReference;
+			path = SMMWindowController.m;
+			refType = 4;
+		};
+		F5DCBE9002E6064E01000164 = {
+			fileRef = F5DCBE8E02E6064E01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5DCBE9102E6064E01000164 = {
+			fileRef = F5DCBE8F02E6064E01000164;
 			isa = PBXBuildFile;
 			settings = {
 			};

@@ -15,20 +15,20 @@
 
 @interface SMMMonitorWindowController (Private)
 
-- (void)_displayPreferencesDidChange:(NSNotification *)notification;
+- (void)displayPreferencesDidChange:(NSNotification *)notification;
 
-- (void)_setupWindowCascading;
-- (void)_setWindowFrameFromDocument;
-- (void)_updateDocumentWindowFrameDescription;
+- (void)setupWindowCascading;
+- (void)setWindowFrameFromDocument;
+- (void)updateDocumentWindowFrameDescription;
 
-- (void)_showSysExProgressIndicator;
-- (void)_hideSysExProgressIndicator;
+- (void)showSysExProgressIndicator;
+- (void)hideSysExProgressIndicator;
 
-- (BOOL)_canShowSelectedMessageDetails;
+- (BOOL)canShowSelectedMessageDetails;
 
-- (NSCellStateValue)_buttonStateForInputSources:(NSArray *)sources;
+- (NSCellStateValue)buttonStateForInputSources:(NSArray *)sources;
 
-- (void)_synchronizeDisclosableView:(SNDisclosableView *)view button:(NSButton *)button withIsShown:(BOOL)isShown;
+- (void)synchronizeDisclosableView:(SNDisclosableView *)view button:(NSButton *)button withIsShown:(BOOL)isShown;
 
 @end
 
@@ -50,7 +50,7 @@ static NSString *kToString = nil;
     if (!(self = [super initWithWindowNibName:@"MIDIMonitor"]))
         return nil;
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_displayPreferencesDidChange:) name:SMMDisplayPreferenceChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayPreferencesDidChange:) name:SMMDisplayPreferenceChangedNotification object:nil];
 
     oneChannel = 1;
 
@@ -129,7 +129,7 @@ static NSString *kToString = nil;
     [messagesTableView setTarget:self];
     [messagesTableView setDoubleAction:@selector(showSelectedMessageDetails:)];
 
-    [self _hideSysExProgressIndicator];
+    [self hideSysExProgressIndicator];
 }
 
 - (void)setDocument:(NSDocument *)document
@@ -137,17 +137,17 @@ static NSString *kToString = nil;
     [super setDocument:document];
 
     if (document) {
-        [self _setupWindowCascading];
+        [self setupWindowCascading];
         [self window];	// Make sure the window is loaded
         [self synchronizeInterface];
-        [self _setWindowFrameFromDocument];
+        [self setWindowFrameFromDocument];
     }
 }
 
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem;
 {
     if ([anItem action] == @selector(showSelectedMessageDetails:)) {
-        return [self _canShowSelectedMessageDetails];
+        return [self canShowSelectedMessageDetails];
     } else {
         return YES;
     }
@@ -218,7 +218,7 @@ static NSString *kToString = nil;
     BOOL isShown;
 
     // Toggle the button immediately, which looks better.
-    // NOTE This is absolutely a dumb place to do it, but I CANNOT get it to work any other way. See comment in -_synchronizeDisclosableView:button:withIsShown:.
+    // NOTE This is absolutely a dumb place to do it, but I CANNOT get it to work any other way. See comment in -synchronizeDisclosableView:button:withIsShown:.
     [sender setIntValue:![sender intValue]];
 
     isShown = [[self document] isFilterShown];
@@ -230,7 +230,7 @@ static NSString *kToString = nil;
     BOOL isShown;
 
     // Toggle the button immediately, which looks better.
-    // NOTE This is absolutely a dumb place to do it, but I CANNOT get it to work any other way. See comment in -_synchronizeDisclosableView:button:withIsShown:.
+    // NOTE This is absolutely a dumb place to do it, but I CANNOT get it to work any other way. See comment in -synchronizeDisclosableView:button:withIsShown:.
     [sender setIntValue:![sender intValue]];
 
     isShown = [[self document] areSourcesShown];
@@ -239,7 +239,7 @@ static NSString *kToString = nil;
 
 - (IBAction)showSelectedMessageDetails:(id)sender;
 {
-    if ([self _canShowSelectedMessageDetails]) {
+    if ([self canShowSelectedMessageDetails]) {
         SMSystemExclusiveMessage *message;
         SMMSysExWindowController *sysExWindowController;
 
@@ -290,7 +290,7 @@ static NSString *kToString = nil;
 
 - (void)synchronizeSourcesShown;
 {
-    [self _synchronizeDisclosableView:sourcesDisclosableView button:sourcesDisclosureButton withIsShown:[[self document] areSourcesShown]];
+    [self synchronizeDisclosableView:sourcesDisclosableView button:sourcesDisclosureButton withIsShown:[[self document] areSourcesShown]];
 }
 
 - (void)synchronizeMaxMessageCount;
@@ -356,7 +356,7 @@ static NSString *kToString = nil;
 
 - (void)synchronizeFilterShown;
 {
-    [self _synchronizeDisclosableView:filterDisclosableView button:filterDisclosureButton withIsShown:[[self document] isFilterShown]];
+    [self synchronizeDisclosableView:filterDisclosableView button:filterDisclosureButton withIsShown:[[self document] isFilterShown]];
 }
 
 - (void)scrollToLastMessage;
@@ -404,7 +404,7 @@ static NSString *kToString = nil;
 
 - (void)updateSysExReadIndicatorWithBytes:(NSNumber *)bytesReadNumber;
 {
-    [self _showSysExProgressIndicator];
+    [self showSysExProgressIndicator];
 
     if (!nextSysExAnimateDate || [[NSDate date] isAfterDate:nextSysExAnimateDate]) {
         [sysExProgressIndicator animate:nil];
@@ -415,7 +415,7 @@ static NSString *kToString = nil;
 
 - (void)stopSysExReadIndicatorWithBytes:(NSNumber *)bytesReadNumber;
 {
-    [self _hideSysExProgressIndicator];
+    [self hideSysExProgressIndicator];
     [nextSysExAnimateDate release];
     nextSysExAnimateDate = nil;
 }
@@ -466,12 +466,12 @@ static NSString *kToString = nil;
 
 - (void)windowDidResize:(NSNotification *)notification;
 {
-    [self _updateDocumentWindowFrameDescription];
+    [self updateDocumentWindowFrameDescription];
 }
 
 - (void)windowDidMove:(NSNotification *)notification;
 {
-    [self _updateDocumentWindowFrameDescription];
+    [self updateDocumentWindowFrameDescription];
 }
 
 
@@ -524,7 +524,7 @@ static NSString *kToString = nil;
         else
             sources = [NSArray arrayWithObject:item];
         
-        return [NSNumber numberWithInt:[self _buttonStateForInputSources:sources]];
+        return [NSNumber numberWithInt:[self buttonStateForInputSources:sources]];
         
     } else {
         return nil;
@@ -607,12 +607,12 @@ static NSString *kToString = nil;
 
 @implementation SMMMonitorWindowController (Private)
 
-- (void)_displayPreferencesDidChange:(NSNotification *)notification;
+- (void)displayPreferencesDidChange:(NSNotification *)notification;
 {
     [messagesTableView reloadData];
 }
 
-- (void)_setupWindowCascading;
+- (void)setupWindowCascading;
 {
     // If the document specifies a window frame, we don't want to cascade.
     // Otherwise, this is a new document, and we do.
@@ -625,7 +625,7 @@ static NSString *kToString = nil;
     [self setShouldCascadeWindows:!documentHasFrame];
 }
 
-- (void)_setWindowFrameFromDocument;
+- (void)setWindowFrameFromDocument;
 {
     NSString *frameDescription;
 
@@ -639,7 +639,7 @@ static NSString *kToString = nil;
     sendWindowFrameChangesToDocument = YES;
 }
 
-- (void)_updateDocumentWindowFrameDescription;
+- (void)updateDocumentWindowFrameDescription;
 {
     if (sendWindowFrameChangesToDocument) {
         NSString *frameDescription;
@@ -649,7 +649,7 @@ static NSString *kToString = nil;
     }
 }
 
-- (void)_showSysExProgressIndicator;
+- (void)showSysExProgressIndicator;
 {
     if (![sysExProgressIndicator superview]) {
         [sysExProgressBox addSubview:sysExProgressIndicator];
@@ -660,7 +660,7 @@ static NSString *kToString = nil;
     }
 }
 
-- (void)_hideSysExProgressIndicator;
+- (void)hideSysExProgressIndicator;
 {
     if ([sysExProgressIndicator superview]) {
         [sysExProgressIndicator retain];
@@ -671,7 +671,7 @@ static NSString *kToString = nil;
     }
 }
 
-- (BOOL)_canShowSelectedMessageDetails;
+- (BOOL)canShowSelectedMessageDetails;
 {
     int selectedRow;
 
@@ -682,7 +682,7 @@ static NSString *kToString = nil;
     return [[displayedMessages objectAtIndex:selectedRow] isKindOfClass:[SMSystemExclusiveMessage class]];
 }
 
-- (NSCellStateValue)_buttonStateForInputSources:(NSArray *)sources;
+- (NSCellStateValue)buttonStateForInputSources:(NSArray *)sources;
 {
     NSSet *selectedSources;
     unsigned int sourceIndex;
@@ -703,7 +703,7 @@ static NSString *kToString = nil;
     return areAnySelected ? NSOnState : NSOffState;
 }
 
-- (void)_synchronizeDisclosableView:(SNDisclosableView *)view button:(NSButton *)button withIsShown:(BOOL)isShown;
+- (void)synchronizeDisclosableView:(SNDisclosableView *)view button:(NSButton *)button withIsShown:(BOOL)isShown;
 {
     BOOL savedSendWindowFrameChangesToDocument;
 
@@ -718,7 +718,7 @@ static NSString *kToString = nil;
 
     sendWindowFrameChangesToDocument = savedSendWindowFrameChangesToDocument;
     // Now we can update the document, once instead of many times.
-    [self _updateDocumentWindowFrameDescription];
+    [self updateDocumentWindowFrameDescription];
 }
 
 @end

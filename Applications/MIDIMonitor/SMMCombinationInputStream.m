@@ -12,13 +12,13 @@
 
 @interface SMMCombinationInputStream (Private)
 
-- (void)_observeNotificationsWithCenter:(NSNotificationCenter *)center object:(id)object;
+- (void)observeNotificationsWithCenter:(NSNotificationCenter *)center object:(id)object;
 
-- (void)_repostNotification:(NSNotification *)notification;
+- (void)repostNotification:(NSNotification *)notification;
 
-- (NSSet *)_intersectionOfSet:(NSSet *)set1 andArray:(NSArray *)array2;
+- (NSSet *)intersectionOfSet:(NSSet *)set1 andArray:(NSArray *)array2;
 
-- (void)_makeInputStream:(SMInputStream *)stream takePersistentSettings:(id)settings addingMissingNamesToArray:(NSMutableArray *)missingNames;
+- (void)makeInputStream:(SMInputStream *)stream takePersistentSettings:(id)settings addingMissingNamesToArray:(NSMutableArray *)missingNames;
 
 @end
 
@@ -38,17 +38,17 @@
     
     portInputStream = [[SMPortInputStream alloc] init];
     [portInputStream setMessageDestination:self];
-    [self _observeNotificationsWithCenter:center object:portInputStream];
+    [self observeNotificationsWithCenter:center object:portInputStream];
 
     virtualInputStream = [[SMVirtualInputStream alloc] init];
     [virtualInputStream setMessageDestination:self];
-    [self _observeNotificationsWithCenter:center object:virtualInputStream];
+    [self observeNotificationsWithCenter:center object:virtualInputStream];
 
     if ((spyClient = [[NSApp delegate] midiSpyClient])) {
         spyingInputStream = [[SMMSpyingInputStream alloc] initWithMIDISpyClient:spyClient];
         if (spyingInputStream) {
             [spyingInputStream setMessageDestination:self];
-            [self _observeNotificationsWithCenter:center object:spyingInputStream];        
+            [self observeNotificationsWithCenter:center object:spyingInputStream];        
         }
     }
 
@@ -142,10 +142,10 @@
     if (!inputSources)
         inputSources = [NSSet set];
     
-    [portInputStream setSelectedInputSources:[self _intersectionOfSet:inputSources andArray:[portInputStream inputSources]]];
-    [virtualInputStream setSelectedInputSources:[self _intersectionOfSet:inputSources andArray:[virtualInputStream inputSources]]];
+    [portInputStream setSelectedInputSources:[self intersectionOfSet:inputSources andArray:[portInputStream inputSources]]];
+    [virtualInputStream setSelectedInputSources:[self intersectionOfSet:inputSources andArray:[virtualInputStream inputSources]]];
     if (spyingInputStream)
-        [spyingInputStream setSelectedInputSources:[self _intersectionOfSet:inputSources andArray:[spyingInputStream inputSources]]];
+        [spyingInputStream setSelectedInputSources:[self intersectionOfSet:inputSources andArray:[spyingInputStream inputSources]]];
 }
 
 - (NSDictionary *)persistentSettings;
@@ -206,10 +206,10 @@
 
     } else {
         // This is a current-style document        
-        [self _makeInputStream:portInputStream takePersistentSettings:[settings objectForKey:@"portInputStream"] addingMissingNamesToArray:missingNames];
-        [self _makeInputStream:virtualInputStream takePersistentSettings:[settings objectForKey:@"virtualInputStream"] addingMissingNamesToArray:missingNames];
+        [self makeInputStream:portInputStream takePersistentSettings:[settings objectForKey:@"portInputStream"] addingMissingNamesToArray:missingNames];
+        [self makeInputStream:virtualInputStream takePersistentSettings:[settings objectForKey:@"virtualInputStream"] addingMissingNamesToArray:missingNames];
         if (spyingInputStream)
-            [self _makeInputStream:spyingInputStream takePersistentSettings:[settings objectForKey:@"spyingInputStream"] addingMissingNamesToArray:missingNames];
+            [self makeInputStream:spyingInputStream takePersistentSettings:[settings objectForKey:@"spyingInputStream"] addingMissingNamesToArray:missingNames];
     }
     
     if ([missingNames count] > 0)
@@ -233,19 +233,19 @@
 
 @implementation SMMCombinationInputStream (Private)
 
-- (void)_observeNotificationsWithCenter:(NSNotificationCenter *)center object:(id)object;
+- (void)observeNotificationsWithCenter:(NSNotificationCenter *)center object:(id)object;
 {
-    [center addObserver:self selector:@selector(_repostNotification:) name:SMInputStreamReadingSysExNotification object:object];
-    [center addObserver:self selector:@selector(_repostNotification:) name:SMInputStreamDoneReadingSysExNotification object:object];
-    [center addObserver:self selector:@selector(_repostNotification:) name:SMInputStreamSelectedInputSourceDisappearedNotification object:object];
+    [center addObserver:self selector:@selector(repostNotification:) name:SMInputStreamReadingSysExNotification object:object];
+    [center addObserver:self selector:@selector(repostNotification:) name:SMInputStreamDoneReadingSysExNotification object:object];
+    [center addObserver:self selector:@selector(repostNotification:) name:SMInputStreamSelectedInputSourceDisappearedNotification object:object];
 }
 
-- (void)_repostNotification:(NSNotification *)notification;
+- (void)repostNotification:(NSNotification *)notification;
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:[notification name] object:self userInfo:[notification userInfo]];
 }
 
-- (NSSet *)_intersectionOfSet:(NSSet *)set1 andArray:(NSArray *)array2;
+- (NSSet *)intersectionOfSet:(NSSet *)set1 andArray:(NSArray *)array2;
 {
     NSMutableSet *set2;
 
@@ -254,7 +254,7 @@
     return set2;
 }
 
-- (void)_makeInputStream:(SMInputStream *)stream takePersistentSettings:(id)settings addingMissingNamesToArray:(NSMutableArray *)missingNames;
+- (void)makeInputStream:(SMInputStream *)stream takePersistentSettings:(id)settings addingMissingNamesToArray:(NSMutableArray *)missingNames;
 {
     NSArray *streamMissingNames;
 

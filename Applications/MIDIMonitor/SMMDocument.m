@@ -11,24 +11,24 @@
 
 @interface SMMDocument (Private)
 
-- (void)_midiSetupDidChange:(NSNotification *)notification;
+- (void)midiSetupDidChange:(NSNotification *)notification;
 
-- (void)_setFilterMask:(SMMessageType)newMask;
-- (void)_setChannelMask:(SMChannelMask)newMask;
+- (void)setFilterMask:(SMMessageType)newMask;
+- (void)setChannelMask:(SMChannelMask)newMask;
 
-- (void)_updateVirtualEndpointName;
+- (void)updateVirtualEndpointName;
 
-- (void)_autoselectSources;
+- (void)autoselectSources;
 
-- (void)_historyDidChange:(NSNotification *)notification;
-- (void)_mainThreadSynchronizeMessages;
-- (void)_mainThreadScrollToLastMessage;
+- (void)historyDidChange:(NSNotification *)notification;
+- (void)mainThreadSynchronizeMessages;
+- (void)mainThreadScrollToLastMessage;
 
-- (void)_readingSysEx:(NSNotification *)notification;
-- (void)_mainThreadReadingSysEx;
+- (void)readingSysEx:(NSNotification *)notification;
+- (void)mainThreadReadingSysEx;
 
-- (void)_doneReadingSysEx:(NSNotification *)notification;
-- (void)_mainThreadDoneReadingSysEx:(NSNumber *)bytesReadNumber;
+- (void)doneReadingSysEx:(NSNotification *)notification;
+- (void)mainThreadDoneReadingSysEx:(NSNumber *)bytesReadNumber;
 
 @end
 
@@ -53,9 +53,9 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
     center = [NSNotificationCenter defaultCenter];
 
     stream = [[SMMCombinationInputStream alloc] init];
-    [center addObserver:self selector:@selector(_readingSysEx:) name:SMInputStreamReadingSysExNotification object:stream];
-    [center addObserver:self selector:@selector(_doneReadingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:stream];
-    [self _updateVirtualEndpointName];
+    [center addObserver:self selector:@selector(readingSysEx:) name:SMInputStreamReadingSysExNotification object:stream];
+    [center addObserver:self selector:@selector(doneReadingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:stream];
+    [self updateVirtualEndpointName];
 
     messageFilter = [[SMMessageFilter alloc] init];
     [stream setMessageDestination:messageFilter];
@@ -64,7 +64,7 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
 
     history = [[SMMessageHistory alloc] init];
     [messageFilter setMessageDestination:history];
-    [center addObserver:self selector:@selector(_historyDidChange:) name:SMMessageHistoryChangedNotification object:history];
+    [center addObserver:self selector:@selector(historyDidChange:) name:SMMessageHistoryChangedNotification object:history];
 
     areSourcesShown = NO;
     isFilterShown = NO;
@@ -72,7 +72,7 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
     missingSourceNames = nil;
     sysExBytesRead = 0;
 
-    [center addObserver:self selector:@selector(_midiSetupDidChange:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
+    [center addObserver:self selector:@selector(midiSetupDidChange:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
 
     oldAutoSelectPref = [OFPreference preferenceForKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey];
     autoSelectPref = [OFPreference preferenceForKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey];
@@ -83,7 +83,7 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
         [oldAutoSelectPref restoreDefaultValue];
     }
 
-    [self _autoselectSources];
+    [self autoselectSources];
 
     [self updateChangeCount:NSChangeCleared];
 
@@ -207,14 +207,14 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
         [self setMaxMessageCount:[SMMessageHistory defaultHistorySize]];
         
     if ((number = [dict objectForKey:@"filterMask"]))
-        [self _setFilterMask:[number unsignedIntValue]];
+        [self setFilterMask:[number unsignedIntValue]];
     else
-        [self _setFilterMask:SMMessageTypeAllMask];
+        [self setFilterMask:SMMessageTypeAllMask];
 
     if ((number = [dict objectForKey:@"channelMask"]))
-        [self _setChannelMask:[number unsignedIntValue]];
+        [self setChannelMask:[number unsignedIntValue]];
     else
-        [self _setChannelMask:SMChannelMaskAll];
+        [self setChannelMask:SMChannelMaskAll];
 
     if ((number = [dict objectForKey:@"areSourcesShown"]))
         [self setAreSourcesShown:[number boolValue]];
@@ -247,7 +247,7 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
 {
     [super setFileName:fileName];
 
-    [self _updateVirtualEndpointName];
+    [self updateVirtualEndpointName];
 }
 
 
@@ -325,7 +325,7 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
     else
         newMask &= ~maskToChange;
 
-    [self _setFilterMask:newMask];
+    [self setFilterMask:newMask];
 }
 
 - (BOOL)isShowingAllChannels;
@@ -357,12 +357,12 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
 
 - (void)showAllChannels;
 {
-    [self _setChannelMask:SMChannelMaskAll];
+    [self setChannelMask:SMChannelMaskAll];
 }
 
 - (void)showOnlyOneChannel:(unsigned int)channel;
 {
-    [self _setChannelMask:(1 << (channel - 1))];
+    [self setChannelMask:(1 << (channel - 1))];
 }
 
 - (BOOL)areSourcesShown;
@@ -422,7 +422,7 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
 
 @implementation SMMDocument (Private)
 
-- (void)_midiSetupDidChange:(NSNotification *)notification;
+- (void)midiSetupDidChange:(NSNotification *)notification;
 {
     if (!listenToMIDISetupChanges)
         return;
@@ -437,7 +437,7 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
     [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeMessages)];
 }
 
-- (void)_setFilterMask:(SMMessageType)newMask;
+- (void)setFilterMask:(SMMessageType)newMask;
 {
     SMMessageType oldMask;
     
@@ -445,14 +445,14 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
     if (newMask == oldMask)
         return;
 
-    [[[self undoManager] prepareWithInvocationTarget:self] _setFilterMask:oldMask];
+    [[[self undoManager] prepareWithInvocationTarget:self] setFilterMask:oldMask];
     [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Filter", @"MIDIMonitor", [self bundle], change filter undo action)];
 
     [messageFilter setFilterMask:newMask];    
     [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeFilterControls)];
 }
 
-- (void)_setChannelMask:(SMChannelMask)newMask;
+- (void)setChannelMask:(SMChannelMask)newMask;
 {
     SMChannelMask oldMask;
 
@@ -460,14 +460,14 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
     if (newMask == oldMask)
         return;
 
-    [[[self undoManager] prepareWithInvocationTarget:self] _setChannelMask:oldMask];
+    [[[self undoManager] prepareWithInvocationTarget:self] setChannelMask:oldMask];
     [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Channel", @"MIDIMonitor", [self bundle], change filter channel undo action)];
 
     [messageFilter setChannelMask:newMask];    
     [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeFilterControls)];
 }
 
-- (void)_updateVirtualEndpointName;
+- (void)updateVirtualEndpointName;
 {
     NSString *applicationName, *endpointName;
 
@@ -476,7 +476,7 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
     [stream setVirtualEndpointName:endpointName];
 }
 
-- (void)_autoselectSources;
+- (void)autoselectSources;
 {
     NSArray *groupedInputSources;
     NSMutableSet *sourcesSet;
@@ -503,53 +503,53 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
     [self setSelectedInputSources:sourcesSet];
 }
 
-- (void)_historyDidChange:(NSNotification *)notification;
+- (void)historyDidChange:(NSNotification *)notification;
 {
     // NOTE This is happening in the MIDI thread
 
-    [self queueSelectorOnce:@selector(_mainThreadSynchronizeMessages)];
+    [self queueSelectorOnce:@selector(mainThreadSynchronizeMessages)];
 
     if ([[[notification userInfo] objectForKey:SMMessageHistoryWereMessagesAdded] boolValue])
-        [self queueSelectorOnce:@selector(_mainThreadScrollToLastMessage)];
+        [self queueSelectorOnce:@selector(mainThreadScrollToLastMessage)];
 }
 
-- (void)_mainThreadSynchronizeMessages;
+- (void)mainThreadSynchronizeMessages;
 {    
     [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeMessages)];
 }
 
-- (void)_mainThreadScrollToLastMessage;
+- (void)mainThreadScrollToLastMessage;
 {
     [[self windowControllers] makeObjectsPerformSelector:@selector(scrollToLastMessage)];
 }
 
-- (void)_readingSysEx:(NSNotification *)notification;
+- (void)readingSysEx:(NSNotification *)notification;
 {
     // NOTE This is happening in the MIDI thread
 
     sysExBytesRead = [[[notification userInfo] objectForKey:@"length"] unsignedIntValue];
-    [self queueSelectorOnce:@selector(_mainThreadReadingSysEx)];
+    [self queueSelectorOnce:@selector(mainThreadReadingSysEx)];
         // We want multiple updates to get coalesced, so only queue it once
 }
 
-- (void)_mainThreadReadingSysEx;
+- (void)mainThreadReadingSysEx;
 {
     [[self windowControllers] makeObjectsPerformSelector:@selector(updateSysExReadIndicatorWithBytes:) withObject:[NSNumber numberWithUnsignedInt:sysExBytesRead]];
 }
 
-- (void)_doneReadingSysEx:(NSNotification *)notification;
+- (void)doneReadingSysEx:(NSNotification *)notification;
 {
     // NOTE This is happening in the MIDI thread
     NSNumber *number;
 
     number = [[notification userInfo] objectForKey:@"length"];
     sysExBytesRead = [number unsignedIntValue];
-    [self queueSelector:@selector(_mainThreadDoneReadingSysEx:) withObject:number];
+    [self queueSelector:@selector(mainThreadDoneReadingSysEx:) withObject:number];
         // We DON'T want this to get coalesced, so always queue it.
-        // Pass the number of bytes read down, since sysExBytesRead may be overwritten before _mainThreadDoneReadingSysEx gets called.
+        // Pass the number of bytes read down, since sysExBytesRead may be overwritten before mainThreadDoneReadingSysEx gets called.
 }
 
-- (void)_mainThreadDoneReadingSysEx:(NSNumber *)bytesReadNumber;
+- (void)mainThreadDoneReadingSysEx:(NSNumber *)bytesReadNumber;
 {
     [[self windowControllers] makeObjectsPerformSelector:@selector(stopSysExReadIndicatorWithBytes:) withObject:bytesReadNumber];
 }

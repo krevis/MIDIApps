@@ -1,9 +1,10 @@
 #import <Cocoa/Cocoa.h>
+#import "SMMWindowController.h"
 
 @class OFPreference;
 
 
-@interface SMMPreferencesWindowController : NSWindowController
+@interface SMMPreferencesWindowController : SMMWindowController
 {
     IBOutlet NSTabView *tabView;
     IBOutlet NSMatrix *timeFormatMatrix;

@@ -1,9 +1,10 @@
 #import <Cocoa/Cocoa.h>
+#import "SMMWindowController.h"
 
 @class SMSystemExclusiveMessage;
 
 
-@interface SMMSysExWindowController : NSWindowController
+@interface SMMSysExWindowController : SMMWindowController
 {
     IBOutlet NSTextField *timeField;
     IBOutlet NSTextField *manufacturerNameField;

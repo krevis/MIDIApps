@@ -10,15 +10,13 @@
 
 @interface SMMSysExWindowController (Private)
 
-- (void)_autosaveWindowFrame;
+- (void)displayPreferencesDidChange:(NSNotification *)notification;
 
-- (void)_displayPreferencesDidChange:(NSNotification *)notification;
+- (void)synchronizeDescriptionFields;
 
-- (void)_synchronizeDescriptionFields;
+- (NSString *)formatSysExData:(NSData *)data;
 
-- (NSString *)_formatSysExData:(NSData *)data;
-
-- (void)_savePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)savePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
 @end
 
@@ -60,9 +58,7 @@ static NSMutableArray *controllers = nil;
 
     message = [inMessage retain];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_displayPreferencesDidChange:) name:SMMDisplayPreferenceChangedNotification object:nil];
-
-    [self setShouldCascadeWindows:NO];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayPreferencesDidChange:) name:SMMDisplayPreferenceChangedNotification object:nil];
     
     return self;
 }
@@ -81,18 +77,13 @@ static NSMutableArray *controllers = nil;
     [super dealloc];
 }
 
-- (void)awakeFromNib
-{
-    [[self window] setFrameAutosaveName:[self windowNibName]];
-}
-
 - (void)windowDidLoad
 {
     [super windowDidLoad];
 
-    [self _synchronizeDescriptionFields];
+    [self synchronizeDescriptionFields];
 
-    [textView setString:[self _formatSysExData:[message receivedDataWithStartByte]]];
+    [textView setString:[self formatSysExData:[message receivedDataWithStartByte]]];
 }
 
 - (SMSystemExclusiveMessage *)message;
@@ -106,23 +97,13 @@ static NSMutableArray *controllers = nil;
 
 - (IBAction)save:(id)sender;
 {
-    [[NSSavePanel savePanel] beginSheetForDirectory:nil file:nil modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_savePanelDidEnd:returnCode:contextInfo:) contextInfo:nil];
+    [[NSSavePanel savePanel] beginSheetForDirectory:nil file:nil modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(savePanelDidEnd:returnCode:contextInfo:) contextInfo:nil];
 }
 
 @end
 
 
 @implementation SMMSysExWindowController (NotificationsDelegatesDataSources)
-
-- (void)windowDidResize:(NSNotification *)notification;
-{
-    [self _autosaveWindowFrame];
-}
-
-- (void)windowDidMove:(NSNotification *)notification;
-{
-    [self _autosaveWindowFrame];
-}
 
 - (void)windowWillClose:(NSNotification *)notification;
 {
@@ -135,35 +116,19 @@ static NSMutableArray *controllers = nil;
 
 @implementation SMMSysExWindowController (Private)
 
-- (void)_autosaveWindowFrame;
+- (void)displayPreferencesDidChange:(NSNotification *)notification;
 {
-    // Work around an AppKit bug: the frame that gets saved in NSUserDefaults is the window's old position, not the new one.
-    // We get notified after the window has been moved/resized and the defaults changed.
-
-    NSWindow *window;
-    NSString *autosaveName;
-    
-    window = [self window];
-    // Sometimes we get called before the window's autosave name is set (when the nib is loading), so check that.
-    if ((autosaveName = [window frameAutosaveName])) {
-        [window saveFrameUsingName:autosaveName];
-        [[NSUserDefaults standardUserDefaults] autoSynchronize];
-    }
+    [self synchronizeDescriptionFields];
 }
 
-- (void)_displayPreferencesDidChange:(NSNotification *)notification;
-{
-    [self _synchronizeDescriptionFields];
-}
-
-- (void)_synchronizeDescriptionFields;
+- (void)synchronizeDescriptionFields;
 {    
     [timeField setStringValue:[message timeStampForDisplay]];
     [manufacturerNameField setStringValue:[message manufacturerName]];
     [sizeField setStringValue:[message sizeForDisplay]];
 }
 
-- (NSString *)_formatSysExData:(NSData *)data;
+- (NSString *)formatSysExData:(NSData *)data;
 {
     unsigned int dataLength;
     const unsigned char *bytes;
@@ -239,7 +204,7 @@ static NSMutableArray *controllers = nil;
     return formattedString;
 }
 
-- (void)_savePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)savePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 {
     [sheet orderOut:nil];
 

@@ -12,9 +12,8 @@
 
 @interface  SMMPreferencesWindowController (Private)
 
-- (void)_synchronizeDefaults;
-- (void)_sendDisplayPreferenceChangedNotification;
-- (void)_autosaveWindowFrame;
+- (void)synchronizeDefaults;
+- (void)sendDisplayPreferenceChangedNotification;
 
 @end
 
@@ -75,11 +74,6 @@ static SMMPreferencesWindowController *controller;
     [super dealloc];
 }
 
-- (void)awakeFromNib
-{
-    [[self window] setFrameAutosaveName:[self windowNibName]];
-}
-
 - (void)windowDidLoad
 {
     [super windowDidLoad];
@@ -108,74 +102,59 @@ static SMMPreferencesWindowController *controller;
 - (IBAction)changeTimeFormat:(id)sender;
 {
     [timeFormatPreference setIntegerValue:[[sender selectedCell] tag]];
-    [self _synchronizeDefaults];
-    [self _sendDisplayPreferenceChangedNotification];
+    [self synchronizeDefaults];
+    [self sendDisplayPreferenceChangedNotification];
 }
 
 - (IBAction)changeNoteFormat:(id)sender;
 {
     [noteFormatPreference setIntegerValue:[[sender selectedCell] tag]];
-    [self _synchronizeDefaults];
-    [self _sendDisplayPreferenceChangedNotification];
+    [self synchronizeDefaults];
+    [self sendDisplayPreferenceChangedNotification];
 }
  
 - (IBAction)changeControllerFormat:(id)sender;
 {
     [controllerFormatPreference setIntegerValue:[[sender selectedCell] tag]];
-    [self _synchronizeDefaults];
-    [self _sendDisplayPreferenceChangedNotification];
+    [self synchronizeDefaults];
+    [self sendDisplayPreferenceChangedNotification];
 }
 
 - (IBAction)changeDataFormat:(id)sender;
 {
     [dataFormatPreference setIntegerValue:[[sender selectedCell] tag]];
-    [self _synchronizeDefaults];
-    [self _sendDisplayPreferenceChangedNotification];
+    [self synchronizeDefaults];
+    [self sendDisplayPreferenceChangedNotification];
 }
 
 - (IBAction)changeAutoSelectOrdinarySources:(id)sender;
 {
     [autoSelectOrdinarySourcesPreference setBoolValue:[sender intValue]];
-    [self _synchronizeDefaults];
+    [self synchronizeDefaults];
 }
 
 - (IBAction)changeAutoSelectVirtualDestination:(id)sender;
 {
     [autoSelectVirtualDestinationPreference setBoolValue:[sender intValue]];
-    [self _synchronizeDefaults];
+    [self synchronizeDefaults];
 }
 
 - (IBAction)changeAutoSelectSpyingDestinations:(id)sender;
 {
     [autoSelectSpyingDestinationsPreference setBoolValue:[sender intValue]];
-    [self _synchronizeDefaults];
+    [self synchronizeDefaults];
 }
 
 - (IBAction)changeOpenWindowsForNewSources:(id)sender;
 {
     [openWindowsForNewSourcesPreference setBoolValue:[sender intValue]];
-    [self _synchronizeDefaults];
+    [self synchronizeDefaults];
 }
 
 - (IBAction)changeAlwaysSaveSysExWithEOX:(id)sender;
 {
     [alwaysSaveSysExWithEOXPreference setBoolValue:[[sender selectedCell] tag]];
-    [self _synchronizeDefaults];
-}
-
-@end
-
-
-@implementation SMMPreferencesWindowController (NotificationsDelegatesDataSources)
-
-- (void)windowDidResize:(NSNotification *)notification;
-{
-    [self _autosaveWindowFrame];
-}
-
-- (void)windowDidMove:(NSNotification *)notification;
-{
-    [self _autosaveWindowFrame];
+    [self synchronizeDefaults];
 }
 
 @end
@@ -183,30 +162,14 @@ static SMMPreferencesWindowController *controller;
 
 @implementation SMMPreferencesWindowController (Private)
 
-- (void)_synchronizeDefaults;
+- (void)synchronizeDefaults;
 {
     [[NSUserDefaults standardUserDefaults] autoSynchronize];
 }
 
-- (void)_sendDisplayPreferenceChangedNotification;
+- (void)sendDisplayPreferenceChangedNotification;
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:SMMDisplayPreferenceChangedNotification object:nil];
-}
-
-- (void)_autosaveWindowFrame;
-{
-    // Work around an AppKit bug: the frame that gets saved in NSUserDefaults is the window's old position, not the new one.
-    // We get notified after the window has been moved/resized and the defaults changed.
-
-    NSWindow *window;
-    NSString *autosaveName;
-    
-    window = [self window];
-    // Sometimes we get called before the window's autosave name is set (when the nib is loading), so check that.
-    if ((autosaveName = [window frameAutosaveName])) {
-        [window saveFrameUsingName:autosaveName];
-        [self _synchronizeDefaults];
-    }
 }
 
 @end

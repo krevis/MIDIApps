@@ -12,7 +12,7 @@
 
 @interface SMMAppController (Private)
 
-- (void)_endpointsAppeared:(NSNotification *)notification;
+- (void)endpointsAppeared:(NSNotification *)notification;
 
 @end
 
@@ -96,7 +96,7 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 {
     // Listen for new endpoints. Don't do this earlier--we only are interested in ones
     // that appear after we've been launched.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_endpointsAppeared:) name:SMEndpointsAppearedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endpointsAppeared:) name:SMEndpointsAppearedNotification object:nil];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification;
@@ -183,7 +183,7 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 
 @implementation SMMAppController (Private)
 
-- (void)_endpointsAppeared:(NSNotification *)notification;
+- (void)endpointsAppeared:(NSNotification *)notification;
 {
     NSArray *endpoints;
     unsigned int endpointIndex, endpointCount;
