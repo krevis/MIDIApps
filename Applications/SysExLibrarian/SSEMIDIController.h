@@ -65,3 +65,7 @@ extern NSString *SSESelectedDestinationPreferenceKey;
 extern NSString *SSEHasShownSysExWorkaroundWarningPreferenceKey;
 extern NSString *SSESysExReadTimeOutPreferenceKey;
 extern NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey;
+
+// Notifications
+extern NSString *SSEMIDIControllerReadStatusChangedNotification;
+extern NSString *SSEMIDIControllerReadFinishedNotification;

@@ -12,7 +12,6 @@
                 addToLibrary = id; 
                 cancelImportSheet = id; 
                 cancelPlaySheet = id; 
-                cancelRecordSheet = id; 
                 delete = id; 
                 doneWithRecordMultipleSheet = id; 
                 endSheetWithReturnCodeFromSenderTag = id; 
@@ -51,10 +50,6 @@
                 recordMultipleProgressMessageField = NSTextField; 
                 recordMultipleSheetWindow = NSPanel; 
                 recordMultipleTotalProgressField = NSTextField; 
-                recordProgressBytesField = NSTextField; 
-                recordProgressIndicator = NSProgressIndicator; 
-                recordProgressMessageField = NSTextField; 
-                recordSheetWindow = NSPanel; 
             }; 
             SUPERCLASS = SSEWindowController; 
         }, 

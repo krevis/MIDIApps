@@ -41,6 +41,9 @@ NSString *SSEHasShownSysExWorkaroundWarningPreferenceKey = @"SSEHasShownSysExWor
 NSString *SSESysExReadTimeOutPreferenceKey = @"SSESysExReadTimeOut";
 NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey = @"SSESysExIntervalBetweenSentMessages";
 
+DEFINE_NSSTRING(SSEMIDIControllerReadStatusChangedNotification);
+DEFINE_NSSTRING(SSEMIDIControllerReadFinishedNotification);
+
 
 - (id)init
 {
@@ -404,8 +407,13 @@ NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey = @"SSESysExIntervalB
     // NOTE This is happening in the MIDI thread
 
     messageBytesRead = [[[notification userInfo] objectForKey:@"length"] unsignedIntValue];
-    [windowController queueSelectorOnce:@selector(updateSysExReadIndicator)];
+    [self queueSelectorOnce:@selector(_updateSysExReadIndicator)];
         // We want multiple updates to get coalesced, so only queue it once
+}
+
+- (void)_updateSysExReadIndicator;
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:SSEMIDIControllerReadStatusChangedNotification object:self];
 }
 
 - (void)_mainThreadTakeMIDIMessages:(NSArray *)messagesToTake;
@@ -425,11 +433,11 @@ NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey = @"SSESysExIntervalB
             totalBytesRead += messageBytesRead;
             messageBytesRead = 0;
 
-            [windowController updateSysExReadIndicator];
+            [self _updateSysExReadIndicator];
             if (listenToMultipleMessages == NO)  {
                 listeningToMessages = NO;
-                [windowController stopSysExReadIndicator];
-                [windowController addReadMessagesToLibrary];
+
+                [[NSNotificationCenter defaultCenter] postNotificationName:SSEMIDIControllerReadFinishedNotification object:self];
                 break;
             }
         }

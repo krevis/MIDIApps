@@ -3,8 +3,8 @@
 @class OFScheduledEvent;
 @class SSEMIDIController;
 @class SSELibrary;
+@class SSERecordOneController;
 @class SSETableView;
-
 
 @interface SSEMainWindowController : SSEWindowController
 {
@@ -13,11 +13,6 @@
     IBOutlet NSPopUpButton *destinationPopUpButton;
 
     IBOutlet SSETableView *libraryTableView;
-
-    IBOutlet NSPanel *recordSheetWindow;
-    IBOutlet NSProgressIndicator *recordProgressIndicator;
-    IBOutlet NSTextField *recordProgressMessageField;
-    IBOutlet NSTextField *recordProgressBytesField;
 
     IBOutlet NSPanel *recordMultipleSheetWindow;
     IBOutlet NSProgressIndicator *recordMultipleProgressIndicator;
@@ -49,6 +44,7 @@
     
     // Transient data
     OFScheduledEvent *progressUpdateEvent;
+    SSERecordOneController *recordOneController;
     NSLock *importStatusLock;
     NSString *importFilePath;
     unsigned int importFileIndex;
@@ -79,7 +75,6 @@
 - (IBAction)rename:(id)sender;
 - (IBAction)showDetails:(id)sender;
 
-- (IBAction)cancelRecordSheet:(id)sender;
 - (IBAction)doneWithRecordMultipleSheet:(id)sender;
 - (IBAction)cancelPlaySheet:(id)sender;
 
@@ -97,8 +92,6 @@
 
 - (void)importFiles:(NSArray *)filePaths showingProgress:(BOOL)showProgress;
 
-- (void)updateSysExReadIndicator;
-- (void)stopSysExReadIndicator;
 - (void)addReadMessagesToLibrary;
 
 - (void)showSysExSendStatus;

@@ -1,0 +1,18 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {cancelRecordSheet = id; }; 
+            CLASS = SSERecordOneController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                recordProgressBytesField = NSTextField; 
+                recordProgressIndicator = NSProgressIndicator; 
+                recordProgressMessageField = NSTextField; 
+                recordSheetWindow = NSPanel; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}
