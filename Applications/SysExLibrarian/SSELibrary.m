@@ -213,9 +213,9 @@ NSString *SSESysExFileExtension = @"syx";
         [NSNumber numberWithUnsignedLong:SSEApplicationCreatorCode], NSFileHFSCreatorCode,
         [NSNumber numberWithBool:YES], NSFileExtensionHidden, nil];
 
-    if ([fileManager atomicallyCreateFileAtPath:newFilePath contents:sysexData attributes:newFileAttributes]) {
+    if ([fileManager createFileAtPath:newFilePath contents:sysexData attributes:newFileAttributes]) {
         entry = [self addEntryForFile:newFilePath];
-        // TODO This is somewhat inefficient since we will write out the file and then immediately read it in again to get the messages.
+        // TODO We will write out the file and then immediately read it in again to get the messages. Pretty inefficient.
     } else {
         [NSException raise:NSGenericException format:@"Couldn't create the file %@", newFilePath];
     }
@@ -297,8 +297,8 @@ NSString *SSESysExFileExtension = @"syx";
             [NSNumber numberWithUnsignedLong:SSELibraryFileTypeCode], NSFileHFSTypeCode,
             [NSNumber numberWithUnsignedLong:SSEApplicationCreatorCode], NSFileHFSCreatorCode,
             [NSNumber numberWithBool:YES], NSFileExtensionHidden, nil];
-    
-        if (![fileManager atomicallyCreateFileAtPath:libraryFilePath contents:[dictionary xmlPropertyListData] attributes:fileAttributes])
+
+        if (![fileManager createFileAtPath:libraryFilePath contents:[dictionary xmlPropertyListData] attributes:fileAttributes])
             errorMessage = @"The file could not be written.";
     }
 
