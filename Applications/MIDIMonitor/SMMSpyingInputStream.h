@@ -10,15 +10,15 @@
 {
     MIDISpyClientRef spyClient;
     MIDISpyPortRef spyPort;
-    NSMutableArray *endpoints;
+    NSMutableSet *endpoints;
     NSMapTable *parsersForEndpoints;
 }
 
 - (id)initWithMIDISpyClient:(MIDISpyClientRef)midiSpyClient;
 
-- (NSArray *)endpoints;
+- (NSSet *)endpoints;
 - (void)addEndpoint:(SMDestinationEndpoint *)endpoint;
 - (void)removeEndpoint:(SMDestinationEndpoint *)endpoint;
-- (void)setEndpoints:(NSArray *)newEndpoints;
+- (void)setEndpoints:(NSSet *)newEndpoints;
 
 @end

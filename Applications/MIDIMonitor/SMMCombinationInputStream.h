@@ -22,8 +22,8 @@
 
 - (NSArray *)groupedInputSources;
     // Returns an array of arrays; each is a list of valid source descriptions for each input stream
-- (NSArray *)selectedInputSources;
-- (void)setSelectedInputSources:(NSArray *)inputSources;
+- (NSSet *)selectedInputSources;
+- (void)setSelectedInputSources:(NSSet *)inputSources;
 
 - (NSDictionary *)persistentSettings;
 - (NSArray *)takePersistentSettings:(NSDictionary *)settings;

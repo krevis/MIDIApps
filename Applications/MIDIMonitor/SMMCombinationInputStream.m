@@ -16,7 +16,7 @@
 
 - (void)_repostNotification:(NSNotification *)notification;
 
-- (NSArray *)_objectsFromArray:(NSArray *)array1 inArray:(NSArray *)array2;
+- (NSSet *)_intersectionOfSet:(NSSet *)set1 andArray:(NSArray *)array2;
 
 - (void)_makeInputStream:(SMInputStream *)stream takePersistentSettings:(id)settings addingMissingNamesToArray:(NSMutableArray *)missingNames;
 
@@ -94,39 +94,45 @@
 - (NSArray *)groupedInputSources;
 {
     NSMutableArray *groupedInputSources;
+    NSDictionary *dictionary;
 
     groupedInputSources = [NSMutableArray array];
 
-    [groupedInputSources addObject:[portInputStream inputSources]];
-    [groupedInputSources addObject:[virtualInputStream inputSources]];
-    if (spyingInputStream)
-        [groupedInputSources addObject:[spyingInputStream inputSources]];
+    dictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"Sources", @"name", [portInputStream inputSources], @"sources", nil];    
+    [groupedInputSources addObject:dictionary];
 
-    // TODO It might be nice to cache this... see if it makes any difference really.
+    dictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"Virtual Destination", @"name", [virtualInputStream inputSources], @"sources", nil];
+        // TODO rename
+    [groupedInputSources addObject:dictionary];
+
+    if (spyingInputStream) {
+        dictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"Spy on output to Destinations", @"name", [spyingInputStream inputSources], @"sources", nil];    
+        [groupedInputSources addObject:dictionary];
+    }
 
     return groupedInputSources;
 }
 
-- (NSArray *)selectedInputSources;
+- (NSSet *)selectedInputSources;
 {
-    NSMutableArray *inputSources;
+    NSMutableSet *inputSources;
 
-    inputSources = [NSMutableArray array];
+    inputSources = [NSMutableSet set];
 
-    [inputSources addObjectsFromArray:[portInputStream selectedInputSources]];
-    [inputSources addObjectsFromArray:[virtualInputStream selectedInputSources]];
+    [inputSources unionSet:[portInputStream selectedInputSources]];
+    [inputSources unionSet:[virtualInputStream selectedInputSources]];
     if (spyingInputStream)
-        [inputSources addObjectsFromArray:[spyingInputStream selectedInputSources]];
+        [inputSources unionSet:[spyingInputStream selectedInputSources]];
 
     return inputSources;
 }
 
-- (void)setSelectedInputSources:(NSArray *)inputSources;
+- (void)setSelectedInputSources:(NSSet *)inputSources;
 {
-    [portInputStream setSelectedInputSources:[self _objectsFromArray:inputSources inArray:[portInputStream inputSources]]];
-    [virtualInputStream setSelectedInputSources:[self _objectsFromArray:inputSources inArray:[virtualInputStream inputSources]]];
+    [portInputStream setSelectedInputSources:[self _intersectionOfSet:inputSources andArray:[portInputStream inputSources]]];
+    [virtualInputStream setSelectedInputSources:[self _intersectionOfSet:inputSources andArray:[virtualInputStream inputSources]]];
     if (spyingInputStream)
-        [spyingInputStream setSelectedInputSources:[self _objectsFromArray:inputSources inArray:[spyingInputStream inputSources]]];
+        [spyingInputStream setSelectedInputSources:[self _intersectionOfSet:inputSources andArray:[spyingInputStream inputSources]]];
 }
 
 - (NSDictionary *)persistentSettings;
@@ -158,7 +164,7 @@
     missingNames = [NSMutableArray array];
 
     // Clear out the current input sources
-    [self setSelectedInputSources:[NSArray array]];
+    [self setSelectedInputSources:[NSSet set]];
 
     if ((oldStyleUniqueID = [settings objectForKey:@"portEndpointUniqueID"])) {
         // This is an old-style document, specifiying an endpoint for the port input stream.
@@ -183,7 +189,7 @@
     } else if ((oldStyleUniqueID = [settings objectForKey:@"virtualEndpointUniqueID"])) {
         // This is an old-style document, specifiying to use a virtual input stream.
         [virtualInputStream setUniqueID:[oldStyleUniqueID intValue]];
-        [virtualInputStream setSelectedInputSources:[virtualInputStream inputSources]];
+        [virtualInputStream setSelectedInputSources:[NSSet setWithArray:[virtualInputStream inputSources]]];
 
     } else {
         // This is a current-style document        
@@ -226,13 +232,13 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:[notification name] object:self userInfo:[notification userInfo]];
 }
 
-- (NSArray *)_objectsFromArray:(NSArray *)array1 inArray:(NSArray *)array2;
+- (NSSet *)_intersectionOfSet:(NSSet *)set1 andArray:(NSArray *)array2;
 {
-    NSMutableSet *set;
+    NSMutableSet *set2;
 
-    set = [NSMutableSet setWithArray:array1];
-    [set intersectSet:[NSSet setWithArray:array2]];
-    return [set allObjects];    
+    set2 = [NSMutableSet setWithArray:array2];
+    [set2 intersectSet:set1];
+    return set2;
 }
 
 - (void)_makeInputStream:(SMInputStream *)stream takePersistentSettings:(id)settings addingMissingNamesToArray:(NSMutableArray *)missingNames;
