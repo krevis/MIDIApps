@@ -148,6 +148,19 @@
     currentTime = 0;
 
     flags.isRunning = YES;
+
+    if ([self sendsMIDIClock]) {
+        SMMessage *message;
+        
+        // Send a MIDI Start message first (immediately).
+        message = [SMSystemRealTimeMessage systemRealTimeMessageWithTimeStamp:AudioGetCurrentHostTime() type:SMSystemRealTimeMessageTypeStart];
+        [nonretainedMessageDestination takeMIDIMessages:[NSArray arrayWithObject:message]];
+
+        // Then wait 100 ms for devices to receive the Start message and get ready.
+        // They don't really start until they receive a MIDI Clock message.
+        [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:100.0e-3]];
+    }
+
     [[SMPeriodicTimer sharedPeriodicTimer] addListener:self];
 }
 
@@ -251,8 +264,6 @@
     localSequence = [[sequence retain] autorelease];
     [sequenceLock unlock];
 
-//    NSLog(@"notes starting between %g and %g", blockStartBeat, blockEndBeat);
-
     return [localSequence notesStartingFromBeat:blockStartBeat toBeat:blockEndBeat];
 }
 
@@ -264,8 +275,6 @@
     count = [playingNotes count];
     if (count == 0)
         return nil;
-
-//    NSLog(@"notes ending before: %g", blockEndBeat);
     
     notes = [NSMutableArray arrayWithCapacity:count];
     for (index = 0; index < count; index++) {
@@ -352,18 +361,17 @@
     NSMutableArray *messages;
     SMMessage *message;
     Float64 nextClockBeat;
+    Float64 clockPhase;
     const Float64 midiClockDurationInBeats = 1/(Float64)24.0;
 
     messages = [NSMutableArray array];
 
-    if (blockStartBeat == 0.0) {
-        // Send a MIDI Start message first (immediately).
-        message = [SMSystemRealTimeMessage systemRealTimeMessageWithTimeStamp:AudioGetCurrentHostTime() type:SMSystemRealTimeMessageTypeStart];
-        [messages addObject:message];
-    }
+    clockPhase = fmod(blockStartBeat, midiClockDurationInBeats);
+    if (clockPhase == 0.0)
+        nextClockBeat = blockStartBeat;
+    else
+        nextClockBeat = blockStartBeat - clockPhase + midiClockDurationInBeats;
 
-    // Then emit as many MIDI clock messages as necessary.
-    nextClockBeat = blockStartBeat - fmod(blockStartBeat, midiClockDurationInBeats) + midiClockDurationInBeats;
     while (nextClockBeat < blockEndBeat) {
         message = [SMSystemRealTimeMessage systemRealTimeMessageWithTimeStamp:[self _timeStampForBeat:nextClockBeat] type:SMSystemRealTimeMessageTypeClock];
         [messages addObject:message];
