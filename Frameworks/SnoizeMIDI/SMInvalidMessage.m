@@ -68,7 +68,7 @@
 
 - (NSString*)dataForDisplay
 {
-    return [[[self sizeForDisplay] stringByAppendingString:@"\t"] stringByAppendingString:[super dataForDisplay]];
+    return [self sizeForDisplay];
 }
 
 
