@@ -42,6 +42,7 @@
 
     // Library
     SSELibrary *library;
+    NSArray *sortedLibraryEntries;
     
     // Transient data
     OFScheduledEvent *progressUpdateEvent;
@@ -50,6 +51,8 @@
     unsigned int importFileIndex;
     unsigned int importFileCount;
     BOOL importCancelled;
+    NSString *sortColumnIdentifier;
+    BOOL isSortAscending;
 }
 
 + (SSEMainWindowController *)mainWindowController;
@@ -77,6 +80,7 @@
     // Calls each of the following
 - (void)synchronizeSources;
 - (void)synchronizeDestinations;
+- (void)synchronizeLibrarySortIndicator;
 - (void)synchronizeLibrary;
 - (void)synchronizePlayButton;
 - (void)synchronizeDeleteButton;

@@ -12,8 +12,13 @@
     NSDragOperation draggingOperation;
 }
 
++ (NSImage *)tableHeaderSortImage;
++ (NSImage *)tableHeaderReverseSortImage;
+
 - (BOOL)shouldEditNextItemWhenEditingEnds;
 - (void)setShouldEditNextItemWhenEditingEnds:(BOOL)value;
+
+- (void)setSortColumn:(NSTableColumn *)column isAscending:(BOOL)isSortAscending;
 
 @end
 

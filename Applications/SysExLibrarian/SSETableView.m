@@ -1,5 +1,12 @@
 #import "SSETableView.h"
 
+// These methods exist as of Mac OS X 10.1.2, and we might as well use them so we match the system look.
+// However, if these methods go away we will fall back to our own images.
+@interface NSTableView (SSEPrivateDeclarations)
+- (NSImage *)_defaultTableHeaderSortImage;
+- (NSImage *)_defaultTableHeaderReverseSortImage;
+@end
+
 
 @interface SSETableView (Private)
 
@@ -11,6 +18,22 @@
 
 
 @implementation SSETableView
+
++ (NSImage *)tableHeaderSortImage;
+{
+    if ([[self class] respondsToSelector:@selector(_defaultTableHeaderSortImage)])
+        return [[self class] _defaultTableHeaderSortImage];
+    else
+        return [NSImage imageNamed:@"TableHeaderSort"];
+}
+
++ (NSImage *)tableHeaderReverseSortImage;
+{
+    if ([[self class] respondsToSelector:@selector(_defaultTableHeaderReverseSortImage)])
+        return [[self class] _defaultTableHeaderReverseSortImage];
+    else
+        return [NSImage imageNamed:@"TableHeaderReverseSort"];
+}
 
 - (id)initWithFrame:(NSRect)rect;
 {
@@ -54,6 +77,31 @@
 - (void)setShouldEditNextItemWhenEditingEnds:(BOOL)value;
 {
     flags.shouldEditNextItemWhenEditingEnds = value;
+}
+
+- (void)setSortColumn:(NSTableColumn *)sortColumn isAscending:(BOOL)isSortAscending;
+{
+    NSArray *columns;
+    unsigned int columnIndex;
+
+    columns = [self tableColumns];
+    columnIndex = [columns count];
+    while (columnIndex--) {
+        NSTableColumn *column;
+        NSImage *indicatorImage;
+
+        column = [columns objectAtIndex:columnIndex];
+        if (column == sortColumn) {
+            if (isSortAscending)
+                indicatorImage = [[self class] tableHeaderSortImage];
+            else
+                indicatorImage = [[self class] tableHeaderReverseSortImage];
+        } else {
+            indicatorImage = nil;
+        }
+
+        [self setIndicatorImage:indicatorImage inTableColumn:column];
+    }
 }
 
 //

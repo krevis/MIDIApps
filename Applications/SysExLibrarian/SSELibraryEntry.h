@@ -13,7 +13,7 @@
     BDAlias *alias;
 
     // Caches of file information
-    NSString *manufacturerName;
+    NSString *manufacturer;
     NSNumber *sizeNumber;
     NSNumber *messageCountNumber;
     struct {
@@ -38,9 +38,9 @@
 
 // Derived information (comes from messages, but gets cached in the entry)
 
-- (NSString *)manufacturerName;
-- (unsigned int)size;
-- (unsigned int)messageCount;
+- (NSString *)manufacturer;
+- (NSNumber *)size;
+- (NSNumber *)messageCount;
 - (BOOL)isFilePresent;
 
 @end

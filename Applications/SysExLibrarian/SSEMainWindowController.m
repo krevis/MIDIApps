@@ -68,6 +68,9 @@ static SSEMainWindowController *controller;
 
     importStatusLock = [[NSLock alloc] init];
 
+    sortColumnIdentifier = @"name";
+    isSortAscending = YES;
+    
     return self;
 }
 
@@ -85,6 +88,10 @@ static SSEMainWindowController *controller;
     importStatusLock = nil;
     [importFilePath release];
     importFilePath = nil;
+    [sortColumnIdentifier release];
+    sortColumnIdentifier = nil;
+    [sortedLibraryEntries release];
+    sortedLibraryEntries = nil;
     
     [super dealloc];
 }
@@ -142,7 +149,7 @@ static SSEMainWindowController *controller;
     while ((rowNumber = [selectedRowEnumerator nextObject])) {
         SSELibraryEntry *entry;
 
-        entry = [[library entries] objectAtIndex:[rowNumber intValue]];
+        entry = [sortedLibraryEntries objectAtIndex:[rowNumber intValue]];
         [entriesToRemove addObject:entry];
     }
 
@@ -183,7 +190,7 @@ static SSEMainWindowController *controller;
     while ((rowNumber = [selectedRowEnumerator nextObject])) {
         NSArray *entryMessages;
 
-        entryMessages = [[[library entries] objectAtIndex:[rowNumber intValue]] messages];
+        entryMessages = [[sortedLibraryEntries objectAtIndex:[rowNumber intValue]] messages];
         if (messages)
             messages = [messages arrayByAddingObjectsFromArray:entryMessages];
         else
@@ -227,6 +234,7 @@ static SSEMainWindowController *controller;
 {
     [self synchronizeSources];
     [self synchronizeDestinations];
+    [self synchronizeLibrarySortIndicator];
     [self synchronizeLibrary];
     [self synchronizePlayButton];
     [self synchronizeDeleteButton];
@@ -242,8 +250,44 @@ static SSEMainWindowController *controller;
     [self _synchronizePopUpButton:destinationPopUpButton withDescriptions:[midiController destinationDescriptions] currentDescription:[midiController destinationDescription]];
 }
 
+- (void)synchronizeLibrarySortIndicator;
+{
+    NSTableColumn *column;
+
+    column = [libraryTableView tableColumnWithIdentifier:sortColumnIdentifier];    
+    [libraryTableView setSortColumn:column isAscending:isSortAscending];
+    [libraryTableView setHighlightedTableColumn:column];
+}
+
+static int libraryEntryComparator(id object1, id object2, void *context)
+{
+    NSString *key = (NSString *)context;
+    id value1, value2;
+
+    value1 = [object1 valueForKey:key];
+    value2 = [object2 valueForKey:key];
+
+    if (value1 && value2)
+//        return [value1 compare:value2];
+        return (NSComparisonResult)objc_msgSend(value1, @selector(compare:), value2);
+    else if (value1) {
+        return NSOrderedDescending;
+    } else {
+        // both are nil
+        return NSOrderedSame;
+    }
+}
+
 - (void)synchronizeLibrary;
 {
+    // TODO this results in too many sorts, I think... can we do this less often?
+
+    [sortedLibraryEntries release];
+    sortedLibraryEntries = [[library entries] sortedArrayUsingFunction:libraryEntryComparator context:sortColumnIdentifier];    
+    if (!isSortAscending)
+        sortedLibraryEntries = [sortedLibraryEntries reversedArray];
+    [sortedLibraryEntries retain];
+
     // TODO may need code to keep selection
     [libraryTableView reloadData];
 }
@@ -358,7 +402,7 @@ static SSEMainWindowController *controller;
 
 - (int)numberOfRowsInTableView:(NSTableView *)tableView;
 {
-    return [[library entries] count];
+    return [sortedLibraryEntries count];
 }
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row;
@@ -366,18 +410,18 @@ static SSEMainWindowController *controller;
     SSELibraryEntry *entry;
     NSString *identifier;
 
-    entry = [[library entries] objectAtIndex:row];
+    entry = [sortedLibraryEntries objectAtIndex:row];
     identifier = [tableColumn identifier];
 
     if ([identifier isEqualToString:@"name"])
         return [entry name];
     else if ([identifier isEqualToString:@"manufacturer"])
-        return [entry manufacturerName];
+        return [entry manufacturer];
     else if ([identifier isEqualToString:@"size"])
 //        return [NSNumber numberWithUnsignedInt:[entry size]];   // TODO make a pref for showing abbreviated vs. full bytes
-        return [NSString abbreviatedStringForBytes:[entry size]];
+        return [NSString abbreviatedStringForBytes:[[entry size] unsignedIntValue]];
     else if ([identifier isEqualToString:@"messageCount"])
-        return [NSNumber numberWithUnsignedInt:[entry messageCount]];
+        return [entry messageCount];
     else
         return nil;
 }
@@ -386,7 +430,7 @@ static SSEMainWindowController *controller;
 {
     SSELibraryEntry *entry;
 
-    entry = [[library entries] objectAtIndex:row];
+    entry = [sortedLibraryEntries objectAtIndex:row];
     if ([object isKindOfClass:[NSString class]])
         [entry setName:object];
 
@@ -432,10 +476,27 @@ static SSEMainWindowController *controller;
         SSELibraryEntry *entry;
         NSColor *color;
         
-        entry = [[library entries] objectAtIndex:row];
+        entry = [sortedLibraryEntries objectAtIndex:row];
         color = [entry isFilePresent] ? [NSColor blackColor] : [NSColor redColor];
         [cell setTextColor:color];
     }
+}
+
+- (void)tableView:(NSTableView *)tableView mouseDownInHeaderOfTableColumn:(NSTableColumn *)tableColumn;
+{
+    NSString *identifier;
+
+    identifier = [tableColumn identifier];
+    if ([identifier isEqualToString:sortColumnIdentifier]) {
+        isSortAscending = !isSortAscending;
+    } else {
+        [sortColumnIdentifier release];
+        sortColumnIdentifier = [identifier retain];
+        isSortAscending = YES;
+    }
+
+    [self synchronizeLibrarySortIndicator];
+    [self synchronizeLibrary];
 }
 
 @end
@@ -508,15 +569,12 @@ static SSEMainWindowController *controller;
 - (void)_selectAndScrollToEntries:(NSArray *)entries;
 {
     unsigned int entryCount, entryIndex;
-    NSArray *allEntries;
 
-    entryCount = [entries count];
-    allEntries = [library entries];
-
+    entryCount = [sortedLibraryEntries count];
     for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
         unsigned int row;
 
-        row = [allEntries indexOfObjectIdenticalTo:[entries objectAtIndex:entryIndex]];
+        row = [sortedLibraryEntries indexOfObjectIdenticalTo:[entries objectAtIndex:entryIndex]];
 
         if (entryIndex == 0) {
             [libraryTableView selectRow:row byExtendingSelection:NO];

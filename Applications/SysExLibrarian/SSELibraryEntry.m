@@ -10,7 +10,7 @@
 
 @interface SSELibraryEntry (Private)
 
-+ (NSString *)_manufacturerNameFromMessages:(NSArray *)messages;
++ (NSString *)_manufacturerFromMessages:(NSArray *)messages;
 + (NSNumber *)_sizeFromMessages:(NSArray *)messages;
 + (NSNumber *)_messageCountFromMessages:(NSArray *)messages;
 
@@ -18,7 +18,7 @@
 
 - (void)_updateDerivedInformationFromMessages:(NSArray *)messages;
 
-- (void)_setManufacturerName:(NSString *)value;
+- (void)_setManufacturer:(NSString *)value;
 - (void)_setSize:(NSNumber *)value;
 - (void)_setMessageCount:(NSNumber *)value;
 
@@ -64,8 +64,8 @@
     [alias release];
     alias = nil;
 
-    [manufacturerName release];
-    manufacturerName = nil;
+    [manufacturer release];
+    manufacturer = nil;
     [sizeNumber release];
     sizeNumber = nil;
     [messageCountNumber release];
@@ -84,8 +84,8 @@
     if (name)
         [dict setObject:name forKey:@"name"];
 
-    if (manufacturerName)
-        [dict setObject:manufacturerName forKey:@"manufacturerName"];
+    if (manufacturer)
+        [dict setObject:manufacturer forKey:@"manufacturerName"];
     if (sizeNumber)
         [dict setObject:sizeNumber forKey:@"size"];
     if (messageCountNumber)
@@ -179,19 +179,19 @@
     return messages;
 }
 
-- (NSString *)manufacturerName;
+- (NSString *)manufacturer;
 {
-    return manufacturerName;
+    return manufacturer;
 }
 
-- (unsigned int)size;
+- (NSNumber *)size;
 {
-    return [sizeNumber unsignedIntValue];
+    return sizeNumber;
 }
 
-- (unsigned int)messageCount;
+- (NSNumber *)messageCount;
 {
-    return [messageCountNumber unsignedIntValue];
+    return messageCountNumber;
 }
 
 - (BOOL)isFilePresent;
@@ -208,32 +208,32 @@
 
 @implementation SSELibraryEntry (Private)
 
-+ (NSString *)_manufacturerNameFromMessages:(NSArray *)messages;
++ (NSString *)_manufacturerFromMessages:(NSArray *)messages;
 {
     unsigned int messageIndex;
-    NSString *newName = nil;
+    NSString *newManufacturer = nil;
 
     messageIndex = [messages count];
     while (messageIndex--) {
-        NSString *messageManufacturerName;
+        NSString *messageManufacturer;
 
-        messageManufacturerName = [[messages objectAtIndex:messageIndex] manufacturerName];
-        if (!messageManufacturerName)
+        messageManufacturer = [[messages objectAtIndex:messageIndex] manufacturerName];
+        if (!messageManufacturer)
             continue;
 
-        if (!newName) {
-            newName = messageManufacturerName;
-        } else if (![messageManufacturerName isEqualToString:newName]) {
-            newName = @"Various";
+        if (!newManufacturer) {
+            newManufacturer = messageManufacturer;
+        } else if (![messageManufacturer isEqualToString:newManufacturer]) {
+            newManufacturer = @"Various";
             // TODO localize
             break;
         }
     }
 
-    if (!newName)
-        newName = @"Unknown";	// TODO localize or get from SnoizeMIDI framework
+    if (!newManufacturer)
+        newManufacturer = @"Unknown";	// TODO localize or get from SnoizeMIDI framework
 
-    return newName;
+    return newManufacturer;
 }
 
 + (NSNumber *)_sizeFromMessages:(NSArray *)messages;
@@ -270,10 +270,10 @@
         [self setNameFromFile];
     }
 
-    OBASSERT(manufacturerName == nil);
+    OBASSERT(manufacturer == nil);
     string = [dict objectForKey:@"manufacturerName"];
     if (string && [string isKindOfClass:[NSString class]]) {
-        manufacturerName = [string retain];
+        manufacturer = [string retain];
     }
 
     OBASSERT(sizeNumber == nil);
@@ -291,16 +291,16 @@
 
 - (void)_updateDerivedInformationFromMessages:(NSArray *)messages;
 {
-    [self _setManufacturerName:[[self class] _manufacturerNameFromMessages:messages]];
+    [self _setManufacturer:[[self class] _manufacturerFromMessages:messages]];
     [self _setSize:[[self class] _sizeFromMessages:messages]];
     [self _setMessageCount:[[self class] _messageCountFromMessages:messages]];
 }
 
-- (void)_setManufacturerName:(NSString *)value;
+- (void)_setManufacturer:(NSString *)value;
 {
-    if (value != manufacturerName && ![manufacturerName isEqualToString:value]) {
-        [manufacturerName release];
-        manufacturerName = [value retain];
+    if (value != manufacturer && ![manufacturer isEqualToString:value]) {
+        [manufacturer release];
+        manufacturer = [value retain];
 
         [nonretainedLibrary noteEntryChanged];
     }

@@ -208,6 +208,8 @@
 				F559F90A01DEC5E001000164,
 				F559F90F01DEFA9701000164,
 				089C165FFE840EACC02AAC07,
+				F561AFAA0208780001000164,
+				F561AFAB0208780001000164,
 			);
 			isa = PBXGroup;
 			name = Resources;
@@ -368,6 +370,8 @@
 				089C1661FE840EACC02AAC07,
 				F559F90C01DEC5E001000164,
 				F559F91001DEFA9701000164,
+				F561AFAC0208780001000164,
+				F561AFAD0208780001000164,
 			);
 			isa = PBXResourcesBuildPhase;
 			name = "Bundle Resources";
@@ -618,6 +622,28 @@
 		};
 		F559F91001DEFA9701000164 = {
 			fileRef = F559F90F01DEFA9701000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F561AFAA0208780001000164 = {
+			isa = PBXFileReference;
+			path = TableHeaderReverseSort.tiff;
+			refType = 4;
+		};
+		F561AFAB0208780001000164 = {
+			isa = PBXFileReference;
+			path = TableHeaderSort.tiff;
+			refType = 4;
+		};
+		F561AFAC0208780001000164 = {
+			fileRef = F561AFAA0208780001000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F561AFAD0208780001000164 = {
+			fileRef = F561AFAB0208780001000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
