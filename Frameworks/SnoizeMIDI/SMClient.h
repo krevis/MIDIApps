@@ -3,6 +3,7 @@
 //
 
 #import <OmniFoundation/OFObject.h>
+#import <CoreFoundation/CoreFoundation.h>
 #import <Foundation/Foundation.h>
 #import <CoreMIDI/CoreMIDI.h>
 
@@ -13,6 +14,8 @@
     NSString *name;
     BOOL postsExternalSetupChangeNotification;
     BOOL isHandlingSetupChange;
+    CFBundleRef coreMIDIFrameworkBundle;
+    NSMutableDictionary *coreMIDIPropertyNameDictionary;
 }
 
 + (SMClient *)sharedClient;
@@ -24,6 +27,8 @@
 - (void)setPostsExternalSetupChangeNotification:(BOOL)value;
 
 - (BOOL)isHandlingSetupChange;
+
+- (CFStringRef)coreMIDIPropertyNameConstantNamed:(NSString *)name;
 
 @end
 

@@ -52,7 +52,9 @@ static SMClient *sharedClient = nil;
     name = [[self processName] retain];
     postsExternalSetupChangeNotification = YES;
     isHandlingSetupChange = NO;
-
+    coreMIDIFrameworkBundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.audio.midi.CoreMIDI"));
+    coreMIDIPropertyNameDictionary = [[NSMutableDictionary alloc] init];
+    
     status = MIDIClientCreate((CFStringRef)name, getMIDINotification, self, &midiClient);
     if (status != noErr) {
         NSLog(@"Couldn't create a MIDI client (error %ld)", status);
@@ -70,6 +72,8 @@ static SMClient *sharedClient = nil;
 
     [name release];
     name = nil;
+    [coreMIDIPropertyNameDictionary release];
+    coreMIDIPropertyNameDictionary = nil;
 
     [super dealloc];
 }
@@ -97,6 +101,42 @@ static SMClient *sharedClient = nil;
 - (BOOL)isHandlingSetupChange;
 {
     return isHandlingSetupChange;    
+}
+
+- (CFStringRef)coreMIDIPropertyNameConstantNamed:(NSString *)constantName;
+{
+    // This method is used to look up CoreMIDI property names which may or may not exist.
+    // (For example, kMIDIPropertyImage, which is present in 10.2 but not 10.1.)
+    // If we used the value kMIDIPropertyImage directly, we could no longer run on 10.1 since dyld
+    // would be unable to find that symbol. So we look it up at runtime instead.
+    // We keep these values cached in a dictionary so we don't do a lot of potentially slow lookups
+    // through CFBundle.
+    
+    id coreMIDIPropertyNameConstant;
+
+    // Look for this name in the cache
+    coreMIDIPropertyNameConstant = [coreMIDIPropertyNameDictionary objectForKey:constantName];
+
+    if (!coreMIDIPropertyNameConstant) {
+        // Try looking up a symbol with this name in the CoreMIDI bundle.
+        if (coreMIDIFrameworkBundle) {
+            CFStringRef *propertyNamePtr;
+
+            propertyNamePtr = CFBundleGetDataPointerForName(coreMIDIFrameworkBundle, (CFStringRef)constantName);
+            if (propertyNamePtr)
+                coreMIDIPropertyNameConstant = *(id *)propertyNamePtr;
+        }
+
+        // If we didn't find it, put an NSNull in the dict instead (so we don't try again to look it up later)
+        if (!coreMIDIPropertyNameConstant)
+            coreMIDIPropertyNameConstant = [NSNull null];
+        [coreMIDIPropertyNameDictionary setObject:coreMIDIPropertyNameConstant forKey:name];
+    }
+
+    if (coreMIDIPropertyNameConstant == [NSNull null])
+        return NULL;
+    else
+        return (CFStringRef)coreMIDIPropertyNameConstant;
 }
 
 @end

@@ -126,9 +126,17 @@ static NSMapTable *staticExternalDevicesMapTable = nil;
 
 - (NSString *)pathToImageFile;
 {
-    // TODO kMIDIPropertyImage is new to 10.2, so we need to conditionalize this so we can still build and run on 10.1.
-    // The value of kMIDIPropertyImage is @"image".
-    return [self stringForProperty:kMIDIPropertyImage];
+    // NOTE CoreMIDI's symbol kMIDIPropertyImage is new to 10.2, but we can't link against it directly
+    // because that will cause us to fail to run on 10.1. So, instead, we try to look up the address of
+    // the symbol at runtime and use it if we find it.
+
+    CFStringRef propertyName;
+
+    propertyName = [[SMClient sharedClient] coreMIDIPropertyNameConstantNamed:@"kMIDIPropertyImage"];
+    if (propertyName)
+        return [self stringForProperty:(CFStringRef)propertyName];
+    else
+        return nil;
 }
 
 @end
