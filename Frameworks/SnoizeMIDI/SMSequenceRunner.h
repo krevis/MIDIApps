@@ -48,5 +48,6 @@
 - (void)start;
 - (void)stop;
 - (BOOL)isRunning;
+- (Float64)currentBeat;
 
 @end

@@ -177,6 +177,11 @@
     return flags.isRunning;
 }
 
+- (Float64)currentBeat;
+{
+    return currentBeat;
+}
+
 //
 // SMPeriodicTimerListener protocol
 //
