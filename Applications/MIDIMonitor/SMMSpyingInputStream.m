@@ -6,7 +6,6 @@
 
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
-#import "SMDestinationEndpoint-Additions.h"
 
 
 @interface SMMSpyingInputStream (Private)
@@ -165,6 +164,11 @@
 - (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;
 {
     return (SMMessageParser *)refCon;
+}
+
+- (id<SMInputStreamSource>)streamSourceForParser:(SMMessageParser *)parser;
+{
+    return [parser originatingEndpoint];
 }
 
 - (NSArray *)inputSources;

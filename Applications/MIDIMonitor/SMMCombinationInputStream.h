@@ -9,7 +9,8 @@
 @class SMMSpyingInputStream;
 
 
-@interface SMMCombinationInputStream : OFObject <SMMessageDestination> {
+@interface SMMCombinationInputStream : OFObject <SMMessageDestination>
+{
     id<SMMessageDestination> nonretainedMessageDestination;
 
     SMPortInputStream *portInputStream;
