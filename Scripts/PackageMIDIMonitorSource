@@ -1,0 +1,59 @@
+#!/bin/zsh
+#
+# Script to build the release version of the MIDI Monitor application.
+
+# Display commands as they happen -- useful for debugging
+#setopt XTRACE
+
+#ThisScriptDir=`dirname ${PWD}/$0`
+
+SourceRoot=~/Source
+SnoizeSource=${SourceRoot}/Snoize
+SnoizeFrameworkSource=${SnoizeSource}/Frameworks
+SnoizeAppSource=${SnoizeSource}/Applications
+SnoizeScriptSource=${SnoizeSource}/Scripts
+SnoizeDocsSource=${SnoizeSource}/Documentation
+
+
+PUBLIC=/Users/Shared
+INSTALL_DIRECTORY=$PUBLIC/$USER/PackagedSource
+PACKAGED_SOURCE_NAME=MIDI\ Monitor\ Source
+PACKAGED_SOURCE_ARCHIVE_NAME=MIDIMonitorSource
+
+
+mkdir -p "$INSTALL_DIRECTORY" || {echo "Couldn't create install directory!"; exit 1}
+
+rm -rf "$INSTALL_DIRECTORY/$PACKAGED_SOURCE_NAME" || {echo "Couldn't remove old packaged source!"; exit 1}
+
+mkdir -p "$INSTALL_DIRECTORY/$PACKAGED_SOURCE_NAME" || {echo "Couldn't create install directory!"; exit 1}
+
+cd $INSTALL_DIRECTORY/$PACKAGED_SOURCE_NAME
+
+mkdir Source
+cp -R $SnoizeFrameworkSource/SnoizeMIDI Source
+cp -R $SnoizeFrameworkSource/DisclosableView Source
+cp -R $SnoizeFrameworkSource/SnoizeMIDISpy Source
+cp -R $SnoizeAppSource/MIDIMonitor Source
+
+mkdir Scripts
+cp -R $SnoizeScriptSource/BuildMIDIMonitor Scripts
+
+cp -R $SnoizeDocsSource/MIDIMonitor/Source/README .
+
+#
+# Remove extra junk from the source
+#
+
+find . -type d -name CVS -exec rm -rf {} \; -prune
+find . -name \*.mode1 -exec rm {} \;
+find . -name \*.pbxuser -exec rm {} \;
+
+#
+# Archive it up
+#
+
+cd ..
+tar -czf ${PACKAGED_SOURCE_ARCHIVE_NAME}.tar.gz $PACKAGED_SOURCE_NAME
+
+echo -n "Done: "
+echo ${PWD}/${PACKAGED_SOURCE_ARCHIVE_NAME}.tar.gz
