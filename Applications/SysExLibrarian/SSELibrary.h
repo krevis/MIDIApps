@@ -44,6 +44,8 @@ typedef enum _SSELibraryFileType {
 - (NSArray *)allowedFileTypes;
 - (SSELibraryFileType)typeOfFileAtPath:(NSString *)filePath;
 
+- (NSArray *)findEntriesForFiles:(NSArray *)filePaths returningNonMatchingFiles:(NSArray **)nonMatchingFilePathsPtr;
+
 @end
 
 // Notifications

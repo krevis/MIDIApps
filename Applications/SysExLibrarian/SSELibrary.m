@@ -13,6 +13,8 @@
 
 - (void)_loadEntries;
 
+- (NSDictionary *)_entriesByFilePath;
+
 @end
 
 
@@ -294,6 +296,38 @@ NSString *SSESysExFileExtension = @"syx";
     }
 }
 
+- (NSArray *)findEntriesForFiles:(NSArray *)filePaths returningNonMatchingFiles:(NSArray **)nonMatchingFilePathsPtr;
+{
+    NSDictionary *entriesByFilePath;
+    NSMutableArray *nonMatchingFilePaths;
+    NSMutableArray *matchingEntries;
+    unsigned int filePathIndex, filePathCount;
+
+    entriesByFilePath = [self _entriesByFilePath];
+
+    filePathCount = [filePaths count];
+    nonMatchingFilePaths = [NSMutableArray arrayWithCapacity:filePathCount];
+    matchingEntries = [NSMutableArray arrayWithCapacity:filePathCount];
+
+    for (filePathIndex = 0; filePathIndex < filePathCount; filePathIndex++) {
+        NSString *filePath;
+        SSELibraryEntry *entry;
+
+        filePath = [filePaths objectAtIndex:filePathIndex];
+
+        entry = [entriesByFilePath objectForKey:filePath];
+        if (entry)
+            [matchingEntries addObject:entry];
+        else
+            [nonMatchingFilePaths addObject:filePath];
+    }
+        
+    if (nonMatchingFilePathsPtr)
+        *nonMatchingFilePathsPtr = nonMatchingFilePaths;
+
+    return matchingEntries;
+}
+
 @end
 
 
@@ -349,6 +383,28 @@ NSString *SSESysExFileExtension = @"syx";
         [entries addObject:entry];
         [entry release];
     }
+}
+
+- (NSDictionary *)_entriesByFilePath;
+{
+    unsigned int entryIndex, entryCount;
+    NSMutableDictionary *entriesByFilePath;
+
+    entryCount = [entries count];
+    entriesByFilePath = [NSMutableDictionary dictionaryWithCapacity:entryCount];
+    for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+        SSELibraryEntry *entry;
+        NSString *filePath;
+
+        entry = [entries objectAtIndex:entryIndex];
+        filePath = [entry path];
+        if (filePath) {
+            OBASSERT([entriesByFilePath objectForKey:filePath] == nil);
+            [entriesByFilePath setObject:entry forKey:filePath];
+        }
+    }
+
+    return entriesByFilePath;
 }
 
 @end

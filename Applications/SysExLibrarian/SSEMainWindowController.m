@@ -388,7 +388,6 @@ static SSEMainWindowController *controller;
 
     selector = showProgress ? @selector(_importFilesShowingProgress:) : @selector(_addFilesToLibraryInMainThread:);
     [self _showImportWarningForFiles:filePaths andThenPerformSelector:selector];
-    // TODO it is possible some of these files are already in the library. we should just select their entry instead of creating a new one.
 }
 
 
@@ -1070,14 +1069,16 @@ static int libraryEntryComparator(id object1, id object2, void *context)
 - (NSArray *)_addFilesToLibrary:(NSArray *)filePaths;
 {
     // NOTE: This may be happening in the main thread or a work thread.
-    
+
+    NSArray *existingEntries;
     unsigned int fileIndex, fileCount;
     NSMutableArray *addedEntries;
 
+    // Find the files which are already in the library, and pull them out.
+    existingEntries = [library findEntriesForFiles:filePaths returningNonMatchingFiles:&filePaths];
+
     // Try to add each file to the library, keeping track of the successful ones.
-
     addedEntries = [NSMutableArray array];
-
     fileCount = [filePaths count];
     for (fileIndex = 0; fileIndex < fileCount; fileIndex++) {
         NSAutoreleasePool *pool;
@@ -1111,7 +1112,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
         [pool release];
     }
 
-    return addedEntries;
+    return [addedEntries arrayByAddingObjectsFromArray:existingEntries];
 }
 
 - (void)_showImportSheet;
