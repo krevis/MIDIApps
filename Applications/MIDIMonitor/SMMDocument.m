@@ -396,12 +396,17 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
 
 - (void)_midiSetupDidChange:(NSNotification *)notification;
 {
-    if (listenToMIDISetupChanges)
-        [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeSources)];
-
+    if (!listenToMIDISetupChanges)
+        return;
+    
     // NOTE: It is unfortunate that we have to do this, since it is possible that only
     // destination endpoints changed. It takes a significant amount of time to regenerate the
     // sources popup menu.
+    [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeSources)];
+
+    // Also, it's possible that the endpoint names went from being unique to non-unique, so we need
+    // to refresh the messages displayed.
+    [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeMessages)];
 }
 
 - (void)_setFilterMask:(SMMessageType)newMask;
