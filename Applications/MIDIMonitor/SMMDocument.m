@@ -18,7 +18,7 @@
 
 - (void)_updateVirtualEndpointName;
 
-- (void)_streamEndpointDisappeared:(NSNotification *)notification;
+- (void)_streamSourceDisappeared:(NSNotification *)notification;
 
 - (void)_selectFirstAvailableSourceWhenPossible;
 - (void)_selectFirstAvailableSource;
@@ -52,7 +52,7 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     center = [NSNotificationCenter defaultCenter];
 
     stream = [[SMMCombinationInputStream alloc] init];
-    [center addObserver:self selector:@selector(_streamEndpointDisappeared:) name:SMPortInputStreamEndpointDisappeared object:stream];
+    [center addObserver:self selector:@selector(_streamSourceDisappeared:) name:SMInputStreamSelectedInputSourceDisappearedNotification object:stream];
     [center addObserver:self selector:@selector(_readingSysEx:) name:SMInputStreamReadingSysExNotification object:stream];
     [center addObserver:self selector:@selector(_doneReadingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:stream];
     [self _updateVirtualEndpointName];
@@ -443,11 +443,14 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     [stream setVirtualEndpointName:endpointName];
 }
 
-- (void)_streamEndpointDisappeared:(NSNotification *)notification;
+- (void)_streamSourceDisappeared:(NSNotification *)notification;
 {
+    // TODO rethink this
+    /*
     if ([[OFPreference preferenceForKey:SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey] boolValue]) {
         [self _selectFirstAvailableSourceWhenPossible];
     }
+     */
 }
 
 - (void)_selectFirstAvailableSourceWhenPossible;

@@ -12,7 +12,7 @@
 
 @interface SMMCombinationInputStream (Private)
 
-- (void)_observeSysExNotificationsWithCenter:(NSNotificationCenter *)center object:(id)object;
+- (void)_observeNotificationsWithCenter:(NSNotificationCenter *)center object:(id)object;
 
 - (void)_repostNotification:(NSNotification *)notification;
 
@@ -38,19 +38,18 @@
     
     portInputStream = [[SMPortInputStream alloc] init];
     [portInputStream setMessageDestination:self];
-    [center addObserver:self selector:@selector(_repostNotification:) name:SMPortInputStreamEndpointDisappeared object:portInputStream];
-    [self _observeSysExNotificationsWithCenter:center object:portInputStream];
+    [self _observeNotificationsWithCenter:center object:portInputStream];
 
     virtualInputStream = [[SMVirtualInputStream alloc] init];
     [virtualInputStream setMessageDestination:self];
+    [self _observeNotificationsWithCenter:center object:virtualInputStream];
     [virtualInputStream setInputSourceName:NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"MIDIMonitor", [self bundle], "title of popup menu item for virtual destination")];
-    [self _observeSysExNotificationsWithCenter:center object:virtualInputStream];
 
     if ((spyClient = [[NSApp delegate] midiSpyClient])) {
         spyingInputStream = [[SMMSpyingInputStream alloc] initWithMIDISpyClient:spyClient];
         if (spyingInputStream) {
             [spyingInputStream setMessageDestination:self];
-            [self _observeSysExNotificationsWithCenter:center object:spyingInputStream];        
+            [self _observeNotificationsWithCenter:center object:spyingInputStream];        
         }
     }
 
@@ -215,10 +214,11 @@
 
 @implementation SMMCombinationInputStream (Private)
 
-- (void)_observeSysExNotificationsWithCenter:(NSNotificationCenter *)center object:(id)object;
+- (void)_observeNotificationsWithCenter:(NSNotificationCenter *)center object:(id)object;
 {
     [center addObserver:self selector:@selector(_repostNotification:) name:SMInputStreamReadingSysExNotification object:object];
     [center addObserver:self selector:@selector(_repostNotification:) name:SMInputStreamDoneReadingSysExNotification object:object];
+    [center addObserver:self selector:@selector(_repostNotification:) name:SMInputStreamSelectedInputSourceDisappearedNotification object:object];
 }
 
 - (void)_repostNotification:(NSNotification *)notification;
