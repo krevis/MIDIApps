@@ -1,13 +1,11 @@
 #include "SpyingMIDIDriver.h"
+
 #include "MessagePortBroadcaster.h"
 #include <pthread.h>
 
 
 #define kFactoryUUID CFUUIDGetConstantUUIDWithBytes(NULL, 0x4F, 0xA1, 0x3C, 0x6B, 0x2D, 0x94, 0x11, 0xD6, 0x8C, 0x2F, 0x00, 0x0A, 0x27, 0xB4, 0x96, 0x5C)
 // 4FA13C6B-2D94-11D6-8C2F-000A27B4965C
-
-
-// __________________________________________________________________________________________________
 
 
 // Implementation of the factory function for this type.
@@ -21,7 +19,10 @@ extern "C" void *NewSpyingMIDIDriver(CFAllocatorRef allocator, CFUUIDRef typeID)
     }
 }
 
-// __________________________________________________________________________________________________
+
+//
+// Public functions
+//
 
 SpyingMIDIDriver::SpyingMIDIDriver() :
     MIDIDriver(kFactoryUUID),
@@ -52,9 +53,6 @@ SpyingMIDIDriver::~SpyingMIDIDriver()
     
     delete mBroadcaster;
 }
-
-// __________________________________________________________________________________________________
-
 
 OSStatus SpyingMIDIDriver::Start(MIDIDeviceListRef devList)
 {
@@ -122,9 +120,9 @@ void SpyingMIDIDriver::BroadcasterListenerCountChanged(MessagePortBroadcaster *b
     EnableMonitoring(hasListeners);
 }
 
-// __________________________________________________________________________________________________
+
 //
-// Private methods
+// Private functions
 //
 
 void SpyingMIDIDriver::CheckCoreMIDIVersion()

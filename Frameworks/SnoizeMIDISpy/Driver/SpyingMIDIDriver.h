@@ -11,32 +11,32 @@ public:
     ~SpyingMIDIDriver();
 
     // MIDIDriver overrides
-    virtual OSStatus	Start(MIDIDeviceListRef devList);
-    virtual OSStatus	Stop();
-    virtual OSStatus	Monitor(MIDIEndpointRef dest, const MIDIPacketList *pktlist);
+    virtual OSStatus Start(MIDIDeviceListRef devList);
+    virtual OSStatus Stop();
+    virtual OSStatus Monitor(MIDIEndpointRef dest, const MIDIPacketList *pktlist);
 
     // MessagePortBroadcasterDelegate overrides
-    virtual void 	BroadcasterListenerCountChanged(MessagePortBroadcaster *broadcaster, bool hasListeners);
+    virtual void BroadcasterListenerCountChanged(MessagePortBroadcaster *broadcaster, bool hasListeners);
     
 private:
-    void		CheckCoreMIDIVersion();
+    void CheckCoreMIDIVersion();
 
-    void		CreateMIDIClient();
-    void		DisposeMIDIClient();
-    friend void 	MIDIClientNotificationProc(const MIDINotification *message, void *refCon);
-    void		RebuildEndpointUniqueIDMappings();
+    void CreateMIDIClient();
+    void DisposeMIDIClient();
+    friend void MIDIClientNotificationProc(const MIDINotification *message, void *refCon);
+    void RebuildEndpointUniqueIDMappings();
 
-    void		EnableMonitoring(Boolean enable);
+    void EnableMonitoring(Boolean enable);
 
-    CFDataRef 	PackageMonitoredDataForBroadcast(const MIDIPacketList *packetList, SInt32 endpointUniqueID);
-    UInt32		SizeOfPacketList(const MIDIPacketList *packetList);
+    CFDataRef PackageMonitoredDataForBroadcast(const MIDIPacketList *packetList, SInt32 endpointUniqueID);
+    UInt32 SizeOfPacketList(const MIDIPacketList *packetList);
 
     
-    bool 				mNeedsMonitorPointerWorkaround;
-    MessagePortBroadcaster	*mBroadcaster;
-    MIDIClientRef			mMIDIClientRef;
-    CFMutableDictionaryRef	mEndpointRefToUniqueIDDictionary;
-    pthread_mutex_t			mEndpointDictionaryMutex;
+    bool mNeedsMonitorPointerWorkaround;
+    MessagePortBroadcaster *mBroadcaster;
+    MIDIClientRef mMIDIClientRef;
+    CFMutableDictionaryRef mEndpointRefToUniqueIDDictionary;
+    pthread_mutex_t	 mEndpointDictionaryMutex;
 };
 
 #endif // __SpyingMIDIDriver_h__
