@@ -26,7 +26,9 @@
 
 @implementation SMPortOutputStream
 
-DEFINE_NSSTRING(SMPortOutputStreamEndpointWasRemoved);
+DEFINE_NSSTRING(SMPortOutputStreamEndpointWasRemovedNotification);
+DEFINE_NSSTRING(SMPortOutputStreamWillStartSysExSendNotification);
+DEFINE_NSSTRING(SMPortOutputStreamFinishedSysExSendNotification);
 
 
 - (id)init;
@@ -156,7 +158,7 @@ DEFINE_NSSTRING(SMPortOutputStreamEndpointWasRemoved);
 
     [self setEndpoint:nil];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMPortOutputStreamEndpointWasRemoved object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMPortOutputStreamEndpointWasRemovedNotification object:self];
 }
 
 - (void)_endpointWasReplaced:(NSNotification *)notification;
@@ -217,6 +219,9 @@ DEFINE_NSSTRING(SMPortOutputStreamEndpointWasRemoved);
         sendRequest = [SMSysExSendRequest sysExSendRequestWithMessage:message endpoint:[self endpoint]];
         [sysExSendRequests addObject:sendRequest];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_sysExSendRequestFinished:) name:SMSysExSendRequestFinishedNotification object:sendRequest];
+
+        [[NSNotificationCenter defaultCenter] postNotificationName:SMPortOutputStreamWillStartSysExSendNotification object:self userInfo:[NSDictionary dictionaryWithObject:sendRequest forKey:@"sendRequest"]];
+
         [sendRequest send];
     }
 }
@@ -227,6 +232,9 @@ DEFINE_NSSTRING(SMPortOutputStreamEndpointWasRemoved);
 
     sendRequest = [notification object];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:sendRequest];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMPortOutputStreamFinishedSysExSendNotification object:self userInfo:[NSDictionary dictionaryWithObject:sendRequest forKey:@"sendRequest"]];
+    
     [sysExSendRequests removeObjectIdenticalTo:sendRequest];
 }
 

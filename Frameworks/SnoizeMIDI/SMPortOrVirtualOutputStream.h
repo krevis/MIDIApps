@@ -19,3 +19,6 @@
     // (This can only work on port streams, not virtual ones.)
 
 @end
+
+// Notifications
+// This class will repost SMPortOutputStreamWillStartSysExSendNotification and SMPortOutputStreamFinishedSysExSendNotification, if it receives them from its port stream.

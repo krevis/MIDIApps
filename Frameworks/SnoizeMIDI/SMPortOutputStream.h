@@ -33,5 +33,10 @@
 
 // Notifications
 
-extern NSString *SMPortOutputStreamEndpointWasRemoved;
+extern NSString *SMPortOutputStreamEndpointWasRemovedNotification;
     // Sent if the stream's destination endpoint goes away
+
+extern NSString *SMPortOutputStreamWillStartSysExSendNotification;
+    // user info has key @"sendRequest", object SMSysExSendRequest
+extern NSString *SMPortOutputStreamFinishedSysExSendNotification;
+    // user info has key @"sendRequest", object SMSysExSendRequest
