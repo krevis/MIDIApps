@@ -24,7 +24,7 @@
 
 @implementation SMPortOrVirtualStream
 
-DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointWasRemoved);
+DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointWasRemovedNotification);
 
 
 - (id)init;
@@ -240,7 +240,7 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointWasRemoved);
 
 - (void)portStreamEndpointWasRemoved:(NSNotification *)notification;
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMPortOrVirtualStreamEndpointWasRemoved object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMPortOrVirtualStreamEndpointWasRemovedNotification object:self];
 }
 
 @end

@@ -44,4 +44,4 @@
 @end
 
 // Notifications
-extern NSString *SMPortOrVirtualStreamEndpointWasRemoved;
+extern NSString *SMPortOrVirtualStreamEndpointWasRemovedNotification;
