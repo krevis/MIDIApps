@@ -179,7 +179,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
     NSNumber *number;
     unsigned int maxMessageCount;
     
-    if ((number = [sender objectValue])) {
+    if ((number = [(NSControl*)sender objectValue])) {
         maxMessageCount = [number unsignedIntValue];
         [[self document] setMaxMessageCount:maxMessageCount];
     } else {
