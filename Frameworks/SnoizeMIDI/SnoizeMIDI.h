@@ -13,6 +13,7 @@
 #import <SnoizeMIDI/SMPeriodicTimer.h>
 #import <SnoizeMIDI/SMPortInputStream.h>
 #import <SnoizeMIDI/SMPortOrVirtualInputStream.h>
+#import <SnoizeMIDI/SMPortOrVirtualOutputStream.h>
 #import <SnoizeMIDI/SMPortOutputStream.h>
 #import <SnoizeMIDI/SMSystemCommonMessage.h>
 #import <SnoizeMIDI/SMSystemRealTimeMessage.h>
