@@ -8,6 +8,7 @@
 #import "NSPopUpButton-MIDIMonitorExtensions.h"
 #import "SMMAppController.h"
 #import "SMMDocument.h"
+#import "SMMSysExWindowController.h"
 
 
 @interface  SMMPreferencesWindowController (Private)
@@ -46,7 +47,8 @@ static SMMPreferencesWindowController *controller;
     autoSelectFirstSourceInNewDocumentPreference = [[OFPreference preferenceForKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey] retain];
     autoSelectFirstSourceIfSourceDisappearsPreference = [[OFPreference preferenceForKey:SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey] retain];
     openWindowsForNewSourcesPreference = [[OFPreference preferenceForKey:SMMOpenWindowsForNewSourcesPreferenceKey] retain];
-
+    alwaysSaveSysExWithEOXPreference = [[OFPreference preferenceForKey:SMMSaveSysExWithEOXAlwaysPreferenceKey] retain];
+    
     return self;
 }
 
@@ -65,6 +67,7 @@ static SMMPreferencesWindowController *controller;
     [autoSelectFirstSourceInNewDocumentPreference release];
     [autoSelectFirstSourceIfSourceDisappearsPreference release];
     [openWindowsForNewSourcesPreference release];
+    [alwaysSaveSysExWithEOXPreference release];
     
     [super dealloc];
 }
@@ -85,6 +88,7 @@ static SMMPreferencesWindowController *controller;
     [autoSelectFirstSourceInNewDocumentMatrix selectCellWithTag:[autoSelectFirstSourceInNewDocumentPreference boolValue]];
     [autoSelectFirstSourceIfSourceDisappearsCheckbox setIntValue:[autoSelectFirstSourceIfSourceDisappearsPreference boolValue]];
     [openWindowsForNewSourcesCheckbox setIntValue:[openWindowsForNewSourcesPreference boolValue]];
+    [alwaysSaveSysExWithEOXMatrix selectCellWithTag:[alwaysSaveSysExWithEOXPreference boolValue]];
 }
 
 
@@ -135,6 +139,12 @@ static SMMPreferencesWindowController *controller;
 - (IBAction)changeOpenWindowsForNewSources:(id)sender;
 {
     [openWindowsForNewSourcesPreference setBoolValue:[sender intValue]];
+    [self _synchronizeDefaults];
+}
+
+- (IBAction)changeAlwaysSaveSysExWithEOX:(id)sender;
+{
+    [alwaysSaveSysExWithEOXPreference setBoolValue:[[sender selectedCell] tag]];
     [self _synchronizeDefaults];
 }
 

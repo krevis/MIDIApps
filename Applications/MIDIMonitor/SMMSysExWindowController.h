@@ -23,3 +23,5 @@
 
 @end
 
+// Preferences keys
+extern NSString *SMMSaveSysExWithEOXAlwaysPreferenceKey;

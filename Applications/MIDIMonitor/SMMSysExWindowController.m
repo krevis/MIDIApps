@@ -25,6 +25,9 @@
 
 @implementation SMMSysExWindowController
 
+NSString *SMMSaveSysExWithEOXAlwaysPreferenceKey = @"SMMSaveSysExWithEOXAlways";
+
+
 static NSMutableArray *controllers = nil;
 
 + (SMMSysExWindowController *)sysExWindowControllerWithMessage:(SMSystemExclusiveMessage *)inMessage;
@@ -89,7 +92,7 @@ static NSMutableArray *controllers = nil;
 
     [self _synchronizeDescriptionFields];
 
-    [textView setString:[self _formatSysExData:[message receivedData]]];
+    [textView setString:[self _formatSysExData:[message receivedDataWithStartByte]]];
 }
 
 - (SMSystemExclusiveMessage *)message;
@@ -154,10 +157,10 @@ static NSMutableArray *controllers = nil;
 }
 
 - (void)_synchronizeDescriptionFields;
-{
+{    
     [timeField setStringValue:[message timeStampForDisplay]];
     [manufacturerNameField setStringValue:[message manufacturerName]];
-    [sizeField setStringValue:[NSString stringWithFormat:@"%@ bytes", [SMMessage formatLength:[message receivedDataLength]]]];
+    [sizeField setStringValue:[message sizeForDisplay]];
 }
 
 - (NSString *)_formatSysExData:(NSData *)data;
@@ -239,9 +242,24 @@ static NSMutableArray *controllers = nil;
 - (void)_savePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 {
     [sheet orderOut:nil];
-    
-    if (returnCode == NSOKButton)
-        [[message fullMessageData] writeToFile:[sheet filename] atomically:YES];
+
+    if (returnCode == NSOKButton) {
+        NSData *dataToWrite;
+        
+        if ([[OFPreference preferenceForKey:SMMSaveSysExWithEOXAlwaysPreferenceKey] boolValue])
+            dataToWrite = [message fullMessageData];
+        else
+            dataToWrite = [message receivedDataWithStartByte];
+
+        if (![dataToWrite writeToFile:[sheet filename] atomically:YES]) {
+            NSString *title, *text;
+
+            title = NSLocalizedStringFromTableInBundle(@"Error", @"MIDIMonitor", [self bundle], "title of error alert sheet");
+            text = NSLocalizedStringFromTableInBundle(@"The file could not be saved.", @"MIDIMonitor", [self bundle], "message when writing sysex data to a file fails");
+
+            NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, text);
+        }
+    }
 }
 
 @end

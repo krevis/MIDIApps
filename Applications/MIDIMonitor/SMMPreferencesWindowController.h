@@ -12,6 +12,7 @@
     IBOutlet NSMatrix *autoSelectFirstSourceInNewDocumentMatrix;
     IBOutlet NSButton *autoSelectFirstSourceIfSourceDisappearsCheckbox;
     IBOutlet NSButton *openWindowsForNewSourcesCheckbox;
+    IBOutlet NSMatrix *alwaysSaveSysExWithEOXMatrix;
 
     OFPreference *timeFormatPreference;
     OFPreference *noteFormatPreference;
@@ -20,6 +21,7 @@
     OFPreference *autoSelectFirstSourceInNewDocumentPreference;
     OFPreference *autoSelectFirstSourceIfSourceDisappearsPreference;
     OFPreference *openWindowsForNewSourcesPreference;
+    OFPreference *alwaysSaveSysExWithEOXPreference;
 }
 
 + (SMMPreferencesWindowController *)preferencesWindowController;
@@ -33,6 +35,7 @@
 - (IBAction)changeAutoSelectFirstSourceInNewDocument:(id)sender;
 - (IBAction)changeAutoSelectFirstSourceIfSourceDisappears:(id)sender;
 - (IBAction)changeOpenWindowsForNewSources:(id)sender;
+- (IBAction)changeAlwaysSaveSysExWithEOX:(id)sender;
 
 @end
 

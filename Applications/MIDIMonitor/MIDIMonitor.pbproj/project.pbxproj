@@ -375,8 +375,8 @@
 				<false/>
 				<key>SMMOpenWindowsForNewSources</key>
 				<false/>
-				<key>SMMSysExBytesPerRow</key>
-				<integer>8</integer>
+				<key>SMMSaveSysExWithEOXAlways</key>
+				<true/>
 			</dict>
 		</dict>
 	</dict>
