@@ -30,6 +30,16 @@
 
 @implementation SMMMonitorWindowController
 
+static NSString *kFromString = nil;
+static NSString *kToString = nil;
+
+
++ (void)didLoad
+{
+    kFromString = [NSLocalizedStringFromTableInBundle(@"From", @"MIDIMonitor", [self bundle], "Prefix for endpoint name when it's a source") retain];
+    kToString = [NSLocalizedStringFromTableInBundle(@"To", @"MIDIMonitor", [self bundle], "Prefix for endpoint name when it's a destination") retain];
+}
+
 - (id)init;
 {
     if (!(self = [super initWithWindowNibName:@"MIDIMonitor"]))
@@ -472,8 +482,16 @@
     if ([identifier isEqualToString:@"timeStamp"]) {
         return [message timeStampForDisplay];
     } else if ([identifier isEqualToString:@"source"]) {
-        return [[message originatingEndpoint] shortName];
-        // TODO we should indicate if name is a regular source, or spying on a destination
+        SMEndpoint *endpoint;
+
+        if ((endpoint = [message originatingEndpoint])) {
+            NSString *fromOrTo;
+
+            fromOrTo = ([endpoint isKindOfClass:[SMSourceEndpoint class]] ? kFromString : kToString);
+            return [[fromOrTo stringByAppendingString:@" "] stringByAppendingString:[endpoint shortName]];
+        } else {
+            return nil;            
+        }
     } else if ([identifier isEqualToString:@"type"]) {
         return [message typeForDisplay];
     } else if ([identifier isEqualToString:@"channel"]) {
