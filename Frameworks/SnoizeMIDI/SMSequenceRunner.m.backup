@@ -1,0 +1,426 @@
+//
+//  SMSequenceRunner.m
+//  SnoizeMIDI
+//
+//  Created by Kurt Revis on Sat Dec 15 2001.
+//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
+//
+
+#import "SMSequenceRunner.h"
+#import <Foundation/Foundation.h>
+#import <CoreAudio/CoreAudio.h>
+#import <CoreMIDI/CoreMIDI.h>
+#import <OmniBase/OmniBase.h>
+#import <OmniFoundation/OmniFoundation.h>
+#import "SMSequence.h"
+#import "SMSequenceNote.h"
+#import "SMScheduler.h"
+#import "SMVoiceMessage.h"
+
+
+@interface SMSequenceRunner (Private)
+
+- (void)_nextTick;
+- (void)_processNotesFromTime:(MIDITimeStamp)blockStartTime toTime:(MIDITimeStamp)blockEndTime;
+- (void)_scheduleNextTick;
+
+- (NSArray *)_notesStartingFromTime:(MIDITimeStamp)blockStartTime toTime:(MIDITimeStamp)blockEndTime;
+- (NSArray *)_notesEndingBeforeTime:(MIDITimeStamp)blockEndTime;
+
+- (SMMessage *)_noteOnMessageForNote:(SMSequenceNote *)note atTime:(MIDITimeStamp)tickTimeStamp;
+- (SMMessage *)_noteOffMessageForNote:(SMSequenceNote *)note atTime:(MIDITimeStamp)tickTimeStamp;
+
+- (Float64)_beatForTimeStamp:(MIDITimeStamp)timeStamp;
+
+- (void)_stopAllPlayingNotesImmediately;
+
+@end
+
+
+@implementation SMSequenceRunner
+
+const unsigned int ticksPerBeat = 960;
+
+
+- (id)init;
+{
+    if (![super init])
+        return nil;
+
+    sequenceLock = [[NSLock alloc] init];
+    tempoLock = [[NSLock alloc] init];
+    nextTickEventLock = [[NSLock alloc] init];
+
+    playingNotes = [[NSMutableArray alloc] init];
+    
+    [self setTempo:120.0];
+    
+    return self;
+}
+
+- (void)dealloc;
+{
+    nonretainedMessageDestination = nil;
+
+    [sequence release];
+    sequence = nil;
+    [sequenceLock release];
+    sequenceLock = nil;
+    [tempoLock release];
+    tempoLock = nil;
+    [nextTickEvent release];
+    nextTickEvent = nil;
+    [nextTickEventLock release];
+    nextTickEventLock = nil;
+    [playingNotes release];
+    playingNotes = nil;
+
+    [super dealloc];
+}
+
+- (id<SMMessageDestination>)messageDestination;
+{
+    return nonretainedMessageDestination;
+}
+
+- (void)setMessageDestination:(id<SMMessageDestination>)value;
+{
+    nonretainedMessageDestination = value;
+}
+
+- (Float64)tempo;
+{
+    return tempo;
+}
+
+- (void)setTempo:(Float64)value;
+{
+    [tempoLock lock];
+    
+    tempo = value;
+    // Convert from beats/minute to seconds/tick to host time units/tick.
+    tickDuration = AudioConvertNanosToHostTime(((60.0 / tempo) / ticksPerBeat) * 1.0e9);
+    
+    [tempoLock unlock];
+
+    // TODO We don't handle tempo change correctly while running... see _beatForTimeStamp comment
+}
+
+- (SMSequence *)sequence;
+{
+    return sequence;
+}
+
+- (void)setSequence:(SMSequence *)value;
+{
+    if (sequence == value)
+        return;
+
+    [sequenceLock lock];
+    [sequence release];
+    sequence = [value retain];
+    [sequenceLock unlock];
+
+    // TODO should we allow this while playing?
+    // what about pending notes?
+}
+
+- (void)start;
+{
+    OBASSERT([NSThread inMainThread]);
+    // TODO Look into allowing this from other threads
+
+    // TODO Temp
+    {
+        NSLog(@"time interval: %.15e", [NSDate timeIntervalSinceReferenceDate]);
+    }
+    
+    if ([self isRunning]) {
+#if DEBUG
+        NSLog(@"-[%@ start] called while already running; ignoring", NSStringFromClass([self class]));
+#endif
+        return;
+    }
+
+    lastTickTimeStamp = 0;
+    shouldStop = NO;
+    // TODO set sequence pointer to start, here
+    [self _nextTick];
+}
+
+- (void)stop;
+{
+    OBASSERT([NSThread inMainThread]);
+    // TODO Look into allowing this from other threads
+
+    [nextTickEventLock lock];
+    if (nextTickEvent) {
+        BOOL couldAbort;
+        NSLog(@"stopping");
+        shouldStop = YES;
+        couldAbort = [[SMScheduler midiScheduler] abortEvent:nextTickEvent];
+        [nextTickEvent release];
+        nextTickEvent = nil;
+
+        [self _stopAllPlayingNotesImmediately];
+            // TODO can this get us in any trouble, doing it in this thread?
+
+        NSLog(@"did abort succeed: %@", couldAbort ? @"YES" : @"NO");
+    } else {
+#if DEBUG
+        NSLog(@"-[%@ stop] called while not running; ignoring", NSStringFromClass([self class]));
+#endif
+    }
+    [nextTickEventLock unlock];
+}
+
+- (BOOL)isRunning;
+{
+    // No need to acquire the lock for this atomic operation
+    return (nextTickEvent != nil);
+}
+
+@end
+
+
+@implementation SMSequenceRunner (Private)
+
+- (void)_nextTick;
+{
+    MIDITimeStamp currentTimeStamp;
+    MIDITimeStamp localTickDuration;
+    MIDITimeStamp nextTickTimeStamp;
+    BOOL shouldProcessNotes = YES;
+    MIDITimeStamp ts1, ts2;
+
+    currentTimeStamp = AudioGetCurrentHostTime();
+    // TODO: If there is an advance schedule time for the endpoint or device we're talking to,
+    // it should be added to currentTimeStamp here.  (Probably need to revisit all of this.)
+
+//    [tempoLock lock];
+    localTickDuration = tickDuration;
+//    [tempoLock unlock];
+
+//    NSLog(@"starting with stuff: %@", [SMMessage formatTimeStamp:AudioGetCurrentHostTime() usingOption:SMTimeFormatHostTimeInteger]);
+
+    if (lastTickTimeStamp == 0) {
+        // We are just starting. Remember this time stamp.
+        startTimeStamp = currentTimeStamp;
+        // Process one tick worth of notes, starting now.
+        lastTickTimeStamp = currentTimeStamp;
+        nextTickTimeStamp = lastTickTimeStamp + localTickDuration;
+
+    } else if (currentTimeStamp < lastTickTimeStamp) {
+        // Nothing to do yet--we've woken up early. This shouldn't really happen.
+        shouldProcessNotes = NO;
+
+    } else {
+        // We've passed the time of the last tick, so all messages should have been sent. Now we need to process more notes.
+        MIDITimeStamp normalNextTickTimeStamp;
+
+        // Normally we should get called before a whole tick has gone by. Check if that is the case.
+        normalNextTickTimeStamp = lastTickTimeStamp + localTickDuration;
+        if (currentTimeStamp < normalNextTickTimeStamp) {
+            // We are right on time.
+            nextTickTimeStamp = normalNextTickTimeStamp;
+            
+        } else {
+            // It took too long to wake up, and we've missed one or more ticks.
+            // But we can recover by sending all events in [lastTickTimeStamp, next tick after currentTimeStamp).
+            // (NOTE: The "normal" case is really just a degenerate version of this case.)
+#if DEBUG
+            NSLog(@"missed tick! we took %@ but tick is only %@",
+                  [SMMessage formatTimeStamp:currentTimeStamp-lastTickTimeStamp usingOption:SMTimeFormatHostTimeInteger],
+                  [SMMessage formatTimeStamp:localTickDuration usingOption:SMTimeFormatHostTimeInteger]);
+#endif
+            nextTickTimeStamp = currentTimeStamp - (currentTimeStamp % localTickDuration) + localTickDuration;
+            
+        }
+    }
+
+    if (shouldProcessNotes) {
+//        NSLog(@"process notes from %@ to %@",
+//                  [SMMessage formatTimeStamp:lastTickTimeStamp usingOption:SMTimeFormatHostTimeInteger],
+//                  [SMMessage formatTimeStamp:nextTickTimeStamp usingOption:SMTimeFormatHostTimeInteger]
+//              );
+//        [self _processNotesFromTime:lastTickTimeStamp toTime:nextTickTimeStamp];
+        // This should get notes in the interval [lastTickTimeStamp, nextTickTimeStamp) --
+        // that is, including lastTickTimeStamp, but not including nextTickTimeStamp.
+        // This way we are certain to get the first note in the sequence. 
+        lastTickTimeStamp = nextTickTimeStamp;
+    }
+
+//    NSLog(@"done with stuff at: %@", [SMMessage formatTimeStamp:AudioGetCurrentHostTime() usingOption:SMTimeFormatHostTimeInteger]);
+//    NSLog(@"next tick: %@", [SMMessage formatTimeStamp:lastTickTimeStamp usingOption:SMTimeFormatHostTimeInteger]);
+
+    ts1 = AudioGetCurrentHostTime();
+
+    if (!shouldStop)	// TODO Temporary--shouldn't really need this
+        [self _scheduleNextTick];
+
+    ts2 = AudioGetCurrentHostTime();
+
+    NSLog(@"1: spent %d in work", (int)(ts1-currentTimeStamp));
+    NSLog(@"2: spent %d in work", (int)(ts2-currentTimeStamp));
+}
+
+- (void)_processNotesFromTime:(MIDITimeStamp)blockStartTime toTime:(MIDITimeStamp)blockEndTime;
+{
+    NSMutableArray *messages;
+    NSArray *notes;
+    unsigned int noteIndex, noteCount;
+
+    messages = [NSMutableArray array];
+
+    // Handle the notes which are ending
+    notes = [self _notesEndingBeforeTime:blockEndTime];
+    noteCount = [notes count];
+    for (noteIndex = 0; noteIndex < noteCount; noteIndex++) {
+        SMSequenceNote *note;
+
+        note = [notes objectAtIndex:noteIndex];
+        [messages addObject:[self _noteOffMessageForNote:note atTime:blockEndTime]];
+        [playingNotes removeObjectIdenticalTo:note];
+    }
+
+    // Handle the notes which are starting
+    notes = [self _notesStartingFromTime:blockStartTime toTime:blockEndTime];
+    noteCount = [notes count];
+    for (noteIndex = 0; noteIndex < noteCount; noteIndex++) {
+        SMSequenceNote *note;
+
+        note = [notes objectAtIndex:noteIndex];
+        [messages addObject:[self _noteOnMessageForNote:note atTime:blockEndTime]];
+        [playingNotes addObject:note];
+    }
+    
+    if ([messages count])
+        [nonretainedMessageDestination takeMIDIMessages:messages];
+}
+
+- (void)_scheduleNextTick;
+{
+    NSTimeInterval delay;
+    MIDITimeStamp currentHostTime;
+
+    currentHostTime = AudioGetCurrentHostTime();
+//    OBASSERT(lastTickTimeStamp > currentHostTime);
+    if (lastTickTimeStamp > currentHostTime) {
+        // Schedule a wakeup at lastTickTimeStamp (doesn't have to be precise, just soon afterwards)
+        delay = AudioConvertHostTimeToNanos(lastTickTimeStamp - currentHostTime) / 1.0e9;
+    } else {
+        delay = 0.0;  	// as soon as possible.. we missed it!
+    }
+    
+//    [nextTickEventLock lock];
+    [nextTickEvent release];
+    nextTickEvent = [[[SMScheduler midiScheduler] scheduleSelector:@selector(_nextTick) onObject:self afterTime:delay] retain];
+//    [nextTickEventLock unlock];
+}
+
+- (NSArray *)_notesStartingFromTime:(MIDITimeStamp)blockStartTime toTime:(MIDITimeStamp)blockEndTime;
+{
+    SMSequence *localSequence;
+    Float64 blockStartBeat, blockEndBeat;
+
+    [sequenceLock lock];
+    localSequence = [[sequence retain] autorelease];
+    [sequenceLock unlock];
+
+    // TODO These should be passed in because they will be needed elsewhere
+    blockStartBeat = [self _beatForTimeStamp:blockStartTime];
+    blockEndBeat = [self _beatForTimeStamp:blockEndTime];
+//    NSLog(@"notes starting between %g and %g", blockStartBeat, blockEndBeat);
+
+    return [sequence notesStartingFromBeat:blockStartBeat toBeat:blockEndBeat];
+}
+
+- (NSArray *)_notesEndingBeforeTime:(MIDITimeStamp)blockEndTime;
+{
+    NSMutableArray *notes;
+    unsigned int index, count;
+    Float64 blockEndBeat;
+
+    count = [playingNotes count];
+    if (count == 0)
+        return nil;
+
+    // TODO This should be passed in because it will be needed elsewhere
+    blockEndBeat = [self _beatForTimeStamp:blockEndTime];
+//    NSLog(@"notes ending before: %g", blockEndBeat);
+    
+    notes = [NSMutableArray arrayWithCapacity:count];
+    for (index = 0; index < count; index++) {
+        SMSequenceNote *note;
+
+        note = [playingNotes objectAtIndex:index];
+        if ([note endPosition] < blockEndBeat)
+            [notes addObject:note];
+    }
+
+    return notes;
+}
+
+- (SMMessage *)_noteOnMessageForNote:(SMSequenceNote *)note atTime:(MIDITimeStamp)tickTimeStamp;
+{
+    SMVoiceMessage *message;
+
+    message = [[[SMVoiceMessage alloc] initWithTimeStamp:tickTimeStamp statusByte:0] autorelease];
+    [message setStatus:SMVoiceMessageStatusNoteOn];
+    [message setChannel:1];	// TODO
+    [message setDataByte1:[note noteNumber]];
+    [message setDataByte2:[note onVelocity]];
+
+    return message;
+}
+
+- (SMMessage *)_noteOffMessageForNote:(SMSequenceNote *)note atTime:(MIDITimeStamp)tickTimeStamp;
+{
+    SMVoiceMessage *message;
+
+    message = [[[SMVoiceMessage alloc] initWithTimeStamp:tickTimeStamp statusByte:0] autorelease];
+    [message setStatus:SMVoiceMessageStatusNoteOff];
+    [message setChannel:1];	// TODO
+    [message setDataByte1:[note noteNumber]];
+    [message setDataByte2:[note offVelocity]];
+
+    return message;
+}
+
+- (Float64)_beatForTimeStamp:(MIDITimeStamp)timeStamp;
+{
+    Float64 secondsElapsed;
+
+    OBASSERT(timeStamp >= startTimeStamp);
+
+    secondsElapsed = AudioConvertHostTimeToNanos(timeStamp - startTimeStamp) / 1.0e9;
+    return ((secondsElapsed / 60.0) * tempo);
+
+    // TODO This won't work if the tempo has ever changed... need to reset startTimeStamp when that happens, or something.
+    // Alternatively we could keep a current beat pointer and then do operations on that... easier to keep up to date
+}
+
+- (void)_stopAllPlayingNotesImmediately;
+{
+    unsigned int noteIndex, noteCount;
+    MIDITimeStamp currentTime;
+    NSMutableArray *messages;
+
+    noteCount = [playingNotes count];
+    if (noteCount == 0)
+        return;
+
+    currentTime = AudioGetCurrentHostTime();
+    messages = [NSMutableArray arrayWithCapacity:noteCount];
+    for (noteIndex = 0; noteIndex < noteCount; noteIndex++) {
+        SMSequenceNote *note;
+
+        note = [playingNotes objectAtIndex:noteIndex];
+        [messages addObject:[self _noteOffMessageForNote:note atTime:currentTime]];
+    }
+    [playingNotes removeAllObjects];
+
+    [nonretainedMessageDestination takeMIDIMessages:messages];
+}
+
+@end

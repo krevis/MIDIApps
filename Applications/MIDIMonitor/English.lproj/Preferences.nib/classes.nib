@@ -1,0 +1,31 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {
+                changeAutoSelectFirstSourceIfSourceDisappears = id; 
+                changeAutoSelectFirstSourceInNewDocument = id; 
+                changeControllerFormat = id; 
+                changeDataFormat = id; 
+                changeNoteFormat = id; 
+                changeOpenWindowsForNewSources = id; 
+                changeSysExBytesPerRow = id; 
+                changeTimeFormat = id; 
+            }; 
+            CLASS = SMMPreferencesWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                autoSelectFirstSourceIfSourceDisappearsCheckbox = id; 
+                autoSelectFirstSourceInNewDocumentMatrix = id; 
+                controllerFormatMatrix = id; 
+                dataFormatMatrix = id; 
+                noteFormatMatrix = id; 
+                openWindowsForNewSourcesCheckbox = id; 
+                sysExBytesPerRowMatrix = id; 
+                timeFormatMatrix = id; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

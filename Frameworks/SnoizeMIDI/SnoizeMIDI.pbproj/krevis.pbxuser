@@ -1,0 +1,125 @@
+// !$*UTF8*$!
+{
+	0867D690FE84028FC02AAC07 = {
+		activeBuildStyle = 014CEA440018CDF011CA2923;
+		activeTarget = 0867D69CFE84028FC02AAC07;
+		addToTargets = (
+			0867D69CFE84028FC02AAC07,
+		);
+		breakpoints = (
+		);
+		perUserDictionary = {
+			PBXWorkspaceConfiguration = {
+				ContentSize = "{1112, 998}";
+				LeftSlideOut = {
+					ActiveTab = 0;
+					Frame = "{{0, 23}, {1112, 975}}";
+					Split0 = {
+						Frame = "{{278, 0}, {834, 975}}";
+						Split0 = {
+							Frame = "{{0, 24}, {834, 951}}";
+						};
+						SplitCount = 1;
+						Tab0 = {
+							Debugger = {
+								ActiveTab = 1;
+								Frame = "{{0, 0}, {804, 511}}";
+								Split0 = {
+									Frame = "{{0, 229}, {804, 282}}";
+									Split0 = {
+										Frame = "{{0, 0}, {389, 282}}";
+									};
+									Split1 = {
+										Frame = "{{398, 0}, {406, 282}}";
+									};
+									SplitCount = 2;
+								};
+								SplitCount = 1;
+								Tab0 = {
+									Frame = "{{0, 0}, {100, 50}}";
+								};
+								Tab1 = {
+									Frame = "{{0, 0}, {804, 205}}";
+								};
+								TabCount = 2;
+							};
+							Frame = "{{0, 0}, {804, 511}}";
+							LauncherConfigVersion = 4;
+						};
+						Tab1 = {
+							Frame = "{{0, 0}, {804, 208}}";
+							LauncherConfigVersion = 3;
+							Runner = {
+								Frame = "{{0, 0}, {804, 208}}";
+							};
+						};
+						Tab2 = {
+							BuildMessageFrame = "{{0, 0}, {836, 240}}";
+							BuildTranscriptFrame = "{{0, 249}, {836, 80}}";
+							Frame = "{{0, 0}, {834, 327}}";
+						};
+						Tab3 = {
+							Frame = "{{0, 0}, {705, 295}}";
+						};
+						TabCount = 4;
+					};
+					SplitCount = 1;
+					Tab0 = {
+						Frame = "{{0, 0}, {254, 975}}";
+					};
+					Tab1 = {
+						ClassesFrame = "{{0, 0}, {202, 56}}";
+						Frame = "{{0, 0}, {200, 100}}";
+						MembersFrame = "{{0, 65}, {202, 35}}";
+						OptionsSetName = "Hierarchy, all classes";
+					};
+					Tab2 = {
+						Frame = "{{0, 0}, {200, 100}}";
+					};
+					Tab3 = {
+						Frame = "{{0, 0}, {200, 918}}";
+						Split0 = {
+							Frame = "{{0, 0}, {200, 448}}";
+						};
+						Split1 = {
+							Frame = "{{0, 457}, {200, 461}}";
+						};
+						SplitCount = 2;
+					};
+					Tab4 = {
+						Frame = "{{0, 0}, {250, 918}}";
+					};
+					TabCount = 5;
+				};
+			};
+		};
+		userBookmarkGroup = F584CFF401CB836101000164;
+		wantsIndex = 1;
+		wantsSCM = -1;
+	};
+	0867D69CFE84028FC02AAC07 = {
+		activeExec = 0;
+	};
+	F53D4AB3015AA95101000164 = {
+		uiCtxt = {
+			sepNavWindowFrame = "{{15, 671}, {750, 502}}";
+		};
+	};
+	F584CFF401CB836101000164 = {
+		children = (
+			F584CFF501CB836101000164,
+		);
+		isa = PBXBookmarkGroup;
+		name = Root;
+	};
+	F584CFF501CB836101000164 = {
+		fRef = F584CFF001CB7BA801000164;
+		isa = PBXTextBookmark;
+		name = "SMSequence.h: 33";
+		rLen = 0;
+		rLoc = 541;
+		rType = 0;
+		vrLen = 636;
+		vrLoc = 0;
+	};
+}

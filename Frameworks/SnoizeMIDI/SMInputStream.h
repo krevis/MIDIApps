@@ -1,0 +1,33 @@
+//
+//  SMInputStream.h
+//  SnoizeMIDI
+//
+//  Created by krevis on Wed Nov 28 2001.
+//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
+//
+
+#import <OmniFoundation/OFObject.h>
+#import <CoreMIDI/MIDIServices.h>
+#import <SnoizeMIDI/SMMessageDestinationProtocol.h>
+
+@class SMMessageParser;
+
+@interface SMInputStream : OFObject
+{
+    SMMessageParser *parser;
+}
+
+- (id<SMMessageDestination>)messageDestination;
+- (void)setMessageDestination:(id<SMMessageDestination>)messageDestination;
+
+// For subclasses only
+- (MIDIReadProc)midiReadProc;
+
+@end
+
+// Notifications
+extern NSString *SMInputStreamReadingSysExNotification;
+    // contains key @"length" with NSNumber (unsigned int) size of data read so far
+extern NSString *SMInputStreamDoneReadingSysExNotification;
+    // contains key @"length" with NSNumber (unsigned int) indicating size of data read
+    // contains key @"valid" with NSNumber (BOOL) indicating whether sysex ended properly or not

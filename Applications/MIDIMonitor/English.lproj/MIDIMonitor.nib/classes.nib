@@ -1,0 +1,48 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = MySound; LANGUAGE = ObjC; SUPERCLASS = Sound; }, 
+        {
+            ACTIONS = {hide = id; show = id; toggleDisclosure = id; }; 
+            CLASS = SMMDisclosableView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSView; 
+        }, 
+        {
+            ACTIONS = {
+                changeFilter = id; 
+                changeFilterFromMatrix = id; 
+                clearMessages = id; 
+                selectSource = id; 
+                setChannel = id; 
+                setChannelRadioButton = id; 
+                setMaximumMessageCount = id; 
+                toggleFilterShown = id; 
+            }; 
+            CLASS = SMMMonitorWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                channelRadioButtons = id; 
+                clearButton = id; 
+                filterDisclosableView = id; 
+                filterDisclosureButton = id; 
+                maxMessageCountField = id; 
+                messagesOutlineView = id; 
+                oneChannelField = id; 
+                realTimeCheckBox = id; 
+                realTimeMatrix = id; 
+                sourcePopUpButton = id; 
+                sysExProgressBox = id; 
+                sysExProgressField = id; 
+                sysExProgressIndicator = id; 
+                systemCommonCheckBox = id; 
+                systemCommonMatrix = id; 
+                systemExclusiveCheckBox = id; 
+                voiceMessagesCheckBox = id; 
+                voiceMessagesMatrix = id; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

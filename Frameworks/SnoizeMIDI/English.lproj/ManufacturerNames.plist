@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+<plist version="0.9">
+<dict>
+	<key>01</key>
+	<string>Sequential Circuits</string>
+	<key>02</key>
+	<string>IDP</string>
+	<key>03</key>
+	<string>Voyetra/Octave Plateau</string>
+	<key>04</key>
+	<string>Moog Music</string>
+	<key>05</key>
+	<string>Passport Designs</string>
+	<key>06</key>
+	<string>Lexicon</string>
+	<key>07</key>
+	<string>Kurzweil</string>
+	<key>08</key>
+	<string>Fender</string>
+	<key>09</key>
+	<string>Gulbransen</string>
+	<key>0a</key>
+	<string>AKG Acoustics</string>
+	<key>0b</key>
+	<string>Voyce Music</string>
+	<key>0c</key>
+	<string>Waveframe</string>
+	<key>0d</key>
+	<string>ADA</string>
+	<key>0e</key>
+	<string>Garfield Electronics</string>
+	<key>0f</key>
+	<string>Ensoniq</string>
+	<key>10</key>
+	<string>Oberheim</string>
+	<key>11</key>
+	<string>Apple Computer</string>
+	<key>12</key>
+	<string>Grey Matter</string>
+	<key>13</key>
+	<string>Digidesign</string>
+	<key>14</key>
+	<string>Palm Tree Instruments</string>
+	<key>15</key>
+	<string>J L Cooper</string>
+	<key>16</key>
+	<string>Lowrey</string>
+	<key>17</key>
+	<string>Adams-Smith</string>
+	<key>18</key>
+	<string>E-mu</string>
+	<key>19</key>
+	<string>Harmony Systems</string>
+	<key>1a</key>
+	<string>ART</string>
+	<key>1b</key>
+	<string>Baldwin</string>
+	<key>1c</key>
+	<string>Eventide</string>
+	<key>1d</key>
+	<string>Inventronics</string>
+	<key>1e</key>
+	<string>Key Concepts</string>
+	<key>1f</key>
+	<string>Clarity</string>
+	<key>20</key>
+	<string>Passac</string>
+	<key>21</key>
+	<string>SIEL</string>
+	<key>21</key>
+	<string></string>
+	<key>22</key>
+	<string>Synthaxe</string>
+	<key>23</key>
+	<string>Stepp</string>
+	<key>24</key>
+	<string>Hohner</string>
+	<key>25</key>
+	<string>Twister</string>
+	<key>26</key>
+	<string>Solton</string>
+	<key>27</key>
+	<string>Jellinghaus</string>
+	<key>28</key>
+	<string>Southworth</string>
+	<key>29</key>
+	<string>PPG</string>
+	<key>2a</key>
+	<string>JEN</string>
+	<key>2b</key>
+	<string>Solid State Logic</string>
+	<key>2c</key>
+	<string>Audio Veritrieb</string>
+	<key>2d</key>
+	<string>Hinton Instruments</string>
+	<key>2e</key>
+	<string>Soundtracs</string>
+	<key>2f</key>
+	<string>Elka</string>
+	<key>30</key>
+	<string>Dynacord</string>
+	<key>33</key>
+	<string>Clavia</string>
+	<key>34</key>
+	<string>Audio Architecture</string>
+	<key>39</key>
+	<string>Soundcraft</string>
+	<key>3b</key>
+	<string>Wersi</string>
+	<key>3c</key>
+	<string>Avab Electronik</string>
+	<key>3d</key>
+	<string>Digigram</string>
+	<key>3e</key>
+	<string>Waldorf</string>
+	<key>3f</key>
+	<string>Quasimidi</string>
+	<key>40</key>
+	<string>Kawai</string>
+	<key>41</key>
+	<string>Roland</string>
+	<key>42</key>
+	<string>Korg</string>
+	<key>43</key>
+	<string>Yamaha</string>
+	<key>44</key>
+	<string>Casio</string>
+	<key>45</key>
+	<string>Moridaira</string>
+	<key>46</key>
+	<string>Kamiya</string>
+	<key>47</key>
+	<string>Akai</string>
+	<key>48</key>
+	<string>Japan Victor</string>
+	<key>49</key>
+	<string>Meisosha</string>
+	<key>4a</key>
+	<string>Hoshino Gakki</string>
+	<key>4b</key>
+	<string>Fujitsu</string>
+	<key>4c</key>
+	<string>Sony</string>
+	<key>4d</key>
+	<string>Nishin Onpa</string>
+	<key>4e</key>
+	<string>TEAC</string>
+	<key>50</key>
+	<string>Matsushita Electric</string>
+	<key>51</key>
+	<string>Fostex</string>
+	<key>52</key>
+	<string>Zoom</string>
+	<key>53</key>
+	<string>Midori Electronics</string>
+	<key>54</key>
+	<string>Matsushita Communication Industrial</string>
+	<key>55</key>
+	<string>Suzuki</string>
+	<key>56</key>
+	<string>Fuji Sound Corporation Ltd.</string>
+	<key>57</key>
+	<string>Acoustic Technical Laboratory, Inc.</string>
+	<key>7d</key>
+	<string>Non-Commercial</string>
+	<key>7e</key>
+	<string>Universal Non-Real Time</string>
+	<key>7f</key>
+	<string>Universal Real Time</string>
+	<key>000001</key>
+	<string>Warner New Media</string>
+	<key>000007</key>
+	<string>Digital Music Corporation</string>
+	<key>000008</key>
+	<string>IOTA Systems</string>
+	<key>000009</key>
+	<string>New England Digital</string>
+	<key>00000a</key>
+	<string>Artisyn</string>
+	<key>00000b</key>
+	<string>IVL Technologies</string>
+	<key>00000c</key>
+	<string>Southern Music Systems</string>
+	<key>00000d</key>
+	<string>Lake Butler Sound Company</string>
+	<key>00000e</key>
+	<string>Alesis</string>
+	<key>000010</key>
+	<string>DOD Electronics</string>
+	<key>000011</key>
+	<string>Studer-Editech</string>
+	<key>000014</key>
+	<string>Perfect Fretworks</string>
+	<key>000015</key>
+	<string>KAT</string>
+	<key>000016</key>
+	<string>Opcode</string>
+	<key>000017</key>
+	<string>Rane</string>
+	<key>000018</key>
+	<string>Spatial Sound / Anadi Inc.</string>
+	<key>000019</key>
+	<string>KMX</string>
+	<key>00001a</key>
+	<string>Allen &amp; Heath</string>
+	<key>00001b</key>
+	<string>Peavey</string>
+	<key>00001c</key>
+	<string>360 Systems</string>
+	<key>00001d</key>
+	<string>Spectrum Design &amp; Development</string>
+	<key>00001e</key>
+	<string>Marquis Musi</string>
+	<key>00001f</key>
+	<string>Zeta Systems</string>
+	<key>000020</key>
+	<string>Axxes</string>
+	<key>000021</key>
+	<string>Orban</string>
+	<key>000024</key>
+	<string>KTI</string>
+	<key>000025</key>
+	<string>Breakaway Technologies</string>
+	<key>000026</key>
+	<string>CAE</string>
+	<key>000029</key>
+	<string>Rocktron Corp.</string>
+	<key>00002a</key>
+	<string>PianoDisc</string>
+	<key>00002b</key>
+	<string>Cannon Research Corporation</string>
+	<key>00002d</key>
+	<string>Rogers Instrument Corp.</string>
+	<key>00002e</key>
+	<string>Blue Sky Logic</string>
+	<key>00002f</key>
+	<string>Encore Electronics</string>
+	<key>000030</key>
+	<string>Uptown</string>
+	<key>000031</key>
+	<string>Voce</string>
+	<key>000032</key>
+	<string>CTI Audio</string>
+	<key>000033</key>
+	<string>S&amp;S Research</string>
+	<key>000034</key>
+	<string>Broderbund Software</string>
+	<key>000035</key>
+	<string>Allen Organ Co.</string>
+	<key>000037</key>
+	<string>Music Quest</string>
+	<key>000038</key>
+	<string>Aphex</string>
+	<key>000039</key>
+	<string>Gallien Krueger</string>
+	<key>00003a</key>
+	<string>IBM</string>
+	<key>00003c</key>
+	<string>Hotz Instruments Technologies</string>
+	<key>00003d</key>
+	<string>ETA Lighting</string>
+	<key>00003e</key>
+	<string>NSI Corporation</string>
+	<key>00003f</key>
+	<string>Ad Lib</string>
+	<key>000040</key>
+	<string>Richmond Sound Design</string>
+	<key>000041</key>
+	<string>Microsoft</string>
+	<key>000042</key>
+	<string>The Software Toolworks</string>
+	<key>000043</key>
+	<string>RJMG/Niche</string>
+	<key>000044</key>
+	<string>Intone</string>
+	<key>000047</key>
+	<string>GT Electronics/Groove Tubes</string>
+	<key>00004e</key>
+	<string>Euphonix</string>
+	<key>00004f</key>
+	<string>InterMIDI</string>
+	<key>000055</key>
+	<string>Lone Wolf</string>
+	<key>000064</key>
+	<string>Musonix</string>
+	<key>000074</key>
+	<string>Ta Horng</string>
+	<key>000075</key>
+	<string>eTek (formerly Forte)</string>
+	<key>000076</key>
+	<string>Electro-Voice</string>
+	<key>000077</key>
+	<string>Midisoft</string>
+	<key>000078</key>
+	<string>Q-Sound Labs</string>
+	<key>000079</key>
+	<string>Westrex</string>
+	<key>00007a</key>
+	<string>NVidia</string>
+	<key>00007b</key>
+	<string>ESS Technology</string>
+	<key>00007c</key>
+	<string>MediaTrix Peripherals</string>
+	<key>00007d</key>
+	<string>Brooktree</string>
+	<key>00007e</key>
+	<string>Otari</string>
+	<key>00007f</key>
+	<string>Key Electronics</string>
+	<key>000100</key>
+	<string>Shure</string>
+	<key>000101</key>
+	<string>AuraSound</string>
+	<key>000102</key>
+	<string>Crystal Semiconductor</string>
+	<key>000103</key>
+	<string>Conexant (Rockwell)</string>
+	<key>000104</key>
+	<string>Silicon Graphics</string>
+	<key>000105</key>
+	<string>Midiman</string>
+	<key>000106</key>
+	<string>PreSonus</string>
+	<key>000108</key>
+	<string>Topaz Enterprises</string>
+	<key>000109</key>
+	<string>Cast Lighting</string>
+	<key>00010a</key>
+	<string>Microsoft Consumer Division</string>
+	<key>00010b</key>
+	<string>Sonic Foundry</string>
+	<key>00010c</key>
+	<string>Line 6 (Fast Forward)</string>
+	<key>00010d</key>
+	<string>Beatnik/Headspace</string>
+	<key>00010e</key>
+	<string>Van Koevering Company</string>
+	<key>00010f</key>
+	<string>Altech Systems</string>
+	<key>000110</key>
+	<string>S &amp; S Research</string>
+	<key>000111</key>
+	<string>VLSI Technology</string>
+	<key>000112</key>
+	<string>Chromatic Research</string>
+	<key>000113</key>
+	<string>Sapphire</string>
+	<key>000114</key>
+	<string>IDRC</string>
+	<key>000115</key>
+	<string>Justonic Tuning</string>
+	<key>000116</key>
+	<string>TorComp ResearcInc</string>
+	<key>000117</key>
+	<string>Newtek Inc</string>
+	<key>000118</key>
+	<string>Sound Sculpture</string>
+	<key>000119</key>
+	<string>Walker Technical</string>
+	<key>00011a</key>
+	<string>Digital Harmony (PAVO)</string>
+	<key>00011b</key>
+	<string>InVision Interactive</string>
+	<key>00011c</key>
+	<string>T-Square Design</string>
+	<key>00011d</key>
+	<string>Nemesys</string>
+	<key>00011e</key>
+	<string>DBX Professional</string>
+	<key>00011f</key>
+	<string>Syndyne Corporation</string>
+	<key>000120</key>
+	<string>Bitheadz</string>
+	<key>000121</key>
+	<string>Cakewalk</string>
+	<key>000122</key>
+	<string>Staccato Systems</string>
+	<key>000123</key>
+	<string>National Semiconductor</string>
+	<key>000124</key>
+	<string>Boom Theory / Adinolfi</string>
+	<key>000125</key>
+	<string>Virtual DSP Corporation</string>
+	<key>000126</key>
+	<string>Antares</string>
+	<key>000127</key>
+	<string>Angel Software</string>
+	<key>000128</key>
+	<string>St Louis Music</string>
+	<key>000129</key>
+	<string>Lyrrus/G-VOX</string>
+	<key>00012a</key>
+	<string>Ashley Audio</string>
+	<key>00012b</key>
+	<string>Vari-Lite</string>
+	<key>00012c</key>
+	<string>Summit Audio</string>
+	<key>00012d</key>
+	<string>Aureal</string>
+	<key>00012e</key>
+	<string>SeaSound</string>
+	<key>00012f</key>
+	<string>U. S. Robotics</string>
+	<key>000130</key>
+	<string>Aurisis Research</string>
+	<key>000131</key>
+	<string>Nearfield Multimedia</string>
+	<key>000132</key>
+	<string>FM7</string>
+	<key>000133</key>
+	<string>Swivel Systems</string>
+	<key>000134</key>
+	<string>Hyperactive Audio Systems</string>
+	<key>000135</key>
+	<string>MidiLite (Castle Studios Productions)</string>
+	<key>000136</key>
+	<string>Radikal Technologies</string>
+	<key>000137</key>
+	<string>Roger Linn Design</string>
+	<key>000138</key>
+	<string>Helicon Vocal Technologies</string>
+	<key>000139</key>
+	<string>Event Electronics</string>
+	<key>00013a</key>
+	<string>Sonic Network Inc</string>
+	<key>00013b</key>
+	<string>Realtime Music Solutions</string>
+	<key>00013c</key>
+	<string>Apogee Digital</string>
+	<key>002000</key>
+	<string>Dream</string>
+	<key>002001</key>
+	<string>Strand Lighting</string>
+	<key>002002</key>
+	<string>AMEK Systems &amp; Controls</string>
+	<key>002004</key>
+	<string>Dr.Bohm/Musician International</string>
+	<key>002006</key>
+	<string>Trident</string>
+	<key>002007</key>
+	<string>Real World Design *</string>
+	<key>002009</key>
+	<string>Yes Technology</string>
+	<key>00200a</key>
+	<string>Audiomatica</string>
+	<key>00200b</key>
+	<string>Bontempi/Farfisa</string>
+	<key>00200c</key>
+	<string>F.B.T. Electronica</string>
+	<key>00200d</key>
+	<string>MIDITEMP</string>
+	<key>00200e</key>
+	<string>Larking Audio</string>
+	<key>00200f</key>
+	<string>Zero 88 Lighting</string>
+	<key>002010</key>
+	<string>Micon Audio Electronics</string>
+	<key>002011</key>
+	<string>Forefront Technology</string>
+	<key>002013</key>
+	<string>Kenton Electronics</string>
+	<key>002015</key>
+	<string>ADB</string>
+	<key>002016</key>
+	<string>Jim Marshall Products</string>
+	<key>002017</key>
+	<string>DDA</string>
+	<key>002018</key>
+	<string>BSS Audio</string>
+	<key>00201f</key>
+	<string>TC Electronic</string>
+	<key>00202b</key>
+	<string>Medeli Electronics Co</string>
+	<key>00202c</key>
+	<string>Charlie Lab SRL</string>
+	<key>00202d</key>
+	<string>Blue Chip Music Technology</string>
+	<key>00202e</key>
+	<string>BEE OH</string>
+	<key>00202f</key>
+	<string>LG Semiconductor</string>
+	<key>002030</key>
+	<string>TESI</string>
+	<key>002031</key>
+	<string>Emagic</string>
+	<key>002032</key>
+	<string>Behringer</string>
+	<key>002033</key>
+	<string>Access</string>
+	<key>002034</key>
+	<string>Synoptic</string>
+	<key>002035</key>
+	<string>Hanmesoft</string>
+	<key>002036</key>
+	<string>Terratec Electronic</string>
+	<key>002037</key>
+	<string>Proel</string>
+	<key>002038</key>
+	<string>IBK MIDI</string>
+	<key>002039</key>
+	<string>IRCAM</string>
+	<key>00203a</key>
+	<string>Propellerhead Software</string>
+	<key>00203b</key>
+	<string>Red Sound</string>
+	<key>00203c</key>
+	<string>Elektron</string>
+	<key>00203d</key>
+	<string>Sintefex Audio</string>
+	<key>00203e</key>
+	<string>MAM (Music and More)</string>
+	<key>00203f</key>
+	<string>Amsaro</string>
+	<key>002040</key>
+	<string>CDS Advanced Technology</string>
+	<key>002041</key>
+	<string>Touched By Sound</string>
+	<key>002042</key>
+	<string>DSP Arts</string>
+	<key>002043</key>
+	<string>Phil Rees Music Tech</string>
+	<key>002044</key>
+	<string>Stamer Musikanlagen</string>
+	<key>002045</key>
+	<string>Soundart (Musical Muntaner)</string>
+	<key>002046</key>
+	<string>C-Mexx Software</string>
+	<key>002047</key>
+	<string>Klavis Technologies</string>
+	<key>002048</key>
+	<string>Noteheads</string>
+</dict>
+</plist>
