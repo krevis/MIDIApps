@@ -118,10 +118,16 @@ and programmers can use it to test MIDI drivers and applications.
 
 <P><BR><BR><a name="Troubleshooting"><font size="+1" face="helvetica"><b>Troubleshooting</b></font></a>
 
-<P>If the Source menu is blank, then there are no MIDI devices available. Remember that you must have a Mac OS X driver for your device; Mac OS 9 drivers will <i>not</i> work. At the time of this writing, Mac OS X drivers are available for the <a href="http://www.midiman.com/">MIDIMAN</a> USB interfaces.  (Supposedly there is also a driver for the Roland SMPU-64, but I can't find it on the web.) Mac OS X also supports any USB MIDI Class-compliant device, with no special driver necessary; however, no such devices are shipping yet.
+<P>If the Source menu is blank, then there are no MIDI devices available. Remember that you must have a Mac OS X driver for your device; Mac OS 9 drivers will <i>not</i> work. At the time of this writing, Mac OS X drivers are available for these devices:
+<ul>
+<li><a href="http://www.midiman.com/">MIDIMAN</a> USB interfaces
+<li><a href="http://www.motu.com/">Mark of the Unicorn (MOTU)</a> USB interfaces
+</ul>
+<br>Mac OS X also supports any USB MIDI Class-compliant device, with no special driver necessary; however, no such devices are shipping yet.
 
 <P>Note: If you have a device hooked up, and the proper driver, but you don't see it in the menu, you may be running into a problem with the Classic environment. Classic tends to grab USB devices for its own exclusive use, and doesn't let programs on the native Mac OS X side get to them. Try shutting down Classic and starting MIDI Monitor again. (If MIDI Monitor is started first, and is running when Classic starts, you will not encounter this problem.)
 
+<P>Note: The current MOTU driver (as of 29 December 2001) provides a source named "All Ports". It has been reported that this source doesn't work--the interface's light blink, but nothing is shown in MIDI Monitor. This is most likely a bug in the driver, and not MIDI Monitor's fault.
 
 <P><BR><BR><font size="+1" face="helvetica"><b>Contact</b></font>
 <P>Please send questions or comments to: <a href="mailto:MIDIMonitor@snoize.com">MIDIMonitor@snoize.com</a>
