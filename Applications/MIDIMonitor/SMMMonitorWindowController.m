@@ -225,6 +225,7 @@
     NSArray *descriptions;
     unsigned int sourceCount, sourceIndex;
     BOOL foundSource = NO;
+    BOOL addedSeparatorBetweenPortAndVirtual = NO;
 
     currentDescription = [[self document] sourceDescription];
 
@@ -240,6 +241,11 @@
         NSDictionary *description;
         
         description = [descriptions objectAtIndex:sourceIndex];
+        if (!addedSeparatorBetweenPortAndVirtual && [description objectForKey:@"endpoint"] == nil) {
+            if (sourceIndex > 0)
+                [sourcePopUpButton addSeparatorItem];
+            addedSeparatorBetweenPortAndVirtual = YES;
+        }
         [sourcePopUpButton addItemWithTitle:[description objectForKey:@"name"] representedObject:description];
 
         if (!foundSource && [description isEqual:currentDescription]) {
