@@ -3,6 +3,8 @@
 
 @interface SSEAppController : NSObject
 {
+    BOOL hasFinishedLaunching;
+    NSMutableArray *filesToOpenAfterLaunch;
 }
 
 - (IBAction)showPreferences:(id)sender;

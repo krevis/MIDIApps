@@ -91,6 +91,8 @@
 - (void)synchronizeLibrarySortIndicator;
 - (void)synchronizeLibrary;
 
+- (void)importFiles:(NSArray *)filePaths;
+
 - (void)updateSysExReadIndicator;
 - (void)stopSysExReadIndicator;
 - (void)addReadMessagesToLibrary;

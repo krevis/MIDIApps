@@ -8,7 +8,24 @@
 #import "SSEPreferencesWindowController.h"
 
 
+@interface SSEAppController (Private)
+
+- (void)_openFiles:(NSArray *)filenames;
+
+@end
+
+
 @implementation SSEAppController
+
+- (id)init;
+{
+    if (![super init])
+        return nil;
+
+    hasFinishedLaunching = NO;
+
+    return self;
+}
 
 //
 // Application delegate
@@ -23,22 +40,32 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification;
 {
+    hasFinishedLaunching = YES;
+    
     // Make sure we go multithreaded, and that our scheduler starts up
     [OFScheduler mainScheduler];
 
     [self showMainWindow:nil];
+
+    if (filesToOpenAfterLaunch) {
+        [[SSEMainWindowController mainWindowController] importFiles:filesToOpenAfterLaunch];
+        [filesToOpenAfterLaunch release];
+        filesToOpenAfterLaunch = nil;
+    }
 }
 
 - (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename;
 {
-    NSLog(@"open file: %@", filename);
-    
-    // TODO
-    // If the file is a library, need to use it
-    // If the file is a sysex file, need to add it to the library if it's not already there, and then select it in the library
-    // NOTE: If the user double-clicks a file to launch us, this will get sent before -applicationDidFinishLaunching!
-    // So we may need to remember the filename here and do something with it later.
-    return NO;
+    if (hasFinishedLaunching) {
+        [[SSEMainWindowController mainWindowController] importFiles:[NSArray arrayWithObject:filename]];
+    } else {
+        if (!filesToOpenAfterLaunch)
+            filesToOpenAfterLaunch = [[NSMutableArray alloc] init];
+
+        [filesToOpenAfterLaunch addObject:filename];
+    }
+
+    return YES;
 }
 
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag;

@@ -372,6 +372,12 @@ static SSEMainWindowController *controller;
     [self _selectAndScrollToEntries:selectedEntries];
 }
 
+- (void)importFiles:(NSArray *)filePaths;
+{
+    [self _showImportWarningForFiles:filePaths andThenPerformSelector:@selector(_importFilesShowingProgress:)];
+}
+
+
 //
 // Reading SysEx
 //
@@ -524,7 +530,7 @@ static SSEMainWindowController *controller;
     NSArray *filePaths;
 
     filePaths = [[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType];
-    [self _showImportWarningForFiles:filePaths andThenPerformSelector:@selector(_importFilesShowingProgress:)];
+    [self importFiles:filePaths];
 
     return YES;
 }
