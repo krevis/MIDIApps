@@ -433,7 +433,7 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
 
     // Also, it's possible that the endpoint names went from being unique to non-unique, so we need
     // to refresh the messages displayed.
-    [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeMessages)];
+    [self mainThreadSynchronizeMessagesWithScroll:NO];
 }
 
 - (void)setFilterMask:(SMMessageType)newMask;
