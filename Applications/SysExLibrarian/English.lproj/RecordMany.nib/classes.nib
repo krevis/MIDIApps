@@ -14,8 +14,10 @@
             SUPERCLASS = NSObject; 
         }, 
         {
-            CLASS = SSERecordOneController; 
+            ACTIONS = {doneRecording = id; }; 
+            CLASS = SSERecordManyController; 
             LANGUAGE = ObjC; 
+            OUTLETS = {doneButton = NSButton; totalProgressField = NSTextField; }; 
             SUPERCLASS = SSERecordController; 
         }
     ); 

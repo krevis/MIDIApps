@@ -20,8 +20,8 @@
             toolTip = "Record one SysEx message";
         };
         RecordMany = {
-            action = "recordMultiple:";
-            imageName = "ToolbarRecordMultiple";
+            action = "recordMany:";
+            imageName = "ToolbarRecordMany";
             label = "Record Many";
             toolTip = "Record one or more SysEx messages";
         };

@@ -13,10 +13,9 @@
                 cancelImportSheet = id; 
                 cancelPlaySheet = id; 
                 delete = id; 
-                doneWithRecordMultipleSheet = id; 
                 endSheetWithReturnCodeFromSenderTag = id; 
                 play = id; 
-                recordMultiple = id; 
+                recordMany = id; 
                 recordOne = id; 
                 rename = id; 
                 selectAll = id; 
@@ -44,12 +43,6 @@
                 playProgressIndicator = NSProgressIndicator; 
                 playProgressMessageField = NSTextField; 
                 playSheetWindow = NSPanel; 
-                recordMultipleDoneButton = NSButton; 
-                recordMultipleProgressBytesField = NSTextField; 
-                recordMultipleProgressIndicator = NSProgressIndicator; 
-                recordMultipleProgressMessageField = NSTextField; 
-                recordMultipleSheetWindow = NSPanel; 
-                recordMultipleTotalProgressField = NSTextField; 
             }; 
             SUPERCLASS = SSEWindowController; 
         }, 

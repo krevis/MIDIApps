@@ -10,6 +10,7 @@
 #import "SSEMIDIController.h"
 #import "SSEPreferencesWindowController.h"
 #import "SSERecordOneController.h"
+#import "SSERecordManyController.h"
 #import "SSETableView.h"
 
 
@@ -37,9 +38,6 @@
 - (void)_showErrorMessageForBadFiles:(NSArray *)badFilePaths;
 
 - (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-
-- (void)_updateSysExReadIndicator;
-- (void)_updateMultipleSysExReadIndicatorWithMessageCount:(unsigned int)messageCount bytesRead:(unsigned int)bytesRead totalBytesRead:(unsigned int)totalBytesRead;
 
 - (void)_playSelectedEntries;
 
@@ -117,10 +115,12 @@ static SSEMainWindowController *controller;
 
 - (void)dealloc
 {
-//    [progressUpdateEvent release];
-//    progressUpdateEvent = nil;
+    [progressUpdateEvent release];
+    progressUpdateEvent = nil;
     [recordOneController  release];
     recordOneController = nil;
+    [recordManyController release];
+    recordManyController = nil;
     [importStatusLock release];
     importStatusLock = nil;
     [importFilePath release];
@@ -264,19 +264,15 @@ static SSEMainWindowController *controller;
     [recordOneController beginRecording];    
 }
 
-- (IBAction)recordMultiple:(id)sender;
+- (IBAction)recordMany:(id)sender;
 {
-    // TODO removing for the moment
-#if 0
     if ([self _finishEditingResultsInError])
         return;
 
-    [self _updateMultipleSysExReadIndicatorWithMessageCount:0 bytesRead:0 totalBytesRead:0];
+    if (!recordManyController)
+        recordManyController = [[SSERecordManyController alloc] initWithMainWindowController:self midiController:midiController];
 
-    [[NSApplication sharedApplication] beginSheet:recordMultipleSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
-
-    [midiController listenForMultipleMessages];
-#endif
+    [recordManyController beginRecording];
 }
 
 - (IBAction)play:(id)sender;
@@ -325,13 +321,6 @@ static SSEMainWindowController *controller;
         return;
 
     [self _findMissingFilesAndPerformSelector:@selector(_showDetailsOfSelectedEntries)];
-}
-
-- (IBAction)doneWithRecordMultipleSheet:(id)sender;
-{
-    [midiController doneWithMultipleMessageListen];
-    [[NSApplication sharedApplication] endSheet:recordMultipleSheetWindow];
-    [self addReadMessagesToLibrary];
 }
 
 - (IBAction)cancelPlaySheet:(id)sender;
@@ -443,7 +432,7 @@ static SSEMainWindowController *controller;
         if (!exceptionReason)
             exceptionReason = @"Unknown error";   // NOTE I don't see how this could happen, but let's handle it...
 
-        // We need to get rid of the sheet right away, instead of after the delay (see -[SSERecordOneController stopSysExReadIndicator]).
+        // We need to get rid of the sheet right away, instead of after the delay (see -[SSERecordOneController readFinished]).
         if ((attachedSheet = [[self window] attachedSheet])) {
             [NSObject cancelPreviousPerformRequestsWithTarget:NSApp selector:@selector(endSheet:) object:attachedSheet];
             [NSApp endSheet:attachedSheet];
@@ -924,47 +913,6 @@ static int libraryEntryComparator(id object1, id object2, void *context)
 {
     // At this point, we don't really care how this sheet ended
     [sheet orderOut:nil];
-}
-
-// TODO nuke this method
-- (void)_updateSysExReadIndicator;
-{
-    unsigned int messageCount, bytesRead, totalBytesRead;
-
-    [midiController getMessageCount:&messageCount bytesRead:&bytesRead totalBytesRead:&totalBytesRead];
-
-//    if ([[self window] attachedSheet] == recordSheetWindow)
-//        [self _updateSingleSysExReadIndicatorWithMessageCount:messageCount bytesRead:bytesRead totalBytesRead:totalBytesRead];
-//    else
-        [self _updateMultipleSysExReadIndicatorWithMessageCount:messageCount bytesRead:bytesRead totalBytesRead:totalBytesRead];
-
-    [progressUpdateEvent release];
-    progressUpdateEvent = nil;
-}
-
-- (void)_updateMultipleSysExReadIndicatorWithMessageCount:(unsigned int)messageCount bytesRead:(unsigned int)bytesRead totalBytesRead:(unsigned int)totalBytesRead;
-{
-    NSString *totalProgress;
-    BOOL hasAtLeastOneCompleteMessage;
-
-    if (bytesRead == 0) {
-        [recordMultipleProgressMessageField setStringValue:@"Waiting for SysEx message..."];
-        [recordMultipleProgressBytesField setStringValue:@""];
-    } else {
-        [recordMultipleProgressIndicator animate:nil];
-        [recordMultipleProgressMessageField setStringValue:@"Receiving SysEx message..."];
-        [recordMultipleProgressBytesField setStringValue:[NSString abbreviatedStringForBytes:bytesRead]];
-    }
-
-    hasAtLeastOneCompleteMessage = (messageCount > 0);
-    if (hasAtLeastOneCompleteMessage) {
-        totalProgress = [NSString stringWithFormat:@"Total: %u message%@, %@", messageCount, (messageCount > 1) ? @"s" : @"", [NSString abbreviatedStringForBytes:totalBytesRead]];
-    } else {
-        totalProgress = @"";
-    }
-
-    [recordMultipleTotalProgressField setStringValue:totalProgress];
-    [recordMultipleDoneButton setEnabled:hasAtLeastOneCompleteMessage];
 }
 
 - (void)_playSelectedEntries;

@@ -195,6 +195,7 @@
 				F587526F0214CEDD01000164,
 				F559F90A01DEC5E001000164,
 				F5308FE80232F9D401000164,
+				F5308FF10233059B01000164,
 				2A37F4B9FDCFA73011CA2CEA,
 				F5D90FD1021628DF01000164,
 				089C165FFE840EACC02AAC07,
@@ -408,6 +409,8 @@
 				F58752760214D73401000164,
 				F5F52C1202200EBE01000164,
 				F5308FE60232E1AB01000164,
+				F5308FEF0233023701000164,
+				F5308FF60233075A01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -434,6 +437,7 @@
 				F5F52C17022015AC01000164,
 				F5D89A3B02215B2101000164,
 				F5308FEA0232F9D401000164,
+				F5308FF30233059B01000164,
 			);
 			isa = PBXResourcesBuildPhase;
 			name = "Bundle Resources";
@@ -457,6 +461,8 @@
 				F58752770214D73401000164,
 				F5F52C1402200F6601000164,
 				F5308FE70232E1AB01000164,
+				F5308FF00233023801000164,
+				F5308FF70233075A01000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -555,8 +561,12 @@
 				F565B6E601E1419001000164,
 				F565B6E901E1498301000164,
 				F565B6EA01E1498301000164,
+				F5308FF40233075A01000164,
+				F5308FF50233075A01000164,
 				F5308FE40232E1AB01000164,
 				F5308FE50232E1AB01000164,
+				F5308FED0233023701000164,
+				F5308FEE0233023701000164,
 			);
 			isa = PBXGroup;
 			name = "Main window";
@@ -638,6 +648,71 @@
 			isa = PBXGroup;
 			name = "Toolbar Images";
 			refType = 4;
+		};
+		F5308FED0233023701000164 = {
+			isa = PBXFileReference;
+			path = SSERecordManyController.h;
+			refType = 4;
+		};
+		F5308FEE0233023701000164 = {
+			isa = PBXFileReference;
+			path = SSERecordManyController.m;
+			refType = 4;
+		};
+		F5308FEF0233023701000164 = {
+			fileRef = F5308FED0233023701000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5308FF00233023801000164 = {
+			fileRef = F5308FEE0233023701000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5308FF10233059B01000164 = {
+			children = (
+				F5308FF20233059B01000164,
+			);
+			isa = PBXVariantGroup;
+			name = RecordMany.nib;
+			path = "";
+			refType = 4;
+		};
+		F5308FF20233059B01000164 = {
+			isa = PBXFileReference;
+			name = English;
+			path = English.lproj/RecordMany.nib;
+			refType = 4;
+		};
+		F5308FF30233059B01000164 = {
+			fileRef = F5308FF10233059B01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5308FF40233075A01000164 = {
+			isa = PBXFileReference;
+			path = SSERecordController.h;
+			refType = 4;
+		};
+		F5308FF50233075A01000164 = {
+			isa = PBXFileReference;
+			path = SSERecordController.m;
+			refType = 4;
+		};
+		F5308FF60233075A01000164 = {
+			fileRef = F5308FF40233075A01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5308FF70233075A01000164 = {
+			fileRef = F5308FF50233075A01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		F539E382020F19A501000164 = {
 			isa = PBXFileReference;
@@ -1191,7 +1266,7 @@
 		};
 		F59F89D002154AFF01000164 = {
 			isa = PBXFileReference;
-			path = ToolbarRecordMultiple.tiff;
+			path = ToolbarRecordMany.tiff;
 			refType = 4;
 		};
 		F59F89D102154AFF01000164 = {

@@ -3,7 +3,7 @@
 @class OFScheduledEvent;
 @class SSEMIDIController;
 @class SSELibrary;
-@class SSERecordOneController;
+@class SSERecordController;
 @class SSETableView;
 
 @interface SSEMainWindowController : SSEWindowController
@@ -14,13 +14,6 @@
 
     IBOutlet SSETableView *libraryTableView;
 
-    IBOutlet NSPanel *recordMultipleSheetWindow;
-    IBOutlet NSProgressIndicator *recordMultipleProgressIndicator;
-    IBOutlet NSTextField *recordMultipleProgressMessageField;
-    IBOutlet NSTextField *recordMultipleProgressBytesField;
-    IBOutlet NSTextField *recordMultipleTotalProgressField;
-    IBOutlet NSButton *recordMultipleDoneButton;
-    
     IBOutlet NSPanel *playSheetWindow;
     IBOutlet NSProgressIndicator *playProgressIndicator;
     IBOutlet NSTextField *playProgressMessageField;
@@ -44,7 +37,8 @@
     
     // Transient data
     OFScheduledEvent *progressUpdateEvent;
-    SSERecordOneController *recordOneController;
+    SSERecordController *recordOneController;
+    SSERecordController *recordManyController;
     NSLock *importStatusLock;
     NSString *importFilePath;
     unsigned int importFileIndex;
@@ -69,13 +63,12 @@
 - (IBAction)addToLibrary:(id)sender;
 - (IBAction)delete:(id)sender;
 - (IBAction)recordOne:(id)sender;
-- (IBAction)recordMultiple:(id)sender;
+- (IBAction)recordMany:(id)sender;
 - (IBAction)play:(id)sender;
 - (IBAction)showFileInFinder:(id)sender;
 - (IBAction)rename:(id)sender;
 - (IBAction)showDetails:(id)sender;
 
-- (IBAction)doneWithRecordMultipleSheet:(id)sender;
 - (IBAction)cancelPlaySheet:(id)sender;
 
 - (IBAction)cancelImportSheet:(id)sender;
