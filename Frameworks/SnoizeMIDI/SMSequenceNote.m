@@ -88,6 +88,11 @@
         return NSOrderedAscending;
 }
 
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<SMSequenceNote %p>{position=%f, duration=%f}", self, position, duration];
+}
+
 @end
 
 
