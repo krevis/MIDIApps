@@ -55,6 +55,8 @@ NSString *SMMIDIObjectDisappearedNotification = @"SMMIDIObjectDisappearedNotific
 NSString *SMMIDIObjectWasReplacedNotification = @"SMMIDIObjectWasReplacedNotification";
 NSString *SMMIDIObjectReplacement = @"SMMIDIObjectReplacement";
 NSString *SMMIDIObjectListChangedNotification = @"SMMIDIObjectListChangedNotification";
+NSString *SMMIDIObjectPropertyChangedNotification = @"SMMIDIObjectPropertyChangedNotification";
+NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 
 
 + (void)initialize
@@ -359,11 +361,16 @@ NSString *SMMIDIObjectListChangedNotification = @"SMMIDIObjectListChangedNotific
 
 - (void)propertyDidChange:(NSString *)propertyName;
 {
+    NSDictionary *userInfo;
+
     if ([propertyName isEqualToString:(NSString *)kMIDIPropertyName]) {
         flags.hasCachedName = NO;
     } else if ([propertyName isEqualToString:(NSString *)kMIDIPropertyUniqueID]) {
         [self updateUniqueID];
-    }    
+    }
+
+    userInfo = [NSDictionary dictionaryWithObject:propertyName forKey:SMMIDIObjectChangedPropertyName];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectPropertyChangedNotification object:self userInfo:userInfo];
 }
 
 @end

@@ -81,6 +81,7 @@
 
 - (void)propertyDidChange:(NSString *)propertyName;
     // Called when a property of this object changes. Subclasses may override (be sure to call super's implementation).
+    // Posts the notification SMMIDIObjectPropertyChangedNotification.
 
 @end
 
@@ -103,3 +104,8 @@ extern NSString *SMMIDIObjectReplacement;
 extern NSString *SMMIDIObjectListChangedNotification;
 // object is the class that has either gained new objects or lost old ones
 // This notification is sent last, after the appeared/disappeared/wasReplaced notifications.
+
+extern NSString *SMMIDIObjectPropertyChangedNotification;
+// object is the object whose property changed
+// userInfo contains changed property's name under key SMMIDIObjectChangedPropertyName
+extern NSString *SMMIDIObjectChangedPropertyName;
