@@ -348,6 +348,9 @@ NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey = @"SSESysExIntervalB
 
 - (void)_outputStreamEndpointDisappeared:(NSNotification *)notification;
 {
+    if (nonretainedCurrentSendRequest || sendNextMessageEvent)
+        [self cancelSendingMessages];
+
     [self _selectFirstAvailableDestinationWhenPossible];
 }
 
@@ -439,7 +442,7 @@ NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey = @"SSESysExIntervalB
 {
     [sendNextMessageEvent release];
     sendNextMessageEvent = nil;
-    
+
     [outputStream takeMIDIMessages:[NSArray arrayWithObject:[messages objectAtIndex:sendingMessageIndex]]];
 }
 
