@@ -13,7 +13,6 @@
     BDAlias *alias;
 
     // Caches of file information
-    NSArray *messages;
     NSString *manufacturerName;
     NSNumber *sizeNumber;
     NSNumber *messageCountNumber;
@@ -32,6 +31,10 @@
 - (void)setNameFromFile;
 
 - (NSArray *)messages;
+
+// Derived information (comes from messages, but gets cached in the entry)
+
+- (void)updateDerivedInformation;
 
 - (NSString *)manufacturerName;
 - (unsigned int)size;

@@ -8,6 +8,17 @@
 #import "SSELibrary.h"
 
 
+@interface SSELibraryEntry (Private)
+
+- (void)_updateDerivedInformationFromMessages:(NSArray *)messages;
+
+- (void)_updateManufacturerNameFromMessages:(NSArray *)messages;
+- (void)_updateSizeFromMessages:(NSArray *)messages;
+- (void)_updateMessageCountFromMessages:(NSArray *)messages;
+
+@end
+
+
 @implementation SSELibraryEntry
 
 - (id)initWithLibrary:(SSELibrary *)library;
@@ -35,8 +46,6 @@
     [alias release];
     alias = nil;
 
-    [messages release];
-    messages = nil;
     [manufacturerName release];
     manufacturerName = nil;
     [sizeNumber release];
@@ -56,13 +65,13 @@
         [dict setObject:[alias aliasData] forKey:@"alias"];
     if (name)
         [dict setObject:name forKey:@"name"];
-    [self manufacturerName];
+
+    [self updateDerivedInformation];
+
     if (manufacturerName)
         [dict setObject:manufacturerName forKey:@"manufacturerName"];
-    [self size];
     if (sizeNumber)
         [dict setObject:sizeNumber forKey:@"size"];
-    [self messageCount];
     if (messageCountNumber)
         [dict setObject:messageCountNumber forKey:@"messageCount"];
 
@@ -133,7 +142,7 @@
 
 - (void)setName:(NSString *)value;
 {
-    // TODO should we also rename the file that the alias points to? I don't think so...
+    // TODO should we also rename the file that the alias points to? maybe...
     if (name != value) {
         [name release];
         name = [value retain];
@@ -148,7 +157,7 @@
     NSString *newName;
 
     if ((path = [self path]))
-        newName = [[[NSFileManager defaultManager] displayNameAtPath:path] retain];
+        newName = [[NSFileManager defaultManager] displayNameAtPath:path];
 
     if (!newName)
         newName = @"Unknown";
@@ -159,99 +168,107 @@
 
 - (NSArray *)messages;
 {
-    // TODO should check that the file hasn't changed since we last read the messages
-    if (!messages) {
-        NSString *path;
-        SSELibraryFileType fileType;
+    NSString *path;
+    SSELibraryFileType fileType;
+    NSArray *messages;
 
-        path = [self path];
-        fileType = [nonretainedLibrary typeOfFileAtPath:path];
+    path = [self path];
+    fileType = [nonretainedLibrary typeOfFileAtPath:path];
 
-        if (fileType == SSELibraryFileTypeStandardMIDI) {
-            messages = [SMSystemExclusiveMessage systemExclusiveMessagesInStandardMIDIFile:path];
-        } else if (fileType == SSELibraryFileTypeRaw) {
-            NSData *data;
+    if (fileType == SSELibraryFileTypeStandardMIDI) {
+        messages = [SMSystemExclusiveMessage systemExclusiveMessagesInStandardMIDIFile:path];
+    } else if (fileType == SSELibraryFileTypeRaw) {
+        NSData *data;
 
-            if ((data = [NSData dataWithContentsOfFile:path]))
-                messages = [SMSystemExclusiveMessage systemExclusiveMessagesInData:data];
-        }
-
-        [messages retain];
-        // TODO TODO TODO
-        // This is very very bad. We really don't want to be holding on to these messages for any extended amount of time.
-        // Why am I doing this again?  We need to  do this more intelligently...
-
-        // Invalidate any cached information which may no longer be accurate
-        [manufacturerName release];
-        manufacturerName = nil;
-        [sizeNumber release];
-        sizeNumber = nil;
-        [messageCountNumber release];
-        messageCountNumber = nil;
+        if ((data = [NSData dataWithContentsOfFile:path]))
+            messages = [SMSystemExclusiveMessage systemExclusiveMessagesInData:data];
     }
 
+    // Always update this stuff when we read the messages
+    [self _updateDerivedInformationFromMessages:messages];
+    
     return messages;
+}
+
+- (void)updateDerivedInformation;
+{
+    [self _updateDerivedInformationFromMessages:[self messages]];
 }
 
 - (NSString *)manufacturerName;
 {
-    if (!manufacturerName) {
-        NSArray *theMessages;
-        unsigned int messageIndex;
-            
-        theMessages = [self messages];
-        messageIndex = [theMessages count];
-        while (messageIndex--) {
-            NSString *thisManufacturerName;
-    
-            thisManufacturerName = [[theMessages objectAtIndex:messageIndex] manufacturerName];
-            if (!thisManufacturerName)
-                continue;
-            
-            if (!manufacturerName) {
-                manufacturerName = thisManufacturerName;
-            } else if (![thisManufacturerName isEqualToString:manufacturerName]) {
-                manufacturerName = @"Various";
-                // TODO localize
-                break;
-            }
-        }
-    
-        if (!manufacturerName)
-            manufacturerName = @"Unknown";	// TODO localize or get from SnoizeMIDI framework
-    
-        [manufacturerName retain];
-    }
-
     return manufacturerName;
 }
 
 - (unsigned int)size;
 {
-    if (!sizeNumber) {
-        NSArray *theMessages;
-        unsigned int messageIndex;
-        unsigned int size = 0;
-    
-        theMessages = [self messages];
-        messageIndex = [theMessages count];
-        while (messageIndex--) {
-            size += [[theMessages objectAtIndex:messageIndex] fullMessageDataLength];
-        }
-
-        sizeNumber = [[NSNumber alloc] initWithUnsignedInt:size];
-    }
-
     return [sizeNumber unsignedIntValue];
 }
 
 - (unsigned int)messageCount;
 {
-    if (!messageCountNumber) {
-        messageCountNumber = [[NSNumber alloc] initWithUnsignedInt:[[self messages] count]];
+    return [messageCountNumber unsignedIntValue];
+}
+
+@end
+
+
+@implementation SSELibraryEntry (Private)
+
+- (void)_updateDerivedInformationFromMessages:(NSArray *)messages;
+{
+    [self _updateManufacturerNameFromMessages:messages];
+    [self _updateSizeFromMessages:messages];
+    [self _updateMessageCountFromMessages:messages];
+}
+
+- (void)_updateManufacturerNameFromMessages:(NSArray *)messages;
+{
+    unsigned int messageIndex;
+
+    [manufacturerName release];
+    manufacturerName = nil;
+
+    messageIndex = [messages count];
+    while (messageIndex--) {
+        NSString *messageManufacturerName;
+
+        messageManufacturerName = [[messages objectAtIndex:messageIndex] manufacturerName];
+        if (!messageManufacturerName)
+            continue;
+
+        if (!manufacturerName) {
+            manufacturerName = messageManufacturerName;
+        } else if (![messageManufacturerName isEqualToString:manufacturerName]) {
+            manufacturerName = @"Various";
+            // TODO localize
+            break;
+        }
     }
 
-    return [messageCountNumber unsignedIntValue];
+    if (!manufacturerName)
+        manufacturerName = @"Unknown";	// TODO localize or get from SnoizeMIDI framework
+
+    [manufacturerName retain];
+}
+
+- (void)_updateSizeFromMessages:(NSArray *)messages;
+{
+    unsigned int messageIndex;
+    unsigned int size = 0;
+
+    messageIndex = [messages count];
+    while (messageIndex--)
+        size += [[messages objectAtIndex:messageIndex] fullMessageDataLength];
+
+    [sizeNumber release];
+    sizeNumber = [[NSNumber alloc] initWithUnsignedInt:size];
+}
+
+- (void)_updateMessageCountFromMessages:(NSArray *)messages;
+{
+    [messageCountNumber release];
+    messageCountNumber = [[NSNumber alloc] initWithUnsignedInt:[messages count]];
 }
 
 @end
