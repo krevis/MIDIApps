@@ -565,42 +565,49 @@ static BOOL sRefreshAllObjectsDisabled = NO;
 
 - (MIDIDeviceRef)getDeviceRefFromConnectedUniqueID:(MIDIUniqueID)connectedUniqueID
 {
-    MIDIObjectRef connectedObjectRef;
-    MIDIObjectType connectedObjectType;
-    OSStatus err;
     MIDIDeviceRef returnDeviceRef = NULL;
-    BOOL done = NO;
-    
-    err = MIDIObjectFindByUniqueID(connectedUniqueID, &connectedObjectRef, &connectedObjectType);
-    connectedObjectType &= ~kMIDIObjectType_ExternalMask;
-    
-    while (err == noErr && !done)
-    {
-        switch (connectedObjectType) {
-            case kMIDIObjectType_Device:
-                // we've got the device already
-                returnDeviceRef = (MIDIDeviceRef)connectedObjectRef;
-                done = YES;
-                break;
-            
-            case kMIDIObjectType_Entity:
-                // get the entity's device
-                connectedObjectType = kMIDIObjectType_Device;
-                err = MIDIEntityGetDevice((MIDIEntityRef)connectedObjectRef, (MIDIDeviceRef*)&connectedObjectRef);
-                break;
+
+    if ([[SMClient sharedClient] coreMIDICanFindObjectByUniqueID]) {
+        // 10.2 and later
+        MIDIObjectRef connectedObjectRef;
+        MIDIObjectType connectedObjectType;
+        OSStatus err;
+        BOOL done = NO;
+        
+        err = MIDIObjectFindByUniqueID(connectedUniqueID, &connectedObjectRef, &connectedObjectType);
+        connectedObjectType &= ~kMIDIObjectType_ExternalMask;
+        
+        while (err == noErr && !done)
+        {
+            switch (connectedObjectType) {
+                case kMIDIObjectType_Device:
+                    // we've got the device already
+                    returnDeviceRef = (MIDIDeviceRef)connectedObjectRef;
+                    done = YES;
+                    break;
                 
-            case kMIDIObjectType_Destination:
-            case kMIDIObjectType_Source:
-                // Get the endpoint's entity
-                connectedObjectType = kMIDIObjectType_Entity;
-                err = MIDIEndpointGetEntity((MIDIEndpointRef)connectedObjectRef, (MIDIEntityRef*)&connectedObjectRef);                
-                break;
-                
-            default:
-                // give up
-                done = YES;
-                break;
-        }        
+                case kMIDIObjectType_Entity:
+                    // get the entity's device
+                    connectedObjectType = kMIDIObjectType_Device;
+                    err = MIDIEntityGetDevice((MIDIEntityRef)connectedObjectRef, (MIDIDeviceRef*)&connectedObjectRef);
+                    break;
+                    
+                case kMIDIObjectType_Destination:
+                case kMIDIObjectType_Source:
+                    // Get the endpoint's entity
+                    connectedObjectType = kMIDIObjectType_Entity;
+                    err = MIDIEndpointGetEntity((MIDIEndpointRef)connectedObjectRef, (MIDIEntityRef*)&connectedObjectRef);                
+                    break;
+                    
+                default:
+                    // give up
+                    done = YES;
+                    break;
+            }        
+        }
+    } else {
+        // 10.1 fallback.  Assume the unique ID is for an external device.
+        returnDeviceRef = [[SMExternalDevice externalDeviceWithUniqueID: connectedUniqueID] deviceRef];
     }
     
     return returnDeviceRef;
