@@ -112,6 +112,9 @@ DEFINE_NSSTRING(SSELibraryEntryNameDidChangeNotification);
     if (flags.isFilePresent != wasFilePresent)
         [nonretainedLibrary noteEntryChanged];
 
+    if (flags.isFilePresent)
+        [self setName:[[NSFileManager defaultManager] displayNameAtPath:path]];
+
     return path;
 }
 
@@ -130,7 +133,7 @@ DEFINE_NSSTRING(SSELibraryEntryNameDidChangeNotification);
 
 - (void)setName:(NSString *)value;
 {
-    if (name != value) {
+    if (name != value && ![name isEqualToString:value]) {
         [name release];
         name = [value retain];
 
@@ -149,7 +152,6 @@ DEFINE_NSSTRING(SSELibraryEntryNameDidChangeNotification);
 
     if (!newName)
         newName = @"Unknown";
-        // TODO do we really want this when the file isn't present?
 
     [self setName:newName];
 }
