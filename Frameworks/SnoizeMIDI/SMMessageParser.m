@@ -87,12 +87,6 @@
     NSMutableArray *messages = nil;
     unsigned int packetCount;
     const MIDIPacket *packet;
-
-    if (sysExTimeOutTimer) {
-        [sysExTimeOutTimer invalidate];
-        [sysExTimeOutTimer release];
-        sysExTimeOutTimer = nil;
-    }
     
     packetCount = packetList->numPackets;
     packet = packetList->packet;
@@ -112,19 +106,28 @@
 
     if (messages)
         [nonretainedDelegate parser:self didReadMessages:messages];
-
+    
     if (readingSysExData) {
-        CFRunLoopRef runLoop;
-        CFStringRef mode;
+        if (!sysExTimeOutTimer) {
+            // Add a timer to this thread's run loop, and make it fire in the current run loop mode.
+            NSRunLoop *runLoop;
 
-        // Add a timer to this thread's run loop, and make it fire in the current run loop mode.
-        
-        sysExTimeOutTimer = [[NSTimer timerWithTimeInterval:sysExTimeOut target:self selector:@selector(sysExTimedOut) userInfo:nil repeats:NO] retain];
-
-        runLoop = CFRunLoopGetCurrent();
-        mode = CFRunLoopCopyCurrentMode(runLoop);
-        CFRunLoopAddTimer(runLoop, (CFRunLoopTimerRef)sysExTimeOutTimer, mode);
-        CFRelease(mode);
+            sysExTimeOutTimer = [[NSTimer timerWithTimeInterval:sysExTimeOut target:self selector:@selector(sysExTimedOut) userInfo:nil repeats:NO] retain];
+            runLoop = [NSRunLoop currentRunLoop];
+            [runLoop addTimer:sysExTimeOutTimer forMode:[runLoop currentMode]];
+        } else {
+            // We already have a timer, so just bump its fire date forward.
+            // Use CoreFoundation because this method is available back to 10.1 (and probably 10.0) whereas
+            // the corresponding NSTimer method only became available in 10.2.
+            CFRunLoopTimerSetNextFireDate((CFRunLoopTimerRef)sysExTimeOutTimer, CFAbsoluteTimeGetCurrent() + sysExTimeOut);
+        }
+    } else {
+        // Not reading sysex, so if we have a timeout pending, forget about it
+        if (sysExTimeOutTimer) {
+            [sysExTimeOutTimer invalidate];
+            [sysExTimeOutTimer release];
+            sysExTimeOutTimer = nil;
+        }        
     }
 }
 
@@ -311,6 +314,7 @@
     [readingSysExLock unlock];
 
     if (message) {
+        [message setOriginatingEndpoint:nonretainedOriginatingEndpoint];
         [message setWasReceivedWithEOX:isEndValid];
         [nonretainedDelegate parser:self finishedReadingSysExMessage:message];
     }
@@ -320,7 +324,7 @@
 
 - (void)sysExTimedOut;
 {
-    SMSystemExclusiveMessage *message = nil;
+    SMSystemExclusiveMessage *message;
 
     [sysExTimeOutTimer release];
     sysExTimeOutTimer = nil;
