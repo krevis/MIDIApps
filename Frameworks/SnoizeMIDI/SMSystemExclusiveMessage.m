@@ -1,7 +1,15 @@
 #import "SMSystemExclusiveMessage.h"
 
+#import <AudioToolbox/MusicPlayer.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
+
+
+@interface SMSystemExclusiveMessage (Private)
+
++ (NSArray *)_systemExclusiveMessagesInDataBuffer:(const Byte *)buffer withLength:(unsigned int)byteCount;
+
+@end
 
 
 @implementation SMSystemExclusiveMessage : SMMessage
@@ -18,39 +26,67 @@
 
 + (NSArray *)systemExclusiveMessagesInData:(NSData *)someData;
 {
-    // Scan through someData and make messages out of it.
-    // Messages must start with 0xF0.  Messages may end in any byte > 0x7F.
+    return [self _systemExclusiveMessagesInDataBuffer:[someData bytes] withLength:[someData length]];
+}
 
++ (NSArray *)systemExclusiveMessagesInStandardMIDIFile:(NSString *)path;
+{
     NSMutableArray *messages;
-    unsigned int byteIndex, byteCount;
-    const Byte *p;
-    NSRange range;
-    BOOL inMessage;
+    FSRef fsRef;
+    FSSpec fsSpec;
+    OSStatus status;
+    MusicSequence sequence;
+
+    status = FSPathMakeRef([path fileSystemRepresentation], &fsRef, NULL);
+    if (status != noErr)
+        return nil;
+    status = FSGetCatalogInfo(&fsRef, kFSCatInfoNone, NULL, NULL, &fsSpec, NULL);
+    if (status != noErr)
+        return nil;
 
     messages = [NSMutableArray array];
+
+    status = NewMusicSequence(&sequence);
+    if (status == noErr) {
+                
+        status = MusicSequenceLoadSMF(sequence, &fsSpec);
+        if (status == noErr) {
+            UInt32 trackCount, trackIndex;
+            
+            MusicSequenceGetTrackCount(sequence, &trackCount);
+            for (trackIndex = 0; trackIndex < trackCount; trackIndex++) {
+                MusicTrack track;
+                MusicEventIterator iterator;
+                Boolean hasNextEvent;
     
-    byteCount = [someData length];
-    inMessage = NO;
-    for (p=[someData bytes], byteIndex = 0; byteIndex < byteCount; byteIndex++, p++) {
-        if (inMessage && (*p & 0x80)) {
-            range.length = byteIndex - range.location;
-            if (range.length > 0)
-                [messages addObject:[self systemExclusiveMessageWithTimeStamp:0 data:[someData subdataWithRange:range]]];
-            inMessage = NO;
+                MusicSequenceGetIndTrack(sequence, trackIndex, &track);        
+                NewMusicEventIterator(track, &iterator);
+
+                while (MusicEventIteratorHasNextEvent(iterator, &hasNextEvent), hasNextEvent) {
+                    MusicEventType eventType;
+                    UInt32 eventDataSize;
+                    Byte *eventData;
+
+                    MusicEventIteratorGetEventInfo(iterator, NULL, &eventType, (void **)&eventData, &eventDataSize);
+                    if (eventType == kMusicEventType_MIDIRawData) {
+                        NSArray *eventMessages;
+
+                        eventMessages = [self _systemExclusiveMessagesInDataBuffer:eventData withLength:eventDataSize];
+                        if (eventMessages)
+                            [messages addObjectsFromArray:eventMessages];
+                    }
+
+                    MusicEventIteratorNextEvent(iterator);
+                }
+
+                DisposeMusicEventIterator(iterator);
+            }
         }
 
-        if (*p == 0xF0) {
-            inMessage = YES;
-            range.location = byteIndex + 1;
-        }
+        DisposeMusicSequence(sequence);
     }
-    if (inMessage) {
-        range.length = byteIndex - range.location;
-        if (range.length > 0)
-            [messages addObject:[self systemExclusiveMessageWithTimeStamp:0 data:[someData subdataWithRange:range]]];
-    }
-
-    return messages;
+    
+    return messages;    
 }
 
 - (id)initWithTimeStamp:(MIDITimeStamp)aTimeStamp statusByte:(Byte)aStatusByte
@@ -223,6 +259,55 @@
         return [[manufacturerName stringByAppendingString:@"\t"] stringByAppendingString:lengthString];
     else
         return lengthString;
+}
+
+@end
+
+
+@implementation SMSystemExclusiveMessage (Private)
+
++ (NSArray *)_systemExclusiveMessagesInDataBuffer:(const Byte *)buffer withLength:(unsigned int)byteCount;
+{
+    // Scan through someData and make messages out of it.
+    // Messages must start with 0xF0.  Messages may end in any byte > 0x7F.
+
+    NSMutableArray *messages;
+    unsigned int byteIndex;
+    const Byte *p;
+    NSRange range;
+    BOOL inMessage;
+
+    messages = [NSMutableArray array];
+
+    inMessage = NO;
+    for (p=buffer, byteIndex = 0; byteIndex < byteCount; byteIndex++, p++) {
+        if (inMessage && (*p & 0x80)) {
+            range.length = byteIndex - range.location;
+            if (range.length > 0) {
+                NSData *sysexData;
+
+                sysexData = [NSData dataWithBytes:buffer+range.location length:range.length];
+                [messages addObject:[self systemExclusiveMessageWithTimeStamp:0 data:sysexData]];
+            }
+            inMessage = NO;
+        }
+
+        if (*p == 0xF0) {
+            inMessage = YES;
+            range.location = byteIndex + 1;
+        }
+    }
+    if (inMessage) {
+        range.length = byteIndex - range.location;
+        if (range.length > 0) {
+            NSData *sysexData;
+
+            sysexData = [NSData dataWithBytes:buffer+range.location length:range.length];
+            [messages addObject:[self systemExclusiveMessageWithTimeStamp:0 data:sysexData]];
+        }
+    }
+
+    return messages;
 }
 
 @end

@@ -25,6 +25,7 @@
     // data should NOT include the ending 0xF7 (EOX)
 
 + (NSArray *)systemExclusiveMessagesInData:(NSData *)someData;
++ (NSArray *)systemExclusiveMessagesInStandardMIDIFile:(NSString *)path;
 
 - (NSData *)data;
 - (void)setData:(NSData *)newData;

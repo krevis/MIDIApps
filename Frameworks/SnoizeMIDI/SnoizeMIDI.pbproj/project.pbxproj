@@ -259,6 +259,8 @@
 				F53D4A90015A950D01000164,
 				F53D4A93015A953401000164,
 				F53D4A94015A953401000164,
+				F56B1FC401F0F66D01000164,
+				F56B1FC601F1006301000164,
 			);
 			isa = PBXFrameworksBuildPhase;
 			name = "Frameworks & Libraries";
@@ -332,8 +334,10 @@
 		1058C7B0FEA5585E11CA2CBB = {
 			children = (
 				0867D69BFE84028FC02AAC07,
+				F56B1FC501F1006301000164,
 				F53D4A8C015A950D01000164,
 				F53D4A8D015A950D01000164,
+				F56B1FC301F0F66D01000164,
 				F53D4A91015A953401000164,
 				F53D4A92015A953401000164,
 			);
@@ -970,6 +974,30 @@
 		};
 		F565B6F501E15D0B01000164 = {
 			fileRef = F565B6F301E15D0B01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F56B1FC301F0F66D01000164 = {
+			isa = PBXFrameworkReference;
+			name = AudioToolbox.framework;
+			path = /System/Library/Frameworks/AudioToolbox.framework;
+			refType = 0;
+		};
+		F56B1FC401F0F66D01000164 = {
+			fileRef = F56B1FC301F0F66D01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F56B1FC501F1006301000164 = {
+			isa = PBXFrameworkReference;
+			name = Carbon.framework;
+			path = /System/Library/Frameworks/Carbon.framework;
+			refType = 0;
+		};
+		F56B1FC601F1006301000164 = {
+			fileRef = F56B1FC501F1006301000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
