@@ -1,16 +1,8 @@
-//
-//  SSEAppController.m
-//  MIDIMonitor
-//
-//  Created by krevis on Sun Apr 15 2001.
-//  Copyright (c) 2001 __CompanyName__. All rights reserved.
-//
-
 #import "SSEAppController.h"
 
-#import <Cocoa/Cocoa.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
+
 #import "SSEMainWindowController.h"
 #import "SSEPreferencesWindowController.h"
 

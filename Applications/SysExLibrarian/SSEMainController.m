@@ -1,17 +1,7 @@
-//
-//  SSEMainController.m
-//  SysExLibrarian
-//
-//  Created by Kurt Revis on Mon Dec 31 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
-
 #import "SSEMainController.h"
 
-#import <Cocoa/Cocoa.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
-#import <SnoizeMIDI/SnoizeMIDI.h>
 
 #import "SSEMainWindowController.h"
 

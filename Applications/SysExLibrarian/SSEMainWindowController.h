@@ -1,16 +1,7 @@
-//
-//  SSEMainWindowController.h
-//  SysExLibrarian
-//
-//  Created by Kurt Revis on Mon Dec 31 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
+#import <Cocoa/Cocoa.h>
 
-#import <AppKit/NSWindowController.h>
-#import <AppKit/NSNibDeclarations.h>
-
-@class NSPopUpButton;
 @class SSEMainController;
+
 
 @interface SSEMainWindowController : NSWindowController
 {
@@ -18,6 +9,11 @@
 
     IBOutlet NSPopUpButton *sourcePopUpButton;
     IBOutlet NSPopUpButton *destinationPopUpButton;
+
+    IBOutlet NSWindow *recordSheetWindow;
+    IBOutlet NSProgressIndicator *sysExProgressIndicator;
+    IBOutlet NSTextField *sysExProgressField;
+    IBOutlet NSBox *sysExProgressBox;
 }
 
 + (SSEMainWindowController *)mainWindowController;
@@ -26,6 +22,12 @@
 
 - (IBAction)selectSource:(id)sender;
 - (IBAction)selectDestination:(id)sender;
+
+- (IBAction)open:(id)sender;
+- (IBAction)delete:(id)sender;
+- (IBAction)recordOne:(id)sender;
+- (IBAction)record:(id)sender;
+- (IBAction)play:(id)sender;
 
 // Other API
 

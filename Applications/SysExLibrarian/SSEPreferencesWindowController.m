@@ -1,14 +1,5 @@
-//
-//  SSEPreferencesWindowController.m
-//  MIDIMonitor
-//
-//  Created by krevis on Sun Sep 23 2001.
-//  Copyright (c) 2001 __CompanyName__. All rights reserved.
-//
-
 #import "SSEPreferencesWindowController.h"
 
-#import <Cocoa/Cocoa.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 

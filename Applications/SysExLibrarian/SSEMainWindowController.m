@@ -1,24 +1,19 @@
-//
-//  SSEMainWindowController.m
-//  SysExLibrarian
-//
-//  Created by Kurt Revis on Mon Dec 31 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
-
 #import "SSEMainWindowController.h"
 
-#import <Cocoa/Cocoa.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
+
 #import "NSPopUpButton-Extensions.h"
 #import "SSEMainController.h"
+
 
 @interface SSEMainWindowController (Private)
 
 - (void)_autosaveWindowFrame;
 
 - (void)_synchronizePopUpButton:(NSPopUpButton *)popUpButton withDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
+
+- (void)_recordSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
 @end
 
@@ -78,6 +73,53 @@ static SSEMainWindowController *controller;
 - (IBAction)selectDestination:(id)sender;
 {
     [mainController setDestinationDescription:[(NSMenuItem *)[sender selectedItem] representedObject]];
+}
+
+- (IBAction)open:(id)sender;
+{
+    // TODO
+    // using standard open file sheet,
+    // open a file
+    // (what file types, etc. are acceptable?)
+    // then add it to the library
+    // should allow multiple file selection
+}
+
+- (IBAction)delete:(id)sender;
+{
+    // TODO
+    // delete the selected files from the library
+    // this should also be hooked up via delete key in the table view
+    // should only be enabled when file(s) are selected in the library
+    // should we have a confirmation dialog?
+    // ask whether to delete the file or just the reference? (see how Project Builder does it)
+}
+
+- (IBAction)recordOne:(id)sender;
+{
+    // TODO
+    // put main controller in "waiting for a sysex message" mode
+    // disable the rest of the UI... right?
+    // put up a sheet with status info and a cancel button
+
+    [[NSApplication sharedApplication] beginSheet:recordSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_recordSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];    
+    [mainController waitForOneSysExMessage];
+}
+
+- (IBAction)record:(id)sender;
+{
+    // TODO
+    // similar to recordOne:, but don't terminate the sheet after one message comes in.
+    // instead, keep recording the messages, until a "done" button is pressed (or cancel).
+}
+
+- (IBAction)play:(id)sender;
+{
+    // TODO
+    // play back the selected sysex file(s) via the selected output.
+    // disable if no files are selected.
+
+    [mainController playFromBuffer];
 }
 
 //
@@ -176,6 +218,11 @@ static SSEMainWindowController *controller;
     if (wasAutodisplay)
         [[self window] displayIfNeeded];
     [[self window] setAutodisplay:wasAutodisplay];
+}
+
+- (void)_recordSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+{
+    
 }
 
 @end

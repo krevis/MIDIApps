@@ -1,18 +1,8 @@
-//
-//  SSEMainController.h
-//  SysExLibrarian
-//
-//  Created by Kurt Revis on Mon Dec 31 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
+#import <Cocoa/Cocoa.h>
+#import <SnoizeMIDI/SnoizeMIDI.h>
 
-#import <Foundation/NSObject.h>
-#import <AppKit/NSNibDeclarations.h>
-#import <SnoizeMIDI/SMMessageDestinationProtocol.h>
-
-@class NSArray, NSDictionary;
-@class SMPortOrVirtualInputStream, SMPortOrVirtualOutputStream;
 @class SSEMainWindowController;
+
 
 @interface SSEMainController : NSObject <SMMessageDestination>
 {
