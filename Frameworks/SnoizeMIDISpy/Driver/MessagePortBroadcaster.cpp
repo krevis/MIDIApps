@@ -7,6 +7,7 @@
 // NOTE This static variable is a dumb workaround. See comment in MessagePortWasInvalidated().
 static MessagePortBroadcaster *sOneBroadcaster = NULL;
 
+
 MessagePortBroadcaster::MessagePortBroadcaster(CFStringRef broadcasterName, MessagePortBroadcasterDelegate *delegate) :
     mDelegate(delegate),
     mBroadcasterName(NULL),
@@ -24,7 +25,7 @@ MessagePortBroadcaster::MessagePortBroadcaster(CFStringRef broadcasterName, Mess
     #endif
         
     sOneBroadcaster = this;
-        
+    
     if (!broadcasterName)
         broadcasterName = CFSTR("Unknown Broadcaster");
     mBroadcasterName = CFStringCreateCopy(kCFAllocatorDefault, broadcasterName);
@@ -137,7 +138,7 @@ void MessagePortBroadcaster::Broadcast(CFDataRef data, SInt32 channel)
     CFArrayRef listeners;
     CFIndex listenerIndex;
 
-    #if DEBUG
+    #if DEBUG && 0
         fprintf(stderr, "MessagePortBroadcaster: broadcast(%p, %p)\n", data, (void *)channel);
     #endif
     
@@ -148,9 +149,7 @@ void MessagePortBroadcaster::Broadcast(CFDataRef data, SInt32 channel)
         listenerIndex = CFArrayGetCount(listeners);
     
         while (listenerIndex--) {
-            CFMessagePortRef listenerPort;
-    
-            listenerPort = (CFMessagePortRef)CFArrayGetValueAtIndex(listeners, listenerIndex);
+            CFMessagePortRef listenerPort = (CFMessagePortRef)CFArrayGetValueAtIndex(listeners, listenerIndex);
             CFMessagePortSendRequest(listenerPort, 0, data, 300, 0, NULL, NULL);
         }
     }
@@ -168,7 +167,7 @@ CFDataRef LocalMessagePortCallBack(CFMessagePortRef local, SInt32 msgid, CFDataR
     MessagePortBroadcaster *broadcaster = (MessagePortBroadcaster *)info;
     CFDataRef result = NULL;
 
-    #if DEBUG
+    #if DEBUG && 0
         fprintf(stderr, "MessagePortBroadcaster: message port callback(msgid=%ld)\n", msgid);
     #endif
     
@@ -300,7 +299,7 @@ void MessagePortWasInvalidated(CFMessagePortRef messagePort, void *info)
     // Thus, we have to assume we have one MessagePortBroadcaster, which we look up statically. Lame!
     // TODO come up with a better solution to this
 
-    #if DEBUG
+    #if DEBUG && 0
         fprintf(stderr, "MessagePortBroadcaster: remote port was invalidated\n");
     #endif
 

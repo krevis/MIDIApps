@@ -19,22 +19,14 @@ public:
 private:
     void CheckCoreMIDIVersion();
 
-    void CreateMIDIClient();
-    void DisposeMIDIClient();
-    friend void MIDIClientNotificationProc(const MIDINotification *message, void *refCon);
-    void RebuildEndpointUniqueIDMappings();
-
     void EnableMonitoring(Boolean enable);
 
-    CFDataRef PackageMonitoredDataForBroadcast(const MIDIPacketList *packetList, SInt32 endpointUniqueID);
+    CFMutableDataRef PackageMonitoredDataForBroadcast(MIDIEndpointRef destination, const MIDIPacketList *packetList);
     UInt32 SizeOfPacketList(const MIDIPacketList *packetList);
 
     
     bool mNeedsMonitorPointerWorkaround;
     MessagePortBroadcaster *mBroadcaster;
-    MIDIClientRef mMIDIClientRef;
-    CFMutableDictionaryRef mEndpointRefToUniqueIDDictionary;
-    pthread_mutex_t	 mEndpointDictionaryMutex;
 };
 
 #endif // __SpyingMIDIDriver_h__

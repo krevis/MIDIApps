@@ -7,12 +7,12 @@
 extern "C" {
 #endif
     
-typedef void (*MessageQueueHandler)(CFDataRef dataFromQueue, void *refCon);
+typedef void (*MessageQueueHandler)(CFTypeRef objectFromQueue, void *refCon);
 
 void CreateMessageQueue(MessageQueueHandler inHandler, void *inHandlerRefCon);
 void DestroyMessageQueue();
 
-void AddToMessageQueue(CFDataRef dataToAdd);
+void AddToMessageQueue(CFTypeRef objectToAdd);
 
 #if defined(__cplusplus)
 }

@@ -81,7 +81,7 @@ void DestroyMessageQueue()
     }
 }
 
-void AddToMessageQueue(CFDataRef dataToAdd)
+void AddToMessageQueue(CFTypeRef objectToAdd)
 {
     int pthreadError;
     
@@ -95,7 +95,7 @@ void AddToMessageQueue(CFDataRef dataToAdd)
     }
     
     // add the data to the array
-    CFArrayAppendValue(queueArray, dataToAdd);
+    CFArrayAppendValue(queueArray, objectToAdd);
 
     // release the lock
     pthreadError = pthread_mutex_unlock(&queueLock);
@@ -127,9 +127,9 @@ void mainThreadRunLoopSourceCallback(void *info)
         return;
     }
 
-    // copy the array of data objects
+    // copy the array of dict objects
     copiedQueueArray = CFArrayCreateCopy(kCFAllocatorDefault, queueArray);
-    // and remove the data objects
+    // and remove the dict objects
     CFArrayRemoveAllValues(queueArray);
 
     // release the lock
@@ -144,10 +144,10 @@ void mainThreadRunLoopSourceCallback(void *info)
     // for each object in the array, call a function to process it
     queueCount = CFArrayGetCount(copiedQueueArray);
     for (queueIndex = 0; queueIndex < queueCount; queueIndex++) {
-        CFDataRef data;
+        CFTypeRef object;
 
-        data = (CFDataRef)CFArrayGetValueAtIndex(copiedQueueArray, queueIndex);
-        handler(data, handlerRefCon);        
+        object = (CFDictionaryRef)CFArrayGetValueAtIndex(copiedQueueArray, queueIndex);
+        handler(object, handlerRefCon);        
     }
 
     CFRelease(copiedQueueArray);
