@@ -168,6 +168,9 @@ static SMClient *sharedClient = nil;
     // (For example, MIDIEntityGetDevice(), which is present in 10.2 but not 10.1.)
     // If we linked against the function directly, we could no longer run on 10.1 since dyld
     // would be unable to find that symbol. So we look it up at runtime instead.
+    //
+    // TODO: This isn't actually true.  We can still reference the function (linking against it normally)
+    // and still be able to launch; the problem is with constants.
     
     if (functionName && coreMIDIFrameworkBundle)
         return CFBundleGetFunctionPointerForName(coreMIDIFrameworkBundle, (CFStringRef)functionName);
