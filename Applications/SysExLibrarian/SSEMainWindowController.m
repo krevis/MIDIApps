@@ -376,6 +376,8 @@ static SSEMainWindowController *controller;
     }
 
     [self synchronizeInterface];
+
+    // TODO we ought to select the new entry (the first one if there are more than one) and scroll to it
 }
 
 - (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
