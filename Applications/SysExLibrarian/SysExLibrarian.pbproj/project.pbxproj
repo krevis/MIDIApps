@@ -51,6 +51,7 @@
 		1058C7A6FEA54F5311CA2CBB = {
 			children = (
 				1058C7A7FEA54F5311CA2CBB,
+				F539E386020F2C2F01000164,
 				F559F8FA01DEC0C601000164,
 				F559F8FC01DEC12201000164,
 				F559F8FD01DEC12201000164,
@@ -385,6 +386,7 @@
 				F583CEBA01EE3E4501000164,
 				F551751E01F3745B01000164,
 				F551752201F3ACED01000164,
+				F539E384020F19A501000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -416,6 +418,7 @@
 				F583CEBB01EE3E4501000164,
 				F551751F01F3745B01000164,
 				F551752301F3ACED01000164,
+				F539E385020F19A501000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -436,6 +439,7 @@
 				F559F8FF01DEC12201000164,
 				F559F90001DEC12201000164,
 				F559F90101DEC12201000164,
+				F539E387020F2C2F01000164,
 			);
 			isa = PBXFrameworksBuildPhase;
 			name = "Frameworks & Libraries";
@@ -479,6 +483,41 @@
 //F52
 //F53
 //F54
+		F539E382020F19A501000164 = {
+			isa = PBXFileReference;
+			path = "NSWorkspace-Extensions.h";
+			refType = 4;
+		};
+		F539E383020F19A501000164 = {
+			isa = PBXFileReference;
+			lineEnding = 0;
+			path = "NSWorkspace-Extensions.m";
+			refType = 4;
+		};
+		F539E384020F19A501000164 = {
+			fileRef = F539E382020F19A501000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F539E385020F19A501000164 = {
+			fileRef = F539E383020F19A501000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F539E386020F2C2F01000164 = {
+			isa = PBXFrameworkReference;
+			name = Carbon.framework;
+			path = /System/Library/Frameworks/Carbon.framework;
+			refType = 0;
+		};
+		F539E387020F2C2F01000164 = {
+			fileRef = F539E386020F2C2F01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		F551751C01F3745B01000164 = {
 			isa = PBXFileReference;
 			path = BDAlias.h;
@@ -723,6 +762,8 @@
 			children = (
 				F565B6EE01E1567501000164,
 				F565B6EF01E1567501000164,
+				F539E382020F19A501000164,
+				F539E383020F19A501000164,
 				F551752001F3ACED01000164,
 				F551752101F3ACED01000164,
 			);
