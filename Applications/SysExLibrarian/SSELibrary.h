@@ -22,15 +22,17 @@ typedef enum _SSELibraryFileType {
     NSArray *allowedFileTypes;
 }
 
-+ (NSString *)libraryFilePath;
-+ (NSString *)libraryFilePathForDisplay;
++ (SSELibrary *)sharedLibrary;
 
-+ (NSString *)defaultFileDirectoryPath;
-
-+ (NSString *)performPreflightChecks;
+- (NSString *)libraryFilePath;
+- (NSString *)libraryFilePathForDisplay;
 
 - (NSString *)fileDirectoryPath;
+- (void)setFileDirectoryPath:(NSString *)newPath;
 - (BOOL)isPathInFileDirectory:(NSString *)path;
+
+- (NSString *)preflightAndLoadEntries;
+    // Returns an error message if something critical is wrong
 
 - (NSArray *)entries;
 
@@ -57,3 +59,7 @@ typedef enum _SSELibraryFileType {
 
 // Notifications
 extern NSString *SSELibraryDidChangeNotification;
+
+// Preference keys
+extern NSString *SSELibraryFileDirectoryAliasPreferenceKey;
+extern NSString *SSELibraryFileDirectoryPathPreferenceKey;

@@ -2,10 +2,10 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            ACTIONS = {changeSizeFormat = id; }; 
+            ACTIONS = {changeSizeFormat = id; changeSysExFolder = id; }; 
             CLASS = SSEPreferencesWindowController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {sizeFormatMatrix = NSMatrix; }; 
+            OUTLETS = {sizeFormatMatrix = NSMatrix; sysExFolderPathField = NSTextField; }; 
             SUPERCLASS = SSEWindowController; 
         }, 
         {

@@ -2,13 +2,20 @@
 
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
+
 #import "SSEMainWindowController.h"
+#import "SSELibrary.h"
 
 
 @interface  SSEPreferencesWindowController (Private)
 
 - (void)_synchronizeDefaults;
+
 - (void)_sendDisplayPreferenceChangedNotification;
+
+- (void)_synchronizeControls;
+
+- (void)_openPanelDidEnd:(NSOpenPanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
 @end
 
@@ -51,19 +58,12 @@ static SSEPreferencesWindowController *controller;
     [super dealloc];
 }
 
-- (void)awakeFromNib
+- (IBAction)showWindow:(id)sender;
 {
-    [super awakeFromNib];
-    
+    [self window];	// Make sure the window gets loaded the first time
+    [self _synchronizeControls];
+    [super showWindow:sender];
 }
-
-- (void)windowDidLoad
-{
-    [super windowDidLoad];
-
-    [sizeFormatMatrix selectCellWithTag:[sizeFormatPreference boolValue]];
-}
-
 
 //
 // Actions
@@ -74,6 +74,20 @@ static SSEPreferencesWindowController *controller;
     [sizeFormatPreference setBoolValue:[[sender selectedCell] tag]];
     [self _synchronizeDefaults];
     [self _sendDisplayPreferenceChangedNotification];
+}
+
+- (IBAction)changeSysExFolder:(id)sender;
+{
+    NSOpenPanel *openPanel;
+    NSString *oldPath;
+
+    openPanel = [NSOpenPanel openPanel];
+    [openPanel setCanChooseDirectories:YES];
+    [openPanel setCanChooseFiles:NO];
+
+    oldPath = [[SSELibrary sharedLibrary] fileDirectoryPath];
+
+    [openPanel beginSheetForDirectory:oldPath file:nil types:nil modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_openPanelDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
 @end
@@ -89,6 +103,21 @@ static SSEPreferencesWindowController *controller;
 - (void)_sendDisplayPreferenceChangedNotification;
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:SSEDisplayPreferenceChangedNotification object:nil];
+}
+
+- (void)_synchronizeControls;
+{
+    [sizeFormatMatrix selectCellWithTag:[sizeFormatPreference boolValue]];
+    [sysExFolderPathField setStringValue:[[SSELibrary sharedLibrary] fileDirectoryPath]];
+}
+
+- (void)_openPanelDidEnd:(NSOpenPanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+{
+    if (returnCode == NSOKButton) {
+        [[SSELibrary sharedLibrary] setFileDirectoryPath:[[sheet filenames] objectAtIndex:0]];
+        [self _synchronizeDefaults];
+        [self _synchronizeControls];
+    }
 }
 
 @end

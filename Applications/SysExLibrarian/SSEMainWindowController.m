@@ -88,7 +88,7 @@ static SSEMainWindowController *controller;
     if (!(self = [super initWithWindowNibName:@"MainWindow"]))
         return nil;
 
-    library = [[SSELibrary alloc] init];
+    library = [[SSELibrary sharedLibrary] retain];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_libraryDidChange:) name:SSELibraryDidChangeNotification object:library];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_displayPreferencesDidChange:) name:SSEDisplayPreferenceChangedNotification object:nil];
 

@@ -6,6 +6,7 @@
 @interface SSEPreferencesWindowController : SSEWindowController
 {
     IBOutlet NSMatrix *sizeFormatMatrix;
+    IBOutlet NSTextField *sysExFolderPathField;
 
     OFPreference *sizeFormatPreference;
 }
@@ -15,6 +16,7 @@
 - (id)init;
 
 - (IBAction)changeSizeFormat:(id)sender;
+- (IBAction)changeSysExFolder:(id)sender;
 
 @end
 

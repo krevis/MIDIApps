@@ -48,11 +48,14 @@
     
     hasFinishedLaunching = YES;
 
-    preflightError = [SSELibrary performPreflightChecks];
+    preflightError = [[SSELibrary sharedLibrary] preflightAndLoadEntries];
     if (preflightError) {
-        NSRunCriticalAlertPanel(@"Error", @"There was a problem accessing the library \"%@\".\n%@", @"Quit", nil, nil, [SSELibrary libraryFilePathForDisplay], preflightError);
+        NSRunCriticalAlertPanel(@"Error", @"%@", @"Quit", nil, nil, preflightError);
         [NSApp terminate:nil];
     } else {
+        // TODO testing
+//        [[SSELibrary sharedLibrary] setFileDirectoryPath:@"/Users/krevis/Documents/Testing/Files"];
+        
         [self showMainWindow:nil];
 
         if (filesToImport)
