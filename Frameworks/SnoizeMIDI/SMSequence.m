@@ -116,7 +116,7 @@
     firstNoteIndex = [self indexOfFirstNoteWithPositionGreaterThanOrEqualTo:startBeat atOrAfterIndex:0];
     if (firstNoteIndex == NSNotFound || [[notes objectAtIndex:firstNoteIndex] position] >= endBeat) {
         // There are no notes in this interval
-        notesInInterval = nil;
+        notesInInterval = [NSArray array];
     } else {
         if (firstNoteIndex == noteCount - 1) {
             // This is the last note, so just use it

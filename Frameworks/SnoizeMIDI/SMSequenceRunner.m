@@ -9,6 +9,7 @@
 
 #import "SMHostTime.h"
 #import "SMPeriodicTimer.h"
+#import "SMPlayingNote.h"
 #import "SMSequence.h"
 #import "SMSequenceNote.h"
 #import "SMSystemRealTimeMessage.h"
@@ -17,15 +18,14 @@
 
 @interface SMSequenceRunner (Private)
 
-- (void)processNotesFromBeat:(Float64)blockStartBeat toBeat:(Float64)blockEndBeat;
+- (void)processNotesAndMIDIClockFromBeat:(Float64)blockStartBeat toBeat:(Float64)blockEndBeat andTime:(UInt64)blockEndTime;
+- (void)processNotesFromBeat:(Float64)blockStartBeat toBeat:(Float64)blockEndBeat andTime:(UInt64)blockEndTime;
 
-- (NSArray *)notesStartingFromBeat:(Float64)blockStartBeat toBeat:(Float64)blockEndBeat;
-- (NSArray *)notesEndingBeforeBeat:(Float64)blockEndBeat;
+- (NSArray *)noteOffMessagesForNotesEndingBeforeTime:(UInt64)endTime;
+- (NSArray *)takePlayingNotesEndingBeforeTime:(UInt64)endTime;
 
-- (SMMessage *)noteOnMessageForNote:(SMSequenceNote *)note;
-- (SMMessage *)noteOffMessageForNote:(SMSequenceNote *)note immediate:(BOOL)isImmediate;
-
-- (MIDITimeStamp)timeStampForBeat:(Float64)beat;
+- (SMMessage *)noteOnMessageForNote:(SMSequenceNote *)note atTime:(MIDITimeStamp)timeStamp;
+- (SMMessage *)noteOffMessageForPlayingNote:(SMPlayingNote *)playingNote immediate:(BOOL)isImmediate;
 
 - (void)stopAllPlayingNotesImmediately;
 
@@ -48,10 +48,14 @@
 
     flags.sendsMIDIClock = NO;
     flags.isRunning = NO;
+    flags.doesLoop = NO;
     currentTime = 0;
     currentBeat = 0.0;
     
     [self setTempo:120.0];
+
+    loopStartBeat = 0.0;
+    loopEndBeat = 0.0;
     
     return self;
 }
@@ -182,6 +186,59 @@
     return currentBeat;
 }
 
+- (BOOL)doesLoop;
+{
+    return flags.doesLoop;
+}
+
+- (void)setDoesLoop:(BOOL)value;
+{
+    flags.doesLoop = value && (loopStartBeat < loopEndBeat);
+}
+
+- (Float64)loopStartBeat;
+{
+    return loopStartBeat;
+}
+
+- (void)setLoopStartBeat:(Float64)value;
+{
+    [tempoLock lock];    
+    loopStartBeat = value;
+    [tempoLock unlock];
+}
+
+- (Float64)loopEndBeat;
+{
+    return loopEndBeat;
+}
+
+- (void)setLoopEndBeat:(Float64)value;
+{
+    [tempoLock lock];    
+    loopEndBeat = value;
+    [tempoLock unlock];
+}
+
+- (Float64)loopBeatDuration;
+{
+    // Derived property
+    Float64 duration;
+
+    // Need to lock because we're reading two properties at one time (don't want to slice between them)
+    [tempoLock lock];
+    duration = loopEndBeat - loopStartBeat;
+    [tempoLock unlock];
+
+    return duration;
+}
+
+- (void)setLoopBeatDuration:(Float64)value;
+{
+    // Derived property. This leaves the start point the same, changing the end point.
+    [self setLoopEndBeat:loopStartBeat + value];
+}
+
 //
 // SMPeriodicTimerListener protocol
 //
@@ -195,17 +252,22 @@
     currentTime = processingStartTime;
 
     [tempoLock lock];
-    
-    processingEndBeat = currentBeat + ((double)(processingEndTime - currentTime)) / beatDuration;
-    [self processNotesFromBeat:currentBeat toBeat:processingEndBeat];
 
-    if ([self sendsMIDIClock])
-        [self processMIDIClockFromBeat:currentBeat toBeat:processingEndBeat];
+    processingEndBeat = currentBeat + (Float64)(processingEndTime - currentTime) / beatDuration;
+    if (flags.doesLoop) {
+        // We should be processing less than one loop worth of time in each pass.
+        // (If this changes, we will need to complicate things.)
+        OBASSERT(processingEndBeat - currentBeat < loopEndBeat - loopStartBeat);
+    }
+    [self processNotesAndMIDIClockFromBeat:currentBeat toBeat:processingEndBeat andTime:processingEndTime];
 
     [tempoLock unlock];
-    
+
     // Update currentBeat for the next time around
-    currentBeat = processingEndBeat;
+    if (flags.doesLoop && processingEndBeat > loopEndBeat)
+        currentBeat = loopStartBeat + (processingEndBeat - loopEndBeat);
+    else
+        currentBeat = processingEndBeat;
 }
 
 @end
@@ -213,7 +275,14 @@
 
 @implementation SMSequenceRunner (Private)
 
-- (void)processNotesFromBeat:(Float64)blockStartBeat toBeat:(Float64)blockEndBeat;
+- (void)processNotesAndMIDIClockFromBeat:(Float64)blockStartBeat toBeat:(Float64)blockEndBeat andTime:(UInt64)blockEndTime;
+{
+    [self processNotesFromBeat:blockStartBeat toBeat:blockEndBeat andTime:blockEndTime];
+    if ([self sendsMIDIClock])
+        [self processMIDIClockFromBeat:blockStartBeat toBeat:blockEndBeat];
+}
+
+- (void)processNotesFromBeat:(Float64)blockStartBeat toBeat:(Float64)blockEndBeat andTime:(UInt64)blockEndTime;
 {
     NSMutableArray *messages;
     NSArray *notes;
@@ -224,25 +293,43 @@
     [playingNotesLock lock];
 
     // Handle the notes which are ending
-    notes = [self notesEndingBeforeBeat:blockEndBeat];
-    noteCount = [notes count];
-    for (noteIndex = 0; noteIndex < noteCount; noteIndex++) {
-        SMSequenceNote *note;
-
-        note = [notes objectAtIndex:noteIndex];
-        [messages addObject:[self noteOffMessageForNote:note immediate:NO]];
-        [playingNotes removeObjectIdenticalTo:note];
-    }
+    [messages addObjectsFromArray:[self noteOffMessagesForNotesEndingBeforeTime:blockEndTime]];
 
     // Handle the notes which are starting
-    notes = [self notesStartingFromBeat:blockStartBeat toBeat:blockEndBeat];
+    if (flags.doesLoop && blockEndBeat > loopEndBeat) {
+        // We're crossing the loop end point, so get the notes in two separate segments.
+        NSArray *notes1, *notes2;
+
+        notes1 = [sequence notesStartingFromBeat:blockStartBeat toBeat:loopEndBeat];
+        notes2 = [sequence notesStartingFromBeat:loopStartBeat toBeat:(loopStartBeat + blockEndBeat - loopEndBeat)];
+        notes = [notes1 arrayByAddingObjectsFromArray:notes2];
+    } else {
+        notes = [sequence notesStartingFromBeat:blockStartBeat toBeat:blockEndBeat];
+    }
+        
     noteCount = [notes count];
     for (noteIndex = 0; noteIndex < noteCount; noteIndex++) {
         SMSequenceNote *note;
+        Float64 notePosition;
+        UInt64 noteStartTime;
+        UInt64 noteEndTime;
+        SMPlayingNote *playingNote;
 
         note = [notes objectAtIndex:noteIndex];
-        [messages addObject:[self noteOnMessageForNote:note]];
-        [playingNotes addObject:note];
+
+        notePosition = [sequence positionForNote:note];
+
+        if (flags.doesLoop && notePosition < currentBeat)
+            notePosition += loopEndBeat - loopStartBeat;
+        noteStartTime = currentTime + (MIDITimeStamp)((notePosition - currentBeat) * beatDuration);
+
+        noteEndTime = noteStartTime + [note duration] * beatDuration;
+        
+        [messages addObject:[self noteOnMessageForNote:note atTime:noteStartTime]];
+
+        playingNote = [[SMPlayingNote alloc] initWithNote:note endTime:noteEndTime];
+        [playingNotes addObject:playingNote];
+        [playingNote release];
     }
 
     [playingNotesLock unlock];
@@ -251,12 +338,28 @@
         [nonretainedMessageDestination takeMIDIMessages:messages];
 }
 
-- (NSArray *)notesStartingFromBeat:(Float64)blockStartBeat toBeat:(Float64)blockEndBeat;
+- (NSArray *)noteOffMessagesForNotesEndingBeforeTime:(UInt64)endTime
 {
-    return [sequence notesStartingFromBeat:blockStartBeat toBeat:blockEndBeat];
+    NSArray *notes;
+    unsigned int noteIndex, noteCount;
+    NSMutableArray *messages;
+
+    notes = [self takePlayingNotesEndingBeforeTime:endTime];
+    noteCount = [notes count];
+
+    messages = [NSMutableArray arrayWithCapacity:noteCount];
+    
+    for (noteIndex = 0; noteIndex < noteCount; noteIndex++) {
+        SMPlayingNote *note;
+
+        note = [notes objectAtIndex:noteIndex];
+        [messages addObject:[self noteOffMessageForPlayingNote:note immediate:NO]];
+    }
+
+    return messages;
 }
 
-- (NSArray *)notesEndingBeforeBeat:(Float64)blockEndBeat;
+- (NSArray *)takePlayingNotesEndingBeforeTime:(UInt64)endTime;
 {
     NSMutableArray *notes;
     unsigned int index, count;
@@ -266,28 +369,33 @@
         return nil;
     
     notes = [NSMutableArray arrayWithCapacity:count];
-    for (index = 0; index < count; index++) {
-        SMSequenceNote *note;
+    index = count;
+    while (index--) {
+        SMPlayingNote *note;
 
         note = [playingNotes objectAtIndex:index];
-        if ([note endPosition] < blockEndBeat)
+        if ([note endTime] < endTime) {
             [notes addObject:note];
+            [playingNotes removeObjectAtIndex:index];
+        }
     }
+
+    return notes;
 
     // TODO this is not really correct. What if someone moves the note afterwards in time after it has been started, but before it ends,
     // so that its end position won't get reached for another minute?
     // We should always use the note's end position as it was when it started playing, EXCEPT if the duration changes.
     // (Changes in the note's position should not have any effect on the playing note.)
-    
-    return notes;
+    //
+    // So: when we start the note, keep that time (and compute the projected end time for it).
+    // If the duration of the note changes while it is playing (but its position does not change), then update the end time accordingly.
+    // If the note is moved: don't change the end time.
 }
 
-- (SMMessage *)noteOnMessageForNote:(SMSequenceNote *)note;
+- (SMMessage *)noteOnMessageForNote:(SMSequenceNote *)note atTime:(MIDITimeStamp)timeStamp;
 {
-    MIDITimeStamp timeStamp;
     SMVoiceMessage *message;
 
-    timeStamp = [self timeStampForBeat:[sequence positionForNote:note]];
     message = [[[SMVoiceMessage alloc] initWithTimeStamp:timeStamp statusByte:0] autorelease];
     [message setStatus:SMVoiceMessageStatusNoteOn];
     [message setChannel:1];	// TODO
@@ -297,30 +405,26 @@
     return message;
 }
 
-- (SMMessage *)noteOffMessageForNote:(SMSequenceNote *)note immediate:(BOOL)isImmediate;
+- (SMMessage *)noteOffMessageForPlayingNote:(SMPlayingNote *)playingNote immediate:(BOOL)isImmediate;
 {
     MIDITimeStamp timeStamp;
     SMVoiceMessage *message;
+    SMSequenceNote *sequenceNote;
 
     if (isImmediate)
-        timeStamp = SMGetCurrentHostTime();
+        timeStamp = currentTime;
     else
-        timeStamp = [self timeStampForBeat:[note endPosition]];
+        timeStamp = [playingNote endTime];
+
+    sequenceNote = [playingNote note];
 
     message = [[[SMVoiceMessage alloc] initWithTimeStamp:timeStamp statusByte:0] autorelease];
     [message setStatus:SMVoiceMessageStatusNoteOff];
     [message setChannel:1];	// TODO
-    [message setDataByte1:[note noteNumber]];
-    [message setDataByte2:[note offVelocity]];
+    [message setDataByte1:[sequenceNote noteNumber]];
+    [message setDataByte2:[sequenceNote offVelocity]];
 
     return message;
-}
-
-- (MIDITimeStamp)timeStampForBeat:(Float64)beat;
-{
-    OBASSERT(beat >= 0);
-
-    return (MIDITimeStamp)((beat - currentBeat) * beatDuration) + currentTime;
 }
 
 - (void)stopAllPlayingNotesImmediately;
@@ -338,10 +442,10 @@
 
     messages = [NSMutableArray arrayWithCapacity:noteCount];
     for (noteIndex = 0; noteIndex < noteCount; noteIndex++) {
-        SMSequenceNote *note;
+        SMPlayingNote *note;
 
         note = [playingNotes objectAtIndex:noteIndex];
-        [messages addObject:[self noteOffMessageForNote:note immediate:YES]];
+        [messages addObject:[self noteOffMessageForPlayingNote:note immediate:YES]];
     }
     [playingNotes removeAllObjects];
 
@@ -367,7 +471,10 @@
         nextClockBeat = blockStartBeat - clockPhase + midiClockDurationInBeats;
 
     while (nextClockBeat < blockEndBeat) {
-        message = [SMSystemRealTimeMessage systemRealTimeMessageWithTimeStamp:[self timeStampForBeat:nextClockBeat] type:SMSystemRealTimeMessageTypeClock];
+        MIDITimeStamp timeStamp;
+
+        timeStamp = currentTime + (MIDITimeStamp)((nextClockBeat - currentBeat) * beatDuration);        
+        message = [SMSystemRealTimeMessage systemRealTimeMessageWithTimeStamp:timeStamp type:SMSystemRealTimeMessageTypeClock];
         [messages addObject:message];
 
         nextClockBeat += midiClockDurationInBeats;
