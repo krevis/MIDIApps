@@ -105,6 +105,11 @@
     return parser;
 }
 
+- (id<SMInputStreamSource>)streamSourceForParser:(SMMessageParser *)aParser;
+{
+    return inputStreamSource;
+}
+
 - (NSArray *)inputSources;
 {
     return [NSArray arrayWithObject:inputStreamSource];

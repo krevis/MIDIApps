@@ -413,6 +413,25 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
     return externalDevices;
 }
 
+//
+// SMInputStreamSource protocol
+//
+
+- (NSString *)inputStreamSourceName;
+{
+    return [self uniqueName];
+}
+
+- (NSNumber *)inputStreamSourceUniqueID;
+{
+    return [NSNumber numberWithInt:[self uniqueID]];
+}
+
+- (NSArray *)inputStreamSourceExternalDeviceNames;
+{
+    return [[self connectedExternalDevices] arrayByPerformingSelector:@selector(name)];
+}
+
 @end
 
 
@@ -950,25 +969,6 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
     [endpoint setModelName:[client name]];
 
     return endpoint;
-}
-
-//
-// SMInputStreamSource protocol
-//
-
-- (NSString *)inputStreamSourceName;
-{
-    return [self uniqueName];
-}
-
-- (NSNumber *)inputStreamSourceUniqueID;
-{
-    return [NSNumber numberWithInt:[self uniqueID]];
-}
-
-- (NSArray *)inputStreamSourceExternalDeviceNames;
-{
-    return [[self connectedExternalDevices] arrayByPerformingSelector:@selector(name)];
 }
 
 @end

@@ -76,11 +76,9 @@ NSString *SMInputStreamSelectedInputSourceDisappearedNotification = @"SMInputStr
         [[parsers objectAtIndex:parserIndex] setSysExTimeOut:sysExTimeOut];
 }
 
-- (BOOL)cancelReceivingSysExMessage;
+- (void)cancelReceivingSysExMessage;
 {
     [[self parsers] makeObjectsPerformSelector:@selector(cancelReceivingSysExMessage)];
-    // TODO is the return value really used anywhere?  (need to AND or OR the results together?)
-    return YES;
 }
 
 - (id)persistentSettings;
@@ -192,6 +190,12 @@ NSString *SMInputStreamSelectedInputSourceDisappearedNotification = @"SMInputStr
     return nil;
 }
 
+- (id<SMInputStreamSource>)streamSourceForParser:(SMMessageParser *)parser;
+{
+    OBRequestConcreteImplementation(self, _cmd);
+    return nil;
+}
+
 - (NSArray *)inputSources;
 {
     OBRequestConcreteImplementation(self, _cmd);
@@ -222,10 +226,11 @@ NSString *SMInputStreamSelectedInputSourceDisappearedNotification = @"SMInputStr
 - (void)parser:(SMMessageParser *)parser isReadingSysExWithLength:(unsigned int)length;
 {
     NSDictionary *userInfo;
-    
-    userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithUnsignedInt:length] forKey:@"length"];
+
+    userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+        [NSNumber numberWithUnsignedInt:length], @"length",
+        [self streamSourceForParser:parser], @"source", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:SMInputStreamReadingSysExNotification object:self userInfo:userInfo];
-        // TODO There could be multiple sysex messages being read simultaneously (from different sources), but this notification gives no way to distinguish between them.
 }
 
 - (void)parser:(SMMessageParser *)parser finishedReadingSysExMessage:(SMSystemExclusiveMessage *)message;
@@ -234,9 +239,9 @@ NSString *SMInputStreamSelectedInputSourceDisappearedNotification = @"SMInputStr
     
     userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
         [NSNumber numberWithUnsignedInt:1 + [[message receivedData] length]], @"length",
-        [NSNumber numberWithBool:[message wasReceivedWithEOX]], @"valid", nil];
+        [NSNumber numberWithBool:[message wasReceivedWithEOX]], @"valid",
+        [self streamSourceForParser:parser], @"source", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:SMInputStreamDoneReadingSysExNotification object:self userInfo:userInfo];
-        // TODO There could be multiple sysex messages being read simultaneously (from different sources), but this notification gives no way to distinguish between them.
 }
 
 @end

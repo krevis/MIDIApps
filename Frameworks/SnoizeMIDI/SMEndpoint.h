@@ -8,7 +8,7 @@
 #import <SnoizeMIDI/SMInputStreamSource.h>
 
 
-@interface SMEndpoint : OFObject
+@interface SMEndpoint : OFObject <SMInputStreamSource>
 {
     MIDIEndpointRef endpointRef;
     SInt32 uniqueID;
@@ -80,10 +80,15 @@
     // may be external devices, endpoints, or who knows what
 - (NSArray *)connectedExternalDevices;
 
+// SMInputStreamSource protocol
+- (NSString *)inputStreamSourceName;
+- (NSNumber *)inputStreamSourceUniqueID;
+- (NSArray *)inputStreamSourceExternalDeviceNames;
+
 @end
 
 
-@interface SMSourceEndpoint : SMEndpoint <SMInputStreamSource>
+@interface SMSourceEndpoint : SMEndpoint
 {
 }
 
@@ -93,11 +98,6 @@
 + (SMSourceEndpoint *)sourceEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
 
 + (SMSourceEndpoint *)createVirtualSourceEndpointWithName:(NSString *)newName uniqueID:(SInt32)newUniqueID;
-
-// SMInputStreamSource protocol
-- (NSString *)inputStreamSourceName;
-- (NSNumber *)inputStreamSourceUniqueID;
-- (NSArray *)inputStreamSourceExternalDeviceNames;
 
 @end
 

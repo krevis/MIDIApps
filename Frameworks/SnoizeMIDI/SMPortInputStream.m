@@ -156,6 +156,11 @@
     return (SMMessageParser *)refCon;
 }
 
+- (id<SMInputStreamSource>)streamSourceForParser:(SMMessageParser *)parser;
+{
+    return [parser originatingEndpoint];
+}
+
 - (NSArray *)inputSources;
 {
     return [SMSourceEndpoint sourceEndpoints];

@@ -24,8 +24,7 @@
 - (NSTimeInterval)sysExTimeOut;
 - (void)setSysExTimeOut:(NSTimeInterval)value;
 
-- (BOOL)cancelReceivingSysExMessage;
-    // Returns YES if it can successfully cancel a sysex message which is being received, and NO otherwise.
+- (void)cancelReceivingSysExMessage;
 
 - (id)persistentSettings;
 - (NSArray *)takePersistentSettings:(id)settings;
@@ -39,6 +38,7 @@
 // For subclasses to implement
 - (NSArray *)parsers;
 - (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;
+- (id<SMInputStreamSource>)streamSourceForParser:(SMMessageParser *)parser;
 
 - (NSArray *)inputSources;
 - (NSSet *)selectedInputSources;
@@ -49,8 +49,10 @@
 // Notifications
 extern NSString *SMInputStreamReadingSysExNotification;
     // contains key @"length" with NSNumber (unsigned int) size of data read so far
+    // contains key @"source" with id<SMInputStreamSource> that this sysex data was read from
 extern NSString *SMInputStreamDoneReadingSysExNotification;
     // contains key @"length" with NSNumber (unsigned int) indicating size of data read
+    // contains key @"source" with id<SMInputStreamSource> that this sysex data was read from
     // contains key @"valid" with NSNumber (BOOL) indicating whether sysex ended properly or not
 extern NSString *SMInputStreamSelectedInputSourceDisappearedNotification;
     // contains key @"source" with id<SMInputStreamSource> which disappeared
