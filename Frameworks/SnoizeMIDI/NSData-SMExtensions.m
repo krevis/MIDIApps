@@ -23,7 +23,7 @@
 
     p = [self bytes];
     end = p + dataLength;
-    resultBuffer = malloc(2 * dataLength);
+    resultBuffer = malloc(2 * dataLength + 1);
     resultChar = resultBuffer;
 
     while (p < end) {
@@ -32,6 +32,7 @@
         *resultChar++ = hexchars[byte & 0x0F];
     }
 
+    *resultChar++ = '\0';
     resultString = [NSString stringWithUTF8String:resultBuffer];
     free(resultBuffer);
     
