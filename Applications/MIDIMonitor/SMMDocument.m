@@ -11,7 +11,7 @@
 
 @interface SMMDocument (Private)
 
-- (void)midiSetupDidChange:(NSNotification *)notification;
+- (void)sourceListDidChange:(NSNotification *)notification;
 
 - (void)setFilterMask:(SMMessageType)newMask;
 - (void)setChannelMask:(SMChannelMask)newMask;
@@ -54,6 +54,7 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
     stream = [[SMMCombinationInputStream alloc] init];
     [center addObserver:self selector:@selector(readingSysEx:) name:SMInputStreamReadingSysExNotification object:stream];
     [center addObserver:self selector:@selector(doneReadingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:stream];
+    [center addObserver:self selector:@selector(sourceListDidChange:) name:SMInputStreamSourceListChangedNotification object:stream];
     [self updateVirtualEndpointName];
 
     messageFilter = [[SMMessageFilter alloc] init];
@@ -67,11 +68,8 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
 
     areSourcesShown = NO;
     isFilterShown = NO;
-    listenToMIDISetupChanges = YES;
     missingSourceNames = nil;
     sysExBytesRead = 0;
-
-    [center addObserver:self selector:@selector(midiSetupDidChange:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
 
     oldAutoSelectPref = [OFPreference preferenceForKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey];
     autoSelectPref = [OFPreference preferenceForKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey];
@@ -267,21 +265,15 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
 - (void)setSelectedInputSources:(NSSet *)inputSources;
 {
     NSSet *oldInputSources;
-    BOOL savedListenFlag;
 
     oldInputSources = [self selectedInputSources];
     if (oldInputSources == inputSources || [oldInputSources isEqual:inputSources])
         return;
 
-    savedListenFlag = listenToMIDISetupChanges;
-    listenToMIDISetupChanges = NO;
-    
     [stream setSelectedInputSources:inputSources];
 
     [(SMMDocument *)[[self undoManager] prepareWithInvocationTarget:self] setSelectedInputSources:oldInputSources];
     [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Selected Sources", @"MIDIMonitor", [self bundle], "change source undo action")];
-
-    listenToMIDISetupChanges = savedListenFlag;
 
     [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeSources)];
 }
@@ -421,14 +413,8 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
 
 @implementation SMMDocument (Private)
 
-- (void)midiSetupDidChange:(NSNotification *)notification;
+- (void)sourceListDidChange:(NSNotification *)notification;
 {
-    if (!listenToMIDISetupChanges)
-        return;
-    
-    // NOTE: It is unfortunate that we have to do this, since it is possible that only
-    // destination endpoints changed. It takes a significant amount of time to regenerate the
-    // displayed sources.
     [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeSources)];
 
     // Also, it's possible that the endpoint names went from being unique to non-unique, so we need

@@ -17,7 +17,6 @@
     NSString *windowFrameDescription;
 
     // Transient data
-    BOOL listenToMIDISetupChanges;
     NSArray *missingSourceNames;
     unsigned int sysExBytesRead;
 }
