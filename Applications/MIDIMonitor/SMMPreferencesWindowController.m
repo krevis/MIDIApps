@@ -1,21 +1,14 @@
-//
-//  SMMPreferencesWindowController.m
-//  MIDIMonitor
-//
-//  Created by krevis on Sun Sep 23 2001.
-//  Copyright (c) 2001 __CompanyName__. All rights reserved.
-//
-
 #import "SMMPreferencesWindowController.h"
 
 #import <Cocoa/Cocoa.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
+
+#import "NSPopUpButton-MIDIMonitorExtensions.h"
 #import "SMMAppController.h"
 #import "SMMDocument.h"
 #import "SMMSysExRow.h"
-#import "NSPopUpButton-MIDIMonitorExtensions.h"
 
 
 @interface  SMMPreferencesWindowController (Private)
@@ -31,6 +24,7 @@
 
 DEFINE_NSSTRING(SMMDisplayPreferenceChangedNotification);
 DEFINE_NSSTRING(SMMSysExBytesPerRowPreferenceChangedNotification);
+
 
 static SMMPreferencesWindowController *controller;
 

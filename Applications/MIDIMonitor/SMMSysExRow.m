@@ -1,12 +1,5 @@
-//
-//  SMMSysExRow.m
-//  MIDIMonitor
-//
-//  Created by krevis on Fri Oct 26 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
-
 #import "SMMSysExRow.h"
+
 #import <Cocoa/Cocoa.h>
 #import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
@@ -15,6 +8,7 @@
 @implementation SMMSysExRow
 
 NSString *SMMSysExBytesPerRowPreferenceKey = @"SMMSysExBytesPerRow";
+
 
 static OFPreference *bytesPerRowPreference = nil;
 

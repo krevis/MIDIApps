@@ -1,18 +1,7 @@
-//
-//  SMMMonitorWindowController.h
-//  MIDIMonitor
-//
-//  Created by krevis on Thu Sep 20 2001.
-//  Copyright (c) 2001 __CompanyName__. All rights reserved.
-//
+#import <Cocoa/Cocoa.h>
 
-#import <AppKit/NSWindowController.h>
-#import <Foundation/NSMapTable.h>
-#import <AppKit/NSNibDeclarations.h>
-
-@class NSDate, NSMutableArray;	// Foundation
-@class NSBox, NSButton, NSMatrix, NSOutlineView, NSTextField, NSPopUpButton, NSProgressIndicator;	// AppKit
 @class SMMDisclosableView;
+
 
 @interface SMMMonitorWindowController : NSWindowController
 {

@@ -1,15 +1,8 @@
-//
-//  SMMSysExRow.h
-//  MIDIMonitor
-//
-//  Created by krevis on Fri Oct 26 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
-
+#import <Cocoa/Cocoa.h>
 #import <OmniFoundation/OFObject.h>
 
-@class NSArray;
 @class SMSystemExclusiveMessage;
+
 
 @interface SMMSysExRow : OFObject
 {

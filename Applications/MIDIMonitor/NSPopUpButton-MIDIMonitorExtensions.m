@@ -1,14 +1,7 @@
-//
-//  NSPopUpButton-MIDIMonitorExtensions.m
-//  MIDIMonitor
-//
-//  Created by krevis on Wed Oct 31 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
-
 #import "NSPopUpButton-MIDIMonitorExtensions.h"
-#import <Foundation/Foundation.h>
-#import <AppKit/AppKit.h>
+
+#import <Cocoa/Cocoa.h>
+
 
 @implementation NSPopUpButton (SMMExtensions)
 

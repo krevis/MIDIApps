@@ -1,11 +1,3 @@
-//
-//  SMMAppController.m
-//  MIDIMonitor
-//
-//  Created by krevis on Sun Apr 15 2001.
-//  Copyright (c) 2001 __CompanyName__. All rights reserved.
-//
-
 #import "SMMAppController.h"
 
 #import <Cocoa/Cocoa.h>
@@ -13,6 +5,7 @@
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
+
 #import "SMMDocument.h"
 #import "SMMPreferencesWindowController.h"
 

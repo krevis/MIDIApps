@@ -1,5 +1,4 @@
-#import <AppKit/NSDocument.h>
-#import <CoreMIDI/CoreMIDI.h>
+#import <Cocoa/Cocoa.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 

@@ -1,16 +1,7 @@
-//
-//  SMMPreferencesWindowController.h
-//  MIDIMonitor
-//
-//  Created by krevis on Sun Sep 23 2001.
-//  Copyright (c) 2001 __CompanyName__. All rights reserved.
-//
+#import <Cocoa/Cocoa.h>
 
-#import <AppKit/NSWindowController.h>
-#import <AppKit/NSNibDeclarations.h>
+@class OFPreference;
 
-@class NSButton, NSMatrix, NSPopUpButton;	// AppKit
-@class OFPreference;		// OmniFoundation
 
 @interface SMMPreferencesWindowController : NSWindowController
 {

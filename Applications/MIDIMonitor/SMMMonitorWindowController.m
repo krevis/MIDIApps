@@ -1,22 +1,16 @@
-//
-//  SMMMonitorWindowController.m
-//  MIDIMonitor
-//
-//  Created by krevis on Thu Sep 20 2001.
-//  Copyright (c) 2001 __CompanyName__. All rights reserved.
-//
-
 #import "SMMMonitorWindowController.h"
 
 #import <Cocoa/Cocoa.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
+
 #import "NSPopUpButton-MIDIMonitorExtensions.h"
 #import "SMMDocument.h"
 #import "SMMPreferencesWindowController.h"
 #import "SMMDisclosableView.h"
 #import "SMMSysExRow.h"
+
 
 @interface SMMMonitorWindowController (Private)
 

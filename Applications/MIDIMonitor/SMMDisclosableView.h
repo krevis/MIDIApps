@@ -1,13 +1,5 @@
-//
-//  SMMDisclosableView.h
-//  MIDIMonitor
-//
-//  Created by krevis on Wed Oct 24 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
+#import <Cocoa/Cocoa.h>
 
-#import <AppKit/NSBox.h>
-#import <AppKit/NSNibDeclarations.h>
 
 @interface SMMDisclosableView : NSView
 {
