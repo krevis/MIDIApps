@@ -80,8 +80,8 @@ static SSEMainWindowController *controller;
     progressUpdateEvent = nil;
     [importStatusLock release];
     importStatusLock = nil;
-    [importStatusText release];
-    importStatusText = nil;
+    [importFilePath release];
+    importFilePath = nil;
     
     [super dealloc];
 }
@@ -631,7 +631,7 @@ static SSEMainWindowController *controller;
 
 - (void)_dragFilesIntoLibrary:(NSArray *)filePaths;
 {
-    importStatusText = @"Scanning...";
+    importFilePath = nil;
     importFileIndex = 0;
     importFileCount = 0;
     importCancelled = NO;
@@ -684,21 +684,23 @@ static SSEMainWindowController *controller;
         pool = [[NSAutoreleasePool alloc] init];
 
         if (isDirectory) {
-            // Handle this directory's contents recursively
-            
-            NSMutableArray *children;
+            // Handle this directory's contents recursively            
+            NSArray *children;
             unsigned int childIndex, childCount;
+            NSMutableArray *fullChildPaths;
             NSArray *acceptableChildren;
             
-            children = [NSMutableArray arrayWithArray:[fileManager directoryContentsAtPath:filePath]];
+            children = [fileManager directoryContentsAtPath:filePath];
             childCount = [children count];
+            fullChildPaths = [NSMutableArray arrayWithCapacity:childCount];
             for (childIndex = 0; childIndex < childCount; childIndex++) {
                 NSString *childPath;
 
                 childPath = [filePath stringByAppendingPathComponent:[children objectAtIndex:childIndex]];
-                [children replaceObjectAtIndex:childIndex withObject:childPath];
+                [fullChildPaths addObject:childPath];
             }
-            acceptableChildren = [self _workThreadExpandAndFilterDraggedFiles:children];
+
+            acceptableChildren = [self _workThreadExpandAndFilterDraggedFiles:fullChildPaths];
             [acceptableFilePaths addObjectsFromArray:acceptableChildren];            
         } else {
             if ([fileManager isReadableFileAtPath:filePath] && [library typeOfFileAtPath:filePath] != SSELibraryFileTypeUnknown) {
@@ -735,7 +737,8 @@ static SSEMainWindowController *controller;
 
         if (![NSThread inMainThread]) {
             [importStatusLock lock];
-            importStatusText = [filePath retain];
+            [importFilePath release];
+            importFilePath = [filePath retain];
             importFileIndex = fileIndex;
             importFileCount = fileCount;
             [importStatusLock unlock];
@@ -772,23 +775,20 @@ static SSEMainWindowController *controller;
 
 - (void)_updateImportStatusDisplay;
 {
-    NSString *filePath, *message;
+    NSString *filePath;
     unsigned int fileIndex, fileCount;
     
     [importStatusLock lock];
-    filePath = [importStatusText retain];
+    filePath = [[importFilePath retain] autorelease];
     fileIndex = importFileIndex;
     fileCount = importFileCount;
     [importStatusLock unlock];
-
-    message = [[NSFileManager defaultManager] displayNameAtPath:filePath];
-    [filePath release];
-    [importProgressMessageField setStringValue:message];
 
     if (fileCount == 0) {
         [importProgressIndicator setIndeterminate:YES];
         [importProgressIndicator setUsesThreadedAnimation:YES];
         [importProgressIndicator startAnimation:nil];
+        [importProgressMessageField setStringValue:@"Scanning..."];	// TODO localize
         [importProgressIndexField setStringValue:@""];
     } else {
         if ([importProgressIndicator isIndeterminate]) {
@@ -796,6 +796,7 @@ static SSEMainWindowController *controller;
             [importProgressIndicator setMaxValue:fileCount];
         }
         [importProgressIndicator setDoubleValue:fileIndex + 1];
+        [importProgressMessageField setStringValue:[[NSFileManager defaultManager] displayNameAtPath:filePath]];
         [importProgressIndexField setStringValue:[NSString stringWithFormat:@"%u of %u", fileIndex + 1, fileCount]];
     }
 }

@@ -46,7 +46,7 @@
     // Transient data
     OFScheduledEvent *progressUpdateEvent;
     NSLock *importStatusLock;
-    NSString *importStatusText;
+    NSString *importFilePath;
     unsigned int importFileIndex;
     unsigned int importFileCount;
     BOOL importCancelled;
