@@ -1,14 +1,11 @@
 #import <SnoizeMIDI/SMClient.h>
-#import <SnoizeMIDI/SMClockGenerator.h>
 #import <SnoizeMIDI/SMEndpoint.h>
 #import <SnoizeMIDI/SMInputStream.h>
-#import <SnoizeMIDI/SMLittleSequencer.h>
 #import <SnoizeMIDI/SMMessage.h>
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 #import <SnoizeMIDI/SMMessageFilter.h>
 #import <SnoizeMIDI/SMMessageHistory.h>
 #import <SnoizeMIDI/SMMessageMult.h>
-#import <SnoizeMIDI/SMScheduler.h>
 #import <SnoizeMIDI/SMSequence.h>
 #import <SnoizeMIDI/SMSequenceNote.h>
 #import <SnoizeMIDI/SMSequenceRunner.h>
