@@ -22,14 +22,17 @@
     NSLock *sequenceLock;
 
     Float64 tempo;
-    MIDITimeStamp midiClockDuration;
+    MIDITimeStamp beatDuration;
     NSLock *tempoLock;
 
-    BOOL sendsMIDIClock;
+    struct {
+        unsigned int sendsMIDIClock:1;
+        unsigned int isRunning:1;
+    } flags;
 
-    MIDITimeStamp startTimeStamp;
-    BOOL isRunning;
-
+    Float64 currentBeat;
+    MIDITimeStamp currentTime;
+    
     NSMutableArray *playingNotes;
     NSLock *playingNotesLock;
 }

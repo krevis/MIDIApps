@@ -21,20 +21,19 @@
 
 @interface SMSequenceRunner (Private)
 
-- (void)_processNotesFromTime:(MIDITimeStamp)blockStartTime toTime:(MIDITimeStamp)blockEndTime;
+- (void)_processNotesFromBeat:(Float64)blockStartBeat toBeat:(Float64)blockEndBeat;
 
-- (NSArray *)_notesStartingFromTime:(MIDITimeStamp)blockStartTime toTime:(MIDITimeStamp)blockEndTime;
-- (NSArray *)_notesEndingBeforeTime:(MIDITimeStamp)blockEndTime;
+- (NSArray *)_notesStartingFromBeat:(Float64)blockStartBeat toBeat:(Float64)blockEndBeat;
+- (NSArray *)_notesEndingBeforeBeat:(Float64)blockEndBeat;
 
 - (SMMessage *)_noteOnMessageForNote:(SMSequenceNote *)note;
 - (SMMessage *)_noteOffMessageForNote:(SMSequenceNote *)note immediate:(BOOL)isImmediate;
 
-- (Float64)_beatForTimeStamp:(MIDITimeStamp)timeStamp;
 - (MIDITimeStamp)_timeStampForBeat:(Float64)beat;
 
 - (void)_stopAllPlayingNotesImmediately;
 
-- (void)_processMIDIClockFromTime:(MIDITimeStamp)blockStartTime toTime:(MIDITimeStamp)blockEndTime;
+- (void)_processMIDIClockFromBeat:(Float64)blockStartBeat toBeat:(Float64)blockEndBeat;
 
 @end
 
@@ -52,8 +51,10 @@
     playingNotes = [[NSMutableArray alloc] init];
     playingNotesLock = [[NSLock alloc] init];
 
-    sendsMIDIClock = NO;
-    isRunning = NO;
+    flags.sendsMIDIClock = NO;
+    flags.isRunning = NO;
+    currentTime = 0;
+    currentBeat = 0.0;
     
     [self setTempo:120.0];
     
@@ -97,12 +98,9 @@
 {
     [tempoLock lock];    
     tempo = value;
-    // Convert from beats/minute to seconds/clock. We need 24 clocks for each beat.
-    midiClockDuration = AudioConvertNanosToHostTime(((60.0 / tempo) / 24.0) * 1.0e9);
+    // Convert from beats/minute to seconds/beat to host clock units/beat.
+    beatDuration = AudioConvertNanosToHostTime((60.0 / tempo) * 1.0e9);
     [tempoLock unlock];
-
-    // TODO We don't handle tempo change correctly while running... see _beatForTimeStamp comment
-    // TODO Also check that we lock tempoLock in all appropriate places
 }
 
 - (SMSequence *)sequence;
@@ -126,12 +124,12 @@
 
 - (BOOL)sendsMIDIClock;
 {
-    return sendsMIDIClock;
+    return flags.sendsMIDIClock;
 }
 
 - (void)setSendsMIDIClock:(BOOL)value;
 {
-    sendsMIDIClock = value;
+    flags.sendsMIDIClock = value;
 }
 
 - (void)start;
@@ -146,9 +144,10 @@
         return;
     }
 
-    startTimeStamp = 0;
+    currentBeat = 0.0;
+    currentTime = 0;
 
-    isRunning = YES;
+    flags.isRunning = YES;
     [[SMPeriodicTimer sharedPeriodicTimer] addListener:self];
 }
 
@@ -164,7 +163,7 @@
         return;
     }
 
-    isRunning = NO;
+    flags.isRunning = NO;
     [[SMPeriodicTimer sharedPeriodicTimer] removeListener:self];
 
     [self _stopAllPlayingNotesImmediately];
@@ -172,7 +171,7 @@
 
 - (BOOL)isRunning;
 {
-    return isRunning;
+    return flags.isRunning;
 }
 
 //
@@ -181,13 +180,24 @@
 
 - (void)periodicTimerFiredForStart:(UInt64)processingStartTime end:(UInt64)processingEndTime;
 {
-    if (startTimeStamp == 0)
-        startTimeStamp = processingStartTime;
+    Float64 processingEndBeat;
 
-    [self _processNotesFromTime:processingStartTime toTime:processingEndTime];
+    OBASSERT(processingEndTime > processingStartTime);
+
+    currentTime = processingStartTime;
+
+    [tempoLock lock];
+    
+    processingEndBeat = currentBeat + ((double)(processingEndTime - currentTime)) / beatDuration;
+    [self _processNotesFromBeat:currentBeat toBeat:processingEndBeat];
 
     if ([self sendsMIDIClock])
-        [self _processMIDIClockFromTime:processingStartTime toTime:processingEndTime];
+        [self _processMIDIClockFromBeat:currentBeat toBeat:processingEndBeat];
+
+    [tempoLock unlock];
+    
+    // Update currentBeat for the next time around
+    currentBeat = processingEndBeat;
 }
 
 @end
@@ -195,7 +205,7 @@
 
 @implementation SMSequenceRunner (Private)
 
-- (void)_processNotesFromTime:(MIDITimeStamp)blockStartTime toTime:(MIDITimeStamp)blockEndTime;
+- (void)_processNotesFromBeat:(Float64)blockStartBeat toBeat:(Float64)blockEndBeat;
 {
     NSMutableArray *messages;
     NSArray *notes;
@@ -206,7 +216,7 @@
     [playingNotesLock lock];
 
     // Handle the notes which are ending
-    notes = [self _notesEndingBeforeTime:blockEndTime];
+    notes = [self _notesEndingBeforeBeat:blockEndBeat];
     noteCount = [notes count];
     for (noteIndex = 0; noteIndex < noteCount; noteIndex++) {
         SMSequenceNote *note;
@@ -217,7 +227,7 @@
     }
 
     // Handle the notes which are starting
-    notes = [self _notesStartingFromTime:blockStartTime toTime:blockEndTime];
+    notes = [self _notesStartingFromBeat:blockStartBeat toBeat:blockEndBeat];
     noteCount = [notes count];
     for (noteIndex = 0; noteIndex < noteCount; noteIndex++) {
         SMSequenceNote *note;
@@ -233,35 +243,28 @@
         [nonretainedMessageDestination takeMIDIMessages:messages];
 }
 
-- (NSArray *)_notesStartingFromTime:(MIDITimeStamp)blockStartTime toTime:(MIDITimeStamp)blockEndTime;
+- (NSArray *)_notesStartingFromBeat:(Float64)blockStartBeat toBeat:(Float64)blockEndBeat;
 {
     SMSequence *localSequence;
-    Float64 blockStartBeat, blockEndBeat;
 
     [sequenceLock lock];
     localSequence = [[sequence retain] autorelease];
     [sequenceLock unlock];
 
-    // TODO These should be passed in because they will be needed elsewhere
-    blockStartBeat = [self _beatForTimeStamp:blockStartTime];
-    blockEndBeat = [self _beatForTimeStamp:blockEndTime];
 //    NSLog(@"notes starting between %g and %g", blockStartBeat, blockEndBeat);
 
     return [localSequence notesStartingFromBeat:blockStartBeat toBeat:blockEndBeat];
 }
 
-- (NSArray *)_notesEndingBeforeTime:(MIDITimeStamp)blockEndTime;
+- (NSArray *)_notesEndingBeforeBeat:(Float64)blockEndBeat;
 {
     NSMutableArray *notes;
     unsigned int index, count;
-    Float64 blockEndBeat;
 
     count = [playingNotes count];
     if (count == 0)
         return nil;
 
-    // TODO This should be passed in because it will be needed elsewhere
-    blockEndBeat = [self _beatForTimeStamp:blockEndTime];
 //    NSLog(@"notes ending before: %g", blockEndBeat);
     
     notes = [NSMutableArray arrayWithCapacity:count];
@@ -310,30 +313,11 @@
     return message;
 }
 
-- (Float64)_beatForTimeStamp:(MIDITimeStamp)timeStamp;
-{
-    Float64 seconds;
-
-    OBASSERT(timeStamp >= startTimeStamp);
-
-    seconds = AudioConvertHostTimeToNanos(timeStamp - startTimeStamp) / 1.0e9;
-    return (seconds * (tempo / 60.0));
-
-    // TODO This won't work if the tempo has ever changed... need to reset startTimeStamp when that happens, or something.
-    // Alternatively we could keep a current beat pointer and then do operations on that... easier to keep up to date
-}
-
 - (MIDITimeStamp)_timeStampForBeat:(Float64)beat;
 {
-    Float64 seconds;
-
     OBASSERT(beat >= 0);
 
-    seconds = beat * (60.0 / tempo);
-    return startTimeStamp + AudioConvertNanosToHostTime(seconds * 1.0e9);    
-
-    // TODO This won't work if the tempo has ever changed... need to reset startTimeStamp when that happens, or something.
-    // Alternatively we could keep a current beat pointer and then do operations on that... easier to keep up to date
+    return (MIDITimeStamp)((beat - currentBeat) * beatDuration) + currentTime;
 }
 
 - (void)_stopAllPlayingNotesImmediately;
@@ -363,27 +347,28 @@
     [nonretainedMessageDestination takeMIDIMessages:messages];
 }
 
-- (void)_processMIDIClockFromTime:(MIDITimeStamp)blockStartTime toTime:(MIDITimeStamp)blockEndTime;
+- (void)_processMIDIClockFromBeat:(Float64)blockStartBeat toBeat:(Float64)blockEndBeat;
 {
     NSMutableArray *messages;
     SMMessage *message;
-    MIDITimeStamp nextClockTime;
+    Float64 nextClockBeat;
+    const Float64 midiClockDurationInBeats = 1/(Float64)24.0;
 
     messages = [NSMutableArray array];
 
-    if (blockStartTime == startTimeStamp) {
+    if (blockStartBeat == 0.0) {
         // Send a MIDI Start message first (immediately).
         message = [SMSystemRealTimeMessage systemRealTimeMessageWithTimeStamp:AudioGetCurrentHostTime() type:SMSystemRealTimeMessageTypeStart];
         [messages addObject:message];
     }
 
     // Then emit as many MIDI clock messages as necessary.
-    nextClockTime = blockStartTime - ((blockStartTime - startTimeStamp) % midiClockDuration) + midiClockDuration;
-    while (nextClockTime < blockEndTime) {
-        message = [SMSystemRealTimeMessage systemRealTimeMessageWithTimeStamp:nextClockTime type:SMSystemRealTimeMessageTypeClock];
+    nextClockBeat = blockStartBeat - fmod(blockStartBeat, midiClockDurationInBeats) + midiClockDurationInBeats;
+    while (nextClockBeat < blockEndBeat) {
+        message = [SMSystemRealTimeMessage systemRealTimeMessageWithTimeStamp:[self _timeStampForBeat:nextClockBeat] type:SMSystemRealTimeMessageTypeClock];
         [messages addObject:message];
 
-        nextClockTime += midiClockDuration;
+        nextClockBeat += midiClockDurationInBeats;
     }
 
     if ([messages count] > 0)
