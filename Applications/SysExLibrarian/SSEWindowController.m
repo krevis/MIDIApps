@@ -64,7 +64,6 @@
 - (void)awakeFromNib
 {
     [[self window] setFrameAutosaveName:[self windowNibName]];
-    [[self window] setExcludedFromWindowsMenu:YES];
 }
 
 - (void)windowDidLoad;

@@ -7,7 +7,6 @@
 
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
-#import "SSEPreferencesWindowController.h"
 
 
 @interface SSEDetailsWindowController (Private)
@@ -15,7 +14,6 @@
 - (void)_synchronizeMessageDataDisplay;
 - (void)_synchronizeTitle;
 
-- (void)_displayPreferencesDidChange:(NSNotification *)notification;
 - (void)_entryWillBeRemoved:(NSNotification *)notification;
 - (void)_entryNameDidChange:(NSNotification *)notification;
 
@@ -64,8 +62,6 @@ static NSMutableArray *controllers = nil;
     
     cachedMessages = [[NSArray alloc] initWithArray:[entry messages]];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_displayPreferencesDidChange:) name:SSEDisplayPreferenceChangedNotification object:nil];
-
     return self;
 }
 
@@ -85,13 +81,6 @@ static NSMutableArray *controllers = nil;
     cachedMessages = nil;
         
     [super dealloc];
-}
-
-- (void)awakeFromNib
-{
-    [super awakeFromNib];
-
-    [[self window] setExcludedFromWindowsMenu:NO];
 }
 
 - (void)windowDidLoad
@@ -148,10 +137,12 @@ static NSMutableArray *controllers = nil;
         return [NSNumber numberWithInt:row + 1];
     } else if ([identifier isEqualToString:@"manufacturer"]) {
         return [message manufacturerName];
-    } else if ([identifier isEqualToString:@"size"]) {
-        return [message sizeForDisplay];
-        // TODO need to expose preference for this?
-        // TODO have separate columns for size in hex and decimal (and abbreviated)?
+    } else if ([identifier isEqualToString:@"sizeDecimal"]) {
+        return [SMMessage formatLength:[message receivedDataWithStartByteLength] usingOption:SMDataFormatDecimal];
+    } else if ([identifier isEqualToString:@"sizeHex"]) {
+        return [SMMessage formatLength:[message receivedDataWithStartByteLength] usingOption:SMDataFormatHexadecimal];
+    } else if ([identifier isEqualToString:@"sizeAbbreviated"]) {
+        return [NSString abbreviatedStringForBytes:[message receivedDataWithStartByteLength]];
     } else {
         return nil;
     }
@@ -190,11 +181,6 @@ static NSMutableArray *controllers = nil;
 {
     [[self window] setTitle:[entry name]];
     [[self window] setRepresentedFilename:[entry path]];
-}
-
-- (void)_displayPreferencesDidChange:(NSNotification *)notification;
-{
-    // TODO
 }
 
 - (void)_entryWillBeRemoved:(NSNotification *)notification;
