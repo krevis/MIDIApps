@@ -7,10 +7,13 @@
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
 #import "SSEMIDIController.h"
+#import "SSEPreferencesWindowController.h"
 #import "SSETableView.h"
 
 
 @interface SSEMainWindowController (Private)
+
+- (void)_displayPreferencesDidChange:(NSNotification *)notification;
 
 - (BOOL)_finishEditingResultsInError;
 
@@ -87,6 +90,7 @@ static SSEMainWindowController *controller;
 
     library = [[SSELibrary alloc] init];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_libraryDidChange:) name:SSELibraryDidChangeNotification object:library];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_displayPreferencesDidChange:) name:SSEDisplayPreferenceChangedNotification object:nil];
 
     importStatusLock = [[NSLock alloc] init];
 
@@ -218,7 +222,7 @@ static SSEMainWindowController *controller;
     if ([self _finishEditingResultsInError])
         return;
 
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SSEShowWarningOnDelete]) {
+    if ([[OFPreference preferenceForKey:SSEShowWarningOnDelete] boolValue]) {
         [doNotWarnOnDeleteAgainCheckbox setIntValue:0];
         [[NSApplication sharedApplication] beginSheet:deleteWarningSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_deleteWarningSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
     } else {
@@ -518,7 +522,7 @@ static SSEMainWindowController *controller;
         NSNumber *entrySize;
 
         entrySize = [entry size];
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SSEAbbreviateFileSizesInLibraryTableView])
+        if ([[OFPreference preferenceForKey:SSEAbbreviateFileSizesInLibraryTableView] boolValue])
             return [NSString abbreviatedStringForBytes:[entrySize unsignedIntValue]];
         else
             return [entrySize stringValue];
@@ -619,6 +623,11 @@ static SSEMainWindowController *controller;
 
 
 @implementation SSEMainWindowController (Private)
+
+- (void)_displayPreferencesDidChange:(NSNotification *)notification;
+{
+    [libraryTableView reloadData];
+}
 
 - (BOOL)_finishEditingResultsInError;
 {
@@ -815,7 +824,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
         }
     }
 
-    if (areAllFilesInLibraryDirectory || [[NSUserDefaults standardUserDefaults] boolForKey:SSEShowWarningOnImport] == NO) {
+    if (areAllFilesInLibraryDirectory || [[OFPreference preferenceForKey:SSEShowWarningOnImport] boolValue] == NO) {
         [self performSelector:selector withObject:filePaths];
     } else {
         OFInvocation *invocation;
@@ -835,7 +844,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
         OFInvocation *invocation = (OFInvocation *)contextInfo;
 
         if ([doNotWarnOnImportAgainCheckbox intValue] == 1)
-            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:SSEShowWarningOnImport];
+            [[OFPreference preferenceForKey:SSEShowWarningOnImport] setBoolValue:NO];
 
         [invocation invoke];
         [invocation release];
@@ -1253,7 +1262,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     [sheet orderOut:nil];
     if (returnCode == NSOKButton) {
         if ([doNotWarnOnDeleteAgainCheckbox intValue] == 1)
-            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:SSEShowWarningOnDelete];
+            [[OFPreference preferenceForKey:SSEShowWarningOnImport] setBoolValue:NO];
 
         [self _deleteStep2];
     }

@@ -79,7 +79,7 @@ DEFINE_NSSTRING(SSESelectedDestination);
     [center addObserver:self selector:@selector(_midiSetupDidChange:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
 
     didSetDestinationFromDefaults = NO;
-    destinationSettings = [[NSUserDefaults standardUserDefaults] objectForKey:SSESelectedDestination];
+    destinationSettings = [[OFPreference preferenceForKey:SSESelectedDestination] dictionaryValue];
     if (destinationSettings) {
         NSString *missingDestinationName;
 
@@ -143,7 +143,7 @@ DEFINE_NSSTRING(SSESelectedDestination);
 
     [windowController synchronizeDestinations];
 
-    [[NSUserDefaults standardUserDefaults] setObject:[outputStream persistentSettings] forKey:SSESelectedDestination];
+    [[OFPreference preferenceForKey:SSESelectedDestination] setDictionaryValue:[outputStream persistentSettings]];
 }
 
 - (NSTimeInterval)pauseTimeBetweenMessages;

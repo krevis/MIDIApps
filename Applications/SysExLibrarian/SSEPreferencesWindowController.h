@@ -1,20 +1,22 @@
 #import "SSEWindowController.h"
 
-//@class OFPreference;		// OmniFoundation
+@class OFPreference;
 
 
 @interface SSEPreferencesWindowController : SSEWindowController
 {
-// TODO  for example:
-//    IBOutlet NSMatrix *timeFormatMatrix;
+    IBOutlet NSMatrix *sizeFormatMatrix;
 
-//    OFPreference *timeFormatPreference;
+    OFPreference *sizeFormatPreference;
 }
 
 + (SSEPreferencesWindowController *)preferencesWindowController;
 
 - (id)init;
 
-//- (IBAction)changeTimeFormat:(id)sender;
+- (IBAction)changeSizeFormat:(id)sender;
 
 @end
+
+// Notifications
+extern NSString *SSEDisplayPreferenceChangedNotification;

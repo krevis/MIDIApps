@@ -2,16 +2,21 @@
 
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
+#import "SSEMainWindowController.h"
 
 
 @interface  SSEPreferencesWindowController (Private)
 
 - (void)_synchronizeDefaults;
+- (void)_sendDisplayPreferenceChangedNotification;
 
 @end
 
 
 @implementation SSEPreferencesWindowController
+
+DEFINE_NSSTRING(SSEDisplayPreferenceChangedNotification);
+
 
 static SSEPreferencesWindowController *controller;
 
@@ -28,7 +33,7 @@ static SSEPreferencesWindowController *controller;
     if (!(self = [super initWithWindowNibName:@"Preferences"]))
         return nil;
 
-//    timeFormatPreference = [[OFPreference preferenceForKey:SMTimeFormatPreferenceKey] retain];
+    sizeFormatPreference = [[OFPreference preferenceForKey:SSEAbbreviateFileSizesInLibraryTableView] retain];
 
     return self;
 }
@@ -41,7 +46,7 @@ static SSEPreferencesWindowController *controller;
 
 - (void)dealloc
 {
-//    [timeFormatPreference release];
+    [sizeFormatPreference release];
     
     [super dealloc];
 }
@@ -56,7 +61,7 @@ static SSEPreferencesWindowController *controller;
 {
     [super windowDidLoad];
 
-//    [timeFormatMatrix selectCellWithTag:[timeFormatPreference integerValue]];
+    [sizeFormatMatrix selectCellWithTag:[sizeFormatPreference boolValue]];
 }
 
 
@@ -64,13 +69,12 @@ static SSEPreferencesWindowController *controller;
 // Actions
 //
 
-/* TODO For example:
-- (IBAction)changeTimeFormat:(id)sender;
+- (IBAction)changeSizeFormat:(id)sender;
 {
-    [timeFormatPreference setIntegerValue:[[sender selectedCell] tag]];
+    [sizeFormatPreference setBoolValue:[[sender selectedCell] tag]];
     [self _synchronizeDefaults];
+    [self _sendDisplayPreferenceChangedNotification];
 }
-*/
 
 @end
 
@@ -80,6 +84,11 @@ static SSEPreferencesWindowController *controller;
 - (void)_synchronizeDefaults;
 {
     [[NSUserDefaults standardUserDefaults] autoSynchronize];
+}
+
+- (void)_sendDisplayPreferenceChangedNotification;
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:SSEDisplayPreferenceChangedNotification object:nil];
 }
 
 @end

@@ -2,7 +2,14 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
+            ACTIONS = {changeSizeFormat = id; }; 
             CLASS = SSEPreferencesWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {sizeFormatMatrix = NSMatrix; }; 
+            SUPERCLASS = SSEWindowController; 
+        }, 
+        {
+            CLASS = SSEWindowController; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSWindowController; 
         }
