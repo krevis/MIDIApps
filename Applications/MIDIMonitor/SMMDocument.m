@@ -17,8 +17,9 @@
 
 - (void)_updateVirtualEndpointName;
 
-- (void)_streamEndpointWasRemoved:(NSNotification *)notification;
+- (void)_streamEndpointDisappeared:(NSNotification *)notification;
 
+- (void)_selectFirstAvailableSourceWhenPossible;
 - (void)_selectFirstAvailableSource;
 
 - (void)_historyDidChange:(NSNotification *)notification;
@@ -50,7 +51,7 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     center = [NSNotificationCenter defaultCenter];
 
     stream = [[SMPortOrVirtualInputStream alloc] init];
-    [center addObserver:self selector:@selector(_streamEndpointWasRemoved:) name:SMPortOrVirtualStreamEndpointWasRemovedNotification object:stream];
+    [center addObserver:self selector:@selector(_streamEndpointDisappeared:) name:SMPortOrVirtualStreamEndpointDisappearedNotification object:stream];
     [center addObserver:self selector:@selector(_readingSysEx:) name:SMInputStreamReadingSysExNotification object:stream];
     [center addObserver:self selector:@selector(_doneReadingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:stream];
     [stream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"MIDIMonitor", [self bundle], "title of popup menu item for virtual destination")];
@@ -442,9 +443,23 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     [stream setVirtualEndpointName:endpointName];
 }
 
-- (void)_streamEndpointWasRemoved:(NSNotification *)notification;
+- (void)_streamEndpointDisappeared:(NSNotification *)notification;
 {
     if ([[OFPreference preferenceForKey:SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey] boolValue]) {
+        [self _selectFirstAvailableSourceWhenPossible];
+    }
+}
+
+- (void)_selectFirstAvailableSourceWhenPossible;
+{
+    // NOTE: We may be handling a MIDI change notification right now. We might want to select a virtual source
+    // but an SMVirtualInputStream can't be created in the middle of handling this notification, so do it later.
+
+    if ([[SMClient sharedClient] isHandlingSetupChange]) {
+        [self performSelector:_cmd withObject:nil afterDelay:0.1];
+        // NOTE Delay longer than 0 is a tradeoff; it means there's a brief window when no source will be selected.
+        // A delay of 0 means that we'll get called many times (about 20 in practice) before the setup change is finished.
+    } else {
         [self _selectFirstAvailableSource];
     }
 }
@@ -452,10 +467,14 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
 - (void)_selectFirstAvailableSource;
 {
     NSArray *descriptions;
-    
+
     descriptions = [stream endpointDescriptions];
-    if ([descriptions count] > 0)
-        [stream setEndpointDescription:[descriptions objectAtIndex:0]];
+    if ([descriptions count] > 0) {
+        // Disable undo registration around this so the user can't undo to a description which is no longer there
+        [[self undoManager] disableUndoRegistration];
+        [self setSourceDescription:[descriptions objectAtIndex:0]];
+        [[self undoManager] enableUndoRegistration];
+    }
 }
 
 - (void)_historyDidChange:(NSNotification *)notification;
