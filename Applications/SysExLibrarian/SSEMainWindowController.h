@@ -52,6 +52,7 @@
     BOOL importCancelled;
     NSString *sortColumnIdentifier;
     BOOL isSortAscending;
+    NSMutableArray *entriesWithMissingFiles;
 }
 
 + (SSEMainWindowController *)mainWindowController;

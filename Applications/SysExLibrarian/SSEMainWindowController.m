@@ -30,6 +30,8 @@
 - (void)_updateSingleSysExReadIndicatorWithMessageCount:(unsigned int)messageCount bytesRead:(unsigned int)bytesRead totalBytesRead:(unsigned int)totalBytesRead;
 - (void)_updateMultipleSysExReadIndicatorWithMessageCount:(unsigned int)messageCount bytesRead:(unsigned int)bytesRead totalBytesRead:(unsigned int)totalBytesRead;
 
+- (void)_playSelectedEntries;
+
 - (void)_updatePlayProgressAndRepeat;
 - (void)_updatePlayProgress;
 
@@ -44,6 +46,11 @@
 - (void)_showImportSheet;
 - (void)_updateImportStatusDisplay;
 - (void)_doneImporting:(NSArray *)addedEntries;
+
+- (void)_findMissingFilesAndPlay;
+- (void)_missingFileAlertDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)_findMissingFileOpenPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+
 
 @end
 
@@ -94,6 +101,8 @@ static SSEMainWindowController *controller;
     sortColumnIdentifier = nil;
     [sortedLibraryEntries release];
     sortedLibraryEntries = nil;
+    [entriesWithMissingFiles release];
+    entriesWithMissingFiles = nil;
     
     [super dealloc];
 }
@@ -180,18 +189,23 @@ static SSEMainWindowController *controller;
 - (IBAction)play:(id)sender;
 {
     NSArray *selectedEntries;
-    NSMutableArray *messages;
     unsigned int entryCount, entryIndex;
 
     selectedEntries = [self _selectedEntries];
-    messages = [NSMutableArray array];
+
+    // Which entries can't find their associated file?
     entryCount = [selectedEntries count];
+    [entriesWithMissingFiles release];
+    entriesWithMissingFiles = [[NSMutableArray alloc] initWithCapacity:entryCount];
     for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
-        [messages addObjectsFromArray:[[selectedEntries objectAtIndex:entryIndex] messages]];
+        SSELibraryEntry *entry;
+
+        entry = [selectedEntries objectAtIndex:entryIndex];
+        if (![entry isFilePresentIgnoringCachedValue])
+            [entriesWithMissingFiles addObject:entry];
     }
-    
-    [midiController setMessages:messages];
-    [midiController sendMessages];
+
+    [self _findMissingFilesAndPlay];
 }
 
 - (IBAction)cancelRecordSheet:(id)sender;
@@ -251,8 +265,7 @@ static SSEMainWindowController *controller;
     NSArray *selectedEntries;
 
     selectedEntries = [self _selectedEntries];
-    
-    // TODO this results in too many sorts, I think... can we do this less often?
+
     [self _sortLibraryEntries];
 
     // NOTE Some entries in selectedEntries may no longer be present in sortedLibraryEntries.
@@ -444,14 +457,12 @@ static SSEMainWindowController *controller;
 
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(int)row;
 {
-    if ([[tableColumn identifier] isEqualToString:@"name"]) {
-        SSELibraryEntry *entry;
-        NSColor *color;
-        
-        entry = [sortedLibraryEntries objectAtIndex:row];
-        color = [entry isFilePresent] ? [NSColor blackColor] : [NSColor redColor];
-        [cell setTextColor:color];
-    }
+    SSELibraryEntry *entry;
+    NSColor *color;
+    
+    entry = [sortedLibraryEntries objectAtIndex:row];
+    color = [entry isFilePresent] ? [NSColor blackColor] : [NSColor redColor];
+    [cell setTextColor:color];
 }
 
 - (void)tableView:(NSTableView *)tableView mouseDownInHeaderOfTableColumn:(NSTableColumn *)tableColumn;
@@ -677,6 +688,24 @@ static int libraryEntryComparator(id object1, id object2, void *context)
 
     [recordMultipleTotalProgressField setStringValue:totalProgress];
     [recordMultipleDoneButton setEnabled:hasAtLeastOneCompleteMessage];
+}
+
+- (void)_playSelectedEntries;
+{
+    NSArray *selectedEntries;
+    NSMutableArray *messages;
+    unsigned int entryCount, entryIndex;
+
+    selectedEntries = [self _selectedEntries];
+        
+    messages = [NSMutableArray array];
+    entryCount = [selectedEntries count];
+    for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+        [messages addObjectsFromArray:[[selectedEntries objectAtIndex:entryIndex] messages]];
+    }
+
+    [midiController setMessages:messages];
+    [midiController sendMessages];
 }
 
 - (void)_updatePlayProgressAndRepeat;
@@ -916,6 +945,64 @@ static int libraryEntryComparator(id object1, id object2, void *context)
 
     [self synchronizeInterface];
     [self _selectAndScrollToEntries:addedEntries];
+}
+
+- (void)_findMissingFilesAndPlay;
+{
+    // Ask the user to find each missing file.
+    // If we go through them all successfully, call [self _playSelectedEntries].
+    // If we cancel at any point of the process, don't do anything.
+
+    if ([entriesWithMissingFiles count] == 0) {
+        [self _playSelectedEntries];
+    } else {
+        SSELibraryEntry *entry;
+
+        entry = [entriesWithMissingFiles objectAtIndex:0];
+
+        NSBeginAlertSheet(@"Missing File", @"Yes", @"Cancel", nil, [self window], self, @selector(_missingFileAlertDidEnd:returnCode:contextInfo:), NULL, NULL, @"The file for the entry \"%@\" could not be found. Would you like to locate it?", [entry name]);
+    }
+}
+
+- (void)_missingFileAlertDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+{
+    if (returnCode == NSAlertDefaultReturn) {
+        // Try to locate the file
+        NSOpenPanel *openPanel;
+
+        // Get this sheet out of the way before we open another one
+        [sheet orderOut:nil];
+
+        openPanel = [NSOpenPanel openPanel];
+        [openPanel beginSheetForDirectory:nil file:nil types:[library allowedFileTypes] modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_findMissingFileOpenPanelDidEnd:returnCode:contextInfo:) contextInfo:nil];
+    } else {
+        // Cancel the whole _findMissingFilesAndPlay process
+        [entriesWithMissingFiles release];
+        entriesWithMissingFiles = nil;
+    }
+}
+
+- (void)_findMissingFileOpenPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+{
+    if (returnCode == NSOKButton) {
+        SSELibraryEntry *entry;
+
+        [openPanel orderOut:nil];
+        
+        OBASSERT([entriesWithMissingFiles count] > 0);
+        entry = [entriesWithMissingFiles objectAtIndex:0];
+
+        [entry setPath:[[openPanel filenames] objectAtIndex:0]];
+
+        [entriesWithMissingFiles removeObjectAtIndex:0];
+
+        // Go on to the next file (if any)
+        [self _findMissingFilesAndPlay];
+    } else {
+        // Cancel the whole _findMissingFilesAndPlay process
+        [entriesWithMissingFiles release];
+        entriesWithMissingFiles = nil;
+    }
 }
 
 @end
