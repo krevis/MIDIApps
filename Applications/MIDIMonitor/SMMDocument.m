@@ -50,7 +50,7 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     center = [NSNotificationCenter defaultCenter];
 
     stream = [[SMPortOrVirtualInputStream alloc] init];
-    [center addObserver:self selector:@selector(_streamEndpointWasRemoved:) name:SMPortOrVirtualInputStreamEndpointWasRemoved object:stream];
+    [center addObserver:self selector:@selector(_streamEndpointWasRemoved:) name:SMPortOrVirtualStreamEndpointWasRemoved object:stream];
     [center addObserver:self selector:@selector(_readingSysEx:) name:SMInputStreamReadingSysExNotification object:stream];
     [center addObserver:self selector:@selector(_doneReadingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:stream];
     [stream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"MIDIMonitor", [self bundle], "title of popup menu item for virtual destination")];
@@ -240,12 +240,12 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
 
 - (NSArray *)sourceDescriptions;
 {
-    return [stream sourceDescriptions];
+    return [stream endpointDescriptions];
 }
 
 - (NSDictionary *)sourceDescription;
 {
-    return [stream sourceDescription];
+    return [stream endpointDescription];
 }
 
 - (void)setSourceDescription:(NSDictionary *)description;
@@ -260,7 +260,7 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     savedListenFlag = listenToMIDISetupChanges;
     listenToMIDISetupChanges = NO;
 
-    [stream setSourceDescription:description];
+    [stream setEndpointDescription:description];
 
     [[[self undoManager] prepareWithInvocationTarget:self] setSourceDescription:oldDescription];
     [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Source", @"MIDIMonitor", [self bundle], "change source undo action")];
@@ -453,9 +453,9 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
 {
     NSArray *descriptions;
     
-    descriptions = [stream sourceDescriptions];
+    descriptions = [stream endpointDescriptions];
     if ([descriptions count] > 0)
-        [stream setSourceDescription:[descriptions objectAtIndex:0]];
+        [stream setEndpointDescription:[descriptions objectAtIndex:0]];
 }
 
 - (void)_historyDidChange:(NSNotification *)notification;
