@@ -19,6 +19,7 @@
                 play = id; 
                 recordMultiple = id; 
                 recordOne = id; 
+                rename = id; 
                 selectDestination = id; 
                 showFileInFinder = id; 
             }; 
@@ -53,6 +54,7 @@
                 recordProgressIndicator = NSProgressIndicator; 
                 recordProgressMessageField = NSTextField; 
                 recordSheetWindow = NSPanel; 
+                renameButton = NSButton; 
                 showFileButton = NSButton; 
             }; 
             SUPERCLASS = NSWindowController; 

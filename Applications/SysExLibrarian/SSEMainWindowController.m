@@ -214,6 +214,12 @@ static SSEMainWindowController *controller;
     }
 }
 
+- (IBAction)rename:(id)sender;
+{
+    // TODO need to handle case when we are already renaming something
+    [libraryTableView editColumn:0 row:[libraryTableView selectedRow] withEvent:nil select:YES];
+}
+
 - (IBAction)cancelRecordSheet:(id)sender;
 {
     [midiController cancelMessageListen];
@@ -253,9 +259,7 @@ static SSEMainWindowController *controller;
     [self synchronizeDestinations];
     [self synchronizeLibrarySortIndicator];
     [self synchronizeLibrary];
-    [self synchronizePlayButton];
-    [self synchronizeDeleteButton];
-    [self synchronizeShowFileButton];
+    [self synchronizeButtons];
 }
 
 - (void)synchronizeDestinations;
@@ -288,19 +292,16 @@ static SSEMainWindowController *controller;
     [self _selectAndScrollToEntries:selectedEntries];
 }
 
-- (void)synchronizePlayButton;
+- (void)synchronizeButtons;
 {
-    [playButton setEnabled:([libraryTableView numberOfSelectedRows] > 0)];
-}
+    int numberOfSelectedRows;
 
-- (void)synchronizeDeleteButton;
-{
-    [deleteButton setEnabled:([libraryTableView numberOfSelectedRows] > 0)];
-}
-
-- (void)synchronizeShowFileButton;
-{
-    [showFileButton setEnabled:([libraryTableView numberOfSelectedRows] == 1)];
+    numberOfSelectedRows = [libraryTableView numberOfSelectedRows];
+    
+    [playButton setEnabled:(numberOfSelectedRows > 0)];
+    [deleteButton setEnabled:(numberOfSelectedRows > 0)];
+    [showFileButton setEnabled:(numberOfSelectedRows == 1)];
+    [renameButton setEnabled:(numberOfSelectedRows == 1)];
 }
 
 
@@ -481,9 +482,7 @@ static SSEMainWindowController *controller;
 
 - (void)tableViewSelectionDidChange:(NSNotification *)notification;
 {
-    [self synchronizePlayButton];
-    [self synchronizeDeleteButton];
-    [self synchronizeShowFileButton];
+    [self synchronizeButtons];
 }
 
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(int)row;
