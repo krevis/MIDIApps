@@ -29,7 +29,7 @@ NSString *SSESysExFileExtension = @"syx";
 
 + (NSString *)defaultPath;
 {
-    return [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"SysEx Library"] stringByAppendingPathComponent:@"Library"];
+    return [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"SysEx Library"] stringByAppendingPathComponent:@"Library.sXLb"];
 }
 
 + (NSString *)defaultFileDirectoryPath;

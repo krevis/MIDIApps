@@ -149,7 +149,10 @@ static SSEMainWindowController *controller;
     [super showWindow:sender];
 
     if (libraryLoadErrorMessage) {
-        NSBeginAlertSheet(@"Error", nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"The library %@ could not be opened.\n%@", [library path], libraryLoadErrorMessage);
+        NSString *libraryFilePath;
+
+        libraryFilePath = [[library path] stringByDeletingPathExtension];
+        NSBeginAlertSheet(@"Error", nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"The library \"%@\" could not be opened.\n%@", libraryFilePath, libraryLoadErrorMessage);
         [libraryLoadErrorMessage release];
         libraryLoadErrorMessage = nil;
 
