@@ -157,6 +157,7 @@
 @implementation SMSequence (Private)
 
 #define TESTING 1
+// TODO Turn this off before shipping
 
 #if TESTING
 - (unsigned int)_simpleIndexOfFirstNoteWithPositionGreaterThanOrEqualTo:(Float64)lowBeat atOrAfterIndex:(unsigned int)startIndex;
