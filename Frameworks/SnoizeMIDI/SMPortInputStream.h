@@ -16,7 +16,8 @@
 - (void)addEndpoint:(SMSourceEndpoint *)endpoint;
 - (void)removeEndpoint:(SMSourceEndpoint *)endpoint;
 
-// TODO for compatibility
+// These are present for compatibility only (from when we only listened to one source).
+// TODO remove these eventually
 - (void)setEndpoint:(SMSourceEndpoint *)endpoint;
 - (SMSourceEndpoint *)endpoint;
 

@@ -92,6 +92,7 @@ DEFINE_NSSTRING(SMInputStreamDoneReadingSysExNotification);
     
     userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithUnsignedInt:length] forKey:@"length"];
     [[NSNotificationCenter defaultCenter] postNotificationName:SMInputStreamReadingSysExNotification object:self userInfo:userInfo];
+        // TODO There could be multiple sysex messages being read simultaneously (from different sources), but this notification gives no way to distinguish between them.
 }
 
 - (void)parser:(SMMessageParser *)parser finishedReadingSysExMessage:(SMSystemExclusiveMessage *)message;
@@ -102,6 +103,7 @@ DEFINE_NSSTRING(SMInputStreamDoneReadingSysExNotification);
         [NSNumber numberWithUnsignedInt:1 + [[message receivedData] length]], @"length",
         [NSNumber numberWithBool:[message wasReceivedWithEOX]], @"valid", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:SMInputStreamDoneReadingSysExNotification object:self userInfo:userInfo];
+        // TODO There could be multiple sysex messages being read simultaneously (from different sources), but this notification gives no way to distinguish between them.
 }
 
 @end
