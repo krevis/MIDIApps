@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 34;
+	objectVersion = 38;
 	objects = {
 		080E96D9FE201CDB7F000001 = {
 			fileRef = 2A37F4B9FDCFA73011CA2CEA;
@@ -311,8 +311,8 @@
 			productName = MIDIMonitor;
 			productReference = 1758732AFF379DA111CA2CBB;
 			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<!DOCTYPE plist SYSTEM \"file://localhost/System/Library/DTDs/PropertyList.dtd\">
-<plist version=\"0.9\">
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
@@ -406,7 +406,7 @@
 				F5DCBE9002E6064E01000164,
 			);
 			isa = PBXHeadersBuildPhase;
-			name = Headers;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		2A37F4C8FDCFA73011CA2CEA = {
 			fileRef = 2A37F4AEFDCFA73011CA2CEA;
@@ -430,7 +430,7 @@
 				F56E05D10206DCB201000164,
 			);
 			isa = PBXResourcesBuildPhase;
-			name = "Bundle Resources";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		2A37F4CEFDCFA73011CA2CEA = {
 			buildActionMask = 2147483647;
@@ -450,7 +450,7 @@
 				F5DCBE9102E6064E01000164,
 			);
 			isa = PBXSourcesBuildPhase;
-			name = Sources;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		2A37F4CFFDCFA73011CA2CEA = {
 			fileRef = 2A37F4ACFDCFA73011CA2CEA;
@@ -480,7 +480,7 @@
 				F5460C1402E319C101000164,
 			);
 			isa = PBXFrameworksBuildPhase;
-			name = "Frameworks & Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 //2A0
 //2A1
@@ -778,6 +778,7 @@
 			refType = 4;
 		};
 		F56D31A40195A90E01000164 = {
+			includeInIndex = 0;
 			isa = PBXFolderReference;
 			name = English;
 			path = English.lproj/docs.htmld;
@@ -1021,7 +1022,7 @@
 				F5B5A54302E4067101000164,
 			);
 			isa = PBXCopyFilesBuildPhase;
-			name = "Copy Files";
+			runOnlyForDeploymentPostprocessing = 1;
 		};
 		F5E4BDD2018FCDAB01000164 = {
 			fileRef = F53D4AAB015AA35201000164;
