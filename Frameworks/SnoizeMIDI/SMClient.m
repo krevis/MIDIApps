@@ -183,16 +183,26 @@ static SMClient *sharedClient = nil;
         return 0;
 }
 
+// NOTE: CoreMIDI.framework has CFBundleVersion "20" as of 10.2. This translates to 0x20008000.
+const UInt32 kCoreMIDIFrameworkVersionIn10_2 = 0x20008000;
+
 - (BOOL)postsObjectAddedAndRemovedNotifications;
 {
-    // CoreMIDI.framework has CFBundleVersion "20" as of 10.2. This translates to 0x20008000.
-    return [self coreMIDIFrameworkVersion] >= 0x20008000;
+    // CoreMIDI in 10.2 posts specific notifications when objects are added and removed.
+    return [self coreMIDIFrameworkVersion] >= kCoreMIDIFrameworkVersionIn10_2;
 }
 
 - (BOOL)postsObjectPropertyChangedNotifications;
 {
-    // CoreMIDI.framework has CFBundleVersion "20" as of 10.2. This translates to 0x20008000.
-    return [self coreMIDIFrameworkVersion] >= 0x20008000;
+    // CoreMIDI in 10.2 posts a specific notification when an object's property changes.
+    return [self coreMIDIFrameworkVersion] >= kCoreMIDIFrameworkVersionIn10_2;
+}
+
+- (BOOL)coreMIDIUsesWrongRunLoop;
+{
+    // Under 10.1 CoreMIDI calls can run the thread's run loop in the default run loop mode,
+    // which causes no end of mischief.  Fortunately this was fixed in 10.2 to use a private mode.
+    return [self coreMIDIFrameworkVersion] < kCoreMIDIFrameworkVersionIn10_2;    
 }
 
 @end

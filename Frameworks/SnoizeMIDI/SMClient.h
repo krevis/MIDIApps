@@ -34,6 +34,7 @@
 
 - (BOOL)postsObjectAddedAndRemovedNotifications;
 - (BOOL)postsObjectPropertyChangedNotifications;
+- (BOOL)coreMIDIUsesWrongRunLoop;
 
 @end
 
