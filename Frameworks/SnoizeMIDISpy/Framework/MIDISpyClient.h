@@ -11,13 +11,7 @@ extern "C" {
     
 typedef struct __MIDISpyClient * MIDISpyClientRef;
 typedef struct __MIDISpyPort * MIDISpyPortRef;
-    
-enum {
-    kMIDISpyDriverAlreadyInstalled = 0,
-    kMIDISpyDriverInstalledSuccessfully = 1,
-    kMIDISpyDriverInstallationFailed = 2,
-    kMIDISpyDriverCouldNotRemoveOldDriver = 3
-};
+
 
 enum {
     kMIDISpyDriverMissing = 1,
@@ -26,8 +20,6 @@ enum {
     kMIDISpyConnectionDoesNotExist = 4
 };
 
-
-extern SInt32 MIDISpyInstallDriverIfNecessary();
 
 extern OSStatus MIDISpyClientCreate(MIDISpyClientRef *outClientRefPtr);
 extern OSStatus MIDISpyClientDispose(MIDISpyClientRef clientRef);
