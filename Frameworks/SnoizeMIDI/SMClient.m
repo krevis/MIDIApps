@@ -66,6 +66,12 @@ static SMClient *sharedClient = nil;
     if (!(self = [super init]))
         return nil;
 
+    // Don't let anyone create more than one client
+    if (sharedClient) {
+        [self release];
+        return nil;
+    }
+
     name = [[self processName] retain];
     postsExternalSetupChangeNotification = YES;
     isHandlingSetupChange = NO;
@@ -288,9 +294,8 @@ static void getMIDINotification(const MIDINotification *message, void *refCon)
         // Notify the objects internal to this framework about the change first, and then let
         // other objects know about it.
         [[NSNotificationCenter defaultCenter] postNotificationName:SMClientSetupChangedInternalNotification object:self];
-        if (postsExternalSetupChangeNotification) {
+        if (postsExternalSetupChangeNotification)
             [[NSNotificationCenter defaultCenter] postNotificationName:SMClientSetupChangedNotification object:self];
-        }
 
         isHandlingSetupChange = NO;
     } while (retryAfterDone);
