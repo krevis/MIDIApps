@@ -177,6 +177,9 @@
         }
 
         [messages retain];
+        // TODO TODO TODO
+        // This is very very bad. We really don't want to be holding on to these messages for any extended amount of time.
+        // Why am I doing this again?  We need to  do this more intelligently...
 
         // Invalidate any cached information which may no longer be accurate
         [manufacturerName release];

@@ -34,7 +34,8 @@
 
 - (void)_workThreadImportFiles:(NSArray *)filePaths;
 - (NSArray *)_workThreadExpandAndFilterDraggedFiles:(NSArray *)filePaths;
-- (NSArray *)_workThreadAddFilesToLibrary:(NSArray *)filePaths;
+
+- (NSArray *)_addFilesToLibrary:(NSArray *)filePaths;
 
 - (void)_showImportSheet;
 - (void)_updateImportStatusDisplay;
@@ -399,37 +400,16 @@ static SSEMainWindowController *controller;
 
 - (NSDragOperation)tableView:(SSETableView *)tableView draggingEntered:(id <NSDraggingInfo>)sender;
 {
-    NSPasteboard *pasteboard;
-
-    pasteboard = [sender draggingPasteboard];
-    if ([[pasteboard types] indexOfObjectIdenticalTo:NSFilenamesPboardType] != NSNotFound) {
-        NSArray *filePaths;
-
-        filePaths = [pasteboard propertyListForType:NSFilenamesPboardType];
-        if ([self _areAnyDraggedFilesAcceptable:filePaths])
-            return NSDragOperationGeneric;
-    }
-
-    return NSDragOperationNone;
+    if ([self _areAnyDraggedFilesAcceptable:[[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType]])
+        return NSDragOperationGeneric;
+    else
+        return NSDragOperationNone;
 }
 
 - (BOOL)tableView:(SSETableView *)tableView performDragOperation:(id <NSDraggingInfo>)sender;
 {
-    NSPasteboard *pasteboard;
-
-    pasteboard = [sender draggingPasteboard];
-    if ([[pasteboard types] indexOfObjectIdenticalTo:NSFilenamesPboardType] != NSNotFound) {
-        NSArray *filePaths;
-
-        filePaths = [pasteboard propertyListForType:NSFilenamesPboardType];
-        [self _dragFilesIntoLibrary:filePaths];
-//        [self performSelector:@selector(_dragFilesIntoLibrary:) withObject:filePaths afterDelay:0.1];
-            // Let the drag finish before we start importing
-
-        return YES;
-    }
-
-    return NO;
+    [self _dragFilesIntoLibrary:[[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType]];
+    return YES;
 }
 
 //
@@ -529,8 +509,7 @@ static SSEMainWindowController *controller;
 - (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
 {
     if (returnCode == NSOKButton)
-        [self _workThreadImportFiles:[openPanel filenames]];
-    // TODO rename this method since we're really doing it in the main thread...
+        [self _addFilesToLibrary:[openPanel filenames]];
 }
 
 - (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
@@ -671,7 +650,7 @@ static SSEMainWindowController *controller;
     
     filePaths = [self _workThreadExpandAndFilterDraggedFiles:filePaths];
     if ([filePaths count] > 0)
-        addedEntries = [self _workThreadAddFilesToLibrary:filePaths];
+        addedEntries = [self _addFilesToLibrary:filePaths];
 
     [self mainThreadPerformSelector:@selector(_doneImporting:) withObject:addedEntries];
 
@@ -693,11 +672,9 @@ static SSEMainWindowController *controller;
         BOOL isDirectory;
         NSAutoreleasePool *pool;
 
-        if (![NSThread inMainThread]) {
-            if (importCancelled) {
-                [acceptableFilePaths removeAllObjects];
-                break;
-            }
+        if (importCancelled) {
+            [acceptableFilePaths removeAllObjects];
+            break;
         }
 
         filePath = [filePaths objectAtIndex:fileIndex];
@@ -735,8 +712,10 @@ static SSEMainWindowController *controller;
     return acceptableFilePaths;
 }
 
-- (NSArray *)_workThreadAddFilesToLibrary:(NSArray *)filePaths;
+- (NSArray *)_addFilesToLibrary:(NSArray *)filePaths;
 {
+    // NOTE: This may be happening in the main thread or a work thread.
+    
     unsigned int fileIndex, fileCount;
     NSMutableArray *addedEntries;
 
@@ -783,7 +762,8 @@ static SSEMainWindowController *controller;
 {
     [self _updateImportStatusDisplay];
 
-    // Bring the application and window to the front, so the sheet doesn't trigger the dock to bounce our icon
+    // Bring the application and window to the front, so the sheet doesn't cause the dock to bounce our icon
+    // TODO Does this actually work correctly? It seems to be getting delayed...
     [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
     [[self window] makeKeyAndOrderFront:nil];
     
