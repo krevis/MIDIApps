@@ -334,9 +334,22 @@ static SSEMainWindowController *controller;
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row;
 {
     SSELibraryEntry *entry;
+    NSString *identifier;
 
     entry = [[library entries] objectAtIndex:row];
-    return [entry name];
+    identifier = [tableColumn identifier];
+
+    if ([identifier isEqualToString:@"name"])
+        return [entry name];
+    else if ([identifier isEqualToString:@"manufacturer"])
+        return [entry manufacturerName];
+    else if ([identifier isEqualToString:@"size"])
+//        return [NSNumber numberWithUnsignedInt:[entry size]];   // TODO make a pref for showing abbreviated vs. full bytes
+        return [NSString abbreviatedStringForBytes:[entry size]];
+    else if ([identifier isEqualToString:@"messageCount"])
+        return [NSNumber numberWithUnsignedInt:[entry messageCount]];
+    else
+        return nil;
 }
 
 - (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(int)row;
@@ -352,13 +365,8 @@ static SSEMainWindowController *controller;
 
     // TODO add drag and drop support
 //- (BOOL)tableView:(NSTableView *)tv writeRows:(NSArray*)rows toPasteboard:(NSPasteboard*)pboard;
-    // This method is called after it has been determined that a drag should begin, but before the drag has been started.  To refuse the drag, return NO.  To start a drag, return YES and place the drag data onto the pasteboard (data, owner, etc...).  The drag image and other drag related information will be set up and provided by the table view once this call returns with YES.  The rows array is the list of row numbers that will be participating in the drag.
-
 //- (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row proposedDropOperation:(NSTableViewDropOperation)op;
-// This method is used by NSTableView to determine a valid drop target.  Based on the mouse position, the table view will suggest a proposed drop location.  This method must return a value that indicates which dragging operation the data source will perform.  The data source may "re-target" a drop if desired by calling setDropRow:dropOperation: and returning something other than NSDragOperationNone.  One may choose to re-target for various reasons (eg. for better visual feedback when inserting into a sorted position).
-
 //- (BOOL)tableView:(NSTableView*)tv acceptDrop:(id <NSDraggingInfo>)info row:(int)row dropOperation:(NSTableViewDropOperation)op;
-    // This method is called when the mouse is released over an outline view that previously decided to allow a drop via the validateDrop method.  The data source should incorporate the data from the dragging pasteboard at this time.
 
 //
 // SSETableView data source

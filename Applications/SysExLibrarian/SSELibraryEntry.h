@@ -7,10 +7,16 @@
 
 @interface SSELibraryEntry : OFObject
 {
+    SSELibrary *nonretainedLibrary;
+
     NSString *name;
     BDAlias *alias;
 
-    SSELibrary *nonretainedLibrary;
+    // Caches of file information
+    NSArray *messages;
+    NSString *manufacturerName;
+    NSNumber *sizeNumber;
+    NSNumber *messageCountNumber;
 }
 
 - (id)initWithLibrary:(SSELibrary *)library;
@@ -26,5 +32,9 @@
 - (void)setNameFromFile;
 
 - (NSArray *)messages;
+
+- (NSString *)manufacturerName;
+- (unsigned int)size;
+- (unsigned int)messageCount;
 
 @end
