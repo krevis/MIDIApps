@@ -12,11 +12,14 @@
 #import "SMMessage.h"
 #import "SMMessageParser.h"
 #import "SMSystemExclusiveMessage.h"
+#import "MessageQueue.h"
 
 
 @interface SMInputStream (Private)
 
 static void midiReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, void *srcConnRefCon);
++ (void)runSecondaryMIDIThread:(id)ignoredObject;
+static void receivePendingPacketList(CFTypeRef objectFromQueue, void *refCon);
 
 - (id <SMInputStreamSource>)findInputSourceWithName:(NSString *)desiredName uniqueID:(NSNumber *)desiredUniqueID;
 
@@ -30,6 +33,11 @@ NSString *SMInputStreamDoneReadingSysExNotification = @"SMInputStreamDoneReading
 NSString *SMInputStreamSelectedInputSourceDisappearedNotification = @"SMInputStreamSelectedInputSourceDisappearedNotification";
 NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceListChangedNotification";
 
+
++ (void)didLoad
+{
+    [NSThread detachNewThreadSelector:@selector(runSecondaryMIDIThread:) toTarget:self withObject:nil];    
+}
 
 - (id)init;
 {
@@ -255,15 +263,95 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
 
 @implementation SMInputStream (Private)
 
+typedef struct PendingPacketList {
+    void *readProcRefCon;
+    void *srcConnRefCon;
+    MIDIPacketList packetList;
+} PendingPacketList;
+
 static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon, void *srcConnRefCon)
 {
     // NOTE: This function is called in a separate, "high-priority" thread.
+    //
+    // NOTE: We used to just do this:
+    //
+    // SMInputStream *self = (SMInputStream *)readProcRefCon;
+    // NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    // [[self parserForSourceConnectionRefCon:srcConnRefCon] takePacketList:packetList];
+    // [pool release];
+    //
+    // However, as of Mac OS X 10.2.2, the CoreMIDI receive thread is no longer run using a run loop.
+    // This violates some assumptions that we made in SMMessageParser regarding the sysex timeout;
+    // we want the timer to fire in the same thread that MIDI messages normally come from, but without
+    // the run loop that's impossible.
+    //
+    // The only way to get the old behavior back is to hand off the MIDI packets to another thread
+    // of our own creation, in which they are processed as they were before. Fortunately this is not
+    // difficult, especially with the MessageQueue that I had already written for SnoizeMIDISpy.
 
-    SMInputStream *self = (SMInputStream *)readProcRefCon;
+    UInt32 packetListSize;
+    const MIDIPacket *packet;
+    UInt32 i;
+    NSData *data;
+    PendingPacketList *pendingPacketList;
+
+    // Find the size of the whole packet list
+    packetListSize = sizeof(UInt32);	// numPackets
+    packet = &packetList->packet[0];
+    for (i = 0; i < packetList->numPackets; i++) {
+        packetListSize += offsetof(MIDIPacket, data) + packet->length;
+        packet = MIDIPacketNext(packet);
+    }
+
+    // Copy the packet list and other arguments into a new PendingPacketList (in an NSData)
+    data = [[NSMutableData alloc] initWithLength:(offsetof(PendingPacketList, packetList) + packetListSize)];
+    pendingPacketList = (PendingPacketList *)[data bytes];
+    pendingPacketList->readProcRefCon = readProcRefCon;
+    pendingPacketList->srcConnRefCon = srcConnRefCon;
+    memcpy(&pendingPacketList->packetList, packetList, packetListSize);
+
+    // Queue the data; receiveFromMessageQueue() will be called in the secondary MIDI thread.
+    AddToMessageQueue((CFDataRef)data);
+    
+    [data release];
+}
+
++ (void)runSecondaryMIDIThread:(id)ignoredObject;
+{
     NSAutoreleasePool *pool;
 
     pool = [[NSAutoreleasePool alloc] init];
-    [[self parserForSourceConnectionRefCon:srcConnRefCon] takePacketList:packetList];
+
+    CreateMessageQueue(receivePendingPacketList, NULL);
+
+    [[NSRunLoop currentRunLoop] run];
+    // Runs until DestroyMessageQueue() is called
+
+    [pool release];
+}
+
+static void receivePendingPacketList(CFTypeRef objectFromQueue, void *refCon)
+{
+    // NOTE: This function is called in the secondary MIDI thread that we create
+
+    NSAutoreleasePool *pool;
+    NSData *data = (NSData *)objectFromQueue;
+    PendingPacketList *pendingPacketList;
+    SMInputStream *inputStream;
+
+    pool = [[NSAutoreleasePool alloc] init];
+
+    pendingPacketList = (PendingPacketList *)[data bytes];
+    inputStream = (SMInputStream *)pendingPacketList->readProcRefCon;
+    NS_DURING {
+        [[inputStream parserForSourceConnectionRefCon:pendingPacketList->srcConnRefCon] takePacketList:&pendingPacketList->packetList];
+    } NS_HANDLER {
+        // Ignore any exceptions raised
+#if DEBUG
+        NSLog(@"Exception raised during MIDI parsing in secondary thread: %@", localException);
+#endif
+    } NS_ENDHANDLER;
+
     [pool release];
 }
 

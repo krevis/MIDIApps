@@ -33,7 +33,7 @@
 
     readingSysExLock = [[NSLock alloc] init];
     sysExTimeOut = 1.0;	// seconds
-    
+
     return self;
 }
 
@@ -81,7 +81,8 @@
 
 - (void)takePacketList:(const MIDIPacketList *)packetList;
 {
-    // NOTE: This function is called in a separate, "high-priority" thread provided by CoreMIDI.
+    // NOTE: This function is called in our MIDI processing thread.
+    // (This is NOT the MIDI receive thread which CoreMIDI creates for us.)
     // All downstream processing will also be done in this thread, until someone jumps it into another.
 
     NSMutableArray *messages = nil;
@@ -109,15 +110,25 @@
     
     if (readingSysExData) {
         if (!sysExTimeOutTimer) {
-            // Add a timer to this thread's run loop, and make it fire in the current run loop mode.
+            // Create a timer which will fire after we have received no sysex data for a while.
+            // This takes care of interruption in the data (devices being turned off or unplugged) as well as
+            // ill-behaved devices which don't terminate their sysex messages with 0xF7.
             NSRunLoop *runLoop;
+            NSString *mode;
 
-            sysExTimeOutTimer = [[NSTimer timerWithTimeInterval:sysExTimeOut target:self selector:@selector(sysExTimedOut) userInfo:nil repeats:NO] retain];
             runLoop = [NSRunLoop currentRunLoop];
-            [runLoop addTimer:sysExTimeOutTimer forMode:[runLoop currentMode]];
+            mode = [runLoop currentMode];
+            if (mode) {
+                sysExTimeOutTimer = [[NSTimer timerWithTimeInterval:sysExTimeOut target:self selector:@selector(sysExTimedOut) userInfo:nil repeats:NO] retain];
+                [runLoop addTimer:sysExTimeOutTimer forMode:mode];
+            } else {
+#if DEBUG
+                NSLog(@"SMMessageParser trying to add timer but the run loop has no mode--giving up");
+#endif
+            }
         } else {
             // We already have a timer, so just bump its fire date forward.
-            // Use CoreFoundation because this method is available back to 10.1 (and probably 10.0) whereas
+            // Use CoreFoundation because this function is available back to 10.1 (and probably 10.0) whereas
             // the corresponding NSTimer method only became available in 10.2.
             CFRunLoopTimerSetNextFireDate((CFRunLoopTimerRef)sysExTimeOutTimer, CFAbsoluteTimeGetCurrent() + sysExTimeOut);
         }

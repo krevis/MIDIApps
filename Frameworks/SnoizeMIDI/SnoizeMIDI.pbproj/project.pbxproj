@@ -205,6 +205,7 @@
 				F5F915F1032A465A01000164,
 				F57A4EEC0354B9FC01000164,
 				F57A51AF0354D62F01000164,
+				F5920EC503850B7E01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -247,6 +248,7 @@
 				F5DAB1E7030DE98E01000164,
 				F51DC11C0328B28901000164,
 				F5F915F2032A465A01000164,
+				F5920EC403850B7E01000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1067,6 +1069,8 @@
 			children = (
 				F58C3E9501B606CB01000164,
 				F58C3E9601B606CB01000164,
+				F5920EC303850B7E01000164,
+				F5920EC203850B7E01000164,
 				F55C9C180244DE3401000164,
 				F55C9C1C0244F30F01000164,
 				F53D4A9C015A960601000164,
@@ -1117,6 +1121,28 @@
 		};
 		F58C3E9A01B60AD801000164 = {
 			fileRef = F58C3E9101B605C301000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5920EC203850B7E01000164 = {
+			isa = PBXFileReference;
+			path = MessageQueue.c;
+			refType = 4;
+		};
+		F5920EC303850B7E01000164 = {
+			isa = PBXFileReference;
+			path = MessageQueue.h;
+			refType = 4;
+		};
+		F5920EC403850B7E01000164 = {
+			fileRef = F5920EC203850B7E01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5920EC503850B7E01000164 = {
+			fileRef = F5920EC303850B7E01000164;
 			isa = PBXBuildFile;
 			settings = {
 			};

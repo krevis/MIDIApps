@@ -1,5 +1,8 @@
-#import <Cocoa/Cocoa.h>
 #import <Carbon/Carbon.h>
+#import <CoreMIDI/CoreMIDI.h>
+
+#ifdef __OBJC__
+#import <Cocoa/Cocoa.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
-#import <CoreMIDI/CoreMIDI.h>
+#endif
