@@ -37,7 +37,10 @@
     flags.isDirty = NO;
 
     [self _loadEntries];
-    
+
+    // Ignore any changes that came from reading entries
+    flags.isDirty = NO;
+
     return self;
 }
 
@@ -60,14 +63,14 @@
 {
     SSELibraryEntry *entry;
 
-    entry = [[SSELibraryEntry alloc] init];
+    entry = [[SSELibraryEntry alloc] initWithLibrary:self];
     [entry setPath:filePath];
+    [entry setNameFromFile];
     [entries addObject:entry];
     [entry release];
 
-    flags.isDirty = YES;
-    [self autosave];
-
+    // Setting the entry path and name will cause us to be notified of a change, and we'll autosave.
+    
     return entry;
 }
 
@@ -88,6 +91,24 @@
         entry = [self addEntryForFile:newFilePath];
 
     return entry;
+}
+
+- (void)removeEntry:(SSELibraryEntry *)entry;
+{
+    unsigned int entryIndex;
+
+    entryIndex = [entries indexOfObjectIdenticalTo:entry];
+    if (entryIndex != NSNotFound) {
+        [entries removeObjectAtIndex:entryIndex];
+
+        [self noteEntryChanged];
+    }
+}
+
+- (void)noteEntryChanged;
+{
+    flags.isDirty = YES;
+    [self autosave];
 }
 
 - (void)autosave;
@@ -148,8 +169,10 @@
         SSELibraryEntry *entry;
 
         entryDict = [entryDicts objectAtIndex:entryDictIndex];
-        if ((entry = [SSELibraryEntry libraryEntryFromDictionary:entryDict]))
-            [entries addObject:entry];
+        entry = [[SSELibraryEntry alloc] initWithLibrary:self];
+        [entry takeValuesFromDictionary:entryDict];
+        [entries addObject:entry];
+        [entry release];
     }
 }
 

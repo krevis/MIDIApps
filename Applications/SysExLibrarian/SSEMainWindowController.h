@@ -15,6 +15,7 @@
     IBOutlet NSTableView  *libraryTableView;
 
     IBOutlet NSButton *playButton;
+    IBOutlet NSButton *deleteButton;
     
     IBOutlet NSWindow *recordSheetWindow;
     IBOutlet NSProgressIndicator *recordProgressIndicator;
@@ -65,6 +66,7 @@
 - (void)synchronizeDestinations;
 - (void)synchronizeLibrary;
 - (void)synchronizePlayButton;
+- (void)synchronizeDeleteButton;
 
 - (void)updateSysExReadIndicator;
 - (void)stopSysExReadIndicator;

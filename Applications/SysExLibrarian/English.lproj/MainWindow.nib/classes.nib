@@ -23,6 +23,7 @@
             CLASS = SSEMainWindowController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                deleteButton = NSButton; 
                 destinationPopUpButton = NSPopUpButton; 
                 libraryTableView = NSTableView; 
                 mainController = SSEMainController; 

@@ -105,11 +105,23 @@ static SSEMainWindowController *controller;
 - (IBAction)delete:(id)sender;
 {
     // TODO
-    // delete the selected files from the library
     // this should also be hooked up via delete key in the table view
-    // should only be enabled when file(s) are selected in the library
     // should we have a confirmation dialog?
     // ask whether to delete the file or just the reference? (see how Project Builder or iTunes do it)
+
+    // TODO handle multiple row selection
+
+    int selectedRow;
+    SSELibraryEntry *entry;
+
+    selectedRow = [libraryTableView selectedRow];
+    OBASSERT(selectedRow != -1);
+    [libraryTableView deselectAll:nil];
+
+    entry = [[library entries] objectAtIndex:selectedRow];
+    [library removeEntry:entry];
+
+    [self synchronizeInterface];
 }
 
 - (IBAction)recordOne:(id)sender;
@@ -135,6 +147,8 @@ static SSEMainWindowController *controller;
     int selectedRow;
     NSArray *messages;
 
+    // TODO handle multiple row selection
+    
     selectedRow = [libraryTableView selectedRow];
     OBASSERT(selectedRow != -1);
 
@@ -172,6 +186,7 @@ static SSEMainWindowController *controller;
     [self synchronizeDestinations];
     [self synchronizeLibrary];
     [self synchronizePlayButton];
+    [self synchronizeDeleteButton];
 }
 
 - (void)synchronizeSources;
@@ -193,6 +208,11 @@ static SSEMainWindowController *controller;
 - (void)synchronizePlayButton;
 {
     [playButton setEnabled:([libraryTableView numberOfSelectedRows] > 0)];
+}
+
+- (void)synchronizeDeleteButton;
+{
+    [deleteButton setEnabled:([libraryTableView numberOfSelectedRows] > 0)];
 }
 
 
@@ -306,6 +326,30 @@ static SSEMainWindowController *controller;
     return [entry name];
 }
 
+- (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(int)row;
+{
+    SSELibraryEntry *entry;
+
+    entry = [[library entries] objectAtIndex:row];
+    if ([object isKindOfClass:[NSString class]])
+        [entry setName:object];
+
+    [self synchronizeLibrary];
+
+    // TODO set table view to not go to next entry 
+}
+
+    // TODO add drag and drop support
+//- (BOOL)tableView:(NSTableView *)tv writeRows:(NSArray*)rows toPasteboard:(NSPasteboard*)pboard;
+    // This method is called after it has been determined that a drag should begin, but before the drag has been started.  To refuse the drag, return NO.  To start a drag, return YES and place the drag data onto the pasteboard (data, owner, etc...).  The drag image and other drag related information will be set up and provided by the table view once this call returns with YES.  The rows array is the list of row numbers that will be participating in the drag.
+
+//- (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row proposedDropOperation:(NSTableViewDropOperation)op;
+// This method is used by NSTableView to determine a valid drop target.  Based on the mouse position, the table view will suggest a proposed drop location.  This method must return a value that indicates which dragging operation the data source will perform.  The data source may "re-target" a drop if desired by calling setDropRow:dropOperation: and returning something other than NSDragOperationNone.  One may choose to re-target for various reasons (eg. for better visual feedback when inserting into a sorted position).
+
+//- (BOOL)tableView:(NSTableView*)tv acceptDrop:(id <NSDraggingInfo>)info row:(int)row dropOperation:(NSTableViewDropOperation)op;
+    // This method is called when the mouse is released over an outline view that previously decided to allow a drop via the validateDrop method.  The data source should incorporate the data from the dragging pasteboard at this time.
+
+
 //
 // NSTableView notifications
 //
@@ -313,6 +357,7 @@ static SSEMainWindowController *controller;
 - (void)tableViewSelectionDidChange:(NSNotification *)notification;
 {
     [self synchronizePlayButton];
+    [self synchronizeDeleteButton];
 }
 
 @end

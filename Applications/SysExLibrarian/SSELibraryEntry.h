@@ -2,14 +2,18 @@
 #import <Cocoa/Cocoa.h>
 
 @class BDAlias;
+@class SSELibrary;
 
 
 @interface SSELibraryEntry : OFObject
 {
+    NSString *name;
     BDAlias *alias;
+
+    SSELibrary *nonretainedLibrary;
 }
 
-+ (SSELibraryEntry *)libraryEntryFromDictionary:(NSDictionary *)dict;
+- (id)initWithLibrary:(SSELibrary *)library;
 
 - (NSDictionary *)dictionaryValues;
 - (void)takeValuesFromDictionary:(NSDictionary *)dict;
@@ -18,6 +22,8 @@
 - (void)setPath:(NSString *)value;
 
 - (NSString *)name;
+- (void)setName:(NSString *)value;
+- (void)setNameFromFile;
 
 - (NSArray *)messages;
 

@@ -20,6 +20,9 @@
 - (SSELibraryEntry *)addEntryForFile:(NSString *)filePath;
 - (SSELibraryEntry *)addNewEntryWithData:(NSData *)sysexData;
 
+- (void)removeEntry:(SSELibraryEntry *)entry;
+
+- (void)noteEntryChanged;
 - (void)autosave;
 - (void)save;
 
