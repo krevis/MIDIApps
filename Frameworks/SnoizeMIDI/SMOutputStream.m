@@ -85,7 +85,7 @@ const unsigned int maxPacketSize = 65535;
     unsigned int packetListSize;
     MIDIPacketList *packetList;
     MIDIPacket *packet;
-    MIDITimeStamp sendImmediatelyTimeStamp;
+    MIDITimeStamp sendImmediatelyTimeStamp = 0;
 
     messageCount = [messages count];
     packetListSize = offsetof(MIDIPacketList, packet);
