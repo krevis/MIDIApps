@@ -5,12 +5,19 @@
 #import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
-#import "SMMAppController.h"
+#import "SMMPreferencesWindowController.h"
 
 
 @interface SMMSysExWindowController (Private)
 
 - (void)_autosaveWindowFrame;
+
+- (void)_displayPreferencesDidChange:(NSNotification *)notification;
+
+- (void)_synchronizeDescriptionFields;
+
+- (NSString *)_formatSysExData:(NSData *)data;
+
 
 @end
 
@@ -34,7 +41,6 @@ static NSMutableArray *controllers = nil;
         if ([controller message] == inMessage)
             return controller;
     }
-    // TODO when window closes, need to get it out of this array
 
     controller = [[SMMSysExWindowController alloc] initWithMessage:inMessage];
     [controllers addObject:controller];
@@ -50,6 +56,8 @@ static NSMutableArray *controllers = nil;
 
     message = [inMessage retain];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_displayPreferencesDidChange:) name:SMMDisplayPreferenceChangedNotification object:nil];
+    
     return self;
 }
 
@@ -78,8 +86,9 @@ static NSMutableArray *controllers = nil;
 {
     [super windowDidLoad];
 
-    // TODO stick dump of message into the window
-    [textView setString:@"Your SysEx Here"];
+    [self _synchronizeDescriptionFields];
+
+    [textView setString:[self _formatSysExData:[message receivedData]]];
 }
 
 - (SMSystemExclusiveMessage *)message;
@@ -132,6 +141,76 @@ static NSMutableArray *controllers = nil;
         [window saveFrameUsingName:autosaveName];
         [[NSUserDefaults standardUserDefaults] autoSynchronize];
     }
+}
+
+- (void)_displayPreferencesDidChange:(NSNotification *)notification;
+{
+    [self _synchronizeDescriptionFields];
+}
+
+- (void)_synchronizeDescriptionFields;
+{
+    [timeField setStringValue:[message timeStampForDisplay]];
+    [manufacturerNameField setStringValue:[message manufacturerName]];
+    [sizeField setStringValue:[SMMessage formatLength:[message receivedDataLength]]];
+}
+
+- (NSString *)_formatSysExData:(NSData *)data;
+{
+    unsigned int dataLength;
+    const unsigned char *bytes;
+    NSMutableString *formattedString;
+    unsigned int dataIndex;
+    int lengthDigitCount;
+    unsigned int scratchLength;
+
+    dataLength = [data length];
+    if (dataLength == 0)
+        return @"";
+
+    bytes = [data bytes];
+
+    // Figure out how many bytes dataLength takes to represent
+    lengthDigitCount = 0;
+    scratchLength = dataLength;
+    while (scratchLength > 0) {
+        lengthDigitCount += 2;
+        scratchLength >>= 8;
+    }
+
+    formattedString = [NSMutableString string];
+    for (dataIndex = 0; dataIndex < dataLength; dataIndex += 16) {
+        static const char hexchars[] = "0123456789ABCDEF";
+        char lineBuffer[64];
+        char *p;
+        unsigned int index;
+        NSString *lineString;
+
+        // This C stuff may be a little ugly but it is a hell of a lot faster than doing it with NSStrings...
+
+        p = lineBuffer;
+        p += sprintf(p, "%.*X", lengthDigitCount, dataIndex);
+        
+        for (index = dataIndex; index < dataIndex+16 && index < dataLength; index++) {
+            unsigned char byte;
+
+            *p++ = ' ';
+            if (index % 8 == 0)
+                *p++ = ' ';
+
+            byte = bytes[index];
+            *p++ = hexchars[(byte & 0xF0) >> 4];
+            *p++ = hexchars[byte & 0x0F];
+        }
+        *p++ = '\n';
+        *p++ = 0;
+
+        lineString = [[NSString alloc] initWithCString:lineBuffer];
+        [formattedString appendString:lineString];
+        [lineString release];
+    }
+
+    return formattedString;
 }
 
 @end

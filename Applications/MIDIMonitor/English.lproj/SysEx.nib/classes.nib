@@ -4,7 +4,12 @@
         {
             CLASS = SMMSysExWindowController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {textView = NSTextView; }; 
+            OUTLETS = {
+                manufacturerNameField = NSTextField; 
+                sizeField = NSTextField; 
+                textView = NSTextView; 
+                timeField = NSTextField; 
+            }; 
             SUPERCLASS = NSWindowController; 
         }
     ); 

@@ -23,6 +23,8 @@
 - (void)_showSysExProgressIndicator;
 - (void)_hideSysExProgressIndicator;
 
+- (BOOL)_canShowSelectedMessageDetails;
+
 @end
 
 
@@ -108,6 +110,15 @@
     }
 }
 
+- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem;
+{
+    if ([anItem action] == @selector(showSelectedMessageDetails:)) {
+        return [self _canShowSelectedMessageDetails];
+    } else {
+        return YES;
+    }
+}
+
 //
 // Actions
 //
@@ -183,19 +194,13 @@
 
 - (IBAction)showSelectedMessageDetails:(id)sender;
 {
-    int selectedRow;
-    
-    selectedRow = [messagesTableView selectedRow];
-    if (selectedRow >= 0) {
-        SMMessage *message;
+    if ([self _canShowSelectedMessageDetails]) {
+        SMSystemExclusiveMessage *message;
+        SMMSysExWindowController *sysExWindowController;
 
-        message = [displayedMessages objectAtIndex:selectedRow];
-        if ([message isKindOfClass:[SMSystemExclusiveMessage class]]) {
-            SMMSysExWindowController *sysExWindowController;
-
-            sysExWindowController = [SMMSysExWindowController sysExWindowControllerWithMessage:(SMSystemExclusiveMessage *)message];
-            [sysExWindowController showWindow:nil];
-        }
+        message = [displayedMessages objectAtIndex:[messagesTableView selectedRow]];
+        sysExWindowController = [SMMSysExWindowController sysExWindowControllerWithMessage:message];
+        [sysExWindowController showWindow:nil];        
     }
 }
 
@@ -501,6 +506,17 @@
         [sysExProgressField retain];
         [sysExProgressField removeFromSuperview];
     }
+}
+
+- (BOOL)_canShowSelectedMessageDetails;
+{
+    int selectedRow;
+
+    selectedRow = [messagesTableView selectedRow];
+    if (selectedRow < 0)
+        return NO;
+
+    return [[displayedMessages objectAtIndex:selectedRow] isKindOfClass:[SMSystemExclusiveMessage class]];
 }
 
 @end

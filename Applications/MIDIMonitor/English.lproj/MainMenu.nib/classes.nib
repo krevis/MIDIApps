@@ -1,7 +1,7 @@
 {
     IBClasses = (
         {
-            ACTIONS = {clearMessages = id; }; 
+            ACTIONS = {clearMessages = id; showSelectedMessageDetails = id; }; 
             CLASS = FirstResponder; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 

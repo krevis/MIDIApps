@@ -5,6 +5,9 @@
 
 @interface SMMSysExWindowController : NSWindowController
 {
+    IBOutlet NSTextField *timeField;
+    IBOutlet NSTextField *manufacturerNameField;
+    IBOutlet NSTextField *sizeField;    
     IBOutlet NSTextView *textView;
 
     SMSystemExclusiveMessage *message;
