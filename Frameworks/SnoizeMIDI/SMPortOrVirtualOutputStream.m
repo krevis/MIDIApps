@@ -85,7 +85,8 @@ DEFINE_NSSTRING(SMPortOrVirtualOutputStreamEndpointWasRemoved);
         SMEndpoint *endpoint;
         
         endpoint = [endpoints objectAtIndex:endpointIndex];
-        [descriptions addObject:[self _descriptionForEndpoint:endpoint]];
+        if (![endpoint isOwnedByThisProcess])
+            [descriptions addObject:[self _descriptionForEndpoint:endpoint]];
     }
 
     [descriptions addObject:[self _descriptionForVirtual]];
