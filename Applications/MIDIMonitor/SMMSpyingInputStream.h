@@ -14,6 +14,8 @@
     NSMapTable *parsersForEndpoints;
 }
 
+- (id)initWithMIDISpyClient:(MIDISpyClientRef)midiSpyClient;
+
 - (NSArray *)endpoints;
 - (void)addEndpoint:(SMDestinationEndpoint *)endpoint;
 - (void)removeEndpoint:(SMDestinationEndpoint *)endpoint;

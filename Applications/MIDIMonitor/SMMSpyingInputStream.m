@@ -18,22 +18,18 @@
 
 @implementation SMMSpyingInputStream
 
-- (id)init;
+- (id)initWithMIDISpyClient:(MIDISpyClientRef)midiSpyClient;
 {
     OSStatus status;
 
     if (!(self = [super init]))
         return nil;
 
-    // TODO should share the spy client across all spying input streams
-    status = MIDISpyClientCreate(&spyClient);
-    if (status != noErr) {
-#if DEBUG
-        NSLog(@"Couldn't create a MIDI spy client: error %ld", status);
-#endif
+    if (!midiSpyClient) {
         [self release];
         return nil;
     }
+    spyClient = midiSpyClient;
 
     status = MIDISpyPortCreate(spyClient, [self midiReadProc], self, &spyPort);
     if (status != noErr) {
@@ -58,9 +54,8 @@
     if (spyPort)
         MIDISpyPortDispose(spyPort);
     spyPort = NULL;
-    
-    if (spyClient)
-        MIDISpyClientDispose(spyClient);
+
+    // Don't tear down the spy client, since others may be using it
     spyClient = NULL;
 
     [endpoints release];
