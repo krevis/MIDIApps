@@ -20,7 +20,8 @@
                 recordMultiple = id; 
                 recordOne = id; 
                 rename = id; 
-                selectDestination = id; 
+                selectDestinationFromMenuItem = id; 
+                selectDestinationFromPopUpButton = id; 
                 showFileInFinder = id; 
             }; 
             CLASS = SSEMainWindowController; 

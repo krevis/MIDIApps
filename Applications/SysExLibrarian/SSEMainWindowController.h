@@ -57,13 +57,15 @@
     NSString *sortColumnIdentifier;
     BOOL isSortAscending;
     NSMutableArray *entriesWithMissingFiles;
+    NSToolbarItem *nonretainedDestinationToolbarItem;
 }
 
 + (SSEMainWindowController *)mainWindowController;
 
 // Actions
 
-- (IBAction)selectDestination:(id)sender;
+- (IBAction)selectDestinationFromPopUpButton:(id)sender;
+- (IBAction)selectDestinationFromMenuItem:(id)sender;
 
 - (IBAction)addToLibrary:(id)sender;
 - (IBAction)delete:(id)sender;

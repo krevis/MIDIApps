@@ -12,7 +12,8 @@
 
 @interface SSEMainWindowController (Private)
 
-- (void)_synchronizePopUpButton:(NSPopUpButton *)popUpButton withDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
+- (void)_synchronizeDestinationPopUpWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
+- (void)_synchronizeDestinationToolbarMenuWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 
 - (void)_libraryDidChange:(NSNotification *)notification;
 - (void)_sortLibraryEntries;
@@ -134,16 +135,23 @@ static SSEMainWindowController *controller;
 - (void)speciallyInitializeToolbarItem:(NSToolbarItem *)toolbarItem;
 {
     float height;
+    NSMenuItem *menuItem;
+    NSMenu *submenu;
 
+    nonretainedDestinationToolbarItem = toolbarItem;
+    
     [toolbarItem setView:destinationPopUpButton];
 
     height = NSHeight([destinationPopUpButton frame]);
     [toolbarItem setMinSize:NSMakeSize(80, height)];
     [toolbarItem setMaxSize:NSMakeSize(1000, height)];
 
-    // TODO Need to do this: [toolbarItem setMenuFormRepresentation:]
-    // Should be a menu item w/title "Destination: <destination name>", with submenu items for each destination
-    // (and need to change that menu item's title when destination is changed, too)
+    menuItem = [[NSMenuItem alloc] initWithTitle:@"Destination" action:NULL keyEquivalent:@""];
+    submenu = [[NSMenu alloc] initWithTitle:@""];
+    [menuItem setSubmenu:submenu];
+    [submenu release];
+    [toolbarItem setMenuFormRepresentation:menuItem];
+    [menuItem release];
 }
 
 //
@@ -172,9 +180,14 @@ static SSEMainWindowController *controller;
 // Actions
 //
 
-- (IBAction)selectDestination:(id)sender;
+- (IBAction)selectDestinationFromPopUpButton:(id)sender;
 {
     [midiController setDestinationDescription:[(NSMenuItem *)[sender selectedItem] representedObject]];
+}
+
+- (IBAction)selectDestinationFromMenuItem:(id)sender;
+{
+    [midiController setDestinationDescription:[(NSMenuItem *)sender representedObject]];
 }
 
 - (IBAction)addToLibrary:(id)sender;
@@ -299,7 +312,14 @@ static SSEMainWindowController *controller;
 
 - (void)synchronizeDestinations;
 {
-    [self _synchronizePopUpButton:destinationPopUpButton withDescriptions:[midiController destinationDescriptions] currentDescription:[midiController destinationDescription]];
+    NSArray *descriptions;
+    NSDictionary *currentDescription;
+
+    descriptions = [midiController destinationDescriptions];
+    currentDescription = [midiController destinationDescription];
+
+    [self _synchronizeDestinationPopUpWithDescriptions:descriptions currentDescription:currentDescription];
+    [self _synchronizeDestinationToolbarMenuWithDescriptions:descriptions currentDescription:currentDescription];
 }
 
 - (void)synchronizeLibrarySortIndicator;
@@ -528,18 +548,18 @@ static SSEMainWindowController *controller;
 
 @implementation SSEMainWindowController (Private)
 
-- (void)_synchronizePopUpButton:(NSPopUpButton *)popUpButton withDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
+- (void)_synchronizeDestinationPopUpWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 {
     BOOL wasAutodisplay;
     unsigned int count, index;
     BOOL found = NO;
     BOOL addedSeparatorBetweenPortAndVirtual = NO;
-
+    
     // The pop up button redraws whenever it's changed, so turn off autodisplay to stop the blinkiness
     wasAutodisplay = [[self window] isAutodisplay];
     [[self window] setAutodisplay:NO];
 
-    [popUpButton removeAllItems];
+    [destinationPopUpButton removeAllItems];
 
     count = [descriptions count];
     for (index = 0; index < count; index++) {
@@ -548,25 +568,76 @@ static SSEMainWindowController *controller;
         description = [descriptions objectAtIndex:index];
         if (!addedSeparatorBetweenPortAndVirtual && [description objectForKey:@"endpoint"] == nil) {
             if (index > 0)
-                [popUpButton addSeparatorItem];
+                [destinationPopUpButton addSeparatorItem];
             addedSeparatorBetweenPortAndVirtual = YES;
         }
-        [popUpButton addItemWithTitle:[description objectForKey:@"name"] representedObject:description];
+        [destinationPopUpButton addItemWithTitle:[description objectForKey:@"name"] representedObject:description];
 
         if (!found && [description isEqual:currentDescription]) {
-            [popUpButton selectItemAtIndex:[popUpButton numberOfItems] - 1];
+            [destinationPopUpButton selectItemAtIndex:[destinationPopUpButton numberOfItems] - 1];
             // Don't use index because it may be off by one (because of the separator item)
             found = YES;
         }
     }
 
     if (!found)
-        [popUpButton selectItem:nil];
+        [destinationPopUpButton selectItem:nil];
 
     // ...and turn autodisplay on again
     if (wasAutodisplay)
         [[self window] displayIfNeeded];
     [[self window] setAutodisplay:wasAutodisplay];
+}
+
+- (void)_synchronizeDestinationToolbarMenuWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
+{
+    // Set the title to "Destination: <Whatever>"
+    // Then set up the submenu items
+    NSMenuItem *topMenuItem;
+    NSString *destinationName;
+    NSMenu *submenu;
+    unsigned int count, index;
+    BOOL found = NO;
+    BOOL addedSeparatorBetweenPortAndVirtual = NO;
+
+    topMenuItem = [nonretainedDestinationToolbarItem menuFormRepresentation];
+    
+    destinationName = [currentDescription objectForKey:@"name"];
+    if (!destinationName)
+        destinationName = @"None";
+    [topMenuItem setTitle:[@"Destination: " stringByAppendingString:destinationName]];
+
+    submenu = [topMenuItem submenu];
+    index = [submenu numberOfItems];
+    while (index--)
+        [submenu removeItemAtIndex:index];
+
+    count = [descriptions count];
+    for (index = 0; index < count; index++) {
+        NSDictionary *description;
+        NSMenuItem *menuItem;
+
+        description = [descriptions objectAtIndex:index];
+        if (!addedSeparatorBetweenPortAndVirtual && [description objectForKey:@"endpoint"] == nil) {
+            if (index > 0)
+                [submenu addItem:[NSMenuItem separatorItem]];
+            addedSeparatorBetweenPortAndVirtual = YES;
+        }
+        menuItem = [submenu addItemWithTitle:[description objectForKey:@"name"] action:@selector(selectDestinationFromMenuItem:) keyEquivalent:@""];
+        [menuItem setRepresentedObject:description];
+        [menuItem setTarget:self];
+
+        if (!found && [description isEqual:currentDescription]) {
+            [menuItem setState:NSOnState];
+            found = YES;
+        }
+    }
+
+    // Workaround to get the toolbar item to refresh after we change the title of the menu item
+    [topMenuItem retain];
+    [nonretainedDestinationToolbarItem setMenuFormRepresentation:nil];
+    [nonretainedDestinationToolbarItem setMenuFormRepresentation:topMenuItem];
+    [topMenuItem release];    
 }
 
 - (void)_libraryDidChange:(NSNotification *)notification;

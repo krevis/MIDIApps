@@ -29,7 +29,6 @@
             toolTip = "Record one or more SysEx messages";
         };
         DestinationPopup = {
-            action = "selectDestination:";
             label = "Destination";
             paletteLabel = "";
             toolTip = "Where to send SysEx data";
