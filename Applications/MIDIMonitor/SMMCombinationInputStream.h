@@ -29,6 +29,9 @@
 - (NSArray *)takePersistentSettings:(NSDictionary *)settings;
     // If any endpoints couldn't be found, their names are returned
 
+- (NSString *)virtualEndpointName;
+- (void)setVirtualEndpointName:(NSString *)value;
+
 @end
 
 // Notifications

@@ -43,6 +43,7 @@
 
     virtualInputStream = [[SMVirtualInputStream alloc] init];
     [virtualInputStream setMessageDestination:self];
+    [virtualInputStream setInputSourceName:NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"MIDIMonitor", [self bundle], "title of popup menu item for virtual destination")];
     [self _observeSysExNotificationsWithCenter:center object:virtualInputStream];
 
     if ((spyClient = [[NSApp delegate] midiSpyClient])) {
@@ -183,7 +184,7 @@
     } else if ((oldStyleUniqueID = [settings objectForKey:@"virtualEndpointUniqueID"])) {
         // This is an old-style document, specifiying to use a virtual input stream.
         [virtualInputStream setUniqueID:[oldStyleUniqueID intValue]];
-        [virtualInputStream setIsActive:YES];
+        [virtualInputStream setSelectedInputSources:[virtualInputStream inputSources]];
 
     } else {
         // This is a current-style document        
@@ -197,6 +198,16 @@
         return missingNames;
     else
         return nil;
+}
+
+- (NSString *)virtualEndpointName;
+{
+    return [virtualInputStream virtualEndpointName];
+}
+
+- (void)setVirtualEndpointName:(NSString *)value;
+{
+    [virtualInputStream setVirtualEndpointName:value];
 }
 
 @end
