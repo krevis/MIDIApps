@@ -122,6 +122,28 @@
         return [self data];		// Without EOX
 }
 
+- (NSData *)fullMessageData;
+{
+    unsigned int length;
+    NSMutableData *fullMessageData;
+    Byte *bytes;
+
+    length = [data length];
+    fullMessageData = [[NSMutableData alloc] initWithLength:1 + length + 1];
+    bytes = [fullMessageData mutableBytes];
+
+    *bytes = 0xF0;
+    [data getBytes:bytes+1];
+    *(bytes + length) = 0xF7;
+
+    return fullMessageData;
+}
+
+- (unsigned int)fullMessageDataLength;
+{
+    return [data length] + 2;
+}
+
 - (NSData *)manufacturerIdentifier;
 {
     unsigned int length;

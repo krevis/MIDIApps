@@ -11,7 +11,6 @@
     SMDestinationEndpoint *endpoint;
 }
 
-- (SMDestinationEndpoint *)endpoint;
 - (void)setEndpoint:(SMDestinationEndpoint *)newEndpoint;
 
 @end

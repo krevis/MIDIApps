@@ -16,6 +16,7 @@
 #import <SnoizeMIDI/SMPortOrVirtualInputStream.h>
 #import <SnoizeMIDI/SMPortOrVirtualOutputStream.h>
 #import <SnoizeMIDI/SMPortOutputStream.h>
+#import <SnoizeMIDI/SMSysExSendRequest.h>
 #import <SnoizeMIDI/SMSystemCommonMessage.h>
 #import <SnoizeMIDI/SMSystemRealTimeMessage.h>
 #import <SnoizeMIDI/SMSystemExclusiveMessage.h>

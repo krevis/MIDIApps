@@ -203,6 +203,7 @@
 				F564774901D6D9E001000164,
 				F565B6F401E15D0B01000164,
 				F556F68201E1C21A01000164,
+				F560977201E564B401000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -245,6 +246,7 @@
 				F557390D01CE7E8801000164,
 				F565B6F501E15D0B01000164,
 				F556F68301E1C21A01000164,
+				F560977301E564B401000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -688,6 +690,31 @@
 			settings = {
 			};
 		};
+		F560977001E564B401000164 = {
+			isa = PBXFileReference;
+			path = SMSysExSendRequest.h;
+			refType = 4;
+		};
+		F560977101E564B401000164 = {
+			isa = PBXFileReference;
+			path = SMSysExSendRequest.m;
+			refType = 4;
+		};
+		F560977201E564B401000164 = {
+			fileRef = F560977001E564B401000164;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		F560977301E564B401000164 = {
+			fileRef = F560977101E564B401000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		F561534A01C187BC01000164 = {
 			isa = PBXFileReference;
 			path = SMPortOrVirtualInputStream.h;
@@ -853,6 +880,8 @@
 				F557E37301BEC38401000164,
 				F565B6F201E15D0B01000164,
 				F565B6F301E15D0B01000164,
+				F560977001E564B401000164,
+				F560977101E564B401000164,
 			);
 			isa = PBXGroup;
 			name = "Output Streams";

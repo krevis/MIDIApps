@@ -47,7 +47,7 @@ DEFINE_NSSTRING(SMPortOutputStreamEndpointWasRemoved);
     [super dealloc];
 }
 
-- (SMDestinationEndpoint *)endpoint;
+- (SMEndpoint *)endpoint;
 {
     return endpoint;
 }

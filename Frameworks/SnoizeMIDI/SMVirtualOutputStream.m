@@ -60,7 +60,7 @@
     [super dealloc];
 }
 
-- (SMSourceEndpoint *)endpoint;
+- (SMEndpoint *)endpoint;
 {
     return endpoint;
 }

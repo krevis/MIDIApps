@@ -3,10 +3,18 @@
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 
+#import "SMEndpoint.h"
 #import "SMMessage.h"
+#import "SMSystemExclusiveMessage.h"
+#import "SMSysExSendRequest.h"
 
 
 @interface SMOutputStream (Private)
+
+- (void)_splitMessages:(NSArray *)messages intoSysex:(NSArray **)sysExMessagesPtr andNormal:(NSArray **)normalMessagesPtr;
+
+- (void)_sendSysExMessagesAsynchronously:(NSArray *)sysExMessages;
+- (void)_sysExSendRequestFinished:(NSNotification *)notification;
 
 - (MIDIPacketList *)_packetListForMessages:(NSArray *)messages;
 
@@ -15,18 +23,27 @@
 
 @implementation SMOutputStream
 
+DEFINE_NSSTRING(SMOutputStreamDoneSendingSysExNotification);
+
+
 - (id)init;
 {
     if (!(self = [super init]))
         return nil;
 
     flags.ignoresTimeStamps = NO;
+    flags.sendsSysExAsynchronously = YES;
 
+    sysExSendRequests = [[NSMutableArray alloc] init];
+    
     return self;
 }
 
 - (void)dealloc;
 {
+    [sysExSendRequests release];
+    sysExSendRequests = nil;
+    
     [super dealloc];
 }
 
@@ -40,9 +57,24 @@
     flags.ignoresTimeStamps = value;
 }
 
+- (BOOL)sendsSysExAsynchronously;
+{
+    return flags.sendsSysExAsynchronously;
+}
+
+- (void)setSendsSysExAsynchronously:(BOOL)value;
+{
+    flags.sendsSysExAsynchronously = value;
+}
+
 - (MIDITimeStamp)sendImmediatelyTimeStamp;
 {
     return 0;
+}
+
+- (void)cancelPendingSysExSendRequests;
+{
+    [sysExSendRequests makeObjectsPerformSelector:@selector(cancel)];
 }
 
 - (void)takeMIDIMessages:(NSArray *)messages;
@@ -52,6 +84,18 @@
     if ([messages count] == 0)
         return;
 
+    if (flags.sendsSysExAsynchronously) {
+        NSArray *sysExMessages, *normalMessages;
+
+        [self _splitMessages:messages intoSysex:&sysExMessages andNormal:&normalMessages];
+
+        [self _sendSysExMessagesAsynchronously:sysExMessages];
+
+        messages = normalMessages;
+        if ([messages count] == 0)
+            return;
+    }
+    
     packetList = [self _packetListForMessages:messages];
     [self sendMIDIPacketList:packetList];
     NSZoneFree(NSDefaultMallocZone(), packetList);
@@ -63,10 +107,85 @@
     OBRequestConcreteImplementation(self, _cmd);
 }
 
+- (SMEndpoint *)endpoint;
+{
+    // Implement this in subclasses
+    OBRequestConcreteImplementation(self, _cmd);
+    return nil;
+}
+
 @end
 
 
 @implementation SMOutputStream (Private)
+
+- (void)_splitMessages:(NSArray *)messages intoSysex:(NSArray **)sysExMessagesPtr andNormal:(NSArray **)normalMessagesPtr;
+{
+    unsigned int messageIndex, messageCount;
+    NSMutableArray *sysExMessages = nil;
+    NSMutableArray *normalMessages = nil;
+
+    messageCount = [messages count];
+    for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {
+        SMMessage *message;
+        NSMutableArray **theArray;
+
+        message = [messages objectAtIndex:messageIndex];
+        if ([message isKindOfClass:[SMSystemExclusiveMessage class]])
+            theArray = &sysExMessages;
+        else
+            theArray = &normalMessages;
+
+        if (*theArray == nil)
+            *theArray = [NSMutableArray array];
+        [*theArray addObject:message];
+    }
+
+    if (sysExMessagesPtr)
+        *sysExMessagesPtr = sysExMessages;
+    if (normalMessagesPtr)
+        *normalMessagesPtr = normalMessages;
+}
+
+- (void)_sendSysExMessagesAsynchronously:(NSArray *)messages;
+{
+    MIDIEndpointRef endpointRef;
+    unsigned int messageCount, messageIndex;
+
+    if (!(endpointRef = [[self endpoint] endpointRef]))
+        return;
+
+    messageCount = [messages count];
+    for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {
+        SMSystemExclusiveMessage *message;
+        SMSysExSendRequest *sendRequest;
+
+        message = [messages objectAtIndex:messageIndex];
+        sendRequest = [SMSysExSendRequest sysExSendRequestWithMessage:message endpoint:endpointRef];
+        [sysExSendRequests addObject:sendRequest];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_sysExSendRequestFinished:) name:SMSysExSendRequestFinishedNotification object:sendRequest];
+        [sendRequest send];
+    }
+}
+
+- (void)_sysExSendRequestFinished:(NSNotification *)notification;
+{
+    SMSysExSendRequest *sendRequest;
+    NSMutableDictionary *userInfo;
+
+    sendRequest = [notification object];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:sendRequest];
+
+    userInfo = [NSMutableDictionary dictionary];
+    [userInfo setObject:[NSNumber numberWithUnsignedInt:[sendRequest bytesSent]] forKey:@"bytesSent"];
+    [userInfo setObject:[NSNumber numberWithBool:[sendRequest wereAllBytesSent]] forKey:@"valid"];
+    [userInfo setObject:[sendRequest message] forKey:@"message"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMOutputStreamDoneSendingSysExNotification object:self userInfo:userInfo];
+    
+    [sysExSendRequests removeObjectIdenticalTo:sendRequest];
+}
+
 
 const unsigned int maxPacketSize = 65535;
 
