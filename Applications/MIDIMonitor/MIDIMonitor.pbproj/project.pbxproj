@@ -88,6 +88,61 @@
 //102
 //103
 //104
+//160
+//161
+//162
+//163
+//164
+		1691E0D804CA1C1400ACFC9D = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = SMMDetailsWindowController.h;
+			refType = 4;
+		};
+		1691E0D904CA1C1400ACFC9D = {
+			fileRef = 1691E0D804CA1C1400ACFC9D;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1691E0DA04CA1C1E00ACFC9D = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = SMMDetailsWindowController.m;
+			refType = 4;
+		};
+		1691E0DB04CA1C1E00ACFC9D = {
+			fileRef = 1691E0DA04CA1C1E00ACFC9D;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1691E0DC04CA26F300ACFC9D = {
+			children = (
+				1691E0DD04CA26F300ACFC9D,
+			);
+			isa = PBXVariantGroup;
+			name = Details.nib;
+			path = "";
+			refType = 4;
+		};
+		1691E0DD04CA26F300ACFC9D = {
+			isa = PBXFileReference;
+			name = English;
+			path = English.lproj/Details.nib;
+			refType = 4;
+		};
+		1691E0DE04CA26F300ACFC9D = {
+			fileRef = 1691E0DC04CA26F300ACFC9D;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//160
+//161
+//162
+//163
+//164
 //170
 //171
 //172
@@ -162,6 +217,8 @@
 				F53D4AB6015AAA2C01000164,
 				F53A1C06015EB24301000164,
 				F53A1C07015EB24301000164,
+				1691E0D804CA1C1400ACFC9D,
+				1691E0DA04CA1C1E00ACFC9D,
 				F56E05CA0206BAB401000164,
 				F56E05CB0206BAB401000164,
 				F571C56C01903F3301000164,
@@ -237,6 +294,7 @@
 				2A37F4B6FDCFA73011CA2CEA,
 				2A37F4B4FDCFA73011CA2CEA,
 				F53A1C0A015EC0FB01000164,
+				1691E0DC04CA26F300ACFC9D,
 				F56E05CE0206BF0C01000164,
 				089C165FFE840EACC02AAC07,
 				F53BB4AE015D96A501000164,
@@ -346,7 +404,7 @@
 	<key>CFBundleExecutable</key>
 	<string>MIDI Monitor</string>
 	<key>CFBundleGetInfoString</key>
-	<string>1.1.5, Copyright 2001-2003 Kurt Revis</string>
+	<string>1.1.6b1, Copyright 2001-2003 Kurt Revis</string>
 	<key>CFBundleIconFile</key>
 	<string>MIDIMonitor.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -358,11 +416,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1.5</string>
+	<string>1.1.6b1</string>
 	<key>CFBundleSignature</key>
 	<string>mMon</string>
 	<key>CFBundleVersion</key>
-	<string>1.1.5</string>
+	<string>1.1.6b1</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2001-2003 Kurt Revis</string>
 	<key>NSMainNibFile</key>
@@ -411,6 +469,7 @@
 				F55462290263619E01000164,
 				F5DCBE9002E6064E01000164,
 				F547DDDA0318496E01000164,
+				1691E0D904CA1C1400ACFC9D,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -435,6 +494,7 @@
 				F56D31A50195A90E01000164,
 				F56E05D00206BF0C01000164,
 				F56E05D10206DCB201000164,
+				1691E0DE04CA26F300ACFC9D,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -454,6 +514,7 @@
 				F57F62920261D5A701000164,
 				F554622A0263619E01000164,
 				F5DCBE9102E6064E01000164,
+				1691E0DB04CA1C1E00ACFC9D,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

@@ -8,13 +8,6 @@
             SUPERCLASS = SMMWindowController; 
         }, 
         {
-            ACTIONS = {save = id; }; 
-            CLASS = SMMSysExWindowController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {manufacturerNameField = NSTextField; }; 
-            SUPERCLASS = SMMDetailsWindowController; 
-        }, 
-        {
             CLASS = SMMWindowController; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSWindowController; 

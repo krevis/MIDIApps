@@ -10,7 +10,7 @@
 #import "SMMNonHighlightingCells.h"
 #import "SMMPreferencesWindowController.h"
 #import "SMMSourcesOutlineView.h"
-#import "SMMSysExWindowController.h"
+#import "SMMDetailsWindowController.h"
 
 
 @interface SMMMonitorWindowController (Private)
@@ -27,7 +27,6 @@
 - (void)showSysExProgressIndicator;
 - (void)hideSysExProgressIndicator;
 
-- (BOOL)canShowDetailsOfAnySelectedMessages;
 - (NSArray *)selectedMessagesWithDetails;
 
 - (NSCellStateValue)buttonStateForInputSources:(NSArray *)sources;
@@ -167,7 +166,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
         else
             return NO;
     } else if ([anItem action] == @selector(showDetailsOfSelectedMessages:)) {
-        return [self canShowDetailsOfAnySelectedMessages];
+        return ([[self selectedMessagesWithDetails] count] > 0);
     } else {
         return YES;
     }
@@ -259,18 +258,12 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
 
 - (IBAction)showDetailsOfSelectedMessages:(id)sender;
 {
-    NSArray *messages;
     NSEnumerator *enumerator;
     SMSystemExclusiveMessage *message;
 
-    messages = [self selectedMessagesWithDetails];
-    enumerator = [messages objectEnumerator];
-    while ((message = [enumerator nextObject])) {
-        SMMSysExWindowController *sysExWindowController;
-
-        sysExWindowController = [SMMSysExWindowController sysExWindowControllerWithMessage:message];
-        [sysExWindowController showWindow:nil];            
-    }    
+    enumerator = [[self selectedMessagesWithDetails] objectEnumerator];
+    while ((message = [enumerator nextObject]))
+        [[SMMDetailsWindowController detailsWindowControllerWithMessage:message] showWindow:nil];
 }
 
 - (IBAction)copy:(id)sender;
@@ -776,26 +769,6 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
     }
 }
 
-- (BOOL)canShowDetailsOfAnySelectedMessages;
-{
-    int selectedRowCount;
-    NSEnumerator *rowEnumerator;
-    NSNumber *rowNumber;
-
-    selectedRowCount = [messagesTableView numberOfSelectedRows];
-    if (selectedRowCount == 0)
-        return NO;
-
-    rowEnumerator = [messagesTableView selectedRowEnumerator];
-    while ((rowNumber = [rowEnumerator nextObject])) {
-        unsigned int row = [rowNumber unsignedIntValue];
-        if ([[displayedMessages objectAtIndex:row] isKindOfClass:[SMSystemExclusiveMessage class]])
-            return YES;
-    }
-
-    return NO;
-}
-
 - (NSArray *)selectedMessagesWithDetails;
 {
     int selectedRowCount;
@@ -811,10 +784,8 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
 
     rowEnumerator = [messagesTableView selectedRowEnumerator];
     while ((rowNumber = [rowEnumerator nextObject])) {
-        unsigned int row = [rowNumber unsignedIntValue];
-        id message = [displayedMessages objectAtIndex:row];
-        
-        if ([message isKindOfClass:[SMSystemExclusiveMessage class]])
+        SMMessage *message = [displayedMessages objectAtIndex:[rowNumber unsignedIntValue]];
+        if ([SMMDetailsWindowController canShowDetailsForMessage:message])
             [messages addObject:message];
     }
 
