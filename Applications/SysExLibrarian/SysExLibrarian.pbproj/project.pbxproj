@@ -266,12 +266,14 @@
 				2A37F4C9FDCFA73011CA2CEA,
 				2A37F4CEFDCFA73011CA2CEA,
 				2A37F4D1FDCFA73011CA2CEA,
+				F54750C3021F8C2701000164,
 			);
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "";
 				HEADER_SEARCH_PATHS = "";
-				INSTALL_PATH = "$(HOME)/Applications";
+				INSTALL_PATH = /Users/Shared/krevis/InstalledProducts;
 				LIBRARY_SEARCH_PATHS = "";
+				OPTIMIZATION_CFLAGS = "-O3";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "SysEx Librarian";
@@ -283,7 +285,7 @@
 			);
 			isa = PBXApplicationTarget;
 			name = SysExLibrarian;
-			productInstallPath = "$(HOME)/Applications";
+			productInstallPath = /Users/Shared/krevis/InstalledProducts;
 			productName = SysExLibrarian;
 			productReference = 1758732AFF379DA111CA2CBB;
 			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
@@ -498,6 +500,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "\U0001-DDEBUG";
 			};
 			isa = PBXBuildStyle;
 			name = Development;
@@ -552,6 +555,36 @@
 		};
 		F539E387020F2C2F01000164 = {
 			fileRef = F539E386020F2C2F01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F54750C3021F8C2701000164 = {
+			buildActionMask = 8;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F54750C4021F8C2701000164,
+				F54750C5021F8C2701000164,
+				F54750C6021F8C2701000164,
+			);
+			isa = PBXCopyFilesBuildPhase;
+			name = "Copy Files";
+		};
+		F54750C4021F8C2701000164 = {
+			fileRef = F559F8FC01DEC12201000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F54750C5021F8C2701000164 = {
+			fileRef = F559F8FD01DEC12201000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F54750C6021F8C2701000164 = {
+			fileRef = F559F8FE01DEC12201000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
