@@ -66,6 +66,7 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     [messageFilter setMessageDestination:history];
     [center addObserver:self selector:@selector(_historyDidChange:) name:SMMessageHistoryChangedNotification object:history];
 
+    areSourcesShown = NO;
     isFilterShown = NO;
     listenToMIDISetupChanges = YES;
     missingSourceNames = nil;
@@ -147,6 +148,9 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     if (channelMask != SMChannelMaskAll)
         [dict setObject:[NSNumber numberWithUnsignedInt:channelMask] forKey:@"channelMask"];
 
+    if (areSourcesShown)
+        [dict setObject:[NSNumber numberWithBool:areSourcesShown] forKey:@"areSourcesShown"];
+
     if (isFilterShown)
         [dict setObject:[NSNumber numberWithBool:isFilterShown] forKey:@"isFilterShown"];
 
@@ -205,6 +209,11 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     else
         [self _setChannelMask:SMChannelMaskAll];
 
+    if ((number = [dict objectForKey:@"areSourcesShown"]))
+        [self setAreSourcesShown:[number boolValue]];
+    else
+        [self setAreSourcesShown:NO];
+    
     if ((number = [dict objectForKey:@"isFilterShown"]))
         [self setIsFilterShown:[number boolValue]];
     else
@@ -344,6 +353,25 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
 - (void)showOnlyOneChannel:(unsigned int)channel;
 {
     [self _setChannelMask:(1 << (channel - 1))];
+}
+
+- (BOOL)areSourcesShown;
+{
+    return areSourcesShown;
+}
+
+- (void)setAreSourcesShown:(BOOL)newValue;
+{
+    if (newValue == areSourcesShown)
+        return;
+
+    [[[self undoManager] prepareWithInvocationTarget:self] setAreSourcesShown:areSourcesShown];
+    [[self undoManager] setActionName:(newValue ?
+                                       NSLocalizedStringFromTableInBundle(@"Show Sources", @"MIDIMonitor", [self bundle], "show sources undo action") :
+                                       NSLocalizedStringFromTableInBundle(@"Hide Sources", @"MIDIMonitor", [self bundle], "hide sources undo action"))];
+
+    areSourcesShown = newValue;
+    [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeSourcesShown)];    
 }
 
 - (BOOL)isFilterShown;

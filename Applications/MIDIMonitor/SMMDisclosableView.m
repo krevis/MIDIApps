@@ -6,12 +6,16 @@
 
 @interface SMMDisclosableView (Private)
 
-- (void)_changeWindowHeightBy:(double)amount;
+- (void)changeWindowHeightBy:(double)amount;
 
 @end
 
 
 @implementation SMMDisclosableView
+
+const double kDefaultHiddenHeight = 10;
+    // TODO It would be nice to calculate this based on the nib, but I'm not sure if that's possible or not.
+
 
 - (id)initWithFrame:(NSRect)frameRect;
 {
@@ -20,7 +24,7 @@
 
     isShown = YES;
     originalHeight = [self frame].size.height;
-    hiddenHeight = 0;
+    hiddenHeight = kDefaultHiddenHeight;
 
     return self;
 }
@@ -39,12 +43,22 @@
         
     isShown = YES;
     originalHeight = [self frame].size.height;
+    hiddenHeight = kDefaultHiddenHeight;
 }
 
 - (BOOL)acceptsFirstResponder
 {
     return NO;
 }
+
+// TODO temp testing
+/*
+- (void)drawRect:(NSRect)rect;
+{
+    [[NSColor redColor] set];
+    NSFrameRect(NSMakeRect(0, 0, NSWidth([self frame]), NSHeight([self frame])));
+}
+*/
 
 - (BOOL)isShown;
 {
@@ -53,12 +67,10 @@
 
 - (void)setIsShown:(BOOL)value;
 {
-    if (isShown != value) {
-        if (value)
-            [self show:nil];
-        else
-            [self hide:nil];
-    }
+    if (value)
+        [self show:nil];
+    else
+        [self hide:nil];
 }
 
 - (double)hiddenHeight;
@@ -77,10 +89,7 @@
 
 - (IBAction)toggleDisclosure:(id)sender;
 {
-    if (isShown)
-        [self hide:sender];
-    else
-        [self show:sender];
+    [self setIsShown:!isShown];
 }
 
 - (IBAction)hide:(id)sender;
@@ -125,7 +134,7 @@
     sizeBeforeHidden = [self frame].size;
     [self setFrameSize:NSMakeSize(sizeBeforeHidden.width, hiddenHeight)];
 
-    [self _changeWindowHeightBy:-(originalHeight - hiddenHeight)];
+    [self changeWindowHeightBy:-(originalHeight - hiddenHeight)];
 
     isShown = NO;
 }
@@ -137,7 +146,7 @@
     if (isShown)
         return;
 
-    [self _changeWindowHeightBy:(originalHeight - hiddenHeight)];
+    [self changeWindowHeightBy:(originalHeight - hiddenHeight)];
 
     [self setFrameSize:NSMakeSize([self frame].size.width, originalHeight)];
 
@@ -164,14 +173,13 @@
 
 @implementation SMMDisclosableView (Private)
 
-- (void)_changeWindowHeightBy:(double)amount;
+- (void)changeWindowHeightBy:(double)amount;
 {
     // This turns out to be more complicated than one might expect, because the way that the other views in the window should move is different than the normal case that the AppKit handles.
     // We want the other views in the window to stay the same size. If a view is above us, we want it to stay in the same position relative to the top of the window; likewise, if a view is below us, we want it to stay in the same position relative to the bottom of the window. However, views may have different autoresize masks configured.
     // So, we save the old autoresize masks for all of the window's content view's immediate subviews, and set them how we want them.
     // Then, we resize the window, and fix up the minimum and maximum sizes for the window.
     // Afterwards, we restore the autoresize masks.
-    // (Also note that we do not want to modify our own autoresize mask.)
 
     NSWindow *window;
     NSView *contentView;
@@ -196,20 +204,19 @@
         autoresizingMask = [windowSubview autoresizingMask];
         [savedAutoresizeMasks addObject:[NSNumber numberWithUnsignedInt:autoresizingMask]];
 
-        if (windowSubview == self)
-            continue;
-
         // We never want to anything to change height.
         autoresizingMask &= ~NSViewHeightSizable;
-        if (NSMaxY([windowSubview frame]) >= NSMaxY([self frame])) {
-            // This subview is above us. Set it to be stuck to the top of the window.
-            autoresizingMask &= ~NSViewMaxYMargin;
-            autoresizingMask |= NSViewMinYMargin;
-        } else {
-            // This subview is below us. Set it to be stuck to the bottom of the window.
+
+        if (windowSubview == self || NSMaxY([windowSubview frame]) < NSMaxY([self frame])) {
+            // This subview is us, or it is below us. Make it stick to the bottom of the window.
             autoresizingMask |= NSViewMaxYMargin;
             autoresizingMask &= ~NSViewMinYMargin;
+        } else {
+            // This subview is above us. Make it stick to the top of the window.
+            autoresizingMask &= ~NSViewMaxYMargin;
+            autoresizingMask |= NSViewMinYMargin;
         }
+
         [windowSubview setAutoresizingMask:autoresizingMask];
     }
     
@@ -234,12 +241,11 @@
 
     for (windowSubviewIndex = 0; windowSubviewIndex < windowSubviewCount; windowSubviewIndex++) {
         NSView *windowSubview;
+        unsigned int autoresizingMask;
         
         windowSubview = [windowSubviews objectAtIndex:windowSubviewIndex];
-        if (windowSubview == self)
-            continue;
-
-        [windowSubview setAutoresizingMask:[[savedAutoresizeMasks objectAtIndex:windowSubviewIndex] unsignedIntValue]];
+        autoresizingMask = [[savedAutoresizeMasks objectAtIndex:windowSubviewIndex] unsignedIntValue];
+        [windowSubview setAutoresizingMask:autoresizingMask];
     }
 }
 

@@ -29,6 +29,8 @@
 
 - (NSCellStateValue)_buttonStateForInputSources:(NSArray *)sources;
 
+- (void)_synchronizeDisclosableView:(SMMDisclosableView *)view button:(NSButton *)button withIsShown:(BOOL)isShown;
+
 @end
 
 
@@ -97,6 +99,9 @@ static NSString *kToString = nil;
     
     [super windowDidLoad];
 
+    [[sourcesDisclosureButton cell] setHighlightsBy:NSPushInCellMask];
+    [[filterDisclosureButton cell] setHighlightsBy:NSPushInCellMask];
+    
     [sourcesOutlineView setOutlineTableColumn:[sourcesOutlineView tableColumnWithIdentifier:@"name"]];
     [sourcesOutlineView setAutoresizesOutlineColumn:NO];
 
@@ -128,8 +133,6 @@ static NSString *kToString = nil;
     [messagesTableView setTarget:self];
     [messagesTableView setDoubleAction:@selector(showSelectedMessageDetails:)];
 
-    [filterDisclosableView setHiddenHeight:10];	// TODO This is sort of hacky but I'm not sure how to calculate this based on the nib
-    
     [self _hideSysExProgressIndicator];
 }
 
@@ -216,10 +219,24 @@ static NSString *kToString = nil;
 
 - (IBAction)toggleFilterShown:(id)sender;
 {
-    BOOL isFilterShown;
+    BOOL isShown;
+
+    // Toggle the button immediately
+    [sender setIntValue:![sender intValue]];
     
-    isFilterShown = [[self document] isFilterShown];
-    [[self document] setIsFilterShown:!isFilterShown];
+    isShown = [[self document] isFilterShown];
+    [[self document] setIsFilterShown:!isShown];
+}
+
+- (IBAction)toggleSourcesShown:(id)sender;
+{
+    BOOL isShown;
+
+    // Toggle the button immediately
+    [sender setIntValue:![sender intValue]];
+
+    isShown = [[self document] areSourcesShown];
+    [[self document] setAreSourcesShown:!isShown];
 }
 
 - (IBAction)showSelectedMessageDetails:(id)sender;
@@ -242,6 +259,7 @@ static NSString *kToString = nil;
 {
     [self synchronizeMessages];
     [self synchronizeSources];
+    [self synchronizeSourcesShown];
     [self synchronizeMaxMessageCount];
     [self synchronizeFilterControls];
     [self synchronizeFilterShown];
@@ -270,6 +288,11 @@ static NSString *kToString = nil;
     }
         
     [sourcesOutlineView reloadData];
+}
+
+- (void)synchronizeSourcesShown;
+{
+    [self _synchronizeDisclosableView:sourcesDisclosableView button:sourcesDisclosureButton withIsShown:[[self document] areSourcesShown]];
 }
 
 - (void)synchronizeMaxMessageCount;
@@ -335,21 +358,7 @@ static NSString *kToString = nil;
 
 - (void)synchronizeFilterShown;
 {
-    BOOL savedSendWindowFrameChangesToDocument;
-    BOOL isShown;
-
-    // Temporarily stop sending window frame changes to the document,
-    // while we're doing the animated resize.
-    savedSendWindowFrameChangesToDocument = sendWindowFrameChangesToDocument;
-    sendWindowFrameChangesToDocument = NO;
-
-    isShown = [[self document] isFilterShown];
-    [filterDisclosableView setIsShown:isShown];
-    [filterDisclosureButton setIntValue:(isShown ? 1 : 0)];
-
-    sendWindowFrameChangesToDocument = savedSendWindowFrameChangesToDocument;
-    // Now we can update the document, once instead of many times.
-    [self _updateDocumentWindowFrameDescription];
+    [self _synchronizeDisclosableView:filterDisclosableView button:filterDisclosureButton withIsShown:[[self document] isFilterShown]];
 }
 
 - (void)scrollToLastMessage;
@@ -659,6 +668,23 @@ static NSString *kToString = nil;
     }
 
     return areAnySelected ? NSOnState : NSOffState;
+}
+
+- (void)_synchronizeDisclosableView:(SMMDisclosableView *)view button:(NSButton *)button withIsShown:(BOOL)isShown;
+{
+    BOOL savedSendWindowFrameChangesToDocument;
+
+    // Temporarily stop sending window frame changes to the document,
+    // while we're doing the animated resize.
+    savedSendWindowFrameChangesToDocument = sendWindowFrameChangesToDocument;
+    sendWindowFrameChangesToDocument = NO;
+
+    [view setIsShown:isShown];
+    [button setIntValue:(isShown ? 1 : 0)];
+
+    sendWindowFrameChangesToDocument = savedSendWindowFrameChangesToDocument;
+    // Now we can update the document, once instead of many times.
+    [self _updateDocumentWindowFrameDescription];
 }
 
 @end

@@ -236,8 +236,8 @@
 				F56E05CE0206BF0C01000164,
 				089C165FFE840EACC02AAC07,
 				F53BB4AE015D96A501000164,
-				F55BB2140188FED601000164,
-				F55BB2150188FED601000164,
+				F554622B026369C001000164,
+				F554622C026369C001000164,
 				F579B5E9018D0F0D01000164,
 				F57053DA018D364A01000164,
 				F56D31A30195A90E01000164,
@@ -342,7 +342,7 @@
 	<key>CFBundleExecutable</key>
 	<string>MIDI Monitor</string>
 	<key>CFBundleGetInfoString</key>
-	<string>1.0.3, Copyright 2001-2002 Kurt Revis</string>
+	<string>1.1b1, Copyright 2001-2002 Kurt Revis</string>
 	<key>CFBundleIconFile</key>
 	<string>MIDIMonitor.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -354,11 +354,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.3</string>
+	<string>1.1b1</string>
 	<key>CFBundleSignature</key>
 	<string>mMon</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.3</string>
+	<string>1.1b1</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2001 Kurt Revis</string>
 	<key>NSMainNibFile</key>
@@ -402,6 +402,7 @@
 				F54A343F02553A3301000164,
 				F57F628C0261C8FC01000164,
 				F57F62910261D5A701000164,
+				F55462290263619E01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -420,14 +421,14 @@
 				089C1661FE840EACC02AAC07,
 				F53BB4B0015D96A501000164,
 				F53A1C0C015EC0FB01000164,
-				F55BB2160188FED601000164,
-				F55BB2170188FED601000164,
 				F579B5EA018D0F0D01000164,
 				F57053DB018D364A01000164,
 				F5A43ED10192896501000164,
 				F56D31A50195A90E01000164,
 				F56E05D00206BF0C01000164,
 				F56E05D10206DCB201000164,
+				F554622D026369C001000164,
+				F554622E026369C001000164,
 			);
 			isa = PBXResourcesBuildPhase;
 			name = "Bundle Resources";
@@ -448,6 +449,7 @@
 				F54A344002553A3301000164,
 				F57F628D0261C8FC01000164,
 				F57F62920261D5A701000164,
+				F554622A0263619E01000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -684,24 +686,46 @@
 			settings = {
 			};
 		};
-		F55BB2140188FED601000164 = {
+		F55462270263619E01000164 = {
 			isa = PBXFileReference;
-			path = SMMDisclosureDownArrow.tiff;
+			path = SMMFastAnimatingWindow.h;
 			refType = 4;
 		};
-		F55BB2150188FED601000164 = {
+		F55462280263619E01000164 = {
 			isa = PBXFileReference;
-			path = SMMDisclosureUpArrow.tiff;
+			path = SMMFastAnimatingWindow.m;
 			refType = 4;
 		};
-		F55BB2160188FED601000164 = {
-			fileRef = F55BB2140188FED601000164;
+		F55462290263619E01000164 = {
+			fileRef = F55462270263619E01000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
 		};
-		F55BB2170188FED601000164 = {
-			fileRef = F55BB2150188FED601000164;
+		F554622A0263619E01000164 = {
+			fileRef = F55462280263619E01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F554622B026369C001000164 = {
+			isa = PBXFileReference;
+			path = SMMDisclosureArrowDown.tiff;
+			refType = 4;
+		};
+		F554622C026369C001000164 = {
+			isa = PBXFileReference;
+			path = SMMDisclosureArrowRight.tiff;
+			refType = 4;
+		};
+		F554622D026369C001000164 = {
+			fileRef = F554622B026369C001000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F554622E026369C001000164 = {
+			fileRef = F554622C026369C001000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -883,6 +907,8 @@
 				F57F628B0261C8FC01000164,
 				F57F628F0261D5A701000164,
 				F57F62900261D5A701000164,
+				F55462270263619E01000164,
+				F55462280263619E01000164,
 			);
 			isa = PBXGroup;
 			name = "Cocoa Extensions";

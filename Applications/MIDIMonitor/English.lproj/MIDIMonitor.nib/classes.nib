@@ -8,6 +8,7 @@
             LANGUAGE = ObjC; 
             SUPERCLASS = NSView; 
         }, 
+        {CLASS = SMMFastAnimatingWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
         {
             ACTIONS = {
                 changeFilter = id; 
@@ -18,6 +19,7 @@
                 setMaximumMessageCount = id; 
                 showSelectedMessageDetails = id; 
                 toggleFilterShown = id; 
+                toggleSourcesShown = id; 
             }; 
             CLASS = SMMMonitorWindowController; 
             LANGUAGE = ObjC; 
@@ -31,7 +33,9 @@
                 oneChannelField = NSTextField; 
                 realTimeCheckBox = NSButton; 
                 realTimeMatrix = NSMatrix; 
-                sourcesOutlineView = NSOutlineView; 
+                sourcesDisclosableView = SMMDisclosableView; 
+                sourcesDisclosureButton = NSButton; 
+                sourcesOutlineView = SMMSourcesOutlineView; 
                 sysExProgressBox = NSBox; 
                 sysExProgressField = NSTextField; 
                 sysExProgressIndicator = NSProgressIndicator; 

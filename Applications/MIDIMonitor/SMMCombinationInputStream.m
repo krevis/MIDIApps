@@ -26,6 +26,19 @@
 
 @implementation SMMCombinationInputStream
 
+static NSString *sourcesGroupName = nil;
+static NSString *virtualGroupName = nil;
+static NSString *spyingGroupName = nil;
+
++ (void)didLoad;
+{
+    // TODO rename all of these? I don't much like them...
+    sourcesGroupName = NSLocalizedStringFromTableInBundle(@"Sources", @"MIDIMonitor", [self bundle], "name of group for ordinary sources");
+    virtualGroupName = NSLocalizedStringFromTableInBundle(@"Virtual Destination", @"MIDIMonitor", [self bundle], "name of group for virtual destination");
+    spyingGroupName = NSLocalizedStringFromTableInBundle(@"Spy on output to Destinations", @"MIDIMonitor", [self bundle], "name of group for spying on destinations");
+}
+
+
 - (id)init;
 {
     NSNotificationCenter *center;
@@ -98,19 +111,16 @@
 
     groupedInputSources = [NSMutableArray array];
 
-    dictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"Sources", @"name", [portInputStream inputSources], @"sources", nil];    
+    dictionary = [NSDictionary dictionaryWithObjectsAndKeys:sourcesGroupName, @"name", [portInputStream inputSources], @"sources", nil];    
     [groupedInputSources addObject:dictionary];
 
-    dictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"Virtual Destination", @"name", [virtualInputStream inputSources], @"sources", nil];
-        // TODO rename
+    dictionary = [NSDictionary dictionaryWithObjectsAndKeys:virtualGroupName, @"name", [virtualInputStream inputSources], @"sources", nil];
     [groupedInputSources addObject:dictionary];
 
     if (spyingInputStream) {
-        dictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"Spy on output to Destinations", @"name", [spyingInputStream inputSources], @"sources", nil];    
+        dictionary = [NSDictionary dictionaryWithObjectsAndKeys:spyingGroupName, @"name", [spyingInputStream inputSources], @"sources", nil];
         [groupedInputSources addObject:dictionary];
     }
-
-    // TODO localize the above names
 
     return groupedInputSources;
 }

@@ -12,6 +12,7 @@
     SMMessageHistory *history;
 
     // Other settings
+    BOOL areSourcesShown;
     BOOL isFilterShown;
     NSString *windowFrameDescription;
 
@@ -36,6 +37,9 @@
 - (unsigned int)oneChannelToShow;
 - (void)showAllChannels;
 - (void)showOnlyOneChannel:(unsigned int)channel;
+
+- (BOOL)areSourcesShown;
+- (void)setAreSourcesShown:(BOOL)newValue;
 
 - (BOOL)isFilterShown;
 - (void)setIsFilterShown:(BOOL)newValue;
