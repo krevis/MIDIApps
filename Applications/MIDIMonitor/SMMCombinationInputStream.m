@@ -110,6 +110,8 @@
         [groupedInputSources addObject:dictionary];
     }
 
+    // TODO localize the above names
+
     return groupedInputSources;
 }
 
