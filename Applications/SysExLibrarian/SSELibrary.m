@@ -12,6 +12,7 @@
 @interface SSELibrary (Private)
 
 - (NSString *)findFolder:(OSType)folderType;
+- (NSString *)resolveAliasesInPath:(NSString *)path;
 
 - (NSString *)defaultFileDirectoryPath;
 
@@ -116,8 +117,10 @@ NSString *SSESysExFileExtension = @"syx";
             preferencesFolderPath = [homeLibraryPath stringByAppendingPathComponent:@"Preferences"];
         }
 
+        preferencesFolderPath = [self resolveAliasesInPath:preferencesFolderPath];        
         libraryFilePath = [preferencesFolderPath stringByAppendingPathComponent:@"SysEx Librarian Library.sXLb"];
-        libraryFilePath = [[libraryFilePath stringByStandardizingPath] retain];
+        libraryFilePath = [self resolveAliasesInPath:libraryFilePath];
+        [libraryFilePath retain];
     }
 
     return libraryFilePath;
@@ -147,6 +150,8 @@ NSString *SSESysExFileExtension = @"syx";
 
     if (!path)
         path = [self defaultFileDirectoryPath];
+
+    path = [self resolveAliasesInPath:path];
 
     return path;
 }
@@ -455,6 +460,42 @@ NSString *SSESysExFileExtension = @"syx";
     return path;    
 }
 
+- (NSString *)resolveAliasesInPath:(NSString *)path
+{
+    // NOTE This only works if all components in the path actually exist.
+    // (And it's not possible to determine that ahead of time, since any component could be an alias...)
+    // If any errors occur, the original path will be returned.
+    
+    NSString *resolvedPath = nil;
+    CFURLRef url;
+
+    url = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)path, kCFURLPOSIXPathStyle, false);
+    if (url) {
+        FSRef fsRef;
+
+        if (CFURLGetFSRef(url, &fsRef)) {
+            Boolean targetIsFolder, wasAliased;
+
+            if (FSResolveAliasFile(&fsRef, true, &targetIsFolder, &wasAliased) == noErr && wasAliased) {
+                CFURLRef resolvedURL;
+
+                resolvedURL = CFURLCreateFromFSRef(kCFAllocatorDefault, &fsRef);
+                if (resolvedURL) {
+                    resolvedPath = (NSString*)CFURLCopyFileSystemPath(resolvedURL, kCFURLPOSIXPathStyle);
+                    CFRelease(resolvedURL);
+                }
+            }
+        }
+
+        CFRelease(url);
+    }
+
+    if (!resolvedPath)
+        resolvedPath = [path copy];
+
+    return [resolvedPath autorelease];
+}
+
 - (NSString *)defaultFileDirectoryPath;
 {
     NSString *documentsFolderPath;
@@ -465,7 +506,10 @@ NSString *SSESysExFileExtension = @"syx";
         documentsFolderPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
     }
 
-    return [[documentsFolderPath stringByAppendingPathComponent:@"SysEx Librarian"] stringByStandardizingPath];
+    documentsFolderPath = [self resolveAliasesInPath:documentsFolderPath];
+    documentsFolderPath = [documentsFolderPath stringByAppendingPathComponent:@"SysEx Librarian"];
+
+    return documentsFolderPath;
 }
 
 - (NSString *)preflightLibrary;
@@ -479,7 +523,7 @@ NSString *SSESysExFileExtension = @"syx";
 
     libraryFilePath = [self libraryFilePath];
     fileManager = [NSFileManager defaultManager];
-
+    
     // Try creating the path to the file, first.
     NS_DURING {
         [fileManager createPathToFile:libraryFilePath attributes:nil];
