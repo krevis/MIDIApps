@@ -27,6 +27,9 @@
 + (NSArray *)systemExclusiveMessagesInData:(NSData *)someData;
 + (NSArray *)systemExclusiveMessagesInStandardMIDIFile:(NSString *)path;
 
++ (NSData *)dataForSystemExclusiveMessages:(NSArray *)messages;
++ (BOOL)writeSystemExclusiveMessages:(NSArray *)messages toStandardMIDIFile:(NSString *)path;
+
 - (NSData *)data;
 - (void)setData:(NSData *)newData;
 

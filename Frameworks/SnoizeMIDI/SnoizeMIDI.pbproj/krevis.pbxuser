@@ -59,7 +59,7 @@
 							Frame = "{{0, 0}, {797, 327}}";
 						};
 						Tab3 = {
-							Frame = "{{0, 0}, {784, 296}}";
+							Frame = "{{0, 0}, {797, 296}}";
 						};
 						TabCount = 4;
 					};
@@ -68,9 +68,9 @@
 						Frame = "{{0, 0}, {291, 917}}";
 					};
 					Tab1 = {
-						ClassesFrame = "{{0, 0}, {202, 56}}";
-						Frame = "{{0, 0}, {200, 100}}";
-						MembersFrame = "{{0, 65}, {202, 35}}";
+						ClassesFrame = "{{0, 0}, {202, 558}}";
+						Frame = "{{0, 0}, {200, 917}}";
+						MembersFrame = "{{0, 567}, {202, 350}}";
 						OptionsSetName = "Hierarchy, all classes";
 					};
 					Tab2 = {

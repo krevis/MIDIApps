@@ -88,6 +88,132 @@
     return messages;    
 }
 
++ (NSData *)dataForSystemExclusiveMessages:(NSArray *)messages;
+{
+    unsigned int messageCount, messageIndex;
+    NSData *allData = nil;
+
+    messageCount = [messages count];
+    for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {
+        NSData *messageData;
+
+        messageData = [[messages objectAtIndex:messageIndex] fullMessageData];
+        if (allData)
+            allData = [allData dataByAppendingData:messageData];
+        else
+            allData = messageData;
+    }
+
+    return allData;
+}
+
++ (BOOL)writeSystemExclusiveMessages:(NSArray *)messages toStandardMIDIFile:(NSString *)path;
+{
+    FSRef fsRef;
+    Boolean isDirectory;
+    FSSpec fsSpec;
+    FSCatalogInfo fsCatalogInfo;
+    Str255 pascalFileName;
+    OSStatus status;
+    MusicSequence sequence;
+    BOOL success = NO;
+
+    // TODO This basically doesn't work at all, because MusicSequenceSaveSMF() is completely broken.
+    // Reported as bug #2840253.
+    
+    NSLog(@"getting FSRef for path: %@", [path stringByDeletingLastPathComponent]);
+    status = FSPathMakeRef([[path stringByDeletingLastPathComponent] fileSystemRepresentation], &fsRef, &isDirectory);
+    if (status != noErr || !isDirectory)
+        return NO;
+
+    status = FSGetCatalogInfo(&fsRef, kFSCatInfoNodeID, &fsCatalogInfo, NULL, &fsSpec, NULL);
+    if (status != noErr)
+        return NO;
+    {
+        CFStringRef stringName;
+
+        NSLog(@"fsSpec has vRefNum %d, parID %d", (int)fsSpec.vRefNum, fsSpec.parID);
+        stringName = CFStringCreateWithPascalString(kCFAllocatorDefault, fsSpec.name, kCFStringEncodingUTF8);
+        NSLog(@"name: %@", stringName);
+        NSLog(@"catalog info has node id: %d", fsCatalogInfo.nodeID);
+    }
+//    NSLog(@"fsSpec has vRefNum %h, parID %d, name %@", fsSpec.vRefNum, fsSpec.parID, CFStringCreateWithPascalString(kCFAllocatorDefault, fsSpec.name, kCFStringEncodingMacRoman));
+
+    NSLog(@"going on with file: %@", [path lastPathComponent]);
+    if (!CFStringGetPascalString((CFStringRef)[path lastPathComponent], pascalFileName, 256, kCFStringEncodingUTF8))
+        return NO;
+    status = FSMakeFSSpec(fsSpec.vRefNum, fsCatalogInfo.nodeID, pascalFileName, &fsSpec);
+    if (status != fnfErr)
+        return NO;
+    {
+        CFStringRef stringName;
+
+        NSLog(@"fsSpec has vRefNum %d, parID %d", (int)fsSpec.vRefNum, fsSpec.parID);
+        stringName = CFStringCreateWithPascalString(kCFAllocatorDefault, fsSpec.name, kCFStringEncodingUTF8);
+        NSLog(@"name: %@", stringName);
+    }
+    //    NSLog(@"fsSpec has vRefNum %h, parID %d, name %@", fsSpec.vRefNum, fsSpec.parID, CFStringCreateWithPascalString(NULL, fsSpec.name, kCFStringEncodingMacRoman));
+    
+    // TODO maybe support an "atomically", or overwrite the file, or something
+
+    status = NewMusicSequence(&sequence);
+    if (status == noErr) {
+        MusicTrack track;
+
+        {
+            UInt32 trackCount;
+
+            status = MusicSequenceGetTrackCount(sequence, &trackCount);
+            NSLog(@"status: %ld track count: %lu", status, trackCount);
+        }
+        
+        status = MusicSequenceNewTrack(sequence, &track);
+        if (status == noErr) {
+            unsigned int messageIndex, messageCount;
+            MusicTimeStamp eventTimeStamp = 0;
+
+            messageCount = [messages count];
+            for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {
+                NSData *messageData;
+                unsigned int messageDataLength;
+                MIDIRawData *midiRawData;
+
+                messageData = [[messages objectAtIndex:messageIndex] fullMessageData];
+                messageDataLength = [messageData length];
+                midiRawData = malloc(sizeof(UInt32) + messageDataLength);
+                midiRawData->length = messageDataLength;
+                [messageData getBytes:midiRawData->data];
+
+                NSLog(@"adding raw data event with length: %u", messageDataLength);
+                
+                status = MusicTrackNewMIDIRawDataEvent(track, eventTimeStamp, midiRawData);
+                if (status != noErr)
+                    NSLog(@"MusicTrackNewMIDIRawDataEvent: error %ld", status);
+
+                free(midiRawData);
+                eventTimeStamp += 1.0; // TODO should be the approx. duration of this sysex data at the sequence's tempo
+                    // unclear if this is in beats or seconds (probably beats)
+                    // also add on some time between messages (say 150ms or more, or round up to next bar)
+            }
+
+            // TODO Apparently we need to create the file first, then save to it... seems like a bug.
+            status = FSpCreate(&fsSpec, '????', '????', smSystemScript);
+            if (status != noErr) {
+                NSLog(@"FSpCreate failed: %ld", status);
+            }
+            
+            status = MusicSequenceSaveSMF(sequence, &fsSpec, 0);
+            if (status == noErr)
+                success = YES;
+        }
+
+        DisposeMusicSequence(sequence);
+    }
+
+    return success;
+}
+
+
 - (id)initWithTimeStamp:(MIDITimeStamp)aTimeStamp statusByte:(Byte)aStatusByte
 {
     if (!(self = [super initWithTimeStamp:aTimeStamp statusByte:aStatusByte]))
