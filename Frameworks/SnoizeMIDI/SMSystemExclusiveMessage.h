@@ -24,6 +24,8 @@
 + (SMSystemExclusiveMessage *)systemExclusiveMessageWithTimeStamp:(MIDITimeStamp)aTimeStamp data:(NSData *)aData;
     // data should NOT include the ending 0xF7 (EOX)
 
++ (NSArray *)systemExclusiveMessagesInData:(NSData *)someData;
+
 - (NSData *)data;
 - (void)setData:(NSData *)newData;
 

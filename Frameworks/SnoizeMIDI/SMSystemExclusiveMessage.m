@@ -16,6 +16,43 @@
     return message;
 }
 
++ (NSArray *)systemExclusiveMessagesInData:(NSData *)someData;
+{
+    // Scan through someData and make messages out of it.
+    // Messages must start with 0xF0.  Messages may end in any byte > 0x7F.
+
+    NSMutableArray *messages;
+    unsigned int byteIndex, byteCount;
+    const Byte *p;
+    NSRange range;
+    BOOL inMessage;
+
+    messages = [NSMutableArray array];
+    
+    byteCount = [someData length];
+    inMessage = NO;
+    for (p=[someData bytes], byteIndex = 0; byteIndex < byteCount; byteIndex++, p++) {
+        if (inMessage && (*p & 0x80)) {
+            range.length = byteIndex - range.location;
+            if (range.length > 0)
+                [messages addObject:[self systemExclusiveMessageWithTimeStamp:0 data:[someData subdataWithRange:range]]];
+            inMessage = NO;
+        }
+
+        if (*p == 0xF0) {
+            inMessage = YES;
+            range.location = byteIndex + 1;
+        }
+    }
+    if (inMessage) {
+        range.length = byteIndex - range.location;
+        if (range.length > 0)
+            [messages addObject:[self systemExclusiveMessageWithTimeStamp:0 data:[someData subdataWithRange:range]]];
+    }
+
+    return messages;
+}
+
 - (id)initWithTimeStamp:(MIDITimeStamp)aTimeStamp statusByte:(Byte)aStatusByte
 {
     if (!(self = [super initWithTimeStamp:aTimeStamp statusByte:aStatusByte]))
