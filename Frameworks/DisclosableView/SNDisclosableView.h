@@ -4,8 +4,8 @@
 @interface SNDisclosableView : NSView
 {
     BOOL isShown;
-    double originalHeight;
-    double hiddenHeight;
+    float originalHeight;
+    float hiddenHeight;
     NSArray *hiddenSubviews;
     NSView *nonretainedOriginalNextKeyView;
     NSView *nonretainedLastChildKeyView;
@@ -15,8 +15,8 @@
 - (BOOL)isShown;
 - (void)setIsShown:(BOOL)value;
 
-- (double)hiddenHeight;
-- (void)setHiddenHeight:(double)value;
+- (float)hiddenHeight;
+- (void)setHiddenHeight:(float)value;
 
 // Actions
 - (IBAction)toggleDisclosure:(id)sender;

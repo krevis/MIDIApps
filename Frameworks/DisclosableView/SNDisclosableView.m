@@ -5,7 +5,7 @@
 
 @interface SNDisclosableView (Private)
 
-- (void)changeWindowHeightBy:(double)amount;
+- (void)changeWindowHeightBy:(float)amount;
 
 @end
 
@@ -27,6 +27,19 @@ const double kDefaultHiddenHeight = 0;
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)aDecoder;
+{
+    if (!(self = [super initWithCoder:aDecoder]))
+        return nil;
+
+    isShown = YES;
+    originalHeight = [self frame].size.height;
+    hiddenHeight = kDefaultHiddenHeight;
+    [aDecoder decodeValueOfObjCType:@encode(typeof(hiddenHeight)) at:&hiddenHeight];
+    
+    return self;
+}
+
 - (void)dealloc;
 {
     [hiddenSubviews release];
@@ -38,20 +51,35 @@ const double kDefaultHiddenHeight = 0;
 {
     if ([[self superclass] instancesRespondToSelector:@selector(awakeFromNib)])
         [super awakeFromNib];
-        
-    isShown = YES;
-    originalHeight = [self frame].size.height;
-    hiddenHeight = kDefaultHiddenHeight;
+
+    // TODO I think all of these should be nuked (the last is essential)
+//    isShown = YES;
+//    originalHeight = [self frame].size.height;
+//    hiddenHeight = kDefaultHiddenHeight;
 
     // TODO do better than this -- and should this happen when unarchiving too?
     if ([self autoresizingMask] & NSViewHeightSizable)
         NSLog(@"SNDisclosableView: You probably don't want this view to be resizeable vertically. I suggest turning that off in the inspector in IB.");
 }
 
+- (void)encodeWithCoder:(NSCoder *)aCoder;
+{
+    [super encodeWithCoder:aCoder];
+    [aCoder encodeValueOfObjCType:@encode(typeof(hiddenHeight)) at:&hiddenHeight];
+}
+
 - (BOOL)acceptsFirstResponder
 {
     return NO;
 }
+
+/*
+- (void)setFrame:(NSRect)frameRect;
+{
+    NSLog(@"setting frame");
+    [super setFrame:frameRect];
+}
+*/
 
 /* TODO this is not such a good idea... caused automatically by NSWindow (or something above) when we tell the window to resize?
 - (void)setAutoresizingMask:(unsigned int)mask
@@ -63,6 +91,7 @@ const double kDefaultHiddenHeight = 0;
 }
 */
 
+/*
 - (void)drawRect:(NSRect)rect;
 {
     // TODO testing
@@ -71,6 +100,8 @@ const double kDefaultHiddenHeight = 0;
     [[NSColor blueColor] set];
     NSFrameRect([self bounds]);
 }
+ */
+
 
 //
 // New methods
@@ -89,12 +120,12 @@ const double kDefaultHiddenHeight = 0;
         [self hide:nil];
 }
 
-- (double)hiddenHeight;
+- (float)hiddenHeight;
 {
     return hiddenHeight;
 }
 
-- (void)setHiddenHeight:(double)value;
+- (void)setHiddenHeight:(float)value;
 {
     hiddenHeight = value;
 }
@@ -193,7 +224,7 @@ const double kDefaultHiddenHeight = 0;
 
 @implementation SNDisclosableView (Private)
 
-- (void)changeWindowHeightBy:(double)amount;
+- (void)changeWindowHeightBy:(float)amount;
 {
     // This turns out to be more complicated than one might expect, because the way that the other views in the window should move is different than the normal case that the AppKit handles.
     // We want the other views in the window to stay the same size. If a view is above us, we want it to stay in the same position relative to the top of the window; likewise, if a view is below us, we want it to stay in the same position relative to the bottom of the window.
@@ -204,6 +235,7 @@ const double kDefaultHiddenHeight = 0;
     // * Then resize the window, and fix up the window's min/max sizes.
     // * For each view that we touched earlier, we restore the old autoresize mask.
 
+    NSRect ourFrame;
     NSWindow *window;
     NSView *contentView;
     NSArray *windowSubviews;
@@ -212,6 +244,7 @@ const double kDefaultHiddenHeight = 0;
     NSRect newWindowFrame;
     NSSize newWindowMinOrMaxSize;
 
+    ourFrame = [self frame];
     window = [self window];
     contentView = [window contentView];
 
@@ -230,7 +263,7 @@ const double kDefaultHiddenHeight = 0;
         // We never want to anything to change height.
         autoresizingMask &= ~NSViewHeightSizable;
 
-        if (windowSubview == self || NSMaxY([windowSubview frame]) < NSMaxY([self frame])) {
+        if (windowSubview == self || NSMaxY([windowSubview frame]) < NSMaxY(ourFrame)) {
             // This subview is us, or it is below us. Make it stick to the bottom of the window.
             autoresizingMask |= NSViewMaxYMargin;
             autoresizingMask &= ~NSViewMinYMargin;
