@@ -4,8 +4,8 @@
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
+#import <DisclosableView/DisclosableView.h>
 
-#import "SMMDisclosableView.h"
 #import "SMMDocument.h"
 #import "SMMNonHighlightingCells.h"
 #import "SMMPreferencesWindowController.h"
@@ -28,7 +28,7 @@
 
 - (NSCellStateValue)_buttonStateForInputSources:(NSArray *)sources;
 
-- (void)_synchronizeDisclosableView:(SMMDisclosableView *)view button:(NSButton *)button withIsShown:(BOOL)isShown;
+- (void)_synchronizeDisclosableView:(SNDisclosableView *)view button:(NSButton *)button withIsShown:(BOOL)isShown;
 
 @end
 
@@ -97,9 +97,6 @@ static NSString *kToString = nil;
     SMMNonHighlightingTextFieldCell *textFieldCell;
     
     [super windowDidLoad];
-
-    [[sourcesDisclosureButton cell] setHighlightsBy:NSPushInCellMask];
-    [[filterDisclosureButton cell] setHighlightsBy:NSPushInCellMask];
     
     [sourcesOutlineView setOutlineTableColumn:[sourcesOutlineView tableColumnWithIdentifier:@"name"]];
     [sourcesOutlineView setAutoresizesOutlineColumn:NO];
@@ -220,18 +217,20 @@ static NSString *kToString = nil;
 {
     BOOL isShown;
 
-    // Toggle the button immediately
+    // Toggle the button immediately, which looks better.
+    // NOTE This is absolutely a dumb place to do it, but I CANNOT get it to work any other way. See comment in -_synchronizeDisclosableView:button:withIsShown:.
     [sender setIntValue:![sender intValue]];
-    
+
     isShown = [[self document] isFilterShown];
-    [[self document] setIsFilterShown:!isShown];
+    [[self document] setIsFilterShown:!isShown];    
 }
 
 - (IBAction)toggleSourcesShown:(id)sender;
 {
     BOOL isShown;
 
-    // Toggle the button immediately
+    // Toggle the button immediately, which looks better.
+    // NOTE This is absolutely a dumb place to do it, but I CANNOT get it to work any other way. See comment in -_synchronizeDisclosableView:button:withIsShown:.
     [sender setIntValue:![sender intValue]];
 
     isShown = [[self document] areSourcesShown];
@@ -704,7 +703,7 @@ static NSString *kToString = nil;
     return areAnySelected ? NSOnState : NSOffState;
 }
 
-- (void)_synchronizeDisclosableView:(SMMDisclosableView *)view button:(NSButton *)button withIsShown:(BOOL)isShown;
+- (void)_synchronizeDisclosableView:(SNDisclosableView *)view button:(NSButton *)button withIsShown:(BOOL)isShown;
 {
     BOOL savedSendWindowFrameChangesToDocument;
 
@@ -713,6 +712,7 @@ static NSString *kToString = nil;
     savedSendWindowFrameChangesToDocument = sendWindowFrameChangesToDocument;
     sendWindowFrameChangesToDocument = NO;
 
+    // NOTE We ought to be able to swap these to get the button to draw first. However, that just doesn't work, and I can't figure out why. Grrr!
     [view setIsShown:isShown];
     [button setIntValue:(isShown ? 1 : 0)];
 

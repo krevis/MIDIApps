@@ -1,19 +1,20 @@
 #import <Cocoa/Cocoa.h>
 
-@class SMMDisclosableView;
+@class SNDisclosableView;
+@class SNDisclosureButton;
 @class SMMSourcesOutlineView;
 
 
 @interface SMMMonitorWindowController : NSWindowController
 {
     // Sources controls
-    IBOutlet NSButton *sourcesDisclosureButton;
-    IBOutlet SMMDisclosableView *sourcesDisclosableView;
+    IBOutlet SNDisclosureButton *sourcesDisclosureButton;
+    IBOutlet SNDisclosableView *sourcesDisclosableView;
     IBOutlet SMMSourcesOutlineView *sourcesOutlineView;
 
     // Filter controls
-    IBOutlet NSButton *filterDisclosureButton;
-    IBOutlet SMMDisclosableView *filterDisclosableView;
+    IBOutlet SNDisclosureButton *filterDisclosureButton;
+    IBOutlet SNDisclosableView *filterDisclosableView;
     IBOutlet NSButton *voiceMessagesCheckBox;
     IBOutlet NSMatrix *voiceMessagesMatrix;
     IBOutlet NSButton *systemCommonCheckBox;

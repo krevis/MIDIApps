@@ -26,15 +26,15 @@
             OUTLETS = {
                 channelRadioButtons = NSMatrix; 
                 clearButton = NSButton; 
-                filterDisclosableView = SMMDisclosableView; 
-                filterDisclosureButton = NSButton; 
+                filterDisclosableView = SNDisclosableView; 
+                filterDisclosureButton = SNDisclosureButton; 
                 maxMessageCountField = NSTextField; 
                 messagesTableView = NSTableView; 
                 oneChannelField = NSTextField; 
                 realTimeCheckBox = NSButton; 
                 realTimeMatrix = NSMatrix; 
-                sourcesDisclosableView = SMMDisclosableView; 
-                sourcesDisclosureButton = NSButton; 
+                sourcesDisclosableView = SNDisclosableView; 
+                sourcesDisclosureButton = SNDisclosureButton; 
                 sourcesOutlineView = SMMSourcesOutlineView; 
                 sysExProgressBox = NSBox; 
                 sysExProgressField = NSTextField; 
@@ -47,7 +47,14 @@
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
-        {CLASS = SMMSourcesOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }
+        {CLASS = SMMSourcesOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
+        {
+            ACTIONS = {hide = id; show = id; toggleDisclosure = id; }; 
+            CLASS = SNDisclosableView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSView; 
+        }, 
+        {CLASS = SNDisclosureButton; LANGUAGE = ObjC; SUPERCLASS = NSButton; }
     ); 
     IBVersion = 1; 
 }
