@@ -373,6 +373,10 @@
 				<true/>
 				<key>SMMAutoSelectOrdinarySources</key>
 				<true/>
+				<key>SMMAutoSelectSpyingDestinations</key>
+				<false/>
+				<key>SMMAutoSelectVirtualDestination</key>
+				<false/>
 				<key>SMMOpenWindowsForNewSources</key>
 				<false/>
 				<key>SMMSaveSysExWithEOXAlways</key>

@@ -4,7 +4,9 @@
         {
             ACTIONS = {
                 changeAlwaysSaveSysExWithEOX = id; 
-                changeAutoSelectOrdinarySourcesInNewDocument = id; 
+                changeAutoSelectOrdinarySources = id; 
+                changeAutoSelectSpyingDestinations = id; 
+                changeAutoSelectVirtualDestination = id; 
                 changeControllerFormat = id; 
                 changeDataFormat = id; 
                 changeNoteFormat = id; 
@@ -15,7 +17,9 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 alwaysSaveSysExWithEOXMatrix = NSMatrix; 
-                autoSelectOrdinarySourcesInNewDocumentMatrix = NSMatrix; 
+                autoSelectOrdinarySourcesCheckbox = NSButton; 
+                autoSelectSpyingDestinationsCheckbox = NSButton; 
+                autoSelectVirtualDestinationCheckbox = NSButton; 
                 controllerFormatMatrix = NSMatrix; 
                 dataFormatMatrix = NSMatrix; 
                 noteFormatMatrix = NSMatrix; 

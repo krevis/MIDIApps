@@ -43,8 +43,12 @@ static SMMPreferencesWindowController *controller;
     noteFormatPreference = [[OFPreference preferenceForKey:SMNoteFormatPreferenceKey] retain];
     controllerFormatPreference = [[OFPreference preferenceForKey:SMControllerFormatPreferenceKey] retain];
     dataFormatPreference = [[OFPreference preferenceForKey:SMDataFormatPreferenceKey] retain];
-    autoSelectOrdinarySourcesInNewDocumentPreference = [[OFPreference preferenceForKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey] retain];
+
+    autoSelectOrdinarySourcesPreference = [[OFPreference preferenceForKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey] retain];
+    autoSelectVirtualDestinationPreference = [[OFPreference preferenceForKey:SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey] retain];
+    autoSelectSpyingDestinationsPreference = [[OFPreference preferenceForKey:SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey] retain];
     openWindowsForNewSourcesPreference = [[OFPreference preferenceForKey:SMMOpenWindowsForNewSourcesPreferenceKey] retain];
+
     alwaysSaveSysExWithEOXPreference = [[OFPreference preferenceForKey:SMMSaveSysExWithEOXAlwaysPreferenceKey] retain];
     
     return self;
@@ -62,7 +66,9 @@ static SMMPreferencesWindowController *controller;
     [noteFormatPreference release];
     [controllerFormatPreference release];
     [dataFormatPreference release];
-    [autoSelectOrdinarySourcesInNewDocumentPreference release];
+    [autoSelectOrdinarySourcesPreference release];
+    [autoSelectVirtualDestinationPreference release];
+    [autoSelectSpyingDestinationsPreference release];
     [openWindowsForNewSourcesPreference release];
     [alwaysSaveSysExWithEOXPreference release];
     
@@ -82,8 +88,12 @@ static SMMPreferencesWindowController *controller;
     [noteFormatMatrix selectCellWithTag:[noteFormatPreference integerValue]];
     [controllerFormatMatrix selectCellWithTag:[controllerFormatPreference integerValue]];
     [dataFormatMatrix selectCellWithTag:[dataFormatPreference integerValue]];
-    [autoSelectOrdinarySourcesInNewDocumentMatrix selectCellWithTag:[autoSelectOrdinarySourcesInNewDocumentPreference boolValue]];
+
+    [autoSelectOrdinarySourcesCheckbox setIntValue:[autoSelectOrdinarySourcesPreference boolValue]];
+    [autoSelectVirtualDestinationCheckbox setIntValue:[autoSelectVirtualDestinationPreference boolValue]];
+    [autoSelectSpyingDestinationsCheckbox setIntValue:[autoSelectSpyingDestinationsPreference boolValue]];
     [openWindowsForNewSourcesCheckbox setIntValue:[openWindowsForNewSourcesPreference boolValue]];
+
     [alwaysSaveSysExWithEOXMatrix selectCellWithTag:[alwaysSaveSysExWithEOXPreference boolValue]];
 }
 
@@ -120,9 +130,21 @@ static SMMPreferencesWindowController *controller;
     [self _sendDisplayPreferenceChangedNotification];
 }
 
-- (IBAction)changeAutoSelectOrdinarySourcesInNewDocument:(id)sender;
+- (IBAction)changeAutoSelectOrdinarySources:(id)sender;
 {
-    [autoSelectOrdinarySourcesInNewDocumentPreference setBoolValue:[[sender selectedCell] tag]];
+    [autoSelectOrdinarySourcesPreference setBoolValue:[sender intValue]];
+    [self _synchronizeDefaults];
+}
+
+- (IBAction)changeAutoSelectVirtualDestination:(id)sender;
+{
+    [autoSelectVirtualDestinationPreference setBoolValue:[sender intValue]];
+    [self _synchronizeDefaults];
+}
+
+- (IBAction)changeAutoSelectSpyingDestinations:(id)sender;
+{
+    [autoSelectSpyingDestinationsPreference setBoolValue:[sender intValue]];
     [self _synchronizeDefaults];
 }
 

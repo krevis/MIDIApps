@@ -18,7 +18,7 @@
 
 - (void)_updateVirtualEndpointName;
 
-- (void)_selectAllOrdinarySources;
+- (void)_autoselectSources;
 
 - (void)_historyDidChange:(NSNotification *)notification;
 - (void)_mainThreadSynchronizeMessages;
@@ -38,6 +38,8 @@
 NSString *SMMAutoSelectFirstSourceInNewDocumentPreferenceKey = @"SMMAutoSelectFirstSource";
     // NOTE: The above is obsolete; it's included only for compatibility
 NSString *SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey = @"SMMAutoSelectOrdinarySources";
+NSString *SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey = @"SMMAutoSelectVirtualDestination";
+NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoSelectSpyingDestinations";
 
 
 - (id)init
@@ -81,8 +83,7 @@ NSString *SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey = @"SMMAutoSele
         [oldAutoSelectPref restoreDefaultValue];
     }
 
-    if ([autoSelectPref boolValue])
-        [self _selectAllOrdinarySources];
+    [self _autoselectSources];
 
     [self updateChangeCount:NSChangeCleared];
 
@@ -482,17 +483,30 @@ NSString *SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey = @"SMMAutoSele
     [stream setVirtualEndpointName:endpointName];
 }
 
-- (void)_selectAllOrdinarySources;
+- (void)_autoselectSources;
 {
+    NSArray *groupedInputSources;
+    NSMutableSet *sourcesSet;
     NSArray *sourcesArray;
-    NSSet *sourcesSet;
 
-    sourcesArray = [[[self groupedInputSources] objectAtIndex:0] objectForKey:@"sources"];
-    if (sourcesArray)
-        sourcesSet = [NSSet setWithArray:sourcesArray];
-    else
-        sourcesSet = [NSSet set];
+    groupedInputSources = [self groupedInputSources];
+    sourcesSet = [NSMutableSet set];
+    
+    if ([[OFPreference preferenceForKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey] boolValue]) {
+        if ((sourcesArray = [[groupedInputSources objectAtIndex:0] objectForKey:@"sources"]))
+            [sourcesSet addObjectsFromArray:sourcesArray];
+    }
 
+    if ([[OFPreference preferenceForKey:SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey] boolValue]) {
+        if ((sourcesArray = [[groupedInputSources objectAtIndex:1] objectForKey:@"sources"]))
+            [sourcesSet addObjectsFromArray:sourcesArray];
+    }
+
+    if ([[OFPreference preferenceForKey:SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey] boolValue]) {
+        if ((sourcesArray = [[groupedInputSources objectAtIndex:2] objectForKey:@"sources"]))
+            [sourcesSet addObjectsFromArray:sourcesArray];
+    }
+    
     [self setSelectedInputSources:sourcesSet];
 }
 

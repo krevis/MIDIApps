@@ -9,7 +9,9 @@
     IBOutlet NSMatrix *noteFormatMatrix;
     IBOutlet NSMatrix *controllerFormatMatrix;
     IBOutlet NSMatrix *dataFormatMatrix;
-    IBOutlet NSMatrix *autoSelectOrdinarySourcesInNewDocumentMatrix;
+    IBOutlet NSButton *autoSelectOrdinarySourcesCheckbox;
+    IBOutlet NSButton *autoSelectVirtualDestinationCheckbox;
+    IBOutlet NSButton *autoSelectSpyingDestinationsCheckbox;
     IBOutlet NSButton *openWindowsForNewSourcesCheckbox;
     IBOutlet NSMatrix *alwaysSaveSysExWithEOXMatrix;
 
@@ -17,7 +19,9 @@
     OFPreference *noteFormatPreference;
     OFPreference *controllerFormatPreference;
     OFPreference *dataFormatPreference;
-    OFPreference *autoSelectOrdinarySourcesInNewDocumentPreference;
+    OFPreference *autoSelectOrdinarySourcesPreference;
+    OFPreference *autoSelectVirtualDestinationPreference;
+    OFPreference *autoSelectSpyingDestinationsPreference;
     OFPreference *openWindowsForNewSourcesPreference;
     OFPreference *alwaysSaveSysExWithEOXPreference;
 }
@@ -30,7 +34,9 @@
 - (IBAction)changeNoteFormat:(id)sender;
 - (IBAction)changeControllerFormat:(id)sender;
 - (IBAction)changeDataFormat:(id)sender;
-- (IBAction)changeAutoSelectOrdinarySourcesInNewDocument:(id)sender;
+- (IBAction)changeAutoSelectOrdinarySources:(id)sender;
+- (IBAction)changeAutoSelectVirtualDestination:(id)sender;
+- (IBAction)changeAutoSelectSpyingDestinations:(id)sender;
 - (IBAction)changeOpenWindowsForNewSources:(id)sender;
 - (IBAction)changeAlwaysSaveSysExWithEOX:(id)sender;
 

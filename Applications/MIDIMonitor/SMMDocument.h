@@ -54,3 +54,5 @@
 
 // Preference keys
 extern NSString *SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey;
+extern NSString *SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey;
+extern NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey;
