@@ -202,6 +202,7 @@
 				F557390C01CE7E8801000164,
 				F564774901D6D9E001000164,
 				F565B6F401E15D0B01000164,
+				F556F68201E1C21A01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -243,6 +244,7 @@
 				F584CFF901CB85F901000164,
 				F557390D01CE7E8801000164,
 				F565B6F501E15D0B01000164,
+				F556F68301E1C21A01000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -307,8 +309,7 @@
 				F53BB49E015D4AC001000164,
 				F53D4A99015A960601000164,
 				F561536201C240C501000164,
-				F58C3E9401B606CB01000164,
-				F56435D501BDE8B701000164,
+				F556F67F01E1C21A01000164,
 				F561536F01C2442F01000164,
 				F584CFEB01CB6BD201000164,
 			);
@@ -580,6 +581,42 @@
 				);
 			};
 		};
+		F556F67F01E1C21A01000164 = {
+			children = (
+				F556F68001E1C21A01000164,
+				F556F68101E1C21A01000164,
+				F58C3E9401B606CB01000164,
+				F56435D501BDE8B701000164,
+			);
+			isa = PBXGroup;
+			name = Streams;
+			refType = 4;
+		};
+		F556F68001E1C21A01000164 = {
+			isa = PBXFileReference;
+			path = SMPortOrVirtualStream.h;
+			refType = 4;
+		};
+		F556F68101E1C21A01000164 = {
+			isa = PBXFileReference;
+			path = SMPortOrVirtualStream.m;
+			refType = 4;
+		};
+		F556F68201E1C21A01000164 = {
+			fileRef = F556F68001E1C21A01000164;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		F556F68301E1C21A01000164 = {
+			fileRef = F556F68101E1C21A01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		F557390A01CE7E8801000164 = {
 			isa = PBXFileReference;
 			path = SMPeriodicTimer.h;
@@ -819,6 +856,7 @@
 			);
 			isa = PBXGroup;
 			name = "Output Streams";
+			path = "";
 			refType = 4;
 		};
 		F56435D601BDE8B701000164 = {
@@ -1119,6 +1157,7 @@
 			);
 			isa = PBXGroup;
 			name = "Input Streams";
+			path = "";
 			refType = 4;
 		};
 		F58C3E9501B606CB01000164 = {
