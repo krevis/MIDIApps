@@ -442,13 +442,9 @@ NSString *SSESysExFileExtension = @"syx";
     }
 
     if ([filesToTrash count] > 0)
-        return [[NSWorkspace sharedWorkspace] moveFilesToTrash:filesToTrash];
+        return [[NSWorkspace sharedWorkspace] SSE_moveFilesToTrash:filesToTrash];
     else
         return YES;
-
-    // NOTE We do the above because -[NSWorkspace performFileOperation:NSWorkspaceRecycleOperation] is broken.
-    // It doesn't work if there is already a file in the Trash with this name, and it doesn't make the Finder update.
-    // TODO supposedly this will be fixed in 10.2... try it then.
 }
 
 @end
