@@ -18,7 +18,7 @@
 - (void)sendPreferenceDidChange:(NSNotification *)notification;
 - (void)receivePreferenceDidChange:(NSNotification *)notification;
 
-- (void)endpointsAppeared:(NSNotification *)notification;
+- (void)sourceEndpointsAppeared:(NSNotification *)notification;
 - (void)outputStreamEndpointDisappeared:(NSNotification *)notification;
 
 - (void)selectFirstAvailableDestinationWhenPossible;
@@ -83,7 +83,7 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
     [outputStream setSendsSysExAsynchronously:YES];
     [outputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a source for other programs", @"SysExLibrarian", [self bundle], "display name of virtual source")];
 
-    [center addObserver:self selector:@selector(endpointsAppeared:) name:SMEndpointsAppearedNotification object:nil];
+    [center addObserver:self selector:@selector(sourceEndpointsAppeared:) name:SMMIDIObjectsAppearedNotification object:[SMSourceEndpoint class]];
     
     listenToMIDISetupChanges = YES;
 
@@ -353,20 +353,15 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
     [inputStream setSysExTimeOut:sysExReadTimeOut];
 }
 
-- (void)endpointsAppeared:(NSNotification *)notification;
+- (void)sourceEndpointsAppeared:(NSNotification *)notification;
 {
     NSArray *endpoints;
     unsigned int endpointIndex, endpointCount;
 
-    endpoints = [notification object];
+    endpoints = [[notification userInfo] objectForKey:SMMIDIObjectsThatAppeared];
     endpointCount = [endpoints count];
-    for (endpointIndex = 0; endpointIndex < endpointCount; endpointIndex++) {
-        id endpoint;
-
-        endpoint = [endpoints objectAtIndex:endpointIndex];
-        if ([endpoint isKindOfClass:[SMSourceEndpoint class]])
-            [inputStream addEndpoint:(SMSourceEndpoint *)endpoint];
-    }
+    for (endpointIndex = 0; endpointIndex < endpointCount; endpointIndex++) 
+        [inputStream addEndpoint:[endpoints objectAtIndex:endpointIndex]];
 }
 
 - (void)outputStreamEndpointDisappeared:(NSNotification *)notification;

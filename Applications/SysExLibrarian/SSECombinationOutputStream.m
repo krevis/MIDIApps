@@ -39,7 +39,8 @@ NSString *SSECombinationOutputStreamEndpointDisappearedNotification = @"SSECombi
 
     // We will always keep the same unique ID for our virtual destination,
     // even if we create and destroy it multiple times.
-    virtualEndpointUniqueID = [SMEndpoint generateNewUniqueID];
+//    virtualEndpointUniqueID = [SMEndpoint generateNewUniqueID];
+    // TODO need to redo this for new SnoizeMIDI
 
     flags.ignoresTimeStamps = NO;
     flags.sendsSysExAsynchronously = NO;
