@@ -36,6 +36,8 @@ static int midiObjectOrdinalComparator(id object1, id object2, void *context);
 
 + (void)midiSetupChanged:(NSNotification *)notification;
 
++ (void)postObjectListChangedNotification;
+
 - (void)updateUniqueID;
 
 - (void)postRemovedNotification;
@@ -605,6 +607,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
     MIDIObjectRef ref;
     MIDIObjectType objectType;
     Class subclass;
+    SMMIDIObject *object;
 
     OBASSERT(self == [SMMIDIObject class]);
 
@@ -613,9 +616,8 @@ static NSMapTable *classToObjectsMapTable = NULL;
     objectType = [[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChildType] intValue];
 
     subclass = [self subclassForObjectType:objectType];
-    [subclass removeObjectWithObjectRef:ref];
-    // Any of the objects' ordinals may have changed, so refresh them
-    [subclass refreshObjectOrdinals];
+    if ((object = [subclass objectWithObjectRef:ref]))
+        [subclass immediatelyRemoveObject:object];
 }
 
 //
@@ -676,6 +678,13 @@ static NSMapTable *classToObjectsMapTable = NULL;
     OBASSERT(self != [SMMIDIObject class]);
 
     [self refreshAllObjects];
+}
+
++ (void)postObjectListChangedNotification;
+{
+    OBASSERT(self != [SMMIDIObject class]);
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectListChangedNotification object:self];
 }
 
 - (void)updateUniqueID;
@@ -740,14 +749,19 @@ static NSMapTable *classToObjectsMapTable = NULL;
     theObject = [self addObjectWithObjectRef:anObjectRef ordinal:0];
     // Any of the objects' ordinals may have changed, so refresh them
     [self refreshObjectOrdinals];
-
+    // And post a notification that the object list has changed
+    [self postObjectListChangedNotification];
+    
     return theObject;
 }
 
 + (void)immediatelyRemoveObject:(SMMIDIObject *)object;
 {
-    [self removeObjectWithObjectRef:[object objectRef]];    
+    [self removeObjectWithObjectRef:[object objectRef]];
+    // Any of the objects' ordinals may have changed, so refresh them
     [self refreshObjectOrdinals];
+    // And post a notification that the object list has changed
+    [self postObjectListChangedNotification];
 }
 
 + (void)refreshAllObjects;
@@ -833,9 +847,8 @@ static NSMapTable *classToObjectsMapTable = NULL;
         [[replacedObjects objectAtIndex:objectIndex] postReplacedNotificationWithReplacement:[replacementObjects objectAtIndex:objectIndex]];
 
     // Then, post a general notification that the list of objects for this subclass has changed (if it has).
-    if ([addedObjects count] > 0 || [removedObjects count] > 0 || [replacedObjects count] > 0) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectListChangedNotification object:self];
-    }
+    if ([addedObjects count] > 0 || [removedObjects count] > 0 || [replacedObjects count] > 0)
+        [self postObjectListChangedNotification];
 }
 
 @end
