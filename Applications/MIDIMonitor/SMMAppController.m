@@ -152,7 +152,6 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
     mailToURL = [NSURL URLWithString:mailToURLString];
     if (mailToURL)
         success = [[NSWorkspace sharedWorkspace] openURL:mailToURL];
-    success = NO;
 
     if (!success) {
         NSString *message, *title;
