@@ -20,7 +20,7 @@
 
 @implementation SMMPreferencesWindowController
 
-DEFINE_NSSTRING(SMMDisplayPreferenceChangedNotification);
+NSString *SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreferenceChangedNotification";
 
 
 static SMMPreferencesWindowController *controller;
