@@ -156,7 +156,9 @@
 		0867D69DFE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
 			files = (
+				F5D80D8E02E3081C01000164,
 				F54FF60902DEE82F01000164,
+				F5D80D8B02E2FEBB01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -175,6 +177,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F54FF60A02DEE82F01000164,
+				F5D80D8C02E2FEBB01000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -233,8 +236,11 @@
 		};
 		08FB77AEFE84172EC02AAC07 = {
 			children = (
+				F5D80D8D02E3081C01000164,
 				F54FF60702DEE82F01000164,
 				F54FF60802DEE82F01000164,
+				F5D80D8702E2F49D01000164,
+				F5D80D8802E2F49D01000164,
 			);
 			isa = PBXGroup;
 			name = Classes;
@@ -334,6 +340,45 @@
 			fileRef = F54FF60C02DEE85401000164;
 			isa = PBXBuildFile;
 			settings = {
+			};
+		};
+		F5D80D8702E2F49D01000164 = {
+			isa = PBXFileReference;
+			path = SNDisclosureButton.h;
+			refType = 4;
+		};
+		F5D80D8802E2F49D01000164 = {
+			isa = PBXFileReference;
+			path = SNDisclosureButton.m;
+			refType = 4;
+		};
+		F5D80D8B02E2FEBB01000164 = {
+			fileRef = F5D80D8702E2F49D01000164;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		F5D80D8C02E2FEBB01000164 = {
+			fileRef = F5D80D8802E2F49D01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5D80D8D02E3081C01000164 = {
+			isa = PBXFileReference;
+			path = DisclosableView.h;
+			refType = 4;
+		};
+		F5D80D8E02E3081C01000164 = {
+			fileRef = F5D80D8D02E3081C01000164;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 	};

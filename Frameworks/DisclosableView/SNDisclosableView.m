@@ -12,7 +12,7 @@
 
 @implementation SNDisclosableView
 
-const double kDefaultHiddenHeight = 0;
+const float kDefaultHiddenHeight = 0.0;
 
 
 - (id)initWithFrame:(NSRect)frameRect;
@@ -52,14 +52,8 @@ const double kDefaultHiddenHeight = 0;
     if ([[self superclass] instancesRespondToSelector:@selector(awakeFromNib)])
         [super awakeFromNib];
 
-    // TODO I think all of these should be nuked (the last is essential)
-//    isShown = YES;
-//    originalHeight = [self frame].size.height;
-//    hiddenHeight = kDefaultHiddenHeight;
-
-    // TODO do better than this -- and should this happen when unarchiving too?
     if ([self autoresizingMask] & NSViewHeightSizable)
-        NSLog(@"SNDisclosableView: You probably don't want this view to be resizeable vertically. I suggest turning that off in the inspector in IB.");
+        NSLog(@"Warning: SNDisclosableView: You probably don't want this view to be resizeable vertically. I suggest turning that off in the inspector in IB.");
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder;
@@ -72,36 +66,6 @@ const double kDefaultHiddenHeight = 0;
 {
     return NO;
 }
-
-/*
-- (void)setFrame:(NSRect)frameRect;
-{
-    NSLog(@"setting frame");
-    [super setFrame:frameRect];
-}
-*/
-
-/* TODO this is not such a good idea... caused automatically by NSWindow (or something above) when we tell the window to resize?
-- (void)setAutoresizingMask:(unsigned int)mask
-{
-    // Make sure the NSViewHeightSizable bit does not get set
-    NSLog(@"SNDisclosableView: setting autoresize mask: %x", mask);
-    [super setAutoresizingMask:(mask & ~NSViewHeightSizable)];
-    NSLog(@"SNDisclosableView: did set autoresize mask, now: %x", [self autoresizingMask]);
-}
-*/
-
-/*
-- (void)drawRect:(NSRect)rect;
-{
-    // TODO testing
-    [[NSColor redColor] set];
-    NSRectFill([self bounds]);
-    [[NSColor blueColor] set];
-    NSFrameRect([self bounds]);
-}
- */
-
 
 //
 // New methods

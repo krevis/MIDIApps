@@ -7,7 +7,6 @@
 			0867D69CFE84028FC02AAC07,
 		);
 		breakpoints = (
-			F5CFE25902E1B8EB01000164,
 		);
 		perUserDictionary = {
 			PBXWorkspaceConfiguration = {
@@ -99,11 +98,5 @@
 	};
 	0867D69CFE84028FC02AAC07 = {
 		activeExec = 0;
-	};
-	F5CFE25902E1B8EB01000164 = {
-		fileReference = F54FF60802DEE82F01000164;
-		isa = PBXFileBreakpoint;
-		lineNumber = 78;
-		state = 2;
 	};
 }
