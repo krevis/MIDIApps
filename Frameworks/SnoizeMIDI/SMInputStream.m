@@ -28,6 +28,7 @@ static void midiReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, vo
 NSString *SMInputStreamReadingSysExNotification = @"SMInputStreamReadingSysExNotification";
 NSString *SMInputStreamDoneReadingSysExNotification = @"SMInputStreamDoneReadingSysExNotification";
 NSString *SMInputStreamSelectedInputSourceDisappearedNotification = @"SMInputStreamSelectedInputSourceDisappearedNotification";
+NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceListChangedNotification";
 
 
 - (id)init;
@@ -172,6 +173,11 @@ NSString *SMInputStreamSelectedInputSourceDisappearedNotification = @"SMInputStr
 - (void)postSelectedInputStreamSourceDisappearedNotification:(id<SMInputStreamSource>)source;
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:SMInputStreamSelectedInputSourceDisappearedNotification object:self userInfo:[NSDictionary dictionaryWithObject:source forKey:@"source"]];
+}
+
+- (void)postSourceListChangedNotification;
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMInputStreamSourceListChangedNotification object:self];
 }
 
 //

@@ -34,6 +34,7 @@
 - (MIDIReadProc)midiReadProc;
 - (SMMessageParser *)newParserWithOriginatingEndpoint:(SMEndpoint *)originatingEndpoint;
 - (void)postSelectedInputStreamSourceDisappearedNotification:(id<SMInputStreamSource>)source;
+- (void)postSourceListChangedNotification;
 
 // For subclasses to implement
 - (NSArray *)parsers;
@@ -56,3 +57,4 @@ extern NSString *SMInputStreamDoneReadingSysExNotification;
     // contains key @"valid" with NSNumber (BOOL) indicating whether sysex ended properly or not
 extern NSString *SMInputStreamSelectedInputSourceDisappearedNotification;
     // contains key @"source" with id<SMInputStreamSource> which disappeared
+extern NSString *SMInputStreamSourceListChangedNotification;

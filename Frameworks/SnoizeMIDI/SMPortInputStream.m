@@ -15,6 +15,7 @@
 
 @interface SMPortInputStream (Private)
 
+- (void)endpointListChanged:(NSNotification *)notification;
 - (void)endpointDisappeared:(NSNotification *)notification;
 - (void)endpointWasReplaced:(NSNotification *)notification;
 
@@ -38,6 +39,8 @@
 
     parsersForEndpoints = NSCreateMapTable(NSNonRetainedObjectMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endpointListChanged:) name:SMMIDIObjectListChangedNotification object:[SMSourceEndpoint class]];
+    
     return self;
 }
 
@@ -180,6 +183,11 @@
 
 
 @implementation SMPortInputStream (Private)
+
+- (void)endpointListChanged:(NSNotification *)notification;
+{
+    [self postSourceListChangedNotification];
+}
 
 - (void)endpointDisappeared:(NSNotification *)notification;
 {
