@@ -208,6 +208,19 @@ static SSEMainWindowController *controller;
     [self _findMissingFilesAndPlay];
 }
 
+- (IBAction)showFileInFinder:(id)sender;
+{
+    NSArray *selectedEntries;
+    NSString *path;
+    
+    selectedEntries = [self _selectedEntries];
+    OBASSERT([selectedEntries count] == 1);
+
+    if ((path = [[selectedEntries objectAtIndex:0] path])) {
+        [[NSWorkspace sharedWorkspace] selectFile:path inFileViewerRootedAtPath:@""];
+    }
+}
+
 - (IBAction)cancelRecordSheet:(id)sender;
 {
     [midiController cancelMessageListen];
@@ -244,6 +257,7 @@ static SSEMainWindowController *controller;
     [self synchronizeLibrary];
     [self synchronizePlayButton];
     [self synchronizeDeleteButton];
+    [self synchronizeShowFileButton];
 }
 
 - (void)synchronizeDestinations;
@@ -284,6 +298,11 @@ static SSEMainWindowController *controller;
 - (void)synchronizeDeleteButton;
 {
     [deleteButton setEnabled:([libraryTableView numberOfSelectedRows] > 0)];
+}
+
+- (void)synchronizeShowFileButton;
+{
+    [showFileButton setEnabled:([libraryTableView numberOfSelectedRows] == 1)];
 }
 
 
@@ -453,6 +472,7 @@ static SSEMainWindowController *controller;
 {
     [self synchronizePlayButton];
     [self synchronizeDeleteButton];
+    [self synchronizeShowFileButton];
 }
 
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(int)row;

@@ -16,6 +16,7 @@
 
     IBOutlet NSButton *playButton;
     IBOutlet NSButton *deleteButton;
+    IBOutlet NSButton *showFileButton;
     
     IBOutlet NSWindow *recordSheetWindow;
     IBOutlet NSProgressIndicator *recordProgressIndicator;
@@ -66,6 +67,7 @@
 - (IBAction)recordOne:(id)sender;
 - (IBAction)recordMultiple:(id)sender;
 - (IBAction)play:(id)sender;
+- (IBAction)showFileInFinder:(id)sender;
 
 - (IBAction)cancelRecordSheet:(id)sender;
 - (IBAction)doneWithRecordMultipleSheet:(id)sender;
@@ -82,6 +84,7 @@
 - (void)synchronizeLibrary;
 - (void)synchronizePlayButton;
 - (void)synchronizeDeleteButton;
+- (void)synchronizeShowFileButton;
 
 - (void)updateSysExReadIndicator;
 - (void)stopSysExReadIndicator;

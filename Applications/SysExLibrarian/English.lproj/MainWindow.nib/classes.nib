@@ -19,6 +19,7 @@
                 recordMultiple = id; 
                 recordOne = id; 
                 selectDestination = id; 
+                showFileInFinder = id; 
             }; 
             CLASS = SSEMainWindowController; 
             LANGUAGE = ObjC; 
@@ -46,6 +47,7 @@
                 recordProgressIndicator = NSProgressIndicator; 
                 recordProgressMessageField = NSTextField; 
                 recordSheetWindow = NSWindow; 
+                showFileButton = NSButton; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
