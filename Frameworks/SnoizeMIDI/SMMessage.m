@@ -412,7 +412,7 @@ static NSDateFormatter *timeStampDateFormatter;
 
 - (NSString *)channelForDisplay;
 {
-    return nil;
+    return @"";
 }
 
 - (NSString *)dataForDisplay;
