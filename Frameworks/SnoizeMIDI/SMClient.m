@@ -13,8 +13,14 @@
 - (NSString *)processName;
 
 static void getMIDINotification(const MIDINotification *message, void *refCon);
+
 - (void)midiSetupChanged;
+- (void)midiObjectAddedOrRemoved:(const MIDIObjectAddRemoveNotification *)message;
+- (void)midiObjectPropertyChanged:(const MIDIObjectPropertyChangeNotification *)message;
+- (void)midiThruConnectionsChanged:(const MIDINotification *)message;
+- (void)serialPortOwnerChanged:(const MIDINotification *)message;
 - (void)broadcastUnknownMIDINotification:(const MIDINotification *)message;
+- (void)broadcastGenericMIDINotification:(const MIDINotification *)message withName:(NSString *)notificationName;
 
 @end
 
@@ -24,9 +30,20 @@ static void getMIDINotification(const MIDINotification *message, void *refCon);
 NSString *SMClientCreatedInternalNotification = @"SMClientCreatedInternalNotification";
 NSString *SMClientSetupChangedInternalNotification = @"SMClientSetupChangedInternalNotification";
 NSString *SMClientSetupChangedNotification = @"SMClientSetupChangedNotification";
+NSString *SMClientObjectAddedNotification = @"SMClientObjectAddedNotification";
+NSString *SMClientObjectAddedOrRemovedParent = @"SMClientObjectAddedOrRemovedParent";
+NSString *SMClientObjectAddedOrRemovedParentType = @"SMClientObjectAddedOrRemovedParentType";
+NSString *SMClientObjectAddedOrRemovedChild = @"SMClientObjectAddedOrRemovedChild";
+NSString *SMClientObjectAddedOrRemovedChildType = @"SMClientObjectAddedOrRemovedChildType";
+NSString *SMClientObjectRemovedNotification = @"SMClientObjectRemovedNotification";
+NSString *SMClientObjectPropertyChangedNotification = @"SMClientObjectPropertyChangedNotification";
+NSString *SMClientObjectPropertyChangedObject = @"SMClientObjectPropertyChangedObject";
+NSString *SMClientObjectPropertyChangedType = @"SMClientObjectPropertyChangedType";
+NSString *SMClientObjectPropertyChangedName = @"SMClientObjectPropertyChangedName";
 NSString *SMClientMIDINotification = @"SMClientMIDINotification";
-NSString *SMClientMIDINotificationID = @"SMClientMIDINotificationID";
-NSString *SMClientMIDINotificationData = @"SMClientMIDINotificationData";
+NSString *SMClientMIDINotificationStruct = @"SMClientMIDINotificationStruct";
+NSString *SMClientThruConnectionsChangedNotification =  @"SMClientThruConnectionsChangedNotification";
+NSString *SMClientSerialPortOwnerChangedNotification = @"SMClientSerialPortOwnerChangedNotification";
 
 
 static SMClient *sharedClient = nil;
@@ -38,7 +55,7 @@ static SMClient *sharedClient = nil;
         if (sharedClient)
             [[NSNotificationCenter defaultCenter] postNotificationName:SMClientCreatedInternalNotification object:sharedClient];
     }
-    
+
     return sharedClient;
 }
 
@@ -139,6 +156,39 @@ static SMClient *sharedClient = nil;
         return (CFStringRef)coreMIDIPropertyNameConstant;
 }
 
+- (void *)coreMIDIFunctionNamed:(NSString *)functionName;
+{
+    // This method is used to look up CoreMIDI functions which may or may not exist.
+    // (For example, MIDIEntityGetDevice(), which is present in 10.2 but not 10.1.)
+    // If we linked against the function directly, we could no longer run on 10.1 since dyld
+    // would be unable to find that symbol. So we look it up at runtime instead.
+    
+    if (functionName && coreMIDIFrameworkBundle)
+        return CFBundleGetFunctionPointerForName(coreMIDIFrameworkBundle, (CFStringRef)functionName);
+    else
+        return NULL;    
+}
+
+- (UInt32)coreMIDIFrameworkVersion;
+{
+    if (coreMIDIFrameworkBundle)
+        return CFBundleGetVersionNumber(coreMIDIFrameworkBundle);
+    else
+        return 0;
+}
+
+- (BOOL)postsObjectAddedAndRemovedNotifications;
+{
+    // CoreMIDI.framework has CFBundleVersion "20" as of 10.2. This translates to 0x20008000.
+    return [self coreMIDIFrameworkVersion] >= 0x20008000;
+}
+
+- (BOOL)postsObjectPropertyChangedNotifications;
+{
+    // CoreMIDI.framework has CFBundleVersion "20" as of 10.2. This translates to 0x20008000.
+    return [self coreMIDIFrameworkVersion] >= 0x20008000;
+}
+
 @end
 
 
@@ -157,23 +207,48 @@ static SMClient *sharedClient = nil;
 
 static void getMIDINotification(const MIDINotification *message, void *refCon)
 {
-#if DEBUG
-//    NSLog(@"Got MIDI notification: %ld size: %ld", message->messageID, message->messageSize);
-#endif
+    SMClient *client = (SMClient *)refCon;
 
-    if (message->messageID == kMIDIMsgSetupChanged) {
-        [(SMClient *)refCon midiSetupChanged];    
-    } else {
-        [(SMClient *)refCon broadcastUnknownMIDINotification:message];
+    switch (message->messageID) {
+        case kMIDIMsgSetupChanged:	// The only notification in 10.1 and earlier
+            [client midiSetupChanged];
+            break;
+
+        case kMIDIMsgObjectAdded:	// Added in 10.2
+        case kMIDIMsgObjectRemoved:	// Added in 10.2
+            [client midiObjectAddedOrRemoved:(const MIDIObjectAddRemoveNotification *)message];
+            break;
+
+        case kMIDIMsgPropertyChanged:	// Added in 10.2
+            [client midiObjectPropertyChanged:(const MIDIObjectPropertyChangeNotification *)message];
+            break;
+
+        case kMIDIMsgThruConnectionsChanged:	// Added in 10.2
+            [client midiThruConnectionsChanged:message];
+            break;
+
+        case kMIDIMsgSerialPortOwnerChanged:	// Added in 10.2
+            [client serialPortOwnerChanged:message];
+            break;
+            
+        default:
+            [client broadcastUnknownMIDINotification:message];
+            break;
     }
 }
 
 - (void)midiSetupChanged;
 {
-    // Unfortunately, CoreMIDI is really messed up, and can send us a notification while we are still processing one!
+    // Unfortunately, CoreMIDI in 10.1.x and earlier has a bug: CoreMIDI calls will run the thread's run loop
+    // in its default mode (instead of a special private mode). Since CoreMIDI also delivers notifications when
+    // this mode runs, we can get notifications inside any CoreMIDI call that we make. It may even deliver another
+    // notification while we are in the middle of reacting to the first one!
+    //
     // So this method needs to be reentrant. If someone calls us while we are processing, just remember that fact,
     // and call ourself again after we're done.  (If we get multiple notifications while we're processing, they
     // will be coalesced into one update at the end.)
+    //
+    // Fortunately the bug has been fixed in 10.2. This code isn't really expensive, so it doesn't hurt to leave it in.
 
     static BOOL retryAfterDone = NO;
 
@@ -197,21 +272,61 @@ static void getMIDINotification(const MIDINotification *message, void *refCon)
     } while (retryAfterDone);
 }
 
-- (void)broadcastUnknownMIDINotification:(const MIDINotification *)message;
+- (void)midiObjectAddedOrRemoved:(const MIDIObjectAddRemoveNotification *)message;
 {
-    unsigned int dataSize;
-    NSData *data;
+    NSString *notificationName;
     NSDictionary *userInfo;
 
-    dataSize = message->messageSize - sizeof(MIDINotification);
-    if (dataSize > 0)
-        data = [NSData dataWithBytes:(message + 1) length:dataSize];
+    if (message->messageID == kMIDIMsgObjectAdded)
+        notificationName = SMClientObjectAddedNotification;
     else
-        data = nil;
+        notificationName = SMClientObjectRemovedNotification;
 
-    userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:message->messageID], SMClientMIDINotificationID, data, SMClientMIDINotificationData, nil];
+    userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+        [NSValue valueWithPointer:message->parent], SMClientObjectAddedOrRemovedParent,
+        [NSNumber numberWithInt:message->parentType], SMClientObjectAddedOrRemovedParentType,
+        [NSValue valueWithPointer:message->child], SMClientObjectAddedOrRemovedChild,
+        [NSNumber numberWithInt:message->childType], SMClientObjectAddedOrRemovedChildType,
+        nil];
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMClientMIDINotification object:self userInfo:userInfo];
+    [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:self userInfo:userInfo];    
+}
+
+- (void)midiObjectPropertyChanged:(const MIDIObjectPropertyChangeNotification *)message;
+{
+    NSDictionary *userInfo;
+
+    userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+        [NSValue valueWithPointer:message->object], SMClientObjectPropertyChangedObject,
+        [NSNumber numberWithInt:message->objectType], SMClientObjectPropertyChangedType,
+        (NSString *)message->propertyName, SMClientObjectPropertyChangedName,
+        nil];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMClientObjectPropertyChangedNotification object:self userInfo:userInfo];    
+}
+
+- (void)midiThruConnectionsChanged:(const MIDINotification *)message;
+{
+    [self broadcastGenericMIDINotification:message withName:SMClientThruConnectionsChangedNotification];
+}
+
+- (void)serialPortOwnerChanged:(const MIDINotification *)message;
+{
+    [self broadcastGenericMIDINotification:message withName:SMClientSerialPortOwnerChangedNotification];
+}
+
+- (void)broadcastUnknownMIDINotification:(const MIDINotification *)message;
+{
+    [self broadcastGenericMIDINotification:message withName:SMClientMIDINotification];
+}
+
+- (void)broadcastGenericMIDINotification:(const MIDINotification *)message withName:(NSString *)notificationName;
+{
+    NSDictionary *userInfo;
+
+    userInfo = [NSDictionary dictionaryWithObject:[NSValue valueWithPointer:message] forKey:SMClientMIDINotificationStruct];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:self userInfo:userInfo];
 }
 
 @end
