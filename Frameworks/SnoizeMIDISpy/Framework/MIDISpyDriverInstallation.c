@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include "MoreFilesX.h"
 
 
 //
@@ -189,18 +190,34 @@ static void CreateBundlesForDriversInDomain(short findFolderDomain, CFMutableArr
 
 static Boolean RemoveInstalledDriver(CFURLRef driverURL)
 {
-    // TODO it would be better to do a recursive delete ourself.
-    // TODO it is possible that something in this path (or the file itself) is an alias (w/resource fork)
-    // so we should not use UNIX API/commands to delete it.
-    char driverPath[PATH_MAX];
-    char *argv[] = { "/bin/rm", "-rf", driverPath, NULL };
+    FSRef driverFSRef;
+    OSErr result;
+    FSCatalogInfo catalogInfo;
 
-    if (!CFURLGetFileSystemRepresentation(driverURL, FALSE, (UInt8 *)driverPath, PATH_MAX)) {
-        debug_string("MIDISpy: CFURLGetFileSystemRepresentation(driverPath) failed");
+    if (!CFURLGetFSRef(driverURL, &driverFSRef))
         return FALSE;
+
+    // If this is a directory, delete the contents first
+    result = FSGetCatalogInfo(&driverFSRef, kFSCatInfoNodeFlags, &catalogInfo, NULL, NULL, NULL);
+    require_noerr(result, FSGetCatalogInfo);
+    if (catalogInfo.nodeFlags & kFSNodeIsDirectoryMask) {
+        result = FSDeleteContainerContents(&driverFSRef);
+        require_noerr(result, FSDeleteContainerContents);
     }
 
-    return ForkAndExec(argv);
+    // Is the top object (directory or file) locked?
+    if (catalogInfo.nodeFlags & kFSNodeLockedMask) {
+        // Then attempt to unlock it (ignore the result since FSDeleteObject will set it correctly)
+        catalogInfo.nodeFlags &= ~kFSNodeLockedMask;
+        FSSetCatalogInfo(&driverFSRef, kFSCatInfoNodeFlags, &catalogInfo);
+    }
+
+    // Delete the directory or file
+    result = FSDeleteObject(&driverFSRef);
+
+FSGetCatalogInfo:
+FSDeleteContainerContents:
+    return (result == noErr);
 }
 
 
@@ -210,13 +227,14 @@ static Boolean InstallDriver(CFURLRef ourDriverURL)
     FSRef folderFSRef;
     Boolean success = FALSE;
 
-    // Find the directory "~/Library/Audio/MIDI Drivers". If it doesn't exist, create it.
+    // Find the MIDI Drivers directory for the current user. If it doesn't exist, create it.
     error = FSFindFolder(kUserDomain, kMIDIDriversFolderType, kCreateFolder, &folderFSRef);
     if (error != noErr) {
         debug_string("MIDISpy: FSFindFolder(kUserDomain, kMIDIDriversFolderType, kCreateFolder) returned error");
     } else {
         CFURLRef folderURL;
 
+        // And copy the driver there.
         folderURL = CFURLCreateFromFSRef(kCFAllocatorDefault, &folderFSRef);
         success = CopyDirectory(ourDriverURL, folderURL);
 
@@ -229,6 +247,10 @@ static Boolean InstallDriver(CFURLRef ourDriverURL)
 
 static Boolean CopyDirectory(CFURLRef sourceDirectoryURL, CFURLRef targetDirectoryURL)
 {
+    // Copy (recursively) from the source into the target.
+    // I know the driver doesn't contain any files with resource forks or interesting finder info, so we are safe using UNIX commands for this.
+    // TODO This is sort of lame, though... but less error-prone than writing it myself, I bet.
+    
     char sourcePath[PATH_MAX];
     char targetPath[PATH_MAX];
     char *argv[] = { "/bin/cp", "-Rf", sourcePath, targetPath, NULL };
@@ -243,8 +265,6 @@ static Boolean CopyDirectory(CFURLRef sourceDirectoryURL, CFURLRef targetDirecto
         return FALSE;
     }
 
-    // Copy (recursively) from the source into the target.
-    // I know the driver doesn't contain any files with resource forks, so we are safe using UNIX commands for this.
     return ForkAndExec(argv);
 }
 
