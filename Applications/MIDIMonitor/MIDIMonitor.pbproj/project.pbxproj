@@ -105,6 +105,7 @@
 				167B882606ED4D650053D305,
 				167B883806ED4D650053D305,
 				167B883E06ED4D650053D305,
+				16B78DE806F44A9D009AF6E6,
 			);
 			buildRules = (
 			);
@@ -113,7 +114,7 @@
 				GCC_PREFIX_HEADER = PrecompHeader.h;
 				GCC_USE_GCC3_PFE_SUPPORT = YES;
 				INFOPLIST_FILE = "Info-MIDIMonitor__Upgraded_.plist";
-				INSTALL_PATH = /Users/Shared/krevis/InstalledProducts;
+				INSTALL_PATH = blah;
 				MACOSX_DEPLOYMENT_TARGET = 10.2;
 				PRODUCT_NAME = "MIDI Monitor";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas -Wparentheses";
@@ -621,6 +622,20 @@
 			isa = PBXBuildFile;
 			settings = {
 			};
+		};
+		16B78DE806F44A9D009AF6E6 = {
+			buildActionMask = 8;
+			comments = "remove headers from copies of internal frameworks -- nobody needs them in the deployed app\n";
+			files = (
+			);
+			inputPaths = (
+			);
+			isa = PBXShellScriptBuildPhase;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "find \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH\" -type d -name Headers -exec rm -rf {} \\; -prune\n";
 		};
 		16F20F4906EAA14A00D9C507 = {
 			fileEncoding = 30;
@@ -1195,7 +1210,6 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "\U0001-DDEBUG";
 				ZERO_LINK = YES;
 			};
