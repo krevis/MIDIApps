@@ -30,6 +30,7 @@
 - (void)_sendNextSysExMessage;
 - (void)_willStartSendingSysEx:(NSNotification *)notification;
 - (void)_doneSendingSysEx:(NSNotification *)notification;
+- (void)_finishedSendingMessagesWithSuccess:(BOOL)success;
 
 @end
 
@@ -43,6 +44,8 @@ NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey = @"SSESysExIntervalB
 
 DEFINE_NSSTRING(SSEMIDIControllerReadStatusChangedNotification);
 DEFINE_NSSTRING(SSEMIDIControllerReadFinishedNotification);
+DEFINE_NSSTRING(SSEMIDIControllerSendWillStartNotification);
+DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
 
 
 - (id)init
@@ -270,7 +273,8 @@ DEFINE_NSSTRING(SSEMIDIControllerReadFinishedNotification);
     for (messageIndex = 0; messageIndex < messageCount; messageIndex++)
         bytesToSend += [[messages objectAtIndex:messageIndex] fullMessageDataLength];
 
-    [windowController showSysExSendStatus];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SSEMIDIControllerSendWillStartNotification object:self];
+
     [self _sendNextSysExMessage];
 }
 
@@ -279,7 +283,7 @@ DEFINE_NSSTRING(SSEMIDIControllerReadFinishedNotification);
     OBASSERT([NSThread inMainThread]);
 
     if (sendNextMessageEvent && [[OFScheduler mainScheduler] abortEvent:sendNextMessageEvent]) {
-        [windowController hideSysExSendStatusWithSuccess:NO];
+        [self _finishedSendingMessagesWithSuccess:NO];
     } else {
         sendCancelled = YES;
         [outputStream cancelPendingSysExSendRequests];
@@ -498,15 +502,20 @@ static MIDITimeStamp pauseStartTimeStamp = 0;
 #endif
     
     if (sendCancelled) {
-        [windowController mainThreadPerformSelector:@selector(hideSysExSendStatusWithSuccess:) withBool:NO];
+        [self mainThreadPerformSelector:@selector(_finishedSendingMessagesWithSuccess:) withBool:NO];
     } else if (sendingMessageIndex < sendingMessageCount && [sendRequest wereAllBytesSent]) {
 #if LOG_PAUSE_DURATION
         pauseStartTimeStamp = SMGetCurrentHostTime();
 #endif
         sendNextMessageEvent = [[[OFScheduler mainScheduler] scheduleSelector:@selector(_sendNextSysExMessage) onObject:self afterTime:pauseTimeBetweenMessages] retain];
     } else {
-        [windowController mainThreadPerformSelector:@selector(hideSysExSendStatusWithSuccess:) withBool:[sendRequest wereAllBytesSent]];
+        [self mainThreadPerformSelector:@selector(_finishedSendingMessagesWithSuccess:) withBool:[sendRequest wereAllBytesSent]];
     }
+}
+
+- (void)_finishedSendingMessagesWithSuccess:(BOOL)success;
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:SSEMIDIControllerSendFinishedNotification object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:success] forKey:@"success"]];
 }
 
 @end

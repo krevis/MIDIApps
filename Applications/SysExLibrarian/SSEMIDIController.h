@@ -69,3 +69,6 @@ extern NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey;
 // Notifications
 extern NSString *SSEMIDIControllerReadStatusChangedNotification;
 extern NSString *SSEMIDIControllerReadFinishedNotification;
+extern NSString *SSEMIDIControllerSendWillStartNotification;
+extern NSString *SSEMIDIControllerSendFinishedNotification;
+    // userInfo has NSNumber for key "success" indicating if all messages were sent

@@ -3,6 +3,7 @@
 @class OFScheduledEvent;
 @class SSEMIDIController;
 @class SSELibrary;
+@class SSEPlayController;
 @class SSERecordController;
 @class SSETableView;
 
@@ -13,11 +14,6 @@
     IBOutlet NSPopUpButton *destinationPopUpButton;
 
     IBOutlet SSETableView *libraryTableView;
-
-    IBOutlet NSPanel *playSheetWindow;
-    IBOutlet NSProgressIndicator *playProgressIndicator;
-    IBOutlet NSTextField *playProgressMessageField;
-    IBOutlet NSTextField *playProgressBytesField;
 
     IBOutlet NSPanel *importSheetWindow;
     IBOutlet NSProgressIndicator *importProgressIndicator;
@@ -36,7 +32,7 @@
     NSArray *sortedLibraryEntries;
     
     // Transient data
-    OFScheduledEvent *progressUpdateEvent;
+    SSEPlayController *playController;
     SSERecordController *recordOneController;
     SSERecordController *recordManyController;
     NSLock *importStatusLock;
@@ -69,8 +65,6 @@
 - (IBAction)rename:(id)sender;
 - (IBAction)showDetails:(id)sender;
 
-- (IBAction)cancelPlaySheet:(id)sender;
-
 - (IBAction)cancelImportSheet:(id)sender;
 
 - (IBAction)endSheetWithReturnCodeFromSenderTag:(id)sender;
@@ -86,9 +80,6 @@
 - (void)importFiles:(NSArray *)filePaths showingProgress:(BOOL)showProgress;
 
 - (void)addReadMessagesToLibrary;
-
-- (void)showSysExSendStatus;
-- (void)hideSysExSendStatusWithSuccess:(BOOL)success;
 
 - (void)showSysExWorkaroundWarning;
 

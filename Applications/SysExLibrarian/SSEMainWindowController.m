@@ -8,6 +8,7 @@
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
 #import "SSEMIDIController.h"
+#import "SSEPlayController.h"
 #import "SSEPreferencesWindowController.h"
 #import "SSERecordOneController.h"
 #import "SSERecordManyController.h"
@@ -40,9 +41,6 @@
 - (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
 - (void)_playSelectedEntries;
-
-- (void)_updatePlayProgressAndRepeat;
-- (void)_updatePlayProgress;
 
 - (void)_showDetailsOfSelectedEntries;
 
@@ -115,8 +113,8 @@ static SSEMainWindowController *controller;
 
 - (void)dealloc
 {
-    [progressUpdateEvent release];
-    progressUpdateEvent = nil;
+    [playController release];
+    playController = nil;
     [recordOneController  release];
     recordOneController = nil;
     [recordManyController release];
@@ -323,12 +321,6 @@ static SSEMainWindowController *controller;
     [self _findMissingFilesAndPerformSelector:@selector(_showDetailsOfSelectedEntries)];
 }
 
-- (IBAction)cancelPlaySheet:(id)sender;
-{
-    [midiController cancelSendingMessages];
-    // -hideSysExSendStatusWithSuccess: will get called soon; it will end the sheet
-}
-
 - (IBAction)cancelImportSheet:(id)sender;
 {
     // No need to lock just to set a boolean
@@ -444,41 +436,6 @@ static SSEMainWindowController *controller;
     }
 }
 
-//
-// Sending SysEx
-//
-
-- (void)showSysExSendStatus;
-{
-    unsigned int bytesToSend;
-
-    [playProgressIndicator setMinValue:0.0];
-    [playProgressIndicator setDoubleValue:0.0];
-    [midiController getMessageCount:NULL messageIndex:NULL bytesToSend:&bytesToSend bytesSent:NULL];
-    [playProgressIndicator setMaxValue:bytesToSend];
-
-    [self _updatePlayProgressAndRepeat];
-
-    [[NSApplication sharedApplication] beginSheet:playSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
-}
-
-- (void)hideSysExSendStatusWithSuccess:(BOOL)success;
-{
-    // If there is an update pending, try to cancel it. If that succeeds, then we know the event never happened, and we do it ourself now.
-    if (progressUpdateEvent && [[OFScheduler mainScheduler] abortEvent:progressUpdateEvent]) {
-        [self _updatePlayProgress];
-        [progressUpdateEvent release];
-        progressUpdateEvent = nil;
-    }
-    
-    if (!success)
-        [playProgressMessageField setStringValue:@"Cancelled."];
-
-    // Even if we have set the progress indicator to its maximum value, it won't get drawn on the screen that way immediately,
-    // probably because it tries to smoothly animate to that state. The only way I have found to show the maximum value is to just
-    // wait a little while for the animation to finish. This looks nice, too.
-    [[NSApplication sharedApplication] performSelector:@selector(endSheet:) withObject:playSheetWindow afterDelay:0.5];    
-}
 
 //
 // SysEx workaround warning
@@ -929,39 +886,12 @@ static int libraryEntryComparator(id object1, id object2, void *context)
         [messages addObjectsFromArray:[[selectedEntries objectAtIndex:entryIndex] messages]];
     }
 
-    [midiController setMessages:messages];
-    [midiController sendMessages];
-}
-
-- (void)_updatePlayProgressAndRepeat;
-{
-    [self _updatePlayProgress];
-
-    [progressUpdateEvent release];
-    progressUpdateEvent = [[[OFScheduler mainScheduler] scheduleSelector:@selector(_updatePlayProgressAndRepeat) onObject:self afterTime:[playProgressIndicator animationDelay]] retain];
-}
-
-- (void)_updatePlayProgress;
-{
-    unsigned int messageIndex, messageCount, bytesToSend, bytesSent;
-    NSString *message;
-
-    [midiController getMessageCount:&messageCount messageIndex:&messageIndex bytesToSend:&bytesToSend bytesSent:&bytesSent];
-
-    OBASSERT(bytesSent >= [playProgressIndicator doubleValue]);
-        // Make sure we don't go backwards somehow
-        
-    [playProgressIndicator setDoubleValue:bytesSent];
-    [playProgressBytesField setStringValue:[NSString abbreviatedStringForBytes:bytesSent]];
-    if (bytesSent < bytesToSend) {
-        if (messageCount > 1)
-            message = [NSString stringWithFormat:@"Sending message %u of %u...", messageIndex+1, messageCount];
-        else
-            message = @"Sending message...";
-    } else {
-        message = @"Done.";
+    if ([messages count] > 0) {
+        if (!playController)
+            playController = [[SSEPlayController alloc] initWithWindowController:self midiController:midiController];
+    
+        [playController playMessages:messages];
     }
-    [playProgressMessageField setStringValue:message];
 }
 
 - (void)_showDetailsOfSelectedEntries;

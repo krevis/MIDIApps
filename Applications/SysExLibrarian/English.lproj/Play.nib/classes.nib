@@ -1,0 +1,18 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {cancelPlaying = id; }; 
+            CLASS = SSEPlayController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                progressBytesField = NSTextField; 
+                progressIndicator = NSProgressIndicator; 
+                progressMessageField = NSTextField; 
+                sheetWindow = NSPanel; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}
