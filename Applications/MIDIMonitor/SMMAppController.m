@@ -37,11 +37,15 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
             break;
         case kMIDISpyDriverInstallationFailed:
             NSLog(@"spying driver installation failed!");
-            break;        
+            break;
+        case kMIDISpyDriverCouldNotRemoveOldDriver:
+            NSLog(@"spying driver couldn't remove old driver");
+            break;
         default:
             NSLog(@"spying driver gave us some wack value");
             break;
     }
+    // TODO If this fails, we should not go on to call MIDISpyClientCreate() later on
 
     // Initialize CoreMIDI while the app's icon is still bouncing, so we don't have a large pause after it stops bouncing
     // but before the app's window opens.  (CoreMIDI needs to find and possibly start its server process, which can take a while.)
