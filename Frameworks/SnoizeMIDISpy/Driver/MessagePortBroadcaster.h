@@ -17,18 +17,23 @@ public:
 
 class MessagePortBroadcaster {
 public:
-                                MessagePortBroadcaster(CFStringRef broadcasterName, MessagePortBroadcasterDelegate *delegate);
-    virtual 		~MessagePortBroadcaster();
+                                        MessagePortBroadcaster(CFStringRef broadcasterName, MessagePortBroadcasterDelegate *delegate);
+    virtual 			~MessagePortBroadcaster();
 
-    void		Broadcast(CFDataRef data, SInt32 channel);
-
-    CFDataRef		NextListenerIdentifier();
-    void		AddListener(CFDataRef listenerIdentifierData);
-    void		ChangeListenerChannelStatus(CFDataRef messageData, Boolean shouldAdd);
-    
-    void		RemoveListenerWithRemotePort(CFMessagePortRef remotePort);
+    void			Broadcast(CFDataRef data, SInt32 channel);
 
 private:
+    friend CFDataRef		LocalMessagePortCallBack(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info);
+
+    CFDataRef			NextListenerIdentifier();
+    void			AddListener(CFDataRef listenerIdentifierData);
+    void			ChangeListenerChannelStatus(CFDataRef messageData, Boolean shouldAdd);
+    
+    friend void	 	MessagePortWasInvalidated(CFMessagePortRef ms, void *info);
+    void			RemoveListenerWithRemotePort(CFMessagePortRef remotePort);
+    friend void		RemoveRemotePortFromChannelArray(const void *key, const void *value, void *context);
+    
+    
     MessagePortBroadcasterDelegate	*mDelegate;
     CFStringRef				mBroadcasterName;
     CFMessagePortRef			mLocalPort;

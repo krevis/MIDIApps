@@ -1,16 +1,11 @@
 #include "MessagePortBroadcaster.h"
+
 #include "MIDISpyShared.h"
 #include <pthread.h>
 
-extern "C" {
-    static CFDataRef localMessagePortCallBack(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info);
-    static void messagePortWasInvalidated(CFMessagePortRef ms, void *info);
-    static void removeRemotePortFromChannelArray(const void *key, const void *value, void *context);
-}
 
-// NOTE This static variable is a dumb workaround. See comment in messagePortWasInvalidated().
+// NOTE This static variable is a dumb workaround. See comment in MessagePortWasInvalidated().
 static MessagePortBroadcaster *sOneBroadcaster = NULL;
-
 
 MessagePortBroadcaster::MessagePortBroadcaster(CFStringRef broadcasterName, MessagePortBroadcasterDelegate *delegate) :
     mDelegate(delegate),
@@ -31,7 +26,7 @@ MessagePortBroadcaster::MessagePortBroadcaster(CFStringRef broadcasterName, Mess
     mBroadcasterName = CFStringCreateCopy(kCFAllocatorDefault, broadcasterName);
 
     // Create a local port for remote listeners to talk to us with
-    mLocalPort = CFMessagePortCreateLocal(kCFAllocatorDefault, mBroadcasterName, localMessagePortCallBack, &messagePortContext, FALSE);
+    mLocalPort = CFMessagePortCreateLocal(kCFAllocatorDefault, mBroadcasterName, LocalMessagePortCallBack, &messagePortContext, FALSE);
 
     // And add it to the current run loop
     mRunLoopSource = CFMessagePortCreateRunLoopSource(kCFAllocatorDefault, mLocalPort, 0);
@@ -96,7 +91,11 @@ void MessagePortBroadcaster::Broadcast(CFDataRef data, SInt32 channel)
 }
 
 
-static CFDataRef localMessagePortCallBack(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info)
+//
+// Private functions and methods
+//
+
+CFDataRef LocalMessagePortCallBack(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info)
 {
     MessagePortBroadcaster *broadcaster = (MessagePortBroadcaster *)info;
     CFDataRef result = NULL;
@@ -157,7 +156,7 @@ void	MessagePortBroadcaster::AddListener(CFDataRef listenerIdentifierData)
 
     remotePort = CFMessagePortCreateRemote(kCFAllocatorDefault, listenerPortName);
     if (remotePort) {
-        CFMessagePortSetInvalidationCallBack(remotePort, messagePortWasInvalidated);
+        CFMessagePortSetInvalidationCallBack(remotePort, MessagePortWasInvalidated);
 
         pthread_mutex_lock(&mListenerStructuresMutex);
         CFDictionarySetValue(mListenersByIdentifier, (void *)listenerIdentifier, (void *)remotePort);
@@ -219,7 +218,7 @@ void	MessagePortBroadcaster::ChangeListenerChannelStatus(CFDataRef messageData, 
     pthread_mutex_unlock(&mListenerStructuresMutex);
 }
 
-void messagePortWasInvalidated(CFMessagePortRef messagePort, void *info)
+void MessagePortWasInvalidated(CFMessagePortRef messagePort, void *info)
 {
     // NOTE: The info pointer provided to this function is useless. CFMessagePort provides no way to set it for remote ports.
     // Thus, we have to assume we have one MessagePortBroadcaster, which we look up statically. Lame!
@@ -244,7 +243,7 @@ void	MessagePortBroadcaster::RemoveListenerWithRemotePort(CFMessagePortRef remot
     CFDictionaryRemoveValue(mIdentifiersByListener, (void *)remotePort);
 
     // Also go through the listener array for each channel and remove remotePort from there too
-    CFDictionaryApplyFunction(mListenerArraysByChannel, removeRemotePortFromChannelArray, remotePort);    
+    CFDictionaryApplyFunction(mListenerArraysByChannel, RemoveRemotePortFromChannelArray, remotePort);    
 
     pthread_mutex_unlock(&mListenerStructuresMutex);
 
@@ -252,7 +251,7 @@ void	MessagePortBroadcaster::RemoveListenerWithRemotePort(CFMessagePortRef remot
         mDelegate->BroadcasterListenerCountChanged(this, false);    
 }
 
-void removeRemotePortFromChannelArray(const void *key, const void *value, void *context)
+void RemoveRemotePortFromChannelArray(const void *key, const void *value, void *context)
 {
     // We don't care about the key (it's a channel number)
     CFMutableArrayRef listenerArray = (CFMutableArrayRef)value;

@@ -18,17 +18,19 @@ public:
     // MessagePortBroadcasterDelegate overrides
     virtual void 	BroadcasterListenerCountChanged(MessagePortBroadcaster *broadcaster, bool hasListeners);
     
-    // This needs to be public in order to call it from a C callback. Annoying.
-    // TODO Can we make it a friend instead?
-    void		RebuildEndpointUniqueIDMappings();
-
 private:
     void		CheckCoreMIDIVersion();
+
     void		CreateMIDIClient();
     void		DisposeMIDIClient();
+    friend void 	MIDIClientNotificationProc(const MIDINotification *message, void *refCon);
+    void		RebuildEndpointUniqueIDMappings();
+
     void		EnableMonitoring(Boolean enable);
-    UInt32		SizeOfPacketList(const MIDIPacketList *packetList);
+
     CFDataRef 	PackageMonitoredDataForBroadcast(const MIDIPacketList *packetList, SInt32 endpointUniqueID);
+    UInt32		SizeOfPacketList(const MIDIPacketList *packetList);
+
     
     bool 				mNeedsMonitorPointerWorkaround;
     MessagePortBroadcaster	*mBroadcaster;
