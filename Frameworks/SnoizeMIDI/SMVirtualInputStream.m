@@ -24,8 +24,7 @@
     if (!(self = [super init]))
         return nil;
 
-    parser = [[SMMessageParser alloc] init];
-    [parser setDelegate:self];
+    parser = [[self newParser] retain];
     
     client = [SMClient sharedClient];
         

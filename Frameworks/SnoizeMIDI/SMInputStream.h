@@ -13,16 +13,21 @@
 @interface SMInputStream : OFObject
 {
     id<SMMessageDestination> nonretainedMessageDestination;
+    NSTimeInterval sysExTimeOut;
 }
 
 - (id<SMMessageDestination>)messageDestination;
 - (void)setMessageDestination:(id<SMMessageDestination>)messageDestination;
+
+- (NSTimeInterval)sysExTimeOut;
+- (void)setSysExTimeOut:(NSTimeInterval)value;
 
 - (BOOL)cancelReceivingSysExMessage;
     // Returns YES if it can successfully cancel a sysex message which is being received, and NO otherwise.
 
 // For subclasses only
 - (MIDIReadProc)midiReadProc;
+- (SMMessageParser *)newParser;
 
 // For subclasses to implement
 - (NSArray *)parsers;

@@ -32,9 +32,8 @@ DEFINE_NSSTRING(SMInputStreamDoneReadingSysExNotification);
     if (!(self = [super init]))
         return nil;
 
-    //    parser = [[SMMessageParser alloc] init];
-    //    [parser setDelegate:self];
-
+    sysExTimeOut = 1.0;
+    
     return self;
 }
 
@@ -53,6 +52,27 @@ DEFINE_NSSTRING(SMInputStreamDoneReadingSysExNotification);
     nonretainedMessageDestination = messageDestination;
 }
 
+- (NSTimeInterval)sysExTimeOut;
+{
+    return sysExTimeOut;
+}
+
+- (void)setSysExTimeOut:(NSTimeInterval)value;
+{
+    NSArray *parsers;
+    unsigned int parserIndex;
+
+    if (sysExTimeOut == value)
+        return;
+
+    sysExTimeOut = value;
+
+    parsers = [self parsers];
+    parserIndex = [parsers count];
+    while (parserIndex--)
+        [[parsers objectAtIndex:parserIndex] setSysExTimeOut:sysExTimeOut];
+}
+
 - (BOOL)cancelReceivingSysExMessage;
 {
     [[self parsers] makeObjectsPerformSelector:@selector(cancelReceivingSysExMessage)];
@@ -60,9 +80,24 @@ DEFINE_NSSTRING(SMInputStreamDoneReadingSysExNotification);
     return YES;
 }
 
+//
+// For use by subclasses only
+//
+
 - (MIDIReadProc)midiReadProc;
 {
     return midiReadProc;
+}
+
+- (SMMessageParser *)newParser;
+{
+    SMMessageParser *parser;
+
+    parser = [[[SMMessageParser alloc] init] autorelease];
+    [parser setDelegate:self];
+    [parser setSysExTimeOut:sysExTimeOut];
+
+    return parser;
 }
 
 //
