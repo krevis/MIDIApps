@@ -97,19 +97,28 @@
 
 - (SSELibraryEntry *)addNewEntryWithData:(NSData *)sysexData;
 {
+    NSFileManager *fileManager;
     NSString *newFilePath;
+    NSDictionary *newFileAttributes;
     SSELibraryEntry *entry = nil;
 
+    fileManager = [NSFileManager defaultManager];
+    
     // TODO what name?  attach the date, perhaps?
     // TODO also get the file directory for real, not the default
     newFilePath = [[SSELibrary defaultFileDirectory] stringByAppendingPathComponent:@"New SysEx File.syx"];
-    newFilePath = [[NSFileManager defaultManager] uniqueFilenameFromName:newFilePath];
+    newFilePath = [fileManager uniqueFilenameFromName:newFilePath];
 
-    // TODO maybe need to create the path to this file
-    // TODO should maybe also hide the extension on this file
-    
-    if ([sysexData writeToFile:newFilePath atomically:YES])
+    [fileManager createPathToFile:newFilePath attributes:nil];
+
+    newFileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
+        [NSNumber numberWithUnsignedLong:'sysX'], NSFileHFSTypeCode,
+        [NSNumber numberWithUnsignedLong:'SnSX'], NSFileHFSCreatorCode,
+        [NSNumber numberWithBool:YES], NSFileExtensionHidden, nil];
+
+    if ([fileManager atomicallyCreateFileAtPath:newFilePath contents:sysexData attributes:newFileAttributes]) {
         entry = [self addEntryForFile:newFilePath];
+    }
 
     return entry;
 }

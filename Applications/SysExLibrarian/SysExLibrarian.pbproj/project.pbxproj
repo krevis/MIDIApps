@@ -332,7 +332,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
-	<string>????</string>
+	<string>SnSX</string>
 	<key>CFBundleVersion</key>
 	<string>0.1</string>
 	<key>NSMainNibFile</key>
