@@ -94,7 +94,7 @@ void AddToMessageQueue(CFTypeRef objectToAdd)
         return;        
     }
     
-    // add the data to the array
+    // add the object to the queue
     CFArrayAppendValue(queueArray, objectToAdd);
 
     // release the lock
@@ -127,9 +127,9 @@ void mainThreadRunLoopSourceCallback(void *info)
         return;
     }
 
-    // copy the array of dict objects
+    // copy the array of queued objects,
     copiedQueueArray = CFArrayCreateCopy(kCFAllocatorDefault, queueArray);
-    // and remove the dict objects
+    // and remove the queued objects
     CFArrayRemoveAllValues(queueArray);
 
     // release the lock
