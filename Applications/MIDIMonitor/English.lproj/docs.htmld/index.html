@@ -51,7 +51,7 @@ Musicians will find it handy for tracking down confusing MIDI problems, and prog
 
 <P>You can clear the list of events by pressing the Clear button, using the Events>Clear Events menu command, or typing Command-K.  You can also change the number of events that the list will remember by changing the number in the text field.
 
-<p>To display the contents of a System Exclusive (or SysEx) event, double-click it, or use the Events->Show SysEx Data menu command. (More on that later.)
+<p>Some kinds of events contain more data than can be shown in one line. These are System Exclusive (or SysEx) events and Invalid events. To show the full contents of the event, double-click it, or use the Events->Show Detailed Data menu command.  (More on that later.)
 
 <P><B>Sources</B>
 
@@ -149,12 +149,16 @@ Musicians will find it handy for tracking down confusing MIDI problems, and prog
 <BR clear="all">
 
 
-<P><BR><BR><font size="+1" face="arial, helvetica"><b>SysEx Data</b></font>
+<P><BR><BR><font size="+1" face="arial, helvetica"><b>SysEx Event Data</b></font>
 <BR><img src="sysexWindow.gif" align="right">
 
-<P>To see the contents of a SysEx event, double-click it, or select it and use the Events->Show SysEx Data menu command.
+<P>To see the contents of a SysEx event, double-click it, or select it and use the Events->Show Detailed Data menu command.
 
 <P>The window shows information about the event, as well as a dump of the event's data in both hexadecimal and ASCII formats. Also, you may save the event data to a file using the &quot;Save As&quot; button.
+
+<P><BR><BR><font size="+1" face="arial, helvetica"><b>Invalid Event Data</b></font>
+
+<P>When MIDI Monitor receives data that does not conform to the MIDI specification, it shows the data in an Invalid event.  To see the contents of the event, double-click it, or select it and use the Events->Show Detailed Data menu command.
 
 <br clear="all">
 
