@@ -62,20 +62,29 @@
     // NOTE: This function is called in a separate, "high-priority" thread.
     // All downstream processing will also be done in this thread, until someone jumps it into another.
 
-    NSMutableArray *messages;
+    NSMutableArray *messages = nil;
     unsigned int packetCount;
     const MIDIPacket *packet;
 
     packetCount = packetList->numPackets;
-    messages = [NSMutableArray arrayWithCapacity:packetCount];
 
     packet = packetList->packet;
     while (packetCount--) {
-        [messages addObjectsFromArray:[self _messagesForPacket:packet]];
+        NSArray *messagesForPacket;
+
+        messagesForPacket = [self _messagesForPacket:packet];
+        if (messagesForPacket) {
+            if (!messages)
+                messages = [NSMutableArray arrayWithArray:messagesForPacket];
+            else
+                [messages addObjectsFromArray:messagesForPacket];
+        }
+
         packet = MIDIPacketNext(packet);
     }
 
-    [nonretainedMessageDestination takeMIDIMessages:messages];
+    if (messages)
+        [nonretainedMessageDestination takeMIDIMessages:messages];
 }
 
 @end
@@ -86,7 +95,7 @@
 - (NSArray *)_messagesForPacket:(const MIDIPacket *)packet;
 {
     // Split this packet into separate MIDI messages    
-    NSMutableArray *messages;
+    NSMutableArray *messages = nil;
     const Byte *data;
     UInt16 length;
     Byte byte;
@@ -94,14 +103,14 @@
     Byte pendingData[2];
     UInt16 pendingDataIndex, pendingDataLength;
     
-    messages = [NSMutableArray array];
-
     pendingMessageStatus = 0;
     pendingDataIndex = pendingDataLength = 0;
 
     data = packet->data;
     length = packet->length;
     while (length--) {
+        SMMessage *message = nil;
+        
         byte = *data++;
     
         if (byte >= 0xF8) {
@@ -113,7 +122,7 @@
                 case SMSystemRealTimeMessageTypeStop:
                 case SMSystemRealTimeMessageTypeActiveSense:
                 case SMSystemRealTimeMessageTypeReset:
-                    [messages addObject:[SMSystemRealTimeMessage systemRealTimeMessageWithTimeStamp:packet->timeStamp type:byte]];
+                    message = [SMSystemRealTimeMessage systemRealTimeMessageWithTimeStamp:packet->timeStamp type:byte];
                     break;
         
                 default:
@@ -134,15 +143,11 @@
 
                     if (pendingDataIndex == pendingDataLength) {
                         // This message is now done--send it
-                        SMMessage *message;
-
                         if (pendingMessageStatus >= 0xF0)
                             message = [SMSystemCommonMessage systemCommonMessageWithTimeStamp:packet->timeStamp type:pendingMessageStatus data:pendingData length:pendingDataLength];
                         else
                             message = [SMVoiceMessage voiceMessageWithTimeStamp:packet->timeStamp statusByte:pendingMessageStatus data:pendingData length:pendingDataLength];
 
-                        [messages addObject:message];
-                        
                         pendingDataLength = 0;
                     }                    
                 } else {
@@ -153,11 +158,9 @@
                     // NOTE: If we want, we could refuse sysex messages that don't end in 0xF7.
                     // The MIDI spec says that messages should end with this byte, but apparently that is not always the case in practice.
                     BOOL wasValidEOX = (byte == 0xF7);
-                    SMSystemExclusiveMessage *message;
                     
                     message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:startSysExTimeStamp data:readingSysExData];
-                    [message setWasReceivedWithEOX:wasValidEOX];
-                    [messages addObject:message];
+                    [(SMSystemExclusiveMessage *)message setWasReceivedWithEOX:wasValidEOX];
                     [nonretainedDelegate parser:self finishedReadingSysExData:readingSysExData validEOX:wasValidEOX];
 
                     [readingSysExData release];
@@ -205,7 +208,7 @@
                                 break;
     
                             case SMSystemCommonMessageTypeTuneRequest:
-                                [messages addObject:[SMSystemCommonMessage systemCommonMessageWithTimeStamp:packet->timeStamp type:byte data:NULL length:0]];
+                                message = [SMSystemCommonMessage systemCommonMessageWithTimeStamp:packet->timeStamp type:byte data:NULL length:0];
                                 break;
                             
                             default:
@@ -220,6 +223,13 @@
                         break;
                 }
             }
+        }
+
+        if (message) {
+            if (!messages)
+                messages = [NSMutableArray arrayWithObject:message];
+            else
+                [messages addObject:message];
         }
     }
 
