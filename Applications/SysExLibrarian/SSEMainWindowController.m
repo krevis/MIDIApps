@@ -26,6 +26,7 @@
 - (void)_updatePlayProgressAndRepeat;
 - (void)_updatePlayProgress;
 
+- (NSArray *)_expandAndFilterDraggedFiles:(NSArray *)filePaths;
 - (void)_addFilesToLibrary:(NSArray *)filePaths;
 
 @end
@@ -326,8 +327,6 @@ static SSEMainWindowController *controller;
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender;
 {
-    NSLog(@"draggingEntered");
-
     // TODO need to highlight window
     // TODO need to check what kinds of operations are OK
     
@@ -337,29 +336,26 @@ static SSEMainWindowController *controller;
 - (void)draggingExited:(id <NSDraggingInfo>)sender;
 {
     // TODO need to un-highlight window
-
-    NSLog(@"draggingExited");    
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender;
 {
     NSPasteboard *pasteboard;
     
-    NSLog(@"performDragOperation");
-
     pasteboard = [sender draggingPasteboard];
     if ([[pasteboard types] indexOfObjectIdenticalTo:NSFilenamesPboardType] != NSNotFound) {
         NSArray *filenames;
 
-        filenames = [pasteboard propertyListForType:NSFilenamesPboardType];
-        NSLog(@"filenames: %@", filenames);
+        filenames = [self _expandAndFilterDraggedFiles:[pasteboard propertyListForType:NSFilenamesPboardType]];
+        if ([filenames count] > 0) {
+            [self _addFilesToLibrary:filenames];
+            return YES;
+        }
 
-        // TODO if a filename is a directory, need to process all files within it
-        // TODO need to filter out files which are unacceptable
-        
-        [self _addFilesToLibrary:filenames];
-        
-        return YES;
+        // TODO we could do this when dragging enters--and if no acceptable files, don't allow the drag
+        // (can we write the files to the pasteboard, or otherwise keep them around, so we don't have to refilter again?)
+        // However, this could take a while if a big directory has been dragged on us... too long, and the drag will time out.
+        // Probably we should save the real work until -concludeDragOperation.
     }
     
     return NO;
@@ -368,7 +364,6 @@ static SSEMainWindowController *controller;
 - (void)concludeDragOperation:(id <NSDraggingInfo>)sender;
 {
     // TODO need to un-highlight window
-    NSLog(@"concludeDragOperation");
 }
 
 //
@@ -589,6 +584,47 @@ static SSEMainWindowController *controller;
         // TODO localize all of the above
     [playProgressMessageField setStringValue:message];
 }
+
+- (NSArray *)_expandAndFilterDraggedFiles:(NSArray *)filePaths;
+{
+    NSFileManager *fileManager;
+    unsigned int fileIndex, fileCount;
+    NSMutableArray *acceptableFilePaths;
+
+    fileManager = [NSFileManager defaultManager];
+    
+    fileCount = [filePaths count];
+    acceptableFilePaths = [NSMutableArray arrayWithCapacity:fileCount];
+    for (fileIndex = 0; fileIndex < fileCount; fileIndex++) {
+        NSString *filePath;
+        BOOL isDirectory;
+
+        filePath = [filePaths objectAtIndex:fileIndex];
+
+        if ([fileManager fileExistsAtPath:filePath isDirectory:&isDirectory] == NO)
+            continue;
+        
+        if (isDirectory) {
+            NSDirectoryEnumerator *enumerator;
+            NSString *childFilePath;
+
+            enumerator = [fileManager enumeratorAtPath:filePath];
+            while ((childFilePath = [enumerator nextObject])) {
+                childFilePath = [filePath stringByAppendingPathComponent:childFilePath];
+                if ([fileManager isReadableFileAtPath:childFilePath] && [library typeOfFileAtPath:childFilePath] != SSELibraryFileTypeUnknown) {
+                    [acceptableFilePaths addObject:childFilePath];
+                }
+            }
+        } else {
+            if ([fileManager isReadableFileAtPath:filePath] && [library typeOfFileAtPath:filePath] != SSELibraryFileTypeUnknown) {
+                [acceptableFilePaths addObject:filePath];
+            }
+        }
+    }
+    
+    return acceptableFilePaths;
+}
+
 
 - (void)_addFilesToLibrary:(NSArray *)filePaths;
 {

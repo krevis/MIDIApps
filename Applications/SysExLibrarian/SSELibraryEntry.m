@@ -162,19 +162,16 @@
     // TODO should check that the file hasn't changed since we last read the messages
     if (!messages) {
         NSString *path;
-        NSString *fileType;
+        SSELibraryFileType fileType;
 
         path = [self path];
-        fileType = [path pathExtension];
-        if (!fileType || [fileType length] == 0) {
-            fileType = NSHFSTypeOfFile(path);
-        }
+        fileType = [nonretainedLibrary typeOfFileAtPath:path];
 
-        if ([[nonretainedLibrary standardMIDIFileTypes] indexOfObject:fileType] != NSNotFound) {
+        if (fileType == SSELibraryFileTypeStandardMIDI) {
             messages = [SMSystemExclusiveMessage systemExclusiveMessagesInStandardMIDIFile:path];
-        } else {
+        } else if (fileType == SSELibraryFileTypeRaw) {
             NSData *data;
-            
+
             if ((data = [NSData dataWithContentsOfFile:path]))
                 messages = [SMSystemExclusiveMessage systemExclusiveMessagesInData:data];
         }

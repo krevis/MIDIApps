@@ -57,6 +57,7 @@
             standardMIDIFileTypes = [[self _fileTypesFromDocumentTypeDictionary:documentTypeDict] retain];
         }
     }
+    allowedFileTypes = [[rawSysExFileTypes arrayByAddingObjectsFromArray:standardMIDIFileTypes] retain];
     
     return self;
 }
@@ -71,6 +72,8 @@
     rawSysExFileTypes = nil;
     [standardMIDIFileTypes release];
     standardMIDIFileTypes = nil;
+    [allowedFileTypes release];
+    allowedFileTypes = nil;
     
     [super dealloc];
 }
@@ -175,19 +178,27 @@
     flags.isDirty = NO;
 }
 
-- (NSArray *)rawSysExFileTypes;
-{
-    return rawSysExFileTypes;
-}
-
-- (NSArray *)standardMIDIFileTypes;
-{
-    return standardMIDIFileTypes;
-}
-
 - (NSArray *)allowedFileTypes;
 {
-    return [rawSysExFileTypes arrayByAddingObjectsFromArray:standardMIDIFileTypes];
+    return allowedFileTypes;
+}
+
+- (SSELibraryFileType)typeOfFileAtPath:(NSString *)filePath;
+{
+    NSString *fileType;
+
+    fileType = [filePath pathExtension];
+    if (!fileType || [fileType length] == 0) {
+        fileType = NSHFSTypeOfFile(filePath);
+    }
+
+    if ([rawSysExFileTypes indexOfObject:fileType] != NSNotFound) {
+        return SSELibraryFileTypeRaw;
+    } else if ([standardMIDIFileTypes indexOfObject:fileType] != NSNotFound) {
+        return SSELibraryFileTypeStandardMIDI;
+    } else {
+        return SSELibraryFileTypeUnknown;
+    }
 }
 
 @end

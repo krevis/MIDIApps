@@ -3,6 +3,13 @@
 @class SSELibraryEntry;
 
 
+typedef enum _SSELibraryFileType {
+    SSELibraryFileTypeRaw = 0,
+    SSELibraryFileTypeStandardMIDI = 1,
+    SSELibraryFileTypeUnknown = 2
+} SSELibraryFileType;
+
+
 @interface SSELibrary : NSObject
 {
     NSString *libraryFilePath;
@@ -13,6 +20,7 @@
 
     NSArray *rawSysExFileTypes;
     NSArray *standardMIDIFileTypes;
+    NSArray *allowedFileTypes;
 }
 
 + (NSString *)defaultPath;
@@ -29,8 +37,7 @@
 - (void)autosave;
 - (void)save;
 
-- (NSArray *)rawSysExFileTypes;
-- (NSArray *)standardMIDIFileTypes;
 - (NSArray *)allowedFileTypes;
+- (SSELibraryFileType)typeOfFileAtPath:(NSString *)filePath;
 
 @end
