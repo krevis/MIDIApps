@@ -32,16 +32,19 @@ and programmers can use it to test MIDI drivers and applications.
 
 <P><BR><BR><font size="+1" face="helvetica"><b>How to use it</b></font>
 
-<P>When you start up MIDI Monitor, it will automatically open a new document, which listens to the first available source of MIDI data.
+<P>When you start up MIDI Monitor, it will automatically open a new document, which listens to all of the available sources of MIDI data.
 
 <P><img src="mainWindow.gif">
 
+<!-- TODO Rewrite starting here 
 <P>At the top of the window is a popup menu, which contains one item for each input port on your MIDI interface. Use this menu to select the MIDI source to watch.
 <BR>(If your MIDI devices don't appear in the menu, see the <a href="#Troubleshooting">Troubleshooting</a> section.)
 
 <P>Other applications on the computer may also appear in this menu, if they are running and can provide MIDI data.
 
 <P>At the bottom of the Source menu is an item named &quot;Act as destination for other programs&quot;. If you choose this, other applications will be able to send their output to this MIDI Monitor window. (In the other applications, the output's name will be the same as the name of the window.) 
+
+-->
 
 <P>The main part of the window is a list of events that MIDI Monitor has received, in chronological order. The columns are as follows:
 <br><i>Time:</i> When the event was received by the computer
@@ -53,10 +56,12 @@ and programmers can use it to test MIDI drivers and applications.
 
 <p>To display the contents of a System Exclusive (or SysEx) event, double-click it, or use the Events->Show SysEx Data menu command. (More on this later.)
 
+<!-- TODO rewrite here too
 <P>MIDI Monitor also provides a filter, so you can see only the events you are interested in. To show the filter controls, click the button at the bottom of the window (with the triangle).
+-->
 <P>New windows start with all of the checkboxes checked, meaning that all messages are displayed. The large checkboxes control the filters for a whole category of messages; the small checkboxes each control the filter for one specific type of message. For "voice" messages, which include a channel number, you can also choose whether to listen to all channels or just one.
 
-<P>MIDI Monitor uses the standard Mac interface for dealing with documents; just open, close, and save as usual. A MIDI Monitor document saves the selected source, number of events to remember, filter settings, and window position. MIDI events are <i>not</i> saved as part of the document.
+<P>MIDI Monitor uses the standard Mac interface for dealing with documents; just open, close, and save as usual. A MIDI Monitor document saves the selected sources, number of events to remember, filter settings, and window position. MIDI events are <i>not</i> saved as part of the document.
 
 <P><BR><BR><font size="+1" face="helvetica"><b>Preferences</b></font>
 
@@ -100,13 +105,23 @@ and programmers can use it to test MIDI drivers and applications.
 <P><BR><B>Sources Preferences</B>
 <BR><img src="preferencesWindow2.gif" align="left">
 
-<P><i>New windows:</i> You can choose whether new windows should automatically use the first available MIDI source, or whether they should receive no events until you choose a source from the menu.
+<P><i>New windows will use these sources:</i> When new windows are created, all of the sources in each of the checked categories will be selected.
 
-<P><i>If current source is removed, choose another:</I> A source may disappear when its device is unplugged, or if the application that provides it quits. Normally, when this happens, MIDI Monitor will clear out the Source menu, and receive no more events.  However, if you check this checkbox, MIDI Monitor will automatically switch to using the first available source.
-
-<P><i>Automatically open windows for new sources:</I> If this checkbox is checked, when new sources become available, MIDI Monitor will open a new window for each one.
+<P><i>Automatically open windows for new sources:</I> If this checkbox is checked, when new sources become available, MIDI Monitor will open a new window which listens to the new sources.
 
 <BR clear="all">
+
+<P><BR><B>SysEx Preferences</B>
+<BR><img src="preferencesWindow3.gif" align="left"><!-- TODO need this image -->
+
+<P><i>Save SysEx:</i> SysEx messages should always end with an EOX byte (hexadecimal F7). However, some devices do not send SysEx messages which end correctly. This option lets you control how SysEx messages are saved to files.
+<ul>
+<li><i>always with EOX byte ($F7):</I> The file will end with an EOX byte, even if the message didn't have one when it was received. This is the default, and the most useful setting (especially if you want to use the SysEx file in another application).
+<li><i>as it was received:</I> Saves the message exactly the same way as it was received, with or without the EOX byte.
+</ul>
+
+<BR clear="all">
+
 
 <P><BR><BR><font size="+1" face="helvetica"><b>SysEx Data</b></font>
 <BR><img src="sysexWindow.gif" align="left">
