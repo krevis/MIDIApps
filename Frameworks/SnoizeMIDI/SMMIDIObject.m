@@ -51,6 +51,7 @@ NSString *SMMIDIObjectsThatAppeared = @"SMMIDIObjectsThatAppeared";
 NSString *SMMIDIObjectDisappearedNotification = @"SMMIDIObjectDisappearedNotification";
 NSString *SMMIDIObjectWasReplacedNotification = @"SMMIDIObjectWasReplacedNotification";
 NSString *SMMIDIObjectReplacement = @"SMMIDIObjectReplacement";
+NSString *SMMIDIObjectListChangedNotification = @"SMMIDIObjectListChangedNotification";
 
 
 // This really belongs in the Private category, but +didLoad won't get called if it's in a category. Strange but true.
@@ -810,18 +811,24 @@ static NSMapTable *classToObjectsMapTable = NULL;
     // Make the new group of objects invalidate their cached properties (names and such).
     [[self allObjects] makeObjectsPerformSelector:@selector(invalidateCachedProperties)];
 
-    // Now everything is in place for the new regime. Have the objects post notifications of their change in status.
+    // Now everything is in place for the new regime.
+    // First, post specific notifications for added/removed/replaced objects.
+    if ([addedObjects count] > 0) {
+        NSDictionary *userInfo;
+
+        userInfo = [NSDictionary dictionaryWithObject:addedObjects forKey:SMMIDIObjectsThatAppeared];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectsAppearedNotification object:self userInfo:userInfo];
+    }
+    
     [removedObjects makeObjectsPerformSelector:@selector(postRemovedNotification)];
 
     objectIndex = [replacedObjects count];
     while (objectIndex--)
         [[replacedObjects objectAtIndex:objectIndex] postReplacedNotificationWithReplacement:[replacementObjects objectAtIndex:objectIndex]];
 
-    if ([addedObjects count] > 0) {
-        NSDictionary *userInfo;
-
-        userInfo = [NSDictionary dictionaryWithObject:addedObjects forKey:SMMIDIObjectsThatAppeared];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectsAppearedNotification object:self userInfo:userInfo];
+    // Then, post a general notification that the list of objects for this subclass has changed (if it has).
+    if ([addedObjects count] > 0 || [removedObjects count] > 0 || [replacedObjects count] > 0) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectListChangedNotification object:self];
     }
 }
 
