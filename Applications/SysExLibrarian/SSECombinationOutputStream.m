@@ -20,13 +20,15 @@
 
 - (void)repostNotification:(NSNotification *)notification;
 - (void)portStreamEndpointDisappeared:(NSNotification *)notification;
+- (void)portStreamEndpointListChanged:(NSNotification *)notification;
 
 @end
 
 
 @implementation SSECombinationOutputStream
 
-NSString *SSECombinationOutputStreamEndpointDisappearedNotification = @"SSECombinationOutputStreamEndpointDisappearedNotification";
+NSString *SSECombinationOutputStreamSelectedDestinationDisappearedNotification = @"SSECombinationOutputStreamSelectedDestinationDisappearedNotification";
+NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECombinationOutputStreamDestinationListChangedNotification";
 
 
 - (id)init;
@@ -270,9 +272,14 @@ NSString *SSECombinationOutputStreamEndpointDisappearedNotification = @"SSECombi
     } NS_ENDHANDLER;
 
     if (portStream) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(portStreamEndpointDisappeared:) name:SMPortOutputStreamEndpointDisappearedNotification object:portStream];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(repostNotification:) name:SMPortOutputStreamWillStartSysExSendNotification object:portStream];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(repostNotification:) name:SMPortOutputStreamFinishedSysExSendNotification object:portStream];
+        NSNotificationCenter *center;
+
+        center = [NSNotificationCenter defaultCenter];
+        
+        [center addObserver:self selector:@selector(portStreamEndpointDisappeared:) name:SMPortOutputStreamEndpointDisappearedNotification object:portStream];
+        [center addObserver:self selector:@selector(repostNotification:) name:SMPortOutputStreamWillStartSysExSendNotification object:portStream];
+        [center addObserver:self selector:@selector(repostNotification:) name:SMPortOutputStreamFinishedSysExSendNotification object:portStream];
+        [center addObserver:self selector:@selector(portStreamEndpointListChanged:) name:SMMIDIObjectListChangedNotification object:[SMDestinationEndpoint class]];
     }
 }
 
@@ -313,7 +320,12 @@ NSString *SSECombinationOutputStreamEndpointDisappearedNotification = @"SSECombi
 
 - (void)portStreamEndpointDisappeared:(NSNotification *)notification;
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:SSECombinationOutputStreamEndpointDisappearedNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SSECombinationOutputStreamSelectedDestinationDisappearedNotification object:self];
+}
+
+- (void)portStreamEndpointListChanged:(NSNotification *)notification;
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:SSECombinationOutputStreamDestinationListChangedNotification object:self];
 }
  
 @end

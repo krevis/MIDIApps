@@ -58,4 +58,9 @@
 @end
 
 // Notifications
-extern NSString *SSECombinationOutputStreamEndpointDisappearedNotification;
+extern NSString *SSECombinationOutputStreamSelectedDestinationDisappearedNotification;
+extern NSString *SSECombinationOutputStreamDestinationListChangedNotification;
+
+// This class also reposts the following notifications from its SMPortOutputStream, with 'self' as the object:
+//	SMPortOutputStreamWillStartSysExSendNotification
+// 	SMPortOutputStreamFinishedSysExSendNotification
