@@ -164,6 +164,8 @@
 				F583CEB801EE3E4401000164,
 				F583CEB901EE3E4401000164,
 				F565B6ED01E1567501000164,
+				F551751C01F3745B01000164,
+				F551751D01F3745B01000164,
 			);
 			isa = PBXGroup;
 			name = Classes;
@@ -312,6 +314,7 @@
 				F565B6F001E1567501000164,
 				F583CEB601EE3D3801000164,
 				F583CEBA01EE3E4501000164,
+				F551751E01F3745B01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -339,6 +342,7 @@
 				F565B6F101E1567501000164,
 				F583CEB701EE3D3801000164,
 				F583CEBB01EE3E4501000164,
+				F551751F01F3745B01000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -402,6 +406,28 @@
 //F52
 //F53
 //F54
+		F551751C01F3745B01000164 = {
+			isa = PBXFileReference;
+			path = BDAlias.h;
+			refType = 4;
+		};
+		F551751D01F3745B01000164 = {
+			isa = PBXFileReference;
+			path = BDAlias.m;
+			refType = 4;
+		};
+		F551751E01F3745B01000164 = {
+			fileRef = F551751C01F3745B01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F551751F01F3745B01000164 = {
+			fileRef = F551751D01F3745B01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		F559F8FA01DEC0C601000164 = {
 			isa = PBXFrameworkReference;
 			name = CoreMIDI.framework;

@@ -1,10 +1,12 @@
 #import <OmniFoundation/OFObject.h>
 #import <Cocoa/Cocoa.h>
 
+@class BDAlias;
+
 
 @interface SSELibraryEntry : OFObject
 {
-    NSString *path;
+    BDAlias *alias;
 }
 
 + (SSELibraryEntry *)libraryEntryFromDictionary:(NSDictionary *)dict;
