@@ -13,8 +13,6 @@
 - (void)endpointDisappeared:(NSNotification *)notification;
 - (void)endpointWasReplaced:(NSNotification *)notification;
 
-static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName, const MIDIPacketList *packetList, void *refCon);
-
 @end
 
 
@@ -22,15 +20,30 @@ static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName,
 
 - (id)init;
 {
+    OSStatus status;
+
     if (!(self = [super init]))
         return nil;
 
-    spyClient = MIDISpyClientCreate(spyClientCallBack, self);
-    if (!spyClient) {
+    // TODO should share the spy client across all spying input streams
+    status = MIDISpyClientCreate(&spyClient);
+    if (status != noErr) {
+#if DEBUG
+        NSLog(@"Couldn't create a MIDI spy client: error %ld", status);
+#endif
         [self release];
         return nil;
     }
-    
+
+    status = MIDISpyPortCreate(spyClient, [self midiReadProc], self, &spyPort);
+    if (status != noErr) {
+#if DEBUG
+        NSLog(@"Couldn't create a MIDI spy port: error %ld", status);
+#endif
+        [self release];
+        return nil;
+    }
+        
     endpoints = [[NSMutableArray alloc] init];
 
     parsersForEndpoints = NSCreateMapTable(NSNonRetainedObjectMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
@@ -42,6 +55,10 @@ static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName,
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
+    if (spyPort)
+        MIDISpyPortDispose(spyPort);
+    spyPort = NULL;
+    
     if (spyClient)
         MIDISpyClientDispose(spyClient);
     spyClient = NULL;
@@ -63,6 +80,7 @@ static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName,
 - (void)addEndpoint:(SMDestinationEndpoint *)endpoint;
 {
     SMMessageParser *parser;
+    OSStatus status;
     NSNotificationCenter *center;
 
     if (!endpoint)
@@ -73,26 +91,24 @@ static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName,
 
     parser = [self newParserWithOriginatingEndpoint:endpoint];
 
-    // TODO hook up spying client
-    /*
-    status = MIDIPortConnectSource(inputPort, [endpoint endpointRef], parser);
+    status = MIDISpyPortConnectDestination(spyPort, [endpoint endpointRef], parser);
     if (status != noErr) {
-        NSLog(@"Error from MIDIPortConnectSource: %d", status);
+        NSLog(@"Error from MIDISpyPortConnectDestination: %ld", status);
         return;
     }
-     */
 
     NSMapInsert(parsersForEndpoints, endpoint, parser);
 
     center = [NSNotificationCenter defaultCenter];
-    [center addObserver:self selector:@selector(_endpointDisappeared:) name:SMEndpointDisappearedNotification object:endpoint];
-    [center addObserver:self selector:@selector(_endpointWasReplaced:) name:SMEndpointWasReplacedNotification object:endpoint];
+    [center addObserver:self selector:@selector(endpointDisappeared:) name:SMEndpointDisappearedNotification object:endpoint];
+    [center addObserver:self selector:@selector(endpointWasReplaced:) name:SMEndpointWasReplacedNotification object:endpoint];
 
     [endpoints addObject:endpoint];
 }
 
 - (void)removeEndpoint:(SMDestinationEndpoint *)endpoint;
 {
+    OSStatus status;
     NSNotificationCenter *center;
 
     if (!endpoint)
@@ -101,13 +117,11 @@ static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName,
     if ([endpoints indexOfObjectIdenticalTo:endpoint] == NSNotFound)
         return;
 
-    // TODO disconnect w/spying client
-    /*
-    status = MIDIPortDisconnectSource(inputPort, [endpoint endpointRef]);
+    status = MIDISpyPortDisconnectDestination(spyPort, [endpoint endpointRef]);
     if (status != noErr) {
+        NSLog(@"Error from MIDISpyPortDisconnectDestination: %ld", status);
         // An error can happen in normal circumstances (if the endpoint has disappeared), so ignore it.
     }
-     */
 
     NSMapRemove(parsersForEndpoints, endpoint);
 
@@ -153,8 +167,7 @@ static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName,
 
 - (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;
 {
-    // In our case, the "refCon" is really a destination endpoint
-    return NSMapGet(parsersForEndpoints, refCon);
+    return (SMMessageParser *)refCon;
 }
 
 - (NSArray *)inputSources;
@@ -212,18 +225,5 @@ static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName,
     [self removeEndpoint:oldEndpoint];
     [self addEndpoint:newEndpoint];
 }
-
-
-static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName, const MIDIPacketList *packetList, void *refCon)
-{
-    SMDestinationEndpoint *destinationEndpoint;
-
-    if ((destinationEndpoint = [SMDestinationEndpoint destinationEndpointWithUniqueID:endpointUniqueID])) {
-        [[(SMMSpyingInputStream *)refCon parserForSourceConnectionRefCon:destinationEndpoint] takePacketList:packetList];
-    }
-}
-
-// TODO
-// Also... we should make the communication channel to the spy driver only pass the MIDI data for endpoints that we are interested in, not all of them.
 
 @end

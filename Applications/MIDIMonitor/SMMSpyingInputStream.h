@@ -9,6 +9,7 @@
 @interface SMMSpyingInputStream : SMInputStream
 {
     MIDISpyClientRef spyClient;
+    MIDISpyPortRef spyPort;
     NSMutableArray *endpoints;
     NSMapTable *parsersForEndpoints;
 }
