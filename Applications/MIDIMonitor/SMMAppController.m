@@ -167,15 +167,25 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 
 - (IBAction)restartMIDI:(id)sender;
 {
-    OSStatus status;
+    NSString *message, *title, *cancelButtonTitle;
+    int alertButton;
 
-    status = MIDIRestart();
-    if (status) {
-        NSString *message, *title;
+    // Ask the user to confirm first
+    message = NSLocalizedStringFromTableInBundle(@"Are you sure you want to restart the MIDI system? It may cause an interruption of MIDI input and output, and may also confuse other running MIDI applications.", @"MIDIMonitor", [self bundle], "message for confirmation panel for Restart MIDI");
+    title = NSLocalizedStringFromTableInBundle(@"Warning", @"MIDIMonitor", [self bundle], "title of warning alert");
+    cancelButtonTitle = NSLocalizedStringFromTableInBundle(@"Cancel", @"MIDIMonitor", [self bundle], "title of cancel button");
 
-        message = NSLocalizedStringFromTableInBundle(@"Restarting MIDI resulted in an unexpected error (%d).", @"MIDIMonitor", [self bundle], "error message if MIDIRestart() fails");
-        title = NSLocalizedStringFromTableInBundle(@"MIDI Error", @"MIDIMonitor", [self bundle], "title of MIDI error panel");
-        NSRunAlertPanel(title, message, nil, nil, nil, status);        
+    alertButton = NSRunAlertPanel(title, message, nil /* "OK" */, cancelButtonTitle, nil);
+    
+    if (alertButton == NSAlertDefaultReturn) {
+        OSStatus status = MIDIRestart();
+        if (status) {
+            // Something went wrong!
+
+            message = NSLocalizedStringFromTableInBundle(@"Restarting MIDI resulted in an unexpected error (%d).", @"MIDIMonitor", [self bundle], "error message if MIDIRestart() fails");
+            title = NSLocalizedStringFromTableInBundle(@"MIDI Error", @"MIDIMonitor", [self bundle], "title of MIDI error panel");
+            NSRunAlertPanel(title, message, nil, nil, nil, status);        
+        }
     }
 }
 
