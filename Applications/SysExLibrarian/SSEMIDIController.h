@@ -5,7 +5,7 @@
 @class SSEMainWindowController;
 
 
-@interface SSEMainController : NSObject <SMMessageDestination>
+@interface SSEMIDIController : NSObject <SMMessageDestination>
 {
     IBOutlet SSEMainWindowController *windowController;
 

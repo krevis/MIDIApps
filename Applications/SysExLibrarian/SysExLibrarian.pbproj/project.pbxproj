@@ -646,12 +646,12 @@
 		};
 		F565B6E901E1498301000164 = {
 			isa = PBXFileReference;
-			path = SSEMainController.h;
+			path = SSEMIDIController.h;
 			refType = 4;
 		};
 		F565B6EA01E1498301000164 = {
 			isa = PBXFileReference;
-			path = SSEMainController.m;
+			path = SSEMIDIController.m;
 			refType = 4;
 		};
 		F565B6EB01E1498301000164 = {

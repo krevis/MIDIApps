@@ -6,7 +6,7 @@
 #import "NSPopUpButton-Extensions.h"
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
-#import "SSEMainController.h"
+#import "SSEMIDIController.h"
 #import "SSETableView.h"
 
 
@@ -108,12 +108,12 @@ static SSEMainWindowController *controller;
 
 - (IBAction)selectSource:(id)sender;
 {
-    [mainController setSourceDescription:[(NSMenuItem *)[sender selectedItem] representedObject]];
+    [midiController setSourceDescription:[(NSMenuItem *)[sender selectedItem] representedObject]];
 }
 
 - (IBAction)selectDestination:(id)sender;
 {
-    [mainController setDestinationDescription:[(NSMenuItem *)[sender selectedItem] representedObject]];
+    [midiController setDestinationDescription:[(NSMenuItem *)[sender selectedItem] representedObject]];
 }
 
 - (IBAction)open:(id)sender;
@@ -161,7 +161,7 @@ static SSEMainWindowController *controller;
 
     [[NSApplication sharedApplication] beginSheet:recordSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];    
 
-    [mainController listenForOneMessage];
+    [midiController listenForOneMessage];
 }
 
 - (IBAction)recordMultiple:(id)sender;
@@ -170,7 +170,7 @@ static SSEMainWindowController *controller;
 
     [[NSApplication sharedApplication] beginSheet:recordMultipleSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 
-    [mainController listenForMultipleMessages];
+    [midiController listenForMultipleMessages];
 }
 
 - (IBAction)play:(id)sender;
@@ -190,26 +190,26 @@ static SSEMainWindowController *controller;
             messages = entryMessages;
     }
 
-    [mainController setMessages:messages];
-    [mainController sendMessages];
+    [midiController setMessages:messages];
+    [midiController sendMessages];
 }
 
 - (IBAction)cancelRecordSheet:(id)sender;
 {
-    [mainController cancelMessageListen];
+    [midiController cancelMessageListen];
     [[NSApplication sharedApplication] endSheet:[[self window] attachedSheet]];
 }
 
 - (IBAction)doneWithRecordMultipleSheet:(id)sender;
 {
-    [mainController doneWithMultipleMessageListen];
+    [midiController doneWithMultipleMessageListen];
     [[NSApplication sharedApplication] endSheet:recordMultipleSheetWindow];
     [self addReadMessagesToLibrary];
 }
 
 - (IBAction)cancelPlaySheet:(id)sender;
 {
-    [mainController cancelSendingMessages];
+    [midiController cancelSendingMessages];
     // -hideSysExSendStatusWithSuccess: will get called soon; it will end the sheet
 }
 
@@ -234,12 +234,12 @@ static SSEMainWindowController *controller;
 
 - (void)synchronizeSources;
 {
-    [self _synchronizePopUpButton:sourcePopUpButton withDescriptions:[mainController sourceDescriptions] currentDescription:[mainController sourceDescription]];
+    [self _synchronizePopUpButton:sourcePopUpButton withDescriptions:[midiController sourceDescriptions] currentDescription:[midiController sourceDescription]];
 }
 
 - (void)synchronizeDestinations;
 {
-    [self _synchronizePopUpButton:destinationPopUpButton withDescriptions:[mainController destinationDescriptions] currentDescription:[mainController destinationDescription]];
+    [self _synchronizePopUpButton:destinationPopUpButton withDescriptions:[midiController destinationDescriptions] currentDescription:[midiController destinationDescription]];
 }
 
 - (void)synchronizeLibrary;
@@ -284,7 +284,7 @@ static SSEMainWindowController *controller;
 {
     NSData *allSysexData;
 
-    allSysexData = [SMSystemExclusiveMessage dataForSystemExclusiveMessages:[mainController messages]];
+    allSysexData = [SMSystemExclusiveMessage dataForSystemExclusiveMessages:[midiController messages]];
     if (allSysexData) {
         SSELibraryEntry *entry;
 
@@ -305,7 +305,7 @@ static SSEMainWindowController *controller;
 
     [playProgressIndicator setMinValue:0.0];
     [playProgressIndicator setDoubleValue:0.0];
-    [mainController getMessageCount:NULL messageIndex:NULL bytesToSend:&bytesToSend bytesSent:NULL];
+    [midiController getMessageCount:NULL messageIndex:NULL bytesToSend:&bytesToSend bytesSent:NULL];
     [playProgressIndicator setMaxValue:bytesToSend];
 
     [self _updatePlayProgressAndRepeat];
@@ -548,7 +548,7 @@ static SSEMainWindowController *controller;
 {
     unsigned int messageCount, bytesRead, totalBytesRead;
 
-    [mainController getMessageCount:&messageCount bytesRead:&bytesRead totalBytesRead:&totalBytesRead];
+    [midiController getMessageCount:&messageCount bytesRead:&bytesRead totalBytesRead:&totalBytesRead];
 
     if ([[self window] attachedSheet] == recordSheetWindow)
         [self _updateSingleSysExReadIndicatorWithMessageCount:messageCount bytesRead:bytesRead totalBytesRead:totalBytesRead];
@@ -610,7 +610,7 @@ static SSEMainWindowController *controller;
     unsigned int messageIndex, messageCount, bytesToSend, bytesSent;
     NSString *message;
 
-    [mainController getMessageCount:&messageCount messageIndex:&messageIndex bytesToSend:&bytesToSend bytesSent:&bytesSent];
+    [midiController getMessageCount:&messageCount messageIndex:&messageIndex bytesToSend:&bytesToSend bytesSent:&bytesSent];
 
     OBASSERT(bytesSent >= [playProgressIndicator doubleValue]);
         // Make sure we don't go backwards somehow

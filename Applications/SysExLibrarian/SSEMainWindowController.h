@@ -1,14 +1,14 @@
 #import <Cocoa/Cocoa.h>
 
 @class OFScheduledEvent;
-@class SSEMainController;
+@class SSEMIDIController;
 @class SSELibrary;
 @class SSETableView;
 
 
 @interface SSEMainWindowController : NSWindowController
 {
-    IBOutlet SSEMainController *mainController;
+    IBOutlet SSEMIDIController *midiController;
 
     IBOutlet NSPopUpButton *sourcePopUpButton;
     IBOutlet NSPopUpButton *destinationPopUpButton;

@@ -2,7 +2,7 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            CLASS = SSEMainController; 
+            CLASS = SSEMIDIController; 
             LANGUAGE = ObjC; 
             OUTLETS = {windowController = SSEMainWindowController; }; 
             SUPERCLASS = NSObject; 
@@ -31,7 +31,7 @@
                 importProgressMessageField = NSTextField; 
                 importSheetWindow = NSWindow; 
                 libraryTableView = SSETableView; 
-                mainController = SSEMainController; 
+                midiController = SSEMIDIController; 
                 playButton = NSButton; 
                 playProgressBytesField = NSTextField; 
                 playProgressIndicator = NSProgressIndicator; 

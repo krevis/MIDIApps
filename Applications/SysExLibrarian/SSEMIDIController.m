@@ -1,4 +1,4 @@
-#import "SSEMainController.h"
+#import "SSEMIDIController.h"
 
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
@@ -6,7 +6,7 @@
 #import "SSEMainWindowController.h"
 
 
-@interface SSEMainController (Private)
+@interface SSEMIDIController (Private)
 
 - (void)_midiSetupDidChange:(NSNotification *)notification;
 
@@ -27,7 +27,7 @@
 @end
 
 
-@implementation SSEMainController
+@implementation SSEMIDIController
 
 - (id)init
 {
@@ -317,7 +317,7 @@
 @end
 
 
-@implementation SSEMainController (Private)
+@implementation SSEMIDIController (Private)
 
 - (void)_midiSetupDidChange:(NSNotification *)notification;
 {
