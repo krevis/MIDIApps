@@ -29,14 +29,19 @@ mkdir -p "$INSTALL_DIRECTORY/$PACKAGED_SOURCE_NAME" || {echo "Couldn't create in
 
 cd $INSTALL_DIRECTORY/$PACKAGED_SOURCE_NAME
 
-mkdir Source
-cp -R $SnoizeFrameworkSource/SnoizeMIDI Source
-cp -R $SnoizeFrameworkSource/DisclosableView Source
-cp -R $SnoizeFrameworkSource/SnoizeMIDISpy Source
-cp -R $SnoizeAppSource/MIDIMonitor Source
+mkdir Frameworks; cd Frameworks
+cp -R $SnoizeFrameworkSource/SnoizeMIDI .
+cp -R $SnoizeFrameworkSource/DisclosableView .
+cp -R $SnoizeFrameworkSource/SnoizeMIDISpy .
+cd ..
 
-mkdir Scripts
-cp -R $SnoizeScriptSource/BuildMIDIMonitor Scripts
+mkdir Applications; cd Applications
+cp -R $SnoizeAppSource/MIDIMonitor .
+cd ..
+
+mkdir Scripts; cd Scripts
+cp -R $SnoizeScriptSource/BuildMIDIMonitor .
+cd ..
 
 cp -R $SnoizeDocsSource/MIDIMonitor/Source/README .
 

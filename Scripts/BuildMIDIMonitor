@@ -7,25 +7,10 @@
 
 ThisScriptDir=`dirname ${PWD}/$0`
 
-SourceRoot=~/Source
-SnoizeSource=${SourceRoot}/Snoize
-SnoizeFrameworkSource=${SnoizeSource}/Frameworks
-SnoizeAppSource=${SnoizeSource}/Applications
+SourceRoot=${ThisScriptDir}/..
+SnoizeFrameworkSource=${SourceRoot}/Frameworks
+SnoizeAppSource=${SourceRoot}/Applications
 
-# buildDirectory=`defaults read com.apple.ProjectBuilder PBXIntermediatesDirectory`
-# if [ -z "$buildDirectory" ]; then
-#     buildDirectory=$PUBLIC/$USER/Products/Builds
-# fi
-# productDirectory=`defaults read com.apple.ProjectBuilder PBXProductDirectory`
-# if [ -z "$productDirectory" ]; then
-#     productDirectory=$PUBLIC/$USER/Products
-# fi
-#
-# TODO: Omni used to do the above, then pass the variables in to pbxbuild like
-#    SYMROOT=${productDirectory} OBJROOT=${buildDirectory}/${projectName%.pbproj}.build
-# This was something of a workaround for the fact that pbxbuild didn't use to read the
-# settings from defaults. Nowadays I think we should check for the defaults settings, and if
-# they're not there, we should just set them.  (Right? but that has side effects)
 
 PUBLIC=/Users/Shared
 INSTALL_DIRECTORY=$PUBLIC/$USER/InstalledProducts
