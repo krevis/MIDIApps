@@ -15,6 +15,8 @@
 
 - (void)_synchronizePopUpButton:(NSPopUpButton *)popUpButton withDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 
+- (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
+
 - (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
 - (void)_updateSysExReadIndicator;
@@ -91,12 +93,8 @@ static SSEMainWindowController *controller;
 
 - (IBAction)open:(id)sender;
 {
-    // TODO
-    // using standard open file sheet,
-    // open a file
-    // (what file types, etc. are acceptable?)
-    // then add it to the library
-    // should allow multiple file selection
+    [[NSOpenPanel openPanel] beginSheetForDirectory:nil file:nil types:nil modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_openPanelDidEnd:returnCode:contextInfo:) contextInfo:nil];
+    // TODO should specify types
 }
 
 - (IBAction)delete:(id)sender;
@@ -356,6 +354,23 @@ static SSEMainWindowController *controller;
     if (wasAutodisplay)
         [[self window] displayIfNeeded];
     [[self window] setAutodisplay:wasAutodisplay];
+}
+
+- (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
+{
+    NSArray *filePaths;
+    unsigned int fileIndex, fileCount;
+
+    if (returnCode != NSOKButton)
+        return;
+
+    filePaths = [openPanel filenames];
+    fileCount = [filePaths count];
+    for (fileIndex = 0; fileIndex < fileCount; fileIndex++) {
+        [library addEntryForFile:[filePaths objectAtIndex:fileIndex]];
+    }
+
+    [self synchronizeInterface];
 }
 
 - (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
