@@ -171,7 +171,7 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
     int alertButton;
 
     // Ask the user to confirm first
-    message = NSLocalizedStringFromTableInBundle(@"Are you sure you want to restart the MIDI system? It may cause an interruption of MIDI input and output, and may also confuse other running MIDI applications.", @"MIDIMonitor", [self bundle], "message for confirmation panel for Restart MIDI");
+    message = NSLocalizedStringFromTableInBundle(@"Are you sure you want to restart the MIDI system? Doing so may cause an interruption of MIDI input and output, and may also confuse other running MIDI applications.", @"MIDIMonitor", [self bundle], "message for confirmation panel for Restart MIDI");
     title = NSLocalizedStringFromTableInBundle(@"Warning", @"MIDIMonitor", [self bundle], "title of warning alert");
     cancelButtonTitle = NSLocalizedStringFromTableInBundle(@"Cancel", @"MIDIMonitor", [self bundle], "title of cancel button");
 
