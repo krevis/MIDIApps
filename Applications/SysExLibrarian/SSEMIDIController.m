@@ -25,6 +25,7 @@
 
 - (void)startListening;
 - (void)readingSysEx:(NSNotification *)notification;
+- (void)updateSysExReadIndicator;
 - (void)mainThreadTakeMIDIMessages:(NSArray *)messagesToTake;
 
 - (void)sendNextSysExMessage;
@@ -413,11 +414,11 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
     // NOTE This is happening in the MIDI thread
 
     messageBytesRead = [[[notification userInfo] objectForKey:@"length"] unsignedIntValue];
-    [self queueSelectorOnce:@selector(_updateSysExReadIndicator)];
+    [self queueSelectorOnce:@selector(updateSysExReadIndicator)];
         // We want multiple updates to get coalesced, so only queue it once
 }
 
-- (void)_updateSysExReadIndicator;
+- (void)updateSysExReadIndicator;
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:SSEMIDIControllerReadStatusChangedNotification object:self];
 }
@@ -439,7 +440,7 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
             totalBytesRead += messageBytesRead;
             messageBytesRead = 0;
 
-            [self _updateSysExReadIndicator];
+            [self updateSysExReadIndicator];
             if (listenToMultipleMessages == NO)  {
                 listeningToMessages = NO;
 
