@@ -3,6 +3,7 @@
 //
 
 #import <SnoizeMIDI/SMClient.h>
+#import <SnoizeMIDI/SMDevice.h>
 #import <SnoizeMIDI/SMEndpoint.h>
 #import <SnoizeMIDI/SMExternalDevice.h>
 #import <SnoizeMIDI/SMHostTime.h>
