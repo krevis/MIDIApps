@@ -1458,8 +1458,7 @@ void FSDeleteFolderLevel(	const FSRef *container,
                         CFRelease(url);
                     }
                     // delete the item
-						theGlobals->result = FSDeleteObject(&itemToDelete);
-                    fprintf(stderr, "result of deleting: %d\n", theGlobals->result);
+                    theGlobals->result = FSDeleteObject(&itemToDelete);
                 }
 			}
 		} while ( theGlobals->result == noErr );
