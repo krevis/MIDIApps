@@ -18,6 +18,8 @@
 
 - (void)_autosaveWindowFrame;
 
+- (void)_synchronizePopUpButton:(NSPopUpButton *)popUpButton withDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
+
 @end
 
 
@@ -91,94 +93,12 @@ static SSEMainWindowController *controller;
 
 - (void)synchronizeSources;
 {
-    NSDictionary *currentDescription;
-    BOOL wasAutodisplay;
-    NSArray *descriptions;
-    unsigned int sourceCount, sourceIndex;
-    BOOL foundSource = NO;
-    BOOL addedSeparatorBetweenPortAndVirtual = NO;
-
-    currentDescription = [mainController sourceDescription];
-
-    // The pop up button redraws whenever it's changed, so turn off autodisplay to stop the blinkiness
-    wasAutodisplay = [[self window] isAutodisplay];
-    [[self window] setAutodisplay:NO];
-
-    [sourcePopUpButton removeAllItems];
-
-    descriptions = [mainController sourceDescriptions];
-    sourceCount = [descriptions count];
-    for (sourceIndex = 0; sourceIndex < sourceCount; sourceIndex++) {
-        NSDictionary *description;
-
-        description = [descriptions objectAtIndex:sourceIndex];
-        if (!addedSeparatorBetweenPortAndVirtual && [description objectForKey:@"endpoint"] == nil) {
-            if (sourceIndex > 0)
-                [sourcePopUpButton addSeparatorItem];
-            addedSeparatorBetweenPortAndVirtual = YES;
-        }
-        [sourcePopUpButton addItemWithTitle:[description objectForKey:@"name"] representedObject:description];
-
-        if (!foundSource && [description isEqual:currentDescription]) {
-            [sourcePopUpButton selectItemAtIndex:[sourcePopUpButton numberOfItems] - 1];
-            // Don't use sourceIndex because it may be off by one (because of the separator item)
-            foundSource = YES;
-        }
-    }
-
-    if (!foundSource)
-        [sourcePopUpButton selectItem:nil];
-
-    // ...and turn autodisplay on again
-    if (wasAutodisplay)
-        [[self window] displayIfNeeded];
-    [[self window] setAutodisplay:wasAutodisplay];
+    [self _synchronizePopUpButton:sourcePopUpButton withDescriptions:[mainController sourceDescriptions] currentDescription:[mainController sourceDescription]];
 }
 
 - (void)synchronizeDestinations;
 {
-    NSDictionary *currentDescription;
-    BOOL wasAutodisplay;
-    NSArray *descriptions;
-    unsigned int sourceCount, sourceIndex;
-    BOOL foundDestination = NO;
-    BOOL addedSeparatorBetweenPortAndVirtual = NO;
-
-    currentDescription = [mainController destinationDescription];
-
-    // The pop up button redraws whenever it's changed, so turn off autodisplay to stop the blinkiness
-    wasAutodisplay = [[self window] isAutodisplay];
-    [[self window] setAutodisplay:NO];
-
-    [destinationPopUpButton removeAllItems];
-
-    descriptions = [mainController destinationDescriptions];
-    sourceCount = [descriptions count];
-    for (sourceIndex = 0; sourceIndex < sourceCount; sourceIndex++) {
-        NSDictionary *description;
-
-        description = [descriptions objectAtIndex:sourceIndex];
-        if (!addedSeparatorBetweenPortAndVirtual && [description objectForKey:@"endpoint"] == nil) {
-            if (sourceIndex > 0)
-                [destinationPopUpButton addSeparatorItem];
-            addedSeparatorBetweenPortAndVirtual = YES;
-        }
-        [destinationPopUpButton addItemWithTitle:[description objectForKey:@"name"] representedObject:description];
-
-        if (!foundDestination && [description isEqual:currentDescription]) {
-            [destinationPopUpButton selectItemAtIndex:[destinationPopUpButton numberOfItems] - 1];
-            // Don't use sourceIndex because it may be off by one (because of the separator item)
-            foundDestination = YES;
-        }
-    }
-
-    if (!foundDestination)
-        [destinationPopUpButton selectItem:nil];
-
-    // ...and turn autodisplay on again
-    if (wasAutodisplay)
-        [[self window] displayIfNeeded];
-    [[self window] setAutodisplay:wasAutodisplay];
+    [self _synchronizePopUpButton:destinationPopUpButton withDescriptions:[mainController destinationDescriptions] currentDescription:[mainController destinationDescription]];
 }
 
 @end
@@ -215,6 +135,47 @@ static SSEMainWindowController *controller;
         [window saveFrameUsingName:autosaveName];
         [[NSUserDefaults standardUserDefaults] autoSynchronize];
     }
+}
+
+- (void)_synchronizePopUpButton:(NSPopUpButton *)popUpButton withDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
+{
+    BOOL wasAutodisplay;
+    unsigned int count, index;
+    BOOL found = NO;
+    BOOL addedSeparatorBetweenPortAndVirtual = NO;
+
+    // The pop up button redraws whenever it's changed, so turn off autodisplay to stop the blinkiness
+    wasAutodisplay = [[self window] isAutodisplay];
+    [[self window] setAutodisplay:NO];
+
+    [popUpButton removeAllItems];
+
+    count = [descriptions count];
+    for (index = 0; index < count; index++) {
+        NSDictionary *description;
+
+        description = [descriptions objectAtIndex:index];
+        if (!addedSeparatorBetweenPortAndVirtual && [description objectForKey:@"endpoint"] == nil) {
+            if (index > 0)
+                [popUpButton addSeparatorItem];
+            addedSeparatorBetweenPortAndVirtual = YES;
+        }
+        [popUpButton addItemWithTitle:[description objectForKey:@"name"] representedObject:description];
+
+        if (!found && [description isEqual:currentDescription]) {
+            [popUpButton selectItemAtIndex:[popUpButton numberOfItems] - 1];
+            // Don't use index because it may be off by one (because of the separator item)
+            found = YES;
+        }
+    }
+
+    if (!found)
+        [popUpButton selectItem:nil];
+
+    // ...and turn autodisplay on again
+    if (wasAutodisplay)
+        [[self window] displayIfNeeded];
+    [[self window] setAutodisplay:wasAutodisplay];
 }
 
 @end

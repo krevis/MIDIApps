@@ -47,7 +47,7 @@
     center = [NSNotificationCenter defaultCenter];
 
     inputStream = [[SMPortOrVirtualInputStream alloc] init];
-    [center addObserver:self selector:@selector(_inputStreamEndpointWasRemoved:) name:SMPortOrVirtualInputStreamEndpointWasRemoved object:inputStream];
+    [center addObserver:self selector:@selector(_inputStreamEndpointWasRemoved:) name:SMPortOrVirtualStreamEndpointWasRemoved object:inputStream];
     [center addObserver:self selector:@selector(_readingSysEx:) name:SMInputStreamReadingSysExNotification object:inputStream];
     [center addObserver:self selector:@selector(_doneReadingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:inputStream];
     [inputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"SysExLibrarian", [self bundle], "title of popup menu item for virtual destination")];
@@ -55,7 +55,7 @@
     [inputStream setMessageDestination:self];
 
     outputStream = [[SMPortOrVirtualOutputStream alloc] init];
-    [center addObserver:self selector:@selector(_outputStreamEndpointWasRemoved:) name:SMPortOrVirtualOutputStreamEndpointWasRemoved object:outputStream];
+    [center addObserver:self selector:@selector(_outputStreamEndpointWasRemoved:) name:SMPortOrVirtualStreamEndpointWasRemoved object:outputStream];
     [outputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a source for other programs", @"SysExLibrarian", [self bundle], "title of popup menu item for virtual source")];
     [outputStream setVirtualEndpointName:@"SysEx Librarian"];	// TODO get this from somewhere
     
@@ -89,12 +89,12 @@
 
 - (NSArray *)sourceDescriptions;
 {
-    return [inputStream sourceDescriptions];
+    return [inputStream endpointDescriptions];
 }
 
 - (NSDictionary *)sourceDescription;
 {
-    return [inputStream sourceDescription];
+    return [inputStream endpointDescription];
 }
 
 - (void)setSourceDescription:(NSDictionary *)description;
@@ -109,7 +109,7 @@
     savedListenFlag = listenToMIDISetupChanges;
     listenToMIDISetupChanges = NO;
 
-    [inputStream setSourceDescription:description];
+    [inputStream setEndpointDescription:description];
     // TODO we don't have an undo manager yet
 //    [[[self undoManager] prepareWithInvocationTarget:self] setSourceDescription:oldDescription];
 //    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Source", @"SysExLibrarian", [self bundle], "change source undo action")];
@@ -121,12 +121,12 @@
 
 - (NSArray *)destinationDescriptions;
 {
-    return [outputStream destinationDescriptions];
+    return [outputStream endpointDescriptions];
 }
 
 - (NSDictionary *)destinationDescription;
 {
-    return [outputStream destinationDescription];
+    return [outputStream endpointDescription];
 }
 
 - (void)setDestinationDescription:(NSDictionary *)description;
@@ -141,7 +141,7 @@
     savedListenFlag = listenToMIDISetupChanges;
     listenToMIDISetupChanges = NO;
 
-    [outputStream setDestinationDescription:description];
+    [outputStream setEndpointDescription:description];
     // TODO we don't have an undo manager yet
     //    [[[self undoManager] prepareWithInvocationTarget:self] setSourceDescription:oldDescription];
     //    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Source", @"SysExLibrarian", [self bundle], "change source undo action")];
@@ -167,9 +167,10 @@
 
 - (void)_midiSetupDidChange:(NSNotification *)notification;
 {
-    if (listenToMIDISetupChanges)
+    if (listenToMIDISetupChanges) {
         [windowController synchronizeSources];
-    // TODO synchronize dests too
+        [windowController synchronizeDestinations];
+    }
 }
 
 - (void)_inputStreamEndpointWasRemoved:(NSNotification *)notification;
@@ -188,18 +189,18 @@
 {
     NSArray *descriptions;
 
-    descriptions = [inputStream sourceDescriptions];
+    descriptions = [inputStream endpointDescriptions];
     if ([descriptions count] > 0)
-        [inputStream setSourceDescription:[descriptions objectAtIndex:0]];
+        [inputStream setEndpointDescription:[descriptions objectAtIndex:0]];
 }
 
 - (void)_selectFirstAvailableDestination;
 {
     NSArray *descriptions;
 
-    descriptions = [outputStream destinationDescriptions];
+    descriptions = [outputStream endpointDescriptions];
     if ([descriptions count] > 0)
-        [outputStream setDestinationDescription:[descriptions objectAtIndex:0]];
+        [outputStream setEndpointDescription:[descriptions objectAtIndex:0]];
 }
 
 - (void)_readingSysEx:(NSNotification *)notification;
