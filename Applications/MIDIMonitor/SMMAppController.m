@@ -1,10 +1,10 @@
 #import "SMMAppController.h"
 
-#import <Cocoa/Cocoa.h>
 #import <CoreMIDI/CoreMIDI.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
+#import <SnoizeMIDISpy/SnoizeMIDISpy.h>
 
 #import "SMMDocument.h"
 #import "SMMPreferencesWindowController.h"
@@ -25,6 +25,23 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 {
     // Make sure we go multithreaded, and that our scheduler starts up
     [OFScheduler mainScheduler];
+
+    // Before CoreMIDI is initialized, make sure the spying driver is installed
+    switch (MIDISpyInstallDriverIfNecessary()) {
+        // TODO temporary logging
+        case kMIDISpyDriverAlreadyInstalled:
+            NSLog(@"spying driver already installed");
+            break;
+        case kMIDISpyDriverInstalledSuccessfully:
+            NSLog(@"spying driver installed OK");
+            break;
+        case kMIDISpyDriverInstallationFailed:
+            NSLog(@"spying driver installation failed!");
+            break;        
+        default:
+            NSLog(@"spying driver gave us some wack value");
+            break;
+    }
 
     // Initialize CoreMIDI while the app's icon is still bouncing, so we don't have a large pause after it stops bouncing
     // but before the app's window opens.  (CoreMIDI needs to find and possibly start its server process, which can take a while.)
