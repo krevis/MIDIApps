@@ -303,7 +303,7 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
 - (NSDictionary *)_descriptionForEndpoint:(SMEndpoint *)endpoint;
 {
     if (endpoint)
-        return [NSDictionary dictionaryWithObjectsAndKeys:endpoint, @"endpoint", [endpoint shortName], @"name", nil];
+        return [NSDictionary dictionaryWithObjectsAndKeys:endpoint, @"endpoint", [endpoint uniqueName], @"name", nil];
     else
         return nil;
 }

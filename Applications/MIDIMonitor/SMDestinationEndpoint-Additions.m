@@ -5,7 +5,7 @@
 
 - (NSString *)inputStreamSourceName;
 {
-    return [self shortName];
+    return [self uniqueName];
 }
 
 - (NSNumber *)inputStreamSourceUniqueID;
