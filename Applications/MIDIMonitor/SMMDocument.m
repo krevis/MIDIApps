@@ -470,10 +470,7 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
 
     descriptions = [stream endpointDescriptions];
     if ([descriptions count] > 0) {
-        // Disable undo registration around this so the user can't undo to a description which is no longer there
-        [[self undoManager] disableUndoRegistration];
         [self setSourceDescription:[descriptions objectAtIndex:0]];
-        [[self undoManager] enableUndoRegistration];
     }
 }
 
