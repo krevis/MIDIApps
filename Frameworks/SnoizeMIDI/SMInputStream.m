@@ -4,23 +4,20 @@
 
 #import "SMInputStream.h"
 
-#include <mach/mach.h>
 #import "SMClient.h"
 #import "SMEndpoint.h"
 #import "SMMessage.h"
 #import "SMMessageParser.h"
 #import "SMSystemExclusiveMessage.h"
 #import "SMUtilities.h"
-#import "VirtualRingBuffer.h"
+#import "MessageQueue.h"
 
 
 @interface SMInputStream (Private)
 
 static void midiReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, void *srcConnRefCon);
-static void sendTrivialMachMessageToPort(CFMachPortRef port);
 + (void)runSecondaryMIDIThread:(id)ignoredObject;
-static void ringBufferConsumerSignaled(CFMachPortRef port, void *msg, CFIndex size, void *info);
-static void readPacketListsFromRingBuffer();
+static void receivePendingPacketList(CFTypeRef objectFromQueue, void *refCon);
 
 - (id <SMInputStreamSource>)findInputSourceWithName:(NSString *)desiredName uniqueID:(NSNumber *)desiredUniqueID;
 
@@ -266,86 +263,47 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
 
 @implementation SMInputStream (Private)
 
-// Static variables, initialized in +runSecondaryMIDIThread:
-static VirtualRingBuffer *sRingBuffer = nil;
-static CFMachPortRef sRingBufferSignalPort = NULL;
+typedef struct PendingPacketList {
+    void *readProcRefCon;
+    void *srcConnRefCon;
+    MIDIPacketList packetList;
+} PendingPacketList;
 
 static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon, void *srcConnRefCon)
 {
     // NOTE: This function is called in a high-priority, time-constraint thread,
     // created for us by CoreMIDI.
     //
-    // Because we're in a time-constraint thread, we should avoid allocating memory,
+    // TODO Because we're in a time-constraint thread, we should avoid allocating memory,
     // since the allocator uses a single app-wide lock. (If another low-priority thread holds
     // that lock, we'll have to wait for that thread to release it, which is priority inversion.)
-    // So we use a nonblocking ring buffer to pass the incoming data to another thread,
-    // which can block as much as it likes.
-    // Unfortunately the ring buffer could potentially fill up, but we don't need
-    // to make it very large to work OK at MIDI speeds. (A typical MIDI message coming in
-    // is only 3 bytes or so.)
-    // TODO test this theory with big sysex (or otherwise) messages sent from a virtual source,
-    // and hence dumped out all at once... we need to receive all the data OK.
-    // We might look at the current MIDI client implementation... what's the size of the shared mem buffer
-    // between the MIDI server and client? 16K.
-    // But of course we can't just rely on that; this readProc might be called many times (with a full 16k) before
-    // the consumer thread could even get one chance to read anything.
-    // Perhaps we should have a reasonable-size ring buffer, and then fall back to allocating entries on a queue
-    // (which would potentially block, but at least nothing would get dropped).
-    // How to signal the consumer that it should pull from the queue, though? some special value for one of the two refcons
+    // We're not even attempting to do that yet; roll back to an earlier version to see some preliminary code.
 
     UInt32 packetListSize;
-    UInt32 ringBufferWriteSize;
-    void *writePointer;
+    const MIDIPacket *packet;
+    UInt32 i;
+    NSData *data;
+    PendingPacketList *pendingPacketList;
 
-    // We need to write two refCons, then the packet list
-    packetListSize = SMPacketListSize(packetList);
-    ringBufferWriteSize = 2 * sizeof(void *) + packetListSize;
-
-    // Check if we have room to write into the ring buffer
-    if ([sRingBuffer lengthAvailableToWriteReturningPointer:&writePointer] >= ringBufferWriteSize) {
-        // Copy the two refCons into the ring buffer
-        *(void **)writePointer = readProcRefCon;
-        writePointer += sizeof(void *);
-        *(void **)writePointer = srcConnRefCon;
-        writePointer += sizeof(void *);
-        // And also the packet list
-        memcpy(writePointer, packetList, packetListSize);
-
-        // And advance the write pointer
-        [sRingBuffer didWriteLength:ringBufferWriteSize];
-
-        // Now signal the reading thread so it wakes up and reads.
-        // We must be careful not to do this in a way that might block.
-        // Normally we would use a Mach semaphore and call semaphore_signal(); the reading thread would be waiting
-        // in semaphore_wait().
-        // However, we want the reading thread to be running a normal run loop, so higher-level code can use an
-        // NSTimer if necessary. So, instead, we have a Mach port attached to the run loop in the reading thread,
-        // and in this thread, we send a message to that port.
-        // The port is set to have a queue of only one message, and we specify that we don't want to wait at all
-        // when sending the message, so there is no way that this thread can block.
-        // This idea is essentially stolen from the implementation of CFRunLoop.
-        sendTrivialMachMessageToPort(sRingBufferSignalPort);
-        
-    } else {
-        // We have no choice but to drop this packet list.
-        // TODO rectify this
-#if DEBUG
-        NSLog(@"SMInputStream: ring buffer is too full to write packet list of size %d; dropping it", packetListSize);
-#endif
+    // Find the size of the whole packet list
+    packetListSize = sizeof(UInt32);	// numPackets
+    packet = &packetList->packet[0];
+    for (i = 0; i < packetList->numPackets; i++) {
+        packetListSize += offsetof(MIDIPacket, data) + packet->length;
+        packet = MIDIPacketNext(packet);
     }
-}
 
-static void sendTrivialMachMessageToPort(CFMachPortRef port)
-{
-    mach_msg_header_t header;
+    // Copy the packet list and other arguments into a new PendingPacketList (in an NSData)
+    data = [[NSMutableData alloc] initWithLength:(offsetof(PendingPacketList, packetList) + packetListSize)];
+    pendingPacketList = (PendingPacketList *)[data bytes];
+    pendingPacketList->readProcRefCon = readProcRefCon;
+    pendingPacketList->srcConnRefCon = srcConnRefCon;
+    memcpy(&pendingPacketList->packetList, packetList, packetListSize);
 
-    header.msgh_bits = MACH_MSGH_BITS(MACH_MSG_TYPE_COPY_SEND, 0);
-    header.msgh_size = sizeof(mach_msg_header_t);
-    header.msgh_remote_port = CFMachPortGetPort(port);
-    header.msgh_local_port = MACH_PORT_NULL;
-    header.msgh_id = 0;
+    // Queue the data; receiveFromMessageQueue() will be called in the secondary MIDI thread.
+    AddToMessageQueue((CFDataRef)data);
 
-    mach_msg(&header, MACH_SEND_MSG | MACH_SEND_TIMEOUT, header.msgh_size, 0, MACH_PORT_NULL, 0, MACH_PORT_NULL);    
+    [data release];
 }
 
 + (void)runSecondaryMIDIThread:(id)ignoredObject;
@@ -354,103 +312,37 @@ static void sendTrivialMachMessageToPort(CFMachPortRef port)
 
     pool = [[NSAutoreleasePool alloc] init];
 
-    sRingBuffer = [(VirtualRingBuffer *)[VirtualRingBuffer alloc] initWithLength:4096];
-    // TODO make a #define for ring buffer length
+    CreateMessageQueue(receivePendingPacketList, NULL);
 
-    sRingBufferSignalPort = CFMachPortCreate(kCFAllocatorDefault, ringBufferConsumerSignaled, NULL, NULL);
-    if (!sRingBufferSignalPort)
-        NSLog(@"CFMachPortCreate failed");
-    else {
-        // Set the port to only queue one incoming message
-        mach_port_t port = CFMachPortGetPort(sRingBufferSignalPort);
-        mach_port_limits_t limits;
-        CFRunLoopSourceRef source;
-        
-        limits.mpl_qlimit = 1;
-        mach_port_set_attributes(mach_task_self(), port, MACH_PORT_LIMITS_INFO, (mach_port_info_t)&limits, MACH_PORT_LIMITS_INFO_COUNT);
-
-        // Get a run loop source for the port, and add it to the current run loop
-        source = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, sRingBufferSignalPort, 0);
-        if (source) {
-            CFRunLoopAddSource(CFRunLoopGetCurrent(), source, kCFRunLoopDefaultMode);
-            CFRelease(source);
-        } else {
-            NSLog(@"CFMachPortCreateRunLoopSource failed");
-        }
-    }
-  
     [[NSRunLoop currentRunLoop] run];
-    // TODO does this have an exit condition?
-
-    [sRingBuffer release];
-    sRingBuffer = nil;
-
-    if (sRingBufferSignalPort)
-        CFRelease(sRingBufferSignalPort);
-    sRingBufferSignalPort = NULL;
+    // Runs until DestroyMessageQueue() is called
 
     [pool release];
 }
 
-static void ringBufferConsumerSignaled(CFMachPortRef port, void *msg, CFIndex size, void *info)
-{
-    readPacketListsFromRingBuffer();
-}
-
-static void readPacketListsFromRingBuffer()
+static void receivePendingPacketList(CFTypeRef objectFromQueue, void *refCon)
 {
     // NOTE: This function is called in the secondary MIDI thread that we create
 
-    // Check the size avail for reading.
-    // If > 0, Should be at least 2*sizeof(refcon) + sizeof(UInt32) + offsetof(MIDIPacket, data) + 1 (one data byte).
-    // If not, then the write thread must have screwed up.
-    // If it is, then get the read ptr, read off the refcons, and pass it on (as we do below).
-    // Then advance the read ptr.
-    // (We could malloc a new packet list and copy into it, which would let us advance the ring buffer faster
-    // and thus decrease the chance of overflowing it. But the extra allocation might hurt... especially since
-    // the parser will likely allocate another object and copy the data again itself.)
-    // TODO cleanup
+    NSAutoreleasePool *pool;
+    NSData *data = (NSData *)objectFromQueue;
+    PendingPacketList *pendingPacketList;
+    SMInputStream *inputStream;
 
-    void *readPointer;
+    pool = [[NSAutoreleasePool alloc] init];
 
-    while ([sRingBuffer lengthAvailableToReadReturningPointer:&readPointer] > 0) {
-        UInt32 readLength = 0;
-        void *readProcRefCon;
-        void *srcConnRefCon;
-        const MIDIPacketList *packetList;
+    pendingPacketList = (PendingPacketList *)[data bytes];
+    inputStream = (SMInputStream *)pendingPacketList->readProcRefCon;
+    NS_DURING {
+        [[inputStream parserForSourceConnectionRefCon:pendingPacketList->srcConnRefCon] takePacketList:&pendingPacketList->packetList];
+    } NS_HANDLER {
+        // Ignore any exceptions raised
+#if DEBUG
+        NSLog(@"Exception raised during MIDI parsing in secondary thread: %@", localException);
+#endif
+    } NS_ENDHANDLER;
 
-        // Copy the two refCons from the ring buffer
-        readProcRefCon = *(void **)readPointer;
-        readPointer += sizeof(void *);
-        readLength += sizeof(void *);
-        srcConnRefCon = *(void **)readPointer;
-        readPointer += sizeof(void *);
-        readLength += sizeof(void *);
-
-        // Now the packet list is at readPointer.
-        packetList = (const MIDIPacketList *)readPointer;
-        readLength += SMPacketListSize(packetList);
-
-        // Now pass on the packet list to the appropriate stream and parser
-        {
-            NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-            
-            NS_DURING {
-                SMInputStream *inputStream = (SMInputStream *)readProcRefCon;            
-                [[inputStream parserForSourceConnectionRefCon:srcConnRefCon] takePacketList:packetList];
-            } NS_HANDLER {
-                // Ignore any exception raised
-    #if DEBUG
-                NSLog(@"Exception raised during MIDI parsing in secondary thread: %@", localException);
-    #endif
-            } NS_ENDHANDLER;
-        
-            [pool release];
-        }
-
-         // Finally, tell the ring buffer that we're done with this data
-         [sRingBuffer didReadLength:readLength];
-    }
+    [pool release];
 }
 
 - (id <SMInputStreamSource>)findInputSourceWithName:(NSString *)desiredName uniqueID:(NSNumber *)desiredUniqueID;
