@@ -79,12 +79,20 @@
 - (NSArray *)messages;
 {
     NSString *realPath;
+    NSString *extension;
     NSData *data;
     NSArray *messages;
 
     realPath = [self _realPath];
-    data = [NSData dataWithContentsOfFile:realPath];
-    messages = [SMSystemExclusiveMessage systemExclusiveMessagesInData:data];
+    extension = [[realPath pathExtension] uppercaseString];
+        // TODO we should also be checking file type, probably
+    if ([extension isEqualToString:@"MID"] || [extension isEqualToString:@"MIDI"]) {
+        messages = [SMSystemExclusiveMessage systemExclusiveMessagesInStandardMIDIFile:realPath];
+    } else {
+        data = [NSData dataWithContentsOfFile:realPath];
+        messages = [SMSystemExclusiveMessage systemExclusiveMessagesInData:data];
+    }
+
     return messages;
 }
 
