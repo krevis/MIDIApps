@@ -16,7 +16,6 @@
     SSECombinationOutputStream *outputStream;
         
     // Transient data
-    BOOL listenToMIDISetupChanges;
     NSMutableArray *messages;
     
     // ... for listening for sysex

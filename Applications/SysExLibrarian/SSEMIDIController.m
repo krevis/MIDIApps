@@ -14,12 +14,14 @@
 
 @interface SSEMIDIController (Private)
 
-- (void)midiSetupDidChange:(NSNotification *)notification;
 - (void)sendPreferenceDidChange:(NSNotification *)notification;
 - (void)receivePreferenceDidChange:(NSNotification *)notification;
 
 - (void)sourceEndpointsAppeared:(NSNotification *)notification;
-- (void)outputStreamEndpointDisappeared:(NSNotification *)notification;
+- (void)addEndpointsToInputStream:(NSArray *)endpoints;
+
+- (void)outputStreamDestinationListChanged:(NSNotification *)notification;
+- (void)outputStreamSelectedDestinationDisappeared:(NSNotification *)notification;
 
 - (void)selectFirstAvailableDestinationWhenPossible;
 - (void)selectFirstAvailableDestination;
@@ -54,8 +56,6 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 - (id)initWithWindowController:(SSEMainWindowController *)mainWindowController;
 {
     NSNotificationCenter *center;
-    NSArray *sources;
-    unsigned int sourceIndex;
     BOOL didSetDestinationFromDefaults;
     NSDictionary *destinationSettings;
     
@@ -70,13 +70,11 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
     [center addObserver:self selector:@selector(readingSysEx:) name:SMInputStreamReadingSysExNotification object:inputStream];
     [center addObserver:self selector:@selector(readingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:inputStream];
     [inputStream setMessageDestination:self];
-    sources = [SMSourceEndpoint sourceEndpoints];
-    sourceIndex = [sources count];
-    while (sourceIndex--)
-        [inputStream addEndpoint:[sources objectAtIndex:sourceIndex]];
+    [self addEndpointsToInputStream:[SMSourceEndpoint sourceEndpoints]];
 
     outputStream = [[SSECombinationOutputStream alloc] init];
-    [center addObserver:self selector:@selector(outputStreamEndpointDisappeared:) name:SSECombinationOutputStreamEndpointDisappearedNotification object:outputStream];
+    [center addObserver:self selector:@selector(outputStreamDestinationListChanged:) name:SSECombinationOutputStreamDestinationListChangedNotification object:outputStream];
+    [center addObserver:self selector:@selector(outputStreamSelectedDestinationDisappeared:) name:SSECombinationOutputStreamSelectedDestinationDisappearedNotification object:outputStream];
     [center addObserver:self selector:@selector(willStartSendingSysEx:) name:SMPortOutputStreamWillStartSysExSendNotification object:outputStream];
     [center addObserver:self selector:@selector(doneSendingSysEx:) name:SMPortOutputStreamFinishedSysExSendNotification object:outputStream];
     [outputStream setIgnoresTimeStamps:YES];
@@ -85,8 +83,6 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 
     [center addObserver:self selector:@selector(sourceEndpointsAppeared:) name:SMMIDIObjectsAppearedNotification object:[SMSourceEndpoint class]];
     
-    listenToMIDISetupChanges = YES;
-
     messages = [[NSMutableArray alloc] init];
     messageBytesRead = 0;
     totalBytesRead = 0;
@@ -95,8 +91,6 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
     listenToMultipleMessages = NO;
 
     sendProgressLock = [[NSLock alloc] init];
-    
-    [center addObserver:self selector:@selector(midiSetupDidChange:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
 
     [self sendPreferenceDidChange:nil];
     [center addObserver:self selector:@selector(sendPreferenceDidChange:) name:SSESysExSendPreferenceChangedNotification object:nil];
@@ -160,18 +154,12 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 - (void)setSelectedDestination:(id <SSEOutputStreamDestination>)destination;
 {
     id <SSEOutputStreamDestination> oldDestination;
-    BOOL savedListenFlag;
 
     oldDestination = [self selectedDestination];
     if (oldDestination == destination || [oldDestination isEqual:destination])
         return;
 
-    savedListenFlag = listenToMIDISetupChanges;
-    listenToMIDISetupChanges = NO;
-
     [outputStream setSelectedDestination:destination];
-
-    listenToMIDISetupChanges = savedListenFlag;
 
     [nonretainedMainWindowController synchronizeDestinations];
 
@@ -334,12 +322,6 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 
 @implementation SSEMIDIController (Private)
 
-- (void)midiSetupDidChange:(NSNotification *)notification;
-{
-    if (listenToMIDISetupChanges)
-        [nonretainedMainWindowController synchronizeDestinations];
-}
-
 - (void)sendPreferenceDidChange:(NSNotification *)notification;
 {
     pauseTimeBetweenMessages = (double)[[OFPreference preferenceForKey:SSESysExIntervalBetweenSentMessagesPreferenceKey] integerValue] / 1000.0;
@@ -355,16 +337,24 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 
 - (void)sourceEndpointsAppeared:(NSNotification *)notification;
 {
-    NSArray *endpoints;
-    unsigned int endpointIndex, endpointCount;
-
-    endpoints = [[notification userInfo] objectForKey:SMMIDIObjectsThatAppeared];
-    endpointCount = [endpoints count];
-    for (endpointIndex = 0; endpointIndex < endpointCount; endpointIndex++) 
-        [inputStream addEndpoint:[endpoints objectAtIndex:endpointIndex]];
+    [self addEndpointsToInputStream:[[notification userInfo] objectForKey:SMMIDIObjectsThatAppeared]];
 }
 
-- (void)outputStreamEndpointDisappeared:(NSNotification *)notification;
+- (void)addEndpointsToInputStream:(NSArray *)endpoints;
+{
+    unsigned int endpointIndex, endpointCount;
+
+    endpointCount = [endpoints count];
+    for (endpointIndex = 0; endpointIndex < endpointCount; endpointIndex++)
+        [inputStream addEndpoint:[endpoints objectAtIndex:endpointIndex]];    
+}
+
+- (void)outputStreamDestinationListChanged:(NSNotification *)notification;
+{
+    [nonretainedMainWindowController synchronizeDestinations];
+}
+
+- (void)outputStreamSelectedDestinationDisappeared:(NSNotification *)notification;
 {
     if (nonretainedCurrentSendRequest || sendNextMessageEvent)
         [self cancelSendingMessages];
@@ -375,7 +365,8 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 - (void)selectFirstAvailableDestinationWhenPossible;
 {
     // NOTE: We may be handling a MIDI change notification right now. We might want to select a virtual source
-    // but an SMVirtualInputStream can't be created in the middle of handling this notification, so do it later.
+    // but a virtual stream can't be created in the middle of handling this notification, so do it later.
+    // NOTE This applied to 10.1; the situation is probably less goofy under 10.2.
 
     if ([[SMClient sharedClient] isHandlingSetupChange]) {
         [self performSelector:_cmd withObject:nil afterDelay:0.1];
