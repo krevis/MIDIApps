@@ -10,10 +10,7 @@
         {
             ACTIONS = {
                 addToLibrary = id; 
-                cancelImportSheet = id; 
-                cancelPlaySheet = id; 
                 delete = id; 
-                endSheetWithReturnCodeFromSenderTag = id; 
                 play = id; 
                 recordMany = id; 
                 recordOne = id; 
@@ -26,24 +23,7 @@
             }; 
             CLASS = SSEMainWindowController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {
-                deleteLibraryFilesWarningSheetWindow = NSPanel; 
-                deleteWarningSheetWindow = NSPanel; 
-                destinationPopUpButton = NSPopUpButton; 
-                doNotWarnOnDeleteAgainCheckbox = NSButton; 
-                doNotWarnOnImportAgainCheckbox = NSButton; 
-                importProgressIndexField = NSTextField; 
-                importProgressIndicator = NSProgressIndicator; 
-                importProgressMessageField = NSTextField; 
-                importSheetWindow = NSPanel; 
-                importWarningSheetWindow = NSPanel; 
-                libraryTableView = SSETableView; 
-                midiController = SSEMIDIController; 
-                playProgressBytesField = NSTextField; 
-                playProgressIndicator = NSProgressIndicator; 
-                playProgressMessageField = NSTextField; 
-                playSheetWindow = NSPanel; 
-            }; 
+            OUTLETS = {destinationPopUpButton = NSPopUpButton; libraryTableView = SSETableView; }; 
             SUPERCLASS = SSEWindowController; 
         }, 
         {CLASS = SSETableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 

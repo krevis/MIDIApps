@@ -7,7 +7,7 @@
 
 @interface SSEMIDIController : NSObject <SMMessageDestination>
 {
-    IBOutlet SSEMainWindowController *windowController;
+    SSEMainWindowController *nonretainedMainWindowController;
 
     // MIDI processing
     SMPortInputStream *inputStream;
@@ -34,6 +34,8 @@
     OFScheduledEvent *sendNextMessageEvent;
     BOOL sendCancelled;
 }
+
+- (id)initWithWindowController:(SSEMainWindowController *)mainWindowController;
 
 - (NSArray *)destinationDescriptions;
 - (NSDictionary *)destinationDescription;

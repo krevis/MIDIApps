@@ -197,6 +197,7 @@
 				F5308FE80232F9D401000164,
 				F5308FF10233059B01000164,
 				F53090060233385B01000164,
+				F530900E023350F901000164,
 				2A37F4B9FDCFA73011CA2CEA,
 				F5D90FD1021628DF01000164,
 				089C165FFE840EACC02AAC07,
@@ -415,6 +416,8 @@
 				F5308FF60233075A01000164,
 				F5308FFB02330F2B01000164,
 				F5309004023333DF01000164,
+				F530900C02333F8B01000164,
+				F53090140233540701000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -444,6 +447,7 @@
 				F5308FF30233059B01000164,
 				F5308FFF023315AD01000164,
 				F53090080233385B01000164,
+				F5309010023350F901000164,
 			);
 			isa = PBXResourcesBuildPhase;
 			name = "Bundle Resources";
@@ -471,6 +475,8 @@
 				F5308FF70233075A01000164,
 				F5308FFC02330F2B01000164,
 				F5309005023333DF01000164,
+				F530900D02333F8B01000164,
+				F53090150233540701000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -572,6 +578,8 @@
 				F5309000023317A701000164,
 				F5308FF802330EEE01000164,
 				F5309001023333DF01000164,
+				F530900902333F8B01000164,
+				F53090110233540701000164,
 			);
 			isa = PBXGroup;
 			name = "Main window";
@@ -832,6 +840,90 @@
 		};
 		F53090080233385B01000164 = {
 			fileRef = F53090060233385B01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F530900902333F8B01000164 = {
+			children = (
+				F530900A02333F8B01000164,
+				F530900B02333F8B01000164,
+			);
+			isa = PBXGroup;
+			name = Importing;
+			refType = 4;
+		};
+		F530900A02333F8B01000164 = {
+			isa = PBXFileReference;
+			path = SSEImportController.h;
+			refType = 4;
+		};
+		F530900B02333F8B01000164 = {
+			isa = PBXFileReference;
+			path = SSEImportController.m;
+			refType = 4;
+		};
+		F530900C02333F8B01000164 = {
+			fileRef = F530900A02333F8B01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F530900D02333F8B01000164 = {
+			fileRef = F530900B02333F8B01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F530900E023350F901000164 = {
+			children = (
+				F530900F023350F901000164,
+			);
+			isa = PBXVariantGroup;
+			name = Import.nib;
+			path = "";
+			refType = 4;
+		};
+		F530900F023350F901000164 = {
+			isa = PBXFileReference;
+			name = English;
+			path = English.lproj/Import.nib;
+			refType = 4;
+		};
+		F5309010023350F901000164 = {
+			fileRef = F530900E023350F901000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F53090110233540701000164 = {
+			children = (
+				F53090120233540701000164,
+				F53090130233540701000164,
+			);
+			isa = PBXGroup;
+			name = "Find Missing";
+			path = "";
+			refType = 4;
+		};
+		F53090120233540701000164 = {
+			isa = PBXFileReference;
+			path = SSEFindMissingController.h;
+			refType = 4;
+		};
+		F53090130233540701000164 = {
+			isa = PBXFileReference;
+			path = SSEFindMissingController.m;
+			refType = 4;
+		};
+		F53090140233540701000164 = {
+			fileRef = F53090120233540701000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F53090150233540701000164 = {
+			fileRef = F53090130233540701000164;
 			isa = PBXBuildFile;
 			settings = {
 			};

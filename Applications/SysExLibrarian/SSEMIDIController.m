@@ -48,15 +48,19 @@ DEFINE_NSSTRING(SSEMIDIControllerSendWillStartNotification);
 DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
 
 
-- (id)init
+- (id)initWithWindowController:(SSEMainWindowController *)mainWindowController;
 {
     NSNotificationCenter *center;
     NSArray *sources;
     unsigned int sourceIndex;
-
+    BOOL didSetDestinationFromDefaults;
+    NSDictionary *destinationSettings;
+    
     if (!(self = [super init]))
         return nil;
 
+    nonretainedMainWindowController = mainWindowController;
+    
     center = [NSNotificationCenter defaultCenter];
 
     inputStream = [[SMPortInputStream alloc] init];
@@ -97,6 +101,19 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
     [self _receivePreferenceDidChange:nil];
     [center addObserver:self selector:@selector(_receivePreferenceDidChange:) name:SSESysExReceivePreferenceChangedNotification object:nil];
 
+    didSetDestinationFromDefaults = NO;
+    destinationSettings = [[OFPreference preferenceForKey:SSESelectedDestinationPreferenceKey] dictionaryValue];
+    if (destinationSettings) {
+        NSString *missingDestinationName;
+
+        missingDestinationName = [outputStream takePersistentSettings:destinationSettings];
+        if (!missingDestinationName)
+            didSetDestinationFromDefaults = YES;
+    }
+
+    if (!didSetDestinationFromDefaults)
+        [self _selectFirstAvailableDestination];
+    
     return self;
 }
 
@@ -116,27 +133,6 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
     sendNextMessageEvent = nil;
 
     [super dealloc];
-}
-
-- (void)awakeFromNib;
-{
-    // We do this now instead of in -init, because we may need to use our outlet to the windowController.
-
-    BOOL didSetDestinationFromDefaults;
-    NSDictionary *destinationSettings;
-
-    didSetDestinationFromDefaults = NO;
-    destinationSettings = [[OFPreference preferenceForKey:SSESelectedDestinationPreferenceKey] dictionaryValue];
-    if (destinationSettings) {
-        NSString *missingDestinationName;
-
-        missingDestinationName = [outputStream takePersistentSettings:destinationSettings];
-        if (!missingDestinationName)
-            didSetDestinationFromDefaults = YES;
-    }
-
-    if (!didSetDestinationFromDefaults)
-        [self _selectFirstAvailableDestination];
 }
 
 //
@@ -169,13 +165,13 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
 
     listenToMIDISetupChanges = savedListenFlag;
 
-    [windowController synchronizeDestinations];
+    [nonretainedMainWindowController synchronizeDestinations];
 
     [[OFPreference preferenceForKey:SSESelectedDestinationPreferenceKey] setDictionaryValue:[outputStream persistentSettings]];
 
     if ([(SMEndpoint *)[description objectForKey:@"endpoint"] needsSysExWorkaround]) {
         if ([[OFPreference preferenceForKey:SSEHasShownSysExWorkaroundWarningPreferenceKey] boolValue] == NO) {
-            [windowController showSysExWorkaroundWarning];
+            [nonretainedMainWindowController showSysExWorkaroundWarning];
         }
     }
 }
@@ -329,9 +325,8 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
 
 - (void)_midiSetupDidChange:(NSNotification *)notification;
 {
-    if (listenToMIDISetupChanges) {
-        [windowController synchronizeDestinations];
-    }
+    if (listenToMIDISetupChanges)
+        [nonretainedMainWindowController synchronizeDestinations];
 }
 
 - (void)_sendPreferenceDidChange:(NSNotification *)notification;

@@ -2,6 +2,8 @@
 
 @class OFScheduledEvent;
 @class SSEDeleteController;
+@class SSEFindMissingController;
+@class SSEImportController;
 @class SSEMIDIController;
 @class SSELibrary;
 @class SSEPlayController;
@@ -10,37 +12,25 @@
 
 @interface SSEMainWindowController : SSEWindowController
 {
-    IBOutlet SSEMIDIController *midiController;
-
     IBOutlet NSPopUpButton *destinationPopUpButton;
-
     IBOutlet SSETableView *libraryTableView;
 
-    IBOutlet NSPanel *importSheetWindow;
-    IBOutlet NSProgressIndicator *importProgressIndicator;
-    IBOutlet NSTextField *importProgressMessageField;
-    IBOutlet NSTextField *importProgressIndexField;
-
-    IBOutlet NSPanel *importWarningSheetWindow;
-    IBOutlet NSButton *doNotWarnOnImportAgainCheckbox;
-    
     // Library
     SSELibrary *library;
     NSArray *sortedLibraryEntries;
-    
-    // Transient data
+
+    // Subcontrollers
+    SSEMIDIController *midiController;
     SSEPlayController *playController;
     SSERecordController *recordOneController;
     SSERecordController *recordManyController;
     SSEDeleteController *deleteController;
-    NSLock *importStatusLock;
-    NSString *importFilePath;
-    unsigned int importFileIndex;
-    unsigned int importFileCount;
-    BOOL importCancelled;
+    SSEImportController *importController;
+    SSEFindMissingController *findMissingController;
+    
+    // Transient data
     NSString *sortColumnIdentifier;
     BOOL isSortAscending;
-    NSMutableArray *entriesWithMissingFiles;
     NSToolbarItem *nonretainedDestinationToolbarItem;
     BOOL showSysExWarningWhenShowingWindow;
 }
@@ -63,10 +53,6 @@
 - (IBAction)rename:(id)sender;
 - (IBAction)showDetails:(id)sender;
 
-- (IBAction)cancelImportSheet:(id)sender;
-
-- (IBAction)endSheetWithReturnCodeFromSenderTag:(id)sender;
-
 // Other API
 
 - (void)synchronizeInterface;
@@ -76,6 +62,7 @@
 - (void)synchronizeLibrary;
 
 - (void)importFiles:(NSArray *)filePaths showingProgress:(BOOL)showProgress;
+- (void)showNewEntries:(NSArray *)newEntries;
 
 - (void)addReadMessagesToLibrary;
 
@@ -84,5 +71,4 @@
 @end
 
 // Preferences keys
-extern NSString *SSEShowWarningOnImportPreferenceKey;
 extern NSString *SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey;

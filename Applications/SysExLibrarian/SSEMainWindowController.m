@@ -6,6 +6,8 @@
 #import "NSPopUpButton-Extensions.h"
 #import "SSEDeleteController.h"
 #import "SSEDetailsWindowController.h"
+#import "SSEFindMissingController.h"
+#import "SSEImportController.h"
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
 #import "SSEMIDIController.h"
@@ -31,41 +33,21 @@
 - (NSArray *)_selectedEntries;
 - (void)_selectEntries:(NSArray *)entries;
 - (void)_scrollToEntries:(NSArray *)entries;
-- (void)_selectAndScrollToEntries:(NSArray *)entries;
 
 - (void)_playSelectedEntries;
 - (void)_showDetailsOfSelectedEntries;
 
 - (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
-- (void)_showImportWarningForFiles:(NSArray *)filePaths andThenPerformSelector:(SEL)selector;
-- (void)_importWarningSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-- (void)_addFilesToLibraryInMainThread:(NSArray *)filePaths;
-- (void)_showErrorMessageForFilesWithNoSysEx:(NSArray *)badFilePaths;
 
-- (BOOL)_areAnyFilesAcceptable:(NSArray *)filePaths;
-- (BOOL)_areAnyFilesDirectories:(NSArray *)filePaths;
-- (void)_importFilesShowingProgress:(NSArray *)filePaths;
-- (void)_workThreadImportFiles:(NSArray *)filePaths;
-- (NSArray *)_workThreadExpandAndFilterDraggedFiles:(NSArray *)filePaths;
-
-- (NSArray *)_addFilesToLibrary:(NSArray *)filePaths returningBadFiles:(NSArray **)badFilePathsPtr;
-
-- (void)_showImportSheet;
-- (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-- (void)_updateImportStatusDisplay;
-- (void)_doneImportingInWorkThreadWithAddedEntries:(NSArray *)addedEntries badFiles:(NSArray *)badFilePaths;
+- (BOOL)_areAnyFilesAcceptableForImport:(NSArray *)filePaths;
 
 - (void)_findMissingFilesAndPerformSelector:(SEL)selector;
-- (void)_missingFileAlertDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-- (void)_runOpenSheetForMissingFileWithContextInfo:(void *)contextInfo;
-- (void)_findMissingFileOpenPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
 @end
 
 
 @implementation SSEMainWindowController
 
-NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
 NSString *SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey = @"SSEAbbreviateFileSizesInLibraryTableView";
 
 static SSEMainWindowController *controller;
@@ -88,8 +70,8 @@ static SSEMainWindowController *controller;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_libraryDidChange:) name:SSELibraryDidChangeNotification object:library];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_displayPreferencesDidChange:) name:SSEDisplayPreferenceChangedNotification object:nil];
 
-    importStatusLock = [[NSLock alloc] init];
-
+    midiController = [[SSEMIDIController alloc] initWithWindowController:self];
+    
     sortColumnIdentifier = @"name";
     isSortAscending = YES;
 
@@ -106,6 +88,8 @@ static SSEMainWindowController *controller;
 
 - (void)dealloc
 {
+    [midiController release];
+    midiController = nil;    
     [playController release];
     playController = nil;
     [recordOneController  release];
@@ -114,16 +98,12 @@ static SSEMainWindowController *controller;
     recordManyController = nil;
     [deleteController release];
     deleteController = nil;
-    [importStatusLock release];
-    importStatusLock = nil;
-    [importFilePath release];
-    importFilePath = nil;
+    [importController release];
+    importController = nil;
     [sortColumnIdentifier release];
     sortColumnIdentifier = nil;
     [sortedLibraryEntries release];
     sortedLibraryEntries = nil;
-    [entriesWithMissingFiles release];
-    entriesWithMissingFiles = nil;
     
     [super dealloc];
 }
@@ -314,17 +294,6 @@ static SSEMainWindowController *controller;
     [self _findMissingFilesAndPerformSelector:@selector(_showDetailsOfSelectedEntries)];
 }
 
-- (IBAction)cancelImportSheet:(id)sender;
-{
-    // No need to lock just to set a boolean
-    importCancelled = YES;
-}
-
-- (IBAction)endSheetWithReturnCodeFromSenderTag:(id)sender;
-{
-    [NSApp endSheet:[[self window] attachedSheet] returnCode:[sender tag]];
-}
-
 //
 // Other API
 //
@@ -378,19 +347,18 @@ static SSEMainWindowController *controller;
 
 - (void)importFiles:(NSArray *)filePaths showingProgress:(BOOL)showProgress;
 {
-    SEL selector;
+    if (!importController)
+        importController = [[SSEImportController alloc] initWithWindowController:self];
 
-    if (![self _areAnyFilesDirectories:filePaths])
-        showProgress = NO;
-
-    selector = showProgress ? @selector(_importFilesShowingProgress:) : @selector(_addFilesToLibraryInMainThread:);
-    [self _showImportWarningForFiles:filePaths andThenPerformSelector:selector];
+    [importController importFiles:filePaths showingProgress:showProgress];
 }
 
-
-//
-// Reading SysEx
-//
+- (void)showNewEntries:(NSArray *)newEntries;
+{
+    [self synchronizeLibrary];
+    [self _selectEntries:newEntries];
+    [self _scrollToEntries:newEntries];
+}
 
 - (void)addReadMessagesToLibrary;
 {
@@ -409,8 +377,7 @@ static SSEMainWindowController *controller;
     } NS_ENDHANDLER;
 
     if (entry) {
-        [self synchronizeLibrary];
-        [self _selectAndScrollToEntries:[NSArray arrayWithObject:entry]];
+        [self showNewEntries:[NSArray arrayWithObject:entry]];
     } else {
         NSWindow *attachedSheet;
         
@@ -428,11 +395,6 @@ static SSEMainWindowController *controller;
         NSBeginAlertSheet(@"Error", nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"The file could not be created.\n%@", exceptionReason);
     }
 }
-
-
-//
-// SysEx workaround warning
-//
 
 - (void)showSysExWorkaroundWarning;
 {    
@@ -519,7 +481,7 @@ static SSEMainWindowController *controller;
 
 - (NSDragOperation)tableView:(SSETableView *)tableView draggingEntered:(id <NSDraggingInfo>)sender;
 {
-    if ([self _areAnyFilesAcceptable:[[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType]])
+    if ([self _areAnyFilesAcceptableForImport:[[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType]])
         return NSDragOperationGeneric;
     else
         return NSDragOperationNone;
@@ -784,12 +746,6 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     [libraryTableView scrollRowToVisible:lowestRow];
 }
 
-- (void)_selectAndScrollToEntries:(NSArray *)entries;
-{
-    [self _selectEntries:entries];
-    [self _scrollToEntries:entries];
-}
-
 //
 // Doing things with selected entries
 //
@@ -843,76 +799,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     }
 }
 
-- (void)_showImportWarningForFiles:(NSArray *)filePaths andThenPerformSelector:(SEL)selector;
-{
-    BOOL areAllFilesInLibraryDirectory = YES;
-    unsigned int fileIndex;
-
-    fileIndex = [filePaths count];
-    while (fileIndex--) {
-        if (![library isPathInFileDirectory:[filePaths objectAtIndex:fileIndex]]) {
-            areAllFilesInLibraryDirectory = NO;
-            break;
-        }
-    }
-
-    if (areAllFilesInLibraryDirectory || [[OFPreference preferenceForKey:SSEShowWarningOnImportPreferenceKey] boolValue] == NO) {
-        [self performSelector:selector withObject:filePaths];
-    } else {
-        OFInvocation *invocation;
-
-        invocation = [[OFInvocation alloc] initForObject:self selector:selector withObject:filePaths];
-
-        [doNotWarnOnImportAgainCheckbox setIntValue:0];
-        [NSApp beginSheet:importWarningSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_importWarningSheetDidEnd:returnCode:contextInfo:) contextInfo:invocation];
-    }
-}
-
-- (void)_importWarningSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-{
-    [sheet orderOut:nil];
-
-    if (returnCode == NSOKButton) {
-        OFInvocation *invocation = (OFInvocation *)contextInfo;
-
-        if ([doNotWarnOnImportAgainCheckbox intValue] == 1)
-            [[OFPreference preferenceForKey:SSEShowWarningOnImportPreferenceKey] setBoolValue:NO];
-
-        [invocation invoke];
-        [invocation release];
-    }
-}
-
-- (void)_addFilesToLibraryInMainThread:(NSArray *)filePaths;
-{
-    NSArray *newEntries;
-    NSArray *badFilePaths;
-
-    newEntries = [self _addFilesToLibrary:filePaths returningBadFiles:&badFilePaths];
-    [self synchronizeLibrary];
-    [self _selectAndScrollToEntries:newEntries];
-
-    if ([badFilePaths count] > 0)
-        [self _showErrorMessageForFilesWithNoSysEx:badFilePaths];
-}
-
-- (void)_showErrorMessageForFilesWithNoSysEx:(NSArray *)badFilePaths;
-{
-    unsigned int badFileCount;
-    NSString *message;
-
-    badFileCount = [badFilePaths count];
-    OBASSERT(badFileCount > 0);
-
-    if (badFileCount == 1)
-        message = @"No SysEx data could be found in this file. It has not been added to the library.";
-    else
-        message = [NSString stringWithFormat:@"No SysEx data could be found in %u of the files. They have not been added to the library.", badFileCount];
-    
-    NSBeginInformationalAlertSheet(@"Could not read SysEx", nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"%@", message);    
-}
-
-- (BOOL)_areAnyFilesAcceptable:(NSArray *)filePaths;
+- (BOOL)_areAnyFilesAcceptableForImport:(NSArray *)filePaths;
 {
     NSFileManager *fileManager;
     unsigned int fileIndex, fileCount;
@@ -938,340 +825,36 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     return NO;
 }
 
-- (BOOL)_areAnyFilesDirectories:(NSArray *)filePaths;
-{
-    NSFileManager *fileManager;
-    unsigned int fileIndex, fileCount;
-
-    fileManager = [NSFileManager defaultManager];
-
-    fileCount = [filePaths count];
-    for (fileIndex = 0; fileIndex < fileCount; fileIndex++) {
-        NSString *filePath;
-        BOOL isDirectory;
-
-        filePath = [filePaths objectAtIndex:fileIndex];
-        if ([fileManager fileExistsAtPath:filePath isDirectory:&isDirectory] == NO)
-            continue;
-
-        if (isDirectory)
-            return YES;
-    }
-
-    return NO;
-}
-
-- (void)_importFilesShowingProgress:(NSArray *)filePaths;
-{
-    importFilePath = nil;
-    importFileIndex = 0;
-    importFileCount = 0;
-    importCancelled = NO;
-
-    [self _showImportSheet];
-
-    [NSThread detachNewThreadSelector:@selector(_workThreadImportFiles:) toTarget:self withObject:filePaths];
-}
-
-- (void)_workThreadImportFiles:(NSArray *)filePaths;
-{
-    NSAutoreleasePool *pool;
-    NSArray *addedEntries = nil;
-    NSArray *badFilePaths;
-
-    pool = [[NSAutoreleasePool alloc] init];
-    
-    filePaths = [self _workThreadExpandAndFilterDraggedFiles:filePaths];
-    if ([filePaths count] > 0)
-        addedEntries = [self _addFilesToLibrary:filePaths returningBadFiles:&badFilePaths];
-
-    [self mainThreadPerformSelector:@selector(_doneImportingInWorkThreadWithAddedEntries:badFiles:) withObject:addedEntries withObject:badFilePaths];
-
-    [pool release];
-}
-
-- (NSArray *)_workThreadExpandAndFilterDraggedFiles:(NSArray *)filePaths;
-{
-    NSFileManager *fileManager;
-    unsigned int fileIndex, fileCount;
-    NSMutableArray *acceptableFilePaths;
-
-    fileManager = [NSFileManager defaultManager];
-    
-    fileCount = [filePaths count];
-    acceptableFilePaths = [NSMutableArray arrayWithCapacity:fileCount];
-    for (fileIndex = 0; fileIndex < fileCount; fileIndex++) {
-        NSString *filePath;
-        BOOL isDirectory;
-        NSAutoreleasePool *pool;
-
-        if (importCancelled) {
-            [acceptableFilePaths removeAllObjects];
-            break;
-        }
-
-        filePath = [filePaths objectAtIndex:fileIndex];
-        if ([fileManager fileExistsAtPath:filePath isDirectory:&isDirectory] == NO)
-            continue;
-        
-        pool = [[NSAutoreleasePool alloc] init];
-
-        if (isDirectory) {
-            // Handle this directory's contents recursively            
-            NSArray *children;
-            unsigned int childIndex, childCount;
-            NSMutableArray *fullChildPaths;
-            NSArray *acceptableChildren;
-            
-            children = [fileManager directoryContentsAtPath:filePath];
-            childCount = [children count];
-            fullChildPaths = [NSMutableArray arrayWithCapacity:childCount];
-            for (childIndex = 0; childIndex < childCount; childIndex++) {
-                NSString *childPath;
-
-                childPath = [filePath stringByAppendingPathComponent:[children objectAtIndex:childIndex]];
-                [fullChildPaths addObject:childPath];
-            }
-
-            acceptableChildren = [self _workThreadExpandAndFilterDraggedFiles:fullChildPaths];
-            [acceptableFilePaths addObjectsFromArray:acceptableChildren];            
-        } else {
-            if ([fileManager isReadableFileAtPath:filePath] && [library typeOfFileAtPath:filePath] != SSELibraryFileTypeUnknown) {
-                [acceptableFilePaths addObject:filePath];
-            }
-        }
-
-        [pool release];
-    }
-    
-    return acceptableFilePaths;
-}
-
-- (NSArray *)_addFilesToLibrary:(NSArray *)filePaths returningBadFiles:(NSArray **)badFilePathsPtr;
-{
-    // NOTE: This may be happening in the main thread or a work thread.
-
-    NSArray *existingEntries;
-    unsigned int fileIndex, fileCount;
-    NSMutableArray *addedEntries;
-    NSMutableArray *badFilePaths = nil;
-
-    if (badFilePathsPtr)
-        badFilePaths = [NSMutableArray array];
-    
-    // Find the files which are already in the library, and pull them out.
-    existingEntries = [library findEntriesForFiles:filePaths returningNonMatchingFiles:&filePaths];
-
-    // Try to add each file to the library, keeping track of the successful ones.
-    addedEntries = [NSMutableArray array];
-    fileCount = [filePaths count];
-    for (fileIndex = 0; fileIndex < fileCount; fileIndex++) {
-        NSAutoreleasePool *pool;
-        NSString *filePath;
-        SSELibraryEntry *addedEntry;
-
-        pool = [[NSAutoreleasePool alloc] init];
-
-        filePath = [filePaths objectAtIndex:fileIndex];
-
-        if (![NSThread inMainThread]) {
-            [importStatusLock lock];
-            [importFilePath release];
-            importFilePath = [filePath retain];
-            importFileIndex = fileIndex;
-            importFileCount = fileCount;
-            [importStatusLock unlock];
-
-            if (importCancelled) {
-                [pool release];
-                break;
-            }
-    
-            [self mainThreadPerformSelectorOnce:@selector(_updateImportStatusDisplay)];
-        }
-
-        addedEntry = [library addEntryForFile:filePath];
-        if (addedEntry)
-            [addedEntries addObject:addedEntry];
-        else
-            [badFilePaths addObject:filePath];
-
-        [pool release];
-    }
-
-    if (badFilePathsPtr)
-        *badFilePathsPtr = badFilePaths;
-
-    return [addedEntries arrayByAddingObjectsFromArray:existingEntries];
-}
-
-- (void)_showImportSheet;
-{
-    [self _updateImportStatusDisplay];
-
-    // Bring the application and window to the front, so the sheet doesn't cause the dock to bounce our icon
-    // TODO Does this actually work correctly? It seems to be getting delayed...
-    [NSApp activateIgnoringOtherApps:YES];
-    [[self window] makeKeyAndOrderFront:nil];
-    
-    [NSApp beginSheet:importSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_sheetDidEnd:returnCode:contextInfo:) contextInfo:nil];
-}
-
-- (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-{
-    // At this point, we don't really care how this sheet ended
-    [sheet orderOut:nil];
-}
-
-- (void)_updateImportStatusDisplay;
-{
-    NSString *filePath;
-    unsigned int fileIndex, fileCount;
-    
-    [importStatusLock lock];
-    filePath = [[importFilePath retain] autorelease];
-    fileIndex = importFileIndex;
-    fileCount = importFileCount;
-    [importStatusLock unlock];
-
-    if (fileCount == 0) {
-        [importProgressIndicator setIndeterminate:YES];
-        [importProgressIndicator setUsesThreadedAnimation:YES];
-        [importProgressIndicator startAnimation:nil];
-        [importProgressMessageField setStringValue:@"Scanning..."];
-        [importProgressIndexField setStringValue:@""];
-    } else {
-        if ([importProgressIndicator isIndeterminate]) {
-            [importProgressIndicator setIndeterminate:NO];
-            [importProgressIndicator setMaxValue:fileCount];
-        }
-        [importProgressIndicator setDoubleValue:fileIndex + 1];
-        [importProgressMessageField setStringValue:[[NSFileManager defaultManager] displayNameAtPath:filePath]];
-        [importProgressIndexField setStringValue:[NSString stringWithFormat:@"%u of %u", fileIndex + 1, fileCount]];
-    }
-}
-
-- (void)_doneImportingInWorkThreadWithAddedEntries:(NSArray *)addedEntries badFiles:(NSArray *)badFilePaths;
-{
-    if ([[self window] attachedSheet])
-        [NSApp endSheet:importSheetWindow];
-
-    [self synchronizeInterface];
-    [self _selectAndScrollToEntries:addedEntries];
-
-    if ([badFilePaths count] > 0)
-        [self _showErrorMessageForFilesWithNoSysEx:badFilePaths];
-}
+//
+// Finding missing files
+//
 
 - (void)_findMissingFilesAndPerformSelector:(SEL)selector;
 {
-    // Ask the user to find each missing file.
-    // If we go through them all successfully, perform the selector on ourself.
-    // If we cancel at any point of the process, don't do anything.
+    NSArray *selectedEntries;
+    unsigned int entryCount, entryIndex;
+    NSMutableArray *entriesWithMissingFiles;
 
-    if (!entriesWithMissingFiles) {
-        NSArray *selectedEntries;
-        unsigned int entryCount, entryIndex;
+    selectedEntries = [self _selectedEntries];
 
-        selectedEntries = [self _selectedEntries];
+    // Which entries can't find their associated file?
+    entryCount = [selectedEntries count];
+    entriesWithMissingFiles = [NSMutableArray arrayWithCapacity:entryCount];
+    for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+        SSELibraryEntry *entry;
 
-        // Which entries can't find their associated file?
-        entryCount = [selectedEntries count];
-        [entriesWithMissingFiles release];
-        entriesWithMissingFiles = [[NSMutableArray alloc] initWithCapacity:entryCount];
-        for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
-            SSELibraryEntry *entry;
-
-            entry = [selectedEntries objectAtIndex:entryIndex];
-            if (![entry isFilePresentIgnoringCachedValue])
-                [entriesWithMissingFiles addObject:entry];
-        }
+        entry = [selectedEntries objectAtIndex:entryIndex];
+        if (![entry isFilePresentIgnoringCachedValue])
+            [entriesWithMissingFiles addObject:entry];
     }
 
     if ([entriesWithMissingFiles count] == 0) {
         [self performSelector:selector];
-        [entriesWithMissingFiles release];
-        entriesWithMissingFiles = nil;
     } else {
-        SSELibraryEntry *entry;
-
-        entry = [entriesWithMissingFiles objectAtIndex:0];
-
-        NSBeginAlertSheet(@"Missing File", @"Yes", @"Cancel", nil, [self window], self, @selector(_missingFileAlertDidEnd:returnCode:contextInfo:), NULL, selector, @"The file for the item \"%@\" could not be found. Would you like to locate it?", [entry name]);
-    }
-}
-
-- (void)_missingFileAlertDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-{
-    if (returnCode == NSAlertDefaultReturn) {
-        // Get this sheet out of the way before we open another one
-        [sheet orderOut:nil];
-
-        // Try to locate the file
-        [self _runOpenSheetForMissingFileWithContextInfo:contextInfo];
-    } else {
-        // Cancel the whole _findMissingFilesAndPerformSelector: process
-        [entriesWithMissingFiles release];
-        entriesWithMissingFiles = nil;
-    }
-}
-
-- (void)_runOpenSheetForMissingFileWithContextInfo:(void *)contextInfo;
-{
-    NSOpenPanel *openPanel;
-
-    openPanel = [NSOpenPanel openPanel];
-    [openPanel beginSheetForDirectory:nil file:nil types:[library allowedFileTypes] modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_findMissingFileOpenPanelDidEnd:returnCode:contextInfo:) contextInfo:contextInfo];
-}
-
-- (void)_findMissingFileOpenPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-{
-    BOOL cancelled = NO;
-
-    if (returnCode != NSOKButton) {
-        cancelled = YES;
-    } else {
-        SSELibraryEntry *entry;
-        NSString *filePath;
-        NSArray *matchingEntries;
-
-        OBASSERT([entriesWithMissingFiles count] > 0);
-        entry = [entriesWithMissingFiles objectAtIndex:0];        
-
-        filePath = [[openPanel filenames] objectAtIndex:0];
-
-        // Is this file in use by any entries?  (It might be in use by *this* entry if the file has gotten put in place again!)
-        matchingEntries = [library findEntriesForFiles:[NSArray arrayWithObject:filePath] returningNonMatchingFiles:NULL];
-        if ([matchingEntries count] > 0 && [matchingEntries indexOfObject:entry] == NSNotFound) {
-            int returnCode2;
-
-            returnCode2 = NSRunAlertPanel(@"In Use", @"That file is already in the library. Please choose another one.", @"OK", @"Cancel", nil);
-            [openPanel orderOut:nil];
-            if (returnCode2 == NSAlertDefaultReturn) {
-                // Run the open sheet again
-                [self _runOpenSheetForMissingFileWithContextInfo:contextInfo];
-            } else {
-                // Cancel out of the whole process
-                cancelled = YES;
-            }
-
-        } else {
-            [openPanel orderOut:nil];
-            
-            [entry setPath:filePath];
-            [entry setNameFromFile];
+        if (!findMissingController)
+            findMissingController = [[SSEFindMissingController alloc] initWithWindowController:self];
     
-            [entriesWithMissingFiles removeObjectAtIndex:0];
-    
-            // Go on to the next file (if any)
-            [self _findMissingFilesAndPerformSelector:(SEL)contextInfo];
-        }
-    }
-
-    if (cancelled) {
-        // Cancel the whole _findMissingFilesAndPerformSelector: process
-        [entriesWithMissingFiles release];
-        entriesWithMissingFiles = nil;
+        [findMissingController findMissingFilesForEntries:entriesWithMissingFiles andPerformSelectorOnWindowController:selector];
     }
 }
 
