@@ -29,11 +29,16 @@
 
 @implementation SSEMIDIController
 
+DEFINE_NSSTRING(SSESelectedDestination);
+
+
 - (id)init
 {
     NSNotificationCenter *center;
     NSArray *sources;
     unsigned int sourceIndex;
+    NSDictionary *destinationSettings;
+    BOOL didSetDestinationFromDefaults;
 
     if (!(self = [super init]))
         return nil;
@@ -74,8 +79,16 @@
     
     [center addObserver:self selector:@selector(_midiSetupDidChange:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
 
-    // TODO should get selected dest from preferences
-    [self _selectFirstAvailableDestination];
+    destinationSettings = [[NSUserDefaults standardUserDefaults] objectForKey:SSESelectedDestination];
+    if (destinationSettings) {
+        NSString *missingDestinationName;
+
+        missingDestinationName = [outputStream takePersistentSettings:destinationSettings];
+        if (!missingDestinationName)
+            didSetDestinationFromDefaults = YES;
+    }
+    if (!didSetDestinationFromDefaults)
+        [self _selectFirstAvailableDestination];
 
     return self;
 }
@@ -132,6 +145,8 @@
     listenToMIDISetupChanges = savedListenFlag;
 
     [windowController synchronizeDestinations];
+
+    [[NSUserDefaults standardUserDefaults] setObject:[outputStream persistentSettings] forKey:SSESelectedDestination];
 }
 
 - (NSTimeInterval)pauseTimeBetweenMessages;

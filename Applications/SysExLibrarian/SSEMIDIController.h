@@ -62,3 +62,6 @@
 - (void)getMessageCount:(unsigned int *)messageCountPtr messageIndex:(unsigned int *)messageIndexPtr bytesToSend:(unsigned int *)bytesToSendPtr bytesSent:(unsigned int *)bytesSentPtr;
 
 @end
+
+// Preferences keys
+extern NSString *SSESelectedDestination;
