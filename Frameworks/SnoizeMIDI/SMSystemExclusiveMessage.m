@@ -8,6 +8,7 @@
 @interface SMSystemExclusiveMessage (Private)
 
 + (NSArray *)_systemExclusiveMessagesInDataBuffer:(const Byte *)buffer withLength:(unsigned int)byteCount;
+- (NSData *)_dataByAddingStartByte:(NSData *)someData;
 
 @end
 
@@ -297,6 +298,19 @@
     return NSLocalizedStringFromTableInBundle(@"SysEx", @"SnoizeMIDI", [self bundle], "displayed type of System Exclusive event");
 }
 
+- (NSString *)dataForDisplay;
+{
+    NSString *manufacturerName, *lengthString;
+
+    manufacturerName = [self manufacturerName];
+    lengthString = [self sizeForDisplay];
+
+    if (manufacturerName)
+        return [[manufacturerName stringByAppendingString:@"\t"] stringByAppendingString:lengthString];
+    else
+        return lengthString;
+}
+
 //
 // Additional API
 //
@@ -340,26 +354,24 @@
     return [[self receivedData] length];
 }
 
+- (NSData *)receivedDataWithStartByte;
+{
+    return [self _dataByAddingStartByte:[self receivedData]];
+}
+
+- (unsigned int)receivedDataWithStartByteLength;
+{
+    return [self receivedDataLength] + 1;
+}
+
 - (NSData *)fullMessageData;
 {
-    unsigned int length;
-    NSMutableData *fullMessageData;
-    Byte *bytes;
-
-    length = [data length];
-    fullMessageData = [[NSMutableData alloc] initWithLength:1 + length + 1];
-    bytes = [fullMessageData mutableBytes];
-
-    *bytes = 0xF0;
-    [data getBytes:bytes+1];
-    *(bytes + length + 1) = 0xF7;
-
-    return fullMessageData;
+    return [self _dataByAddingStartByte:[self otherData]];
 }
 
 - (unsigned int)fullMessageDataLength;
 {
-    return [data length] + 2;
+    return [self otherDataLength] + 1;
 }
 
 - (NSData *)manufacturerIdentifier;
@@ -391,19 +403,11 @@
         return nil;
 }
 
-- (NSString *)dataForDisplay;
+- (NSString *)sizeForDisplay;
 {
-    NSString *manufacturerName, *lengthString;
-    
-    manufacturerName = [self manufacturerName];
-    lengthString = [NSString stringWithFormat:
+    return [NSString stringWithFormat:
         NSLocalizedStringFromTableInBundle(@"%@ bytes", @"SnoizeMIDI", [self bundle], "SysEx length format string"),
-        [SMMessage formatLength:[[self receivedData] length]]];
-
-    if (manufacturerName)
-        return [[manufacturerName stringByAppendingString:@"\t"] stringByAppendingString:lengthString];
-    else
-        return lengthString;
+        [SMMessage formatLength:[self receivedDataWithStartByteLength]]];
 }
 
 @end
@@ -453,6 +457,22 @@
     }
 
     return messages;
+}
+
+- (NSData *)_dataByAddingStartByte:(NSData *)someData;
+{
+    unsigned int length;
+    NSMutableData *dataWithStartByte;
+    Byte *bytes;
+
+    length = [someData length];
+    dataWithStartByte = [[NSMutableData alloc] initWithLength:1 + length];
+    bytes = [dataWithStartByte mutableBytes];
+
+    *bytes = 0xF0;
+    [someData getBytes:bytes+1];
+
+    return dataWithStartByte;
 }
 
 @end
