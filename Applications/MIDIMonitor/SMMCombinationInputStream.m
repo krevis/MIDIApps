@@ -6,6 +6,7 @@
 
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
+#import "SMMAppController.h"
 #import "SMMSpyingInputStream.h"
 
 
@@ -43,10 +44,12 @@
     [virtualInputStream setMessageDestination:self];
     [self _observeSysExNotificationsWithCenter:center object:virtualInputStream];
 
-    spyingInputStream = [[SMMSpyingInputStream alloc] init];
-    if (spyingInputStream) {
-        [spyingInputStream setMessageDestination:self];
-        [self _observeSysExNotificationsWithCenter:center object:spyingInputStream];        
+    if ([[NSApp delegate] shouldUseMIDISpy]) {
+        spyingInputStream = [[SMMSpyingInputStream alloc] init];
+        if (spyingInputStream) {
+            [spyingInputStream setMessageDestination:self];
+            [self _observeSysExNotificationsWithCenter:center object:spyingInputStream];        
+        }
     }
 
     return self;
