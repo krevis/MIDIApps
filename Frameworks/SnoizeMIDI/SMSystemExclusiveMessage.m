@@ -182,7 +182,10 @@
         NSLocalizedStringFromTableInBundle(@"%@ bytes", @"SnoizeMIDI", [self bundle], "SysEx length format string"),
         [SMMessage formatLength:[[self receivedData] length]]];
 
-    return [[manufacturerName stringByAppendingString:@"\t"] stringByAppendingString:lengthString];
+    if (manufacturerName)
+        return [[manufacturerName stringByAppendingString:@"\t"] stringByAppendingString:lengthString];
+    else
+        return lengthString;
 }
 
 @end
