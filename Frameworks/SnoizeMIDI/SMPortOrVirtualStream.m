@@ -149,7 +149,7 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
             return dict;
         }
     } else if (virtualStream) {
-        return [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:virtualEndpointUniqueID] forKey:@"virtualEndpointUniqueID"];
+        return [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[[virtualStream endpoint] uniqueID]] forKey:@"virtualEndpointUniqueID"];
     }
 
     return nil;
@@ -214,6 +214,7 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
 
 - (id)newPortStream;
 {
+    // Implement in subclasses
     OBRequestConcreteImplementation(self, _cmd);
     return nil;
 }
@@ -225,6 +226,7 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
 
 - (id)newVirtualStream;
 {
+    // Implement in subclasses
     OBRequestConcreteImplementation(self, _cmd);
     return nil;
 }
@@ -236,7 +238,6 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
 
 //
 // To be used by subclasses only
-// To be used only by subclasses (TODO move to a private header or something)
 //
 
 - (void)portStreamEndpointDisappeared:(NSNotification *)notification;
