@@ -30,47 +30,49 @@
 
 <P>When you start up SysEx Librarian, it will automatically open a new window, blah blah blah.
 
-<P><img src="mainWindow.gif">
+<P><img src="MainWindowSmall.gif">
 
 <P>Describe the main window here.
 
-<P>At the bottom of the Source menu is an item named "Act as destination for other programs". If you choose this, other applications will be able to send their output to this MIDI Monitor window. (In the other applications, the output's name will be the same as the name of the window.) 
+<P>Main area is the list of files in the library. The columns are as follows:
+<br><i>Blah:</i> Stuff
+<br><i>Blah:</i> More stuff
+<br><i>Blah:</i> Like, even more stuff, man.
 
-<P>The main part of the window is a list of sysex files. The columns are as follows:
-<br><i>Time:</i> When the event was received by the computer
-<br><i>Message:</i> What kind of event happened (e.g. note on, note off, controller)
-<br><i>Chan:</I> What channel the event was on. (Some types of messages do not have a channel.)
-<br><i>Data:</i> The specific data in the event. The format depends on the type of message. (Some messages have no data.)
+<P>Use the controls in the toolbar to play files. Choose where the data goes with the Destination popup menu.
+<P>At the bottom of the Destination menu is an item named "Act as source for other programs". If you choose this, other applications will be able to take input from us. blah blah blah
+<P>To record a new file, use the Record One or Record Any buttons.  Record One records just one SysEx message. Record Many will keep recording messages until you tell it to stop.
+<P>SysEx Librarian listens for data from all ports on all MIDI interfaces connected to your computer.
 
-<p>To display the contents of a System Exclusive (or SysEx) event, double-click it, or use the Events->Show SysEx Data menu command. (More on this later.)
+
 
 
 <P><BR><BR><font size="+1" face="helvetica"><b>Preferences</b></font>
 
 <P>The preferences window lets you change the way that SysEx Librarian does stuff. Changes in this window take effect immediately, and are automatically saved.
 
-<P><img src="preferencesWindow.gif">
+<P><img src="PreferencesSmall.gif">
 
 <P>Describe the window here.
 
 
-<P><BR><BR><font size="+1" face="helvetica"><b>SysEx Data</b></font>
-<BR><img src="sysexWindow.gif" align="left">
+<P><BR><BR><font size="+1" face="helvetica"><b>SysEx File Contents</b></font>
+<BR><img src="ContentsSmall.gif" align="left">
 
-<P>To see the contents of a SysEx event, double-click it, or select it and use the Events->Show SysEx Data menu command.
+<P>To see the contents of a SysEx file, do this.
 
-<P>The window shows information about the event, as well as a dump of the event's data in both hexadecimal and ASCII formats. Also, you may save the event data to a file using the "Save As" button.
+<P>The window shows information about the event, as well as a dump of the event's data in both hexadecimal and ASCII formats.
 
 <br clear="all">
 
 
 <P><BR><BR><a name="Troubleshooting"><font size="+1" face="helvetica"><b>Troubleshooting</b></font></a>
 
-<P>If the Source menu is blank, then there are no MIDI devices available. Remember that you must have a Mac OS X driver for your device; Mac OS 9 drivers will <i>not</i> work. At the time of this writing, Mac OS X drivers are available for these devices:
+<P>Remember that you must have a Mac OS X driver for your device; Mac OS 9 drivers will <i>not</i> work. At the time of this writing, Mac OS X drivers are available for these devices:
 <ul>
-<li><a href="http://www.midiman.com/">MIDIMAN</a> USB interfaces
+<li><a href="http://www.midiman.com/">MIDIMAN</a> USB interfaces <font color="red">(See warning below!)</font>
 <li><a href="http://www.motu.com/">Mark of the Unicorn (MOTU)</a> USB interfaces
-<li><a href="http://pete.yandell.com/software/">Roland/Edirol UM-1, UM-2, PC-300, S-MPU64, and possibly others</a><br>(unofficial, not created by Roland)
+<li><a href="http://www.edirol.com/support/drivers.html">Roland/Edirol</a> interfaces
 </ul>
 <P>Mac OS X also supports any USB MIDI Class-compliant device, with no special driver necessary. This list is probably not complete.
 <ul>
@@ -80,6 +82,8 @@
 </ul>
 
 <P>Note: If you have a device hooked up, and the proper driver, but you don't see it in the menu, you may be running into a problem with the Classic environment. Classic tends to grab USB devices for its own exclusive use, and doesn't let programs on the native Mac OS X side get to them. Try shutting down Classic and starting SysEx Librarian again. (If SysEx Librarian is started first, and is running when Classic starts, you will not encounter this problem.)
+
+<P>Note: The MIDIMAN drivers are seriously brain-damaged and don't work well for sending SysEx.  We try to work around the bugs, but things are still pretty unstable, and your machine may hang or SysEx Librarian may crash.  Yell at MIDIMAN and tell them to fix their driver.
 
 <P>Note: The current MOTU driver (as of 29 December 2001) provides a source named "All Ports" for some devices. It has been reported that this source doesn't work--the interface's lights blink, but nothing is shown in MIDI Monitor. This is most likely a bug in the driver, and not MIDI Monitor's fault.
 
