@@ -13,6 +13,7 @@
 - (void)_endpointAppeared:(NSNotification *)notification;
 - (void)_outputStreamEndpointDisappeared:(NSNotification *)notification;
 
+- (void)_selectFirstAvailableDestinationWhenPossible;
 - (void)_selectFirstAvailableDestination;
 
 - (void)_startListening;
@@ -309,10 +310,21 @@
 - (void)_outputStreamEndpointDisappeared:(NSNotification *)notification;
 {
     // TODO should print a message?
+    [self _selectFirstAvailableDestinationWhenPossible];
+}
 
-    // NOTE: We are handling a MIDI change notification right now. We might want to select a virtual destination
-    // but an SMVirtualOutputStream can't be created in the middle of handling this notification, so do it later.
-    [self performSelector:@selector(_selectFirstAvailableDestination) withObject:nil afterDelay:0];
+- (void)_selectFirstAvailableDestinationWhenPossible;
+{
+    // NOTE: We may be handling a MIDI change notification right now. We might want to select a virtual source
+    // but an SMVirtualInputStream can't be created in the middle of handling this notification, so do it later.
+
+    if ([[SMClient sharedClient] isHandlingSetupChange]) {
+        [self performSelector:_cmd withObject:nil afterDelay:0.1];
+        // NOTE Delay longer than 0 is a tradeoff; it means there's a brief window when no destination will be selected.
+        // A delay of 0 means that we'll get called many times (about 20 in practice) before the setup change is finished.
+    } else {
+        [self _selectFirstAvailableDestination];
+    }
 }
 
 - (void)_selectFirstAvailableDestination;
