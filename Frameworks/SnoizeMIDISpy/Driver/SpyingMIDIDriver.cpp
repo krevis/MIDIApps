@@ -77,8 +77,8 @@ OSStatus SpyingMIDIDriver::Monitor(MIDIEndpointRef destination, const MIDIPacket
     #endif
 
     if (mNeedsMonitorPointerWorkaround) {
-        // Under 10.1.3 and earlier, we are really given a pointer to a MIDIEndpointRef, not the MIDIEndpointRef itself.
-        // This is Radar #2877457; Doug Wyatt claims the bug will be fixed "in the next rev".
+        // Under Mac OS X 10.1.3 and earlier, we are really given a pointer to a MIDIEndpointRef, not the MIDIEndpointRef itself.
+        // This is Radar #2877457. The bug was fixed in 10.2.
         destination = *(MIDIEndpointRef *)destination;        
     }
 
