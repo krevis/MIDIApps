@@ -9,6 +9,7 @@
 
 #import "SMEndpoint.h"
 #import "SMSystemExclusiveMessage.h"
+#import "SMWorkaroundSysExSendRequest.h"
 
 
 @interface SMSysExSendRequest (Private)
@@ -25,7 +26,14 @@ DEFINE_NSSTRING(SMSysExSendRequestFinishedNotification);
 
 + (SMSysExSendRequest *)sysExSendRequestWithMessage:(SMSystemExclusiveMessage *)aMessage endpoint:(SMDestinationEndpoint *)endpoint;
 {
-    return [[[self alloc] initWithMessage:aMessage endpoint:endpoint] autorelease];
+    Class sendRequestClass;
+    
+    if ([endpoint needsSysExWorkaround])
+        sendRequestClass = [SMWorkaroundSysExSendRequest class];
+    else
+        sendRequestClass = self;
+    
+    return [[[sendRequestClass alloc] initWithMessage:aMessage endpoint:endpoint] autorelease];
 }
 
 - (id)initWithMessage:(SMSystemExclusiveMessage *)aMessage endpoint:(SMDestinationEndpoint *)endpoint;

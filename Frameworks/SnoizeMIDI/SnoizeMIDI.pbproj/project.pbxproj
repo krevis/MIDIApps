@@ -203,6 +203,7 @@
 				F558450C021E15F801000164,
 				F558450D021E15F801000164,
 				F558450E021E15F801000164,
+				F540F195022133F901000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -242,6 +243,7 @@
 				F565B6F501E15D0B01000164,
 				F556F68301E1C21A01000164,
 				F560977301E564B401000164,
+				F540F196022133F901000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -582,6 +584,28 @@
 				);
 			};
 		};
+		F540F193022133F901000164 = {
+			isa = PBXFileReference;
+			path = SMWorkaroundSysExSendRequest.h;
+			refType = 4;
+		};
+		F540F194022133F901000164 = {
+			isa = PBXFileReference;
+			path = SMWorkaroundSysExSendRequest.m;
+			refType = 4;
+		};
+		F540F195022133F901000164 = {
+			fileRef = F540F193022133F901000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F540F196022133F901000164 = {
+			fileRef = F540F194022133F901000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		F556F67F01E1C21A01000164 = {
 			children = (
 				F556F68001E1C21A01000164,
@@ -902,6 +926,8 @@
 				F565B6F301E15D0B01000164,
 				F560977001E564B401000164,
 				F560977101E564B401000164,
+				F540F193022133F901000164,
+				F540F194022133F901000164,
 			);
 			isa = PBXGroup;
 			name = "Output Streams";
