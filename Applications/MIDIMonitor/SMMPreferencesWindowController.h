@@ -5,6 +5,7 @@
 
 @interface SMMPreferencesWindowController : NSWindowController
 {
+    IBOutlet NSTabView *tabView;
     IBOutlet NSMatrix *timeFormatMatrix;
     IBOutlet NSMatrix *noteFormatMatrix;
     IBOutlet NSMatrix *controllerFormatMatrix;

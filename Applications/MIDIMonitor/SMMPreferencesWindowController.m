@@ -84,6 +84,9 @@ static SMMPreferencesWindowController *controller;
 {
     [super windowDidLoad];
 
+    // Make sure the first tab is selected (just in case someone changed it while editing the nib)
+    [tabView selectFirstTabViewItem:nil];
+    
     [timeFormatMatrix selectCellWithTag:[timeFormatPreference integerValue]];
     [noteFormatMatrix selectCellWithTag:[noteFormatPreference integerValue]];
     [controllerFormatMatrix selectCellWithTag:[controllerFormatPreference integerValue]];

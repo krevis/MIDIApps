@@ -24,6 +24,7 @@
                 dataFormatMatrix = NSMatrix; 
                 noteFormatMatrix = NSMatrix; 
                 openWindowsForNewSourcesCheckbox = NSButton; 
+                tabView = NSTabView; 
                 timeFormatMatrix = NSMatrix; 
             }; 
             SUPERCLASS = NSWindowController; 
