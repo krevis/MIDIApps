@@ -41,7 +41,7 @@ and programmers can use it to test MIDI drivers and applications.
 
 <P>Other applications on the computer may also appear in this menu, if they are running and can provide MIDI data.
 
-<P>At the bottom of Source menu is an item named "Act as destination for other programs". If you choose this, other applications will be able to send their output to this MIDI Monitor window. (In the other applications, the output's name will be the same as the name of the window.) 
+<P>At the bottom of the Source menu is an item named "Act as destination for other programs". If you choose this, other applications will be able to send their output to this MIDI Monitor window. (In the other applications, the output's name will be the same as the name of the window.) 
 
 <P>The main part of the window is a list of events that MIDI Monitor has received, in chronological order. The columns are as follows:
 <br><i>Time:</i> When the event was received by the computer
@@ -49,9 +49,9 @@ and programmers can use it to test MIDI drivers and applications.
 <br><i>Chan:</I> What channel the event was on. (Some types of messages do not have a channel.)
 <br><i>Data:</i> The specific data in the event. The format depends on the type of message. (Some messages have no data.)
 
-<p>System Exclusive (or SysEx) events are displayed with a triangle next to them. Click the triangle to show the full contents of the event. The byte offset of each row is shown.
+<P>You can clear the list of events by pressing the Clear button, using the Events>Clear Events menu command, or typing Command-K.  You can also change the number of events that the list will remember by changing the number in the text field.
 
-<P>You can clear the list of events by pressing the Clear button, using the Special->Clear Events menu command, or typing Command-K.  You can also change the number of events that the list will remember by changing the number in the text field.
+<p>To display the contents of a System Exclusive (or SysEx) event, double-click it, or use the Events->Show SysEx Data menu command. (More on this later.)
 
 <P>MIDI Monitor also provides a filter, so you can see only the events you are interested in. To show the filter controls, click the button at the bottom of the window (with the triangle).
 <P>New windows start with all of the checkboxes checked, meaning that all messages are displayed. The large checkboxes control the filters for a whole category of messages; the small checkboxes each control the filter for one specific type of message. For "voice" messages, which include a channel number, you can also choose whether to listen to all channels or just one.
@@ -97,8 +97,6 @@ and programmers can use it to test MIDI drivers and applications.
 <li><i>Hexadecimal number:</I> The value in base 16. One byte values range from $00 to $7F; two byte values range from $0000 to $3FFF, with $2000 as the "center" value.
 </ul>
 
-<P><i>SysEx format:</I> The number of bytes to display in each row of SysEx data. You can choose 8 or 16.
-
 <P><BR><B>Sources Preferences</B>
 <BR><img src="preferencesWindow2.gif" align="left">
 
@@ -109,6 +107,15 @@ and programmers can use it to test MIDI drivers and applications.
 <P><i>Automatically open windows for new sources:</I> If this checkbox is checked, when new sources become available, MIDI Monitor will open a new window for each one.
 
 <BR clear="all">
+
+<P><BR><BR><font size="+1" face="helvetica"><b>SysEx Data</b></font>
+<BR><img src="sysexWindow.gif" align="left">
+
+<P>To see the contents of a SysEx event, double-click it, or select it and use the Events->Show SysEx Data menu command.
+
+<P>The window shows information about the event, as well as a dump of the event's data in both hexadecimal and ASCII formats. Also, you may save the event data to a file using the "Save As" button.
+
+<br clear="all">
 
 <P><BR><BR><font size="+1" face="helvetica"><b>Advanced Features</b></font>
 
@@ -122,7 +129,7 @@ and programmers can use it to test MIDI drivers and applications.
 <ul>
 <li><a href="http://www.midiman.com/">MIDIMAN</a> USB interfaces
 <li><a href="http://www.motu.com/">Mark of the Unicorn (MOTU)</a> USB interfaces
-<li><a href="http://pete.yandell.com/software/">Roland UM-1, PC-300, S-MPU64, and possibly others</a> (unofficial, not created by Roland)
+<li><a href="http://pete.yandell.com/software/">Roland UM-1, UM-2, PC-300, S-MPU64, and possibly others</a><br>(unofficial, not created by Roland)
 </ul>
 <br>Mac OS X also supports any USB MIDI Class-compliant device, with no special driver necessary; however, no such devices are shipping yet.
 
