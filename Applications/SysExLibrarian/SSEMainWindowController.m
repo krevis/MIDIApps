@@ -69,8 +69,6 @@ static SSEMainWindowController *controller;
     library = [[SSELibrary sharedLibrary] retain];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_libraryDidChange:) name:SSELibraryDidChangeNotification object:library];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_displayPreferencesDidChange:) name:SSEDisplayPreferenceChangedNotification object:nil];
-
-    midiController = [[SSEMIDIController alloc] initWithWindowController:self];
     
     sortColumnIdentifier = @"name";
     isSortAscending = YES;
@@ -115,6 +113,9 @@ static SSEMainWindowController *controller;
     [libraryTableView registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
     [libraryTableView setTarget:self];
     [libraryTableView setDoubleAction:@selector(play:)];
+
+    // The MIDI controller may cause us to do some things to the UI, so we create it now instead of earlier
+    midiController = [[SSEMIDIController alloc] initWithWindowController:self];
 }
 
 - (void)windowDidLoad
@@ -348,7 +349,7 @@ static SSEMainWindowController *controller;
 - (void)importFiles:(NSArray *)filePaths showingProgress:(BOOL)showProgress;
 {
     if (!importController)
-        importController = [[SSEImportController alloc] initWithWindowController:self];
+        importController = [[SSEImportController alloc] initWithWindowController:self library:library];
 
     [importController importFiles:filePaths showingProgress:showProgress];
 }
@@ -493,7 +494,6 @@ static SSEMainWindowController *controller;
 
     filePaths = [[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType];
     [self importFiles:filePaths showingProgress:YES];
-
     return YES;
 }
 
@@ -852,7 +852,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
         [self performSelector:selector];
     } else {
         if (!findMissingController)
-            findMissingController = [[SSEFindMissingController alloc] initWithWindowController:self];
+            findMissingController = [[SSEFindMissingController alloc] initWithWindowController:self library:library];
     
         [findMissingController findMissingFilesForEntries:entriesWithMissingFiles andPerformSelectorOnWindowController:selector];
     }

@@ -45,7 +45,9 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
-    // TODO do we need to dealloc top-level items in the nib, like the window?
+    // Top-level nib objects
+    [sheetWindow release];
+    sheetWindow = nil;
     
     [progressUpdateEvent release];
     progressUpdateEvent = nil;

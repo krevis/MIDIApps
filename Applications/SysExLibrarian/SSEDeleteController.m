@@ -39,8 +39,12 @@ NSString *SSEShowWarningOnDeletePreferenceKey = @"SSEShowWarningOnDelete";
 
 - (void)dealloc;
 {
-    // TODO do we need to dealloc top-level items in the nib, like the window?
-
+    // Top-level nib objects
+    [deleteWarningSheetWindow release];
+    deleteWarningSheetWindow = nil;
+    [deleteLibraryFilesWarningSheetWindow release];
+    deleteLibraryFilesWarningSheetWindow = nil;
+    
     [entriesToDelete release];
     entriesToDelete = nil;
     

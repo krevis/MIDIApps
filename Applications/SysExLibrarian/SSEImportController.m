@@ -58,8 +58,12 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
 
 - (void)dealloc;
 {
-    // TODO do we need to dealloc top-level items in the nib, like the window?
-
+    // Top-level nib objects
+    [importSheetWindow release];
+    importSheetWindow = nil;
+    [importWarningSheetWindow release];
+    importWarningSheetWindow = nil;
+    
     [filePathsToImport release];
     filePathsToImport = nil;
     [importStatusLock release];
@@ -198,11 +202,6 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
     [self updateImportStatusDisplay];
 
     mainWindow = [nonretainedMainWindowController window];
-
-    // Bring the application and window to the front, so the sheet doesn't cause the dock to bounce our icon
-    // TODO Does this actually work correctly? It seems to be getting delayed...
-    [NSApp activateIgnoringOtherApps:YES];
-    [mainWindow makeKeyAndOrderFront:nil];
 
     [NSApp beginSheet:importSheetWindow modalForWindow:mainWindow modalDelegate:self didEndSelector:@selector(importSheetDidEnd:returnCode:contextInfo:) contextInfo:nil];
     
