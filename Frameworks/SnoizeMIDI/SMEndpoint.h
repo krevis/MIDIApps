@@ -105,7 +105,8 @@
 
 // Notifications
 
-extern NSString *SMEndpointAppearedNotification;
+extern NSString *SMEndpointsAppearedNotification;
+    // object is an array of endpoints
 extern NSString *SMEndpointDisappearedNotification;
 extern NSString *SMEndpointWasReplacedNotification;
     // userInfo contains new endpoint under key SMEndpointReplacement

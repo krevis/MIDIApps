@@ -63,14 +63,13 @@ static int endpointOrdinalComparator(id endpoint1, id endpoint2, void *context);
 
 - (void)_postRemovedNotification;
 - (void)_postReplacedNotificationWithReplacement:(SMEndpoint *)replacement;
-- (void)_postAddedNotification;
 
 @end
 
 
 @implementation SMEndpoint
 
-DEFINE_NSSTRING(SMEndpointAppearedNotification);
+DEFINE_NSSTRING(SMEndpointsAppearedNotification);
 DEFINE_NSSTRING(SMEndpointDisappearedNotification);
 DEFINE_NSSTRING(SMEndpointWasReplacedNotification);
 DEFINE_NSSTRING(SMEndpointReplacement);
@@ -457,8 +456,9 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     while (endpointIndex--) {
         [[replacedEndpoints objectAtIndex:endpointIndex] _postReplacedNotificationWithReplacement:[replacementEndpoints objectAtIndex:endpointIndex]];
     }
-    
-    [addedEndpoints makeObjectsPerformSelector:@selector(_postAddedNotification)];
+
+    if ([addedEndpoints count] > 0)
+        [[NSNotificationCenter defaultCenter] postNotificationName:SMEndpointsAppearedNotification object:addedEndpoints];
 }
 
 + (NSArray *)_allEndpoints;
@@ -759,11 +759,6 @@ static int endpointOrdinalComparator(id object1, id object2, void *context)
     OBASSERT(replacement != NULL);
     userInfo = [NSDictionary dictionaryWithObjectsAndKeys:replacement, SMEndpointReplacement, nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:SMEndpointWasReplacedNotification object:self userInfo:userInfo];
-}
-
-- (void)_postAddedNotification;
-{
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMEndpointAppearedNotification object:self];
 }
 
 @end
