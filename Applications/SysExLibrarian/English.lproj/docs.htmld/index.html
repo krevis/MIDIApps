@@ -84,12 +84,11 @@
 
 <P>If you have a device hooked up, and the proper driver, but you don't see it in the menu, you may be running into a problem with the Classic environment. Classic tends to grab USB devices for its own exclusive use, and doesn't let programs on the native Mac OS X side get to them. Try shutting down Classic and starting SysEx Librarian again. (If SysEx Librarian is started first, and is running when Classic starts, you will not encounter this problem.)
 
-<P>Notes on specific interfaces and drivers:
+<P>Notes on specific interfaces:
 
 <ul>
-<li>The <a href="http://www.edirol.com/products/info/um1s.html">Edirol UM-1S</a> apparently has problems sending more than 256 bytes of SysEx data. After every 256 bytes of data, 2 bytes will be dropped. (This is with driver version 1.0.0, as of July 2002.)
-<br>Other Edirol interfaces seem to have similar problems.
-<P><b>However:</b> I have a report that <a href="http://pete.yandell.com/software/index.html">Pete Yandell's unofficial driver</a> handles SysEx correctly. So if you're having problems, give his driver a try.
+<li>The driver for Edirol/Roland MIDI interfaces (such as the UM-1, UM-1S, UM-2, and UM-4) has had problems sending SysEx data. I have a report that the latest version of the driver fixes this problem, so please <a href="http://www.edirol.com/support/drivers.html">download the latest version</a> if necessary. (The good driver is version 1.1.0, released 6 November 2002.)
+
 <P>
 <li>MIDIMAN's drivers have had problems handling SysEx, but the latest driver (3.0b1, 16 August 2002) appears to work correctly. If you are using an older version of the driver, getting the new one is highly recommended.
 </ul>
