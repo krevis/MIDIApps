@@ -2,22 +2,22 @@
 <head>
 <title>MIDI Monitor Documentation</title>
 </head>
-<body bgcolor=white>
+<body bgcolor="white">
 
-<table height="98%" width="100%" border=0>
+<table height="98%" width="100%" border="0">
 
 <tr>
-<td width=200 valign=top>
+<td width="200" valign="top">
 </td>
-<td align=center>
-<img src="icon.gif" border=1>
+<td align="center">
+<img src="icon.gif" border="1">
 <BR><font size="+3" face="helvetica"><b>MIDI Monitor</b></font>
 <P><font size="+1" face="helvetica"><b>Documentation</b></font>
 </td>
-<td width=200></td>
+<td width="200"></td>
 </tr>
 
-<tr align=left><td colspan=3>
+<tr align="left"><td colspan="3">
 
 <P><BR><BR><font size="+1" face="helvetica"><b>Basics</b></font>
 <P><b>MIDI Monitor</b> is a utility for Mac OS X
@@ -41,7 +41,7 @@ and programmers can use it to test MIDI drivers and applications.
 
 <P>Other applications on the computer may also appear in this menu, if they are running and can provide MIDI data.
 
-<P>At the bottom of the Source menu is an item named "Act as destination for other programs". If you choose this, other applications will be able to send their output to this MIDI Monitor window. (In the other applications, the output's name will be the same as the name of the window.) 
+<P>At the bottom of the Source menu is an item named &quot;Act as destination for other programs&quot;. If you choose this, other applications will be able to send their output to this MIDI Monitor window. (In the other applications, the output's name will be the same as the name of the window.) 
 
 <P>The main part of the window is a list of events that MIDI Monitor has received, in chronological order. The columns are as follows:
 <br><i>Time:</i> When the event was received by the computer
@@ -86,7 +86,7 @@ and programmers can use it to test MIDI drivers and applications.
 
 <P><i>Controller format:</I> The method of displaying the name or number of control events.
 <ul>
-<li><i>Standard name:</I> The name of this controller as given in the MIDI standard. For example, controller 72 means "Release Time". Controllers without standard names are displayed as decimal numbers. Some controllers come in pairs; one controller conveys the "coarse" value (or high byte) and the other conveys the "fine" value (or low byte).
+<li><i>Standard name:</I> The name of this controller as given in the MIDI standard. For example, controller 72 means &quot;Release Time&quot;. Controllers without standard names are displayed as decimal numbers. Some controllers come in pairs; one controller conveys the &quot;coarse&quot; value (or high byte) and the other conveys the &quot;fine&quot; value (or low byte).
 <li><i>Decimal number:</I> The controller number in base 10, from 0 to 127.
 <li><i>Hexadecimal number:</I> The controller number in base 16, from $00 to $7F.
 </ul>
@@ -94,7 +94,7 @@ and programmers can use it to test MIDI drivers and applications.
 <P><i>Data format:</I> The method of displaying any other data in events.
 <ul>
 <li><i>Decimal number:</I> The value in base 10. One byte values range from 0 to 127; signed two byte values range from -8192 to 8191.
-<li><i>Hexadecimal number:</I> The value in base 16. One byte values range from $00 to $7F; two byte values range from $0000 to $3FFF, with $2000 as the "center" value.
+<li><i>Hexadecimal number:</I> The value in base 16. One byte values range from $00 to $7F; two byte values range from $0000 to $3FFF, with $2000 as the &quot;center&quot; value.
 </ul>
 
 <P><BR><B>Sources Preferences</B>
@@ -113,13 +113,13 @@ and programmers can use it to test MIDI drivers and applications.
 
 <P>To see the contents of a SysEx event, double-click it, or select it and use the Events->Show SysEx Data menu command.
 
-<P>The window shows information about the event, as well as a dump of the event's data in both hexadecimal and ASCII formats. Also, you may save the event data to a file using the "Save As" button.
+<P>The window shows information about the event, as well as a dump of the event's data in both hexadecimal and ASCII formats. Also, you may save the event data to a file using the &quot;Save As&quot; button.
 
 <br clear="all">
 
 <P><BR><BR><font size="+1" face="helvetica"><b>Advanced Features</b></font>
 
-<P>You can use the menu command "Restart MIDI", in the "Special" menu, to reinitialize the entire MIDI system and look for available devices. Generally you shouldn't need to do this, but I've included it so driver authors can use it for testing. (Developers: the menu command just calls the MIDIRestart() function.)
+<P>You can use the menu command &quot;Restart MIDI&quot;, in the &quot;Special&quot; menu, to reinitialize the entire MIDI system and look for available devices. Generally you shouldn't need to do this, but I've included it so driver authors can use it for testing. (Developers: the menu command just calls the MIDIRestart() function.)
 <BR>(Note: This command is only available on Mac OS X 10.1 and later.)
 
 
@@ -150,7 +150,7 @@ and programmers can use it to test MIDI drivers and applications.
 <P>MIDI Monitor is copyright &copy; 2001-2002 by Kurt Revis. All rights reserved.
 
 <P>SysEx Librarian uses OmniBase and OmniFoundation, from <a href="http://www.omnigroup.com/">The Omni Group</a>. Thanks to the authors for saving me a bunch of time.
-<P>Also: Thanks to the folks on the <a href="http://www.lists.apple.com/coreaudio-api">CoreAudio-API mailing list</a> for all the help they have provided.
+<P>Also: Thanks to the folks on the <a href="http://www.lists.apple.com/coreaudio-api">CoreAudio-API mailing list</a> for all the help they have provided, and to everyone who has sent in bug reports and feature requests.
 
 <P><BR><BR>
 
