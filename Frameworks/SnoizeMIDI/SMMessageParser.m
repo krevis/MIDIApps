@@ -9,6 +9,7 @@
 #import "SMSystemCommonMessage.h"
 #import "SMSystemRealTimeMessage.h"
 #import "SMSystemExclusiveMessage.h"
+#import "SMInvalidMessage.h"
 
 
 @interface SMMessageParser (Private)
@@ -30,6 +31,7 @@
 
     readingSysExLock = [[NSLock alloc] init];
     sysExTimeOut = 1.0;	// seconds
+    ignoreInvalidData = NO;
 
     return self;
 }
@@ -74,6 +76,16 @@
 - (void)setSysExTimeOut:(NSTimeInterval)value;
 {
     sysExTimeOut = value;
+}
+
+- (BOOL)ignoresInvalidData
+{
+    return ignoreInvalidData;
+}
+
+- (void)setIgnoresInvalidData:(BOOL)value
+{
+    ignoreInvalidData = value;
 }
 
 - (void)takePacketList:(const MIDIPacketList *)packetList;
@@ -171,6 +183,7 @@
     Byte pendingMessageStatus;
     Byte pendingData[2];
     UInt16 pendingDataIndex, pendingDataLength;
+    NSMutableData* readingInvalidData = nil;
     
     pendingMessageStatus = 0;
     pendingDataIndex = pendingDataLength = 0;
@@ -179,6 +192,7 @@
     length = packet->length;
     while (length--) {
         SMMessage *message = nil;
+        BOOL byteIsInvalid = NO;
         
         byte = *data++;
     
@@ -195,7 +209,8 @@
                     break;
         
                 default:
-                    // Ignore unrecognized message
+                    // Byte is invalid
+                    byteIsInvalid = YES;
                     break;
             }
         } else {
@@ -228,6 +243,7 @@
                     }                    
                 } else {
                     // Skip this byte -- it is invalid
+                    byteIsInvalid = YES;
                 }
             } else {
                 if (readingSysExData)
@@ -279,19 +295,35 @@
                                 break;
                             
                             default:
-                                // Ignore this message
+                                // Invalid message
+                                byteIsInvalid = YES;
                                 break;
                         }                 
                         break;
                     }
                 
                     default:
-                        // This can't happen
+                        // This can't happen, but handle it anyway
+                        byteIsInvalid = YES;
                         break;
                 }
             }
         }
 
+        if (!ignoreInvalidData) {
+            if (byteIsInvalid) {
+                if (!readingInvalidData)
+                    readingInvalidData = [NSMutableData data];
+                [readingInvalidData appendBytes:&byte length:1];
+            }
+    
+            if (readingInvalidData && (!byteIsInvalid || length == 0)) {
+                // We hit the end of a stretch of invalid data.
+                message = [SMInvalidMessage invalidMessageWithTimeStamp:packet->timeStamp data:readingInvalidData];
+                readingInvalidData = nil;
+            }
+        }
+        
         if (message) {
             [message setOriginatingEndpoint:nonretainedOriginatingEndpoint];
             

@@ -36,6 +36,9 @@ typedef enum _SMMessageType {
     
     // System exclusive
     SMMessageTypeSystemExclusive	= 1 << 17,
+
+    // Invalid
+    SMMessageTypeInvalid			= 1 << 18,
     
     // Groups
     SMMessageTypeNothingMask			= 0,
@@ -44,7 +47,7 @@ typedef enum _SMMessageType {
     SMMessageTypeAllSystemCommonMask	= (SMMessageTypeTimeCode | SMMessageTypeSongPositionPointer | SMMessageTypeSongSelect | SMMessageTypeTuneRequest),
     SMMessageTypeAllRealTimeMask		= (SMMessageTypeClock | SMMessageTypeStart | SMMessageTypeStop | SMMessageTypeContinue | SMMessageTypeActiveSense | SMMessageTypeReset),
     SMMessageTypeStartStopContinueMask	= (SMMessageTypeStart | SMMessageTypeStop | SMMessageTypeContinue),
-    SMMessageTypeAllMask			= (SMMessageTypeAllVoiceMask | SMMessageTypeAllSystemCommonMask | SMMessageTypeAllRealTimeMask | SMMessageTypeSystemExclusive)
+    SMMessageTypeAllMask			= (SMMessageTypeAllVoiceMask | SMMessageTypeAllSystemCommonMask | SMMessageTypeAllRealTimeMask | SMMessageTypeSystemExclusive | SMMessageTypeInvalid)
 
 } SMMessageType;
 

@@ -215,6 +215,7 @@
 				F587D6CFC5B0447501527BD6,
 				1637C041041F239400100005,
 				1637C043041F239600100005,
+				16DA873B04BA853C00100005,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -261,6 +262,7 @@
 				F5ACCB4703EE5A5201100002,
 				1637C042041F239500100005,
 				1637C044041F239600100005,
+				16DA873C04BA853C00100005,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -388,6 +390,30 @@
 			settings = {
 			};
 		};
+		16DA873904BA853C00100005 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = SMInvalidMessage.h;
+			refType = 4;
+		};
+		16DA873A04BA853C00100005 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = SMInvalidMessage.m;
+			refType = 4;
+		};
+		16DA873B04BA853C00100005 = {
+			fileRef = 16DA873904BA853C00100005;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		16DA873C04BA853C00100005 = {
+			fileRef = 16DA873A04BA853C00100005;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 //160
 //161
 //162
@@ -453,7 +479,7 @@
 			refType = 4;
 		};
 		F53BB4B2015D9A5D01000164 = {
-			fileEncoding = 4;
+			fileEncoding = 10;
 			isa = PBXFileReference;
 			name = English;
 			path = English.lproj/SnoizeMIDI.strings;
@@ -809,6 +835,8 @@
 				F561536801C2411D01000164,
 				F561536B01C2418301000164,
 				F561536C01C2418301000164,
+				16DA873904BA853C00100005,
+				16DA873A04BA853C00100005,
 			);
 			isa = PBXGroup;
 			name = Messages;

@@ -19,6 +19,8 @@
     MIDITimeStamp startSysExTimeStamp;
     NSTimer *sysExTimeOutTimer;
     NSTimeInterval sysExTimeOut;
+
+    BOOL ignoreInvalidData;
 }
 
 - (id)delegate;
@@ -29,6 +31,9 @@
 
 - (NSTimeInterval)sysExTimeOut;
 - (void)setSysExTimeOut:(NSTimeInterval)value;
+
+- (BOOL)ignoresInvalidData;
+- (void)setIgnoresInvalidData:(BOOL)value;
 
 - (void)takePacketList:(const MIDIPacketList *)packetList;
 
