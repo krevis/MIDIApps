@@ -90,7 +90,7 @@
     [groupedInputSources addObject:[virtualInputStream inputSources]];
     [groupedInputSources addObject:[spyingInputStream inputSources]];
 
-    // TODO It would be nice to cache this...
+    // TODO It might be nice to cache this... see if it makes any difference really.
 
     return groupedInputSources;
 }
