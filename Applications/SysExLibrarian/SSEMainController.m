@@ -172,6 +172,23 @@
     pauseTimeBetweenMessages = value;
 }
 
+- (NSArray *)messages;
+{
+    return messages;
+}
+
+- (void)setMessages:(NSArray *)value;
+{
+    // Shouldn't do this while listening for messages or playing messages
+    OBASSERT(listeningToMessages == NO);
+    OBASSERT(nonretainedCurrentSendRequest == nil);
+    
+    if (value != messages) {
+        [messages release];
+        messages = [[NSMutableArray alloc] initWithArray:value];
+    }
+}
+
 //
 // Listening to sysex messages
 //

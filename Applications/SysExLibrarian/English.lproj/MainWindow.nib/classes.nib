@@ -24,6 +24,7 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 destinationPopUpButton = NSPopUpButton; 
+                libraryTableView = NSTableView; 
                 mainController = SSEMainController; 
                 playProgressBytesField = NSTextField; 
                 playProgressIndicator = NSProgressIndicator; 

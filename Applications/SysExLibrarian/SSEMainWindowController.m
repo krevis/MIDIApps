@@ -4,6 +4,8 @@
 #import <OmniFoundation/OmniFoundation.h>
 
 #import "NSPopUpButton-Extensions.h"
+#import "SSELibrary.h"
+#import "SSELibraryEntry.h"
 #import "SSEMainController.h"
 
 
@@ -42,6 +44,8 @@ static SSEMainWindowController *controller;
     if (!(self = [super initWithWindowNibName:@"MainWindow"]))
         return nil;
 
+    library = [[SSELibrary alloc] init];
+    
     return self;
 }
 
@@ -102,7 +106,7 @@ static SSEMainWindowController *controller;
     // this should also be hooked up via delete key in the table view
     // should only be enabled when file(s) are selected in the library
     // should we have a confirmation dialog?
-    // ask whether to delete the file or just the reference? (see how Project Builder does it)
+    // ask whether to delete the file or just the reference? (see how Project Builder or iTunes do it)
 }
 
 - (IBAction)recordOne:(id)sender;
@@ -126,7 +130,7 @@ static SSEMainWindowController *controller;
 - (IBAction)play:(id)sender;
 {
     // TODO
-    // disable if no files are selected.
+    // disable if no files are selected
 
     [mainController sendMessages];
 }
@@ -157,7 +161,7 @@ static SSEMainWindowController *controller;
 {
     [self synchronizeSources];
     [self synchronizeDestinations];
-    // TODO more of course
+    [self synchronizeLibrary];
 }
 
 - (void)synchronizeSources;
@@ -169,6 +173,16 @@ static SSEMainWindowController *controller;
 {
     [self _synchronizePopUpButton:destinationPopUpButton withDescriptions:[mainController destinationDescriptions] currentDescription:[mainController destinationDescription]];
 }
+
+- (void)synchronizeLibrary;
+{
+    // TODO may need code to keep selection
+    [libraryTableView reloadData];
+}
+
+//
+// Reading SysEx
+//
 
 - (void)updateSysExReadIndicator;
 {
@@ -186,6 +200,10 @@ static SSEMainWindowController *controller;
     // Close the sheet, after a little bit of a delay (makes it look nicer)
     [[NSApplication sharedApplication] performSelector:@selector(endSheet:) withObject:[[self window] attachedSheet] afterDelay:0.5];
 }
+
+//
+// Sending SysEx
+//
 
 - (void)showSysExSendStatus;
 {
@@ -226,6 +244,10 @@ static SSEMainWindowController *controller;
 
 @implementation SSEMainWindowController (NotificationsDelegatesDataSources)
 
+//
+// Window delegate
+//
+
 - (void)windowDidResize:(NSNotification *)notification;
 {
     [self _autosaveWindowFrame];
@@ -234,6 +256,23 @@ static SSEMainWindowController *controller;
 - (void)windowDidMove:(NSNotification *)notification;
 {
     [self _autosaveWindowFrame];
+}
+
+//
+// NSTableView data source
+//
+
+- (int)numberOfRowsInTableView:(NSTableView *)tableView;
+{
+    return [[library entries] count];
+}
+
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row;
+{
+    SSELibraryEntry *entry;
+
+    entry = [[library entries] objectAtIndex:row];
+    return [entry name];
 }
 
 @end

@@ -2,6 +2,7 @@
 
 @class OFScheduledEvent;
 @class SSEMainController;
+@class SSELibrary;
 
 
 @interface SSEMainWindowController : NSWindowController
@@ -11,6 +12,8 @@
     IBOutlet NSPopUpButton *sourcePopUpButton;
     IBOutlet NSPopUpButton *destinationPopUpButton;
 
+    IBOutlet NSTableView  *libraryTableView;
+    
     IBOutlet NSWindow *recordSheetWindow;
     IBOutlet NSProgressIndicator *recordProgressIndicator;
     IBOutlet NSTextField *recordProgressMessageField;
@@ -28,6 +31,9 @@
     IBOutlet NSTextField *playProgressMessageField;
     IBOutlet NSTextField *playProgressBytesField;
 
+    // Library
+    SSELibrary *library;
+    
     // Transient data
     OFScheduledEvent *progressUpdateEvent;
 }
@@ -55,6 +61,7 @@
     // Calls each of the following
 - (void)synchronizeSources;
 - (void)synchronizeDestinations;
+- (void)synchronizeLibrary;
 
 - (void)updateSysExReadIndicator;
 - (void)stopSysExReadIndicator;

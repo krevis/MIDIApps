@@ -159,6 +159,10 @@
 				F565B6E601E1419001000164,
 				F565B6E901E1498301000164,
 				F565B6EA01E1498301000164,
+				F583CEB401EE3D3801000164,
+				F583CEB501EE3D3801000164,
+				F583CEB801EE3E4401000164,
+				F583CEB901EE3E4401000164,
 				F565B6ED01E1567501000164,
 			);
 			isa = PBXGroup;
@@ -306,6 +310,8 @@
 				F565B6E701E1419001000164,
 				F565B6EB01E1498301000164,
 				F565B6F001E1567501000164,
+				F583CEB601EE3D3801000164,
+				F583CEBA01EE3E4501000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -331,6 +337,8 @@
 				F565B6E801E1419001000164,
 				F565B6EC01E1498301000164,
 				F565B6F101E1567501000164,
+				F583CEB701EE3D3801000164,
+				F583CEBB01EE3E4501000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -595,6 +603,50 @@
 		};
 		F565B6F101E1567501000164 = {
 			fileRef = F565B6EF01E1567501000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F583CEB401EE3D3801000164 = {
+			isa = PBXFileReference;
+			path = SSELibrary.h;
+			refType = 4;
+		};
+		F583CEB501EE3D3801000164 = {
+			isa = PBXFileReference;
+			path = SSELibrary.m;
+			refType = 4;
+		};
+		F583CEB601EE3D3801000164 = {
+			fileRef = F583CEB401EE3D3801000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F583CEB701EE3D3801000164 = {
+			fileRef = F583CEB501EE3D3801000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F583CEB801EE3E4401000164 = {
+			isa = PBXFileReference;
+			path = SSELibraryEntry.h;
+			refType = 4;
+		};
+		F583CEB901EE3E4401000164 = {
+			isa = PBXFileReference;
+			path = SSELibraryEntry.m;
+			refType = 4;
+		};
+		F583CEBA01EE3E4501000164 = {
+			fileRef = F583CEB801EE3E4401000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F583CEBB01EE3E4501000164 = {
+			fileRef = F583CEB901EE3E4401000164;
 			isa = PBXBuildFile;
 			settings = {
 			};

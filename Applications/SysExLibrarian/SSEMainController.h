@@ -15,12 +15,11 @@
         
     // Transient data
     BOOL listenToMIDISetupChanges;
-
+    NSMutableArray *messages;
+    
     // ... for listening for sysex 
     BOOL listeningToMessages;
     BOOL listenToMultipleMessages;
-
-    NSMutableArray *messages;
     unsigned int messageBytesRead;
     unsigned int totalBytesRead;
 
@@ -45,6 +44,9 @@
 
 - (NSTimeInterval)pauseTimeBetweenMessages;
 - (void)setPauseTimeBetweenMessages:(NSTimeInterval)value;
+
+- (NSArray *)messages;
+- (void)setMessages:(NSArray *)value;
 
 // Listening to sysex messages
 
