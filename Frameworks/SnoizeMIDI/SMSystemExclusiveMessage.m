@@ -11,6 +11,8 @@
 
 @interface SMSystemExclusiveMessage (Private)
 
+static UInt32 readVariableLengthFieldFromSMF(const Byte **pPtr, const Byte *end);
+
 + (NSArray *)systemExclusiveMessagesInDataBuffer:(const Byte *)buffer withLength:(unsigned int)byteCount;
 - (NSData *)dataByAddingStartByte:(NSData *)someData;
 
@@ -34,34 +36,7 @@
     return [self systemExclusiveMessagesInDataBuffer:[someData bytes] withLength:[someData length]];
 }
 
-
-// TODO make static declaration
-UInt32 readVariableLengthField(const Byte **pPtr, const Byte *end)
-{
-    const Byte *p = *pPtr;
-    UInt32 value = 0;
-    BOOL keepGoing = YES;
-    
-    while (p < end && keepGoing) {
-        Byte byte;
-
-        value <<= 7;
-        
-        byte = *p++;
-        if (byte & 0x80)
-            byte &= 0x7F;
-        else
-            keepGoing = NO;
-
-        value += byte;
-    }
-
-    *pPtr = p;
-    return value;
-}
-
 + (NSArray *)systemExclusiveMessagesInStandardMIDIFile:(NSString *)path;
-#if 1
 {
     NSData *smfData;
     unsigned int smfDataLength;
@@ -87,7 +62,7 @@ UInt32 readVariableLengthField(const Byte **pPtr, const Byte *end)
     if (CFSwapInt32BigToHost(*(const UInt32 *)p) != 'MThd')
         goto done;
     p += 4;
-    chunkSize = CFSwapInt32BigToHost(*(const UInt32 *)p);	// should be 6, but this could conceivably change
+    chunkSize = CFSwapInt32BigToHost(*(const UInt32 *)p);	// should be 6, but that could conceivably change, so don't hard-code it
     p += 4;
     p += chunkSize;
     if (p >= end)
@@ -107,7 +82,7 @@ UInt32 readVariableLengthField(const Byte **pPtr, const Byte *end)
         p += 4;
         trackChunkEnd = p + chunkSize;
         if (trackChunkEnd > end)
-            goto done;
+            goto done;	// this track is supposedly bigger than the file is... unlikely.
         
         // Read each event in the track
         runningStatusEventSize = 0;
@@ -116,7 +91,7 @@ UInt32 readVariableLengthField(const Byte **pPtr, const Byte *end)
             Byte topNibble;
 
             // Get the delta-time for this event. We don't really care what it is.
-            (void)readVariableLengthField(&p, trackChunkEnd);
+            (void)readVariableLengthFieldFromSMF(&p, trackChunkEnd);
             if (p >= trackChunkEnd)
                 goto done;
 
@@ -132,8 +107,7 @@ UInt32 readVariableLengthField(const Byte **pPtr, const Byte *end)
                     p += (runningStatusEventSize - 1);
                 } else {
                     // Malformed file -- this shouldn't happen.
-                    // What to do? TODO
-                    NSLog(@"Bad data in standard MIDI file: got byte 0x%02x when we expected >= 0x80", eventType);
+                    NSLog(@"Bad data in standard MIDI file: at offset 0x%08x, got byte 0x%02x when we expected >= 0x80", p - 1 - (const Byte*)[smfData bytes], eventType);
                     goto done;
                 }
 
@@ -158,7 +132,7 @@ UInt32 readVariableLengthField(const Byte **pPtr, const Byte *end)
                         goto done;
 
                     // Now read a variable-length value, which is the number of bytes in this event.
-                    eventSize = readVariableLengthField(&p, trackChunkEnd);
+                    eventSize = readVariableLengthFieldFromSMF(&p, trackChunkEnd);
                     if (p > trackChunkEnd)	// Hitting the end of the track chunk is OK here
                         goto done;
 
@@ -172,7 +146,7 @@ UInt32 readVariableLengthField(const Byte **pPtr, const Byte *end)
                     BOOL isCompleteMessage;
 
                     // Read a variable-length value, which is the number of bytes in this event.
-                    sysexSize = readVariableLengthField(&p, trackChunkEnd);
+                    sysexSize = readVariableLengthFieldFromSMF(&p, trackChunkEnd);
                     if (p >= trackChunkEnd)
                         goto done;
 
@@ -211,7 +185,6 @@ UInt32 readVariableLengthField(const Byte **pPtr, const Byte *end)
 
                 } else {
                     // Malformed file -- this shouldn't happen.
-                    // What to do? TODO
                     NSLog(@"Bad data in standard MIDI file: got byte 0x%02x which is an unknown event type", eventType);
                     goto done;
                 }
@@ -222,94 +195,7 @@ UInt32 readVariableLengthField(const Byte **pPtr, const Byte *end)
 done:
     return messages;
 }
-#else
-{
-    FSSpec fsSpec;
-    NSMutableArray *messages;
-    OSStatus status;
-    MusicSequence sequence;
 
-    {
-        FSRef fsRef;
-        
-        status = FSPathMakeRef([path fileSystemRepresentation], &fsRef, NULL);
-        if (noErr == status)
-            status = FSGetCatalogInfo(&fsRef, kFSCatInfoNone, NULL, NULL, &fsSpec, NULL);
-
-        if (status != noErr)
-            return [NSArray array];
-    }
-
-    messages = [NSMutableArray array];
-
-    status = NewMusicSequence(&sequence);
-    if (status == noErr) {
-        status = MusicSequenceLoadSMF(sequence, &fsSpec);
-        if (status)
-            NSLog(@"MusicSequenceLoadSMF returns err: %ld", status);
-        if (status == noErr) {
-            UInt32 trackCount, trackIndex;
-            
-            MusicSequenceGetTrackCount(sequence, &trackCount);
-            NSLog(@"got number of tracks: %lu", trackCount);
-            for (trackIndex = 0; trackIndex < trackCount; trackIndex++) {
-                MusicTrack track;
-                MusicEventIterator iterator;
-                Boolean hasCurrentEvent;
-
-                NSLog(@"getting track %lu", trackIndex + 1);
-                MusicSequenceGetIndTrack(sequence, trackIndex, &track);        
-                NewMusicEventIterator(track, &iterator);
-
-                MusicEventIteratorHasNextEvent(iterator, &hasCurrentEvent);
-                while (hasCurrentEvent) {
-                    MusicEventType eventType;
-                    UInt32 eventDataSize;
-                    Byte *eventData;
-
-                    MusicEventIteratorGetEventInfo(iterator, NULL, &eventType, (const void **)&eventData, &eventDataSize);
-                    NSLog(@"'got event type: %lu size: %lu", eventType, eventDataSize);
-                    if (eventType == kMusicEventType_MIDIRawData) {
-                        NSArray *eventMessages;
-
-                        eventMessages = [self systemExclusiveMessagesInDataBuffer:eventData withLength:eventDataSize];
-                        NSLog(@"got sysex messages: %@", eventMessages);
-                        if (eventMessages)
-                            [messages addObjectsFromArray:eventMessages];
-                    }
-
-                    MusicEventIteratorNextEvent(iterator);
-                    MusicEventIteratorHasNextEvent(iterator, &hasCurrentEvent);
-                }
-
-                DisposeMusicEventIterator(iterator);
-            }
-        }
-
-        // Dispose of all the tracks in the sequence. We shouldn't have to do this (DisposeMusicSequence should do it)
-        // but apparently we have to. This works around bug #2848166.
-        // TODO reevaluate if this is still necessary on 10.2
-#if 0
-        {
-            UInt32 trackCount;
-
-            if (MusicSequenceGetTrackCount(sequence, &trackCount) == noErr) {
-                while (trackCount--) {
-                    MusicTrack track;
-    
-                    if (MusicSequenceGetIndTrack(sequence, trackCount, &track) == noErr)
-                        MusicSequenceDisposeTrack(sequence, track);
-                }
-            }
-        }
-#endif
-
-        DisposeMusicSequence(sequence);
-    }
-    
-    return messages;
-}
-#endif
 
 + (NSData *)dataForSystemExclusiveMessages:(NSArray *)messages;
 #if SLOW_WAY
@@ -669,6 +555,31 @@ done:
 
 
 @implementation SMSystemExclusiveMessage (Private)
+
+UInt32 readVariableLengthFieldFromSMF(const Byte **pPtr, const Byte *end)
+{
+    const Byte *p = *pPtr;
+    UInt32 value = 0;
+    BOOL keepGoing = YES;
+
+    while (p < end && keepGoing) {
+        Byte byte;
+
+        value <<= 7;
+
+        byte = *p++;
+        if (byte & 0x80)
+            byte &= 0x7F;
+        else
+            keepGoing = NO;
+
+        value += byte;
+    }
+
+    *pPtr = p;
+    return value;
+}
+
 
 + (NSArray *)systemExclusiveMessagesInDataBuffer:(const Byte *)buffer withLength:(unsigned int)byteCount;
 {
