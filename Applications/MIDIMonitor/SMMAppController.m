@@ -40,12 +40,12 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
             break;
 
         case kMIDISpyDriverCouldNotRemoveOldDriver:
-            midiSpyErrorMessage = NSLocalizedStringFromTableInBundle(@"TODO", @"MIDIMonitor", [self bundle], "error message if old MIDI spy driver could not be removed");
+            midiSpyErrorMessage = NSLocalizedStringFromTableInBundle(@"There is an old version of MIDI Monitor's driver installed, but it could not be removed. To fix this, remove the old driver. (It is probably \"Library/Audio/MIDI Drivers/MIDI Monitor.plugin\" in your home folder.)", @"MIDIMonitor", [self bundle], "error message if old MIDI spy driver could not be removed");
             break;
 
         case kMIDISpyDriverInstallationFailed:
         default:
-            midiSpyErrorMessage = NSLocalizedStringFromTableInBundle(@"TODO", @"MIDIMonitor", [self bundle], "error message if MIDI spy driver installation fails");
+            midiSpyErrorMessage = NSLocalizedStringFromTableInBundle(@"MIDI Monitor tried to install a MIDI driver in \"Library/Audio/MIDI Drivers\" in your your home folder, but it failed. (Do the privileges allow write access?)", @"MIDIMonitor", [self bundle], "error message if MIDI spy driver installation fails");
             break;
     }
 
@@ -72,15 +72,18 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
         // Create our client for spying on MIDI output.
         status = MIDISpyClientCreate(&midiSpyClient);
         if (status != noErr) {
-            midiSpyErrorMessage = NSLocalizedStringFromTableInBundle(@"TODO", @"MIDIMonitor", [self bundle], "error message if MIDI spy client creation fails");
+            midiSpyErrorMessage = NSLocalizedStringFromTableInBundle(@"MIDI Monitor could not make a connection to its MIDI driver. To fix the problem, quit all MIDI applications (including this one) and launch them again.", @"MIDIMonitor", [self bundle], "error message if MIDI spy client creation fails");
         }
     }
 
     if (midiSpyErrorMessage) {
         NSString *title;
+        NSString *message2;
 
         title = NSLocalizedStringFromTableInBundle(@"Warning", @"MIDIMonitor", [self bundle], "title of warning alert");
-        NSRunAlertPanel(title, midiSpyErrorMessage, nil, nil, nil);
+        message2 = NSLocalizedStringFromTableInBundle(@"For now, MIDI Monitor will not be able to spy on the output of other MIDI applications, but all other features will still work.", @"MIDIMonitor", [self bundle], "second line of warning when MIDI spy is unavailable");
+        
+        NSRunAlertPanel(title, @"%@\n\n%@", nil, nil, nil, midiSpyErrorMessage, message2);
     }    
 }
 
