@@ -57,7 +57,7 @@ static HRESULT MIDIDriverQueryInterface(MIDIDriverRef ref, REFIID iid, LPVOID *p
 		// set the ppv parameter equal to the instance, and
 		// return good status.
 		MIDIDriver *self = GetMIDIDriver(ref);
-		self->mInterface->AddRef(self);
+		self->mInterface->AddRef(ref);
 		*ppv = &self->mInterface;
 		CFRelease(interfaceID);
 		self->mVersion = 2;
@@ -75,7 +75,7 @@ static HRESULT MIDIDriverQueryInterface(MIDIDriverRef ref, REFIID iid, LPVOID *p
 		// set the ppv parameter equal to the instance, and
 		// return good status.
 		MIDIDriver *self = GetMIDIDriver(ref);
-		self->mInterface->AddRef(self);
+		self->mInterface->AddRef(ref);
 		*ppv = &self->mInterface;
 		CFRelease(interfaceID);
 		self->mVersion = 1;
@@ -85,7 +85,7 @@ static HRESULT MIDIDriverQueryInterface(MIDIDriverRef ref, REFIID iid, LPVOID *p
 
 	if (CFEqual(interfaceID, IUnknownUUID)) {
 		MIDIDriver *self = GetMIDIDriver(ref);
-		self->mInterface->AddRef(self);
+		self->mInterface->AddRef(ref);
 		*ppv = &self->mInterface;
 		CFRelease(interfaceID);
 		return S_OK;
@@ -201,6 +201,7 @@ MIDIDriver::~MIDIDriver()
 {
 	if (mFactoryID) {
 		CFPlugInRemoveInstanceForFactory(mFactoryID);
-		CFRelease(mFactoryID);
+		// CFRelease(mFactoryID); this came from CFUUIDGetConstantUUIDWithBytes which
+		// says that it is immortal and should never be released
 	}
 }

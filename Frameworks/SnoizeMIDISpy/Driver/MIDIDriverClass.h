@@ -94,7 +94,8 @@ public:
 // to the MIDIDriver pointer.
 inline MIDIDriver *	GetMIDIDriver(MIDIDriverRef ref)
 {
-	return (MIDIDriver *)((Byte *)ref - offsetof(MIDIDriver, mInterface));
+	MIDIDriver *p = (MIDIDriver *)ref;
+	return (MIDIDriver *)((Byte *)p - ((Byte *)&p->mInterface - (Byte *)p));
 }
 
 #if V1_MIDI_DRIVER_SUPPORT && V2_MIDI_DRIVER_SUPPORT
