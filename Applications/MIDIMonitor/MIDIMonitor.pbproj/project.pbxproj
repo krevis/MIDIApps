@@ -55,6 +55,7 @@
 				F53D4AAB015AA35201000164,
 				F53D4AAC015AA35201000164,
 				F53D4AAE015AA35201000164,
+				F5BCCECA023F644901000164,
 			);
 			isa = PBXGroup;
 			name = "Linked Frameworks";
@@ -464,6 +465,7 @@
 				F53D4AB1015AA35201000164,
 				F53D4AB2015AA35201000164,
 				F5B4281901A360AD01000164,
+				F5BCCECB023F644901000164,
 			);
 			isa = PBXFrameworksBuildPhase;
 			name = "Frameworks & Libraries";
@@ -845,6 +847,17 @@
 		};
 		F5B4281901A360AD01000164 = {
 			fileRef = F5B4281801A360AD01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5BCCECA023F644901000164 = {
+			isa = PBXFrameworkReference;
+			path = SnoizeMIDISpy.framework;
+			refType = 3;
+		};
+		F5BCCECB023F644901000164 = {
+			fileRef = F5BCCECA023F644901000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
