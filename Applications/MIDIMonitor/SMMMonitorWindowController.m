@@ -532,8 +532,20 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
     if ([identifier isEqualToString:@"name"]) {
         if (isCategory)
             return [item objectForKey:@"name"];
-        else
-            return [(id<SMInputStreamSource>)item inputStreamSourceName];
+        else {
+            NSString *name;
+            NSArray *externalDeviceNames;
+
+            name = [(id<SMInputStreamSource>)item inputStreamSourceName];
+            externalDeviceNames = [(id<SMInputStreamSource>)item inputStreamSourceExternalDeviceNames];
+
+            if ([externalDeviceNames count] > 0) {
+                return [NSString stringWithFormat:@"%@ (%@)", name, [externalDeviceNames componentsJoinedByString:@", "]];
+                // TODO do we need to retain this? because I don't think NSOutlineView will do it for us
+            } else {
+                return name;
+            }
+        }
         
     } else if ([identifier isEqualToString:@"enabled"]) {
         NSArray *sources;
