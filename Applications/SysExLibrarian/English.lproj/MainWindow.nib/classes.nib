@@ -20,8 +20,6 @@
                 recordMultiple = id; 
                 recordOne = id; 
                 selectDestination = id; 
-                setShowDeleteLibraryFileWarningInFuture = id; 
-                setShowDeleteWarningInFuture = id; 
                 showFileInFinder = id; 
             }; 
             CLASS = SSEMainWindowController; 
@@ -31,6 +29,7 @@
                 deleteLibraryFilesWarningSheetWindow = NSPanel; 
                 deleteWarningSheetWindow = NSPanel; 
                 destinationPopUpButton = NSPopUpButton; 
+                doNotWarnOnDeleteAgainCheckbox = NSButton; 
                 importProgressIndexField = NSTextField; 
                 importProgressIndicator = NSProgressIndicator; 
                 importProgressMessageField = NSTextField; 

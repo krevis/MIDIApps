@@ -41,6 +41,7 @@
     IBOutlet NSTextField *importProgressIndexField;
 
     IBOutlet NSPanel *deleteWarningSheetWindow;
+    IBOutlet NSButton *doNotWarnOnDeleteAgainCheckbox;
     IBOutlet NSPanel *deleteLibraryFilesWarningSheetWindow;
     
     // Library
@@ -80,9 +81,6 @@
 
 - (IBAction)endSheetWithReturnCodeFromSenderTag:(id)sender;
 
-- (IBAction)setShowDeleteWarningInFuture:(id)sender;
-- (IBAction)setShowDeleteLibraryFileWarningInFuture:(id)sender;
-
 // Other API
 
 - (void)synchronizeInterface;
@@ -105,4 +103,3 @@
 
 // Preferences keys
 extern NSString *SSEShowWarningOnDelete;
-extern NSString *SSEShowWarningOnDeleteFilesInLibrary;

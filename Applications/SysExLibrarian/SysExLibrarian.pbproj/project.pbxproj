@@ -364,8 +364,6 @@
 			<dict>
 				<key>SSEShowWarningOnDelete</key>
 				<true/>
-				<key>SSEShowWarningOnDeleteFilesInLibrary</key>
-				<true/>
 			</dict>
 		</dict>
 	</dict>

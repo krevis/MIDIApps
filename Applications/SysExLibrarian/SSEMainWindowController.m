@@ -62,7 +62,6 @@
 @implementation SSEMainWindowController
 
 DEFINE_NSSTRING(SSEShowWarningOnDelete);
-DEFINE_NSSTRING(SSEShowWarningOnDeleteFilesInLibrary);
 
 static SSEMainWindowController *controller;
 
@@ -150,6 +149,7 @@ static SSEMainWindowController *controller;
 - (IBAction)delete:(id)sender;
 {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SSEShowWarningOnDelete]) {
+        [doNotWarnOnDeleteAgainCheckbox setIntValue:0];
         [[NSApplication sharedApplication] beginSheet:deleteWarningSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_deleteWarningSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
     } else {
         [self _deleteStep2];
@@ -237,16 +237,6 @@ static SSEMainWindowController *controller;
 - (IBAction)endSheetWithReturnCodeFromSenderTag:(id)sender;
 {
     [[NSApplication sharedApplication] endSheet:[[self window] attachedSheet] returnCode:[sender tag]];
-}
-
-- (IBAction)setShowDeleteWarningInFuture:(id)sender;
-{
-    [[NSUserDefaults standardUserDefaults] setBool:(![sender intValue]) forKey:SSEShowWarningOnDelete];
-}
-
-- (IBAction)setShowDeleteLibraryFileWarningInFuture:(id)sender;
-{
-    [[NSUserDefaults standardUserDefaults] setBool:(![sender intValue]) forKey:SSEShowWarningOnDeleteFilesInLibrary];
 }
 
 //
@@ -1032,6 +1022,9 @@ static int libraryEntryComparator(id object1, id object2, void *context)
 {
     [sheet orderOut:nil];
     if (returnCode == NSOKButton) {
+        if ([doNotWarnOnDeleteAgainCheckbox intValue] == 1)
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:SSEShowWarningOnDelete];
+
         [self _deleteStep2];
     }
 }
@@ -1051,10 +1044,9 @@ static int libraryEntryComparator(id object1, id object2, void *context)
         }
     }
 
-    if (areAnyFilesInLibraryDirectory && [[NSUserDefaults standardUserDefaults] boolForKey:SSEShowWarningOnDeleteFilesInLibrary]) {
+    if (areAnyFilesInLibraryDirectory) {
         [[NSApplication sharedApplication] beginSheet:deleteLibraryFilesWarningSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_deleteLibraryFilesWarningSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
     } else {
-        // TODO Should this be YES or NO? Should it be the what the user chose when they last saw the warning dialog?  See what iTunes does.
         [self _deleteSelectedEntriesMovingLibraryFilesToTrash:NO];
     }
 }
