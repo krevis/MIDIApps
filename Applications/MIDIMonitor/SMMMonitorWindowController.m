@@ -249,7 +249,8 @@
         [sourcePopUpButton addItemWithTitle:[description objectForKey:@"name"] representedObject:description];
 
         if (!foundSource && [description isEqual:currentDescription]) {
-            [sourcePopUpButton selectItemAtIndex:sourceIndex];
+            [sourcePopUpButton selectItemAtIndex:[sourcePopUpButton numberOfItems] - 1];
+                // Don't use sourceIndex because it may be off by one (because of the separator item)
             foundSource = YES;
         }
     }
