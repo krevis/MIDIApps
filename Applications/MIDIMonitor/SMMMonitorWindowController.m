@@ -99,7 +99,8 @@
     [[maxMessageCountField formatter] setAllowsFloats:NO];
     [[oneChannelField formatter] setAllowsFloats:NO];
     
-    [messagesOutlineView setAutosaveName:@"MessagesOutlineView"];
+    [messagesOutlineView setAutosaveName:@"MessagesOutlineView2"];
+        // NOTE: Added the 2 so that old saved values (pre-1.0) don't make the outline column too small
     [messagesOutlineView setAutosaveTableColumns:YES];
 
     [filterDisclosableView setHiddenHeight:10];	// TODO This is sort of hacky but I'm not sure how to calculate this based on the nib
