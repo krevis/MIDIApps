@@ -1,7 +1,5 @@
 #import "SMMSysExWindowController.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 
@@ -56,7 +54,7 @@ NSString *SMMSaveSysExWithEOXAlwaysPreferenceKey = @"SMMSaveSysExWithEOXAlways";
         SMSystemExclusiveMessage *sysExMessage = (SMSystemExclusiveMessage *)message;
         NSData *dataToWrite;
         
-        if ([[OFPreference preferenceForKey:SMMSaveSysExWithEOXAlwaysPreferenceKey] boolValue])
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SMMSaveSysExWithEOXAlwaysPreferenceKey])
             dataToWrite = [sysExMessage fullMessageData];
         else
             dataToWrite = [sysExMessage receivedDataWithStartByte];
@@ -64,8 +62,8 @@ NSString *SMMSaveSysExWithEOXAlwaysPreferenceKey = @"SMMSaveSysExWithEOXAlways";
         if (![dataToWrite writeToFile:[sheet filename] atomically:YES]) {
             NSString *title, *text;
 
-            title = NSLocalizedStringFromTableInBundle(@"Error", @"MIDIMonitor", [self bundle], "title of error alert sheet");
-            text = NSLocalizedStringFromTableInBundle(@"The file could not be saved.", @"MIDIMonitor", [self bundle], "message when writing sysex data to a file fails");
+            title = NSLocalizedStringFromTableInBundle(@"Error", @"MIDIMonitor", SMBundleForObject(self), "title of error alert sheet");
+            text = NSLocalizedStringFromTableInBundle(@"The file could not be saved.", @"MIDIMonitor", SMBundleForObject(self), "message when writing sysex data to a file fails");
 
             NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, text);
         }

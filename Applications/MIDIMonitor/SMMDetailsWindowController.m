@@ -1,7 +1,5 @@
 #import "SMMDetailsWindowController.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 #import "SMMPreferencesWindowController.h"
@@ -65,7 +63,7 @@ static NSMapTable* messageToControllerMapTable = NULL;
 
 - (id)initWithWindowNibName:(NSString *)windowNibName;
 {
-    OBRejectUnusedImplementation(self, _cmd);
+    SMRejectUnusedImplementation(self, _cmd);
     return nil;
 }
 

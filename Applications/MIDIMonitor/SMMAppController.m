@@ -1,8 +1,6 @@
 #import "SMMAppController.h"
 
 #import <CoreMIDI/CoreMIDI.h>
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 #import <SnoizeMIDISpy/SnoizeMIDISpy.h>
 
@@ -12,6 +10,7 @@
 
 @interface SMMAppController (Private)
 
+- (void)doNothing:(id)ignored;
 - (void)sourceEndpointsAppeared:(NSNotification *)notification;
 - (void)openWindowForNewSources;
 
@@ -28,8 +27,10 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
     SInt32 spyStatus;
     NSString *midiSpyErrorMessage = nil;
     
-    // Make sure we go multithreaded, and that our scheduler starts up
-    [OFScheduler mainScheduler];
+    // Make sure we go multithreaded
+	if (![NSThread isMultiThreaded]) {
+		[NSThread detachNewThreadSelector: @selector(doNothing:) toTarget: self withObject: nil];
+	}
 
     // Before CoreMIDI is initialized, make sure the spying driver is installed
     shouldUseMIDISpy = NO;
@@ -41,12 +42,12 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
             break;
 
         case kMIDISpyDriverCouldNotRemoveOldDriver:
-            midiSpyErrorMessage = NSLocalizedStringFromTableInBundle(@"There is an old version of MIDI Monitor's driver installed, but it could not be removed. To fix this, remove the old driver. (It is probably \"Library/Audio/MIDI Drivers/MIDI Monitor.plugin\" in your home folder.)", @"MIDIMonitor", [self bundle], "error message if old MIDI spy driver could not be removed");
+            midiSpyErrorMessage = NSLocalizedStringFromTableInBundle(@"There is an old version of MIDI Monitor's driver installed, but it could not be removed. To fix this, remove the old driver. (It is probably \"Library/Audio/MIDI Drivers/MIDI Monitor.plugin\" in your home folder.)", @"MIDIMonitor", SMBundleForObject(self), "error message if old MIDI spy driver could not be removed");
             break;
 
         case kMIDISpyDriverInstallationFailed:
         default:
-            midiSpyErrorMessage = NSLocalizedStringFromTableInBundle(@"MIDI Monitor tried to install a MIDI driver in \"Library/Audio/MIDI Drivers\" in your your home folder, but it failed. (Do the privileges allow write access?)", @"MIDIMonitor", [self bundle], "error message if MIDI spy driver installation fails");
+            midiSpyErrorMessage = NSLocalizedStringFromTableInBundle(@"MIDI Monitor tried to install a MIDI driver in \"Library/Audio/MIDI Drivers\" in your your home folder, but it failed. (Do the privileges allow write access?)", @"MIDIMonitor", SMBundleForObject(self), "error message if MIDI spy driver installation fails");
             break;
     }
 
@@ -57,9 +58,9 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
         
         shouldOpenUntitledDocument = NO;
 
-        title = NSLocalizedStringFromTableInBundle(@"Error", @"MIDIMonitor", [self bundle], "title of error alert");
-        message = NSLocalizedStringFromTableInBundle(@"There was a problem initializing the MIDI system. To try to fix this, log out and log back in, or restart the computer.", @"MIDIMonitor", [self bundle], "error message if MIDI initialization fails");
-        quit = NSLocalizedStringFromTableInBundle(@"Quit", @"MIDIMonitor", [self bundle], "title of quit button");
+        title = NSLocalizedStringFromTableInBundle(@"Error", @"MIDIMonitor", SMBundleForObject(self), "title of error alert");
+        message = NSLocalizedStringFromTableInBundle(@"There was a problem initializing the MIDI system. To try to fix this, log out and log back in, or restart the computer.", @"MIDIMonitor", SMBundleForObject(self), "error message if MIDI initialization fails");
+        quit = NSLocalizedStringFromTableInBundle(@"Quit", @"MIDIMonitor", SMBundleForObject(self), "title of quit button");
 
         NSRunCriticalAlertPanel(title, @"%@", quit, nil, nil, message);
         [NSApp terminate:nil];
@@ -73,7 +74,7 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
         // Create our client for spying on MIDI output.
         status = MIDISpyClientCreate(&midiSpyClient);
         if (status != noErr) {
-            midiSpyErrorMessage = NSLocalizedStringFromTableInBundle(@"MIDI Monitor could not make a connection to its MIDI driver. To fix the problem, quit all MIDI applications (including this one) and launch them again.", @"MIDIMonitor", [self bundle], "error message if MIDI spy client creation fails");
+            midiSpyErrorMessage = NSLocalizedStringFromTableInBundle(@"MIDI Monitor could not make a connection to its MIDI driver. To fix the problem, quit all MIDI applications (including this one) and launch them again.", @"MIDIMonitor", SMBundleForObject(self), "error message if MIDI spy client creation fails");
         }
     }
 
@@ -81,8 +82,8 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
         NSString *title;
         NSString *message2;
 
-        title = NSLocalizedStringFromTableInBundle(@"Warning", @"MIDIMonitor", [self bundle], "title of warning alert");
-        message2 = NSLocalizedStringFromTableInBundle(@"For now, MIDI Monitor will not be able to spy on the output of other MIDI applications, but all other features will still work.", @"MIDIMonitor", [self bundle], "second line of warning when MIDI spy is unavailable");
+        title = NSLocalizedStringFromTableInBundle(@"Warning", @"MIDIMonitor", SMBundleForObject(self), "title of warning alert");
+        message2 = NSLocalizedStringFromTableInBundle(@"For now, MIDI Monitor will not be able to spy on the output of other MIDI applications, but all other features will still work.", @"MIDIMonitor", SMBundleForObject(self), "second line of warning when MIDI spy is unavailable");
         
         NSRunAlertPanel(title, @"%@\n\n%@", nil, nil, nil, midiSpyErrorMessage, message2);
     }    
@@ -122,20 +123,20 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
     NSString *path;
     NSString *message = nil;
     
-    path = [[self bundle] pathForResource:@"docs" ofType:@"htmld"];
+    path = [SMBundleForObject(self) pathForResource:@"docs" ofType:@"htmld"];
     if (path) {
         path = [path stringByAppendingPathComponent:@"index.html"];
         if (![[NSWorkspace sharedWorkspace] openFile:path]) {
-            message = NSLocalizedStringFromTableInBundle(@"The help file could not be opened.", @"MIDIMonitor", [self bundle], "error message if opening the help file fails");
+            message = NSLocalizedStringFromTableInBundle(@"The help file could not be opened.", @"MIDIMonitor", SMBundleForObject(self), "error message if opening the help file fails");
         }
     } else {
-        message = NSLocalizedStringFromTableInBundle(@"The help file could not be found.", @"MIDIMonitor", [self bundle], "error message if help file can't be found");
+        message = NSLocalizedStringFromTableInBundle(@"The help file could not be found.", @"MIDIMonitor", SMBundleForObject(self), "error message if help file can't be found");
     }
 
     if (message) {
         NSString *title;
 
-        title = NSLocalizedStringFromTableInBundle(@"Error", @"MIDIMonitor", [self bundle], "title of error alert");
+        title = NSLocalizedStringFromTableInBundle(@"Error", @"MIDIMonitor", SMBundleForObject(self), "title of error alert");
         NSRunAlertPanel(title, @"%@", nil, nil, nil, message);
     }
 }
@@ -148,8 +149,9 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
     BOOL success = NO;
 
     feedbackEmailAddress = @"MIDIMonitor@snoize.com";	// Don't localize this
-    feedbackEmailSubject = NSLocalizedStringFromTableInBundle(@"MIDI Monitor Feedback", @"MIDIMonitor", [self bundle], "subject of feedback email");    
-    mailToURLString = [[NSString stringWithFormat:@"mailto:%@?Subject=%@", feedbackEmailAddress, feedbackEmailSubject] fullyEncodeAsIURI];
+    feedbackEmailSubject = NSLocalizedStringFromTableInBundle(@"MIDI Monitor Feedback", @"MIDIMonitor", SMBundleForObject(self), "subject of feedback email");    
+    mailToURLString = [NSString stringWithFormat:@"mailto:%@?Subject=%@", feedbackEmailAddress, feedbackEmailSubject];
+	mailToURLString = [(NSString*)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)mailToURLString, NULL, NULL, kCFStringEncodingUTF8) autorelease];
     mailToURL = [NSURL URLWithString:mailToURLString];
     if (mailToURL)
         success = [[NSWorkspace sharedWorkspace] openURL:mailToURL];
@@ -159,8 +161,8 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
         
         NSLog(@"Couldn't send feedback: url string was <%@>, url was <%@>", mailToURLString, mailToURL);
 
-        title = NSLocalizedStringFromTableInBundle(@"Error", @"MIDIMonitor", [self bundle], "title of error alert");
-        message = NSLocalizedStringFromTableInBundle(@"MIDI Monitor could not ask your email application to create a new message, so you will have to do it yourself. Please send your email to this address:\n%@\nThank you!", @"MIDIMonitor", [self bundle], "message of alert when can't send feedback email");
+        title = NSLocalizedStringFromTableInBundle(@"Error", @"MIDIMonitor", SMBundleForObject(self), "title of error alert");
+        message = NSLocalizedStringFromTableInBundle(@"MIDI Monitor could not ask your email application to create a new message, so you will have to do it yourself. Please send your email to this address:\n%@\nThank you!", @"MIDIMonitor", SMBundleForObject(self), "message of alert when can't send feedback email");
         
         NSRunAlertPanel(title, message, nil, nil, nil, feedbackEmailAddress);
     }
@@ -174,8 +176,8 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
         NSString* message;
         NSString* title;        
 
-        message = NSLocalizedStringFromTableInBundle(@"Rescanning the MIDI system resulted in an unexpected error (%d).", @"MIDIMonitor", [self bundle], "error message if MIDIRestart() fails");
-        title = NSLocalizedStringFromTableInBundle(@"MIDI Error", @"MIDIMonitor", [self bundle], "title of MIDI error panel");
+        message = NSLocalizedStringFromTableInBundle(@"Rescanning the MIDI system resulted in an unexpected error (%d).", @"MIDIMonitor", SMBundleForObject(self), "error message if MIDIRestart() fails");
+        title = NSLocalizedStringFromTableInBundle(@"MIDI Error", @"MIDIMonitor", SMBundleForObject(self), "title of MIDI error panel");
 
         NSRunAlertPanel(title, message, nil, nil, nil, status);        
     }
@@ -200,9 +202,14 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 
 @implementation SMMAppController (Private)
 
+- (void)doNothing:(id)ignored
+{
+	// do nothing, just a way to go multithreaded
+}
+
 - (void)sourceEndpointsAppeared:(NSNotification *)notification;
 {
-    if ([[OFPreference preferenceForKey:SMMOpenWindowsForNewSourcesPreferenceKey] boolValue])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SMMOpenWindowsForNewSourcesPreferenceKey])
     {
         NSArray *endpoints;
 

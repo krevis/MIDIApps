@@ -2,14 +2,13 @@
 // Copyright 2002 Kurt Revis. All rights reserved.
 //
 
-#import <OmniFoundation/OFObject.h>
 #import <Foundation/Foundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 @class SMMSpyingInputStream;
 
 
-@interface SMMCombinationInputStream : OFObject <SMMessageDestination>
+@interface SMMCombinationInputStream : NSObject <SMMessageDestination>
 {
     id<SMMessageDestination> nonretainedMessageDestination;
 

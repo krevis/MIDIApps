@@ -1,12 +1,13 @@
 #import "SMMDocument.h"
 
 #import <Cocoa/Cocoa.h>
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
+#import <objc/objc-runtime.h>
 
 #import "SMMCombinationInputStream.h"
 #import "SMMMonitorWindowController.h"
+#import "NSData-SMMExtensions.h"
+#import "NSDictionary-SMMExtensions.h"
 
 
 @interface SMMDocument (Private)
@@ -21,6 +22,7 @@
 - (void)autoselectSources;
 
 - (void)historyDidChange:(NSNotification *)notification;
+- (void)mainThreadSynchronizeMessagesWithScrollValue:(NSNumber *)shouldScrollNumber;
 - (void)mainThreadSynchronizeMessagesWithScroll:(BOOL)shouldScroll;
 
 - (void)readingSysEx:(NSNotification *)notification;
@@ -45,7 +47,6 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
 - (id)init
 {
     NSNotificationCenter *center;
-    OFPreference *oldAutoSelectPref, *autoSelectPref;
 
     if (!(self = [super init]))
         return nil;
@@ -72,14 +73,13 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
     missingSourceNames = nil;
     sysExBytesRead = 0;
 
-    oldAutoSelectPref = [OFPreference preferenceForKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey];
-    autoSelectPref = [OFPreference preferenceForKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey];
-
     // If the user changed the value of this old obsolete preference, bring its value forward to our new preference
-    if ([oldAutoSelectPref hasNonDefaultValue]) {
-        [autoSelectPref setBoolValue:[oldAutoSelectPref boolValue]];
-        [oldAutoSelectPref restoreDefaultValue];
-    }
+	// (the default value was YES)
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey]) {
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey];
+		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey];
+		[[NSUserDefaults standardUserDefaults] synchronize];
+	}
 
     [self autoselectSources];
 
@@ -162,20 +162,23 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
     if (windowFrameDescription)
         [dict setObject:windowFrameDescription forKey:@"windowFrame"];
 
-    return [dict xmlPropertyListData];
+    return [dict SMM_xmlPropertyListData];
 }
 
 - (BOOL)loadDataRepresentation:(NSData *)data ofType:(NSString *)type;
 {
+	id propertyList;
     NSDictionary *dict;
     int version;
     NSNumber *number;
     NSString *string;
     NSDictionary *streamSettings = nil;
 
-    dict = [data propertyList];
-    if (!dict || ![dict isKindOfClass:[NSDictionary class]])
+    propertyList = [data SMM_propertyList];
+    if (!propertyList || ![propertyList isKindOfClass:[NSDictionary class]])
         return NO;
+	else
+		dict = propertyList;
 
     version = [[dict objectForKey:@"version"] intValue];    
     if (version == 2) {
@@ -250,7 +253,7 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
 
 - (void)canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
 {
-    if ([[OFPreference preferenceForKey:SMMAskBeforeClosingModifiedWindowPreferenceKey] boolValue]) {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SMMAskBeforeClosingModifiedWindowPreferenceKey]) {
         [super canCloseDocumentWithDelegate:delegate shouldCloseSelector:shouldCloseSelector contextInfo:contextInfo];
     } else {
         // Tell the delgate to close now, regardless of what the document's dirty flag may be
@@ -284,7 +287,7 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
     [stream setSelectedInputSources:inputSources];
 
     [(SMMDocument *)[[self undoManager] prepareWithInvocationTarget:self] setSelectedInputSources:oldInputSources];
-    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Selected Sources", @"MIDIMonitor", [self bundle], "change source undo action")];
+    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Selected Sources", @"MIDIMonitor", SMBundleForObject(self), "change source undo action")];
 
     [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeSources)];
 }
@@ -305,7 +308,7 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
         return;
 
     [[[self undoManager] prepareWithInvocationTarget:self] setMaxMessageCount:[history historySize]];
-    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Remembered Events", @"MIDIMonitor", [self bundle], "change history limit undo action")];
+    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Remembered Events", @"MIDIMonitor", SMBundleForObject(self), "change history limit undo action")];
 
     [history setHistorySize:newValue];
 
@@ -343,7 +346,7 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
     unsigned int channel;
     SMChannelMask mask;
 
-    OBPRECONDITION(![self isShowingAllChannels]);
+    SMAssert(![self isShowingAllChannels]);
     
     mask = [messageFilter channelMask];
 
@@ -442,7 +445,7 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
         return;
 
     [[[self undoManager] prepareWithInvocationTarget:self] setFilterMask:oldMask];
-    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Filter", @"MIDIMonitor", [self bundle], change filter undo action)];
+    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Filter", @"MIDIMonitor", SMBundleForObject(self), change filter undo action)];
 
     [messageFilter setFilterMask:newMask];    
     [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeFilterControls)];
@@ -457,7 +460,7 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
         return;
 
     [[[self undoManager] prepareWithInvocationTarget:self] setChannelMask:oldMask];
-    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Channel", @"MIDIMonitor", [self bundle], change filter channel undo action)];
+    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Channel", @"MIDIMonitor", SMBundleForObject(self), change filter channel undo action)];
 
     [messageFilter setChannelMask:newMask];    
     [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeFilterControls)];
@@ -474,6 +477,7 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
 
 - (void)autoselectSources;
 {
+	NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     NSArray *groupedInputSources;
     NSMutableSet *sourcesSet;
     NSArray *sourcesArray;
@@ -481,17 +485,17 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
     groupedInputSources = [self groupedInputSources];
     sourcesSet = [NSMutableSet set];
     
-    if ([[OFPreference preferenceForKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey] boolValue]) {
+    if ([defaults boolForKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey]) {
         if ((sourcesArray = [[groupedInputSources objectAtIndex:0] objectForKey:@"sources"]))
             [sourcesSet addObjectsFromArray:sourcesArray];
     }
 
-    if ([[OFPreference preferenceForKey:SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey] boolValue]) {
+    if ([defaults boolForKey:SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey]) {
         if ((sourcesArray = [[groupedInputSources objectAtIndex:1] objectForKey:@"sources"]))
             [sourcesSet addObjectsFromArray:sourcesArray];
     }
 
-    if ([[OFPreference preferenceForKey:SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey] boolValue]) {
+	if ([defaults boolForKey:SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey]) {
         if ((sourcesArray = [[groupedInputSources objectAtIndex:2] objectForKey:@"sources"]))
             [sourcesSet addObjectsFromArray:sourcesArray];
     }
@@ -503,10 +507,17 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
 {
     // NOTE This can happen in the MIDI thread (for normal MIDI input) or in the main thread (if the "clear" button is used) or in the spy's listener thread (for spying input).
 
-    BOOL shouldScroll;
+	if (!isMessageUpdateQueued) {
+        NSNumber *shouldScroll = [[notification userInfo] objectForKey:SMMessageHistoryWereMessagesAdded];
+        isMessageUpdateQueued = YES;
+        [self performSelectorOnMainThread:@selector(mainThreadSynchronizeMessagesWithScrollValue:) withObject:shouldScroll waitUntilDone:NO];
+    }
+}
 
-    shouldScroll = [[[notification userInfo] objectForKey:SMMessageHistoryWereMessagesAdded] boolValue];
-    [self mainThreadPerformSelectorOnce:@selector(mainThreadSynchronizeMessagesWithScroll:) withBool:shouldScroll];
+- (void)mainThreadSynchronizeMessagesWithScrollValue:(NSNumber *)shouldScrollNumber
+{
+    isMessageUpdateQueued = NO;
+	[self mainThreadSynchronizeMessagesWithScroll: [shouldScrollNumber boolValue]];
 }
 
 - (void)mainThreadSynchronizeMessagesWithScroll:(BOOL)shouldScroll
@@ -525,12 +536,17 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
     // NOTE This can happen in the MIDI thread (for normal MIDI input) or in the spy's listener thread (for spying input).
 
     sysExBytesRead = [[[notification userInfo] objectForKey:@"length"] unsignedIntValue];
-    [self queueSelectorOnce:@selector(mainThreadReadingSysEx)];
-        // We want multiple updates to get coalesced, so only queue it once
+    
+    // We want multiple updates to get coalesced, so only queue it once
+    if (!isSysExUpdateQueued) {
+        isSysExUpdateQueued = YES;
+        [self performSelectorOnMainThread: @selector(mainThreadReadingSysEx) withObject: nil waitUntilDone: NO];
+    }
 }
 
 - (void)mainThreadReadingSysEx;
 {
+    isSysExUpdateQueued = NO;
     [[self windowControllers] makeObjectsPerformSelector:@selector(updateSysExReadIndicatorWithBytes:) withObject:[NSNumber numberWithUnsignedInt:sysExBytesRead]];
 }
 
@@ -541,7 +557,8 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
 
     number = [[notification userInfo] objectForKey:@"length"];
     sysExBytesRead = [number unsignedIntValue];
-    [self queueSelector:@selector(mainThreadDoneReadingSysEx:) withObject:number];
+    
+    [self performSelectorOnMainThread: @selector(mainThreadDoneReadingSysEx:) withObject: number waitUntilDone: NO];
         // We DON'T want this to get coalesced, so always queue it.
         // Pass the number of bytes read down, since sysExBytesRead may be overwritten before mainThreadDoneReadingSysEx gets called.
 }

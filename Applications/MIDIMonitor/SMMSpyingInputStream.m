@@ -4,8 +4,6 @@
 
 #import "SMMSpyingInputStream.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
 
 
 @interface SMMSpyingInputStream (Private)
@@ -214,7 +212,7 @@
     SMDestinationEndpoint *endpoint;
 
     endpoint = [[[notification object] retain] autorelease];
-    OBASSERT([endpoints containsObject:endpoint]);
+    SMAssert([endpoints containsObject:endpoint]);
 
     [self removeEndpoint:endpoint];
 
@@ -226,7 +224,7 @@
     SMDestinationEndpoint *oldEndpoint, *newEndpoint;
 
     oldEndpoint = [notification object];
-    OBASSERT([endpoints containsObject:oldEndpoint]);
+    SMAssert([endpoints containsObject:oldEndpoint]);
 
     newEndpoint = [[notification userInfo] objectForKey:SMMIDIObjectReplacement];
 

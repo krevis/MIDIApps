@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 38;
+	objectVersion = 39;
 	objects = {
 		080E96D9FE201CDB7F000001 = {
 			fileRef = 2A37F4B9FDCFA73011CA2CEA;
@@ -24,13 +24,16 @@
 			isa = PBXVariantGroup;
 			name = InfoPlist.strings;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		089C1660FE840EACC02AAC07 = {
 			fileEncoding = 10;
 			isa = PBXFileReference;
+			lastKnownFileType = text.plist.strings;
 			name = English;
 			path = English.lproj/InfoPlist.strings;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		089C1661FE840EACC02AAC07 = {
 			fileRef = 089C165FFE840EACC02AAC07;
@@ -52,8 +55,6 @@
 			children = (
 				1058C7A7FEA54F5311CA2CBB,
 				F5B4281801A360AD01000164,
-				F53D4AAB015AA35201000164,
-				F53D4AAC015AA35201000164,
 				F53D4AAE015AA35201000164,
 				F5BCCECA023F644901000164,
 				F5460C1302E319C101000164,
@@ -61,12 +62,15 @@
 			isa = PBXGroup;
 			name = "Linked Frameworks";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		1058C7A7FEA54F5311CA2CBB = {
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
 			name = Cocoa.framework;
 			path = /System/Library/Frameworks/Cocoa.framework;
 			refType = 0;
+			sourceTree = "<absolute>";
 		};
 		1058C7A8FEA54F5311CA2CBB = {
 			children = (
@@ -76,6 +80,7 @@
 			isa = PBXGroup;
 			name = "Other Frameworks";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		1058C7A9FEA54F5311CA2CBB = {
 			fileRef = 1058C7A7FEA54F5311CA2CBB;
@@ -96,8 +101,10 @@
 		1691E0D804CA1C1400ACFC9D = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = SMMDetailsWindowController.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		1691E0D904CA1C1400ACFC9D = {
 			fileRef = 1691E0D804CA1C1400ACFC9D;
@@ -108,8 +115,10 @@
 		1691E0DA04CA1C1E00ACFC9D = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
 			path = SMMDetailsWindowController.m;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		1691E0DB04CA1C1E00ACFC9D = {
 			fileRef = 1691E0DA04CA1C1E00ACFC9D;
@@ -125,15 +134,144 @@
 			name = Details.nib;
 			path = "";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		1691E0DD04CA26F300ACFC9D = {
 			isa = PBXFileReference;
+			lastKnownFileType = wrapper.nib;
 			name = English;
 			path = English.lproj/Details.nib;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		1691E0DE04CA26F300ACFC9D = {
 			fileRef = 1691E0DC04CA26F300ACFC9D;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		16F20F4906EAA14A00D9C507 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text.xml;
+			path = Defaults.plist;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		16F20F4A06EAA14A00D9C507 = {
+			fileRef = 16F20F4906EAA14A00D9C507;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		16F210AB06EAAF6A00D9C507 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = "NSArray-SMMExtensions.h";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		16F210AC06EAAF6A00D9C507 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = "NSArray-SMMExtensions.m";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		16F210AD06EAAF6A00D9C507 = {
+			fileRef = 16F210AB06EAAF6A00D9C507;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		16F210AE06EAAF6A00D9C507 = {
+			fileRef = 16F210AC06EAAF6A00D9C507;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		16F210DC06EAB24700D9C507 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = "NSString-SMMExtensions.h";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		16F210DD06EAB24700D9C507 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = "NSString-SMMExtensions.m";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		16F210DE06EAB24700D9C507 = {
+			fileRef = 16F210DC06EAB24700D9C507;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		16F210DF06EAB24700D9C507 = {
+			fileRef = 16F210DD06EAB24700D9C507;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		16F2112006EAB6F600D9C507 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = "NSDictionary-SMMExtensions.h";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		16F2112106EAB6F600D9C507 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = "NSDictionary-SMMExtensions.m";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		16F2112206EAB6F600D9C507 = {
+			fileRef = 16F2112006EAB6F600D9C507;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		16F2112306EAB6F600D9C507 = {
+			fileRef = 16F2112106EAB6F600D9C507;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		16F2114306EAB83B00D9C507 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = "NSData-SMMExtensions.h";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		16F2114406EAB83B00D9C507 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = "NSData-SMMExtensions.m";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		16F2114506EAB83B00D9C507 = {
+			fileRef = 16F2114306EAB83B00D9C507;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		16F2114606EAB83B00D9C507 = {
+			fileRef = 16F2114406EAB83B00D9C507;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -149,9 +287,11 @@
 //173
 //174
 		1758732AFF379DA111CA2CBB = {
-			isa = PBXApplicationReference;
+			explicitFileType = wrapper.application;
+			isa = PBXFileReference;
 			path = "MIDI Monitor.app";
 			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 //170
 //171
@@ -170,6 +310,7 @@
 			isa = PBXGroup;
 			name = Products;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 //190
 //191
@@ -182,6 +323,8 @@
 //2A3
 //2A4
 		2A37F4A9FDCFA73011CA2CEA = {
+			buildSettings = {
+			};
 			buildStyles = (
 				4A9504D0FFE6A4CB11CA0CBA,
 				4A9504D1FFE6A4CB11CA0CBA,
@@ -206,6 +349,7 @@
 			name = MIDIMonitor;
 			path = "";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		2A37F4ABFDCFA73011CA2CEA = {
 			children = (
@@ -228,18 +372,23 @@
 			name = Classes;
 			path = "";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		2A37F4ACFDCFA73011CA2CEA = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
 			path = SMMDocument.m;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		2A37F4AEFDCFA73011CA2CEA = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = SMMDocument.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		2A37F4AFFDCFA73011CA2CEA = {
 			children = (
@@ -250,12 +399,15 @@
 			name = "Other Sources";
 			path = "";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		2A37F4B0FDCFA73011CA2CEA = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
 			path = main.m;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		2A37F4B4FDCFA73011CA2CEA = {
 			children = (
@@ -265,12 +417,15 @@
 			name = MIDIMonitor.nib;
 			path = "";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		2A37F4B5FDCFA73011CA2CEA = {
 			isa = PBXFileReference;
+			lastKnownFileType = wrapper.nib;
 			name = English;
 			path = English.lproj/MIDIMonitor.nib;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		2A37F4B6FDCFA73011CA2CEA = {
 			children = (
@@ -280,17 +435,21 @@
 			name = MainMenu.nib;
 			path = "";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		2A37F4B7FDCFA73011CA2CEA = {
 			isa = PBXFileReference;
+			lastKnownFileType = wrapper.nib;
 			name = English;
 			path = English.lproj/MainMenu.nib;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		2A37F4B8FDCFA73011CA2CEA = {
 			children = (
 				2A37F4B9FDCFA73011CA2CEA,
 				F5A43ECF0192896501000164,
+				16F20F4906EAA14A00D9C507,
 				2A37F4B6FDCFA73011CA2CEA,
 				2A37F4B4FDCFA73011CA2CEA,
 				F53A1C0A015EC0FB01000164,
@@ -307,6 +466,7 @@
 			name = Resources;
 			path = "";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		2A37F4B9FDCFA73011CA2CEA = {
 			children = (
@@ -316,12 +476,15 @@
 			name = Credits.rtf;
 			path = "";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		2A37F4BAFDCFA73011CA2CEA = {
 			isa = PBXFileReference;
+			lastKnownFileType = text.rtf;
 			name = English;
 			path = English.lproj/Credits.rtf;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		2A37F4C3FDCFA73011CA2CEA = {
 			children = (
@@ -332,18 +495,23 @@
 			name = Frameworks;
 			path = "";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		2A37F4C4FDCFA73011CA2CEA = {
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
 			name = AppKit.framework;
 			path = /System/Library/Frameworks/AppKit.framework;
 			refType = 0;
+			sourceTree = "<absolute>";
 		};
 		2A37F4C5FDCFA73011CA2CEA = {
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
 			name = Foundation.framework;
 			path = /System/Library/Frameworks/Foundation.framework;
 			refType = 0;
+			sourceTree = "<absolute>";
 		};
 		2A37F4C6FDCFA73011CA2CEA = {
 			buildPhases = (
@@ -404,7 +572,7 @@
 	<key>CFBundleExecutable</key>
 	<string>MIDI Monitor</string>
 	<key>CFBundleGetInfoString</key>
-	<string>1.1.6, Copyright 2001-2003 Kurt Revis</string>
+	<string>1.1.7, Copyright 2001-2004 Kurt Revis</string>
 	<key>CFBundleIconFile</key>
 	<string>MIDIMonitor.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -416,40 +584,17 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1.6</string>
+	<string>1.1.7</string>
 	<key>CFBundleSignature</key>
 	<string>mMon</string>
 	<key>CFBundleVersion</key>
-	<string>1.1.6</string>
+	<string>1.1.7</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2001-2003 Kurt Revis</string>
+	<string>Copyright © 2001-2004 Kurt Revis</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>OFRegistrations</key>
-	<dict>
-		<key>NSUserDefaults</key>
-		<dict>
-			<key>defaultsDictionary</key>
-			<dict>
-				<key>SMMAskBeforeClosingModifiedWindow</key>
-				<true/>
-				<key>SMMAutoSelectFirstSource</key>
-				<true/>
-				<key>SMMAutoSelectOrdinarySources</key>
-				<true/>
-				<key>SMMAutoSelectSpyingDestinations</key>
-				<false/>
-				<key>SMMAutoSelectVirtualDestination</key>
-				<false/>
-				<key>SMMOpenWindowsForNewSources</key>
-				<false/>
-				<key>SMMSaveSysExWithEOXAlways</key>
-				<true/>
-			</dict>
-		</dict>
-	</dict>
 </dict>
 </plist>
 ";
@@ -470,6 +615,10 @@
 				F5DCBE9002E6064E01000164,
 				F547DDDA0318496E01000164,
 				1691E0D904CA1C1400ACFC9D,
+				16F210AD06EAAF6A00D9C507,
+				16F210DE06EAB24700D9C507,
+				16F2112206EAB6F600D9C507,
+				16F2114506EAB83B00D9C507,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -495,6 +644,7 @@
 				F56E05D00206BF0C01000164,
 				F56E05D10206DCB201000164,
 				1691E0DE04CA26F300ACFC9D,
+				16F20F4A06EAA14A00D9C507,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -515,6 +665,10 @@
 				F554622A0263619E01000164,
 				F5DCBE9102E6064E01000164,
 				1691E0DB04CA1C1E00ACFC9D,
+				16F210AE06EAAF6A00D9C507,
+				16F210DF06EAB24700D9C507,
+				16F2112306EAB6F600D9C507,
+				16F2114606EAB83B00D9C507,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -539,8 +693,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1058C7A9FEA54F5311CA2CBB,
-				F53D4AB0015AA35201000164,
-				F53D4AB1015AA35201000164,
 				F53D4AB2015AA35201000164,
 				F5B4281901A360AD01000164,
 				F5BCCECB023F644901000164,
@@ -560,21 +712,24 @@
 //4A3
 //4A4
 		4A9504D0FFE6A4CB11CA0CBA = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "\U0001-DDEBUG";
+				ZERO_LINK = YES;
 			};
 			isa = PBXBuildStyle;
 			name = Development;
 		};
 		4A9504D1FFE6A4CB11CA0CBA = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ZERO_LINK = NO;
 			};
 			isa = PBXBuildStyle;
 			name = Deployment;
@@ -592,14 +747,18 @@
 		F53A1C06015EB24301000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = SMMPreferencesWindowController.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F53A1C07015EB24301000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
 			path = SMMPreferencesWindowController.m;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F53A1C08015EB24301000164 = {
 			fileRef = F53A1C06015EB24301000164;
@@ -621,12 +780,15 @@
 			name = Preferences.nib;
 			path = "";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F53A1C0B015EC0FB01000164 = {
 			isa = PBXFileReference;
+			lastKnownFileType = wrapper.nib;
 			name = English;
 			path = English.lproj/Preferences.nib;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F53A1C0C015EC0FB01000164 = {
 			fileRef = F53A1C0A015EC0FB01000164;
@@ -642,13 +804,16 @@
 			name = MIDIMonitor.strings;
 			path = "";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F53BB4AF015D96A501000164 = {
 			fileEncoding = 10;
 			isa = PBXFileReference;
+			lastKnownFileType = text.plist.strings;
 			name = English;
 			path = English.lproj/MIDIMonitor.strings;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F53BB4B0015D96A501000164 = {
 			fileRef = F53BB4AE015D96A501000164;
@@ -656,32 +821,12 @@
 			settings = {
 			};
 		};
-		F53D4AAB015AA35201000164 = {
-			isa = PBXFrameworkReference;
-			path = OmniBase.framework;
-			refType = 3;
-		};
-		F53D4AAC015AA35201000164 = {
-			isa = PBXFrameworkReference;
-			path = OmniFoundation.framework;
-			refType = 3;
-		};
 		F53D4AAE015AA35201000164 = {
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
 			path = SnoizeMIDI.framework;
 			refType = 3;
-		};
-		F53D4AB0015AA35201000164 = {
-			fileRef = F53D4AAB015AA35201000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F53D4AB1015AA35201000164 = {
-			fileRef = F53D4AAC015AA35201000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
+			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		F53D4AB2015AA35201000164 = {
 			fileRef = F53D4AAE015AA35201000164;
@@ -692,14 +837,18 @@
 		F53D4AB5015AAA2C01000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = SMMMonitorWindowController.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F53D4AB6015AAA2C01000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
 			path = SMMMonitorWindowController.m;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F53D4AB7015AAA2C01000164 = {
 			fileRef = F53D4AB5015AAA2C01000164;
@@ -716,14 +865,18 @@
 		F53D4AB9015AAB7E01000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = SMMAppController.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F53D4ABA015AAB7E01000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
 			path = SMMAppController.m;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F53D4ABB015AAB7E01000164 = {
 			fileRef = F53D4AB9015AAB7E01000164;
@@ -738,9 +891,11 @@
 			};
 		};
 		F5460C1302E319C101000164 = {
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
+			lastKnownFileType = file;
 			path = DisclosableView.framework;
 			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		F5460C1402E319C101000164 = {
 			fileRef = F5460C1302E319C101000164;
@@ -751,8 +906,10 @@
 		F547DDD90318496E01000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = PrecompHeader.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F547DDDA0318496E01000164 = {
 			fileRef = F547DDD90318496E01000164;
@@ -763,14 +920,18 @@
 		F55462270263619E01000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = SMMFastAnimatingWindow.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F55462280263619E01000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
 			path = SMMFastAnimatingWindow.m;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F55462290263619E01000164 = {
 			fileRef = F55462270263619E01000164;
@@ -787,14 +948,18 @@
 		F55C9C140244CE3701000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = SMMCombinationInputStream.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F55C9C150244CE3701000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
 			path = SMMCombinationInputStream.m;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F55C9C160244CE3701000164 = {
 			fileRef = F55C9C140244CE3701000164;
@@ -817,14 +982,18 @@
 		F562148D02408B2D01000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = SMMSpyingInputStream.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F562148E02408B2D01000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
 			path = SMMSpyingInputStream.m;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F562148F02408B2D01000164 = {
 			fileRef = F562148D02408B2D01000164;
@@ -846,13 +1015,16 @@
 			name = docs.htmld;
 			path = "";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F56D31A40195A90E01000164 = {
 			includeInIndex = 0;
-			isa = PBXFolderReference;
+			isa = PBXFileReference;
+			lastKnownFileType = text.html;
 			name = English;
 			path = English.lproj/docs.htmld;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F56D31A50195A90E01000164 = {
 			fileRef = F56D31A30195A90E01000164;
@@ -863,14 +1035,18 @@
 		F56E05CA0206BAB401000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = SMMSysExWindowController.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F56E05CB0206BAB401000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
 			path = SMMSysExWindowController.m;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F56E05CC0206BAB401000164 = {
 			fileRef = F56E05CA0206BAB401000164;
@@ -892,12 +1068,15 @@
 			name = SysEx.nib;
 			path = "";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F56E05CF0206BF0C01000164 = {
 			isa = PBXFileReference;
+			lastKnownFileType = wrapper.nib;
 			name = English;
 			path = English.lproj/SysEx.nib;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F56E05D00206BF0C01000164 = {
 			fileRef = F56E05CE0206BF0C01000164;
@@ -913,8 +1092,10 @@
 		};
 		F57053DA018D364A01000164 = {
 			isa = PBXFileReference;
+			lastKnownFileType = image.icns;
 			path = Document.icns;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F57053DB018D364A01000164 = {
 			fileRef = F57053DA018D364A01000164;
@@ -924,6 +1105,14 @@
 		};
 		F571C56C01903F3301000164 = {
 			children = (
+				16F210AB06EAAF6A00D9C507,
+				16F210AC06EAAF6A00D9C507,
+				16F2114306EAB83B00D9C507,
+				16F2114406EAB83B00D9C507,
+				16F2112006EAB6F600D9C507,
+				16F2112106EAB6F600D9C507,
+				16F210DC06EAB24700D9C507,
+				16F210DD06EAB24700D9C507,
 				F57F628A0261C8FC01000164,
 				F57F628B0261C8FC01000164,
 				F57F628F0261D5A701000164,
@@ -936,11 +1125,14 @@
 			isa = PBXGroup;
 			name = "Cocoa Extensions";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F579B5E9018D0F0D01000164 = {
 			isa = PBXFileReference;
+			lastKnownFileType = image.icns;
 			path = MIDIMonitor.icns;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F579B5EA018D0F0D01000164 = {
 			fileRef = F579B5E9018D0F0D01000164;
@@ -951,20 +1143,26 @@
 		F57B0567026BB81F01000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = text.html;
 			path = "Read Me.html";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F57F628A0261C8FC01000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = SMMSourcesOutlineView.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F57F628B0261C8FC01000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
 			path = SMMSourcesOutlineView.m;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F57F628C0261C8FC01000164 = {
 			fileRef = F57F628A0261C8FC01000164;
@@ -981,14 +1179,18 @@
 		F57F628F0261D5A701000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = SMMNonHighlightingCells.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F57F62900261D5A701000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
 			path = SMMNonHighlightingCells.m;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F57F62910261D5A701000164 = {
 			fileRef = F57F628F0261D5A701000164;
@@ -1012,6 +1214,7 @@
 			isa = PBXGroup;
 			name = "SnoizeMIDI Extensions";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F5A43ECF0192896501000164 = {
 			children = (
@@ -1021,13 +1224,16 @@
 			name = Credits.html;
 			path = "";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F5A43ED00192896501000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = text.html;
 			name = English;
 			path = English.lproj/Credits.html;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F5A43ED10192896501000164 = {
 			fileRef = F5A43ECF0192896501000164;
@@ -1036,10 +1242,12 @@
 			};
 		};
 		F5B4281801A360AD01000164 = {
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
 			name = CoreMIDI.framework;
 			path = /System/Library/Frameworks/CoreMIDI.framework;
 			refType = 0;
+			sourceTree = "<absolute>";
 		};
 		F5B4281901A360AD01000164 = {
 			fileRef = F5B4281801A360AD01000164;
@@ -1054,9 +1262,11 @@
 			};
 		};
 		F5BCCECA023F644901000164 = {
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
 			path = SnoizeMIDISpy.framework;
 			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		F5BCCECB023F644901000164 = {
 			fileRef = F5BCCECA023F644901000164;
@@ -1067,14 +1277,18 @@
 		F5DCBE8E02E6064E01000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = SMMWindowController.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F5DCBE8F02E6064E01000164 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
 			path = SMMWindowController.m;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F5DCBE9002E6064E01000164 = {
 			fileRef = F5DCBE8E02E6064E01000164;
@@ -1093,26 +1307,12 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				F5E4BDD2018FCDAB01000164,
-				F5E4BDD3018FCDAB01000164,
 				F5E4BDD5018FCDAB01000164,
 				F55E29290266071301000164,
 				F5B5A54302E4067101000164,
 			);
 			isa = PBXCopyFilesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 1;
-		};
-		F5E4BDD2018FCDAB01000164 = {
-			fileRef = F53D4AAB015AA35201000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F5E4BDD3018FCDAB01000164 = {
-			fileRef = F53D4AAC015AA35201000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		F5E4BDD5018FCDAB01000164 = {
 			fileRef = F53D4AAE015AA35201000164;

@@ -1,8 +1,6 @@
 #import "SMMPreferencesWindowController.h"
 
 #import <Cocoa/Cocoa.h>
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 #import "SMMAppController.h"
@@ -39,63 +37,41 @@ static SMMPreferencesWindowController *controller;
     if (!(self = [super initWithWindowNibName:@"Preferences"]))
         return nil;
 
-    timeFormatPreference = [[OFPreference preferenceForKey:SMTimeFormatPreferenceKey] retain];
-    noteFormatPreference = [[OFPreference preferenceForKey:SMNoteFormatPreferenceKey] retain];
-    controllerFormatPreference = [[OFPreference preferenceForKey:SMControllerFormatPreferenceKey] retain];
-    dataFormatPreference = [[OFPreference preferenceForKey:SMDataFormatPreferenceKey] retain];
-
-    autoSelectOrdinarySourcesPreference = [[OFPreference preferenceForKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey] retain];
-    autoSelectVirtualDestinationPreference = [[OFPreference preferenceForKey:SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey] retain];
-    autoSelectSpyingDestinationsPreference = [[OFPreference preferenceForKey:SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey] retain];
-    openWindowsForNewSourcesPreference = [[OFPreference preferenceForKey:SMMOpenWindowsForNewSourcesPreferenceKey] retain];
-
-    askBeforeClosingModifiedWindowPreference = [[OFPreference preferenceForKey:SMMAskBeforeClosingModifiedWindowPreferenceKey] retain];
-    alwaysSaveSysExWithEOXPreference = [[OFPreference preferenceForKey:SMMSaveSysExWithEOXAlwaysPreferenceKey] retain];
-    
     return self;
 }
 
 - (id)initWithWindowNibName:(NSString *)windowNibName;
 {
-    OBRejectUnusedImplementation(self, _cmd);
+    SMRejectUnusedImplementation(self, _cmd);
     return nil;
 }
 
 - (void)dealloc
 {
-    [timeFormatPreference release];
-    [noteFormatPreference release];
-    [controllerFormatPreference release];
-    [dataFormatPreference release];
-    [autoSelectOrdinarySourcesPreference release];
-    [autoSelectVirtualDestinationPreference release];
-    [autoSelectSpyingDestinationsPreference release];
-    [openWindowsForNewSourcesPreference release];
-    [askBeforeClosingModifiedWindowPreference release];
-    [alwaysSaveSysExWithEOXPreference release];
-    
     [super dealloc];
 }
 
 - (void)windowDidLoad
 {
+	NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+	
     [super windowDidLoad];
 
     // Make sure the first tab is selected (just in case someone changed it while editing the nib)
     [tabView selectFirstTabViewItem:nil];
     
-    [timeFormatMatrix selectCellWithTag:[timeFormatPreference integerValue]];
-    [noteFormatMatrix selectCellWithTag:[noteFormatPreference integerValue]];
-    [controllerFormatMatrix selectCellWithTag:[controllerFormatPreference integerValue]];
-    [dataFormatMatrix selectCellWithTag:[dataFormatPreference integerValue]];
+    [timeFormatMatrix selectCellWithTag:[defaults integerForKey: SMTimeFormatPreferenceKey]];
+    [noteFormatMatrix selectCellWithTag:[defaults integerForKey: SMNoteFormatPreferenceKey]];
+    [controllerFormatMatrix selectCellWithTag:[defaults integerForKey: SMControllerFormatPreferenceKey]];
+	[dataFormatMatrix selectCellWithTag:[defaults integerForKey: SMDataFormatPreferenceKey]];
 
-    [autoSelectOrdinarySourcesCheckbox setIntValue:[autoSelectOrdinarySourcesPreference boolValue]];
-    [autoSelectVirtualDestinationCheckbox setIntValue:[autoSelectVirtualDestinationPreference boolValue]];
-    [autoSelectSpyingDestinationsCheckbox setIntValue:[autoSelectSpyingDestinationsPreference boolValue]];
-    [openWindowsForNewSourcesCheckbox setIntValue:[openWindowsForNewSourcesPreference boolValue]];
+    [autoSelectOrdinarySourcesCheckbox setIntValue:[defaults boolForKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey]];
+    [autoSelectVirtualDestinationCheckbox setIntValue:[defaults boolForKey:SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey]];
+    [autoSelectSpyingDestinationsCheckbox setIntValue:[defaults boolForKey:SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey]];
+    [openWindowsForNewSourcesCheckbox setIntValue:[defaults boolForKey:SMMOpenWindowsForNewSourcesPreferenceKey]];
 
-    [askBeforeClosingModifiedWindowCheckbox setIntValue:[askBeforeClosingModifiedWindowPreference boolValue]];
-    [alwaysSaveSysExWithEOXMatrix selectCellWithTag:[alwaysSaveSysExWithEOXPreference boolValue]];
+    [askBeforeClosingModifiedWindowCheckbox setIntValue:[defaults boolForKey:SMMAskBeforeClosingModifiedWindowPreferenceKey]];
+    [alwaysSaveSysExWithEOXMatrix selectCellWithTag:[defaults boolForKey:SMMSaveSysExWithEOXAlwaysPreferenceKey]];
 }
 
 
@@ -105,65 +81,65 @@ static SMMPreferencesWindowController *controller;
 
 - (IBAction)changeTimeFormat:(id)sender;
 {
-    [timeFormatPreference setIntegerValue:[[sender selectedCell] tag]];
+	[[NSUserDefaults standardUserDefaults] setInteger: [[sender selectedCell] tag] forKey: SMTimeFormatPreferenceKey];
     [self synchronizeDefaults];
     [self sendDisplayPreferenceChangedNotification];
 }
 
 - (IBAction)changeNoteFormat:(id)sender;
 {
-    [noteFormatPreference setIntegerValue:[[sender selectedCell] tag]];
+	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey: SMNoteFormatPreferenceKey];
     [self synchronizeDefaults];
     [self sendDisplayPreferenceChangedNotification];
 }
  
 - (IBAction)changeControllerFormat:(id)sender;
 {
-    [controllerFormatPreference setIntegerValue:[[sender selectedCell] tag]];
+	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey: SMControllerFormatPreferenceKey];
     [self synchronizeDefaults];
     [self sendDisplayPreferenceChangedNotification];
 }
 
 - (IBAction)changeDataFormat:(id)sender;
 {
-    [dataFormatPreference setIntegerValue:[[sender selectedCell] tag]];
+	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey: SMDataFormatPreferenceKey];
     [self synchronizeDefaults];
     [self sendDisplayPreferenceChangedNotification];
 }
 
 - (IBAction)changeAutoSelectOrdinarySources:(id)sender;
 {
-    [autoSelectOrdinarySourcesPreference setBoolValue:[sender intValue]];
+	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey];
     [self synchronizeDefaults];
 }
 
 - (IBAction)changeAutoSelectVirtualDestination:(id)sender;
 {
-    [autoSelectVirtualDestinationPreference setBoolValue:[sender intValue]];
+	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey];
     [self synchronizeDefaults];
 }
 
 - (IBAction)changeAutoSelectSpyingDestinations:(id)sender;
 {
-    [autoSelectSpyingDestinationsPreference setBoolValue:[sender intValue]];
+	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey];
     [self synchronizeDefaults];
 }
 
 - (IBAction)changeOpenWindowsForNewSources:(id)sender;
 {
-    [openWindowsForNewSourcesPreference setBoolValue:[sender intValue]];
+	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMMOpenWindowsForNewSourcesPreferenceKey];
     [self synchronizeDefaults];
 }
 
 - (IBAction)changeAskBeforeClosingModifiedWindow:(id)sender;
 {
-    [askBeforeClosingModifiedWindowPreference setBoolValue:[sender intValue]];
+	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMMAskBeforeClosingModifiedWindowPreferenceKey];
     [self synchronizeDefaults];
 }
 
 - (IBAction)changeAlwaysSaveSysExWithEOX:(id)sender;
 {
-    [alwaysSaveSysExWithEOXPreference setBoolValue:[[sender selectedCell] tag]];
+	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey: SMMSaveSysExWithEOXAlwaysPreferenceKey];
     [self synchronizeDefaults];
 }
 
@@ -174,7 +150,7 @@ static SMMPreferencesWindowController *controller;
 
 - (void)synchronizeDefaults;
 {
-    [[NSUserDefaults standardUserDefaults] autoSynchronize];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)sendDisplayPreferenceChangedNotification;

@@ -1,8 +1,6 @@
 #import <Cocoa/Cocoa.h>
 #import "SMMWindowController.h"
 
-@class OFPreference;
-
 
 @interface SMMPreferencesWindowController : SMMWindowController
 {
@@ -17,17 +15,6 @@
     IBOutlet NSButton *openWindowsForNewSourcesCheckbox;
     IBOutlet NSButton *askBeforeClosingModifiedWindowCheckbox;
     IBOutlet NSMatrix *alwaysSaveSysExWithEOXMatrix;
-
-    OFPreference *timeFormatPreference;
-    OFPreference *noteFormatPreference;
-    OFPreference *controllerFormatPreference;
-    OFPreference *dataFormatPreference;
-    OFPreference *autoSelectOrdinarySourcesPreference;
-    OFPreference *autoSelectVirtualDestinationPreference;
-    OFPreference *autoSelectSpyingDestinationsPreference;
-    OFPreference *openWindowsForNewSourcesPreference;
-    OFPreference *askBeforeClosingModifiedWindowPreference;
-    OFPreference *alwaysSaveSysExWithEOXPreference;
 }
 
 + (SMMPreferencesWindowController *)preferencesWindowController;

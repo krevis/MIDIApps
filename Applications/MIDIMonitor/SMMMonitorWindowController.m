@@ -1,8 +1,6 @@
 #import "SMMMonitorWindowController.h"
 
 #import <Cocoa/Cocoa.h>
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 #import <DisclosableView/DisclosableView.h>
 
@@ -11,6 +9,8 @@
 #import "SMMPreferencesWindowController.h"
 #import "SMMSourcesOutlineView.h"
 #import "SMMDetailsWindowController.h"
+#import "NSArray-SMMExtensions.h"
+#import "NSString-SMMExtensions.h"
 
 
 @interface SMMMonitorWindowController (Private)
@@ -22,7 +22,7 @@
 - (void)updateDocumentWindowFrameDescription;
 
 - (void)refreshMessagesTableView;
-- (void)refreshMessagesTableViewFromScheduledEvent;
+- (void)refreshMessagesTableViewFromTimer:(NSTimer *)timer;
 
 - (void)showSysExProgressIndicator;
 - (void)hideSysExProgressIndicator;
@@ -44,12 +44,6 @@ static NSString *kToString = nil;
 static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
 
 
-+ (void)didLoad
-{
-    kFromString = [NSLocalizedStringFromTableInBundle(@"From", @"MIDIMonitor", [self bundle], "Prefix for endpoint name when it's a source") retain];
-    kToString = [NSLocalizedStringFromTableInBundle(@"To", @"MIDIMonitor", [self bundle], "Prefix for endpoint name when it's a destination") retain];
-}
-
 - (id)init;
 {
     if (!(self = [super initWithWindowNibName:@"MIDIMonitor"]))
@@ -70,7 +64,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
 
 - (id)initWithWindowNibName:(NSString *)windowNibName;
 {
-    OBRejectUnusedImplementation(self, _cmd);
+    SMRejectUnusedImplementation(self, _cmd);
     return nil;
 }
 
@@ -96,10 +90,9 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
     [nextMessagesRefreshDate release];
     nextMessagesRefreshDate = nil;
 
-    if (nextMessagesRefreshEvent) {
-        [[OFScheduler mainScheduler] abortEvent:nextMessagesRefreshEvent];
-        [nextMessagesRefreshEvent release];
-        nextMessagesRefreshEvent = nil;
+    if (nextMessagesRefreshTimer) {
+		[nextMessagesRefreshTimer invalidate];
+        nextMessagesRefreshTimer = nil;
     }
 
     [super dealloc];
@@ -325,18 +318,19 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
     if (shouldScrollToBottom)
         messagesNeedScrollToBottom = YES;
 
-    if (nextMessagesRefreshEvent) {
+    if (nextMessagesRefreshTimer) {
         // We're going to refresh soon, so don't do anything now.
         return;
     }
     
-    if (!nextMessagesRefreshDate || [[NSDate date] isAfterDate:nextMessagesRefreshDate]) {
+    if (!nextMessagesRefreshDate || [(NSDate*)[NSDate date] compare: nextMessagesRefreshDate] == NSOrderedDescending) {
         // Refresh right away, since we haven't recently.
         [self refreshMessagesTableView];
     } else {
         // We have refreshed recently.
         // Schedule an event to make us refresh when we are next allowed to do so.
-        nextMessagesRefreshEvent = [[[OFScheduler mainScheduler] scheduleSelector:@selector(refreshMessagesTableViewFromScheduledEvent) onObject:self atDate:nextMessagesRefreshDate] retain];
+		NSTimeInterval ti = [nextMessagesRefreshDate timeIntervalSinceReferenceDate] - [NSDate timeIntervalSinceReferenceDate];
+		nextMessagesRefreshTimer = [NSTimer scheduledTimerWithTimeInterval:ti target:self selector:@selector(refreshMessagesTableViewFromTimer:) userInfo:nil repeats:NO];
     }
 }
 
@@ -436,8 +430,8 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
     } else if (sourceNamesCount == 1) {
         NSString *messageFormat;
         
-        title = NSLocalizedStringFromTableInBundle(@"Missing Source", @"MIDIMonitor", [self bundle], "if document's source is missing, title of sheet");    
-        messageFormat = NSLocalizedStringFromTableInBundle(@"The source named \"%@\" could not be found.", @"MIDIMonitor", [self bundle], "if document's source is missing, message in sheet (with source name)");
+        title = NSLocalizedStringFromTableInBundle(@"Missing Source", @"MIDIMonitor", SMBundleForObject(self), "if document's source is missing, title of sheet");    
+        messageFormat = NSLocalizedStringFromTableInBundle(@"The source named \"%@\" could not be found.", @"MIDIMonitor", SMBundleForObject(self), "if document's source is missing, message in sheet (with source name)");
         message = [NSString stringWithFormat:messageFormat, [sourceNames objectAtIndex:0]];
     } else {
         NSMutableArray *sourceNamesInQuotes;
@@ -445,15 +439,15 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
         NSString *concatenatedSourceNames;
         NSString *messageFormat;
         
-        title = NSLocalizedStringFromTableInBundle(@"Missing Sources", @"MIDIMonitor", [self bundle], "if more than one of document's sources are missing, title of sheet");
+        title = NSLocalizedStringFromTableInBundle(@"Missing Sources", @"MIDIMonitor", SMBundleForObject(self), "if more than one of document's sources are missing, title of sheet");
 
         sourceNamesInQuotes = [NSMutableArray arrayWithCapacity:sourceNamesCount];
         for (sourceNamesIndex = 0; sourceNamesIndex < sourceNamesCount; sourceNamesIndex++)
             [sourceNamesInQuotes addObject:[NSString stringWithFormat:@"\"%@\"", [sourceNames objectAtIndex:sourceNamesIndex]]];
 
-        concatenatedSourceNames = [sourceNamesInQuotes componentsJoinedByCommaAndAnd];
+        concatenatedSourceNames = [sourceNamesInQuotes SMM_componentsJoinedByCommaAndAnd];
         
-        messageFormat = NSLocalizedStringFromTableInBundle(@"The sources named %@ could not be found.", @"MIDIMonitor", [self bundle], "if more than one of document's sources are missing, message in sheet (with source names)");
+        messageFormat = NSLocalizedStringFromTableInBundle(@"The sources named %@ could not be found.", @"MIDIMonitor", SMBundleForObject(self), "if more than one of document's sources are missing, message in sheet (with source names)");
 
         message = [NSString stringWithFormat:messageFormat, concatenatedSourceNames];        
     }
@@ -465,7 +459,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
 {
     [self showSysExProgressIndicator];
 
-    if (!nextSysExAnimateDate || [[NSDate date] isAfterDate:nextSysExAnimateDate]) {
+    if (!nextSysExAnimateDate || [(NSDate*)[NSDate date] compare:nextSysExAnimateDate] == NSOrderedDescending) {
         [sysExProgressIndicator animate:nil];
         [nextSysExAnimateDate release];
         nextSysExAnimateDate = [[NSDate alloc] initWithTimeIntervalSinceNow:[sysExProgressIndicator animationDelay]];
@@ -580,7 +574,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
             externalDeviceNames = [(id<SMInputStreamSource>)item inputStreamSourceExternalDeviceNames];
 
             if ([externalDeviceNames count] > 0) {
-                return [[name stringByAppendingString:[NSString emdashString]] stringByAppendingString:[externalDeviceNames componentsJoinedByString:@", "]];
+                return [[name stringByAppendingString:[NSString SMM_emdashString]] stringByAppendingString:[externalDeviceNames componentsJoinedByString:@", "]];
             } else {
                 return name;
             }
@@ -651,6 +645,11 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
 
         if ((endpoint = [message originatingEndpoint])) {
             NSString *fromOrTo;
+			
+			if (!kFromString)
+				kFromString = [NSLocalizedStringFromTableInBundle(@"From", @"MIDIMonitor", SMBundleForObject(self), "Prefix for endpoint name when it's a source") retain];
+			if (!kToString)
+				kToString = [NSLocalizedStringFromTableInBundle(@"To", @"MIDIMonitor", SMBundleForObject(self), "Prefix for endpoint name when it's a destination") retain];
 
             fromOrTo = ([endpoint isKindOfClass:[SMSourceEndpoint class]] ? kFromString : kToString);
             return [[fromOrTo stringByAppendingString:@" "] stringByAppendingString:[endpoint alwaysUniqueName]];
@@ -695,7 +694,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
 {
     NSString *frameDescription;
 
-    OBASSERT(sendWindowFrameChangesToDocument == NO);
+    SMAssert(sendWindowFrameChangesToDocument == NO);
     
     frameDescription = [[self document] windowFrameDescription];
     if (frameDescription)
@@ -739,10 +738,9 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
     nextMessagesRefreshDate = [[NSDate alloc] initWithTimeIntervalSinceNow:kMinimumMessagesRefreshDelay];
 }
 
-- (void)refreshMessagesTableViewFromScheduledEvent
+- (void)refreshMessagesTableViewFromTimer:(NSTimer *)timer
 {
-    [nextMessagesRefreshEvent release];
-    nextMessagesRefreshEvent = nil;
+    nextMessagesRefreshTimer = nil;
 
     [self refreshMessagesTableView];
 }

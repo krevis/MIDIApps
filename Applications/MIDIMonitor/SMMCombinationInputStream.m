@@ -4,8 +4,6 @@
 
 #import "SMMCombinationInputStream.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
 #import "SMMAppController.h"
 #import "SMMSpyingInputStream.h"
 
@@ -106,14 +104,14 @@
         NSDictionary *portGroup, *virtualGroup, *spyingGroup;
         NSString *groupName;
 
-        groupName = NSLocalizedStringFromTableInBundle(@"MIDI sources", @"MIDIMonitor", [self bundle], "name of group for ordinary sources");
+        groupName = NSLocalizedStringFromTableInBundle(@"MIDI sources", @"MIDIMonitor", SMBundleForObject(self), "name of group for ordinary sources");
         portGroup = [NSMutableDictionary dictionaryWithObjectsAndKeys:groupName, @"name", nil];
 
-        groupName = NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"MIDIMonitor", [self bundle], "name of source item for virtual destination");
+        groupName = NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"MIDIMonitor", SMBundleForObject(self), "name of source item for virtual destination");
         virtualGroup = [NSMutableDictionary dictionaryWithObjectsAndKeys:groupName, @"name", [NSNumber numberWithBool:YES], @"isNotExpandable", nil];
 
         if (spyingInputStream) {
-            groupName = NSLocalizedStringFromTableInBundle(@"Spy on output to destinations", @"MIDIMonitor", [self bundle], "name of group for spying on destinations");
+            groupName = NSLocalizedStringFromTableInBundle(@"Spy on output to destinations", @"MIDIMonitor", SMBundleForObject(self), "name of group for spying on destinations");
             spyingGroup = [NSMutableDictionary dictionaryWithObjectsAndKeys:groupName, @"name", nil];
         } else {
             spyingGroup = nil;
@@ -205,7 +203,7 @@
             [portInputStream addEndpoint:sourceEndpoint];
         } else {
             if (!sourceEndpointName)
-                sourceEndpointName = NSLocalizedStringFromTableInBundle(@"Unknown", @"MIDIMonitor", [self bundle], "name of missing endpoint if not specified in document");
+                sourceEndpointName = NSLocalizedStringFromTableInBundle(@"Unknown", @"MIDIMonitor", SMBundleForObject(self), "name of missing endpoint if not specified in document");
             [missingNames addObject:sourceEndpointName];
         }
         

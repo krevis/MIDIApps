@@ -1,6 +1,5 @@
 #import <Cocoa/Cocoa.h>
 
-@class OFScheduledEvent;
 @class SNDisclosableView;
 @class SNDisclosureButton;
 @class SMMSourcesOutlineView;
@@ -45,7 +44,7 @@
     NSDate *nextSysExAnimateDate;
     BOOL messagesNeedScrollToBottom;
     NSDate *nextMessagesRefreshDate;
-    OFScheduledEvent *nextMessagesRefreshEvent;
+    NSTimer *nextMessagesRefreshTimer;
 }
 
 - (id)init;

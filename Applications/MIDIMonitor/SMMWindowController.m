@@ -1,9 +1,5 @@
 #import "SMMWindowController.h"
 
-#import <Cocoa/Cocoa.h>
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
-
 
 
 @interface SMMWindowController (Private)
@@ -62,7 +58,7 @@
     // Sometimes we get called before the window's autosave name is set (when the nib is loading), so check that.
     if ((autosaveName = [window frameAutosaveName])) {
         [window saveFrameUsingName:autosaveName];
-        [[NSUserDefaults standardUserDefaults] autoSynchronize];
+        [[NSUserDefaults standardUserDefaults] synchronize];
     }
 }
 
