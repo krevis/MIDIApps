@@ -197,16 +197,16 @@
 				F561536D01C2418301000164,
 				F565B6F401E15D0B01000164,
 				F560977201E564B401000164,
-				F558450B021E15F801000164,
-				F558450C021E15F801000164,
 				F558450D021E15F801000164,
 				F558450E021E15F801000164,
 				F540F195022133F901000164,
 				F5ADD9F8023189AE01000164,
 				F55C9C1A0244DE3401000164,
 				F55C9C1E0244F91B01000164,
-				F5A2A22E02E6DDDB01000164,
-				F5A066FE02E83B3D01000164,
+				F506401902ECBB1C01000164,
+				F506401A02ECBB1C01000164,
+				F506401B02ECBB1C01000164,
+				F506401C02ECBB1C01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -248,11 +248,6 @@
 				F5ADD9F9023189AE01000164,
 				F55C9C1D0244F30F01000164,
 				F55C9C1F0244F91B01000164,
-				F5A2A22F02E6DDDB01000164,
-				F5A2A23002E6DDDB01000164,
-				F5A2A23102E6DDDB01000164,
-				F5A2A23202E6DDDB01000164,
-				F5A066FF02E83B3D01000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -368,6 +363,30 @@
 //F52
 //F53
 //F54
+		F506401902ECBB1C01000164 = {
+			fileRef = F5A066FC02E83B3D01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F506401A02ECBB1C01000164 = {
+			fileRef = F584CFF601CB85F901000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F506401B02ECBB1C01000164 = {
+			fileRef = F584CFF001CB7BA801000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F506401C02ECBB1C01000164 = {
+			fileRef = F564774801D6D9E001000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		F53BB49D015D4AC001000164 = {
 			isa = PBXFileReference;
 			path = SMEndpoint.h;
@@ -656,24 +675,6 @@
 			fileRef = F557E37301BEC38401000164;
 			isa = PBXBuildFile;
 			settings = {
-			};
-		};
-		F558450B021E15F801000164 = {
-			fileRef = F584CFF601CB85F901000164;
-			isa = PBXBuildFile;
-			settings = {
-				ATTRIBUTES = (
-					Public,
-				);
-			};
-		};
-		F558450C021E15F801000164 = {
-			fileRef = F584CFF001CB7BA801000164;
-			isa = PBXBuildFile;
-			settings = {
-				ATTRIBUTES = (
-					Public,
-				);
 			};
 		};
 		F558450D021E15F801000164 = {
@@ -1122,7 +1123,7 @@
 				F5A066FD02E83B3D01000164,
 			);
 			isa = PBXGroup;
-			name = Sequencing;
+			name = "Sequencing (Experimental)";
 			refType = 4;
 		};
 		F584CFEC01CB6BF101000164 = {
@@ -1257,48 +1258,6 @@
 			isa = PBXFileReference;
 			path = SMPlayingNote.m;
 			refType = 4;
-		};
-		F5A066FE02E83B3D01000164 = {
-			fileRef = F5A066FC02E83B3D01000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F5A066FF02E83B3D01000164 = {
-			fileRef = F5A066FD02E83B3D01000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F5A2A22E02E6DDDB01000164 = {
-			fileRef = F564774801D6D9E001000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F5A2A22F02E6DDDB01000164 = {
-			fileRef = F557390B01CE7E8801000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F5A2A23002E6DDDB01000164 = {
-			fileRef = F584CFED01CB6BF101000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F5A2A23102E6DDDB01000164 = {
-			fileRef = F584CFF101CB7BA801000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F5A2A23202E6DDDB01000164 = {
-			fileRef = F584CFF701CB85F901000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		F5ADD9F6023189AE01000164 = {
 			isa = PBXFileReference;
