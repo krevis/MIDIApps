@@ -155,7 +155,7 @@ static SSEMainWindowController *controller;
     [toolbarItem setView:destinationPopUpButton];
 
     height = NSHeight([destinationPopUpButton frame]);
-    [toolbarItem setMinSize:NSMakeSize(80, height)];
+    [toolbarItem setMinSize:NSMakeSize(150, height)];
     [toolbarItem setMaxSize:NSMakeSize(1000, height)];
 
     menuItem = [[NSMenuItem alloc] initWithTitle:@"Destination" action:NULL keyEquivalent:@""];
