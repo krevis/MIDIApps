@@ -128,7 +128,7 @@ static NSString *kToString = nil;
     [[maxMessageCountField formatter] setAllowsFloats:NO];
     [[oneChannelField formatter] setAllowsFloats:NO];
     
-    [messagesTableView setAutosaveName:@"MessagesTableView"];
+    [messagesTableView setAutosaveName:@"MessagesTableView2"];
     [messagesTableView setAutosaveTableColumns:YES];
     [messagesTableView setTarget:self];
     [messagesTableView setDoubleAction:@selector(showSelectedMessageDetails:)];
