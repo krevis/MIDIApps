@@ -43,6 +43,9 @@
     IBOutlet NSPanel *deleteWarningSheetWindow;
     IBOutlet NSButton *doNotWarnOnDeleteAgainCheckbox;
     IBOutlet NSPanel *deleteLibraryFilesWarningSheetWindow;
+
+    IBOutlet NSPanel *importWarningSheetWindow;
+    IBOutlet NSButton *doNotWarnOnImportAgainCheckbox;
     
     // Library
     SSELibrary *library;
@@ -66,7 +69,7 @@
 
 - (IBAction)selectDestination:(id)sender;
 
-- (IBAction)open:(id)sender;
+- (IBAction)addToLibrary:(id)sender;
 - (IBAction)delete:(id)sender;
 - (IBAction)recordOne:(id)sender;
 - (IBAction)recordMultiple:(id)sender;
@@ -103,3 +106,4 @@
 
 // Preferences keys
 extern NSString *SSEShowWarningOnDelete;
+extern NSString *SSEShowWarningOnImport;

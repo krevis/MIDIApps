@@ -210,13 +210,12 @@
     return [self isFilePresent];
 }
 
-- (BOOL)isFileInLibraryDirectory;
+- (BOOL)isFileInLibraryFileDirectory;
 {
     if (![self isFilePresentIgnoringCachedValue])
         return NO;
-    
-    return ([[[self path] stringByDeletingLastPathComponent] isEqualToString:[nonretainedLibrary fileDirectoryPath]]);
-    // TODO is this really the way to do this?
+
+    return [nonretainedLibrary isPathInFileDirectory:[self path]];
 }
 
 - (void)moveFileToTrash;

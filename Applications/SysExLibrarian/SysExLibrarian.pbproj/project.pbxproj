@@ -364,6 +364,8 @@
 			<dict>
 				<key>SSEShowWarningOnDelete</key>
 				<true/>
+				<key>SSEShowWarningOnImport</key>
+				<true/>
 			</dict>
 		</dict>
 	</dict>

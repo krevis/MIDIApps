@@ -23,6 +23,9 @@
 - (void)_selectAndScrollToEntries:(NSArray *)entries;
 
 - (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
+- (void)_showImportWarningForFiles:(NSArray *)filePaths andThenPerformSelector:(SEL)selector;
+- (void)_importWarningSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)_addFilesToLibraryInMainThread:(NSArray *)filePaths;
 
 - (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
@@ -36,8 +39,7 @@
 - (void)_updatePlayProgress;
 
 - (BOOL)_areAnyDraggedFilesAcceptable:(NSArray *)filePaths;
-- (void)_dragFilesIntoLibrary:(NSArray *)filePaths;
-
+- (void)_importFilesShowingProgress:(NSArray *)filePaths;
 - (void)_workThreadImportFiles:(NSArray *)filePaths;
 - (NSArray *)_workThreadExpandAndFilterDraggedFiles:(NSArray *)filePaths;
 
@@ -62,6 +64,7 @@
 @implementation SSEMainWindowController
 
 DEFINE_NSSTRING(SSEShowWarningOnDelete);
+DEFINE_NSSTRING(SSEShowWarningOnImport);
 
 static SSEMainWindowController *controller;
 
@@ -136,7 +139,7 @@ static SSEMainWindowController *controller;
     [midiController setDestinationDescription:[(NSMenuItem *)[sender selectedItem] representedObject]];
 }
 
-- (IBAction)open:(id)sender;
+- (IBAction)addToLibrary:(id)sender;
 {
     NSOpenPanel *openPanel;
 
@@ -453,7 +456,11 @@ static SSEMainWindowController *controller;
 
 - (BOOL)tableView:(SSETableView *)tableView performDragOperation:(id <NSDraggingInfo>)sender;
 {
-    [self _dragFilesIntoLibrary:[[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType]];
+    NSArray *filePaths;
+
+    filePaths = [[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType];
+    [self _showImportWarningForFiles:filePaths andThenPerformSelector:@selector(_importFilesShowingProgress:)];
+
     return YES;
 }
 
@@ -636,12 +643,58 @@ static int libraryEntryComparator(id object1, id object2, void *context)
 - (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
 {
     if (returnCode == NSOKButton) {
-        NSArray *newEntries;
-        
-        newEntries = [self _addFilesToLibrary:[openPanel filenames]];        
-        [self synchronizeLibrary];
-        [self _selectAndScrollToEntries:newEntries];
+        [openPanel orderOut:nil];
+        [self _showImportWarningForFiles:[openPanel filenames] andThenPerformSelector:@selector(_addFilesToLibraryInMainThread:)];
     }
+}
+
+- (void)_showImportWarningForFiles:(NSArray *)filePaths andThenPerformSelector:(SEL)selector;
+{
+    BOOL areAllFilesInLibraryDirectory = YES;
+    unsigned int fileIndex;
+
+    fileIndex = [filePaths count];
+    while (fileIndex--) {
+        if (![library isPathInFileDirectory:[filePaths objectAtIndex:fileIndex]]) {
+            areAllFilesInLibraryDirectory = NO;
+            break;
+        }
+    }
+
+    if (areAllFilesInLibraryDirectory || [[NSUserDefaults standardUserDefaults] boolForKey:SSEShowWarningOnImport] == NO) {
+        [self performSelector:selector withObject:filePaths];
+    } else {
+        OFInvocation *invocation;
+
+        invocation = [[OFInvocation alloc] initForObject:self selector:selector withObject:filePaths];
+
+        [doNotWarnOnImportAgainCheckbox setIntValue:0];
+        [[NSApplication sharedApplication] beginSheet:importWarningSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_importWarningSheetDidEnd:returnCode:contextInfo:) contextInfo:invocation];
+    }
+}
+
+- (void)_importWarningSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+{
+    [sheet orderOut:nil];
+
+    if (returnCode == NSOKButton) {
+        OFInvocation *invocation = (OFInvocation *)contextInfo;
+
+        if ([doNotWarnOnImportAgainCheckbox intValue] == 1)
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:SSEShowWarningOnImport];
+
+        [invocation invoke];
+        [invocation release];
+    }
+}
+
+- (void)_addFilesToLibraryInMainThread:(NSArray *)filePaths;
+{
+    NSArray *newEntries;
+
+    newEntries = [self _addFilesToLibrary:filePaths];
+    [self synchronizeLibrary];
+    [self _selectAndScrollToEntries:newEntries];    
 }
 
 - (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
@@ -779,7 +832,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     return NO;
 }
 
-- (void)_dragFilesIntoLibrary:(NSArray *)filePaths;
+- (void)_importFilesShowingProgress:(NSArray *)filePaths;
 {
     importFilePath = nil;
     importFileIndex = 0;
@@ -1038,7 +1091,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     selectedEntries = [self _selectedEntries];
     entryIndex = [selectedEntries count];
     while (entryIndex--) {
-        if ([[selectedEntries objectAtIndex:entryIndex] isFileInLibraryDirectory]) {
+        if ([[selectedEntries objectAtIndex:entryIndex] isFileInLibraryFileDirectory]) {
             areAnyFilesInLibraryDirectory = YES;
             break;
         }
@@ -1074,7 +1127,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
         SSELibraryEntry *entry;
 
         entry = [entriesToRemove objectAtIndex:entryIndex];
-        if (shouldMoveToTrash && [entry isFileInLibraryDirectory]) {
+        if (shouldMoveToTrash && [entry isFileInLibraryFileDirectory]) {
             [entry moveFileToTrash];
         }
         [library removeEntry:entry];

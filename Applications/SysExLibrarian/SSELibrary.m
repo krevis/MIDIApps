@@ -127,6 +127,12 @@ NSString *SSESysExFileExtension = @"syx";
     return path;
 }
 
+- (BOOL)isPathInFileDirectory:(NSString *)path;
+{
+    return [path hasPrefix:[[self fileDirectoryPath] stringByAppendingString:@"/"]];
+    // TODO is this really the way to do this?
+}
+
 - (NSArray *)entries;
 {
     return entries;
