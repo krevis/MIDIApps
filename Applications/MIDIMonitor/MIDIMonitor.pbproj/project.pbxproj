@@ -57,10 +57,10 @@
 		1058C7A6FEA54F5311CA2CBB = {
 			children = (
 				1058C7A7FEA54F5311CA2CBB,
+				F5B4281801A360AD01000164,
 				F53D4AAB015AA35201000164,
 				F53D4AAC015AA35201000164,
 				F53D4AAE015AA35201000164,
-				F5B4281801A360AD01000164,
 			);
 			isa = PBXGroup;
 			name = "Linked Frameworks";
@@ -305,7 +305,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "MIDI Monitor";
 				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas -Wparentheses";
 				WRAPPER_EXTENSION = app;
 			};
 			dependencies = (

@@ -165,7 +165,7 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
         NSString *string;
         NSDictionary *streamSettings;
     
-        if (streamSettings = [dict objectForKey:@"streamSettings"]) {
+        if ((streamSettings = [dict objectForKey:@"streamSettings"])) {
             [missingSourceName release];
             missingSourceName = [[stream takePersistentSettings:streamSettings] retain];
             [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeSources)];
