@@ -139,7 +139,7 @@ fi
 
 if [[ $DO_IMAGE -eq 1 ]]; then
 	if [[ -x "$ThisScriptDir/MakeDiskImage" ]] ; then
-		$ThisScriptDir/MakeDiskImage "SysEx Librarian" "SysExLibrarian"
+		$ThisScriptDir/MakeDiskImage "SysEx Librarian" "SysExLibrarian" "${SnoizeAppSource}/SysExLibrarian/Read Me.html"
 	else
 		echo "Error: Couldn't find the MakeDiskImage script."
 	fi
