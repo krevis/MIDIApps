@@ -13,8 +13,7 @@
 
 @implementation SMMDisclosableView
 
-const double kDefaultHiddenHeight = 10;
-    // TODO It would be nice to calculate this based on the nib, but I'm not sure if that's possible or not.
+const double kDefaultHiddenHeight = 0;
 
 
 - (id)initWithFrame:(NSRect)frameRect;
@@ -50,15 +49,6 @@ const double kDefaultHiddenHeight = 10;
 {
     return NO;
 }
-
-// TODO temp testing
-/*
-- (void)drawRect:(NSRect)rect;
-{
-    [[NSColor redColor] set];
-    NSFrameRect(NSMakeRect(0, 0, NSWidth([self frame]), NSHeight([self frame])));
-}
-*/
 
 - (BOOL)isShown;
 {
