@@ -93,6 +93,23 @@
 }
 
 //
+// Action validation
+//
+
+- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)theItem;
+{
+    if ([theItem action] == @selector(showMainWindowAndAddToLibrary:)) {
+        // Don't allow adds if the main window is open and has a sheet on it
+        NSWindow *mainWindow;
+
+        mainWindow = [[SSEMainWindowController mainWindowController] window];
+        return (!mainWindow || [mainWindow attachedSheet] == nil);
+    }
+
+    return YES;
+}
+
+//
 // Actions
 //
 
