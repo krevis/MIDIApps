@@ -20,8 +20,6 @@
     SInt32 virtualEndpointUniqueID;
     NSString *virtualEndpointName;
     NSString *virtualDisplayName;
-        
-    id<SMMessageDestination> nonretainedMessageDestination;
 }
 
 - (NSArray *)destinationDescriptions;
