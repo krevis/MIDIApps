@@ -133,8 +133,9 @@ static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
             packet = MIDIPacketNext(packet);
 
         } else {
-            if (dataSize <= 3) {
-                // This is a small message; we don't want to split it up.
+            if (dataSize <= 3 || (MAX_PACKET_LIST_SIZE - packetListSize <= offsetof(MIDIPacket, data))) {
+                // This is a small message; we don't want to split it up;
+                // or, there is not enough space in the packet list for even the header of one more packet.
                 // We will start a new packet list, and then put this message in it.
 
                 // We're finished with this packet list, so send it
@@ -149,6 +150,7 @@ static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
                 [self _addMessage:message withDataSize:dataSize toPacketList:packetList packet:packet];
                 packetListSize += packetSize;
                 packet = MIDIPacketNext(packet);
+                OBASSERT((Byte *)packet - (Byte *)packetList < MAX_PACKET_LIST_SIZE);
 
             } else {
                 // This is a large sysex message. We can split it up.
@@ -166,6 +168,7 @@ static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
                 while (dataRemaining > 0) {
                     unsigned int partialSize;
 
+                    OBASSERT((int)MAX_PACKET_LIST_SIZE - packetListSize - offsetof(MIDIPacket, data) > 0);
                     partialSize = MIN(MAX_PACKET_LIST_SIZE - packetListSize - offsetof(MIDIPacket, data), dataRemaining);
 
                     // add data to packet
@@ -184,8 +187,10 @@ static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
                     packetListSize += offsetof(MIDIPacket, data) + partialSize;
                     packetList->numPackets++;
 
-                    if (packetListSize == MAX_PACKET_LIST_SIZE) {
-                        // We're finished with this packet list, so send it
+                    OBASSERT(packetListSize <= MAX_PACKET_LIST_SIZE);
+
+                    if (MAX_PACKET_LIST_SIZE - packetListSize <= offsetof(MIDIPacket, data)) {
+                        // No room for any more packets in this packet list, so send it
                         [self sendMIDIPacketList:packetList];
 
                         // and start a new one
@@ -193,7 +198,9 @@ static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
                         packet = &packetList->packet[0];
                         packetListSize = offsetof(MIDIPacketList, packet);
                     } else {
+                        OBASSERT(packetListSize + offsetof(MIDIPacket, data) < MAX_PACKET_LIST_SIZE);
                         packet = MIDIPacketNext(packet);
+                        OBASSERT((Byte *)packet - (Byte *)packetList < MAX_PACKET_LIST_SIZE);
                     }
                 }
             }
