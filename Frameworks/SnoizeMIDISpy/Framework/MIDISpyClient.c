@@ -77,6 +77,7 @@ static void ClientAddConnection(MIDISpyClientRef clientRef, MIDISpyPortConnectio
 static void ClientRemoveConnection(MIDISpyClientRef clientRef, MIDISpyPortConnection *connection);
 static CFMutableArrayRef GetConnectionsToEndpoint(MIDISpyClientRef clientRef, MIDIEndpointRef endpoint);
 
+static void SetClientSubscribesToDataFromEndpoint(MIDISpyClientRef clientRef, MIDIEndpointRef endpoint, Boolean subscribes);
 static CFDataRef LocalMessagePortCallback(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info);
 
 
@@ -683,20 +684,20 @@ void DisconnectConnection(MIDISpyPortRef spyPortRef, MIDISpyPortConnection *conn
 void ClientAddConnection(MIDISpyClientRef clientRef, MIDISpyPortConnection *connection)
 {
     CFMutableArrayRef connections;
+    Boolean isFirstConnectionToEndpoint = FALSE;
 
     connections = GetConnectionsToEndpoint(clientRef, connection->endpoint);
     if (!connections) {
         connections = CFArrayCreateMutable(kCFAllocatorDefault, 0, NULL);
         CFDictionarySetValue(clientRef->endpointConnections, connection->endpoint, connections);
         CFRelease(connections);
+        isFirstConnectionToEndpoint = TRUE;
     }
     CFArrayAppendValue(connections, connection);
-    
-    // TODO
-    // is this the first connection to this endpoint?
-    // if so, then send a request to the driver to start sending info about the endpoint to us
-    // need to send a request to the driver
-    // 	kSpyingMIDIDriverConnectDestinationMessageID
+
+    if (isFirstConnectionToEndpoint) {
+        SetClientSubscribesToDataFromEndpoint(clientRef, connection->endpoint, TRUE);
+    }    
 }
 
 void ClientRemoveConnection(MIDISpyClientRef clientRef, MIDISpyPortConnection *connection)
@@ -711,12 +712,11 @@ void ClientRemoveConnection(MIDISpyClientRef clientRef, MIDISpyPortConnection *c
         if (connectionIndex != kCFNotFound)
             CFArrayRemoveValueAtIndex(connections, connectionIndex);
     }
-    
-    // TODO
-    // are there any more connections to this endpoint?
-    // If not, then send a request to the driver to stop sending info about the endpoint to us.
-    // Need to send a request to the driver
-    //     kSpyingMIDIDriverDisconnectDestinationMessageID = 3
+
+    if (connections && CFArrayGetCount(connections) == 0) {
+        CFDictionaryRemoveValue(clientRef->endpointConnections, connection->endpoint);
+        SetClientSubscribesToDataFromEndpoint(clientRef, connection->endpoint, FALSE);
+    }    
 }
 
 CFMutableArrayRef GetConnectionsToEndpoint(MIDISpyClientRef clientRef, MIDIEndpointRef endpoint)
@@ -726,6 +726,17 @@ CFMutableArrayRef GetConnectionsToEndpoint(MIDISpyClientRef clientRef, MIDIEndpo
 
 
 // Communication with driver
+
+void SetClientSubscribesToDataFromEndpoint(MIDISpyClientRef clientRef, MIDIEndpointRef endpoint, Boolean subscribes)
+{
+    // TODO
+
+    // Send a request to the driver to start or stop sending info about the endpoint to us
+    // need to send a request to the driver
+    // kSpyingMIDIDriverConnectDestinationMessageID
+    // kSpyingMIDIDriverDisconnectDestinationMessageID = 3
+}
+
 
 static CFDataRef LocalMessagePortCallback(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info)
 {
