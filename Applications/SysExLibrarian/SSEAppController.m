@@ -11,7 +11,7 @@
 
 @interface SSEAppController (Private)
 
-- (void)_importFiles;
+- (void)importFiles;
 
 @end
 
@@ -59,7 +59,7 @@
         [self showMainWindow:nil];
 
         if (filesToImport)
-            [self _importFiles];
+            [self importFiles];
     }
 }
 
@@ -71,7 +71,7 @@
 
     if (hasFinishedLaunching) {
         [self showMainWindow:nil];
-        [self _importFiles];
+        [self importFiles];
     }
 
     return YES;
@@ -143,7 +143,7 @@
 
 @implementation SSEAppController (Private)
 
-- (void)_importFiles;
+- (void)importFiles;
 {
     [[SSEMainWindowController mainWindowController] importFiles:filesToImport showingProgress:NO];
     [filesToImport release];

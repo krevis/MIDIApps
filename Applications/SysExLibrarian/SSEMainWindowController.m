@@ -20,28 +20,28 @@
 
 @interface SSEMainWindowController (Private)
 
-- (void)_displayPreferencesDidChange:(NSNotification *)notification;
+- (void)displayPreferencesDidChange:(NSNotification *)notification;
 
-- (BOOL)_finishEditingResultsInError;
+- (BOOL)finishEditingResultsInError;
 
-- (void)_synchronizeDestinationPopUpWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
-- (void)_synchronizeDestinationToolbarMenuWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
+- (void)synchronizeDestinationPopUpWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
+- (void)synchronizeDestinationToolbarMenuWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 
-- (void)_libraryDidChange:(NSNotification *)notification;
-- (void)_sortLibraryEntries;
+- (void)libraryDidChange:(NSNotification *)notification;
+- (void)sortLibraryEntries;
 
-- (NSArray *)_selectedEntries;
-- (void)_selectEntries:(NSArray *)entries;
-- (void)_scrollToEntries:(NSArray *)entries;
+- (NSArray *)selectedEntries;
+- (void)selectEntries:(NSArray *)entries;
+- (void)scrollToEntries:(NSArray *)entries;
 
-- (void)_playSelectedEntries;
-- (void)_showDetailsOfSelectedEntries;
+- (void)playSelectedEntries;
+- (void)showDetailsOfSelectedEntries;
 
-- (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
-- (BOOL)_areAnyFilesAcceptableForImport:(NSArray *)filePaths;
+- (BOOL)areAnyFilesAcceptableForImport:(NSArray *)filePaths;
 
-- (void)_findMissingFilesAndPerformSelector:(SEL)selector;
+- (void)findMissingFilesAndPerformSelector:(SEL)selector;
 
 @end
 
@@ -67,8 +67,8 @@ static SSEMainWindowController *controller;
         return nil;
 
     library = [[SSELibrary sharedLibrary] retain];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_libraryDidChange:) name:SSELibraryDidChangeNotification object:library];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_displayPreferencesDidChange:) name:SSEDisplayPreferenceChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(libraryDidChange:) name:SSELibraryDidChangeNotification object:library];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayPreferencesDidChange:) name:SSEDisplayPreferenceChangedNotification object:nil];
     
     sortColumnIdentifier = @"name";
     isSortAscending = YES;
@@ -172,9 +172,9 @@ static SSEMainWindowController *controller;
     else if (action == @selector(delete:))
         return ([libraryTableView numberOfSelectedRows] > 0);
     else if (action == @selector(showFileInFinder:))
-        return ([libraryTableView numberOfSelectedRows] == 1 && [[[self _selectedEntries] objectAtIndex:0] isFilePresent]);
+        return ([libraryTableView numberOfSelectedRows] == 1 && [[[self selectedEntries] objectAtIndex:0] isFilePresent]);
     else if (action == @selector(rename:))
-        return ([libraryTableView numberOfSelectedRows] == 1 && [[[self _selectedEntries] objectAtIndex:0] isFilePresent]);
+        return ([libraryTableView numberOfSelectedRows] == 1 && [[[self selectedEntries] objectAtIndex:0] isFilePresent]);
     else if (action == @selector(showDetails:))
         return ([libraryTableView numberOfSelectedRows] > 0);
     else
@@ -205,29 +205,29 @@ static SSEMainWindowController *controller;
 {
     NSOpenPanel *openPanel;
 
-    if ([self _finishEditingResultsInError])
+    if ([self finishEditingResultsInError])
         return;
     
     openPanel = [NSOpenPanel openPanel];
     [openPanel setAllowsMultipleSelection:YES];
 
-    [openPanel beginSheetForDirectory:nil file:nil types:[library allowedFileTypes] modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_openPanelDidEnd:returnCode:contextInfo:) contextInfo:nil];
+    [openPanel beginSheetForDirectory:nil file:nil types:[library allowedFileTypes] modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:) contextInfo:nil];
 }
 
 - (IBAction)delete:(id)sender;
 {
-    if ([self _finishEditingResultsInError])
+    if ([self finishEditingResultsInError])
         return;
 
     if (!deleteController)
         deleteController = [[SSEDeleteController alloc] initWithWindowController:self];
 
-    [deleteController deleteEntries:[self _selectedEntries]];
+    [deleteController deleteEntries:[self selectedEntries]];
 }
 
 - (IBAction)recordOne:(id)sender;
 {
-    if ([self _finishEditingResultsInError])
+    if ([self finishEditingResultsInError])
         return;
 
     if (!recordOneController)
@@ -238,7 +238,7 @@ static SSEMainWindowController *controller;
 
 - (IBAction)recordMany:(id)sender;
 {
-    if ([self _finishEditingResultsInError])
+    if ([self finishEditingResultsInError])
         return;
 
     if (!recordManyController)
@@ -249,10 +249,10 @@ static SSEMainWindowController *controller;
 
 - (IBAction)play:(id)sender;
 {
-    if ([self _finishEditingResultsInError])
+    if ([self finishEditingResultsInError])
         return;
 
-    [self _findMissingFilesAndPerformSelector:@selector(_playSelectedEntries)];
+    [self findMissingFilesAndPerformSelector:@selector(playSelectedEntries)];
 }
 
 - (IBAction)showFileInFinder:(id)sender;
@@ -263,7 +263,7 @@ static SSEMainWindowController *controller;
     [self finishEditingInWindow];
         // We don't care if there is an error, go on anyway
 
-    selectedEntries = [self _selectedEntries];
+    selectedEntries = [self selectedEntries];
     OBASSERT([selectedEntries count] == 1);
 
     if ((path = [[selectedEntries objectAtIndex:0] path]))
@@ -280,7 +280,7 @@ static SSEMainWindowController *controller;
         [self finishEditingInWindow];  // In case we are editing something else
 
         // Make sure that the file really exists right now before we try to rename it
-        if ([[[self _selectedEntries] objectAtIndex:0] isFilePresentIgnoringCachedValue])
+        if ([[[self selectedEntries] objectAtIndex:0] isFilePresentIgnoringCachedValue])
             [libraryTableView editColumn:0 row:[libraryTableView selectedRow] withEvent:nil select:YES];
         else
             NSBeep();
@@ -289,10 +289,10 @@ static SSEMainWindowController *controller;
 
 - (IBAction)showDetails:(id)sender;
 {
-    if ([self _finishEditingResultsInError])
+    if ([self finishEditingResultsInError])
         return;
 
-    [self _findMissingFilesAndPerformSelector:@selector(_showDetailsOfSelectedEntries)];
+    [self findMissingFilesAndPerformSelector:@selector(showDetailsOfSelectedEntries)];
 }
 
 //
@@ -314,8 +314,8 @@ static SSEMainWindowController *controller;
     descriptions = [midiController destinationDescriptions];
     currentDescription = [midiController destinationDescription];
 
-    [self _synchronizeDestinationPopUpWithDescriptions:descriptions currentDescription:currentDescription];
-    [self _synchronizeDestinationToolbarMenuWithDescriptions:descriptions currentDescription:currentDescription];
+    [self synchronizeDestinationPopUpWithDescriptions:descriptions currentDescription:currentDescription];
+    [self synchronizeDestinationToolbarMenuWithDescriptions:descriptions currentDescription:currentDescription];
 }
 
 - (void)synchronizeLibrarySortIndicator;
@@ -331,16 +331,16 @@ static SSEMainWindowController *controller;
 {
     NSArray *selectedEntries;
 
-    selectedEntries = [self _selectedEntries];
+    selectedEntries = [self selectedEntries];
 
-    [self _sortLibraryEntries];
+    [self sortLibraryEntries];
 
     // NOTE Some entries in selectedEntries may no longer be present in sortedLibraryEntries.
-    // We don't need to manually take them out of selectedEntries because _selectEntries can deal with
+    // We don't need to manually take them out of selectedEntries because selectEntries can deal with
     // entries that are missing.
     
     [libraryTableView reloadData];
-    [self _selectEntries:selectedEntries];
+    [self selectEntries:selectedEntries];
 
     // Sometimes, apparently, reloading the table view will not mark the window as needing update. Weird.
     [NSApp setWindowsNeedUpdate:YES];
@@ -357,8 +357,8 @@ static SSEMainWindowController *controller;
 - (void)showNewEntries:(NSArray *)newEntries;
 {
     [self synchronizeLibrary];
-    [self _selectEntries:newEntries];
-    [self _scrollToEntries:newEntries];
+    [self selectEntries:newEntries];
+    [self scrollToEntries:newEntries];
 }
 
 - (void)addReadMessagesToLibrary;
@@ -482,7 +482,7 @@ static SSEMainWindowController *controller;
 
 - (NSDragOperation)tableView:(SSETableView *)tableView draggingEntered:(id <NSDraggingInfo>)sender;
 {
-    if ([self _areAnyFilesAcceptableForImport:[[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType]])
+    if ([self areAnyFilesAcceptableForImport:[[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType]])
         return NSDragOperationGeneric;
     else
         return NSDragOperationNone;
@@ -526,7 +526,7 @@ static SSEMainWindowController *controller;
 
     [self synchronizeLibrarySortIndicator];
     [self synchronizeLibrary];
-    [self _scrollToEntries:[self _selectedEntries]];
+    [self scrollToEntries:[self selectedEntries]];
 }
 
 - (BOOL)tableView:(NSTableView *)tableView shouldEditTableColumn:(NSTableColumn *)tableColumn row:(int)row;
@@ -542,12 +542,12 @@ static SSEMainWindowController *controller;
 
 @implementation SSEMainWindowController (Private)
 
-- (void)_displayPreferencesDidChange:(NSNotification *)notification;
+- (void)displayPreferencesDidChange:(NSNotification *)notification;
 {
     [libraryTableView reloadData];
 }
 
-- (BOOL)_finishEditingResultsInError;
+- (BOOL)finishEditingResultsInError;
 {
     [self finishEditingInWindow];
     return ([[self window] attachedSheet] != nil);
@@ -557,7 +557,7 @@ static SSEMainWindowController *controller;
 // Destination selections (popup and toolbar menu)
 //
 
-- (void)_synchronizeDestinationPopUpWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
+- (void)synchronizeDestinationPopUpWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 {
     BOOL wasAutodisplay;
     unsigned int count, index;
@@ -598,7 +598,7 @@ static SSEMainWindowController *controller;
     [[self window] setAutodisplay:wasAutodisplay];
 }
 
-- (void)_synchronizeDestinationToolbarMenuWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
+- (void)synchronizeDestinationToolbarMenuWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 {
     // Set the title to "Destination: <Whatever>"
     // Then set up the submenu items
@@ -653,7 +653,7 @@ static SSEMainWindowController *controller;
 // Library interaction
 //
 
-- (void)_libraryDidChange:(NSNotification *)notification;
+- (void)libraryDidChange:(NSNotification *)notification;
 {
     // Reloading the table view will wipe out the edit session, so don't do that if we're editing
     if ([libraryTableView editedRow] == -1)
@@ -682,7 +682,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     }
 }
 
-- (void)_sortLibraryEntries;
+- (void)sortLibraryEntries;
 {
     [sortedLibraryEntries release];
     sortedLibraryEntries = [[library entries] sortedArrayUsingFunction:libraryEntryComparator context:sortColumnIdentifier];
@@ -691,7 +691,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     [sortedLibraryEntries retain];
 }
 
-- (NSArray *)_selectedEntries;
+- (NSArray *)selectedEntries;
 {
     NSMutableArray *selectedEntries;
     NSEnumerator *selectedRowEnumerator;
@@ -707,7 +707,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     return selectedEntries;
 }
 
-- (void)_selectEntries:(NSArray *)entries;
+- (void)selectEntries:(NSArray *)entries;
 {
     unsigned int entryCount, entryIndex;
 
@@ -726,7 +726,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     }
 }
 
-- (void)_scrollToEntries:(NSArray *)entries;
+- (void)scrollToEntries:(NSArray *)entries;
 {
     unsigned int entryCount, entryIndex;
     unsigned int lowestRow = UINT_MAX;
@@ -750,13 +750,13 @@ static int libraryEntryComparator(id object1, id object2, void *context)
 // Doing things with selected entries
 //
 
-- (void)_playSelectedEntries;
+- (void)playSelectedEntries;
 {
     NSArray *selectedEntries;
     NSMutableArray *messages;
     unsigned int entryCount, entryIndex;
 
-    selectedEntries = [self _selectedEntries];
+    selectedEntries = [self selectedEntries];
 
     messages = [NSMutableArray array];
     entryCount = [selectedEntries count];
@@ -772,12 +772,12 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     }
 }
 
-- (void)_showDetailsOfSelectedEntries;
+- (void)showDetailsOfSelectedEntries;
 {
     NSArray *selectedEntries;
     unsigned int entryCount, entryIndex;
 
-    selectedEntries = [self _selectedEntries];
+    selectedEntries = [self selectedEntries];
     entryCount = [selectedEntries count];
     for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
         SSELibraryEntry *entry;
@@ -791,7 +791,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
 // Add files / importing
 //
 
-- (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
+- (void)openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
 {
     if (returnCode == NSOKButton) {
         [openPanel orderOut:nil];
@@ -799,7 +799,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     }
 }
 
-- (BOOL)_areAnyFilesAcceptableForImport:(NSArray *)filePaths;
+- (BOOL)areAnyFilesAcceptableForImport:(NSArray *)filePaths;
 {
     NSFileManager *fileManager;
     unsigned int fileIndex, fileCount;
@@ -829,13 +829,13 @@ static int libraryEntryComparator(id object1, id object2, void *context)
 // Finding missing files
 //
 
-- (void)_findMissingFilesAndPerformSelector:(SEL)selector;
+- (void)findMissingFilesAndPerformSelector:(SEL)selector;
 {
     NSArray *selectedEntries;
     unsigned int entryCount, entryIndex;
     NSMutableArray *entriesWithMissingFiles;
 
-    selectedEntries = [self _selectedEntries];
+    selectedEntries = [self selectedEntries];
 
     // Which entries can't find their associated file?
     entryCount = [selectedEntries count];

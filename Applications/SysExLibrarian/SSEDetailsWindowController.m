@@ -11,13 +11,13 @@
 
 @interface SSEDetailsWindowController (Private)
 
-- (void)_synchronizeMessageDataDisplay;
-- (void)_synchronizeTitle;
+- (void)synchronizeMessageDataDisplay;
+- (void)synchronizeTitle;
 
-- (void)_entryWillBeRemoved:(NSNotification *)notification;
-- (void)_entryNameDidChange:(NSNotification *)notification;
+- (void)entryWillBeRemoved:(NSNotification *)notification;
+- (void)entryNameDidChange:(NSNotification *)notification;
 
-- (NSString *)_formatSysExData:(NSData *)data;
+- (NSString *)formatSysExData:(NSData *)data;
 
 @end
 
@@ -57,8 +57,8 @@ static NSMutableArray *controllers = nil;
     [self setShouldCascadeWindows:YES];
 
     entry = [inEntry retain];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_entryWillBeRemoved:) name:SSELibraryEntryWillBeRemovedNotification object:entry];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_entryNameDidChange:) name:SSELibraryEntryNameDidChangeNotification object:entry];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(entryWillBeRemoved:) name:SSELibraryEntryWillBeRemovedNotification object:entry];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(entryNameDidChange:) name:SSELibraryEntryNameDidChangeNotification object:entry];
     
     cachedMessages = [[NSArray alloc] initWithArray:[entry messages]];
 
@@ -87,13 +87,13 @@ static NSMutableArray *controllers = nil;
 {
     [super windowDidLoad];
 
-    [self _synchronizeTitle];
+    [self synchronizeTitle];
     
     [messagesTableView reloadData];
     if ([cachedMessages count] > 0)
         [messagesTableView selectRow:0 byExtendingSelection:NO];
 
-    [self _synchronizeMessageDataDisplay];
+    [self synchronizeMessageDataDisplay];
 }
 
 - (SSELibraryEntry *)entry;
@@ -164,7 +164,7 @@ static NSMutableArray *controllers = nil;
 
 - (void)tableViewSelectionDidChange:(NSNotification *)notification;
 {
-    [self _synchronizeMessageDataDisplay];
+    [self synchronizeMessageDataDisplay];
 }
 
 //
@@ -186,14 +186,14 @@ static NSMutableArray *controllers = nil;
 
 @implementation SSEDetailsWindowController (Private)
 
-- (void)_synchronizeMessageDataDisplay;
+- (void)synchronizeMessageDataDisplay;
 {
     int selectedRow;
     NSString *formattedData;
 
     selectedRow = [messagesTableView selectedRow];
     if (selectedRow >= 0) {
-        formattedData = [self _formatSysExData:[[cachedMessages objectAtIndex:selectedRow] receivedDataWithStartByte]];
+        formattedData = [self formatSysExData:[[cachedMessages objectAtIndex:selectedRow] receivedDataWithStartByte]];
     } else {
         formattedData = @"";
     }
@@ -201,23 +201,23 @@ static NSMutableArray *controllers = nil;
     [textView setString:formattedData];
 }
 
-- (void)_synchronizeTitle;
+- (void)synchronizeTitle;
 {
     [[self window] setTitle:[entry name]];
     [[self window] setRepresentedFilename:[entry path]];
 }
 
-- (void)_entryWillBeRemoved:(NSNotification *)notification;
+- (void)entryWillBeRemoved:(NSNotification *)notification;
 {
     [self close];
 }
 
-- (void)_entryNameDidChange:(NSNotification *)notification;
+- (void)entryNameDidChange:(NSNotification *)notification;
 {
-    [self _synchronizeTitle];
+    [self synchronizeTitle];
 }
 
-- (NSString *)_formatSysExData:(NSData *)data;
+- (NSString *)formatSysExData:(NSData *)data;
 {
     unsigned int dataLength;
     const unsigned char *bytes;

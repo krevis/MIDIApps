@@ -13,24 +13,24 @@
 
 @interface SSEMIDIController (Private)
 
-- (void)_midiSetupDidChange:(NSNotification *)notification;
-- (void)_sendPreferenceDidChange:(NSNotification *)notification;
-- (void)_receivePreferenceDidChange:(NSNotification *)notification;
+- (void)midiSetupDidChange:(NSNotification *)notification;
+- (void)sendPreferenceDidChange:(NSNotification *)notification;
+- (void)receivePreferenceDidChange:(NSNotification *)notification;
 
-- (void)_endpointAppeared:(NSNotification *)notification;
-- (void)_outputStreamEndpointDisappeared:(NSNotification *)notification;
+- (void)endpointAppeared:(NSNotification *)notification;
+- (void)outputStreamEndpointDisappeared:(NSNotification *)notification;
 
-- (void)_selectFirstAvailableDestinationWhenPossible;
-- (void)_selectFirstAvailableDestination;
+- (void)selectFirstAvailableDestinationWhenPossible;
+- (void)selectFirstAvailableDestination;
 
-- (void)_startListening;
-- (void)_readingSysEx:(NSNotification *)notification;
-- (void)_mainThreadTakeMIDIMessages:(NSArray *)messagesToTake;
+- (void)startListening;
+- (void)readingSysEx:(NSNotification *)notification;
+- (void)mainThreadTakeMIDIMessages:(NSArray *)messagesToTake;
 
-- (void)_sendNextSysExMessage;
-- (void)_willStartSendingSysEx:(NSNotification *)notification;
-- (void)_doneSendingSysEx:(NSNotification *)notification;
-- (void)_finishedSendingMessagesWithSuccess:(BOOL)success;
+- (void)sendNextSysExMessage;
+- (void)willStartSendingSysEx:(NSNotification *)notification;
+- (void)doneSendingSysEx:(NSNotification *)notification;
+- (void)finishedSendingMessagesWithSuccess:(BOOL)success;
 
 @end
 
@@ -64,8 +64,8 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
     center = [NSNotificationCenter defaultCenter];
 
     inputStream = [[SMPortInputStream alloc] init];
-    [center addObserver:self selector:@selector(_readingSysEx:) name:SMInputStreamReadingSysExNotification object:inputStream];
-    [center addObserver:self selector:@selector(_readingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:inputStream];
+    [center addObserver:self selector:@selector(readingSysEx:) name:SMInputStreamReadingSysExNotification object:inputStream];
+    [center addObserver:self selector:@selector(readingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:inputStream];
     [inputStream setMessageDestination:self];
     sources = [SMSourceEndpoint sourceEndpoints];
     sourceIndex = [sources count];
@@ -73,14 +73,14 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
         [inputStream addEndpoint:[sources objectAtIndex:sourceIndex]];
 
     outputStream = [[SMPortOrVirtualOutputStream alloc] init];
-    [center addObserver:self selector:@selector(_outputStreamEndpointDisappeared:) name:SMPortOrVirtualStreamEndpointDisappearedNotification object:outputStream];
-    [center addObserver:self selector:@selector(_willStartSendingSysEx:) name:SMPortOutputStreamWillStartSysExSendNotification object:outputStream];
-    [center addObserver:self selector:@selector(_doneSendingSysEx:) name:SMPortOutputStreamFinishedSysExSendNotification object:outputStream];
+    [center addObserver:self selector:@selector(outputStreamEndpointDisappeared:) name:SMPortOrVirtualStreamEndpointDisappearedNotification object:outputStream];
+    [center addObserver:self selector:@selector(willStartSendingSysEx:) name:SMPortOutputStreamWillStartSysExSendNotification object:outputStream];
+    [center addObserver:self selector:@selector(doneSendingSysEx:) name:SMPortOutputStreamFinishedSysExSendNotification object:outputStream];
     [outputStream setIgnoresTimeStamps:YES];
     [outputStream setSendsSysExAsynchronously:YES];
     [outputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a source for other programs", @"SysExLibrarian", [self bundle], "title of popup menu item for virtual source")];
 
-    [center addObserver:self selector:@selector(_endpointAppeared:) name:SMEndpointAppearedNotification object:nil];
+    [center addObserver:self selector:@selector(endpointAppeared:) name:SMEndpointAppearedNotification object:nil];
     
     listenToMIDISetupChanges = YES;
 
@@ -93,13 +93,13 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
 
     sendProgressLock = [[NSLock alloc] init];
     
-    [center addObserver:self selector:@selector(_midiSetupDidChange:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
+    [center addObserver:self selector:@selector(midiSetupDidChange:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
 
-    [self _sendPreferenceDidChange:nil];
-    [center addObserver:self selector:@selector(_sendPreferenceDidChange:) name:SSESysExSendPreferenceChangedNotification object:nil];
+    [self sendPreferenceDidChange:nil];
+    [center addObserver:self selector:@selector(sendPreferenceDidChange:) name:SSESysExSendPreferenceChangedNotification object:nil];
 
-    [self _receivePreferenceDidChange:nil];
-    [center addObserver:self selector:@selector(_receivePreferenceDidChange:) name:SSESysExReceivePreferenceChangedNotification object:nil];
+    [self receivePreferenceDidChange:nil];
+    [center addObserver:self selector:@selector(receivePreferenceDidChange:) name:SSESysExReceivePreferenceChangedNotification object:nil];
 
     didSetDestinationFromDefaults = NO;
     destinationSettings = [[OFPreference preferenceForKey:SSESelectedDestinationPreferenceKey] dictionaryValue];
@@ -112,7 +112,7 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
     }
 
     if (!didSetDestinationFromDefaults)
-        [self _selectFirstAvailableDestination];
+        [self selectFirstAvailableDestination];
     
     return self;
 }
@@ -200,13 +200,13 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
 - (void)listenForOneMessage;
 {
     listenToMultipleMessages = NO;
-    [self _startListening];
+    [self startListening];
 }
 
 - (void)listenForMultipleMessages;
 {
     listenToMultipleMessages = YES;
-    [self _startListening];
+    [self startListening];
 }
 
 - (void)cancelMessageListen;
@@ -271,7 +271,7 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
 
     [[NSNotificationCenter defaultCenter] postNotificationName:SSEMIDIControllerSendWillStartNotification object:self];
 
-    [self _sendNextSysExMessage];
+    [self sendNextSysExMessage];
 }
 
 - (void)cancelSendingMessages;
@@ -279,7 +279,7 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
     OBASSERT([NSThread inMainThread]);
 
     if (sendNextMessageEvent && [[OFScheduler mainScheduler] abortEvent:sendNextMessageEvent]) {
-        [self _finishedSendingMessagesWithSuccess:NO];
+        [self finishedSendingMessagesWithSuccess:NO];
     } else {
         sendCancelled = YES;
         [outputStream cancelPendingSysExSendRequests];
@@ -315,7 +315,7 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
 
 - (void)takeMIDIMessages:(NSArray *)messagesToTake;
 {
-    [self queueSelector:@selector(_mainThreadTakeMIDIMessages:) withObject:messagesToTake];
+    [self queueSelector:@selector(mainThreadTakeMIDIMessages:) withObject:messagesToTake];
 }
 
 @end
@@ -323,18 +323,18 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
 
 @implementation SSEMIDIController (Private)
 
-- (void)_midiSetupDidChange:(NSNotification *)notification;
+- (void)midiSetupDidChange:(NSNotification *)notification;
 {
     if (listenToMIDISetupChanges)
         [nonretainedMainWindowController synchronizeDestinations];
 }
 
-- (void)_sendPreferenceDidChange:(NSNotification *)notification;
+- (void)sendPreferenceDidChange:(NSNotification *)notification;
 {
     pauseTimeBetweenMessages = (double)[[OFPreference preferenceForKey:SSESysExIntervalBetweenSentMessagesPreferenceKey] integerValue] / 1000.0;
 }
 
-- (void)_receivePreferenceDidChange:(NSNotification *)notification;
+- (void)receivePreferenceDidChange:(NSNotification *)notification;
 {
     double sysExReadTimeOut;
 
@@ -342,7 +342,7 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
     [inputStream setSysExTimeOut:sysExReadTimeOut];
 }
 
-- (void)_endpointAppeared:(NSNotification *)notification;
+- (void)endpointAppeared:(NSNotification *)notification;
 {
     SMEndpoint *endpoint;
 
@@ -351,15 +351,15 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
         [inputStream addEndpoint:(SMSourceEndpoint *)endpoint];
 }
 
-- (void)_outputStreamEndpointDisappeared:(NSNotification *)notification;
+- (void)outputStreamEndpointDisappeared:(NSNotification *)notification;
 {
     if (nonretainedCurrentSendRequest || sendNextMessageEvent)
         [self cancelSendingMessages];
 
-    [self _selectFirstAvailableDestinationWhenPossible];
+    [self selectFirstAvailableDestinationWhenPossible];
 }
 
-- (void)_selectFirstAvailableDestinationWhenPossible;
+- (void)selectFirstAvailableDestinationWhenPossible;
 {
     // NOTE: We may be handling a MIDI change notification right now. We might want to select a virtual source
     // but an SMVirtualInputStream can't be created in the middle of handling this notification, so do it later.
@@ -369,11 +369,11 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
         // NOTE Delay longer than 0 is a tradeoff; it means there's a brief window when no destination will be selected.
         // A delay of 0 means that we'll get called many times (about 20 in practice) before the setup change is finished.
     } else {
-        [self _selectFirstAvailableDestination];
+        [self selectFirstAvailableDestination];
     }
 }
 
-- (void)_selectFirstAvailableDestination;
+- (void)selectFirstAvailableDestination;
 {
     NSArray *descriptions;
 
@@ -387,7 +387,7 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
 // Listening to sysex messages
 //
 
-- (void)_startListening;
+- (void)startListening;
 {
     OBASSERT(listeningToMessages == NO);
     
@@ -401,7 +401,7 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
     listeningToMessages = YES;
 }
 
-- (void)_readingSysEx:(NSNotification *)notification;
+- (void)readingSysEx:(NSNotification *)notification;
 {
     // NOTE This is happening in the MIDI thread
 
@@ -415,7 +415,7 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
     [[NSNotificationCenter defaultCenter] postNotificationName:SSEMIDIControllerReadStatusChangedNotification object:self];
 }
 
-- (void)_mainThreadTakeMIDIMessages:(NSArray *)messagesToTake;
+- (void)mainThreadTakeMIDIMessages:(NSArray *)messagesToTake;
 {
     unsigned int messageCount, messageIndex;
 
@@ -452,7 +452,7 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
 static MIDITimeStamp pauseStartTimeStamp = 0;
 #endif
 
-- (void)_sendNextSysExMessage;
+- (void)sendNextSysExMessage;
 {
 #if LOG_PAUSE_DURATION
     if (pauseStartTimeStamp > 0) {
@@ -469,13 +469,13 @@ static MIDITimeStamp pauseStartTimeStamp = 0;
     [outputStream takeMIDIMessages:[NSArray arrayWithObject:[messages objectAtIndex:sendingMessageIndex]]];
 }
 
-- (void)_willStartSendingSysEx:(NSNotification *)notification;
+- (void)willStartSendingSysEx:(NSNotification *)notification;
 {    
     OBASSERT(nonretainedCurrentSendRequest == nil);
     nonretainedCurrentSendRequest = [[notification userInfo] objectForKey:@"sendRequest"];
 }
 
-- (void)_doneSendingSysEx:(NSNotification *)notification;
+- (void)doneSendingSysEx:(NSNotification *)notification;
 {
     // NOTE This is happening in the MIDI thread, probably.
     // The request may or may not have finished successfully.
@@ -497,18 +497,18 @@ static MIDITimeStamp pauseStartTimeStamp = 0;
 #endif
     
     if (sendCancelled) {
-        [self mainThreadPerformSelector:@selector(_finishedSendingMessagesWithSuccess:) withBool:NO];
+        [self mainThreadPerformSelector:@selector(finishedSendingMessagesWithSuccess:) withBool:NO];
     } else if (sendingMessageIndex < sendingMessageCount && [sendRequest wereAllBytesSent]) {
 #if LOG_PAUSE_DURATION
         pauseStartTimeStamp = SMGetCurrentHostTime();
 #endif
-        sendNextMessageEvent = [[[OFScheduler mainScheduler] scheduleSelector:@selector(_sendNextSysExMessage) onObject:self afterTime:pauseTimeBetweenMessages] retain];
+        sendNextMessageEvent = [[[OFScheduler mainScheduler] scheduleSelector:@selector(sendNextSysExMessage) onObject:self afterTime:pauseTimeBetweenMessages] retain];
     } else {
-        [self mainThreadPerformSelector:@selector(_finishedSendingMessagesWithSuccess:) withBool:[sendRequest wereAllBytesSent]];
+        [self mainThreadPerformSelector:@selector(finishedSendingMessagesWithSuccess:) withBool:[sendRequest wereAllBytesSent]];
     }
 }
 
-- (void)_finishedSendingMessagesWithSuccess:(BOOL)success;
+- (void)finishedSendingMessagesWithSuccess:(BOOL)success;
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:SSEMIDIControllerSendFinishedNotification object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:success] forKey:@"success"]];
 }

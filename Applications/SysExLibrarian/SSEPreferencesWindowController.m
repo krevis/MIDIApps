@@ -10,15 +10,15 @@
 
 @interface  SSEPreferencesWindowController (Private)
 
-- (void)_synchronizeDefaults;
+- (void)synchronizeDefaults;
 
-- (void)_synchronizeControls;
-- (void)_synchronizeReadTimeOutField;
-- (void)_synchronizeIntervalBetweenSentMessagesField;
+- (void)synchronizeControls;
+- (void)synchronizeReadTimeOutField;
+- (void)synchronizeIntervalBetweenSentMessagesField;
 
-- (NSString *)_formatMilliseconds:(int)msec;
+- (NSString *)formatMilliseconds:(int)msec;
 
-- (void)_openPanelDidEnd:(NSOpenPanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)openPanelDidEnd:(NSOpenPanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
 @end
 
@@ -70,7 +70,7 @@ static SSEPreferencesWindowController *controller;
 - (IBAction)showWindow:(id)sender;
 {
     [self window];	// Make sure the window gets loaded the first time
-    [self _synchronizeControls];
+    [self synchronizeControls];
     [super showWindow:sender];
 }
 
@@ -81,7 +81,7 @@ static SSEPreferencesWindowController *controller;
 - (IBAction)changeSizeFormat:(id)sender;
 {
     [sizeFormatPreference setBoolValue:[[sender selectedCell] tag]];
-    [self _synchronizeDefaults];
+    [self synchronizeDefaults];
     [[NSNotificationCenter defaultCenter] postNotificationName:SSEDisplayPreferenceChangedNotification object:nil];
 }
 
@@ -96,22 +96,22 @@ static SSEPreferencesWindowController *controller;
 
     oldPath = [[SSELibrary sharedLibrary] fileDirectoryPath];
 
-    [openPanel beginSheetForDirectory:oldPath file:nil types:nil modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_openPanelDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+    [openPanel beginSheetForDirectory:oldPath file:nil types:nil modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
 - (IBAction)changeReadTimeOut:(id)sender;
 {
     [readTimeOutPreference setIntegerValue:[sender intValue]];
-    [self _synchronizeReadTimeOutField];
-    [self _synchronizeDefaults];
+    [self synchronizeReadTimeOutField];
+    [self synchronizeDefaults];
     [[NSNotificationQueue defaultQueue] enqueueNotificationName:SSESysExReceivePreferenceChangedNotification object:nil postingStyle:NSPostWhenIdle];
 }
 
 - (IBAction)changeIntervalBetweenSentMessages:(id)sender;
 {
     [intervalBetweenSentMessagesPreference setIntegerValue:[sender intValue]];
-    [self _synchronizeIntervalBetweenSentMessagesField];
-    [self _synchronizeDefaults];
+    [self synchronizeIntervalBetweenSentMessagesField];
+    [self synchronizeDefaults];
     [[NSNotificationQueue defaultQueue] enqueueNotificationName:SSESysExSendPreferenceChangedNotification object:nil postingStyle:NSPostWhenIdle];
 }
 
@@ -120,32 +120,32 @@ static SSEPreferencesWindowController *controller;
 
 @implementation SSEPreferencesWindowController (Private)
 
-- (void)_synchronizeDefaults;
+- (void)synchronizeDefaults;
 {
     [[NSUserDefaults standardUserDefaults] autoSynchronize];
 }
 
-- (void)_synchronizeControls;
+- (void)synchronizeControls;
 {
     [sizeFormatMatrix selectCellWithTag:[sizeFormatPreference boolValue]];
     [sysExFolderPathField setStringValue:[[SSELibrary sharedLibrary] fileDirectoryPath]];
     [sysExReadTimeOutSlider setIntValue:[readTimeOutPreference integerValue]];
-    [self _synchronizeReadTimeOutField];
+    [self synchronizeReadTimeOutField];
     [sysExIntervalBetweenSentMessagesSlider setIntValue:[intervalBetweenSentMessagesPreference integerValue]];
-    [self _synchronizeIntervalBetweenSentMessagesField];
+    [self synchronizeIntervalBetweenSentMessagesField];
 }
 
-- (void)_synchronizeReadTimeOutField;
+- (void)synchronizeReadTimeOutField;
 {
-    [sysExReadTimeOutField setStringValue:[self _formatMilliseconds:[readTimeOutPreference integerValue]]];
+    [sysExReadTimeOutField setStringValue:[self formatMilliseconds:[readTimeOutPreference integerValue]]];
 }
 
-- (void)_synchronizeIntervalBetweenSentMessagesField;
+- (void)synchronizeIntervalBetweenSentMessagesField;
 {
-    [sysExIntervalBetweenSentMessagesField setStringValue:[self _formatMilliseconds:[intervalBetweenSentMessagesPreference integerValue]]];
+    [sysExIntervalBetweenSentMessagesField setStringValue:[self formatMilliseconds:[intervalBetweenSentMessagesPreference integerValue]]];
 }
 
-- (NSString *)_formatMilliseconds:(int)msec;
+- (NSString *)formatMilliseconds:(int)msec;
 {
     if (msec == 1000)
         return @"1 second";
@@ -153,12 +153,12 @@ static SSEPreferencesWindowController *controller;
         return [NSString stringWithFormat:@"%d milliseconds", msec];
 }
 
-- (void)_openPanelDidEnd:(NSOpenPanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)openPanelDidEnd:(NSOpenPanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 {
     if (returnCode == NSOKButton) {
         [[SSELibrary sharedLibrary] setFileDirectoryPath:[[sheet filenames] objectAtIndex:0]];
-        [self _synchronizeDefaults];
-        [self _synchronizeControls];
+        [self synchronizeDefaults];
+        [self synchronizeControls];
     }
 }
 

@@ -10,17 +10,17 @@
 
 @interface SSELibraryEntry (Private)
 
-+ (NSString *)_manufacturerFromMessages:(NSArray *)messages;
-+ (NSNumber *)_sizeFromMessages:(NSArray *)messages;
-+ (NSNumber *)_messageCountFromMessages:(NSArray *)messages;
++ (NSString *)manufacturerFromMessages:(NSArray *)messages;
++ (NSNumber *)sizeFromMessages:(NSArray *)messages;
++ (NSNumber *)messageCountFromMessages:(NSArray *)messages;
 
-- (void)_takeValuesFromDictionary:(NSDictionary *)dict;
+- (void)takeValuesFromDictionary:(NSDictionary *)dict;
 
-- (void)_updateDerivedInformationFromMessages:(NSArray *)messages;
+- (void)updateDerivedInformationFromMessages:(NSArray *)messages;
 
-- (void)_setManufacturer:(NSString *)value;
-- (void)_setSize:(NSNumber *)value;
-- (void)_setMessageCount:(NSNumber *)value;
+- (void)setManufacturer:(NSString *)value;
+- (void)setSize:(NSNumber *)value;
+- (void)setMessageCount:(NSNumber *)value;
 
 @end
 
@@ -47,7 +47,7 @@ DEFINE_NSSTRING(SSELibraryEntryNameDidChangeNotification);
     if (![self initWithLibrary:library])
         return nil;
 
-    [self _takeValuesFromDictionary:dict];
+    [self takeValuesFromDictionary:dict];
     
     return self;
 }
@@ -284,7 +284,7 @@ DEFINE_NSSTRING(SSELibraryEntryNameDidChangeNotification);
     }
 
     // Always update this stuff when we read the messages
-    [self _updateDerivedInformationFromMessages:messages];
+    [self updateDerivedInformationFromMessages:messages];
     
     return messages;
 }
@@ -332,7 +332,7 @@ DEFINE_NSSTRING(SSELibraryEntryNameDidChangeNotification);
 
 @implementation SSELibraryEntry (Private)
 
-+ (NSString *)_manufacturerFromMessages:(NSArray *)messages;
++ (NSString *)manufacturerFromMessages:(NSArray *)messages;
 {
     unsigned int messageIndex;
     NSString *newManufacturer = nil;
@@ -359,7 +359,7 @@ DEFINE_NSSTRING(SSELibraryEntryNameDidChangeNotification);
     return newManufacturer;
 }
 
-+ (NSNumber *)_sizeFromMessages:(NSArray *)messages;
++ (NSNumber *)sizeFromMessages:(NSArray *)messages;
 {
     unsigned int messageIndex;
     unsigned int size = 0;
@@ -371,12 +371,12 @@ DEFINE_NSSTRING(SSELibraryEntryNameDidChangeNotification);
     return [NSNumber numberWithUnsignedInt:size];
 }
 
-+ (NSNumber *)_messageCountFromMessages:(NSArray *)messages;
++ (NSNumber *)messageCountFromMessages:(NSArray *)messages;
 {
     return [NSNumber numberWithUnsignedInt:[messages count]];
 }
 
-- (void)_takeValuesFromDictionary:(NSDictionary *)dict;
+- (void)takeValuesFromDictionary:(NSDictionary *)dict;
 {
     id data, string, number;
 
@@ -412,14 +412,14 @@ DEFINE_NSSTRING(SSELibraryEntryNameDidChangeNotification);
     }
 }
 
-- (void)_updateDerivedInformationFromMessages:(NSArray *)messages;
+- (void)updateDerivedInformationFromMessages:(NSArray *)messages;
 {
-    [self _setManufacturer:[[self class] _manufacturerFromMessages:messages]];
-    [self _setSize:[[self class] _sizeFromMessages:messages]];
-    [self _setMessageCount:[[self class] _messageCountFromMessages:messages]];
+    [self setManufacturer:[[self class] manufacturerFromMessages:messages]];
+    [self setSize:[[self class] sizeFromMessages:messages]];
+    [self setMessageCount:[[self class] messageCountFromMessages:messages]];
 }
 
-- (void)_setManufacturer:(NSString *)value;
+- (void)setManufacturer:(NSString *)value;
 {
     if (value != manufacturer && ![manufacturer isEqualToString:value]) {
         [manufacturer release];
@@ -429,7 +429,7 @@ DEFINE_NSSTRING(SSELibraryEntryNameDidChangeNotification);
     }
 }
 
-- (void)_setSize:(NSNumber *)value;
+- (void)setSize:(NSNumber *)value;
 {
     if (value != sizeNumber && ![sizeNumber isEqual:value]) {
         [sizeNumber release];
@@ -439,7 +439,7 @@ DEFINE_NSSTRING(SSELibraryEntryNameDidChangeNotification);
     }
 }
 
-- (void)_setMessageCount:(NSNumber *)value;
+- (void)setMessageCount:(NSNumber *)value;
 {
     if (value != messageCountNumber && ![messageCountNumber isEqual:value]) {
         [messageCountNumber release];

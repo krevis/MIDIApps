@@ -10,9 +10,9 @@
 
 @interface SSETableView (Private)
 
-- (void)_deleteSelectedRows;
+- (void)deleteSelectedRows;
 
-- (void)_setDrawsDraggingHighlight:(BOOL)value;
+- (void)setDrawsDraggingHighlight:(BOOL)value;
 
 @end
 
@@ -175,12 +175,12 @@
 
 - (void)deleteForward:(id)sender;
 {
-    [self _deleteSelectedRows];
+    [self deleteSelectedRows];
 }
 
 - (void)deleteBackward:(id)sender;
 {
-    [self _deleteSelectedRows];
+    [self deleteSelectedRows];
 }
 
 - (BOOL)respondsToSelector:(SEL)aSelector;
@@ -206,7 +206,7 @@
         draggingOperation = NSDragOperationNone;
 
     if (draggingOperation != NSDragOperationNone)
-        [self _setDrawsDraggingHighlight:YES];
+        [self setDrawsDraggingHighlight:YES];
 
     return draggingOperation;
 }
@@ -218,7 +218,7 @@
 
 - (void)draggingExited:(id <NSDraggingInfo>)sender;
 {
-    [self _setDrawsDraggingHighlight:NO];
+    [self setDrawsDraggingHighlight:NO];
 }
 
 - (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender;
@@ -236,7 +236,7 @@
 
 - (void)concludeDragOperation:(id <NSDraggingInfo>)sender;
 {
-    [self _setDrawsDraggingHighlight:NO];
+    [self setDrawsDraggingHighlight:NO];
 }
 
 @end
@@ -244,7 +244,7 @@
 
 @implementation SSETableView (Private)
 
-- (void)_deleteSelectedRows;
+- (void)deleteSelectedRows;
 {
     if (flags.dataSourceCanDeleteRows) {
         NSArray *selectedRows;
@@ -254,7 +254,7 @@
     }
 }
 
-- (void)_setDrawsDraggingHighlight:(BOOL)value;
+- (void)setDrawsDraggingHighlight:(BOOL)value;
 {
     if (value != flags.drawsDraggingHighlight) {
         flags.drawsDraggingHighlight = value;

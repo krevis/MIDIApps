@@ -11,19 +11,19 @@
 
 @interface SSELibrary (Private)
 
-- (NSString *)_findFolder:(OSType)folderType;
+- (NSString *)findFolder:(OSType)folderType;
 
-- (NSString *)_defaultFileDirectoryPath;
+- (NSString *)defaultFileDirectoryPath;
 
-- (NSString *)_preflightLibrary;
-- (NSString *)_preflightFileDirectory;
-- (void)_loadEntries;
+- (NSString *)preflightLibrary;
+- (NSString *)preflightFileDirectory;
+- (void)loadEntries;
 
-- (NSArray *)_fileTypesFromDocumentTypeDictionary:(NSDictionary *)documentTypeDict;
+- (NSArray *)fileTypesFromDocumentTypeDictionary:(NSDictionary *)documentTypeDict;
 
-- (NSDictionary *)_entriesByFilePath;
+- (NSDictionary *)entriesByFilePath;
 
-- (void)_postEntryWillBeRemovedNotificationForEntry:(SSELibraryEntry *)entry;
+- (void)postEntryWillBeRemovedNotificationForEntry:(SSELibraryEntry *)entry;
 
 @end
 
@@ -64,11 +64,11 @@ NSString *SSESysExFileExtension = @"syx";
         NSDictionary *documentTypeDict;
 
         documentTypeDict = [documentTypes objectAtIndex:0];
-        rawSysExFileTypes = [[self _fileTypesFromDocumentTypeDictionary:documentTypeDict] retain];
+        rawSysExFileTypes = [[self fileTypesFromDocumentTypeDictionary:documentTypeDict] retain];
 
         if ([documentTypes count] > 1) {
             documentTypeDict = [documentTypes objectAtIndex:1];
-            standardMIDIFileTypes = [[self _fileTypesFromDocumentTypeDictionary:documentTypeDict] retain];
+            standardMIDIFileTypes = [[self fileTypesFromDocumentTypeDictionary:documentTypeDict] retain];
         }
     }
     allowedFileTypes = [[rawSysExFileTypes arrayByAddingObjectsFromArray:standardMIDIFileTypes] retain];
@@ -100,7 +100,7 @@ NSString *SSESysExFileExtension = @"syx";
     if (!libraryFilePath) {
         NSString *preferencesFolderPath;
 
-        preferencesFolderPath = [self _findFolder:kPreferencesFolderType];
+        preferencesFolderPath = [self findFolder:kPreferencesFolderType];
         // That shouldn't have failed, but let's be sure...
         if (!preferencesFolderPath) {
             NSArray *paths;
@@ -146,7 +146,7 @@ NSString *SSESysExFileExtension = @"syx";
     }
 
     if (!path)
-        path = [self _defaultFileDirectoryPath];
+        path = [self defaultFileDirectoryPath];
 
     return path;
 }
@@ -156,7 +156,7 @@ NSString *SSESysExFileExtension = @"syx";
     BDAlias *alias;
 
     if (!newPath)
-        newPath = [self _defaultFileDirectoryPath];
+        newPath = [self defaultFileDirectoryPath];
     
     alias = [BDAlias aliasWithPath:newPath];
     OBASSERT([alias fullPath] != nil);
@@ -174,13 +174,13 @@ NSString *SSESysExFileExtension = @"syx";
 {
     NSString *errorMessage;
 
-    if ((errorMessage = [self _preflightLibrary]))
+    if ((errorMessage = [self preflightLibrary]))
         return [NSString stringWithFormat:@"There is a problem accessing the library \"%@\".\n%@", [self libraryFilePathForDisplay], errorMessage];
 
-    if ((errorMessage = [self _preflightFileDirectory]))
+    if ((errorMessage = [self preflightFileDirectory]))
         return [NSString stringWithFormat:@"There is a problem accessing the SysEx files folder \"%@\".\n%@", [self fileDirectoryPath], errorMessage];
 
-    [self _loadEntries];
+    [self loadEntries];
     return nil;
 }
 
@@ -256,7 +256,7 @@ NSString *SSESysExFileExtension = @"syx";
 
     entryIndex = [entries indexOfObjectIdenticalTo:entry];
     if (entryIndex != NSNotFound) {
-        [self _postEntryWillBeRemovedNotificationForEntry:[entries objectAtIndex:entryIndex]];
+        [self postEntryWillBeRemovedNotificationForEntry:[entries objectAtIndex:entryIndex]];
         [entries removeObjectAtIndex:entryIndex];
 
         [self noteEntryChanged];
@@ -269,7 +269,7 @@ NSString *SSESysExFileExtension = @"syx";
 
     entryIndex = [entriesToRemove count];
     while (entryIndex--) {
-        [self _postEntryWillBeRemovedNotificationForEntry:[entriesToRemove objectAtIndex:entryIndex]];
+        [self postEntryWillBeRemovedNotificationForEntry:[entriesToRemove objectAtIndex:entryIndex]];
     }
 
     [entries removeIdenticalObjectsFromArray:entriesToRemove];
@@ -377,7 +377,7 @@ NSString *SSESysExFileExtension = @"syx";
     NSMutableArray *matchingEntries;
     unsigned int filePathIndex, filePathCount;
 
-    entriesByFilePath = [self _entriesByFilePath];
+    entriesByFilePath = [self entriesByFilePath];
 
     filePathCount = [filePaths count];
     if (nonMatchingFilePathsPtr)
@@ -434,7 +434,7 @@ NSString *SSESysExFileExtension = @"syx";
 
 @implementation SSELibrary (Private)
 
-- (NSString *)_findFolder:(OSType)folderType;
+- (NSString *)findFolder:(OSType)folderType;
 {
     OSErr error;
     FSRef folderFSRef;
@@ -454,11 +454,11 @@ NSString *SSESysExFileExtension = @"syx";
     return path;    
 }
 
-- (NSString *)_defaultFileDirectoryPath;
+- (NSString *)defaultFileDirectoryPath;
 {
     NSString *documentsFolderPath;
 
-    documentsFolderPath = [self _findFolder:kDocumentsFolderType];
+    documentsFolderPath = [self findFolder:kDocumentsFolderType];
     if (!documentsFolderPath) {
         // Fall back to hard-coding it
         documentsFolderPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
@@ -467,7 +467,7 @@ NSString *SSESysExFileExtension = @"syx";
     return [[documentsFolderPath stringByAppendingPathComponent:@"SysEx Librarian"] stringByStandardizingPath];
 }
 
-- (NSString *)_preflightLibrary;
+- (NSString *)preflightLibrary;
 {
     // Check that the library file can be read and written.
 
@@ -517,7 +517,7 @@ NSString *SSESysExFileExtension = @"syx";
     return nil;
 }
 
-- (NSString *)_preflightFileDirectory;
+- (NSString *)preflightFileDirectory;
 {
     // Make sure the file directory exists.  If it isn't there, try to create it.
 
@@ -559,7 +559,7 @@ NSString *SSESysExFileExtension = @"syx";
     return nil;
 }
 
-- (void)_loadEntries;
+- (void)loadEntries;
 {
     NSString *libraryFilePath;
     NSDictionary *libraryDictionary = nil;
@@ -591,7 +591,7 @@ NSString *SSESysExFileExtension = @"syx";
     flags.isDirty = NO;
 }
 
-- (NSArray *)_fileTypesFromDocumentTypeDictionary:(NSDictionary *)documentTypeDict;
+- (NSArray *)fileTypesFromDocumentTypeDictionary:(NSDictionary *)documentTypeDict;
 {
     NSMutableArray *fileTypes;
     NSArray *extensions;
@@ -617,7 +617,7 @@ NSString *SSESysExFileExtension = @"syx";
     return fileTypes;
 }
 
-- (NSDictionary *)_entriesByFilePath;
+- (NSDictionary *)entriesByFilePath;
 {
     unsigned int entryIndex, entryCount;
     NSMutableDictionary *entriesByFilePath;
@@ -639,7 +639,7 @@ NSString *SSESysExFileExtension = @"syx";
     return entriesByFilePath;
 }
 
-- (void)_postEntryWillBeRemovedNotificationForEntry:(SSELibraryEntry *)entry;
+- (void)postEntryWillBeRemovedNotificationForEntry:(SSELibraryEntry *)entry;
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:SSELibraryEntryWillBeRemovedNotification object:entry];
 }

@@ -8,11 +8,10 @@
 @interface SSEWindowController (Private)
 
 // Window stuff
-- (void)_autosaveWindowFrame;
+- (void)autosaveCurrentWindowFrame;
 
 // Toolbar
-- (void)_loadToolbarNamed:(NSString *)toolbarName;
-- (NSDictionary *)_toolbarPropertyListWithName:(NSString *)toolbarName;
+- (void)loadToolbarNamed:(NSString *)toolbarName;
 
 @end
 
@@ -73,7 +72,7 @@
     // Make sure that we are the window's delegate (it might not have been set in the nib)
     [[self window] setDelegate:self];
 
-    [self _loadToolbarNamed:[self windowNibName]]; // Might fail; that's OK
+    [self loadToolbarNamed:[self windowNibName]]; // Might fail; that's OK
 }
 
 - (void)speciallyInitializeToolbarItem:(NSToolbarItem *)toolbarItem;
@@ -164,12 +163,12 @@
 
 - (void)windowDidResize:(NSNotification *)notification;
 {
-    [self _autosaveWindowFrame];
+    [self autosaveCurrentWindowFrame];
 }
 
 - (void)windowDidMove:(NSNotification *)notification;
 {
-    [self _autosaveWindowFrame];
+    [self autosaveCurrentWindowFrame];
 }
 
 //
@@ -212,7 +211,7 @@
 // Window stuff
 //
 
-- (void)_autosaveWindowFrame;
+- (void)autosaveCurrentWindowFrame;
 {
     // Work around an AppKit bug: the frame that gets saved in NSUserDefaults is the window's old position, not the new one.
     // We get notified after the window has been moved/resized and the defaults changed.
@@ -232,13 +231,18 @@
 // Toolbars
 //
 
-- (void)_loadToolbarNamed:(NSString *)toolbarName;
+- (void)loadToolbarNamed:(NSString *)toolbarName;
 {
+    NSString *toolbarFilePath;
     NSDictionary *toolbarPropertyList;
     NSToolbar *toolbar;
 
-    toolbarPropertyList = [self _toolbarPropertyListWithName:toolbarName];
-    // If we have no plist specifying a toolbar, then don't add one to the window.
+    // If we have a plist specifying a toolbar, then add one to the window.
+    toolbarFilePath = [[NSBundle mainBundle] pathForResource:toolbarName ofType:@"toolbar"];
+    if (!toolbarFilePath)
+        return;
+
+    toolbarPropertyList = [NSDictionary dictionaryWithContentsOfFile:toolbarFilePath];
     if (!toolbarPropertyList)
         return;
 
@@ -256,17 +260,6 @@
     [toolbar setDelegate:self];
     [[self window] setToolbar:toolbar];
     [toolbar release];
-}
-
-- (NSDictionary *)_toolbarPropertyListWithName:(NSString *)toolbarName;
-{
-    NSString *toolbarFilePath;
-
-    toolbarFilePath = [[NSBundle mainBundle] pathForResource:toolbarName ofType:@"toolbar"];
-    if (!toolbarFilePath)
-        return nil;
-
-    return [NSDictionary dictionaryWithContentsOfFile:toolbarFilePath];
 }
 
 @end
