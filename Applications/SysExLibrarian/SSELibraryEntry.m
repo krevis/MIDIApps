@@ -145,7 +145,7 @@ DEFINE_NSSTRING(SSELibraryEntryNameDidChangeNotification);
 - (void)setNameFromFile;
 {
     NSString *path;
-    NSString *newName;
+    NSString *newName = nil;
 
     if ((path = [self path]))
         newName = [[NSFileManager defaultManager] displayNameAtPath:path];
