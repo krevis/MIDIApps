@@ -46,8 +46,10 @@
 #include "MIDIDriverClass.h"
 
 // Implementation of the IUnknown QueryInterface function.
-static HRESULT MIDIDriverQueryInterface(MIDIDriverRef ref, REFIID iid, LPVOID *ppv) 
+static HRESULT MIDIDriverQueryInterface(void *thisPointer, REFIID iid, LPVOID *ppv) 
 {
+	MIDIDriverRef ref = (MIDIDriverRef)thisPointer;
+
 	// Create a CoreFoundation UUIDRef for the requested interface.
 	CFUUIDRef interfaceID = CFUUIDCreateFromUUIDBytes( NULL, iid );
 
@@ -103,18 +105,18 @@ static HRESULT MIDIDriverQueryInterface(MIDIDriverRef ref, REFIID iid, LPVOID *p
 // Whenever an interface is requested, bump the refCount for
 // the instance. NOTE: returning the refcount is a convention
 // but is not required so don't rely on it.
-static ULONG MIDIDriverAddRef(MIDIDriverRef ref) 
+static ULONG MIDIDriverAddRef(void *thisPointer) 
 {
-	MIDIDriver *self = GetMIDIDriver(ref);
+	MIDIDriver *self = GetMIDIDriver((MIDIDriverRef)thisPointer);
 
 	return ++self->mRefCount;
 }
 
 // When an interface is released, decrement the refCount.
 // If the refCount goes to zero, deallocate the instance.
-static ULONG MIDIDriverRelease(MIDIDriverRef ref) 
+static ULONG MIDIDriverRelease(void *thisPointer) 
 {
-	MIDIDriver *self = GetMIDIDriver(ref);
+	MIDIDriver *self = GetMIDIDriver((MIDIDriverRef)thisPointer);
 
 	if (--self->mRefCount == 0) {
 		delete self;
@@ -169,8 +171,6 @@ static MIDIDriverInterface MIDIDriverInterfaceFtbl = {
 	NULL, // Required padding for COM
 	//
 	// These are the required COM functions
-	// NOTE: Warnings here about conversion from MIDIDriverInterface** to void* are nothing to worry about
-	// (although yucky)
 	MIDIDriverQueryInterface,
 	MIDIDriverAddRef,
 	MIDIDriverRelease,
