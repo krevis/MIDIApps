@@ -26,6 +26,7 @@
 + (NSArray *)_allEndpoints;
 + (NSArray *)_allEndpointsSortedByOrdinal;
 + (SMEndpoint *)_endpointMatchingUniqueID:(SInt32)uniqueID;
++ (SMEndpoint *)_endpointMatchingName:(NSString *)aName;
 + (SMEndpoint *)_endpointForEndpointRef:(MIDIEndpointRef)anEndpointRef;
 
 + (BOOL)_doEndpointsHaveUniqueNames;
@@ -458,14 +459,35 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 {
     NSArray *allEndpoints;
     unsigned int endpointIndex;
-    
+
     allEndpoints = [self _allEndpoints];
     endpointIndex = [allEndpoints count];
     while (endpointIndex--) {
         SMEndpoint *endpoint;
-        
+
         endpoint = [allEndpoints objectAtIndex:endpointIndex];
         if ([endpoint uniqueID] == aUniqueID)
+            return endpoint;
+    }
+
+    return nil;
+}
+
++ (SMEndpoint *)_endpointMatchingName:(NSString *)aName;
+{
+    NSArray *allEndpoints;
+    unsigned int endpointIndex;
+
+    if (!aName)
+        return nil;
+
+    allEndpoints = [self _allEndpoints];
+    endpointIndex = [allEndpoints count];
+    while (endpointIndex--) {
+        SMEndpoint *endpoint;
+
+        endpoint = [allEndpoints objectAtIndex:endpointIndex];
+        if ([[endpoint name] isEqualToString:aName])
             return endpoint;
     }
 
@@ -752,6 +774,11 @@ static NSMapTable *sourceEndpointRefToSMEndpointMapTable = NULL;
     return (SMSourceEndpoint *)[self _endpointMatchingUniqueID:aUniqueID];
 }
 
++ (SMSourceEndpoint *)sourceEndpointWithName:(NSString *)aName;
+{
+    return (SMSourceEndpoint *)[self _endpointMatchingName:aName];
+}
+
 + (SMSourceEndpoint *)sourceEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
 {
     return (SMSourceEndpoint *)[self _endpointForEndpointRef:anEndpointRef];
@@ -761,6 +788,11 @@ static NSMapTable *sourceEndpointRefToSMEndpointMapTable = NULL;
 - (NSString *)inputStreamSourceName;
 {
     return [self shortName];
+}
+
+- (NSNumber *)inputStreamSourceUniqueID;
+{
+    return [NSNumber numberWithInt:[self uniqueID]];
 }
 
 @end
@@ -809,6 +841,11 @@ static NSMapTable *destinationEndpointRefToSMEndpointMapTable = NULL;
 + (SMDestinationEndpoint *)destinationEndpointWithUniqueID:(SInt32)aUniqueID;
 {
     return (SMDestinationEndpoint *)[self _endpointMatchingUniqueID:aUniqueID];
+}
+
++ (SMDestinationEndpoint *)destinationEndpointWithName:(NSString *)aName;
+{
+    return (SMDestinationEndpoint *)[self _endpointMatchingName:aName];
 }
 
 + (SMDestinationEndpoint *)destinationEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;

@@ -77,10 +77,12 @@
 
 + (NSArray *)sourceEndpoints;
 + (SMSourceEndpoint *)sourceEndpointWithUniqueID:(SInt32)uniqueID;
++ (SMSourceEndpoint *)sourceEndpointWithName:(NSString *)name;
 + (SMSourceEndpoint *)sourceEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
 
 // SMInputStreamSource protocol
 - (NSString *)inputStreamSourceName;
+- (NSNumber *)inputStreamSourceUniqueID;
 
 @end
 
@@ -91,6 +93,7 @@
 
 + (NSArray *)destinationEndpoints;
 + (SMDestinationEndpoint *)destinationEndpointWithUniqueID:(SInt32)uniqueID;
++ (SMDestinationEndpoint *)destinationEndpointWithName:(NSString *)aName;
 + (SMDestinationEndpoint *)destinationEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
 
 @end
