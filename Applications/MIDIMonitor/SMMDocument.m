@@ -55,7 +55,6 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     [center addObserver:self selector:@selector(_streamEndpointDisappeared:) name:SMPortInputStreamEndpointDisappeared object:stream];
     [center addObserver:self selector:@selector(_readingSysEx:) name:SMInputStreamReadingSysExNotification object:stream];
     [center addObserver:self selector:@selector(_doneReadingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:stream];
-//    [stream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"MIDIMonitor", [self bundle], "title of popup menu item for virtual destination")];	// TODO the equivalent
     [self _updateVirtualEndpointName];
 
     messageFilter = [[SMMessageFilter alloc] init];
@@ -437,13 +436,11 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
 
 - (void)_updateVirtualEndpointName;
 {
-    // TODO for SMMCombinationInputStream
-/*    NSString *applicationName, *endpointName;
+    NSString *applicationName, *endpointName;
 
     applicationName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleNameKey];
     endpointName = [NSString stringWithFormat:@"%@ (%@)", applicationName, [self displayName]];
     [stream setVirtualEndpointName:endpointName];
-    */
 }
 
 - (void)_streamEndpointDisappeared:(NSNotification *)notification;
