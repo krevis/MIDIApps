@@ -8,7 +8,6 @@
 #import "NSPopUpButton-MIDIMonitorExtensions.h"
 #import "SMMAppController.h"
 #import "SMMDocument.h"
-#import "SMMSysExRow.h"
 
 
 @interface  SMMPreferencesWindowController (Private)
@@ -23,7 +22,6 @@
 @implementation SMMPreferencesWindowController
 
 DEFINE_NSSTRING(SMMDisplayPreferenceChangedNotification);
-DEFINE_NSSTRING(SMMSysExBytesPerRowPreferenceChangedNotification);
 
 
 static SMMPreferencesWindowController *controller;
@@ -45,7 +43,6 @@ static SMMPreferencesWindowController *controller;
     noteFormatPreference = [[OFPreference preferenceForKey:SMNoteFormatPreferenceKey] retain];
     controllerFormatPreference = [[OFPreference preferenceForKey:SMControllerFormatPreferenceKey] retain];
     dataFormatPreference = [[OFPreference preferenceForKey:SMDataFormatPreferenceKey] retain];
-    sysExBytesPerRowPreference = [[OFPreference preferenceForKey:SMMSysExBytesPerRowPreferenceKey] retain];
     autoSelectFirstSourceInNewDocumentPreference = [[OFPreference preferenceForKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey] retain];
     autoSelectFirstSourceIfSourceDisappearsPreference = [[OFPreference preferenceForKey:SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey] retain];
     openWindowsForNewSourcesPreference = [[OFPreference preferenceForKey:SMMOpenWindowsForNewSourcesPreferenceKey] retain];
@@ -65,7 +62,6 @@ static SMMPreferencesWindowController *controller;
     [noteFormatPreference release];
     [controllerFormatPreference release];
     [dataFormatPreference release];
-    [sysExBytesPerRowPreference release];
     [autoSelectFirstSourceInNewDocumentPreference release];
     [autoSelectFirstSourceIfSourceDisappearsPreference release];
     [openWindowsForNewSourcesPreference release];
@@ -86,7 +82,6 @@ static SMMPreferencesWindowController *controller;
     [noteFormatMatrix selectCellWithTag:[noteFormatPreference integerValue]];
     [controllerFormatMatrix selectCellWithTag:[controllerFormatPreference integerValue]];
     [dataFormatMatrix selectCellWithTag:[dataFormatPreference integerValue]];
-    [sysExBytesPerRowMatrix selectCellWithTag:[sysExBytesPerRowPreference integerValue]];
     [autoSelectFirstSourceInNewDocumentMatrix selectCellWithTag:[autoSelectFirstSourceInNewDocumentPreference boolValue]];
     [autoSelectFirstSourceIfSourceDisappearsCheckbox setIntValue:[autoSelectFirstSourceIfSourceDisappearsPreference boolValue]];
     [openWindowsForNewSourcesCheckbox setIntValue:[openWindowsForNewSourcesPreference boolValue]];
@@ -127,9 +122,7 @@ static SMMPreferencesWindowController *controller;
 
 - (IBAction)changeSysExBytesPerRow:(id)sender;
 {
-    [sysExBytesPerRowPreference setIntegerValue:[[sender selectedCell] tag]];
-    [self _synchronizeDefaults];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMMSysExBytesPerRowPreferenceChangedNotification object:nil];
+    // TODO get rid of this
 }
 
 - (IBAction)changeAutoSelectFirstSourceInNewDocument:(id)sender;

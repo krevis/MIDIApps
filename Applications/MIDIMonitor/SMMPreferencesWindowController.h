@@ -9,7 +9,6 @@
     IBOutlet NSMatrix *noteFormatMatrix;
     IBOutlet NSMatrix *controllerFormatMatrix;
     IBOutlet NSMatrix *dataFormatMatrix;
-    IBOutlet NSMatrix *sysExBytesPerRowMatrix;
     IBOutlet NSMatrix *autoSelectFirstSourceInNewDocumentMatrix;
     IBOutlet NSButton *autoSelectFirstSourceIfSourceDisappearsCheckbox;
     IBOutlet NSButton *openWindowsForNewSourcesCheckbox;
@@ -18,7 +17,6 @@
     OFPreference *noteFormatPreference;
     OFPreference *controllerFormatPreference;
     OFPreference *dataFormatPreference;
-    OFPreference *sysExBytesPerRowPreference;
     OFPreference *autoSelectFirstSourceInNewDocumentPreference;
     OFPreference *autoSelectFirstSourceIfSourceDisappearsPreference;
     OFPreference *openWindowsForNewSourcesPreference;
@@ -41,4 +39,3 @@
 
 // Notifications
 extern NSString *SMMDisplayPreferenceChangedNotification;
-extern NSString *SMMSysExBytesPerRowPreferenceChangedNotification;

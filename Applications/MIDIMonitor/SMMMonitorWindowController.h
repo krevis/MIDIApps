@@ -6,7 +6,7 @@
 @interface SMMMonitorWindowController : NSWindowController
 {
     IBOutlet NSPopUpButton *sourcePopUpButton;
-    IBOutlet NSOutlineView *messagesOutlineView;
+    IBOutlet NSTableView *messagesTableView;
     IBOutlet NSButton *clearButton;
     IBOutlet NSTextField *maxMessageCountField;
     IBOutlet NSProgressIndicator *sysExProgressIndicator;
@@ -32,7 +32,6 @@
 
     // Transient data
     NSArray *displayedMessages;
-    NSMapTable *sysExRowsMapTable;
     BOOL sendWindowFrameChangesToDocument;
     NSDate *nextSysExAnimateDate;
 }
@@ -48,6 +47,7 @@
 - (IBAction)setChannelRadioButton:(id)sender;
 - (IBAction)setChannel:(id)sender;
 - (IBAction)toggleFilterShown:(id)sender;
+- (IBAction)showSelectedMessageDetails:(id)sender;
 
 // Other API
 

@@ -170,6 +170,8 @@
 				F559BACD018A51A301000164,
 				F559BACE018A51A301000164,
 				F571C56C01903F3301000164,
+				F56E05CA0206BAB401000164,
+				F56E05CB0206BAB401000164,
 			);
 			isa = PBXGroup;
 			name = Classes;
@@ -237,6 +239,7 @@
 				2A37F4B6FDCFA73011CA2CEA,
 				2A37F4B4FDCFA73011CA2CEA,
 				F53A1C0A015EC0FB01000164,
+				F56E05CE0206BF0C01000164,
 				089C165FFE840EACC02AAC07,
 				F53BB4AE015D96A501000164,
 				F55BB2140188FED601000164,
@@ -398,8 +401,8 @@
 				F53D4ABB015AAB7E01000164,
 				F53A1C08015EB24301000164,
 				F55DB8A10187EAD701000164,
-				F559BACF018A51A301000164,
 				F571C56901903A6B01000164,
+				F56E05CC0206BAB401000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -425,6 +428,7 @@
 				F57053DB018D364A01000164,
 				F5A43ED10192896501000164,
 				F56D31A50195A90E01000164,
+				F56E05D00206BF0C01000164,
 			);
 			isa = PBXResourcesBuildPhase;
 			name = "Bundle Resources";
@@ -438,8 +442,8 @@
 				F53D4ABC015AAB7E01000164,
 				F53A1C09015EB24301000164,
 				F55DB8A20187EAD701000164,
-				F559BAD0018A51A301000164,
 				F571C56A01903A6B01000164,
+				F56E05CD0206BAB401000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -663,18 +667,6 @@
 			path = SMMSysExRow.m;
 			refType = 4;
 		};
-		F559BACF018A51A301000164 = {
-			fileRef = F559BACD018A51A301000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F559BAD0018A51A301000164 = {
-			fileRef = F559BACE018A51A301000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		F55BB2140188FED601000164 = {
 			isa = PBXFileReference;
 			path = SMMDisclosureDownArrow.tiff;
@@ -736,6 +728,49 @@
 		};
 		F56D31A50195A90E01000164 = {
 			fileRef = F56D31A30195A90E01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F56E05CA0206BAB401000164 = {
+			isa = PBXFileReference;
+			path = SMMSysExWindowController.h;
+			refType = 4;
+		};
+		F56E05CB0206BAB401000164 = {
+			isa = PBXFileReference;
+			path = SMMSysExWindowController.m;
+			refType = 4;
+		};
+		F56E05CC0206BAB401000164 = {
+			fileRef = F56E05CA0206BAB401000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F56E05CD0206BAB401000164 = {
+			fileRef = F56E05CB0206BAB401000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F56E05CE0206BF0C01000164 = {
+			children = (
+				F56E05CF0206BF0C01000164,
+			);
+			isa = PBXVariantGroup;
+			name = SysEx.nib;
+			path = "";
+			refType = 4;
+		};
+		F56E05CF0206BF0C01000164 = {
+			isa = PBXFileReference;
+			name = English;
+			path = English.lproj/SysEx.nib;
+			refType = 4;
+		};
+		F56E05D00206BF0C01000164 = {
+			fileRef = F56E05CE0206BF0C01000164;
 			isa = PBXBuildFile;
 			settings = {
 			};

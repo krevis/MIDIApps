@@ -6,19 +6,15 @@
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 #import "NSPopUpButton-MIDIMonitorExtensions.h"
+#import "SMMDisclosableView.h"
 #import "SMMDocument.h"
 #import "SMMPreferencesWindowController.h"
-#import "SMMDisclosableView.h"
-#import "SMMSysExRow.h"
+#import "SMMSysExWindowController.h"
 
 
 @interface SMMMonitorWindowController (Private)
 
 - (void)_displayPreferencesDidChange:(NSNotification *)notification;
-- (void)_sysExBytesPerRowDidChange:(NSNotification *)notification;
-
-- (NSArray *)_sysExRowsForMessage:(SMSystemExclusiveMessage *)message;
-- (void)_removeSysExRowsForMessagesNotIn:(NSArray *)newMessages;
 
 - (void)_setupWindowCascading;
 - (void)_setWindowFrameFromDocument;
@@ -38,12 +34,10 @@
         return nil;
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_displayPreferencesDidChange:) name:SMMDisplayPreferenceChangedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_sysExBytesPerRowDidChange:) name:SMMSysExBytesPerRowPreferenceChangedNotification object:nil];
 
     oneChannel = 1;
 
     displayedMessages = nil;
-    sysExRowsMapTable = NSCreateMapTable(NSNonRetainedObjectMapKeyCallBacks, NSObjectMapValueCallBacks, 10);
 
     // We don't want to tell our document about window frame changes while we are still in the middle
     // of loading it, because we may do some resizing.
@@ -71,7 +65,6 @@
     [filterMatrixCells release];
 
     [displayedMessages release];
-    NSFreeMapTable(sysExRowsMapTable);
 
     [nextSysExAnimateDate release];
     nextSysExAnimateDate = nil;
@@ -93,9 +86,10 @@
     [[maxMessageCountField formatter] setAllowsFloats:NO];
     [[oneChannelField formatter] setAllowsFloats:NO];
     
-    [messagesOutlineView setAutosaveName:@"MessagesOutlineView2"];
-        // NOTE: Added the 2 so that old saved values (pre-1.0) don't make the outline column too small
-    [messagesOutlineView setAutosaveTableColumns:YES];
+    [messagesTableView setAutosaveName:@"MessagesTableView"];
+    [messagesTableView setAutosaveTableColumns:YES];
+    [messagesTableView setTarget:self];
+    [messagesTableView setDoubleAction:@selector(showSelectedMessageDetails:)];
 
     [filterDisclosableView setHiddenHeight:10];	// TODO This is sort of hacky but I'm not sure how to calculate this based on the nib
     
@@ -187,6 +181,24 @@
     [[self document] setIsFilterShown:!isFilterShown];
 }
 
+- (IBAction)showSelectedMessageDetails:(id)sender;
+{
+    int selectedRow;
+    
+    selectedRow = [messagesTableView selectedRow];
+    if (selectedRow >= 0) {
+        SMMessage *message;
+
+        message = [displayedMessages objectAtIndex:selectedRow];
+        if ([message isKindOfClass:[SMSystemExclusiveMessage class]]) {
+            SMMSysExWindowController *sysExWindowController;
+
+            sysExWindowController = [SMMSysExWindowController sysExWindowControllerWithMessage:(SMSystemExclusiveMessage *)message];
+            [sysExWindowController showWindow:nil];
+        }
+    }
+}
+
 //
 // Other API
 //
@@ -205,12 +217,11 @@
     NSArray *newMessages;
 
     newMessages = [[self document] savedMessages];
-    [self _removeSysExRowsForMessagesNotIn:newMessages];
 
     [displayedMessages release];
     displayedMessages = [newMessages retain];
 
-    [messagesOutlineView reloadData];
+    [messagesTableView reloadData];
 }
 
 - (void)synchronizeSources;
@@ -342,7 +353,7 @@
 - (void)scrollToLastMessage;
 {
     if ([displayedMessages count] > 0)
-        [messagesOutlineView scrollRowToVisible:[messagesOutlineView rowForItem:[displayedMessages lastObject]]];
+        [messagesTableView scrollRowToVisible:[displayedMessages count] - 1];
 }
 
 - (void)couldNotFindSourceNamed:(NSString *)sourceName;
@@ -394,68 +405,32 @@
 
 
 //
-// NSOutlineView data source
+// NSTableView data source
 //
 
-- (id)outlineView:(NSOutlineView *)outlineView child:(int)index ofItem:(id)item;
+- (int)numberOfRowsInTableView:(NSTableView *)tableView;
 {
-    if (item == nil) {
-        return [displayedMessages objectAtIndex:index];    
-    } else {
-        OBASSERT([item isKindOfClass:[SMSystemExclusiveMessage class]]);
-
-        return [[self _sysExRowsForMessage:item] objectAtIndex:index];
-    }    
+    return [displayedMessages count];
 }
 
-- (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item;
-{
-    return [item isKindOfClass:[SMSystemExclusiveMessage class]];
-}
-
-- (int)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item;
-{
-    if (item == nil) {
-        return [displayedMessages count];
-    } else {
-        OBASSERT([item isKindOfClass:[SMSystemExclusiveMessage class]]);
-        return [SMMSysExRow rowCountForMessage:item];
-    }
-}
-
-- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item;
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row;
 {
     NSString *identifier;
     SMMessage *message = nil;
-    SMMSysExRow *sysExRow = nil;
-    
-    identifier = [tableColumn identifier];
 
-    if ([item isKindOfClass:[SMMessage class]])
-        message = (SMMessage *)item;
-    else
-        sysExRow = (SMMSysExRow *)item;
-    
-    if (message) {
-        if ([identifier isEqualToString:@"timeStamp"]) {
-            return [message timeStampForDisplay];
-        } else if ([identifier isEqualToString:@"type"]) {
-            return [message typeForDisplay];
-        } else if ([identifier isEqualToString:@"channel"]) {
-            return [message channelForDisplay];
-        } else if ([identifier isEqualToString:@"data"]) {
-            return [message dataForDisplay];
-        } else {
-            return nil;
-        }
+    message = [displayedMessages objectAtIndex:row];
+
+    identifier = [tableColumn identifier];
+    if ([identifier isEqualToString:@"timeStamp"]) {
+        return [message timeStampForDisplay];
+    } else if ([identifier isEqualToString:@"type"]) {
+        return [message typeForDisplay];
+    } else if ([identifier isEqualToString:@"channel"]) {
+        return [message channelForDisplay];
+    } else if ([identifier isEqualToString:@"data"]) {
+        return [message dataForDisplay];
     } else {
-       if ([identifier isEqualToString:@"type"]) {
-            return [sysExRow formattedOffset];
-        } else if ([identifier isEqualToString:@"data"]) {
-            return [sysExRow formattedData];
-        } else {
-            return nil;
-        }    
+        return nil;
     }
 }
 
@@ -466,55 +441,7 @@
 
 - (void)_displayPreferencesDidChange:(NSNotification *)notification;
 {
-    [messagesOutlineView reloadData];
-}
-
-- (void)_sysExBytesPerRowDidChange:(NSNotification *)notification;
-{
-    NSResetMapTable(sysExRowsMapTable);
-
-    [messagesOutlineView reloadData];
-}
-
-- (NSArray *)_sysExRowsForMessage:(SMSystemExclusiveMessage *)message;
-{
-    NSArray *rows;
-
-    // NOTE If NSOutlineView was smart, it would only ask for children when it needed to display them.
-    // Unfortunately it seems that when the parent is expanded, NSOutlineView asks for EVERY child, sequentially,
-    // whether or not they will be visible. Sigh.
-    // So the current code is as good as we can get for now. If NSOutlineView ever gets fixed, we
-    // should be able to be lazier about creating SMMSysExRows, instead of creating them all at once.
-
-    rows = NSMapGet(sysExRowsMapTable, message);
-    if (!rows) {
-        rows = [SMMSysExRow sysExRowsForMessage:message];
-        NSMapInsert(sysExRowsMapTable, message, rows);
-    }
-
-    return rows;
-}
-
-- (void)_removeSysExRowsForMessagesNotIn:(NSArray *)newMessages;
-{
-    NSArray *oldExpandedMessages;
-    NSSet *newMessageSet;
-    unsigned int messageIndex, messageCount;
-
-    // Get the sysex messages which have been expanded
-    oldExpandedMessages = NSAllMapTableKeys(sysExRowsMapTable);
-
-    // Find out which ones are now gone, and remove them from the map table
-    newMessageSet = [NSSet setWithArray:newMessages];    
-    messageCount = [oldExpandedMessages count];
-    for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {
-        SMSystemExclusiveMessage *message;
-    
-        message = [oldExpandedMessages objectAtIndex:messageIndex];
-        if (![newMessageSet containsObject:message]) {
-            NSMapRemove(sysExRowsMapTable, message);        
-        }    
-    }
+    [messagesTableView reloadData];
 }
 
 - (void)_setupWindowCascading;
