@@ -169,6 +169,7 @@
 
     [dictionary setObject:entryDicts forKey:@"Entries"];
 
+    [[NSFileManager defaultManager] createPathToFile:libraryFilePath attributes:nil];
     [dictionary writeToFile:libraryFilePath atomically:YES];
     
     flags.isDirty = NO;
