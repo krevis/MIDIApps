@@ -46,6 +46,7 @@
 
     outputStream = [[SMPortOrVirtualOutputStream alloc] init];
     [outputStream setIgnoresTimeStamps:YES];
+//    [outputStream setSendsSysExAsynchronously:YES];	// TODO frob this  ... sending synchronously seems faster
     [center addObserver:self selector:@selector(_outputStreamEndpointWasRemoved:) name:SMPortOrVirtualStreamEndpointWasRemoved object:outputStream];
     [outputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a source for other programs", @"SysExLibrarian", [self bundle], "title of popup menu item for virtual source")];
     [outputStream setVirtualEndpointName:@"SysEx Librarian"];	// TODO get this from somewhere
@@ -180,6 +181,8 @@
             [sysExMessage release];
             sysExMessage = [message retain];
             // TODO need to send a notification or something... do it in the main thread
+
+//            NSLog(@"received sysex: %lu bytes, checksum %@", [(SMSystemExclusiveMessage *)message fullMessageDataLength], [[[(SMSystemExclusiveMessage *)message fullMessageData] md5Signature] unadornedLowercaseHexString]);
             break;
         }
     }    
