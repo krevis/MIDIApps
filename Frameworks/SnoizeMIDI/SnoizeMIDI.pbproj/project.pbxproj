@@ -202,8 +202,8 @@
 				F55C9C1A0244DE3401000164,
 				F5DAB1E6030DE98E01000164,
 				F547E05403184DAA01000164,
-				F51DC11B0328B28901000164,
 				F5F915F1032A465A01000164,
+				F57A4EEC0354B9FC01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -366,15 +366,6 @@
 			isa = PBXFileReference;
 			path = SMMIDIObject.m;
 			refType = 4;
-		};
-		F51DC11B0328B28901000164 = {
-			fileRef = F51DC1190328B28901000164;
-			isa = PBXBuildFile;
-			settings = {
-				ATTRIBUTES = (
-					Public,
-				);
-			};
 		};
 		F51DC11C0328B28901000164 = {
 			fileRef = F51DC11A0328B28901000164;
@@ -1012,6 +1003,12 @@
 		};
 		F57722BE0166F16D01000164 = {
 			fileRef = F57722BC0166F16D01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F57A4EEC0354B9FC01000164 = {
+			fileRef = F51DC1190328B28901000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
