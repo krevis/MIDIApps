@@ -103,7 +103,7 @@
 
     propertyName = [[SMClient sharedClient] coreMIDIPropertyNameConstantNamed:@"kMIDIPropertyImage"];
     if (propertyName)
-        return [self stringForProperty:(CFStringRef)propertyName];
+        return [self stringForProperty:propertyName];
     else
         return nil;
 }
