@@ -263,7 +263,7 @@ NSString *SSESysExFileExtension = @"syx";
 
 - (void)autosave;
 {
-    [self performSelector:@selector(save) withObject:nil afterDelay:0];
+    [self queueSelectorOnce:@selector(save)];
 }
 
 - (void)save;
@@ -274,7 +274,8 @@ NSString *SSESysExFileExtension = @"syx";
     NSFileManager *fileManager;
     NSString *libraryFilePath;
     NSDictionary *fileAttributes;
-    
+    NSString *errorMessage = nil;
+
     if (!flags.isDirty)
         return;
 
@@ -298,18 +299,25 @@ NSString *SSESysExFileExtension = @"syx";
     NS_DURING {
         [fileManager createPathToFile:libraryFilePath attributes:nil];
     } NS_HANDLER {
-        // TODO The above will raise if it fails. Need to tell the user in that case.
+        errorMessage = [[[localException reason] retain] autorelease];
     } NS_ENDHANDLER;
 
-    fileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-        [NSNumber numberWithUnsignedLong:SSELibraryFileTypeCode], NSFileHFSTypeCode,
-        [NSNumber numberWithUnsignedLong:SSEApplicationCreatorCode], NSFileHFSCreatorCode,
-        [NSNumber numberWithBool:YES], NSFileExtensionHidden, nil];
-
-    [fileManager atomicallyCreateFileAtPath:libraryFilePath contents:[dictionary xmlPropertyListData] attributes:fileAttributes];    
-    // TODO Need to handle the case of the above failing, too
+    if (!errorMessage) {
+        fileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
+            [NSNumber numberWithUnsignedLong:SSELibraryFileTypeCode], NSFileHFSTypeCode,
+            [NSNumber numberWithUnsignedLong:SSEApplicationCreatorCode], NSFileHFSCreatorCode,
+            [NSNumber numberWithBool:YES], NSFileExtensionHidden, nil];
     
-    flags.isDirty = NO;
+        if (![fileManager atomicallyCreateFileAtPath:libraryFilePath contents:[dictionary xmlPropertyListData] attributes:fileAttributes])
+            errorMessage = @"The file could not be written.";
+    }
+
+    if (errorMessage) {
+        NSRunCriticalAlertPanel(@"Error", @"The library \"%@\" could not be saved.\n%@", nil, nil, nil, libraryFilePath, errorMessage);
+        // NOTE This is not fantastic UI, but it basically works.  This should not happen unless the user is trying to provoke us, anyway.
+    } else {
+        flags.isDirty = NO;
+    }
 }
 
 - (NSArray *)allowedFileTypes;
