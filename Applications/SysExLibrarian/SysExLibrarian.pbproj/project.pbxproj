@@ -212,6 +212,9 @@
 				F561AFAA0208780001000164,
 				F561AFAB0208780001000164,
 				F57D1E5902122FA501000164,
+				F57D1E5B02127DF401000164,
+				F57D1E5C02127DF401000164,
+				F57D1E5D02127DF401000164,
 			);
 			isa = PBXGroup;
 			name = Resources;
@@ -296,6 +299,8 @@
 				<string>SYX</string>
 				<string>Syx</string>
 			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>SysExDocument.icns</string>
 			<key>CFBundleTypeName</key>
 			<string>SysEx Librarian Document</string>
 			<key>CFBundleTypeOSTypes</key>
@@ -314,6 +319,8 @@
 				<string>MIDI</string>
 				<string>Midi</string>
 			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>MIDIDocument.icns</string>
 			<key>CFBundleTypeName</key>
 			<string>MIDI file</string>
 			<key>CFBundleTypeOSTypes</key>
@@ -329,6 +336,8 @@
 			<array>
 				<string>sXLb</string>
 			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>LibraryDocument.icns</string>
 			<key>CFBundleTypeName</key>
 			<string>SysEx Librarian Library</string>
 			<key>CFBundleTypeOSTypes</key>
@@ -403,6 +412,9 @@
 				F561AFAC0208780001000164,
 				F561AFAD0208780001000164,
 				F57D1E5A02122FA501000164,
+				F57D1E5E02127DF401000164,
+				F57D1E5F02127DF401000164,
+				F57D1E6002127DF401000164,
 			);
 			isa = PBXResourcesBuildPhase;
 			name = "Bundle Resources";
@@ -802,6 +814,39 @@
 		};
 		F57D1E5A02122FA501000164 = {
 			fileRef = F57D1E5902122FA501000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F57D1E5B02127DF401000164 = {
+			isa = PBXFileReference;
+			path = SysExDocument.icns;
+			refType = 4;
+		};
+		F57D1E5C02127DF401000164 = {
+			isa = PBXFileReference;
+			path = LibraryDocument.icns;
+			refType = 4;
+		};
+		F57D1E5D02127DF401000164 = {
+			isa = PBXFileReference;
+			path = MIDIDocument.icns;
+			refType = 4;
+		};
+		F57D1E5E02127DF401000164 = {
+			fileRef = F57D1E5C02127DF401000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F57D1E5F02127DF401000164 = {
+			fileRef = F57D1E5D02127DF401000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F57D1E6002127DF401000164 = {
+			fileRef = F57D1E5B02127DF401000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
