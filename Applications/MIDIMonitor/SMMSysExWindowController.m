@@ -18,6 +18,7 @@
 
 - (NSString *)_formatSysExData:(NSData *)data;
 
+- (void)_savePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
 @end
 
@@ -94,6 +95,15 @@ static NSMutableArray *controllers = nil;
 - (SMSystemExclusiveMessage *)message;
 {
     return message;
+}
+
+//
+// Actions
+//
+
+- (IBAction)save:(id)sender;
+{
+    [[NSSavePanel savePanel] beginSheetForDirectory:nil file:nil modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_savePanelDidEnd:returnCode:contextInfo:) contextInfo:nil];
 }
 
 @end
@@ -212,7 +222,7 @@ static NSMutableArray *controllers = nil;
 
             byte = bytes[index];
             *p++ = (isprint(byte) ? byte : ' ');
-        }        
+        }
         
         *p++ = '|';
         *p++ = '\n';
@@ -224,6 +234,14 @@ static NSMutableArray *controllers = nil;
     }
 
     return formattedString;
+}
+
+- (void)_savePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+{
+    [sheet orderOut:nil];
+    
+    if (returnCode == NSOKButton)
+        [[message fullMessageData] writeToFile:[sheet filename] atomically:YES];
 }
 
 @end

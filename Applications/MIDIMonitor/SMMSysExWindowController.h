@@ -19,4 +19,7 @@
 
 - (SMSystemExclusiveMessage *)message;
 
+- (IBAction)save:(id)sender;
+
 @end
+
