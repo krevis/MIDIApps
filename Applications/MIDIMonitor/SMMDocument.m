@@ -375,11 +375,6 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
     if (newValue == areSourcesShown)
         return;
 
-    [[[self undoManager] prepareWithInvocationTarget:self] setAreSourcesShown:areSourcesShown];
-    [[self undoManager] setActionName:(newValue ?
-                                       NSLocalizedStringFromTableInBundle(@"Show Sources", @"MIDIMonitor", [self bundle], "show sources undo action") :
-                                       NSLocalizedStringFromTableInBundle(@"Hide Sources", @"MIDIMonitor", [self bundle], "hide sources undo action"))];
-
     areSourcesShown = newValue;
     [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeSourcesShown)];    
 }
@@ -393,11 +388,6 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
 {
     if (newValue == isFilterShown)
         return;
-
-    [[[self undoManager] prepareWithInvocationTarget:self] setIsFilterShown:isFilterShown];
-    [[self undoManager] setActionName:(newValue ? 
-        NSLocalizedStringFromTableInBundle(@"Show Filter", @"MIDIMonitor", [self bundle], "show filter undo action") :
-        NSLocalizedStringFromTableInBundle(@"Hide Filter", @"MIDIMonitor", [self bundle], "hide filter undo action"))];
 
     isFilterShown = newValue;
     [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeFilterShown)];
@@ -413,8 +403,6 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
     if (value == windowFrameDescription || [value isEqualToString:windowFrameDescription])
         return;
 
-    [self updateChangeCount:NSChangeDone];
-    
     [windowFrameDescription release];
     windowFrameDescription = [value retain];
 }
