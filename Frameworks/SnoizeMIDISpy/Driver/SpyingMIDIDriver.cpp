@@ -54,25 +54,6 @@ SpyingMIDIDriver::~SpyingMIDIDriver()
     delete mBroadcaster;
 }
 
-OSStatus SpyingMIDIDriver::Start(MIDIDeviceListRef devList)
-{
-#if DEBUG
-    fprintf(stderr, "SpyingMIDIDriver: starting\n");
-#endif
-
-    return noErr;    
-}
-
-OSStatus SpyingMIDIDriver::Stop()
-{
-#if DEBUG
-    fprintf(stderr, "SpyingMIDIDriver: stopping\n");
-#endif
-    
-    EnableMonitoring(FALSE);
-
-    return noErr;
-}
 
 OSStatus SpyingMIDIDriver::Monitor(MIDIEndpointRef destination, const MIDIPacketList *packetList)
 {
@@ -85,21 +66,6 @@ OSStatus SpyingMIDIDriver::Monitor(MIDIEndpointRef destination, const MIDIPacket
         destination = *(MIDIEndpointRef *)destination;        
     }
     
-#if DEBUG && 0
-    {
-        UInt32 packetIndex;
-        const MIDIPacket *packet;
-        
-        printf("Monitor got packet list with destination %p\n", (void *)destination);
-        printf("   Packet list has %lu packets\n", packetList->numPackets);
-
-        packet = &packetList->packet[0];
-        for (packetIndex = 0; packetIndex < packetList->numPackets; packetIndex++, packet = MIDIPacketNext(packet)) {
-            printf("   Packet %lu: time stamp %qu, size %hu\n", packetIndex, packet->timeStamp, packet->length);
-        }
-    }
-#endif
-
     // Look up the unique ID for this destination. Lock around this in case we are modifying the endpoint dictionary in the main thread.
     pthread_mutex_lock(&mEndpointDictionaryMutex);
     endpointUniqueID = (SInt32)CFDictionaryGetValue(mEndpointRefToUniqueIDDictionary, destination);
@@ -151,7 +117,7 @@ void SpyingMIDIDriver::CreateMIDIClient()
 #if DEBUG
     fprintf(stderr, "SpyingMIDIDriver: creating MIDI client\n");
 #endif
-    
+
     status = MIDIClientCreate(CFSTR("Spying MIDI Driver"), MIDIClientNotificationProc, this, &mMIDIClientRef);
     if (status != noErr) {
 #if DEBUG

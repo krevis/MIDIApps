@@ -11,9 +11,7 @@ public:
     virtual ~SpyingMIDIDriver();
 
     // MIDIDriver overrides
-    virtual OSStatus Start(MIDIDeviceListRef devList);
-    virtual OSStatus Stop();
-    virtual OSStatus Monitor(MIDIEndpointRef dest, const MIDIPacketList *pktlist);
+     virtual OSStatus Monitor(MIDIEndpointRef dest, const MIDIPacketList *pktlist);
 
     // MessagePortBroadcasterDelegate overrides
     virtual void BroadcasterListenerCountChanged(MessagePortBroadcaster *broadcaster, bool hasListeners);
