@@ -13,7 +13,9 @@
             OUTLETS = {
                 sizeFormatMatrix = NSMatrix; 
                 sysExFolderPathField = NSTextField; 
+                sysExIntervalBetweenSentMessagesField = NSTextField; 
                 sysExIntervalBetweenSentMessagesSlider = NSSlider; 
+                sysExReadTimeOutField = NSTextField; 
                 sysExReadTimeOutSlider = NSSlider; 
             }; 
             SUPERCLASS = SSEWindowController; 

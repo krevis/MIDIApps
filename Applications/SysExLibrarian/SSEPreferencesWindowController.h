@@ -8,7 +8,9 @@
     IBOutlet NSMatrix *sizeFormatMatrix;
     IBOutlet NSTextField *sysExFolderPathField;
     IBOutlet NSSlider *sysExReadTimeOutSlider;
+    IBOutlet NSTextField *sysExReadTimeOutField;
     IBOutlet NSSlider *sysExIntervalBetweenSentMessagesSlider;
+    IBOutlet NSTextField *sysExIntervalBetweenSentMessagesField;
 
     OFPreference *sizeFormatPreference;
     OFPreference *readTimeOutPreference;

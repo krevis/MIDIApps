@@ -13,6 +13,10 @@
 - (void)_synchronizeDefaults;
 
 - (void)_synchronizeControls;
+- (void)_synchronizeReadTimeOutField;
+- (void)_synchronizeIntervalBetweenSentMessagesField;
+
+- (NSString *)_formatMilliseconds:(int)msec;
 
 - (void)_openPanelDidEnd:(NSOpenPanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
@@ -98,15 +102,17 @@ static SSEPreferencesWindowController *controller;
 - (IBAction)changeReadTimeOut:(id)sender;
 {
     [readTimeOutPreference setIntegerValue:[sender intValue]];
+    [self _synchronizeReadTimeOutField];
     [self _synchronizeDefaults];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SSESysExReceivePreferenceChangedNotification object:nil];
+    [[NSNotificationQueue defaultQueue] enqueueNotificationName:SSESysExReceivePreferenceChangedNotification object:nil postingStyle:NSPostWhenIdle];
 }
 
 - (IBAction)changeIntervalBetweenSentMessages:(id)sender;
 {
     [intervalBetweenSentMessagesPreference setIntegerValue:[sender intValue]];
+    [self _synchronizeIntervalBetweenSentMessagesField];
     [self _synchronizeDefaults];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SSESysExSendPreferenceChangedNotification object:nil];
+    [[NSNotificationQueue defaultQueue] enqueueNotificationName:SSESysExSendPreferenceChangedNotification object:nil postingStyle:NSPostWhenIdle];
 }
 
 @end
@@ -124,7 +130,27 @@ static SSEPreferencesWindowController *controller;
     [sizeFormatMatrix selectCellWithTag:[sizeFormatPreference boolValue]];
     [sysExFolderPathField setStringValue:[[SSELibrary sharedLibrary] fileDirectoryPath]];
     [sysExReadTimeOutSlider setIntValue:[readTimeOutPreference integerValue]];
+    [self _synchronizeReadTimeOutField];
     [sysExIntervalBetweenSentMessagesSlider setIntValue:[intervalBetweenSentMessagesPreference integerValue]];
+    [self _synchronizeIntervalBetweenSentMessagesField];
+}
+
+- (void)_synchronizeReadTimeOutField;
+{
+    [sysExReadTimeOutField setStringValue:[self _formatMilliseconds:[readTimeOutPreference integerValue]]];
+}
+
+- (void)_synchronizeIntervalBetweenSentMessagesField;
+{
+    [sysExIntervalBetweenSentMessagesField setStringValue:[self _formatMilliseconds:[intervalBetweenSentMessagesPreference integerValue]]];
+}
+
+- (NSString *)_formatMilliseconds:(int)msec;
+{
+    if (msec == 1000)
+        return @"1 second";
+    else
+        return [NSString stringWithFormat:@"%d milliseconds", msec];
 }
 
 - (void)_openPanelDidEnd:(NSOpenPanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
