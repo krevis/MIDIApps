@@ -54,7 +54,7 @@ SInt32 MIDISpyInstallDriverIfNecessary()
         goto done;
     }
 
-    // TODO There might be more than one "installed" driver.
+    // TODO There might be more than one "installed" driver. (What does CFPlugIn do in that case?)
     // TODO Or someone might have left a directory with our plugin name in the way, but w/o proper plugin files in it. Who knows.
     if (FindInstalledDriver(&installedDriverURL, &installedDriverVersion)) {
         if (installedDriverVersion == ourDriverVersion) {
