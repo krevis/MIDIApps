@@ -13,6 +13,11 @@
 // Should be sent only to SMMIDIObject subclasses, not to SMMIDIObject itself.
 + (SMMIDIObject *)immediatelyAddObjectWithObjectRef:(MIDIObjectRef)anObjectRef;
 
+// Similarly, subclasses may use this method to immediately cause an object to be removed from the list
+// of SMMIDIObjects of this subclass, instead of waiting for CoreMIDI to send a notification.
+// Should be sent only to SMMIDIObject subclasses, not to SMMIDIObject itself.
++ (void)immediatelyRemoveObject:(SMMIDIObject *)object;
+
 // Refresh all SMMIDIObjects of this subclass.
 // Should be sent only to SMMIDIObject subclasses, not to SMMIDIObject itself.
 + (void)refreshAllObjects;

@@ -744,6 +744,12 @@ static NSMapTable *classToObjectsMapTable = NULL;
     return theObject;
 }
 
++ (void)immediatelyRemoveObject:(SMMIDIObject *)object;
+{
+    [self removeObjectWithObjectRef:[object objectRef]];    
+    [self refreshObjectOrdinals];
+}
+
 + (void)refreshAllObjects;
 {
     NSMapTable *oldMapTable, *newMapTable;

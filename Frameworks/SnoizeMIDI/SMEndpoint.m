@@ -154,6 +154,12 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 {
     if (objectRef && [self isOwnedByThisProcess]) {
         MIDIEndpointDispose((MIDIEndpointRef)objectRef);
+
+        // This object still hangs around in the endpoint lists until CoreMIDI gets around to posting a notification.
+        // We should remove it immediately.
+        [[self class] immediatelyRemoveObject:self];
+
+        // Now we can forget the objectRef (not earlier!)
         objectRef = NULL;
     }
 }
