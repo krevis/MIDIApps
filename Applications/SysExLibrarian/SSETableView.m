@@ -19,20 +19,34 @@
 
 @implementation SSETableView
 
+static NSImage *findTableHeaderSortImage(NSString *publicName, SEL privateSelector, NSString *ourName)
+{
+    NSImage *image = nil;
+
+    // Try the public named image first. This is present in 10.2 and later.
+    image = [NSImage imageNamed:publicName];
+    if (!image) {
+        // Now fall back to private API (works on 10.1, maybe on 10.0)
+        if ([[NSTableView class] respondsToSelector:privateSelector])
+            image = [[NSTableView class] performSelector:privateSelector];
+
+        if (!image) {
+            // Finally fall back to our own image
+            image = [NSImage imageNamed:ourName];
+        }
+    }
+
+    return image;
+}
+
 + (NSImage *)tableHeaderSortImage;
 {
-    if ([[self class] respondsToSelector:@selector(_defaultTableHeaderSortImage)])
-        return [[self class] _defaultTableHeaderSortImage];
-    else
-        return [NSImage imageNamed:@"TableHeaderSort"];
+    return findTableHeaderSortImage(@"NSAscendingSortIndicator", @selector(_defaultTableHeaderSortImage), @"TableHeaderSort");    
 }
 
 + (NSImage *)tableHeaderReverseSortImage;
 {
-    if ([[self class] respondsToSelector:@selector(_defaultTableHeaderReverseSortImage)])
-        return [[self class] _defaultTableHeaderReverseSortImage];
-    else
-        return [NSImage imageNamed:@"TableHeaderReverseSort"];
+    return findTableHeaderSortImage(@"NSDescendingSortIndicator", @selector(_defaultTableHeaderReverseSortImage), @"TableHeaderReverseSort");
 }
 
 - (id)initWithFrame:(NSRect)rect;
