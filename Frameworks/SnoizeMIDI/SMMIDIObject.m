@@ -37,6 +37,7 @@ static int midiObjectOrdinalComparator(id object1, id object2, void *context);
 + (void)midiSetupChanged:(NSNotification *)notification;
 
 + (void)postObjectListChangedNotification;
++ (void)postObjectsAddedNotificationWithObjects:(NSArray*)objects;
 
 - (void)updateUniqueID;
 
@@ -580,7 +581,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
     if (subclass) {
         // We might already have this object. Check and see.
         if (![subclass objectWithObjectRef:ref])
-            [subclass immediatelyAddObjectWithObjectRef:ref];
+            [subclass immediatelyAddObjectWithObjectRef:ref];            
     }
 }
 
@@ -669,6 +670,16 @@ static NSMapTable *classToObjectsMapTable = NULL;
     [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectListChangedNotification object:self];
 }
 
++ (void)postObjectsAddedNotificationWithObjects:(NSArray*)objects
+{
+    NSDictionary *userInfo;
+    
+    SMAssert(self != [SMMIDIObject class]);
+
+    userInfo = [NSDictionary dictionaryWithObject:objects forKey:SMMIDIObjectsThatAppeared];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectsAppearedNotification object:self userInfo:userInfo];    
+}
+
 - (void)updateUniqueID;
 {
     if (noErr != MIDIObjectGetIntegerProperty(objectRef, kMIDIPropertyUniqueID, &uniqueID))
@@ -733,17 +744,25 @@ static NSMapTable *classToObjectsMapTable = NULL;
     [self refreshObjectOrdinals];
     // And post a notification that the object list has changed
     [self postObjectListChangedNotification];
+    // And post a notification that this object has been added
+    [self postObjectsAddedNotificationWithObjects:[NSArray arrayWithObject:theObject]];
     
     return theObject;
 }
 
 + (void)immediatelyRemoveObject:(SMMIDIObject *)object;
 {
+    [object retain];
+    
     [self removeObjectWithObjectRef:[object objectRef]];
     // Any of the objects' ordinals may have changed, so refresh them
     [self refreshObjectOrdinals];
     // And post a notification that the object list has changed
     [self postObjectListChangedNotification];
+    // And post a notification that this object has been removed
+    [object postRemovedNotification];
+
+    [object release];
 }
 
 + (void)refreshAllObjects;
@@ -815,12 +834,8 @@ static NSMapTable *classToObjectsMapTable = NULL;
 
     // Now everything is in place for the new regime.
     // First, post specific notifications for added/removed/replaced objects.
-    if ([addedObjects count] > 0) {
-        NSDictionary *userInfo;
-
-        userInfo = [NSDictionary dictionaryWithObject:addedObjects forKey:SMMIDIObjectsThatAppeared];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectsAppearedNotification object:self userInfo:userInfo];
-    }
+    if ([addedObjects count] > 0)
+        [self postObjectsAddedNotificationWithObjects:addedObjects];
     
     [removedObjects makeObjectsPerformSelector:@selector(postRemovedNotification)];
 
