@@ -66,6 +66,7 @@
 				014CEA450018CDF011CA2923,
 				F5BCCEC7023F613D01000164,
 			);
+			hasScannedForEncodings = 1;
 			isa = PBXProject;
 			mainGroup = 0867D691FE84028FC02AAC07;
 			productRefGroup = 034768DFFF38A50411DB9C8B;
@@ -152,7 +153,6 @@
 </dict>
 </plist>
 ";
-			shouldUseHeadermap = 1;
 		};
 		0867D69DFE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
@@ -247,6 +247,7 @@
 			refType = 4;
 		};
 		08FB77B4FE84181DC02AAC07 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = MIDISpyClient.c;
 			refType = 4;
@@ -297,6 +298,7 @@
 //F53
 //F54
 		F53956EE0256D06A01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = MIDISpyShared.h;
 			refType = 2;
@@ -404,7 +406,6 @@
 </dict>
 </plist>
 ";
-			shouldUseHeadermap = 0;
 		};
 		F540CCA8023F40E701000164 = {
 			buildActionMask = 2147483647;
@@ -453,46 +454,55 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		F540CCAD023F41B101000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = MIDIDriverClass.h;
 			refType = 4;
 		};
 		F540CCAE023F41B101000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = MIDIDriver.cpp;
 			refType = 4;
 		};
 		F540CCAF023F41B101000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SpyingMIDIDriver.h;
 			refType = 4;
 		};
 		F540CCB0023F41B101000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SpyingMIDIDriver.cpp;
 			refType = 4;
 		};
 		F540CCB1023F41B101000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = MessagePortBroadcaster.h;
 			refType = 4;
 		};
 		F540CCB2023F41B101000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = MessagePortBroadcaster.cpp;
 			refType = 4;
 		};
 		F540CCB3023F41B101000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = MessageQueue.h;
 			refType = 4;
 		};
 		F540CCB4023F41B101000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = MessageQueue.c;
 			refType = 4;
 		};
 		F540CCB5023F41B101000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SpyingMIDIDriver.exp;
 			refType = 4;
@@ -614,11 +624,13 @@
 			};
 		};
 		F551C2DB032756AF01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = FSCopyObject.c;
 			refType = 4;
 		};
 		F551C2DC032756AF01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = FSCopyObject.h;
 			refType = 4;
@@ -689,6 +701,7 @@
 			refType = 4;
 		};
 		F5B4DD94025DA04101000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = MIDISpyDriverInstallation.c;
 			refType = 4;
@@ -700,6 +713,7 @@
 			};
 		};
 		F5B4DD96025DA07801000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = MIDISpyDriverInstallation.h;
 			refType = 4;
@@ -726,6 +740,7 @@
 			};
 		};
 		F5BCCEC3023F486D01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = MIDISpyClient.h;
 			refType = 4;
@@ -763,6 +778,7 @@
 			name = DeploymentInApp;
 		};
 		F5BCCEC8023F631901000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SnoizeMIDISpy.h;
 			refType = 4;
