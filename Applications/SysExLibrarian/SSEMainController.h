@@ -32,6 +32,7 @@
     unsigned int bytesToSend;
     unsigned int bytesSent;
     OFScheduledEvent *sendNextMessageEvent;
+    BOOL sendCancelled;
 }
 
 - (NSArray *)sourceDescriptions;

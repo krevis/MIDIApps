@@ -244,6 +244,8 @@
 {
     unsigned int messageIndex, messageCount;
 
+    OBASSERT([NSThread inMainThread]);
+
     if (!messages || (messageCount = [messages count]) == 0)
         return;
 
@@ -258,6 +260,7 @@
     sendingMessageIndex = 0;
     bytesToSend = 0;
     bytesSent = 0;
+    sendCancelled = NO;
 
     for (messageIndex = 0; messageIndex < messageCount; messageIndex++)
         bytesToSend += [[messages objectAtIndex:messageIndex] fullMessageDataLength];
@@ -269,10 +272,14 @@
 
 - (void)cancelSendingMessages;
 {
+    OBASSERT([NSThread inMainThread]);
+
     if (sendNextMessageEvent && [[OFScheduler mainScheduler] abortEvent:sendNextMessageEvent]) {
-        [windowController mainThreadPerformSelector:@selector(hideSysExSendStatusWithSuccess:) withBool:NO];
+        [windowController hideSysExSendStatusWithSuccess:NO];
     } else {
+        sendCancelled = YES;
         [outputStream cancelPendingSysExSendRequests];
+        // We will get notified when the current send request is finished
     }
 }
 
@@ -440,8 +447,10 @@
     nonretainedCurrentSendRequest = nil;
     
     [sendProgressLock unlock];
-    
-    if (sendingMessageIndex < sendingMessageCount && [sendRequest wereAllBytesSent]) {
+
+    if (sendCancelled) {
+        [windowController mainThreadPerformSelector:@selector(hideSysExSendStatusWithSuccess:) withBool:NO];
+    } else if (sendingMessageIndex < sendingMessageCount && [sendRequest wereAllBytesSent]) {
         sendNextMessageEvent = [[[OFScheduler mainScheduler] scheduleSelector:@selector(_sendNextSysExMessage) onObject:self afterTime:pauseTimeBetweenMessages] retain];
     } else {
         [windowController mainThreadPerformSelector:@selector(hideSysExSendStatusWithSuccess:) withBool:[sendRequest wereAllBytesSent]];
