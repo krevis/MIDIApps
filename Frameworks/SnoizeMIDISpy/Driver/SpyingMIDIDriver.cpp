@@ -196,76 +196,42 @@ void SpyingMIDIDriver::MonitorInMainThread(MIDIEndpointRef destination, const MI
 {
     OSStatus status;
     SInt32 endpointUniqueID = 0;
-    CFStringRef endpointName = NULL;
     CFDataRef dataToBroadcast = NULL;
     
     status = MIDIObjectGetIntegerProperty(destination, kMIDIPropertyUniqueID, &endpointUniqueID);
     if (status != noErr) {
 #if DEBUG
-        if (status != noErr)
-            fprintf(stderr, "SpyingMIDIDriver: MIDIObjectGetIntegerProperty failed: %ld\n", status);
-#endif
-    }
-
-    status = MIDIObjectGetStringProperty(destination, kMIDIPropertyName, &endpointName);
-    if (status != noErr) {
-#if DEBUG
-        if (status != noErr)
-            fprintf(stderr, "SpyingMIDIDriver: MIDIObjectGetStringProperty failed: %ld\n", status);
+        fprintf(stderr, "SpyingMIDIDriver: MIDIObjectGetIntegerProperty failed: %ld\n", status);
 #endif
     }
 
 #if DEBUG && 0
-    fprintf(stderr, "got data for destination %p with unique ID %ld, name:\n", (void *)destination, endpointUniqueID);
-    CFShow(endpointName);
+    fprintf(stderr, "got data for destination %p with unique ID %ld\n", (void *)destination, endpointUniqueID);
 #endif
+
+    // TODO Need to change the way this broadcaster works.  We should only broadcast to those clients
+    // who are interested in this particular endpoint (uniqueID).
     
-    dataToBroadcast = PackageMonitoredDataForBroadcast(packetList, endpointUniqueID, endpointName);
+    dataToBroadcast = PackageMonitoredDataForBroadcast(packetList, endpointUniqueID);
     if (dataToBroadcast) {
         mMessagePortBroadcaster->Broadcast(dataToBroadcast);
         CFRelease(dataToBroadcast);
     }
-
-    if (endpointName)
-        CFRelease(endpointName);
 }
 
-CFDataRef SpyingMIDIDriver::PackageMonitoredDataForBroadcast(const MIDIPacketList *packetList, SInt32 endpointUniqueID, CFStringRef endpointName)
+CFDataRef SpyingMIDIDriver::PackageMonitoredDataForBroadcast(const MIDIPacketList *packetList, SInt32 endpointUniqueID)
 {
-    const char *endpointNameCString;
-    char *endpointNameCStringBuffer = NULL;
-    char emptyCString = '\0';
+    UInt32 packetListSize, totalSize;
     CFMutableDataRef data;
 
-    if (endpointName) {
-        // Try the easy way first
-        endpointNameCString = CFStringGetCStringPtr(endpointName, kCFStringEncodingUTF8);
-        if (!endpointNameCString) {
-            // Do it the hard way
-            CFIndex bufferSize;
-
-            bufferSize = CFStringGetMaximumSizeForEncoding(CFStringGetLength(endpointName), kCFStringEncodingUTF8);
-            bufferSize++;	// Add one for terminating '\0'
-            endpointNameCStringBuffer = (char *)malloc(bufferSize);
-
-            if (CFStringGetCString(endpointName, endpointNameCStringBuffer, bufferSize, kCFStringEncodingUTF8)) {
-                endpointNameCString = endpointNameCStringBuffer;
-            } else {
-                // This failed for some odd reason. Give up.
-                endpointNameCString = &emptyCString;
-            }
-        }
-    } else {
-        endpointNameCString = &emptyCString;
+    packetListSize = SizeOfPacketList(packetList);
+    totalSize = packetListSize + sizeof(SInt32);
+    
+    data = CFDataCreateMutable(kCFAllocatorDefault, totalSize);
+    if (data) {
+        CFDataAppendBytes(data, (const UInt8 *)&endpointUniqueID, sizeof(SInt32));
+        CFDataAppendBytes(data, (const UInt8 *)packetList, packetListSize);
     }
 
-    data = CFDataCreateMutable(kCFAllocatorDefault, 0);
-    CFDataAppendBytes(data, (const UInt8 *)&endpointUniqueID, sizeof(SInt32));
-    CFDataAppendBytes(data, (const UInt8 *)endpointNameCString, strlen(endpointNameCString) + 1);
-    CFDataAppendBytes(data, (const UInt8 *)packetList, SizeOfPacketList(packetList));
-
-    if (endpointNameCStringBuffer)
-        free(endpointNameCStringBuffer);
-    
     return data;
 }

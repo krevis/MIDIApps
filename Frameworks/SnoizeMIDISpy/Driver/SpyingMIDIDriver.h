@@ -26,7 +26,7 @@ private:
     void		EnableMonitoring(Boolean enable);
     CFDataRef		PackageMonitoredDataForMessageQueue(MIDIEndpointRef endpointRef, const MIDIPacketList *packetList);
     UInt32		SizeOfPacketList(const MIDIPacketList *packetList);
-    CFDataRef 	PackageMonitoredDataForBroadcast(const MIDIPacketList *packetList, SInt32 endpointUniqueID, CFStringRef endpointName);
+    CFDataRef 	PackageMonitoredDataForBroadcast(const MIDIPacketList *packetList, SInt32 endpointUniqueID);
     
     bool 				mNeedsMonitorPointerWorkaround;
     MessagePortBroadcaster	*mMessagePortBroadcaster;
