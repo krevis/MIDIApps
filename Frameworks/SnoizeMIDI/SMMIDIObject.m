@@ -35,6 +35,31 @@
     return objectRef;
 }
 
+- (unsigned int)ordinal;
+{
+    return ordinal;
+}
+
+- (void)setOrdinal:(unsigned int)value;
+{
+    ordinal = value;
+}
+
+int midiObjectOrdinalComparator(id object1, id object2, void *context)
+{
+    unsigned int ordinal1, ordinal2;
+
+    ordinal1 = [object1 ordinal];
+    ordinal2 = [object2 ordinal];
+
+    if (ordinal1 > ordinal2)
+        return NSOrderedDescending;
+    else if (ordinal1 == ordinal2)
+        return NSOrderedSame;
+    else
+        return NSOrderedAscending;
+}
+
 //
 // Specific property access
 //

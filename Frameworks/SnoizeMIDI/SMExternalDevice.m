@@ -14,10 +14,6 @@
 + (NSArray *)allExternalDevices;
 + (void)reloadExternalDevices;
 
-- (void)setOrdinal:(unsigned int)value;
-- (unsigned int)ordinal;
-static int externalDeviceOrdinalComparator(id object1, id object2, void *context);
-
 @end
 
 
@@ -33,7 +29,7 @@ static NSMapTable *staticExternalDevicesMapTable = nil;
 
 + (NSArray *)externalDevices;
 {
-    return [[self allExternalDevices] sortedArrayUsingFunction:externalDeviceOrdinalComparator context:NULL];
+    return [[self allExternalDevices] sortedArrayUsingFunction:midiObjectOrdinalComparator context:NULL];
 }
 
 + (SMExternalDevice *)externalDeviceWithUniqueID:(MIDIUniqueID)aUniqueID;
@@ -198,31 +194,6 @@ static NSMapTable *staticExternalDevicesMapTable = nil;
     staticExternalDevicesMapTable = newMapTable;
 
     // TODO post notifications etc (see SMEndpoint version)
-}
-
-- (void)setOrdinal:(unsigned int)value;
-{
-    ordinal = value;
-}
-
-- (unsigned int)ordinal;
-{
-    return ordinal;
-}
-
-static int externalDeviceOrdinalComparator(id object1, id object2, void *context)
-{
-    unsigned int ordinal1, ordinal2;
-
-    ordinal1 = [object1 ordinal];
-    ordinal2 = [object2 ordinal];
-
-    if (ordinal1 > ordinal2)
-        return NSOrderedDescending;
-    else if (ordinal1 == ordinal2)
-        return NSOrderedSame;
-    else
-        return NSOrderedAscending;    
 }
 
 @end

@@ -50,10 +50,6 @@ typedef struct EndpointUniqueNamesFlags {
 - (SInt32)ownerPID;
 - (void)setOwnerPID:(SInt32)value;
 
-- (void)setOrdinal:(unsigned int)value;
-- (unsigned int)ordinal;
-static int endpointOrdinalComparator(id endpoint1, id endpoint2, void *context);
-
 - (void)postRemovedNotification;
 - (void)postReplacedNotificationWithReplacement:(SMEndpoint *)replacement;
 
@@ -543,7 +539,7 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 
 + (NSArray *)allEndpointsSortedByOrdinal;
 {
-    return [[self allEndpoints] sortedArrayUsingFunction:endpointOrdinalComparator context:NULL];
+    return [[self allEndpoints] sortedArrayUsingFunction:midiObjectOrdinalComparator context:NULL];
 }
 
 + (SMEndpoint *)endpointMatchingUniqueID:(MIDIUniqueID)aUniqueID;
@@ -766,31 +762,6 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
     if (status) {
         [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't set owner PID on endpoint: error %ld", @"SnoizeMIDI", [self bundle], "exception with OSStatus if setting endpoint's owner PID fails"), status];
     }
-}
-
-- (void)setOrdinal:(unsigned int)value;
-{
-    ordinal = value;
-}
-
-- (unsigned int)ordinal;
-{
-    return ordinal;
-}
-
-static int endpointOrdinalComparator(id object1, id object2, void *context)
-{
-    unsigned int ordinal1, ordinal2;
-
-    ordinal1 = [object1 ordinal];
-    ordinal2 = [object2 ordinal];
-        
-    if (ordinal1 > ordinal2)
-        return NSOrderedDescending;
-    else if (ordinal1 == ordinal2)
-        return NSOrderedSame;
-    else
-        return NSOrderedAscending;
 }
 
 - (void)postRemovedNotification;

@@ -10,7 +10,6 @@
 
 @interface SMExternalDevice : SMMIDIObject
 {
-    unsigned int ordinal;
 }
 
 + (NSArray *)externalDevices;

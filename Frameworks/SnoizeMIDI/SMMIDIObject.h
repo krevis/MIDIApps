@@ -7,6 +7,7 @@
 {
     MIDIObjectRef objectRef;
     MIDIUniqueID uniqueID;
+    unsigned int ordinal;
 
     struct {
         unsigned int hasCachedName:1;
@@ -17,6 +18,9 @@
 - (id)initWithObjectRef:(MIDIObjectRef)anObjectRef;
 
 - (MIDIObjectRef)objectRef;
+
+- (unsigned int)ordinal;
+- (void)setOrdinal:(unsigned int)value;
 
 // Specific property access
 
@@ -55,3 +59,8 @@
     // Call this if you believe this object's unique ID may have changed.
 
 @end
+
+// Other functions
+
+extern int midiObjectOrdinalComparator(id object1, id object2, void *context);
+    // Use for sorting arrays of MIDIObjects

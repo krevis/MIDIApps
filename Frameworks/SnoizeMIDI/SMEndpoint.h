@@ -19,7 +19,6 @@
         unsigned int hasCachedModelName:1;
         unsigned int hasCachedDeviceName:1;
     } endpointFlags;
-    unsigned int ordinal;
 
     NSString *cachedManufacturerName;
     NSString *cachedModelName;
