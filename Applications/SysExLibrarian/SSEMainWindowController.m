@@ -432,6 +432,8 @@ static SSEMainWindowController *controller;
     if (entry) {
         [self synchronizeLibrary];
         [self _selectAndScrollToEntries:[NSArray arrayWithObject:entry]];
+        // Make sure that the toolbar gets updated. Yes, this is actually necessary.
+        [NSApp setWindowsNeedUpdate:YES];
     } else {
         NSWindow *attachedSheet;
         
@@ -540,7 +542,7 @@ static SSEMainWindowController *controller;
         if ([entry renameFileTo:newName]) {
             [entry setName:newName];
         } else {
-            NSBeginAlertSheet(@"Error", nil, nil, nil, [self window], self, @selector(_sheetDidEnd:returnCode:contextInfo:), NULL, NULL, @"The file for this item could not be renamed to \"%@\".", newName);
+            NSBeginAlertSheet(@"Error", nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"The file for this item could not be renamed to \"%@\".", newName);
         }
     }
     
