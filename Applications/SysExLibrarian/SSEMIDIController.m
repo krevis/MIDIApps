@@ -7,6 +7,10 @@
 #import "SSEPreferencesWindowController.h"
 
 
+// Turn this on to NSLog the actual amount of time we pause between messages
+#define LOG_PAUSE_DURATION 0
+
+
 @interface SSEMIDIController (Private)
 
 - (void)_midiSetupDidChange:(NSNotification *)notification;
@@ -263,9 +267,8 @@ NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey = @"SSESysExIntervalB
     for (messageIndex = 0; messageIndex < messageCount; messageIndex++)
         bytesToSend += [[messages objectAtIndex:messageIndex] fullMessageDataLength];
 
-    [self _sendNextSysExMessage];
-
     [windowController showSysExSendStatus];
+    [self _sendNextSysExMessage];
 }
 
 - (void)cancelSendingMessages;
@@ -438,8 +441,21 @@ NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey = @"SSESysExIntervalB
 // Sending sysex messages
 //
 
+#if LOG_PAUSE_DURATION
+static MIDITimeStamp pauseStartTimeStamp = 0;
+#endif
+
 - (void)_sendNextSysExMessage;
 {
+#if LOG_PAUSE_DURATION
+    if (pauseStartTimeStamp > 0) {
+        UInt64 realPauseDuration;
+
+        realPauseDuration = SMGetCurrentHostTime() - pauseStartTimeStamp;
+        NSLog(@"pause took %f ms", (double)SMConvertHostTimeToNanos(realPauseDuration) / 1.0e6);
+    }
+#endif
+    
     [sendNextMessageEvent release];
     sendNextMessageEvent = nil;
 
@@ -447,7 +463,7 @@ NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey = @"SSESysExIntervalB
 }
 
 - (void)_willStartSendingSysEx:(NSNotification *)notification;
-{
+{    
     OBASSERT(nonretainedCurrentSendRequest == nil);
     nonretainedCurrentSendRequest = [[notification userInfo] objectForKey:@"sendRequest"];
 }
@@ -469,9 +485,16 @@ NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey = @"SSESysExIntervalB
     
     [sendProgressLock unlock];
 
+#if LOG_PAUSE_DURATION
+    pauseStartTimeStamp = 0;
+#endif
+    
     if (sendCancelled) {
         [windowController mainThreadPerformSelector:@selector(hideSysExSendStatusWithSuccess:) withBool:NO];
     } else if (sendingMessageIndex < sendingMessageCount && [sendRequest wereAllBytesSent]) {
+#if LOG_PAUSE_DURATION
+        pauseStartTimeStamp = SMGetCurrentHostTime();
+#endif
         sendNextMessageEvent = [[[OFScheduler mainScheduler] scheduleSelector:@selector(_sendNextSysExMessage) onObject:self afterTime:pauseTimeBetweenMessages] retain];
     } else {
         [windowController mainThreadPerformSelector:@selector(hideSysExSendStatusWithSuccess:) withBool:[sendRequest wereAllBytesSent]];
