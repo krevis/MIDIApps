@@ -102,6 +102,7 @@
 				0867D69FFE84028FC02AAC07,
 				0867D6A0FE84028FC02AAC07,
 				0867D6A2FE84028FC02AAC07,
+				F56214930240DAA601000164,
 			);
 			buildSettings = {
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -119,6 +120,7 @@
 				WRAPPER_EXTENSION = framework;
 			};
 			dependencies = (
+				F56214950240DB0501000164,
 			);
 			isa = PBXFrameworkTarget;
 			name = SnoizeMIDISpy.framework;
@@ -136,7 +138,7 @@
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
-	<string></string>
+	<string>com.snoize.MIDISpyFramework</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -182,6 +184,7 @@
 			files = (
 				F5BCCEC2023F47DC01000164,
 				F5BCCEC6023F4AE501000164,
+				F56214920240BADA01000164,
 			);
 			isa = PBXFrameworksBuildPhase;
 			name = "Frameworks & Libraries";
@@ -226,8 +229,8 @@
 		08FB77AEFE84172EC02AAC07 = {
 			children = (
 				F5BCCEC8023F631901000164,
-				08FB77B4FE84181DC02AAC07,
 				F5BCCEC3023F486D01000164,
+				08FB77B4FE84181DC02AAC07,
 			);
 			isa = PBXGroup;
 			name = Source;
@@ -261,6 +264,7 @@
 			children = (
 				F5BCCEC1023F47DC01000164,
 				F5BCCEC5023F4AE501000164,
+				F56214910240BADA01000164,
 			);
 			isa = PBXGroup;
 			name = "Linked Frameworks";
@@ -596,6 +600,38 @@
 			isa = PBXBuildFile;
 			settings = {
 			};
+		};
+		F56214910240BADA01000164 = {
+			isa = PBXFrameworkReference;
+			name = Carbon.framework;
+			path = /System/Library/Frameworks/Carbon.framework;
+			refType = 0;
+		};
+		F56214920240BADA01000164 = {
+			fileRef = F56214910240BADA01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F56214930240DAA601000164 = {
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+				F56214940240DAA601000164,
+			);
+			isa = PBXCopyFilesBuildPhase;
+			name = "Copy Files";
+		};
+		F56214940240DAA601000164 = {
+			fileRef = F540CCA6023F40E701000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F56214950240DB0501000164 = {
+			isa = PBXTargetDependency;
+			target = F540CCA7023F40E701000164;
 		};
 		F5BCCEC1023F47DC01000164 = {
 			isa = PBXFrameworkReference;

@@ -12,6 +12,13 @@ typedef struct __MIDISpyClient * MIDISpyClientRef;
 
 typedef void (*MIDISpyClientCallBack)(SInt32 endpointUniqueID, CFStringRef endpointName, const MIDIPacketList *packetList, void *refCon);
 
+enum {
+    kMIDISpyDriverAlreadyInstalled = 0,
+    kMIDISpyDriverInstalledSuccessfully = 1,
+    kMIDISpyDriverInstallationFailed = 2
+};
+
+SInt32 MIDISpyInstallDriverIfNecessary();
 
 MIDISpyClientRef MIDISpyClientCreate(MIDISpyClientCallBack callBack, void *refCon);
 void MIDISpyClientDispose(MIDISpyClientRef clientRef);

@@ -1,5 +1,7 @@
 #include "MIDISpyClient.h"
 
+#include <Carbon/Carbon.h>
+
 
 typedef struct __MIDISpyClient
 {
@@ -10,11 +12,63 @@ typedef struct __MIDISpyClient
 } MIDISpyClient;
 
 
+static CFStringRef kSpyingMIDIDriverPlugInName = NULL;
+static CFStringRef kSpyingMIDIDriverPlugInIdentifier = NULL;
 static CFStringRef kSpyingMIDIDriverPortName = NULL;
 static const SInt32 kSpyingMIDIDriverNextSequenceNumberMessageID = 0; 
 static const SInt32 kSpyingMIDIDriverAddListenerMessageID = 1; 
 
-static CFDataRef localMessagePortCallback(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info);
+static Boolean FindDriverInFramework(CFURLRef *urlPtr, UInt32 *versionPtr);
+static Boolean FindInstalledDriver(CFURLRef *urlPtr, UInt32 *versionPtr);
+static void CreateBundlesForDriversInDomain(short findFolderDomain, CFMutableArrayRef createdBundles);
+static Boolean InstallDriver(CFURLRef ourDriverURL);
+
+static CFDataRef LocalMessagePortCallback(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info);
+
+
+SInt32 MIDISpyInstallDriverIfNecessary()
+{
+    SInt32 returnStatus;
+    CFURLRef ourDriverURL = NULL;
+    UInt32 ourDriverVersion;
+    CFURLRef installedDriverURL = NULL;
+    UInt32 installedDriverVersion;
+
+    if (!kSpyingMIDIDriverPlugInName)
+        kSpyingMIDIDriverPlugInName = CFSTR("SpyingMIDIDriver.plugin");
+    if (!kSpyingMIDIDriverPlugInIdentifier)
+        kSpyingMIDIDriverPlugInIdentifier = CFSTR("com.snoize.SpyingMIDIDriver");
+
+    if (!FindDriverInFramework(&ourDriverURL, &ourDriverVersion)) {
+        returnStatus =  kMIDISpyDriverInstallationFailed;
+        goto done;
+    }
+    
+    if (FindInstalledDriver(&installedDriverURL, &installedDriverVersion)) {
+        if (installedDriverVersion == ourDriverVersion) {
+            returnStatus = kMIDISpyDriverAlreadyInstalled;
+            goto done;
+        } else {
+            // TODO Try to remove the installed driver; if we fail, do stuff below.
+            fprintf(stderr, "MIDISpy: We are not even trying to delete an old copy of the driver\n");
+            returnStatus = kMIDISpyDriverInstallationFailed;
+            goto done;
+        }        
+    }
+
+    if (InstallDriver(ourDriverURL))
+        returnStatus = kMIDISpyDriverInstalledSuccessfully;
+    else
+        returnStatus = kMIDISpyDriverInstallationFailed;
+        
+done:
+    if (ourDriverURL)
+        CFRelease(ourDriverURL);
+    if (installedDriverURL)
+        CFRelease(installedDriverURL);
+        
+    return returnStatus;
+}
 
 
 MIDISpyClientRef MIDISpyClientCreate(MIDISpyClientCallBack callBack, void *refCon)
@@ -65,7 +119,7 @@ MIDISpyClientRef MIDISpyClientCreate(MIDISpyClientCallBack callBack, void *refCo
         sequenceNumber = *(UInt32 *)CFDataGetBytePtr(sequenceNumberData);
         localPortName = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%@-%lu"), kSpyingMIDIDriverPortName, sequenceNumber);
 
-        localPort = CFMessagePortCreateLocal(kCFAllocatorDefault, localPortName, localMessagePortCallback, &context, FALSE);
+        localPort = CFMessagePortCreateLocal(kCFAllocatorDefault, localPortName, LocalMessagePortCallback, &context, FALSE);
         CFRelease(localPortName);
         if (!localPort) {
 #if DEBUG
@@ -118,6 +172,7 @@ MIDISpyClientRef MIDISpyClientCreate(MIDISpyClientCallBack callBack, void *refCo
     return clientRef;
 }
 
+
 void MIDISpyClientDispose(MIDISpyClientRef clientRef)
 {
     if (clientRef->runLoopSource) {
@@ -134,7 +189,170 @@ void MIDISpyClientDispose(MIDISpyClientRef clientRef)
 }
 
 
-static CFDataRef localMessagePortCallback(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info)
+//
+// Private functions
+//
+
+static Boolean FindDriverInFramework(CFURLRef *urlPtr, UInt32 *versionPtr)
+{
+    CFBundleRef frameworkBundle = NULL;
+    CFURLRef driverURL = NULL;
+    UInt32 driverVersion = 0;
+    Boolean success = FALSE;
+
+    // Find this framework's bundle
+    frameworkBundle = CFBundleGetBundleWithIdentifier(CFSTR("com.snoize.MIDISpyFramework"));
+    if (!frameworkBundle) {
+#if DEBUG
+        fprintf(stderr, "MIDISpyClient: Couldn't find our own framework's bundle!\n");
+#endif
+    } else {
+        // Find the copy of the plugin in the framework's resources
+        driverURL = CFBundleCopyResourceURL(frameworkBundle, kSpyingMIDIDriverPlugInName, NULL, NULL);
+        if (!driverURL) {
+#if DEBUG
+            fprintf(stderr, "MIDISpyClient: Couldn't find the copy of the plugin in our framework!\n");
+#endif
+        } else {
+            // Make a CFBundle with it.
+            CFBundleRef driverBundle;
+
+            driverBundle = CFBundleCreate(kCFAllocatorDefault, driverURL);
+            if (!driverBundle) {
+#if DEBUG
+                fprintf(stderr, "MIDISpyClient: Couldn't create a CFBundle for the copy of the plugin in our framework!\n");
+#endif
+                CFRelease(driverURL);
+                driverURL = NULL;
+            } else {
+                // Remember the version of the bundle.
+                driverVersion = CFBundleGetVersionNumber(driverBundle);
+                // Then get rid of the bundle--we no longer need it.
+                CFRelease(driverBundle);
+                success = TRUE;
+            }
+        }
+    }
+
+    *urlPtr = driverURL;
+    *versionPtr = driverVersion;
+    return success;
+}
+
+
+static Boolean FindInstalledDriver(CFURLRef *urlPtr, UInt32 *versionPtr)
+{
+    CFMutableArrayRef createdBundles = NULL;
+    CFBundleRef driverBundle = NULL;
+    CFURLRef driverURL = NULL;
+    UInt32 driverVersion = 0;
+    Boolean success = FALSE;
+
+    createdBundles = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
+    CreateBundlesForDriversInDomain(kSystemDomain, createdBundles);
+    CreateBundlesForDriversInDomain(kLocalDomain, createdBundles);
+    CreateBundlesForDriversInDomain(kNetworkDomain, createdBundles);
+    CreateBundlesForDriversInDomain(kUserDomain, createdBundles);
+
+    // See if the driver is installed anywhere.
+    driverBundle = CFBundleGetBundleWithIdentifier(kSpyingMIDIDriverPlugInIdentifier);
+    if (!driverBundle) {
+#if DEBUG
+        fprintf(stderr, "MIDISpyClient: Couldn't find an installed driver\n");
+#endif
+    } else {
+        // Remember the URL and version of the bundle.
+        driverURL = CFBundleCopyBundleURL(driverBundle);
+        driverVersion = CFBundleGetVersionNumber(driverBundle);
+        success = TRUE;
+    }
+
+    if (createdBundles)
+        CFRelease(createdBundles);   
+        
+    *urlPtr = driverURL;
+    *versionPtr = driverVersion;
+    return success;
+}
+
+
+static void CreateBundlesForDriversInDomain(short findFolderDomain, CFMutableArrayRef createdBundles)
+{
+    FSRef folderFSRef;
+    CFURLRef folderURL;
+    CFArrayRef newBundles;
+    CFIndex newBundlesCount;
+
+    if (FSFindFolder(findFolderDomain, kMIDIDriversFolderType, kDontCreateFolder, &folderFSRef) != noErr)
+        return;
+
+    folderURL = CFURLCreateFromFSRef(kCFAllocatorDefault, &folderFSRef);
+
+    newBundles = CFBundleCreateBundlesFromDirectory(kCFAllocatorDefault, folderURL, NULL);
+    if (newBundles) {
+        if ((newBundlesCount = CFArrayGetCount(newBundles))) {
+            CFArrayAppendArray(createdBundles, newBundles, CFRangeMake(0, newBundlesCount));
+        }
+        CFRelease(newBundles);
+    }
+
+    CFRelease(folderURL);
+}
+
+
+static Boolean InstallDriver(CFURLRef ourDriverURL)
+{
+    OSErr error;
+    FSRef folderFSRef;
+    Boolean success = FALSE;
+
+    // Find the directory "~/Library/Audio/MIDI Drivers". If it doesn't exist, create it.
+    error = FSFindFolder(kUserDomain, kMIDIDriversFolderType, kCreateFolder, &folderFSRef);
+    if (error != noErr) {
+#if DEBUG
+        fprintf(stderr, "MIDISpy: FSFindFolder(kUserDomain, kMIDIDriversFolderType, kCreateFolder) returned error: %hd\n", error);
+#endif
+    } else {
+        CFURLRef folderURL;
+        char folderPath[PATH_MAX];
+
+        folderURL = CFURLCreateFromFSRef(kCFAllocatorDefault, &folderFSRef);
+
+        if (!CFURLGetFileSystemRepresentation(folderURL, FALSE, (UInt8 *)folderPath, PATH_MAX)) {
+#if DEBUG
+            fprintf(stderr, "MIDISpy: CFURLGetFileSystemRepresentation(folderURL) failed\n");
+#endif
+        } else {
+            char driverPath[PATH_MAX];
+
+            if (!CFURLGetFileSystemRepresentation(ourDriverURL, FALSE, (UInt8 *)driverPath, PATH_MAX)) {
+#if DEBUG
+                fprintf(stderr, "MIDISpy: CFURLGetFileSystemRepresentation(ourDriverURL) failed\n");
+#endif
+            } else {
+                // Copy (recursively) from the directory of the driver in our resources directory.
+                // I know the driver doesn't contain any files with resource forks, so we are safe using the UNIX API for this.
+                // TODO what a pain, it's not as though there is good UNIX API for this either.
+                char command[2 * PATH_MAX + 10];
+
+                snprintf(command, sizeof(command), "cp -Rf \"%s\" \"%s\"", driverPath, folderPath);
+
+                success = (system(command) == 0);
+#if DEBUG
+                if (!success)
+                    fprintf(stderr, "MIDISpy: cp failed\n");
+#endif
+            }
+        }
+
+        CFRelease(folderURL);
+    }
+ 
+    return success;
+}
+
+
+static CFDataRef LocalMessagePortCallback(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info)
 {
     const UInt8 *bytes;
     SInt32 endpointUniqueID;
