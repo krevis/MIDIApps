@@ -27,6 +27,9 @@
 
 @implementation SSELibraryEntry
 
+DEFINE_NSSTRING(SSELibraryEntryNameDidChangeNotification);
+
+
 - (id)initWithLibrary:(SSELibrary *)library;
 {
     if (![super init])
@@ -131,6 +134,7 @@
         [name release];
         name = [value retain];
 
+        [[NSNotificationCenter defaultCenter] postNotificationName:SSELibraryEntryNameDidChangeNotification object:self];
         [nonretainedLibrary noteEntryChanged];
     }
 }

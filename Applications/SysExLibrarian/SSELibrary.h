@@ -59,6 +59,7 @@ typedef enum _SSELibraryFileType {
 
 // Notifications
 extern NSString *SSELibraryDidChangeNotification;
+extern NSString *SSELibraryEntryWillBeRemovedNotification;	// notification's object is the entry
 
 // Preference keys
 extern NSString *SSELibraryFileDirectoryAliasPreferenceKey;

@@ -48,3 +48,6 @@
 - (BOOL)isFileInLibraryFileDirectory;
 
 @end
+
+// Notifications
+extern NSString *SSELibraryEntryNameDidChangeNotification;

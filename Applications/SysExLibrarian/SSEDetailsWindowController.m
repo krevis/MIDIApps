@@ -5,6 +5,7 @@
 #import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
+#import "SSELibrary.h"
 #import "SSELibraryEntry.h"
 #import "SSEPreferencesWindowController.h"
 
@@ -12,8 +13,11 @@
 @interface SSEDetailsWindowController (Private)
 
 - (void)_synchronizeMessageDataDisplay;
+- (void)_synchronizeTitle;
 
 - (void)_displayPreferencesDidChange:(NSNotification *)notification;
+- (void)_entryWillBeRemoved:(NSNotification *)notification;
+- (void)_entryNameDidChange:(NSNotification *)notification;
 
 - (NSString *)_formatSysExData:(NSData *)data;
 
@@ -55,6 +59,9 @@ static NSMutableArray *controllers = nil;
     [self setShouldCascadeWindows:YES];
 
     entry = [inEntry retain];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_entryWillBeRemoved:) name:SSELibraryEntryWillBeRemovedNotification object:entry];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_entryNameDidChange:) name:SSELibraryEntryNameDidChangeNotification object:entry];
+    
     cachedMessages = [[NSArray alloc] initWithArray:[entry messages]];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_displayPreferencesDidChange:) name:SSEDisplayPreferenceChangedNotification object:nil];
@@ -91,8 +98,7 @@ static NSMutableArray *controllers = nil;
 {
     [super windowDidLoad];
 
-    [[self window] setTitle:[NSString stringWithFormat:@"Details: %@", [entry name]]];
-    // TODO is this really the title we want?
+    [self _synchronizeTitle];
     
     [messagesTableView reloadData];
     if ([cachedMessages count] > 0)
@@ -180,9 +186,25 @@ static NSMutableArray *controllers = nil;
     [textView setString:formattedData];
 }
 
+- (void)_synchronizeTitle;
+{
+    [[self window] setTitle:[NSString stringWithFormat:@"Details: %@", [entry name]]];
+    // TODO is this really the title we want?
+}
+
 - (void)_displayPreferencesDidChange:(NSNotification *)notification;
 {
     // TODO
+}
+
+- (void)_entryWillBeRemoved:(NSNotification *)notification;
+{
+    [self close];
+}
+
+- (void)_entryNameDidChange:(NSNotification *)notification;
+{
+    [self _synchronizeTitle];
 }
 
 - (NSString *)_formatSysExData:(NSData *)data;

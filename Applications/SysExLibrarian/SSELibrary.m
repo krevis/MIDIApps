@@ -23,12 +23,15 @@
 
 - (NSDictionary *)_entriesByFilePath;
 
+- (void)_postEntryWillBeRemovedNotificationForEntry:(SSELibraryEntry *)entry;
+
 @end
 
 
 @implementation SSELibrary
 
 DEFINE_NSSTRING(SSELibraryDidChangeNotification);
+DEFINE_NSSTRING(SSELibraryEntryWillBeRemovedNotification);
 
 NSString *SSELibraryFileDirectoryAliasPreferenceKey = @"SSELibraryFileDirectoryAlias";
 NSString *SSELibraryFileDirectoryPathPreferenceKey = @"SSELibraryFileDirectoryPath";
@@ -253,6 +256,7 @@ NSString *SSESysExFileExtension = @"syx";
 
     entryIndex = [entries indexOfObjectIdenticalTo:entry];
     if (entryIndex != NSNotFound) {
+        [self _postEntryWillBeRemovedNotificationForEntry:[entries objectAtIndex:entryIndex]];
         [entries removeObjectAtIndex:entryIndex];
 
         [self noteEntryChanged];
@@ -261,6 +265,13 @@ NSString *SSESysExFileExtension = @"syx";
 
 - (void)removeEntries:(NSArray *)entriesToRemove;
 {
+    unsigned int entryIndex;
+
+    entryIndex = [entriesToRemove count];
+    while (entryIndex--) {
+        [self _postEntryWillBeRemovedNotificationForEntry:[entriesToRemove objectAtIndex:entryIndex]];
+    }
+
     [entries removeIdenticalObjectsFromArray:entriesToRemove];
     [self noteEntryChanged];
 }
@@ -623,6 +634,11 @@ NSString *SSESysExFileExtension = @"syx";
     }
 
     return entriesByFilePath;
+}
+
+- (void)_postEntryWillBeRemovedNotificationForEntry:(SSELibraryEntry *)entry;
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:SSELibraryEntryWillBeRemovedNotification object:entry];
 }
 
 @end
