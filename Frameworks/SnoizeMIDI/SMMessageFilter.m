@@ -4,8 +4,6 @@
 
 #import "SMMessageFilter.h"
 
-#import <OmniBase/OmniBase.h>
-
 
 @interface SMMessageFilter (Private)
 

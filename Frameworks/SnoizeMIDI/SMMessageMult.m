@@ -4,8 +4,6 @@
 
 #import "SMMessageMult.h"
 
-#import <OmniBase/OmniBase.h>
-
 
 @implementation SMMessageMult
 

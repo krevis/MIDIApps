@@ -2,13 +2,12 @@
 // Copyright 2001-2002 Kurt Revis. All rights reserved.
 //
 
-#import <OmniFoundation/OFObject.h>
 #import <Foundation/Foundation.h>
 #import <SnoizeMIDI/SMVoiceMessage.h>
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 
 
-@interface SMMessageFilter : OFObject <SMMessageDestination>
+@interface SMMessageFilter : NSObject <SMMessageDestination>
 {
     SMMessageType filterMask;
     SMChannelMask channelMask;

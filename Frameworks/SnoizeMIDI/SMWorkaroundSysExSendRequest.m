@@ -4,9 +4,6 @@
 
 #import "SMWorkaroundSysExSendRequest.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
-
 #import "SMEndpoint.h"
 #import "SMSystemExclusiveMessage.h"
 

@@ -2,12 +2,11 @@
 // Copyright 2001-2002 Kurt Revis. All rights reserved.
 //
 
-#import <OmniFoundation/OFObject.h>
 #import <Foundation/Foundation.h>
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 
 
-@interface SMMessageHistory : OFObject <SMMessageDestination>
+@interface SMMessageHistory : NSObject <SMMessageDestination>
 {
     NSMutableArray *savedMessages;
     NSLock *savedMessagesLock;

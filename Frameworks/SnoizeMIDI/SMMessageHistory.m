@@ -4,9 +4,6 @@
 
 #import "SMMessageHistory.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
-
 
 @interface SMMessageHistory (Private)
 
