@@ -3,17 +3,18 @@
 # Script to make a disk image for an application.
 #
 # Arguments:
+#	Install directory (containing the application itself)
 #	Application executable name (without .app extension)
-#	Disk image file name
+#	Output disk image path
 #	Read Me file path
 #
 
 PUBLIC=/Users/Shared
-INSTALL_DIRECTORY=$PUBLIC/$USER/InstalledProducts
-APP_EXECUTABLE_NAME="$1"
+INSTALL_DIRECTORY="$1"
+APP_EXECUTABLE_NAME="$2"
 APP_WRAPPER_NAME="${APP_EXECUTABLE_NAME}.app"
-IMAGE_FILE_NAME="$2"
-READ_ME_FILE_PATH="$3"
+OUTPUT_IMAGE="$3"
+READ_ME_FILE_PATH="$4"
 VOLUME_NAME=$APP_EXECUTABLE_NAME
 
 DO_APPLESCRIPT=1
@@ -22,8 +23,7 @@ if [[ `uname -r` == "5.5" ]] { DO_APPLESCRIPT=0 }
 
 echo "Building disk image"
 
-SCRATCH_IMAGE="$PUBLIC/$USER/TempImage-$$.dmg"
-DISKCOPY_IMAGE="$PUBLIC/$USER/$IMAGE_FILE_NAME.dmg"
+SCRATCH_IMAGE="/tmp/TempImage-$$.dmg"
 
 # Create the image
 echo "    Creating scratch image..."
@@ -105,7 +105,7 @@ hdiutil eject $DRIVE   # This doesn't give the Finder a chance to sync... not tr
 
 # Convert the image to a UDIF compressed image 
 echo "    Compressing..."
-hdiutil convert -format UDCO $SCRATCH_IMAGE -o ${DISKCOPY_IMAGE:r}
+hdiutil convert -format UDCO $SCRATCH_IMAGE -o ${OUTPUT_IMAGE:r}
 
 # Remove the temporary image
 echo "    Removing scratch image"
