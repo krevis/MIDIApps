@@ -3,6 +3,7 @@
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 
+#import "SMClient.h"
 #import "SMEndpoint.h"
 #import "SMPortInputStream.h"		// For declaration of -endpoint -- could be output stream too, doesn't matter
 
@@ -32,8 +33,8 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
     if (!(self = [super init]))
         return nil;
 
-    virtualEndpointName = @"";
-    virtualDisplayName = @"";
+    virtualEndpointName = [[[SMClient sharedClient] name] copy];
+    virtualDisplayName = [virtualEndpointName copy];
 
     // We will always keep the same unique ID for our virtual destination,
     // even if we create and destroy it multiple times.
