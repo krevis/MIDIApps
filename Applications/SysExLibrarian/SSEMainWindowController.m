@@ -97,8 +97,6 @@ static SSEMainWindowController *controller;
     sortColumnIdentifier = @"name";
     isSortAscending = YES;
 
-    libraryLoadErrorMessage = [[library loadEntriesReturningErrorMessage] retain];
-    
     return self;
 }
 
@@ -110,8 +108,6 @@ static SSEMainWindowController *controller;
 
 - (void)dealloc
 {
-    [libraryLoadErrorMessage release];
-    libraryLoadErrorMessage = nil;
     [progressUpdateEvent release];
     progressUpdateEvent = nil;
     [importStatusLock release];
@@ -142,22 +138,6 @@ static SSEMainWindowController *controller;
     [super windowDidLoad];
 
     [self synchronizeInterface];
-}
-
-- (IBAction)showWindow:(id)sender;
-{
-    [super showWindow:sender];
-
-    if (libraryLoadErrorMessage) {
-        NSString *libraryFilePath;
-
-        libraryFilePath = [[library path] stringByDeletingPathExtension];
-        NSBeginAlertSheet(@"Error", nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"The library \"%@\" could not be opened.\n%@", libraryFilePath, libraryLoadErrorMessage);
-        [libraryLoadErrorMessage release];
-        libraryLoadErrorMessage = nil;
-
-        // TODO we probably want the user to pick a new location now...
-    }
 }
 
 - (void)speciallyInitializeToolbarItem:(NSToolbarItem *)toolbarItem;

@@ -12,7 +12,6 @@ typedef enum _SSELibraryFileType {
 
 @interface SSELibrary : NSObject
 {
-    NSString *libraryFilePath;
     NSMutableArray *entries;
     struct {
         unsigned int isDirty:1;
@@ -23,14 +22,16 @@ typedef enum _SSELibraryFileType {
     NSArray *allowedFileTypes;
 }
 
-+ (NSString *)defaultPath;
++ (NSString *)libraryFilePath;
++ (NSString *)libraryFilePathForDisplay;
+
 + (NSString *)defaultFileDirectoryPath;
 
-- (NSString *)path;
++ (NSString *)performPreflightChecks;
+
 - (NSString *)fileDirectoryPath;
 - (BOOL)isPathInFileDirectory:(NSString *)path;
 
-- (NSString *)loadEntriesReturningErrorMessage;
 - (NSArray *)entries;
 
 - (SSELibraryEntry *)addEntryForFile:(NSString *)filePath;

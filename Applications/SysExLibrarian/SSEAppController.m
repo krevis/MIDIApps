@@ -6,6 +6,7 @@
 
 #import "SSEMainWindowController.h"
 #import "SSEPreferencesWindowController.h"
+#import "SSELibrary.h"
 
 
 @interface SSEAppController (Private)
@@ -43,12 +44,20 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification;
 {
-    hasFinishedLaunching = YES;
+    NSString *preflightError;
     
-    [self showMainWindow:nil];
+    hasFinishedLaunching = YES;
 
-    if (filesToImport)
-        [self _importFiles];
+    preflightError = [SSELibrary performPreflightChecks];
+    if (preflightError) {
+        NSRunCriticalAlertPanel(@"Error", @"There was a problem accessing the library \"%@\".\n%@", @"Quit", nil, nil, [SSELibrary libraryFilePathForDisplay], preflightError);
+        [NSApp terminate:nil];
+    } else {
+        [self showMainWindow:nil];
+
+        if (filesToImport)
+            [self _importFiles];
+    }
 }
 
 - (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename;

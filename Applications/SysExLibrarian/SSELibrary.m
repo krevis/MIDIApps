@@ -10,6 +10,8 @@
 
 @interface SSELibrary (Private)
 
+- (void)_loadEntries;
+
 - (NSArray *)_fileTypesFromDocumentTypeDictionary:(NSDictionary *)documentTypeDict;
 
 - (NSDictionary *)_entriesByFilePath;
@@ -27,14 +29,75 @@ const FourCharCode SSESysExFileTypeCode = 'sysX';
 NSString *SSESysExFileExtension = @"syx";
 
 
-+ (NSString *)defaultPath;
++ (NSString *)libraryFilePath;
 {
-    return [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"SysEx Library"] stringByAppendingPathComponent:@"Library.sXLb"];
+    static NSString *libraryFilePath = nil;
+
+    if (!libraryFilePath) {
+        libraryFilePath = [[[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"SysEx Library"] stringByAppendingPathComponent:@"Library.sXLb"] retain];
+    }
+    
+    return libraryFilePath;
+}
+
++ (NSString *)libraryFilePathForDisplay;
+{
+    return [[self libraryFilePath] stringByDeletingPathExtension];
 }
 
 + (NSString *)defaultFileDirectoryPath;
 {
     return [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"SysEx Library"] stringByAppendingPathComponent:@"Files"];
+}
+
++ (NSString *)performPreflightChecks;
+{
+    // Check that the library file can be read and written.
+
+    NSString *libraryFilePath;
+    NSFileManager *fileManager;
+    NSString *parentDirectoryPath;
+    BOOL isDirectory;
+
+    libraryFilePath = [self libraryFilePath];
+    fileManager = [NSFileManager defaultManager];
+
+    // Try creating the path to the file, first.
+    NS_DURING {
+        [fileManager createPathToFile:libraryFilePath attributes:nil];
+    } NS_HANDLER {
+        return [localException reason];
+    } NS_ENDHANDLER;
+
+    // Then check that the file's parent directory is readable, writable, and searchable.
+    parentDirectoryPath = [libraryFilePath stringByDeletingLastPathComponent];
+    if (![fileManager isReadableFileAtPath:parentDirectoryPath])
+        return [NSString stringWithFormat:@"The privileges of the folder \"%@\" do not allow reading.", [parentDirectoryPath lastPathComponent]];
+    if (![fileManager isWritableFileAtPath:parentDirectoryPath])
+        return [NSString stringWithFormat:@"The privileges of the folder \"%@\" do not allow writing.", [parentDirectoryPath lastPathComponent]];
+    if (![fileManager isExecutableFileAtPath:parentDirectoryPath])
+        return [NSString stringWithFormat:@"The privileges of the folder \"%@\" do not allow searching.", [parentDirectoryPath lastPathComponent]];
+    
+    // Now check the actual file, if it exists.    
+    if ([fileManager fileExistsAtPath:libraryFilePath isDirectory:&isDirectory]) {
+        NSDictionary *libraryDictionary;
+        
+        if (isDirectory)
+            return @"There is a folder where the file should be.";
+
+        if (![fileManager isReadableFileAtPath:libraryFilePath])
+            return @"The file's privileges do not allow reading.";
+
+        if (![fileManager isWritableFileAtPath:libraryFilePath])
+            return @"The file's privileges do not allow writing.";
+
+        libraryDictionary = [NSDictionary dictionaryWithContentsOfFile:libraryFilePath];
+        if (!libraryDictionary)
+            return @"The file could not be read.";
+    }
+
+    // Everything is fine.
+    return nil;
 }
 
 - (id)init;
@@ -58,17 +121,16 @@ NSString *SSESysExFileExtension = @"syx";
     }
     allowedFileTypes = [[rawSysExFileTypes arrayByAddingObjectsFromArray:standardMIDIFileTypes] retain];
     
-    libraryFilePath = [[self path] retain];
     entries = [[NSMutableArray alloc] init];
     flags.isDirty = NO;
 
+    [self _loadEntries];
+    
     return self;
 }
 
 - (void)dealloc;
 {
-    [libraryFilePath release];
-    libraryFilePath = nil;
     [entries release];
     entries = nil;
     [rawSysExFileTypes release];
@@ -79,33 +141,6 @@ NSString *SSESysExFileExtension = @"syx";
     allowedFileTypes = nil;
     
     [super dealloc];
-}
-
-- (NSString *)path;
-{
-    // TODO why do we have this method, but keep the libraryFilePath ivar too?
-    
-    NSData *aliasData;
-    NSString *path = nil;
-
-    // TODO define a string for this, and use OFPreference
-    aliasData = [[NSUserDefaults standardUserDefaults] objectForKey:@"LibraryAlias"];
-    if (aliasData) {
-        BDAlias *alias;
-
-        alias = [BDAlias aliasWithData:aliasData];
-        path = [alias fullPath];
-    }
-    // TODO We don't save this alias in the user defaults yet, but we need to.
-
-    if (!path)
-        path = [[self class] defaultPath];
-
-    // TODO It is sort of unclear that we want things to work this way in future. If we set a library path, we don't necessarily want to keep track of it with an alias only, since the alias will no longer resolve if the file gets removed.
-    // (Is my assumption about this correct? yes--BDAlias will return nil, but the alias manager will in reality give us back an FSRef for a file which no longer exists, and return fnfErr.  So we might want to go down to alias manager level and do this ourself.)
-    // (that is: if the file gets removed we should create a new one at the same place as it was, not at the default path)
-
-    return path;
 }
 
 - (NSString *)fileDirectoryPath;
@@ -132,48 +167,6 @@ NSString *SSESysExFileExtension = @"syx";
 - (BOOL)isPathInFileDirectory:(NSString *)path;
 {
     return [path hasPrefix:[[self fileDirectoryPath] stringByAppendingString:@"/"]];
-}
-
-- (NSString *)loadEntriesReturningErrorMessage;
-{
-    BOOL isDirectory;
-    NSDictionary *libraryDictionary = nil;
-    NSArray *entryDicts;
-    unsigned int entryDictIndex, entryDictCount;
-
-    // We should only be called once at startup
-    OBASSERT([entries count] == 0);
-    
-    if (![[NSFileManager defaultManager] fileExistsAtPath:libraryFilePath isDirectory:&isDirectory])
-        return nil;	// Nothing to load
-
-    if (isDirectory)
-        return @"There is a folder where the file should be.";
-
-    if (![[NSFileManager defaultManager] isReadableFileAtPath:libraryFilePath])
-        return @"The file's permissions do not allow reading.";
-
-    libraryDictionary = [NSDictionary dictionaryWithContentsOfFile:libraryFilePath];
-    if (!libraryDictionary)
-        return @"The file could not be read.";
-
-    // Now we can actually use the contents of the file...
-    entryDicts = [libraryDictionary objectForKey:@"Entries"];
-    entryDictCount = [entryDicts count];
-    for (entryDictIndex = 0; entryDictIndex < entryDictCount; entryDictIndex++) {
-        NSDictionary *entryDict;
-        SSELibraryEntry *entry;
-
-        entryDict = [entryDicts objectAtIndex:entryDictIndex];
-        entry = [[SSELibraryEntry alloc] initWithLibrary:self dictionary:entryDict];
-        [entries addObject:entry];
-        [entry release];
-    }
-
-    // Ignore any changes that came from reading entries
-    flags.isDirty = NO;
-
-    return nil;
 }
 
 - (NSArray *)entries;
@@ -279,6 +272,7 @@ NSString *SSESysExFileExtension = @"syx";
     NSMutableArray *entryDicts;
     unsigned int entryCount, entryIndex;
     NSFileManager *fileManager;
+    NSString *libraryFilePath;
     NSDictionary *fileAttributes;
     
     if (!flags.isDirty)
@@ -299,6 +293,7 @@ NSString *SSESysExFileExtension = @"syx";
     [dictionary setObject:entryDicts forKey:@"Entries"];
 
     fileManager = [NSFileManager defaultManager];
+    libraryFilePath = [[self class] libraryFilePath];
     
     NS_DURING {
         [fileManager createPathToFile:libraryFilePath attributes:nil];
@@ -404,6 +399,38 @@ NSString *SSESysExFileExtension = @"syx";
 
 
 @implementation SSELibrary (Private)
+
+- (void)_loadEntries;
+{
+    NSString *libraryFilePath;
+    NSDictionary *libraryDictionary = nil;
+    NSArray *entryDicts;
+    unsigned int entryDictIndex, entryDictCount;
+
+    // We should only be called once at startup
+    OBASSERT([entries count] == 0);
+
+    // NOTE: We don't do much error checking here; that should have already been taken care of in +performPreflightChecks.
+    // (Of course something could have changed since then and now, but that's pretty unlikely.)
+
+    libraryFilePath = [[self class] libraryFilePath];
+    libraryDictionary = [NSDictionary dictionaryWithContentsOfFile:libraryFilePath];
+
+    entryDicts = [libraryDictionary objectForKey:@"Entries"];
+    entryDictCount = [entryDicts count];
+    for (entryDictIndex = 0; entryDictIndex < entryDictCount; entryDictIndex++) {
+        NSDictionary *entryDict;
+        SSELibraryEntry *entry;
+
+        entryDict = [entryDicts objectAtIndex:entryDictIndex];
+        entry = [[SSELibraryEntry alloc] initWithLibrary:self dictionary:entryDict];
+        [entries addObject:entry];
+        [entry release];
+    }
+
+    // Ignore any changes that came from reading entries
+    flags.isDirty = NO;
+}
 
 - (NSArray *)_fileTypesFromDocumentTypeDictionary:(NSDictionary *)documentTypeDict;
 {
