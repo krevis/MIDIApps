@@ -20,7 +20,6 @@
 - (void)_updateMultipleSysExReadIndicatorWithMessageCount:(unsigned int)messageCount bytesRead:(unsigned int)bytesRead totalBytesRead:(unsigned int)totalBytesRead;
 
 - (void)_updatePlayProgress;
-- (void)_updatePlayProgressWithBytesSent:(unsigned int)bytesSent;
 
 @end
 
@@ -130,7 +129,7 @@ static SSEMainWindowController *controller;
     // TODO
     // disable if no files are selected.
 
-    [mainController sendMessage];
+    [mainController sendMessages];
 }
 
 - (IBAction)cancelRecordSheet:(id)sender;
@@ -147,8 +146,8 @@ static SSEMainWindowController *controller;
 
 - (IBAction)cancelPlaySheet:(id)sender;
 {
-    [mainController cancelSendingMessage];
-    [[NSApplication sharedApplication] endSheet:playSheetWindow];
+    [mainController cancelSendingMessages];
+    [[NSApplication sharedApplication] endSheet:playSheetWindow];  // TODO is this needed?
 }
 
 //
@@ -189,19 +188,24 @@ static SSEMainWindowController *controller;
     [[NSApplication sharedApplication] performSelector:@selector(endSheet:) withObject:[[self window] attachedSheet] afterDelay:0.5];
 }
 
-- (void)showSysExSendStatusWithBytesToSend:(unsigned int)bytesToSend;
+- (void)showSysExSendStatus;
 {
+    unsigned int bytesToSend;
+
     [playProgressIndicator setMinValue:0.0];
+    [mainController getMessageCount:NULL messageIndex:NULL bytesToSend:&bytesToSend bytesSent:NULL];
     [playProgressIndicator setMaxValue:bytesToSend];
 
-    [self _updatePlayProgressWithBytesSent:0];
+    [self _updatePlayProgress];
+
     [[NSApplication sharedApplication] beginSheet:playSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
-- (void)hideSysExSendStatusWithBytesSent:(unsigned int)bytesSent;
+- (void)hideSysExSendStatus;
 {
-    [self _updatePlayProgressWithBytesSent:bytesSent];
+    [self _updatePlayProgress];
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_updatePlayProgress) object:nil];
+        // TODO the above is really clunky
 
     // Even if we have set the progress indicator to its maximum value, it won't get drawn on the screen that way immediately,
     // probably because it tries to smoothly animate to that state. The only way I have found to show the maximum value is to just
@@ -356,14 +360,23 @@ static SSEMainWindowController *controller;
 
 - (void)_updatePlayProgress;
 {
-    [self _updatePlayProgressWithBytesSent:[mainController bytesSent]];
-}
+    unsigned int messageIndex, messageCount, bytesToSend, bytesSent;
+    NSString *message;
 
-- (void)_updatePlayProgressWithBytesSent:(unsigned int)bytesSent;
-{
+    [mainController getMessageCount:&messageCount messageIndex:&messageIndex bytesToSend:&bytesToSend bytesSent:&bytesSent];
+
     [playProgressIndicator setDoubleValue:bytesSent];
-    [playProgressField setStringValue:[@"Sent " stringByAppendingString:[NSString abbreviatedStringForBytes:bytesSent]]];
-    // TODO localize
+    [playProgressBytesField setStringValue:[NSString abbreviatedStringForBytes:bytesSent]];
+    if (bytesSent < bytesToSend) {
+        if (messageCount > 1)
+            message = [NSString stringWithFormat:@"Sending message %u of %u...", messageIndex+1, messageCount];
+        else
+            message = @"Sending message...";
+    } else {
+        message = @"Done.";
+    }
+        // TODO localize all of the above
+    [playProgressMessageField setStringValue:message];
 
     [self performSelector:@selector(_updatePlayProgress) withObject:nil afterDelay:[playProgressIndicator animationDelay]];
 }

@@ -24,7 +24,10 @@
     unsigned int totalBytesRead;
 
     // ... for sending sysex
-    SMSysExSendRequest *currentSendRequest;
+    unsigned int sendingMessageCount;
+    unsigned int sendingMessageIndex;
+    unsigned int bytesToSend;
+    unsigned int bytesSent;
 }
 
 - (NSArray *)sourceDescriptions;
@@ -46,8 +49,9 @@
 
 // Sending sysex messages
 
-- (void)sendMessage;
-- (unsigned int)bytesSent;
-- (void)cancelSendingMessage;
+- (void)sendMessages;
+- (void)cancelSendingMessages;
+
+- (void)getMessageCount:(unsigned int *)messageCountPtr messageIndex:(unsigned int *)messageIndexPtr bytesToSend:(unsigned int *)bytesToSendPtr bytesSent:(unsigned int *)bytesSentPtr;
 
 @end

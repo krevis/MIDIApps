@@ -82,8 +82,6 @@
     outputStream = nil;
     [messages release];
     messages = nil;
-    [currentSendRequest release];
-    currentSendRequest = nil;
 
     [super dealloc];
 }
@@ -207,20 +205,51 @@
 // Sending sysex messages
 //
 
-- (void)sendMessage;
+- (void)sendMessages;
 {
-    if (messages && [messages count] > 0)
-        [outputStream takeMIDIMessages:messages];
+    if (!messages || [messages count] == 0)
+        return;
+
+    sendingMessageCount = 0;
+    sendingMessageIndex = 0;
+    bytesToSend = 0;
+    bytesSent = 0;
+    
+    [outputStream takeMIDIMessages:messages];
+
+    if (sendingMessageCount > 0) {
+        unsigned int messageIndex;
+
+        bytesToSend = 0;
+        for (messageIndex = 0; messageIndex < sendingMessageCount; messageIndex++)
+            bytesToSend += [[messages objectAtIndex:messageIndex] fullMessageDataLength];
+
+        [windowController showSysExSendStatus];
+    }
 }
 
-- (unsigned int)bytesSent;
+- (void)cancelSendingMessages;
 {
-    return [currentSendRequest bytesSent];
+    [outputStream cancelPendingSysExSendRequests];
 }
 
-- (void)cancelSendingMessage;
+- (void)getMessageCount:(unsigned int *)messageCountPtr messageIndex:(unsigned int *)messageIndexPtr bytesToSend:(unsigned int *)bytesToSendPtr bytesSent:(unsigned int *)bytesSentPtr;
 {
-    [currentSendRequest cancel];
+    OBASSERT([NSThread inMainThread])
+
+    if (messageCountPtr)
+        *messageCountPtr = sendingMessageCount;
+    if (messageIndexPtr)
+        *messageIndexPtr = sendingMessageIndex;
+    if (bytesToSendPtr)
+        *bytesToSendPtr = bytesToSend;
+    if (bytesSentPtr) {
+        SMSysExSendRequest *currentRequest;
+        
+        *bytesSentPtr = bytesSent;
+        if ((currentRequest = [outputStream currentSysExSendRequest]))
+            *bytesSentPtr += [currentRequest bytesSent];
+    }
 }
 
 
@@ -338,24 +367,29 @@
 
 - (void)_willStartSendingSysEx:(NSNotification *)notification;
 {
-    OBASSERT(currentSendRequest == nil);
-
-    currentSendRequest = [[[notification userInfo] objectForKey:@"sendRequest"] retain];
-    [windowController showSysExSendStatusWithBytesToSend:[currentSendRequest totalBytes]];
+    sendingMessageCount++;
 }
 
 - (void)_doneSendingSysEx:(NSNotification *)notification;
 {
-    // NOTE This is happening in the MIDI thread, probably
+    // NOTE This is happening in the MIDI thread, probably.
+    // The request may or may not have finished successfully.
     SMSysExSendRequest *sendRequest;
 
     sendRequest = [[notification userInfo] objectForKey:@"sendRequest"];
-    OBASSERT(currentSendRequest == sendRequest);
+    [self mainThreadPerformSelector:@selector(_mainThreadDoneSendingSysExWithBytesSent:) withInt:[sendRequest bytesSent]];
+}
 
-    [windowController queueSelector:@selector(hideSysExSendStatusWithBytesSent:) withInt:[currentSendRequest bytesSent]];
+- (void)_mainThreadDoneSendingSysExWithBytesSent:(unsigned int)requestBytesSent;
+{
+    bytesSent += requestBytesSent;
 
-    [currentSendRequest release];
-    currentSendRequest = nil;
+    if (sendingMessageIndex + 1 >= sendingMessageCount) {
+        // We're done.
+        [windowController hideSysExSendStatus];
+    } else {
+        sendingMessageIndex++;
+    }
 }
 
 @end

@@ -25,8 +25,9 @@
             OUTLETS = {
                 destinationPopUpButton = NSPopUpButton; 
                 mainController = SSEMainController; 
-                playProgressField = NSTextField; 
+                playProgressBytesField = NSTextField; 
                 playProgressIndicator = NSProgressIndicator; 
+                playProgressMessageField = NSTextField; 
                 playSheetWindow = NSWindow; 
                 recordMultipleDoneButton = NSButton; 
                 recordMultipleProgressField = NSTextField; 

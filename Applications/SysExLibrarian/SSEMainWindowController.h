@@ -25,7 +25,8 @@
     
     IBOutlet NSWindow *playSheetWindow;
     IBOutlet NSProgressIndicator *playProgressIndicator;
-    IBOutlet NSTextField *playProgressField;
+    IBOutlet NSTextField *playProgressMessageField;
+    IBOutlet NSTextField *playProgressBytesField;
 
     // Transient data
     OFScheduledEvent *progressUpdateEvent;
@@ -58,7 +59,7 @@
 - (void)updateSysExReadIndicator;
 - (void)stopSysExReadIndicator;
 
-- (void)showSysExSendStatusWithBytesToSend:(unsigned int)bytesToSend;
-- (void)hideSysExSendStatusWithBytesSent:(unsigned int)bytesSent;
+- (void)showSysExSendStatus;
+- (void)hideSysExSendStatus;
 
 @end
