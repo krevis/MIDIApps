@@ -81,6 +81,61 @@
 //102
 //103
 //104
+//160
+//161
+//162
+//163
+//164
+		169A4DBF04D37047007059A2 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = SSESysExSpeedWindowController.h;
+			refType = 4;
+		};
+		169A4DC004D37047007059A2 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = SSESysExSpeedWindowController.m;
+			refType = 4;
+		};
+		169A4DC104D37047007059A2 = {
+			fileRef = 169A4DBF04D37047007059A2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		169A4DC204D37047007059A2 = {
+			fileRef = 169A4DC004D37047007059A2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		169A4DC304D376F8007059A2 = {
+			children = (
+				169A4DC404D376F8007059A2,
+			);
+			isa = PBXVariantGroup;
+			name = SysExSpeed.nib;
+			path = "";
+			refType = 4;
+		};
+		169A4DC404D376F8007059A2 = {
+			isa = PBXFileReference;
+			name = English;
+			path = English.lproj/SysExSpeed.nib;
+			refType = 4;
+		};
+		169A4DC504D376F8007059A2 = {
+			fileRef = 169A4DC304D376F8007059A2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//160
+//161
+//162
+//163
+//164
 //170
 //171
 //172
@@ -124,6 +179,7 @@
 				4A9504D0FFE6A4CB11CA0CBA,
 				4A9504D1FFE6A4CB11CA0CBA,
 			);
+			hasScannedForEncodings = 1;
 			isa = PBXProject;
 			mainGroup = 2A37F4AAFDCFA73011CA2CEA;
 			projectDirPath = "";
@@ -170,6 +226,7 @@
 			refType = 4;
 		};
 		2A37F4B0FDCFA73011CA2CEA = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = main.m;
 			refType = 4;
@@ -193,6 +250,7 @@
 			children = (
 				2A37F4B6FDCFA73011CA2CEA,
 				F559F90A01DEC5E001000164,
+				169A4DC304D376F8007059A2,
 				F5F52C15022015AC01000164,
 				F559F90F01DEFA9701000164,
 				F5308FFD023315AD01000164,
@@ -398,7 +456,6 @@
 </dict>
 </plist>
 ";
-			shouldUseHeadermap = 1;
 		};
 		2A37F4C7FDCFA73011CA2CEA = {
 			buildActionMask = 2147483647;
@@ -429,6 +486,7 @@
 				F56B119A0324C4A901000164,
 				F56B119E0324C89D01000164,
 				F56B11A40324D5AA01000164,
+				169A4DC104D37047007059A2,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -460,6 +518,7 @@
 				F53090080233385B01000164,
 				F5309010023350F901000164,
 				F5C54B9D030C6F9E01000164,
+				169A4DC504D376F8007059A2,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -493,6 +552,7 @@
 				F56B119B0324C4A901000164,
 				F56B119F0324C89D01000164,
 				F56B11A50324D5AA01000164,
+				169A4DC204D37047007059A2,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -571,6 +631,8 @@
 			children = (
 				F559F90601DEC1D801000164,
 				F559F90701DEC1D801000164,
+				169A4DBF04D37047007059A2,
+				169A4DC004D37047007059A2,
 			);
 			isa = PBXGroup;
 			name = "Preferences window";
@@ -616,11 +678,13 @@
 			refType = 4;
 		};
 		F5308FE40232E1AB01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSERecordOneController.h;
 			refType = 4;
 		};
 		F5308FE50232E1AB01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSERecordOneController.m;
 			refType = 4;
@@ -680,11 +744,13 @@
 			refType = 4;
 		};
 		F5308FED0233023701000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSERecordManyController.h;
 			refType = 4;
 		};
 		F5308FEE0233023701000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSERecordManyController.m;
 			refType = 4;
@@ -723,11 +789,13 @@
 			};
 		};
 		F5308FF40233075A01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSERecordController.h;
 			refType = 4;
 		};
 		F5308FF50233075A01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSERecordController.m;
 			refType = 4;
@@ -758,11 +826,13 @@
 			refType = 4;
 		};
 		F5308FF902330F2A01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEPlayController.h;
 			refType = 4;
 		};
 		F5308FFA02330F2A01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEPlayController.m;
 			refType = 4;
@@ -819,11 +889,13 @@
 			refType = 4;
 		};
 		F5309002023333DF01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEDeleteController.h;
 			refType = 4;
 		};
 		F5309003023333DF01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEDeleteController.m;
 			refType = 4;
@@ -871,11 +943,13 @@
 			refType = 4;
 		};
 		F530900A02333F8B01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEImportController.h;
 			refType = 4;
 		};
 		F530900B02333F8B01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEImportController.m;
 			refType = 4;
@@ -924,11 +998,13 @@
 			refType = 4;
 		};
 		F53090120233540701000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEFindMissingController.h;
 			refType = 4;
 		};
 		F53090130233540701000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEFindMissingController.m;
 			refType = 4;
@@ -946,11 +1022,13 @@
 			};
 		};
 		F539E382020F19A501000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = "NSWorkspace-Extensions.h";
 			refType = 4;
 		};
 		F539E383020F19A501000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lineEnding = 0;
 			path = "NSWorkspace-Extensions.m";
@@ -1011,6 +1089,7 @@
 			};
 		};
 		F547DDDC03184C5C01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = PrecompHeader.h;
 			refType = 4;
@@ -1039,11 +1118,13 @@
 			};
 		};
 		F551751C01F3745B01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = BDAlias.h;
 			refType = 4;
 		};
 		F551751D01F3745B01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = BDAlias.m;
 			refType = 4;
@@ -1061,11 +1142,13 @@
 			};
 		};
 		F551752001F3ACED01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSETableView.h;
 			refType = 4;
 		};
 		F551752101F3ACED01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSETableView.m;
 			refType = 4;
@@ -1128,11 +1211,13 @@
 			};
 		};
 		F559F90201DEC14A01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEAppController.h;
 			refType = 4;
 		};
 		F559F90301DEC14A01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEAppController.m;
 			refType = 4;
@@ -1144,11 +1229,13 @@
 			};
 		};
 		F559F90601DEC1D801000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEPreferencesWindowController.h;
 			refType = 4;
 		};
 		F559F90701DEC1D801000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEPreferencesWindowController.m;
 			refType = 4;
@@ -1230,11 +1317,13 @@
 			};
 		};
 		F565B6E501E1419001000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEMainWindowController.h;
 			refType = 4;
 		};
 		F565B6E601E1419001000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEMainWindowController.m;
 			refType = 4;
@@ -1252,11 +1341,13 @@
 			};
 		};
 		F565B6E901E1498301000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEMIDIController.h;
 			refType = 4;
 		};
 		F565B6EA01E1498301000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEMIDIController.m;
 			refType = 4;
@@ -1293,11 +1384,13 @@
 			refType = 4;
 		};
 		F565B6EE01E1567501000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = "NSPopUpButton-Extensions.h";
 			refType = 4;
 		};
 		F565B6EF01E1567501000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = "NSPopUpButton-Extensions.m";
 			refType = 4;
@@ -1329,11 +1422,13 @@
 			refType = 4;
 		};
 		F56B11980324C4A901000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSECombinationOutputStream.h;
 			refType = 4;
 		};
 		F56B11990324C4A901000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSECombinationOutputStream.m;
 			refType = 4;
@@ -1351,11 +1446,13 @@
 			};
 		};
 		F56B119C0324C89D01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEOutputStreamDestination.h;
 			refType = 4;
 		};
 		F56B119D0324C89D01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEOutputStreamDestination.m;
 			refType = 4;
@@ -1373,11 +1470,13 @@
 			};
 		};
 		F56B11A20324D5AA01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = "SMDestinationEndpoint-SSEOutputStreamDestination.h";
 			refType = 4;
 		};
 		F56B11A30324D5AA01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = "SMDestinationEndpoint-SSEOutputStreamDestination.m";
 			refType = 4;
@@ -1439,11 +1538,13 @@
 			};
 		};
 		F583CEB401EE3D3801000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSELibrary.h;
 			refType = 4;
 		};
 		F583CEB501EE3D3801000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSELibrary.m;
 			refType = 4;
@@ -1461,11 +1562,13 @@
 			};
 		};
 		F583CEB801EE3E4401000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSELibraryEntry.h;
 			refType = 4;
 		};
 		F583CEB901EE3E4401000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSELibraryEntry.m;
 			refType = 4;
@@ -1483,11 +1586,13 @@
 			};
 		};
 		F58752670214C25201000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEWindowController.h;
 			refType = 4;
 		};
 		F58752680214C25201000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEWindowController.m;
 			refType = 4;
@@ -1505,11 +1610,13 @@
 			};
 		};
 		F587526B0214CA4E01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = "NSToolbarItem-Extensions.h";
 			refType = 4;
 		};
 		F587526C0214CA4E01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = "NSToolbarItem-Extensions.m";
 			refType = 4;
@@ -1536,6 +1643,7 @@
 			refType = 4;
 		};
 		F58752700214CEDD01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			name = English;
 			path = English.lproj/MainWindow.toolbar;
@@ -1548,11 +1656,13 @@
 			};
 		};
 		F58752740214D73401000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEValidatingButton.h;
 			refType = 4;
 		};
 		F58752750214D73401000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEValidatingButton.m;
 			refType = 4;
@@ -1576,6 +1686,7 @@
 			};
 		};
 		F597D8FC026BC47A01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = "Read Me.html";
 			refType = 4;
@@ -1612,6 +1723,7 @@
 			refType = 4;
 		};
 		F5C54B9C030C6F9D01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			name = English;
 			path = English.lproj/SysExLibrarian.strings;
@@ -1639,6 +1751,7 @@
 			refType = 4;
 		};
 		F5D90FD2021628DF01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			name = English;
 			path = English.lproj/Credits.html;
@@ -1667,11 +1780,13 @@
 			};
 		};
 		F5DFAC8302F7715701000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEExportController.h;
 			refType = 4;
 		};
 		F5DFAC8402F7715701000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEExportController.m;
 			refType = 4;
@@ -1698,6 +1813,7 @@
 			refType = 4;
 		};
 		F5F52C1102200EBE01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEDetailsWindowController.h;
 			refType = 4;
@@ -1709,6 +1825,7 @@
 			};
 		};
 		F5F52C1302200F6601000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SSEDetailsWindowController.m;
 			refType = 4;

@@ -11,6 +11,7 @@
     IBOutlet NSTextField *sysExReadTimeOutField;
     IBOutlet NSSlider *sysExIntervalBetweenSentMessagesSlider;
     IBOutlet NSTextField *sysExIntervalBetweenSentMessagesField;
+    IBOutlet NSButton *showSysExSpeedWindowButton;
 
     OFPreference *sizeFormatPreference;
     OFPreference *readTimeOutPreference;
@@ -25,6 +26,8 @@
 - (IBAction)changeSysExFolder:(id)sender;
 - (IBAction)changeReadTimeOut:(id)sender;
 - (IBAction)changeIntervalBetweenSentMessages:(id)sender;
+
+- (IBAction)showSysExSpeedWindow:(id)sender;
 
 @end
 

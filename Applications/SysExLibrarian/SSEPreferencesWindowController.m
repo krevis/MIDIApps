@@ -6,6 +6,7 @@
 #import "SSEMainWindowController.h"
 #import "SSELibrary.h"
 #import "SSEMIDIController.h"
+#import "SSESysExSpeedWindowController.h"
 
 
 @interface  SSEPreferencesWindowController (Private)
@@ -115,6 +116,11 @@ static SSEPreferencesWindowController *controller = nil;
     [[NSNotificationQueue defaultQueue] enqueueNotificationName:SSESysExSendPreferenceChangedNotification object:nil postingStyle:NSPostWhenIdle];
 }
 
+- (IBAction)showSysExSpeedWindow:(id)sender
+{
+    [[SSESysExSpeedWindowController sysExSpeedWindowController] showWindow:nil];
+}
+
 @end
 
 
@@ -133,6 +139,7 @@ static SSEPreferencesWindowController *controller = nil;
     [self synchronizeReadTimeOutField];
     [sysExIntervalBetweenSentMessagesSlider setIntValue:[intervalBetweenSentMessagesPreference integerValue]];
     [self synchronizeIntervalBetweenSentMessagesField];
+//    [showSysExSpeedWindowButton setEnabled:[[SMClient sharedClient] doesSendSysExRespectExternalDeviceSpeed]];
 }
 
 - (void)synchronizeReadTimeOutField;

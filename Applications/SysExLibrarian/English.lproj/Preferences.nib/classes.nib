@@ -7,10 +7,12 @@
                 changeReadTimeOut = id; 
                 changeSizeFormat = id; 
                 changeSysExFolder = id; 
+                showSysExSpeedWindow = id; 
             }; 
             CLASS = SSEPreferencesWindowController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                showSysExSpeedWindowButton = NSButton; 
                 sizeFormatMatrix = NSMatrix; 
                 sysExFolderPathField = NSTextField; 
                 sysExIntervalBetweenSentMessagesField = NSTextField; 
