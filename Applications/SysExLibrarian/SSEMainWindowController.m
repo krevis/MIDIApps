@@ -19,6 +19,7 @@
 - (void)_updateSingleSysExReadIndicatorWithMessageCount:(unsigned int)messageCount bytesRead:(unsigned int)bytesRead totalBytesRead:(unsigned int)totalBytesRead;
 - (void)_updateMultipleSysExReadIndicatorWithMessageCount:(unsigned int)messageCount bytesRead:(unsigned int)bytesRead totalBytesRead:(unsigned int)totalBytesRead;
 
+- (void)_updatePlayProgressAndRepeat;
 - (void)_updatePlayProgress;
 
 @end
@@ -191,20 +192,24 @@ static SSEMainWindowController *controller;
     unsigned int bytesToSend;
 
     [playProgressIndicator setMinValue:0.0];
+    [playProgressIndicator setDoubleValue:0.0];
     [mainController getMessageCount:NULL messageIndex:NULL bytesToSend:&bytesToSend bytesSent:NULL];
     [playProgressIndicator setMaxValue:bytesToSend];
 
-    [self _updatePlayProgress];
+    [self _updatePlayProgressAndRepeat];
 
     [[NSApplication sharedApplication] beginSheet:playSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
 - (void)hideSysExSendStatusWithSuccess:(BOOL)success;
 {
-    [self _updatePlayProgress];
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_updatePlayProgress) object:nil];
-        // TODO the above is really clunky... we ask to perform a request then immediately terminate it
-
+    // If there is an update pending, try to cancel it. If that succeeds, then we know the event never happened, and we do it ourself now.
+    if (progressUpdateEvent && [[OFScheduler mainScheduler] abortEvent:progressUpdateEvent]) {
+        [self _updatePlayProgress];
+        [progressUpdateEvent release];
+        progressUpdateEvent = nil;
+    }
+    
     if (!success) {
         [playProgressMessageField setStringValue:@"Cancelled."];
             // TODO localize
@@ -352,6 +357,14 @@ static SSEMainWindowController *controller;
     [recordMultipleDoneButton setEnabled:hasAtLeastOneCompleteMessage];
 }
 
+- (void)_updatePlayProgressAndRepeat;
+{
+    [self _updatePlayProgress];
+
+    [progressUpdateEvent release];
+    progressUpdateEvent = [[[OFScheduler mainScheduler] scheduleSelector:@selector(_updatePlayProgressAndRepeat) onObject:self afterTime:[playProgressIndicator animationDelay]] retain];
+}
+
 - (void)_updatePlayProgress;
 {
     unsigned int messageIndex, messageCount, bytesToSend, bytesSent;
@@ -359,6 +372,9 @@ static SSEMainWindowController *controller;
 
     [mainController getMessageCount:&messageCount messageIndex:&messageIndex bytesToSend:&bytesToSend bytesSent:&bytesSent];
 
+    OBASSERT(bytesSent >= [playProgressIndicator doubleValue]);
+        // Make sure we don't go backwards somehow
+        
     [playProgressIndicator setDoubleValue:bytesSent];
     [playProgressBytesField setStringValue:[NSString abbreviatedStringForBytes:bytesSent]];
     if (bytesSent < bytesToSend) {
@@ -371,8 +387,6 @@ static SSEMainWindowController *controller;
     }
         // TODO localize all of the above
     [playProgressMessageField setStringValue:message];
-
-    [self performSelector:@selector(_updatePlayProgress) withObject:nil afterDelay:[playProgressIndicator animationDelay]];
 }
 
 @end

@@ -24,6 +24,8 @@
     unsigned int totalBytesRead;
 
     // ... for sending sysex
+    NSLock *sendProgressLock;
+    SMSysExSendRequest *nonretainedCurrentSendRequest;
     unsigned int sendingMessageCount;
     unsigned int sendingMessageIndex;
     unsigned int bytesToSend;

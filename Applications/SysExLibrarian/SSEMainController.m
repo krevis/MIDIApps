@@ -63,6 +63,8 @@
     listeningToMessages = NO;
     listenToMultipleMessages = NO;
 
+    sendProgressLock = [[NSLock alloc] init];
+    
     [center addObserver:self selector:@selector(_midiSetupDidChange:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
 
     // TODO should get selected source and dest from preferences
@@ -82,6 +84,8 @@
     outputStream = nil;
     [messages release];
     messages = nil;
+    [sendProgressLock release];
+    sendProgressLock = nil;
 
     [super dealloc];
 }
@@ -210,6 +214,7 @@
     if (!messages || [messages count] == 0)
         return;
 
+    nonretainedCurrentSendRequest = nil;
     sendingMessageCount = 0;
     sendingMessageIndex = 0;
     bytesToSend = 0;
@@ -237,6 +242,8 @@
 {
     OBASSERT([NSThread inMainThread])
 
+    [sendProgressLock lock];
+    
     if (messageCountPtr)
         *messageCountPtr = sendingMessageCount;
     if (messageIndexPtr)
@@ -244,12 +251,12 @@
     if (bytesToSendPtr)
         *bytesToSendPtr = bytesToSend;
     if (bytesSentPtr) {
-        SMSysExSendRequest *currentRequest;
-        
         *bytesSentPtr = bytesSent;
-        if ((currentRequest = [outputStream currentSysExSendRequest]))
-            *bytesSentPtr += [currentRequest bytesSent];
+        if (nonretainedCurrentSendRequest)
+            *bytesSentPtr += [nonretainedCurrentSendRequest bytesSent];
     }
+
+    [sendProgressLock unlock];
 }
 
 
@@ -367,7 +374,14 @@
 
 - (void)_willStartSendingSysEx:(NSNotification *)notification;
 {
+    [sendProgressLock lock];
+
     sendingMessageCount++;
+
+    if (!nonretainedCurrentSendRequest)
+        nonretainedCurrentSendRequest = [outputStream currentSysExSendRequest];
+
+    [sendProgressLock unlock];
 }
 
 - (void)_doneSendingSysEx:(NSNotification *)notification;
@@ -377,18 +391,19 @@
     SMSysExSendRequest *sendRequest;
 
     sendRequest = [[notification userInfo] objectForKey:@"sendRequest"];
-    [self mainThreadPerformSelector:@selector(_mainThreadDoneSendingSysExWithBytesSent:) withInt:[sendRequest bytesSent]];
-}
 
-- (void)_mainThreadDoneSendingSysExWithBytesSent:(unsigned int)requestBytesSent;
-{
-    bytesSent += requestBytesSent;
+    [sendProgressLock lock];
 
-    if (sendingMessageIndex + 1 >= sendingMessageCount) {
+    bytesSent += [sendRequest bytesSent];
+    sendingMessageIndex++;
+    nonretainedCurrentSendRequest = [outputStream currentSysExSendRequest];
+    
+    [sendProgressLock unlock];
+
+    if (!nonretainedCurrentSendRequest) {
+        OBASSERT(sendingMessageIndex == sendingMessageCount);
         // We're done.
-        [windowController hideSysExSendStatusWithSuccess:(bytesSent == bytesToSend)];
-    } else {
-        sendingMessageIndex++;
+        [windowController mainThreadPerformSelector:@selector(hideSysExSendStatusWithSuccess:) withBool:(bytesSent == bytesToSend)];
     }
 }
 
