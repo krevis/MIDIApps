@@ -5,6 +5,7 @@
 #import "SMUtilities.h"
 #import <AvailabilityMacros.h>
 #import <objc/objc-class.h>
+#import <CoreMIDI/CoreMIDI.h>
 
 
 void SMRequestConcreteImplementation(id self, SEL _cmd)
@@ -35,10 +36,25 @@ BOOL SMClassIsSubclassOfClass(Class class, Class potentialSuperclass)
 }
 
 #if DEBUG
-
 extern void SMAssertionFailed(const char *expression, const char *file, unsigned int line)
 {
     NSLog(@"SnoizeMIDI: Assertion failed: condition %s, file %s, line %u", expression, file, line);
 }
-
 #endif
+
+UInt32 SMPacketListSize(const MIDIPacketList *packetList)
+{
+    const MIDIPacket *packet;
+    UInt32 i;
+    UInt32 size;
+
+    // Find the size of the whole packet list
+    size = offsetof(MIDIPacketList, packet);
+    packet = &packetList->packet[0];
+    for (i = 0; i < packetList->numPackets; i++) {
+        size += offsetof(MIDIPacket, data) + packet->length;
+        packet = MIDIPacketNext(packet);
+    }
+
+    return size;    
+}
