@@ -48,7 +48,7 @@
     BOOL shouldBeEnabled;
 
     action = [self action];
-    validator = [[NSApplication sharedApplication] targetForAction:action to:[self target] from:self];
+    validator = [NSApp targetForAction:action to:[self target] from:self];
 
     if ((action == NULL) || (validator == nil) || ![validator respondsToSelector:action]) {
         shouldBeEnabled = NO;

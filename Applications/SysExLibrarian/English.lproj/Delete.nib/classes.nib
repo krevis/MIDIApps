@@ -1,0 +1,17 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {endSheetWithReturnCodeFromSenderTag = id; }; 
+            CLASS = SSEDeleteController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                deleteLibraryFilesWarningSheetWindow = NSPanel; 
+                deleteWarningSheetWindow = NSPanel; 
+                doNotWarnOnDeleteAgainCheckbox = NSButton; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

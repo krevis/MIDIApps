@@ -77,6 +77,11 @@ DEFINE_NSSTRING(SSELibraryEntryNameDidChangeNotification);
     [super dealloc];
 }
 
+- (SSELibrary *)library;
+{
+    return nonretainedLibrary;
+}
+
 - (NSDictionary *)dictionaryValues;
 {
     NSMutableDictionary *dict;

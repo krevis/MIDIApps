@@ -193,16 +193,17 @@
 				F559F90A01DEC5E001000164,
 				F5F52C15022015AC01000164,
 				F559F90F01DEFA9701000164,
-				F587526F0214CEDD01000164,
 				F5308FFD023315AD01000164,
 				F5308FE80232F9D401000164,
 				F5308FF10233059B01000164,
+				F53090060233385B01000164,
 				2A37F4B9FDCFA73011CA2CEA,
 				F5D90FD1021628DF01000164,
 				089C165FFE840EACC02AAC07,
 				F561AFAA0208780001000164,
 				F561AFAB0208780001000164,
 				F5308FEB0233012701000164,
+				F587526F0214CEDD01000164,
 				F5308FEC0233012701000164,
 				F5D90FE4021630C101000164,
 			);
@@ -413,6 +414,7 @@
 				F5308FEF0233023701000164,
 				F5308FF60233075A01000164,
 				F5308FFB02330F2B01000164,
+				F5309004023333DF01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -441,6 +443,7 @@
 				F5308FEA0232F9D401000164,
 				F5308FF30233059B01000164,
 				F5308FFF023315AD01000164,
+				F53090080233385B01000164,
 			);
 			isa = PBXResourcesBuildPhase;
 			name = "Bundle Resources";
@@ -467,6 +470,7 @@
 				F5308FF00233023801000164,
 				F5308FF70233075A01000164,
 				F5308FFC02330F2B01000164,
+				F5309005023333DF01000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -567,6 +571,7 @@
 				F565B6EA01E1498301000164,
 				F5309000023317A701000164,
 				F5308FF802330EEE01000164,
+				F5309001023333DF01000164,
 			);
 			isa = PBXGroup;
 			name = "Main window";
@@ -778,6 +783,58 @@
 			isa = PBXGroup;
 			name = Playing;
 			refType = 4;
+		};
+		F5309001023333DF01000164 = {
+			children = (
+				F5309002023333DF01000164,
+				F5309003023333DF01000164,
+			);
+			isa = PBXGroup;
+			name = Deleting;
+			refType = 4;
+		};
+		F5309002023333DF01000164 = {
+			isa = PBXFileReference;
+			path = SSEDeleteController.h;
+			refType = 4;
+		};
+		F5309003023333DF01000164 = {
+			isa = PBXFileReference;
+			path = SSEDeleteController.m;
+			refType = 4;
+		};
+		F5309004023333DF01000164 = {
+			fileRef = F5309002023333DF01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5309005023333DF01000164 = {
+			fileRef = F5309003023333DF01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F53090060233385B01000164 = {
+			children = (
+				F53090070233385B01000164,
+			);
+			isa = PBXVariantGroup;
+			name = Delete.nib;
+			path = "";
+			refType = 4;
+		};
+		F53090070233385B01000164 = {
+			isa = PBXFileReference;
+			name = English;
+			path = English.lproj/Delete.nib;
+			refType = 4;
+		};
+		F53090080233385B01000164 = {
+			fileRef = F53090060233385B01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		F539E382020F19A501000164 = {
 			isa = PBXFileReference;

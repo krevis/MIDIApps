@@ -4,6 +4,7 @@
 #import <OmniFoundation/OmniFoundation.h>
 
 #import "NSPopUpButton-Extensions.h"
+#import "SSEDeleteController.h"
 #import "SSEDetailsWindowController.h"
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
@@ -32,17 +33,14 @@
 - (void)_scrollToEntries:(NSArray *)entries;
 - (void)_selectAndScrollToEntries:(NSArray *)entries;
 
+- (void)_playSelectedEntries;
+- (void)_showDetailsOfSelectedEntries;
+
 - (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
 - (void)_showImportWarningForFiles:(NSArray *)filePaths andThenPerformSelector:(SEL)selector;
 - (void)_importWarningSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 - (void)_addFilesToLibraryInMainThread:(NSArray *)filePaths;
-- (void)_showErrorMessageForBadFiles:(NSArray *)badFilePaths;
-
-- (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-
-- (void)_playSelectedEntries;
-
-- (void)_showDetailsOfSelectedEntries;
+- (void)_showErrorMessageForFilesWithNoSysEx:(NSArray *)badFilePaths;
 
 - (BOOL)_areAnyFilesAcceptable:(NSArray *)filePaths;
 - (BOOL)_areAnyFilesDirectories:(NSArray *)filePaths;
@@ -53,6 +51,7 @@
 - (NSArray *)_addFilesToLibrary:(NSArray *)filePaths returningBadFiles:(NSArray **)badFilePathsPtr;
 
 - (void)_showImportSheet;
+- (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 - (void)_updateImportStatusDisplay;
 - (void)_doneImportingInWorkThreadWithAddedEntries:(NSArray *)addedEntries badFiles:(NSArray *)badFilePaths;
 
@@ -61,17 +60,11 @@
 - (void)_runOpenSheetForMissingFileWithContextInfo:(void *)contextInfo;
 - (void)_findMissingFileOpenPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
-- (void)_deleteWarningSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-- (void)_deleteStep2;
-- (void)_deleteLibraryFilesWarningSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-- (void)_deleteSelectedEntriesMovingLibraryFilesToTrash:(BOOL)shouldMoveToTrash;
-
 @end
 
 
 @implementation SSEMainWindowController
 
-NSString *SSEShowWarningOnDeletePreferenceKey = @"SSEShowWarningOnDelete";
 NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
 NSString *SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey = @"SSEAbbreviateFileSizesInLibraryTableView";
 
@@ -119,6 +112,8 @@ static SSEMainWindowController *controller;
     recordOneController = nil;
     [recordManyController release];
     recordManyController = nil;
+    [deleteController release];
+    deleteController = nil;
     [importStatusLock release];
     importStatusLock = nil;
     [importFilePath release];
@@ -243,12 +238,10 @@ static SSEMainWindowController *controller;
     if ([self _finishEditingResultsInError])
         return;
 
-    if ([[OFPreference preferenceForKey:SSEShowWarningOnDeletePreferenceKey] boolValue]) {
-        [doNotWarnOnDeleteAgainCheckbox setIntValue:0];
-        [[NSApplication sharedApplication] beginSheet:deleteWarningSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_deleteWarningSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
-    } else {
-        [self _deleteStep2];
-    } 
+    if (!deleteController)
+        deleteController = [[SSEDeleteController alloc] initWithWindowController:self];
+
+    [deleteController deleteEntries:[self _selectedEntries]];
 }
 
 - (IBAction)recordOne:(id)sender;
@@ -329,7 +322,7 @@ static SSEMainWindowController *controller;
 
 - (IBAction)endSheetWithReturnCodeFromSenderTag:(id)sender;
 {
-    [[NSApplication sharedApplication] endSheet:[[self window] attachedSheet] returnCode:[sender tag]];
+    [NSApp endSheet:[[self window] attachedSheet] returnCode:[sender tag]];
 }
 
 //
@@ -598,6 +591,10 @@ static SSEMainWindowController *controller;
     return ([[self window] attachedSheet] != nil);
 }
 
+//
+// Destination selections (popup and toolbar menu)
+//
+
 - (void)_synchronizeDestinationPopUpWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 {
     BOOL wasAutodisplay;
@@ -689,6 +686,10 @@ static SSEMainWindowController *controller;
     [nonretainedDestinationToolbarItem setMenuFormRepresentation:topMenuItem];
     [topMenuItem release];    
 }
+
+//
+// Library interaction
+//
 
 - (void)_libraryDidChange:(NSNotification *)notification;
 {
@@ -789,6 +790,51 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     [self _scrollToEntries:entries];
 }
 
+//
+// Doing things with selected entries
+//
+
+- (void)_playSelectedEntries;
+{
+    NSArray *selectedEntries;
+    NSMutableArray *messages;
+    unsigned int entryCount, entryIndex;
+
+    selectedEntries = [self _selectedEntries];
+
+    messages = [NSMutableArray array];
+    entryCount = [selectedEntries count];
+    for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+        [messages addObjectsFromArray:[[selectedEntries objectAtIndex:entryIndex] messages]];
+    }
+
+    if ([messages count] > 0) {
+        if (!playController)
+            playController = [[SSEPlayController alloc] initWithWindowController:self midiController:midiController];
+
+        [playController playMessages:messages];
+    }
+}
+
+- (void)_showDetailsOfSelectedEntries;
+{
+    NSArray *selectedEntries;
+    unsigned int entryCount, entryIndex;
+
+    selectedEntries = [self _selectedEntries];
+    entryCount = [selectedEntries count];
+    for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+        SSELibraryEntry *entry;
+
+        entry = [selectedEntries objectAtIndex:entryIndex];
+        [[SSEDetailsWindowController detailsWindowControllerWithEntry:entry] showWindow:nil];
+    }
+}
+
+//
+// Add files / importing
+//
+
 - (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
 {
     if (returnCode == NSOKButton) {
@@ -818,7 +864,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
         invocation = [[OFInvocation alloc] initForObject:self selector:selector withObject:filePaths];
 
         [doNotWarnOnImportAgainCheckbox setIntValue:0];
-        [[NSApplication sharedApplication] beginSheet:importWarningSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_importWarningSheetDidEnd:returnCode:contextInfo:) contextInfo:invocation];
+        [NSApp beginSheet:importWarningSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_importWarningSheetDidEnd:returnCode:contextInfo:) contextInfo:invocation];
     }
 }
 
@@ -847,10 +893,10 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     [self _selectAndScrollToEntries:newEntries];
 
     if ([badFilePaths count] > 0)
-        [self _showErrorMessageForBadFiles:badFilePaths];
+        [self _showErrorMessageForFilesWithNoSysEx:badFilePaths];
 }
 
-- (void)_showErrorMessageForBadFiles:(NSArray *)badFilePaths;
+- (void)_showErrorMessageForFilesWithNoSysEx:(NSArray *)badFilePaths;
 {
     unsigned int badFileCount;
     NSString *message;
@@ -864,49 +910,6 @@ static int libraryEntryComparator(id object1, id object2, void *context)
         message = [NSString stringWithFormat:@"No SysEx data could be found in %u of the files. They have not been added to the library.", badFileCount];
     
     NSBeginInformationalAlertSheet(@"Could not read SysEx", nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"%@", message);    
-}
-
-- (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-{
-    // At this point, we don't really care how this sheet ended
-    [sheet orderOut:nil];
-}
-
-- (void)_playSelectedEntries;
-{
-    NSArray *selectedEntries;
-    NSMutableArray *messages;
-    unsigned int entryCount, entryIndex;
-
-    selectedEntries = [self _selectedEntries];
-        
-    messages = [NSMutableArray array];
-    entryCount = [selectedEntries count];
-    for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
-        [messages addObjectsFromArray:[[selectedEntries objectAtIndex:entryIndex] messages]];
-    }
-
-    if ([messages count] > 0) {
-        if (!playController)
-            playController = [[SSEPlayController alloc] initWithWindowController:self midiController:midiController];
-    
-        [playController playMessages:messages];
-    }
-}
-
-- (void)_showDetailsOfSelectedEntries;
-{
-    NSArray *selectedEntries;
-    unsigned int entryCount, entryIndex;
-
-    selectedEntries = [self _selectedEntries];
-    entryCount = [selectedEntries count];
-    for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
-        SSELibraryEntry *entry;
-
-        entry = [selectedEntries objectAtIndex:entryIndex];
-        [[SSEDetailsWindowController detailsWindowControllerWithEntry:entry] showWindow:nil];
-    }
 }
 
 - (BOOL)_areAnyFilesAcceptable:(NSArray *)filePaths;
@@ -1108,10 +1111,16 @@ static int libraryEntryComparator(id object1, id object2, void *context)
 
     // Bring the application and window to the front, so the sheet doesn't cause the dock to bounce our icon
     // TODO Does this actually work correctly? It seems to be getting delayed...
-    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+    [NSApp activateIgnoringOtherApps:YES];
     [[self window] makeKeyAndOrderFront:nil];
     
-    [[NSApplication sharedApplication] beginSheet:importSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_sheetDidEnd:returnCode:contextInfo:) contextInfo:nil];
+    [NSApp beginSheet:importSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_sheetDidEnd:returnCode:contextInfo:) contextInfo:nil];
+}
+
+- (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+{
+    // At this point, we don't really care how this sheet ended
+    [sheet orderOut:nil];
 }
 
 - (void)_updateImportStatusDisplay;
@@ -1145,13 +1154,13 @@ static int libraryEntryComparator(id object1, id object2, void *context)
 - (void)_doneImportingInWorkThreadWithAddedEntries:(NSArray *)addedEntries badFiles:(NSArray *)badFilePaths;
 {
     if ([[self window] attachedSheet])
-        [[NSApplication sharedApplication] endSheet:importSheetWindow];
+        [NSApp endSheet:importSheetWindow];
 
     [self synchronizeInterface];
     [self _selectAndScrollToEntries:addedEntries];
 
     if ([badFilePaths count] > 0)
-        [self _showErrorMessageForBadFiles:badFilePaths];
+        [self _showErrorMessageForFilesWithNoSysEx:badFilePaths];
 }
 
 - (void)_findMissingFilesAndPerformSelector:(SEL)selector;
@@ -1264,65 +1273,6 @@ static int libraryEntryComparator(id object1, id object2, void *context)
         [entriesWithMissingFiles release];
         entriesWithMissingFiles = nil;
     }
-}
-
-- (void)_deleteWarningSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-{
-    [sheet orderOut:nil];
-    if (returnCode == NSOKButton) {
-        if ([doNotWarnOnDeleteAgainCheckbox intValue] == 1)
-            [[OFPreference preferenceForKey:SSEShowWarningOnDeletePreferenceKey] setBoolValue:NO];
-
-        [self _deleteStep2];
-    }
-}
-
-- (void)_deleteStep2;
-{
-    NSArray *selectedEntries;
-    unsigned int entryIndex;
-    BOOL areAnyFilesInLibraryDirectory = NO;
-
-    selectedEntries = [self _selectedEntries];
-    entryIndex = [selectedEntries count];
-    while (entryIndex--) {
-        if ([[selectedEntries objectAtIndex:entryIndex] isFileInLibraryFileDirectory]) {
-            areAnyFilesInLibraryDirectory = YES;
-            break;
-        }
-    }
-
-    if (areAnyFilesInLibraryDirectory) {
-        [[NSApplication sharedApplication] beginSheet:deleteLibraryFilesWarningSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_deleteLibraryFilesWarningSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
-    } else {
-        [self _deleteSelectedEntriesMovingLibraryFilesToTrash:NO];
-    }
-}
-
-- (void)_deleteLibraryFilesWarningSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-{
-    [sheet orderOut:nil];
-    if (returnCode == NSAlertDefaultReturn) {
-        // "Yes" button
-        [self _deleteSelectedEntriesMovingLibraryFilesToTrash:YES];
-    } else if (returnCode == NSAlertAlternateReturn) {
-        // "No" button
-        [self _deleteSelectedEntriesMovingLibraryFilesToTrash:NO];
-    }
-}
-
-- (void)_deleteSelectedEntriesMovingLibraryFilesToTrash:(BOOL)shouldMoveToTrash;
-{
-    NSArray *entriesToRemove;
-
-    entriesToRemove = [self _selectedEntries];
-
-    if (shouldMoveToTrash)
-        [library moveFilesInLibraryDirectoryToTrashForEntries:entriesToRemove];
-    [library removeEntries:entriesToRemove];
-
-    [libraryTableView deselectAll:nil];
-    [self synchronizeInterface];
 }
 
 @end

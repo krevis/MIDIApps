@@ -1,6 +1,7 @@
 #import "SSEWindowController.h"
 
 @class OFScheduledEvent;
+@class SSEDeleteController;
 @class SSEMIDIController;
 @class SSELibrary;
 @class SSEPlayController;
@@ -20,10 +21,6 @@
     IBOutlet NSTextField *importProgressMessageField;
     IBOutlet NSTextField *importProgressIndexField;
 
-    IBOutlet NSPanel *deleteWarningSheetWindow;
-    IBOutlet NSButton *doNotWarnOnDeleteAgainCheckbox;
-    IBOutlet NSPanel *deleteLibraryFilesWarningSheetWindow;
-
     IBOutlet NSPanel *importWarningSheetWindow;
     IBOutlet NSButton *doNotWarnOnImportAgainCheckbox;
     
@@ -35,6 +32,7 @@
     SSEPlayController *playController;
     SSERecordController *recordOneController;
     SSERecordController *recordManyController;
+    SSEDeleteController *deleteController;
     NSLock *importStatusLock;
     NSString *importFilePath;
     unsigned int importFileIndex;
@@ -86,6 +84,5 @@
 @end
 
 // Preferences keys
-extern NSString *SSEShowWarningOnDeletePreferenceKey;
 extern NSString *SSEShowWarningOnImportPreferenceKey;
 extern NSString *SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey;

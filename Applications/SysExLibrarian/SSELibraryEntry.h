@@ -25,6 +25,8 @@
 - (id)initWithLibrary:(SSELibrary *)library;
 - (id)initWithLibrary:(SSELibrary *)library dictionary:(NSDictionary *)dict;
 
+- (SSELibrary *)library;
+
 - (NSDictionary *)dictionaryValues;
 
 - (NSString *)path;

@@ -108,7 +108,7 @@
     optionsDictionary = [[NSMutableDictionary alloc] init];
     [optionsDictionary setObject:@"" forKey:@"Version"];
 
-    [[NSApplication sharedApplication] orderFrontStandardAboutPanelWithOptions:optionsDictionary];
+    [NSApp orderFrontStandardAboutPanelWithOptions:optionsDictionary];
 
     [optionsDictionary release];
 }
