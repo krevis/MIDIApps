@@ -8,6 +8,7 @@
     MIDIClientRef midiClient;
     NSString *name;
     BOOL postsExternalSetupChangeNotification;
+    BOOL isHandlingSetupChange;
 }
 
 + (SMClient *)sharedClient;
@@ -17,6 +18,8 @@
 
 - (BOOL)postsExternalSetupChangeNotification;
 - (void)setPostsExternalSetupChangeNotification:(BOOL)value;
+
+- (BOOL)isHandlingSetupChange;
 
 @end
 

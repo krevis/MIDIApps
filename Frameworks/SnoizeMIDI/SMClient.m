@@ -43,7 +43,8 @@ static SMClient *sharedClient = nil;
 
     name = [[self _processName] retain];
     postsExternalSetupChangeNotification = YES;
-
+    isHandlingSetupChange = NO;
+    
     status = MIDIClientCreate((CFStringRef)name, getMIDINotification, self, &midiClient);
     if (status != noErr)
         [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't create a MIDI client (error %ld)", @"SnoizeMIDI", [self bundle], "exception with OSStatus if MIDIClientCreate() fails"), status];
@@ -76,6 +77,11 @@ static SMClient *sharedClient = nil;
 - (void)setPostsExternalSetupChangeNotification:(BOOL)value;
 {
     postsExternalSetupChangeNotification = value;
+}
+
+- (BOOL)isHandlingSetupChange;
+{
+    return isHandlingSetupChange;    
 }
 
 @end
@@ -114,10 +120,14 @@ static void getMIDINotification(const MIDINotification *message, void *refCon)
     // and call ourself again after we're done.  (If we get multiple notifications while we're processing, they
     // will be coalesced into one update at the end.)
 
-    static BOOL isHandlingSetupChange = NO;
     static BOOL retryAfterDone = NO;
-    
-    if (!isHandlingSetupChange) {
+
+    if (isHandlingSetupChange) {
+        retryAfterDone = YES;
+        return;
+    }
+
+    do {
         isHandlingSetupChange = YES;
         retryAfterDone = NO;
 
@@ -127,13 +137,9 @@ static void getMIDINotification(const MIDINotification *message, void *refCon)
         if (postsExternalSetupChangeNotification) {
             [[NSNotificationCenter defaultCenter] postNotificationName:SMClientSetupChangedNotification object:self];
         }
-        
+
         isHandlingSetupChange = NO;
-        if (retryAfterDone)
-            [self _midiSetupChanged];
-    } else {
-        retryAfterDone = YES;
-    }
+    } while (retryAfterDone);
 }
 
 - (void)_broadcastUnknownMIDINotification:(const MIDINotification *)message;
