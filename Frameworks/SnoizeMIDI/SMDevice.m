@@ -113,8 +113,17 @@
 {
     OSStatus status;
     SInt32 value;
+    CFStringRef propertyName;
 
-    status = MIDIObjectGetIntegerProperty(objectRef, kMIDIPropertySingleRealtimeEntity, &value);
+#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_2
+    propertyName = kMIDIPropertySingleRealtimeEntity;
+#else
+    propertyName = [[SMClient sharedClient] coreMIDIPropertyNameConstantNamed:@"kMIDIPropertySingleRealtimeEntity"];
+    if (!propertyName)
+        return -1;
+#endif
+
+    status = MIDIObjectGetIntegerProperty(objectRef, propertyName, &value);
     if (status == noErr)
         return value;
     else
