@@ -802,4 +802,14 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
     return endpoint;
 }
 
++ (void)flushOutputForAllDestinationEndpoints;
+{
+    MIDIFlushOutput(NULL);
+}
+
+- (void)flushOutput;
+{
+    MIDIFlushOutput((MIDIEndpointRef)objectRef);
+}
+
 @end

@@ -107,6 +107,9 @@
 
 + (SMDestinationEndpoint *)createVirtualDestinationEndpointWithName:(NSString *)endpointName readProc:(MIDIReadProc)readProc readProcRefCon:(void *)readProcRefCon uniqueID:(MIDIUniqueID)newUniqueID;
 
++ (void)flushOutputForAllDestinationEndpoints;
+- (void)flushOutput;
+
 @end
 
 
