@@ -37,7 +37,7 @@
 - (void)_playSelectedEntries;
 - (void)_showDetailsOfSelectedEntries;
 
-- (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
+- (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
 - (BOOL)_areAnyFilesAcceptableForImport:(NSArray *)filePaths;
 

@@ -23,7 +23,7 @@
 
 // Main window controller sends this to begin recording
 - (void)beginRecording;
-// When we have recorded successfully, we will send -addReadMessagesToLibrary to the window controller
+    // When we have recorded successfully, we will send -addReadMessagesToLibrary to the window controller
 
 // Actions
 - (IBAction)cancelRecording:(id)sender;
