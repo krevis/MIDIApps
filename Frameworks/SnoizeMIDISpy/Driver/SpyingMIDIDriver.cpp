@@ -2,7 +2,6 @@
 
 #include "MessageQueue.h"
 #include "MessagePortBroadcaster.h"
-#include <pthread.h>
 
 
 #define kFactoryUUID CFUUIDGetConstantUUIDWithBytes(NULL, 0x4F, 0xA1, 0x3C, 0x6B, 0x2D, 0x94, 0x11, 0xD6, 0x8C, 0x2F, 0x00, 0x0A, 0x27, 0xB4, 0x96, 0x5C)
@@ -41,7 +40,9 @@ static void messageQueueHandler(CFTypeRef objectFromQueue, void *refCon);
 SpyingMIDIDriver::SpyingMIDIDriver() :
     MIDIDriver(kFactoryUUID),
     MessagePortBroadcasterDelegate(),
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
     mNeedsMonitorPointerWorkaround(false),
+#endif
     mBroadcaster(NULL)
 {
     #if DEBUG
@@ -52,8 +53,10 @@ SpyingMIDIDriver::SpyingMIDIDriver() :
     // NOTE This might raise an exception; we let it propagate upwards.
 
     CreateMessageQueue(messageQueueHandler, mBroadcaster);
-    
-    CheckCoreMIDIVersion();
+
+    #if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
+        CheckCoreMIDIVersion();
+    #endif
 }
 
 SpyingMIDIDriver::~SpyingMIDIDriver()
@@ -76,12 +79,14 @@ OSStatus SpyingMIDIDriver::Monitor(MIDIEndpointRef destination, const MIDIPacket
         fprintf(stderr, "SpyingMIDIDriver: Monitor: mNeedsMonitorPointerWorkaround is %d\n", mNeedsMonitorPointerWorkaround);
     #endif
 
+    #if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
     if (mNeedsMonitorPointerWorkaround) {
         // Under Mac OS X 10.1.3 and earlier, we are really given a pointer to a MIDIEndpointRef, not the MIDIEndpointRef itself.
         // This is Radar #2877457. The bug was fixed in 10.2.
         destination = *(MIDIEndpointRef *)destination;        
     }
-
+    #endif
+    
     #if DEBUG && 0
         fprintf(stderr, "SpyingMIDIDriver: Monitor: dereferenced pointer successfully\n");
     #endif
@@ -115,6 +120,7 @@ void SpyingMIDIDriver::BroadcasterListenerCountChanged(MessagePortBroadcaster *b
 // Private functions
 //
 
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
 void SpyingMIDIDriver::CheckCoreMIDIVersion()
 {
     CFBundleRef coreMIDIServerBundle;
@@ -136,6 +142,7 @@ void SpyingMIDIDriver::CheckCoreMIDIVersion()
         #endif
     }   
 }
+#endif
 
 void SpyingMIDIDriver::EnableMonitoring(Boolean enabled)
 {
