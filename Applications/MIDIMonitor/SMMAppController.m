@@ -171,7 +171,7 @@ static CFDataRef localMessagePortCallback(CFMessagePortRef local, SInt32 msgid, 
 {
     CFMessagePortRef spyingMIDIDriverMessagePort;
     SInt32 sendStatus;
-    CFDataRef sequenceNumberData;
+    CFDataRef sequenceNumberData = NULL;
 
     spyingMIDIDriverMessagePort = CFMessagePortCreateRemote(kCFAllocatorDefault, CFSTR("Spying MIDI Driver"));
     if (!spyingMIDIDriverMessagePort) {
@@ -210,6 +210,12 @@ static CFDataRef localMessagePortCallback(CFMessagePortRef local, SInt32 msgid, 
             }
         }
     }
+
+    if (sequenceNumberData)
+        CFRelease(sequenceNumberData);
+
+    if (spyingMIDIDriverMessagePort)
+        CFRelease(spyingMIDIDriverMessagePort);
 }
 
 @end
