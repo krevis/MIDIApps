@@ -12,7 +12,8 @@
 
 - (void)_observeSysExNotificationsFromStream:(SMInputStream *)stream;
 - (void)_stopObservingSysExNotificationsFromStream:(SMInputStream *)stream;
-- (void)_sysExNotification:(NSNotification *)notification;
+
+- (void)_repostNotification:(NSNotification *)notification;
 
 @end
 
@@ -85,8 +86,8 @@
 
 - (void)_observeSysExNotificationsFromStream:(SMInputStream *)stream;
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_sysExNotification:) name:SMInputStreamReadingSysExNotification object:stream];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_sysExNotification:) name:SMInputStreamDoneReadingSysExNotification object:stream];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_repostNotification:) name:SMInputStreamReadingSysExNotification object:stream];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_repostNotification:) name:SMInputStreamDoneReadingSysExNotification object:stream];
 }
 
 - (void)_stopObservingSysExNotificationsFromStream:(SMInputStream *)stream;
@@ -95,7 +96,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:SMInputStreamDoneReadingSysExNotification object:stream];
 }
 
-- (void)_sysExNotification:(NSNotification *)notification;
+- (void)_repostNotification:(NSNotification *)notification;
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:[notification name] object:self userInfo:[notification userInfo]];
 }
