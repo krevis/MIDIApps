@@ -33,6 +33,7 @@
 - (MIDIDeviceRef)_findDevice;
 - (MIDIDeviceRef)_device;
 - (NSString *)_deviceName;
+- (NSString *)_deviceStringForProperty:(CFStringRef)property;
 
 - (SInt32)_ownerPID;
 - (void)_setOwnerPID:(SInt32)value;
@@ -176,7 +177,15 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 
 - (NSString *)manufacturerName;
 {
-    return [self _stringForProperty:kMIDIPropertyManufacturer];
+    // NOTE This fails sometimes on 10.1.3 and earlier (see bug #2865704).
+    // So we fall back to asking for the device's manufacturer name if necessary.
+    NSString *manufacturerName;
+
+    if ((manufacturerName = [self _stringForProperty:kMIDIPropertyManufacturer])) {
+        return manufacturerName;
+    } else {
+        return [self _deviceStringForProperty:kMIDIPropertyManufacturer];
+    }
 }
 
 - (void)setManufacturerName:(NSString *)value;
@@ -232,6 +241,18 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     [self _setInteger:newValue forProperty:kMIDIPropertyAdvanceScheduleTimeMuSec];
 }
 
+- (id)allProperties;
+{
+    OSStatus status;
+    id propertyList;
+
+    status = MIDIObjectGetProperties(endpointRef, (CFPropertyListRef *)&propertyList, NO);	// Not deep
+    if (status != noErr)
+        propertyList = nil;
+
+    return [propertyList autorelease];
+}
+
 - (BOOL)needsSysExWorkaround;
 {
     // Returns YES if the endpoint is provided by the broken MIDIMAN driver, which can't send more than 3 bytes of sysex at once.
@@ -240,8 +261,8 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     // that we can get through CoreMIDI.
     // (We could use the string property kMIDIPropertyDriverOwner, go through the possible MIDI Drivers directories,
     // track down the bundle, and get the CFBundleVersion out of it...)
-    // But these drivers also unnecessarily put "MIDIMAN MIDISPORT " at the beginning of each endpoint name, which will
-    // probably be fixed whenever they are next released.
+    // But these drivers also unnecessarily put "MIDIMAN MIDISPORT " at the beginning of each endpoint name, which got
+    // fixed in the next release.
 
     return ([[self manufacturerName] isEqualToString:@"MIDIMAN"] && [[self name] hasPrefix:@"MIDIMAN "]);
 }
@@ -482,12 +503,17 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 
 - (NSString *)_deviceName;
 {
+    return [self _deviceStringForProperty:kMIDIPropertyName];
+}
+
+- (NSString *)_deviceStringForProperty:(CFStringRef)property;
+{
     MIDIDeviceRef device;
-    NSString *deviceName;
-    
+    NSString *string;
+
     device = [self _device];
-    if (device && (noErr == MIDIObjectGetStringProperty(device, kMIDIPropertyName, (CFStringRef *)&deviceName)))
-        return [deviceName autorelease];
+    if (device && (noErr == MIDIObjectGetStringProperty(device, property, (CFStringRef *)&string)))
+        return [string autorelease];
     else
         return nil;
 }
