@@ -1,7 +1,13 @@
 {
     IBClasses = (
         {
-            ACTIONS = {addToLibrary = id; rename = id; showDetails = id; showFileInFinder = id; }; 
+            ACTIONS = {
+                addToLibrary = id; 
+                rename = id; 
+                saveAsStandardMIDI = id; 
+                showDetails = id; 
+                showFileInFinder = id; 
+            }; 
             CLASS = FirstResponder; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 

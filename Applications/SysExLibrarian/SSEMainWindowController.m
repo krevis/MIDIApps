@@ -6,6 +6,7 @@
 #import "NSPopUpButton-Extensions.h"
 #import "SSEDeleteController.h"
 #import "SSEDetailsWindowController.h"
+#import "SSEExportController.h"
 #import "SSEFindMissingController.h"
 #import "SSEImportController.h"
 #import "SSELibrary.h"
@@ -36,6 +37,7 @@
 
 - (void)playSelectedEntries;
 - (void)showDetailsOfSelectedEntries;
+- (void)exportSelectedEntries;
 
 - (void)openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
@@ -98,6 +100,8 @@ static SSEMainWindowController *controller;
     deleteController = nil;
     [importController release];
     importController = nil;
+    [exportController release];
+    exportController= nil;
     [sortColumnIdentifier release];
     sortColumnIdentifier = nil;
     [sortedLibraryEntries release];
@@ -176,6 +180,8 @@ static SSEMainWindowController *controller;
     else if (action == @selector(rename:))
         return ([libraryTableView numberOfSelectedRows] == 1 && [[[self selectedEntries] objectAtIndex:0] isFilePresent]);
     else if (action == @selector(showDetails:))
+        return ([libraryTableView numberOfSelectedRows] > 0);
+    else if (action == @selector(saveAsStandardMIDI:))
         return ([libraryTableView numberOfSelectedRows] > 0);
     else
         return [super validateUserInterfaceItem:theItem];
@@ -294,6 +300,15 @@ static SSEMainWindowController *controller;
 
     [self findMissingFilesAndPerformSelector:@selector(showDetailsOfSelectedEntries)];
 }
+
+- (IBAction)saveAsStandardMIDI:(id)sender;
+{
+    if ([self finishEditingResultsInError])
+        return;
+
+    [self findMissingFilesAndPerformSelector:@selector(exportSelectedEntries)];
+}
+
 
 //
 // Other API
@@ -784,6 +799,28 @@ static int libraryEntryComparator(id object1, id object2, void *context)
 
         entry = [selectedEntries objectAtIndex:entryIndex];
         [[SSEDetailsWindowController detailsWindowControllerWithEntry:entry] showWindow:nil];
+    }
+}
+
+- (void)exportSelectedEntries;
+{
+    NSArray *selectedEntries;
+    NSMutableArray *messages;
+    unsigned int entryCount, entryIndex;
+
+    selectedEntries = [self selectedEntries];
+
+    messages = [NSMutableArray array];
+    entryCount = [selectedEntries count];
+    for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+        [messages addObjectsFromArray:[[selectedEntries objectAtIndex:entryIndex] messages]];
+    }
+
+    if ([messages count] > 0) {
+        if (!exportController)
+            exportController = [[SSEExportController alloc] initWithWindowController:self];
+
+        [exportController exportMessages:messages];
     }
 }
 

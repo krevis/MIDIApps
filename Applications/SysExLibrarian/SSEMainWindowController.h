@@ -2,6 +2,7 @@
 
 @class OFScheduledEvent;
 @class SSEDeleteController;
+@class SSEExportController;
 @class SSEFindMissingController;
 @class SSEImportController;
 @class SSEMIDIController;
@@ -26,6 +27,7 @@
     SSERecordController *recordManyController;
     SSEDeleteController *deleteController;
     SSEImportController *importController;
+    SSEExportController *exportController;
     SSEFindMissingController *findMissingController;
     
     // Transient data
@@ -52,6 +54,7 @@
 - (IBAction)showFileInFinder:(id)sender;
 - (IBAction)rename:(id)sender;
 - (IBAction)showDetails:(id)sender;
+- (IBAction)saveAsStandardMIDI:(id)sender;
 
 // Other API
 

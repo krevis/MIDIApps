@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 34;
+	objectVersion = 38;
 	objects = {
 		080E96DAFE201CDB7F000001 = {
 			fileRef = 2A37F4B6FDCFA73011CA2CEA;
@@ -50,6 +50,7 @@
 				F559F8FC01DEC12201000164,
 				F559F8FD01DEC12201000164,
 				F559F8FE01DEC12201000164,
+				F5DFAC0E02F73DF801000164,
 			);
 			isa = PBXGroup;
 			name = "Linked Frameworks";
@@ -280,8 +281,8 @@
 			productName = SysExLibrarian;
 			productReference = 1758732AFF379DA111CA2CBB;
 			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<!DOCTYPE plist SYSTEM \"file://localhost/System/Library/DTDs/PropertyList.dtd\">
-<plist version=\"0.9\">
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
@@ -419,9 +420,10 @@
 				F5309004023333DF01000164,
 				F530900C02333F8B01000164,
 				F53090140233540701000164,
+				F5DFAC8502F7715701000164,
 			);
 			isa = PBXHeadersBuildPhase;
-			name = Headers;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		2A37F4C9FDCFA73011CA2CEA = {
 			buildActionMask = 2147483647;
@@ -451,7 +453,7 @@
 				F5309010023350F901000164,
 			);
 			isa = PBXResourcesBuildPhase;
-			name = "Bundle Resources";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		2A37F4CEFDCFA73011CA2CEA = {
 			buildActionMask = 2147483647;
@@ -478,9 +480,10 @@
 				F5309005023333DF01000164,
 				F530900D02333F8B01000164,
 				F53090150233540701000164,
+				F5DFAC8602F7715701000164,
 			);
 			isa = PBXSourcesBuildPhase;
-			name = Sources;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		2A37F4D0FDCFA73011CA2CEA = {
 			fileRef = 2A37F4B0FDCFA73011CA2CEA;
@@ -499,9 +502,10 @@
 				F559F90001DEC12201000164,
 				F559F90101DEC12201000164,
 				F539E387020F2C2F01000164,
+				F5DFAC1A02F73DF801000164,
 			);
 			isa = PBXFrameworksBuildPhase;
-			name = "Frameworks & Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 //2A0
 //2A1
@@ -580,6 +584,7 @@
 				F5308FF802330EEE01000164,
 				F5309001023333DF01000164,
 				F530900902333F8B01000164,
+				F5DFAC8702F7715A01000164,
 				F53090110233540701000164,
 			);
 			isa = PBXGroup;
@@ -974,7 +979,7 @@
 				F54750C6021F8C2701000164,
 			);
 			isa = PBXCopyFilesBuildPhase;
-			name = "Copy Files";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		F54750C4021F8C2701000164 = {
 			fileRef = F559F8FC01DEC12201000164;
@@ -1526,6 +1531,7 @@
 			refType = 4;
 		};
 		F5D90FE5021630C101000164 = {
+			includeInIndex = 0;
 			isa = PBXFolderReference;
 			name = English;
 			path = English.lproj/docs.htmld;
@@ -1536,6 +1542,49 @@
 			isa = PBXBuildFile;
 			settings = {
 			};
+		};
+		F5DFAC0E02F73DF801000164 = {
+			isa = PBXFrameworkReference;
+			name = AudioToolbox.framework;
+			path = /System/Library/Frameworks/AudioToolbox.framework;
+			refType = 0;
+		};
+		F5DFAC1A02F73DF801000164 = {
+			fileRef = F5DFAC0E02F73DF801000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5DFAC8302F7715701000164 = {
+			isa = PBXFileReference;
+			path = SSEExportController.h;
+			refType = 4;
+		};
+		F5DFAC8402F7715701000164 = {
+			isa = PBXFileReference;
+			path = SSEExportController.m;
+			refType = 4;
+		};
+		F5DFAC8502F7715701000164 = {
+			fileRef = F5DFAC8302F7715701000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5DFAC8602F7715701000164 = {
+			fileRef = F5DFAC8402F7715701000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5DFAC8702F7715A01000164 = {
+			children = (
+				F5DFAC8302F7715701000164,
+				F5DFAC8402F7715701000164,
+			);
+			isa = PBXGroup;
+			name = Exporting;
+			refType = 4;
 		};
 		F5F52C1102200EBE01000164 = {
 			isa = PBXFileReference;
