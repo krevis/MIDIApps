@@ -4,7 +4,7 @@
 <dict>
 	<key>IBPaletteDependency</key>
 	<array>
-		<string>DisclosableViewPalette</string>
+		<string>DisclosableView</string>
 	</array>
 </dict>
 </plist>
