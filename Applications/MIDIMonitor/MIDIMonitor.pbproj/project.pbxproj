@@ -774,6 +774,12 @@
 			settings = {
 			};
 		};
+		F55E29290266071301000164 = {
+			fileRef = F5BCCECA023F644901000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		F562148D02408B2D01000164 = {
 			isa = PBXFileReference;
 			path = SMMSpyingInputStream.h;
@@ -1012,6 +1018,7 @@
 				F5E4BDD2018FCDAB01000164,
 				F5E4BDD3018FCDAB01000164,
 				F5E4BDD5018FCDAB01000164,
+				F55E29290266071301000164,
 			);
 			isa = PBXCopyFilesBuildPhase;
 			name = "Copy Files";
