@@ -521,8 +521,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     
     status = MIDIObjectGetIntegerProperty(endpointRef, property, &value);
     if (status) {
-        [NSException raise:NSGenericException format:@"Couldn't get value for property %@: error %ld", property, status];
-        // TODO localize
+        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't get endpoint's property %@ (error %ld)", @"SnoizeMIDI", [self bundle], "exception with property and OSStatus if getting endpoint's property fails"), property, status];
     }
     
     return value;    
@@ -536,8 +535,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     
     status = MIDIObjectSetIntegerProperty(endpointRef, property, value);
     if (status) {
-        [NSException raise:NSGenericException format:@"Couldn't set endpoint's property %@ (error %ld)", property, status];
-        // TODO localize
+        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't set endpoint's property %@ (error %ld)", @"SnoizeMIDI", [self bundle], "exception with property and OSStatus if setting endpoint's property fails"), property, status];
     }
 }
 
