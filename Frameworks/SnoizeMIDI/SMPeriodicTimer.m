@@ -160,13 +160,14 @@ static const UInt64 sliceTimeNanoseconds = 10.0e-3 * 1.0e9;	// 10 ms
                 // Wait for a while.
                 kern_return_t error;
 
+                // TODO: Should we use usleep() or nanosleep() instead of mach_wait_until()?
                 error = mach_wait_until(processStartTime);
                 if (error)
                     mach_error("SMPeriodicTimer: mach_wait_until error: ", error);
             } else {
                 // We took longer than we would have liked.
                 // Continue on instead of waiting (but give some other threads some time first);
-                sched_yield();	// TODO is this really necessary? It seems like the Nice Thing To Do.
+                sched_yield();	// TODO is this really necessary or even beneficial? It seems like the Nice Thing To Do--maybe too nice.
             }
         }
     }
@@ -175,6 +176,35 @@ static const UInt64 sliceTimeNanoseconds = 10.0e-3 * 1.0e9;	// 10 ms
 }
 
 - (void)setThreadSchedulingPolicy;
+#if 1
+{
+    kern_return_t error;
+    thread_extended_policy_data_t extendedPolicy;
+    thread_precedence_policy_data_t precedencePolicy;
+
+    OBASSERT(![NSThread inMainThread]);
+    if ([NSThread inMainThread])
+        return;
+
+    // Increase this thread's priority, and turn off timesharing.
+
+    extendedPolicy.timeshare = 0;
+    error = thread_policy_set(mach_thread_self(), THREAD_EXTENDED_POLICY,  (thread_policy_t)&extendedPolicy, THREAD_EXTENDED_POLICY_COUNT);
+    if (error != KERN_SUCCESS) {
+#if DEBUG
+        mach_error("Couldn't set periodic timer thread's extended policy", error);
+#endif
+    }
+
+    precedencePolicy.importance = 4; // TODO play with this and parameterize
+    error = thread_policy_set(mach_thread_self(), THREAD_PRECEDENCE_POLICY, (thread_policy_t)&precedencePolicy, THREAD_PRECEDENCE_POLICY_COUNT);
+    if (error != KERN_SUCCESS) {
+#if DEBUG
+        mach_error("Couldn't set periodic timer thread's precedence policy", error);
+#endif
+    }
+}
+#else
 {
     kern_return_t error;
     thread_time_constraint_policy_data_t policy;
@@ -182,7 +212,7 @@ static const UInt64 sliceTimeNanoseconds = 10.0e-3 * 1.0e9;	// 10 ms
     OBASSERT(![NSThread inMainThread]);
     if ([NSThread inMainThread])
         return;
-
+    
     /*
         From a message by Jeff Moore <jcm10@apple.com> on the CoreAudio-API mailing list,
         19 November 2001:
@@ -216,6 +246,12 @@ static const UInt64 sliceTimeNanoseconds = 10.0e-3 * 1.0e9;	// 10 ms
         operation, as it involves a kernel transition).
     */
 
+    //
+    // TODO TODO TODO
+    // Investigate whether we can just a non-timeshare thread with an increased priority,
+    // instead of a heavyweight time-constraint thread.
+    //
+    
     policy.period = SMConvertNanosToHostTime(sliceTimeNanoseconds);
     policy.computation = SMConvertNanosToHostTime(sliceTimeNanoseconds / 2);
         // TODO No great thought went into this. I bet we don't really need this much time.
@@ -232,5 +268,6 @@ static const UInt64 sliceTimeNanoseconds = 10.0e-3 * 1.0e9;	// 10 ms
         NSLog(@"Couldn't set thread policy: error %s", mach_error_string(error));
     }
 }
+#endif
 
 @end
