@@ -42,6 +42,7 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
         case kMIDISpyDriverInstallationFailed:
         case kMIDISpyDriverCouldNotRemoveOldDriver:
         default:
+            // TODO We need to report this error later on
             break;
     }
 
@@ -62,6 +63,7 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 #if DEBUG
             NSLog(@"Couldn't create a MIDI spy client: error %ld", status);
 #endif
+            // TODO We need to report this error, too
         }
     }    
 }
@@ -109,11 +111,23 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 - (IBAction)showHelp:(id)sender;
 {
     NSString *path;
+    NSString *message = nil;
     
     path = [[self bundle] pathForResource:@"docs" ofType:@"htmld"];
     if (path) {
         path = [path stringByAppendingString:@"/index.html"];
-        [[NSWorkspace sharedWorkspace] openFile:path];
+        if (![[NSWorkspace sharedWorkspace] openFile:path]) {
+            message = NSLocalizedStringFromTableInBundle(@"The help file could not be opened.", @"MIDIMonitor", [self bundle], "error message if opening the help file fails");
+        }
+    } else {
+        message = NSLocalizedStringFromTableInBundle(@"The help file could not be found.", @"MIDIMonitor", [self bundle], "error message if help file can't be found");
+    }
+
+    if (message) {
+        NSString *title;
+
+        title = NSLocalizedStringFromTableInBundle(@"Error", @"MIDIMonitor", [self bundle], "title of error alert");
+        NSRunAlertPanel(title, message, nil, nil, nil);
     }
 }
 
@@ -122,8 +136,13 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
     OSStatus err;
 
     err = MIDIRestart();
-    if (err)
-        NSRunAlertPanel(@"MIDI Error", @"Restarting MIDI resulted in error %d.", @"OK", nil, nil, err);
+    if (err) {
+        NSString *message, *title;
+
+        message = NSLocalizedStringFromTableInBundle(@"Restarting MIDI resulted in an unexpected error (%d).", @"MIDIMonitor", [self bundle], "error message if MIDIRestart() fails");
+        title = NSLocalizedStringFromTableInBundle(@"MIDI Error", @"MIDIMonitor", [self bundle], "title of MIDI error panel");
+        NSRunAlertPanel(title, message, nil, nil, nil, err);        
+    }
 }
 
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem;
