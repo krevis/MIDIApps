@@ -10,6 +10,12 @@
 
 @interface SMMSpyingInputStream (Private)
 
+- (void)endpointAppeared:(NSNotification *)notification;
+- (void)endpointDisappeared:(NSNotification *)notification;
+- (void)endpointWasReplaced:(NSNotification *)notification;
+
+- (void)addEndpointToMapTable:(SMDestinationEndpoint *)endpoint withParser:(SMMessageParser *)parser;
+
 static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName, const MIDIPacketList *packetList, void *refCon);
 
 @end
@@ -19,13 +25,29 @@ static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName,
 
 - (id)init;
 {
+    NSArray *destinationEndpoints;
+    unsigned int destinationEndpointCount, destinationEndpointIndex;
+    
     if (!(self = [super init]))
         return nil;
 
     inputStreamSource = [[SMSimpleInputStreamSource alloc] initWithName:@"Spy on computer output"];
     // TODO better name
 
-    parser = [[self newParser] retain];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endpointAppeared:) name:SMEndpointAppearedNotification object:nil];
+
+    endpointToParserMapTable = NSCreateMapTable(NSNonOwnedPointerMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
+
+    destinationEndpoints = [SMDestinationEndpoint destinationEndpoints];
+    destinationEndpointCount = [destinationEndpoints count];
+    for (destinationEndpointIndex = 0; destinationEndpointIndex < destinationEndpointCount; destinationEndpointIndex++) {
+        SMDestinationEndpoint *endpoint;
+        SMMessageParser *parser;
+
+        endpoint = [destinationEndpoints objectAtIndex:destinationEndpointIndex];
+        parser = [self newParserWithOriginatingEndpoint:endpoint];
+        [self addEndpointToMapTable:endpoint withParser:parser];
+    }
 
     return self;
 }
@@ -33,12 +55,13 @@ static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName,
 - (void)dealloc;
 {
     [self setIsActive:NO];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 
     [inputStreamSource release];
     inputStreamSource = nil;
 
-    [parser release];
-    parser = nil;
+    NSFreeMapTable(endpointToParserMapTable);
+    endpointToParserMapTable = NULL;
 
     [super dealloc];
 }
@@ -49,21 +72,26 @@ static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName,
 
 - (NSArray *)parsers;
 {
-    return [NSArray arrayWithObject:parser];
+    if (endpointToParserMapTable)
+        return NSAllMapTableValues(endpointToParserMapTable);
+    else
+        return nil;
 }
 
 - (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;
 {
-    // TODO this is never actually called in this subclass
-    // refCon is ignored, since it only applies to connections created with MIDIPortConnectSource()
-    return parser;
+    // In our case, the "refCon" is really a destination endpoint
+    if (endpointToParserMapTable)
+        return NSMapGet(endpointToParserMapTable, refCon);
+    else
+        return nil;
 }
 
 - (NSArray *)inputSources;
 {
     return [NSArray arrayWithObject:inputStreamSource];
     // TODO it would be nice to be able to spy on endpoints selectively, not just all of them at once...
-    // we would need to return an object for each destination endpoint here, and then filter as input comes in.
+    // we would need to return an object for each destination endpoint here, and keep an array of the selected ones
 }
 
 - (NSArray *)selectedInputSources;
@@ -105,11 +133,64 @@ static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName,
 
 @implementation SMMSpyingInputStream (Private)
 
+- (void)endpointAppeared:(NSNotification *)notification;
+{
+    SMEndpoint *endpoint;
+
+    endpoint = [notification object];
+    if ([endpoint isKindOfClass:[SMDestinationEndpoint class]]) {
+        SMMessageParser *parser;
+
+        parser = [self newParserWithOriginatingEndpoint:endpoint];
+        [self addEndpointToMapTable:(SMDestinationEndpoint *)endpoint withParser:parser];
+    }
+}
+
+- (void)endpointDisappeared:(NSNotification *)notification;
+{
+    SMDestinationEndpoint *endpoint;
+
+    endpoint = [notification object];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:endpoint];
+
+    NSMapRemove(endpointToParserMapTable, endpoint);
+    // TODO and clean up anything which might be in progress?
+}
+
+- (void)endpointWasReplaced:(NSNotification *)notification;
+{
+    SMDestinationEndpoint *oldEndpoint, *newEndpoint;
+    SMMessageParser *parser;
+
+    oldEndpoint = [notification object];
+    newEndpoint = [[notification userInfo] objectForKey:SMEndpointReplacement];
+
+    parser = NSMapGet(endpointToParserMapTable, oldEndpoint);
+    [parser retain];
+    NSMapRemove(endpointToParserMapTable, oldEndpoint);
+    [self addEndpointToMapTable:newEndpoint withParser:parser];
+    [parser setOriginatingEndpoint:newEndpoint];
+    [parser release];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:oldEndpoint];
+}
+
+- (void)addEndpointToMapTable:(SMDestinationEndpoint *)endpoint withParser:(SMMessageParser *)parser;
+{
+    NSMapInsert(endpointToParserMapTable, endpoint, parser);
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endpointDisappeared:) name:SMEndpointDisappearedNotification object:endpoint];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endpointWasReplaced:) name:SMEndpointWasReplacedNotification object:endpoint];    
+}
+
+
 static void spyClientCallBack(SInt32 endpointUniqueID, CFStringRef endpointName, const MIDIPacketList *packetList, void *refCon)
 {
-    // TODO we need some way to pass down the endpoint information
-    // TODO also, we need a separate parser for each endpoint... as it is now, this is just wrong.
-    [((SMMSpyingInputStream *)refCon)->parser takePacketList:packetList];
+    SMDestinationEndpoint *destinationEndpoint;
+
+    if ((destinationEndpoint = [SMDestinationEndpoint destinationEndpointWithUniqueID:endpointUniqueID])) {
+        [[(SMMSpyingInputStream *)refCon parserForSourceConnectionRefCon:destinationEndpoint] takePacketList:packetList];
+    }
 }
 
 @end

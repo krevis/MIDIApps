@@ -9,8 +9,7 @@
 @interface SMMSpyingInputStream : SMInputStream
 {
     MIDISpyClientRef spyClient;
-    SMSimpleInputStreamSource *inputStreamSource;
-    SMMessageParser *parser;    
+    NSMapTable *endpointToParserMapTable;    SMSimpleInputStreamSource *inputStreamSource;
 }
 
 - (BOOL)isActive;
