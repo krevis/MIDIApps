@@ -18,6 +18,8 @@
     BOOL waitingForSysExMessage;
 
     SMSystemExclusiveMessage *sysExMessage;
+
+    SMSysExSendRequest *currentSendRequest;
 }
 
 - (NSArray *)sourceDescriptions;
@@ -32,5 +34,7 @@
 - (void)cancelSysExMessageWait;
 
 - (void)playSysExMessage;
+- (SMSysExSendRequest *)currentSendRequest;
+- (void)cancelPlayingSysExMessage;
 
 @end

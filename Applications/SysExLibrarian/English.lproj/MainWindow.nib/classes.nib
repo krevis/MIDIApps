@@ -23,11 +23,11 @@
             OUTLETS = {
                 destinationPopUpButton = NSPopUpButton; 
                 mainController = SSEMainController; 
+                recordProgressField = NSTextField; 
+                recordProgressIndicator = NSProgressIndicator; 
+                recordSheetTabView = NSTabView; 
                 recordSheetWindow = NSWindow; 
                 sourcePopUpButton = NSPopUpButton; 
-                sysExProgressBox = NSBox; 
-                sysExProgressField = NSTextField; 
-                sysExProgressIndicator = NSProgressIndicator; 
             }; 
             SUPERCLASS = NSWindowController; 
         }

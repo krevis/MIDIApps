@@ -13,8 +13,6 @@
 
 - (void)_synchronizePopUpButton:(NSPopUpButton *)popUpButton withDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 
-- (void)_showSysExProgressIndicator;
-- (void)_hideSysExProgressIndicator;
 - (void)_recordSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
 @end
@@ -102,12 +100,7 @@ static SSEMainWindowController *controller;
 
 - (IBAction)recordOne:(id)sender;
 {
-    // TODO
-    // put main controller in "waiting for a sysex message" mode
-    // disable the rest of the UI... right?
-    // put up a sheet with status info and a cancel button
-
-    [self _hideSysExProgressIndicator];
+    [recordSheetTabView selectTabViewItemWithIdentifier:@"waiting"];    
     [[NSApplication sharedApplication] beginSheet:recordSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_recordSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];    
     [mainController waitForOneSysExMessage];
 }
@@ -122,7 +115,6 @@ static SSEMainWindowController *controller;
 - (IBAction)play:(id)sender;
 {
     // TODO
-    // play back the selected sysex file(s) via the selected output.
     // disable if no files are selected.
 
     [mainController playSysExMessage];
@@ -157,23 +149,36 @@ static SSEMainWindowController *controller;
 
 - (void)updateSysExReadIndicatorWithBytes:(unsigned int)bytesRead;
 {
-    [self _showSysExProgressIndicator];
+    [recordSheetTabView selectTabViewItemWithIdentifier:@"receiving"];    
 
     if (!nextSysExAnimateDate || [[NSDate date] isAfterDate:nextSysExAnimateDate]) {
-        [sysExProgressIndicator animate:nil];
+        [recordProgressIndicator animate:nil];
         [nextSysExAnimateDate release];
-        nextSysExAnimateDate = [[NSDate alloc] initWithTimeIntervalSinceNow:[sysExProgressIndicator animationDelay]];
+        nextSysExAnimateDate = [[NSDate alloc] initWithTimeIntervalSinceNow:[recordProgressIndicator animationDelay]];
+
+        [recordProgressField setStringValue:[@"Received " stringByAppendingString:[NSString abbreviatedStringForBytes:bytesRead]]];
+        // TODO localize
     }
 }
 
 - (void)stopSysExReadIndicatorWithBytes:(unsigned int)bytesRead;
 {
-    // TODO probably this isn't entirely what we want
-    [self _hideSysExProgressIndicator];
     [nextSysExAnimateDate release];
     nextSysExAnimateDate = nil;
 
     [[NSApplication sharedApplication] endSheet:recordSheetWindow returnCode:NSRunStoppedResponse];
+}
+
+- (void)showSysExSendStatus;
+{
+    // TODO
+    // show sheet
+}
+
+- (void)hideSysExSendStatus;
+{
+    // TODO
+    // end sheet
 }
 
 @end
@@ -251,28 +256,6 @@ static SSEMainWindowController *controller;
     if (wasAutodisplay)
         [[self window] displayIfNeeded];
     [[self window] setAutodisplay:wasAutodisplay];
-}
-
-- (void)_showSysExProgressIndicator;
-{
-    if (![sysExProgressIndicator superview]) {
-        [sysExProgressBox addSubview:sysExProgressIndicator];
-        [sysExProgressIndicator release];
-
-        [sysExProgressBox addSubview:sysExProgressField];
-        [sysExProgressField release];
-    }
-}
-
-- (void)_hideSysExProgressIndicator;
-{
-    if ([sysExProgressIndicator superview]) {
-        [sysExProgressIndicator retain];
-        [sysExProgressIndicator removeFromSuperview];
-
-        [sysExProgressField retain];
-        [sysExProgressField removeFromSuperview];
-    }
 }
 
 - (void)_recordSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;

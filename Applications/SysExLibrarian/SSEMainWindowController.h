@@ -11,9 +11,9 @@
     IBOutlet NSPopUpButton *destinationPopUpButton;
 
     IBOutlet NSWindow *recordSheetWindow;
-    IBOutlet NSProgressIndicator *sysExProgressIndicator;
-    IBOutlet NSTextField *sysExProgressField;
-    IBOutlet NSBox *sysExProgressBox;
+    IBOutlet NSTabView *recordSheetTabView;
+    IBOutlet NSProgressIndicator *recordProgressIndicator;
+    IBOutlet NSTextField *recordProgressField;
 
     // Transient data
     NSDate *nextSysExAnimateDate;
@@ -43,5 +43,8 @@
 
 - (void)updateSysExReadIndicatorWithBytes:(unsigned int)bytesRead;
 - (void)stopSysExReadIndicatorWithBytes:(unsigned int)bytesRead;
+
+- (void)showSysExSendStatus;
+- (void)hideSysExSendStatus;
 
 @end
