@@ -121,6 +121,8 @@ static SSEMainWindowController *controller;
 {
     [[self window] setFrameAutosaveName:[self windowNibName]];
     [libraryTableView registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
+    [libraryTableView setTarget:self];
+    [libraryTableView setDoubleAction:@selector(play:)];
 }
 
 - (void)windowDidLoad
@@ -1026,7 +1028,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
 
         entry = [entriesWithMissingFiles objectAtIndex:0];
 
-        NSBeginAlertSheet(@"Missing File", @"Yes", @"Cancel", nil, [self window], self, @selector(_missingFileAlertDidEnd:returnCode:contextInfo:), NULL, NULL, @"The file for the entry \"%@\" could not be found. Would you like to locate it?", [entry name]);
+        NSBeginAlertSheet(@"Missing File", @"Yes", @"Cancel", nil, [self window], self, @selector(_missingFileAlertDidEnd:returnCode:contextInfo:), NULL, NULL, @"The file for the item \"%@\" could not be found. Would you like to locate it?", [entry name]);
     }
 }
 
