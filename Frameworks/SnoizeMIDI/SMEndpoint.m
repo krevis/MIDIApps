@@ -476,73 +476,42 @@ static BOOL sRefreshAllObjectsDisabled = NO;
 }
 
 - (MIDIDeviceRef)findDevice;
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_2
 {
-    OSStatus status;
-    MIDIEntityRef entity;
-    MIDIDeviceRef device;
-
-    status = MIDIEndpointGetEntity((MIDIEndpointRef)objectRef, &entity);
-    if (noErr == status) {
-        status = MIDIEntityGetDevice(entity, &device);
-        if (noErr == status)
-            return device;
-    }
-
-    return NULL;
-}
-#else
-{
-    static BOOL lookedForFunctions = NO;
-    static OSStatus (*midiEndpointGetEntityFuncPtr)(MIDIEndpointRef, MIDIEntityRef *) = NULL;
-    static OSStatus (*midiEntityGetDeviceFuncPtr)(MIDIEntityRef, MIDIDeviceRef *) = NULL;
-
-    if (!lookedForFunctions) {
-        // Try looking up the functions MIDIEndpointGetEntity() and MIDIEntityGetDevice() at run time.
-        // They should be present on 10.2 but not on 10.1.
-        midiEndpointGetEntityFuncPtr = [[SMClient sharedClient] coreMIDIFunctionNamed:@"MIDIEndpointGetEntity"];
-        midiEntityGetDeviceFuncPtr = [[SMClient sharedClient] coreMIDIFunctionNamed:@"MIDIEntityGetDevice"];
-        lookedForFunctions = YES;
-    }
-
-    if (midiEntityGetDeviceFuncPtr && midiEndpointGetEntityFuncPtr) {
+    if ([[SMClient sharedClient] coreMIDICanGetDeviceFromEntity]) {
         OSStatus status;
         MIDIEntityRef entity;
         MIDIDeviceRef device;
 
-        status = midiEndpointGetEntityFuncPtr((MIDIEndpointRef)objectRef, &entity);
+        status = MIDIEndpointGetEntity((MIDIEndpointRef)objectRef, &entity);
         if (noErr == status) {
-            status = midiEntityGetDeviceFuncPtr(entity, &device);
+            status = MIDIEntityGetDevice(entity, &device);
             if (noErr == status)
                 return device;
         }
-
-        return NULL;
-
     } else {
         // This must be 10.1. Do it the hard way.
         // Walk the device/entity/endpoint tree, looking for the device which has our endpointRef.
         // Note that if this endpoint is virtual, no device will be found.
-    
+
         ItemCount deviceCount, deviceIndex;
-        
+
         deviceCount = MIDIGetNumberOfDevices();
         for (deviceIndex = 0; deviceIndex < deviceCount; deviceIndex++) {
             MIDIDeviceRef device;
             ItemCount entityCount, entityIndex;
-            
+
             device = MIDIGetDevice(deviceIndex);
             entityCount = MIDIDeviceGetNumberOfEntities(device);
-            
+
             for (entityIndex = 0; entityIndex < entityCount; entityIndex++) {
                 MIDIEntityRef entity;
                 ItemCount endpointCount, endpointIndex;
-                
+
                 entity = MIDIDeviceGetEntity(device, entityIndex);
                 endpointCount = [[self class] endpointCountForEntity:entity];
                 for (endpointIndex = 0; endpointIndex < endpointCount; endpointIndex++) {
                     MIDIEndpointRef thisEndpoint;
-                    
+
                     thisEndpoint = [[self class] endpointRefAtIndex:endpointIndex forEntity:entity];
                     if (thisEndpoint == (MIDIEndpointRef)objectRef) {
                         // Found it!
@@ -551,12 +520,11 @@ static BOOL sRefreshAllObjectsDisabled = NO;
                 }
             }
         }
-        
-        // Nothing was found
-        return NULL;
-    }    
+    }
+
+    // Nothing was found
+    return NULL;
 }
-#endif
 
 - (MIDIDeviceRef)deviceRef;
 {

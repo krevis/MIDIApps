@@ -29,12 +29,13 @@
 - (BOOL)isHandlingSetupChange;
 
 - (CFStringRef)coreMIDIPropertyNameConstantNamed:(NSString *)name;
-- (void *)coreMIDIFunctionNamed:(NSString *)functionName;
 - (UInt32)coreMIDIFrameworkVersion;
 
 - (BOOL)postsObjectAddedAndRemovedNotifications;
 - (BOOL)postsObjectPropertyChangedNotifications;
 - (BOOL)coreMIDIUsesWrongRunLoop;
+- (BOOL)coreMIDICanFindObjectByUniqueID;
+- (BOOL)coreMIDICanGetDeviceFromEntity;
 
 @end
 

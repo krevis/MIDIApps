@@ -162,22 +162,6 @@ static SMClient *sharedClient = nil;
         return (CFStringRef)coreMIDIPropertyNameConstant;
 }
 
-- (void *)coreMIDIFunctionNamed:(NSString *)functionName;
-{
-    // This method is used to look up CoreMIDI functions which may or may not exist.
-    // (For example, MIDIEntityGetDevice(), which is present in 10.2 but not 10.1.)
-    // If we linked against the function directly, we could no longer run on 10.1 since dyld
-    // would be unable to find that symbol. So we look it up at runtime instead.
-    //
-    // TODO: This isn't actually true.  We can still reference the function (linking against it normally)
-    // and still be able to launch; the problem is with constants.
-    
-    if (functionName && coreMIDIFrameworkBundle)
-        return CFBundleGetFunctionPointerForName(coreMIDIFrameworkBundle, (CFStringRef)functionName);
-    else
-        return NULL;    
-}
-
 - (UInt32)coreMIDIFrameworkVersion;
 {
     if (coreMIDIFrameworkBundle)
@@ -206,6 +190,16 @@ const UInt32 kCoreMIDIFrameworkVersionIn10_2 = 0x20008000;
     // Under 10.1 CoreMIDI calls can run the thread's run loop in the default run loop mode,
     // which causes no end of mischief.  Fortunately this was fixed in 10.2 to use a private mode.
     return [self coreMIDIFrameworkVersion] < kCoreMIDIFrameworkVersionIn10_2;    
+}
+
+- (BOOL)coreMIDICanFindObjectByUniqueID;
+{
+    return [self coreMIDIFrameworkVersion] >= kCoreMIDIFrameworkVersionIn10_2;        
+}
+
+- (BOOL)coreMIDICanGetDeviceFromEntity;
+{
+    return [self coreMIDIFrameworkVersion] >= kCoreMIDIFrameworkVersionIn10_2;        
 }
 
 @end

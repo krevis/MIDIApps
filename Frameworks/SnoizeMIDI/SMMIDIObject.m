@@ -527,29 +527,12 @@ static NSMapTable *classToObjectsMapTable = NULL;
 //
 
 + (BOOL)isUniqueIDInUse:(MIDIUniqueID)proposedUniqueID;
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_2
 {
-    MIDIObjectRef object = NULL;
-    MIDIObjectType type;
-
-    MIDIObjectFindByUniqueID(proposedUniqueID, &object, &type);
-    return (object != NULL);
-}
-#else
-{
-    static BOOL lookedForFunction = NO;
-    static OSStatus (*midiObjectFindByUniqueIDFuncPtr)(MIDIUniqueID, MIDIObjectRef *, MIDIObjectType *) = NULL;
-
-    if (!lookedForFunction) {
-        midiObjectFindByUniqueIDFuncPtr = [[SMClient sharedClient] coreMIDIFunctionNamed:@"MIDIObjectFindByUniqueID"];
-        lookedForFunction = YES;
-    }
-
-    if (midiObjectFindByUniqueIDFuncPtr) {
-        MIDIObjectRef object;
+    if ([[SMClient sharedClient] coreMIDICanFindObjectByUniqueID]) {
+        MIDIObjectRef object = NULL;
         MIDIObjectType type;
 
-        midiObjectFindByUniqueIDFuncPtr(proposedUniqueID, &object, &type);
+        MIDIObjectFindByUniqueID(proposedUniqueID, &object, &type);
         return (object != NULL);
     } else {
         // This search is not as complete as it could be, but it'll have to do.
@@ -557,7 +540,6 @@ static NSMapTable *classToObjectsMapTable = NULL;
         return ([SMSourceEndpoint sourceEndpointWithUniqueID:proposedUniqueID] != nil || [SMDestinationEndpoint destinationEndpointWithUniqueID:proposedUniqueID] != nil);
     }
 }
-#endif
 
 //
 // Notifications that objects have changed
