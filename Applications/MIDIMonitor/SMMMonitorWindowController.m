@@ -444,7 +444,9 @@
     if ([identifier isEqualToString:@"timeStamp"]) {
         return [message timeStampForDisplay];
     } else if ([identifier isEqualToString:@"source"]) {
-        return @"";  // TODO
+        return [[message originatingEndpoint] shortName];
+        // TODO we should indicate if name is a regular source, or spying on a destination
+        // TODO this could fail if the endpoint has disappeared since the message was created. Need to cache this value, or fix it in SMEndpoint?
     } else if ([identifier isEqualToString:@"type"]) {
         return [message typeForDisplay];
     } else if ([identifier isEqualToString:@"channel"]) {
