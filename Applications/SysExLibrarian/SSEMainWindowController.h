@@ -3,6 +3,7 @@
 @class OFScheduledEvent;
 @class SSEMainController;
 @class SSELibrary;
+@class SSETableView;
 
 
 @interface SSEMainWindowController : NSWindowController
@@ -12,7 +13,7 @@
     IBOutlet NSPopUpButton *sourcePopUpButton;
     IBOutlet NSPopUpButton *destinationPopUpButton;
 
-    IBOutlet NSTableView  *libraryTableView;
+    IBOutlet SSETableView *libraryTableView;
 
     IBOutlet NSButton *playButton;
     IBOutlet NSButton *deleteButton;

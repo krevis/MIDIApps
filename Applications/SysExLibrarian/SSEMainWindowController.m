@@ -7,6 +7,7 @@
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
 #import "SSEMainController.h"
+#import "SSETableView.h"
 
 
 @interface SSEMainWindowController (Private)
@@ -329,6 +330,8 @@ static SSEMainWindowController *controller;
 {
     // TODO need to highlight window
     // TODO need to check what kinds of operations are OK
+
+    [libraryTableView setDrawsDraggingHighlight:YES];
     
     return NSDragOperationCopy;
 }
@@ -336,6 +339,9 @@ static SSEMainWindowController *controller;
 - (void)draggingExited:(id <NSDraggingInfo>)sender;
 {
     // TODO need to un-highlight window
+
+    [libraryTableView setDrawsDraggingHighlight:NO];
+
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender;
@@ -364,6 +370,7 @@ static SSEMainWindowController *controller;
 - (void)concludeDragOperation:(id <NSDraggingInfo>)sender;
 {
     // TODO need to un-highlight window
+    [libraryTableView setDrawsDraggingHighlight:NO];
 }
 
 //

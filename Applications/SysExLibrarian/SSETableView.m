@@ -17,6 +17,7 @@
 
     flags.shouldEditNextItemWhenEditingEnds = NO;
     flags.dataSourceCanDeleteRows = NO;
+    flags.drawsDraggingHighlight = NO;
 
     return self;
 }
@@ -28,7 +29,8 @@
 
     flags.shouldEditNextItemWhenEditingEnds = NO;
     flags.dataSourceCanDeleteRows = NO;
-
+    flags.drawsDraggingHighlight = NO;
+    
     return self;
 }
 
@@ -48,6 +50,18 @@
     flags.shouldEditNextItemWhenEditingEnds = value;
 }
 
+- (BOOL)drawsDraggingHighlight;
+{
+    return flags.drawsDraggingHighlight;
+}
+
+- (void)setDrawsDraggingHighlight:(BOOL)value;
+{
+    if (value != flags.drawsDraggingHighlight) {
+        flags.drawsDraggingHighlight = value;
+        [self setNeedsDisplay:YES];
+    }
+}
 
 // NSTableView overrides
 
@@ -78,6 +92,19 @@
         [super mouseDown:event];
     else if (_editingCell)
         [[[self window] firstResponder] selectAll:nil];
+}
+
+- (void)drawRect:(NSRect)rect;
+{
+    [super drawRect:rect];
+
+    if (flags.drawsDraggingHighlight) {
+        NSRect highlightRect;
+
+        highlightRect = [[self enclosingScrollView] documentVisibleRect];
+        [[NSColor selectedControlColor] set];
+        NSFrameRectWithWidth(highlightRect, 2.0);
+    }
 }
 
 - (void)keyDown:(NSEvent *)theEvent;
