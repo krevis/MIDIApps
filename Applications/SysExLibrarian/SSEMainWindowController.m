@@ -105,7 +105,6 @@ static SSEMainWindowController *controller;
 - (IBAction)delete:(id)sender;
 {
     // TODO
-    // this should also be hooked up via delete key in the table view
     // should we have a confirmation dialog?
     // ask whether to delete the file or just the reference? (see how Project Builder or iTunes do it)
 
@@ -349,8 +348,6 @@ static SSEMainWindowController *controller;
         [entry setName:object];
 
     [self synchronizeLibrary];
-
-    // TODO set table view to not go to next entry 
 }
 
     // TODO add drag and drop support
@@ -363,6 +360,14 @@ static SSEMainWindowController *controller;
 //- (BOOL)tableView:(NSTableView*)tv acceptDrop:(id <NSDraggingInfo>)info row:(int)row dropOperation:(NSTableViewDropOperation)op;
     // This method is called when the mouse is released over an outline view that previously decided to allow a drop via the validateDrop method.  The data source should incorporate the data from the dragging pasteboard at this time.
 
+//
+// SSETableView data source
+//
+
+- (void)tableView:(NSTableView *)tableView deleteRows:(NSArray *)rows;
+{
+    [self delete:tableView];
+}
 
 //
 // NSTableView notifications

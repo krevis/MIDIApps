@@ -315,6 +315,7 @@
 				F583CEB601EE3D3801000164,
 				F583CEBA01EE3E4501000164,
 				F551751E01F3745B01000164,
+				F551752201F3ACED01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -343,6 +344,7 @@
 				F583CEB701EE3D3801000164,
 				F583CEBB01EE3E4501000164,
 				F551751F01F3745B01000164,
+				F551752301F3ACED01000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -424,6 +426,28 @@
 		};
 		F551751F01F3745B01000164 = {
 			fileRef = F551751D01F3745B01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F551752001F3ACED01000164 = {
+			isa = PBXFileReference;
+			path = SSETableView.h;
+			refType = 4;
+		};
+		F551752101F3ACED01000164 = {
+			isa = PBXFileReference;
+			path = SSETableView.m;
+			refType = 4;
+		};
+		F551752201F3ACED01000164 = {
+			fileRef = F551752001F3ACED01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F551752301F3ACED01000164 = {
+			fileRef = F551752101F3ACED01000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -606,6 +630,8 @@
 			children = (
 				F565B6EE01E1567501000164,
 				F565B6EF01E1567501000164,
+				F551752001F3ACED01000164,
+				F551752101F3ACED01000164,
 			);
 			isa = PBXGroup;
 			name = "Cocoa Extensions";
