@@ -62,7 +62,7 @@ static void writeVariableLengthFieldIntoSMF(Byte **pPtr, const UInt32 value);
 }
 #else
 {
-    // This is about a million times faster than the naive implementation above (which can take *minutes* for about 4500 60-byte messages).
+    // This is much faster than the naive implementation above, which can take *minutes* for about 4500 60-byte messages.
     // Calculate the size of the total data buffer first and only do one malloc, instead of continually appending data (which causes lots of mallocs).
     unsigned int messageCount, messageIndex;
     unsigned int totalDataLength;
