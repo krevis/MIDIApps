@@ -53,9 +53,6 @@
         NSRunCriticalAlertPanel(@"Error", @"%@", @"Quit", nil, nil, preflightError);
         [NSApp terminate:nil];
     } else {
-        // TODO testing
-//        [[SSELibrary sharedLibrary] setFileDirectoryPath:@"/Users/krevis/Documents/Testing/Files"];
-        
         [self showMainWindow:nil];
 
         if (filesToImport)
