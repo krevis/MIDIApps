@@ -24,6 +24,9 @@
     // Send an AppleEvent to the Finder to move the files to the trash.
     // This is a workaround for bugs in -[NSWorkspace performFileOperation:NSWorkspaceRecycleOperation ...].
     // Wheee.
+    // NOTE: This does not work correctly if any of the file paths point to symlinks. The FSRef that we create points to
+    // the target of the symlink, not the symlink itself--and this happens transparently so I'm not sure anything
+    // can be done about it. Lame.
 
     OSErr err;
     AppleEvent event, reply;
@@ -57,7 +60,7 @@
         filePath = [filePaths objectAtIndex:filePathIndex];
 
         // Create the descriptor of the file to delete
-        // (This needs to be an alias--if you use AECreateDesc(typeFSRef,...) it won't work.)
+        // (This needs to be an alias--if you use AECreateDesc(typeFSRef,...) it won't work, since FSRefs are not valid across application boundaries.)
         err = FSPathMakeRef((const unsigned char *)[filePath fileSystemRepresentation], &fsRef, NULL);
         if (err != noErr) goto bail;
 

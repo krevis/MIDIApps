@@ -426,7 +426,8 @@ NSString *SSESysExFileExtension = @"syx";
         return YES;
 
     // NOTE We do the above because -[NSWorkspace performFileOperation:NSWorkspaceRecycleOperation] is broken.
-    // It doesn't work if there is already a file in the Trash with this name, and it doesn't make the Finder update.    
+    // It doesn't work if there is already a file in the Trash with this name, and it doesn't make the Finder update.
+    // TODO supposedly this will be fixed in 10.2... try it then.
 }
 
 @end
