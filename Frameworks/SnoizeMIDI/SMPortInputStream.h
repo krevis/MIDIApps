@@ -16,6 +16,10 @@
 - (void)addEndpoint:(SMSourceEndpoint *)endpoint;
 - (void)removeEndpoint:(SMSourceEndpoint *)endpoint;
 
+// TODO for compatibility
+- (void)setEndpoint:(SMSourceEndpoint *)endpoint;
+- (SMSourceEndpoint *)endpoint;
+
 @end
 
 // Notifications

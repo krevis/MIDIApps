@@ -114,6 +114,30 @@ DEFINE_NSSTRING(SMPortInputStreamEndpointDisappeared);
     [endpoints removeObjectIdenticalTo:endpoint];
 }
 
+// TODO for compatibility only -- get rid of these
+- (void)setEndpoint:(SMSourceEndpoint *)endpoint;
+{
+    NSArray *currentEndpoints;
+    unsigned int index;
+
+    currentEndpoints = [NSArray arrayWithArray:endpoints];
+    index = [currentEndpoints count];
+    while (index--) {
+        [self removeEndpoint:[currentEndpoints objectAtIndex:index]];
+    }
+
+    [self addEndpoint:endpoint];
+}
+
+- (SMSourceEndpoint *)endpoint;
+{
+    if ([endpoints count] > 0)
+        return [endpoints objectAtIndex:0];
+    else
+        return nil;
+}
+
+
 //
 // SMInputStream subclass
 //
