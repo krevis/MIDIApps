@@ -27,6 +27,7 @@
 
 - (void)synchronizeDestinationPopUpWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 - (void)synchronizeDestinationToolbarMenuWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
+- (NSString *)titleForDestinationWithDescription:(NSDictionary *)description;
 
 - (void)libraryDidChange:(NSNotification *)notification;
 - (void)sortLibraryEntries;
@@ -607,14 +608,18 @@ static SSEMainWindowController *controller = nil;
     count = [descriptions count];
     for (index = 0; index < count; index++) {
         NSDictionary *description;
+        NSString *title;
 
         description = [descriptions objectAtIndex:index];
+
         if (!addedSeparatorBetweenPortAndVirtual && [description objectForKey:@"endpoint"] == nil) {
             if (index > 0)
                 [destinationPopUpButton addSeparatorItem];
             addedSeparatorBetweenPortAndVirtual = YES;
         }
-        [destinationPopUpButton addItemWithTitle:[description objectForKey:@"name"] representedObject:description];
+
+        title = [self titleForDestinationWithDescription:description];
+        [destinationPopUpButton addItemWithTitle:title representedObject:description];
 
         if (!found && [description isEqual:currentDescription]) {
             [destinationPopUpButton selectItemAtIndex:[destinationPopUpButton numberOfItems] - 1];
@@ -636,28 +641,22 @@ static SSEMainWindowController *controller = nil;
 {
     // Set the title to "Destination: <Whatever>"
     // Then set up the submenu items
-    static NSString *noDestinationName = nil;
-    static NSString *destinationBaseTitle = nil;    
     NSMenuItem *topMenuItem;
-    NSString *destinationName;
+    NSString *selectedDestinationTitle;
+    NSString *topTitle;
     NSMenu *submenu;
     unsigned int count, index;
     BOOL found = NO;
     BOOL addedSeparatorBetweenPortAndVirtual = NO;
-
-    if (!noDestinationName)
-        noDestinationName = [NSLocalizedStringFromTableInBundle(@"None", @"SysExLibrarian", [self bundle], "none") retain];
-    if (!destinationBaseTitle) {
-        destinationBaseTitle = NSLocalizedStringFromTableInBundle(@"Destination", @"SysExLibrarian", [self bundle], "title of destination toolbar item");
-        destinationBaseTitle = [[destinationBaseTitle stringByAppendingString:@": "] retain];
-    }
     
     topMenuItem = [nonretainedDestinationToolbarItem menuFormRepresentation];
-    
-    destinationName = [currentDescription objectForKey:@"name"];
-    if (!destinationName)
-        destinationName = noDestinationName;
-    [topMenuItem setTitle:[destinationBaseTitle stringByAppendingString:destinationName]];
+
+    selectedDestinationTitle = [self titleForDestinationWithDescription:currentDescription];
+    if (!selectedDestinationTitle)
+        selectedDestinationTitle = NSLocalizedStringFromTableInBundle(@"None", @"SysExLibrarian", [self bundle], "none");
+
+    topTitle = [[NSLocalizedStringFromTableInBundle(@"Destination", @"SysExLibrarian", [self bundle], "title of destination toolbar item") stringByAppendingString:@": "] stringByAppendingString:selectedDestinationTitle];
+    [topMenuItem setTitle:topTitle];
 
     submenu = [topMenuItem submenu];
     index = [submenu numberOfItems];
@@ -667,15 +666,19 @@ static SSEMainWindowController *controller = nil;
     count = [descriptions count];
     for (index = 0; index < count; index++) {
         NSDictionary *description;
+        NSString *title;
         NSMenuItem *menuItem;
 
         description = [descriptions objectAtIndex:index];
+
         if (!addedSeparatorBetweenPortAndVirtual && [description objectForKey:@"endpoint"] == nil) {
             if (index > 0)
                 [submenu addItem:[NSMenuItem separatorItem]];
             addedSeparatorBetweenPortAndVirtual = YES;
         }
-        menuItem = [submenu addItemWithTitle:[description objectForKey:@"name"] action:@selector(selectDestinationFromMenuItem:) keyEquivalent:@""];
+
+        title = [self titleForDestinationWithDescription:description];
+        menuItem = [submenu addItemWithTitle:title action:@selector(selectDestinationFromMenuItem:) keyEquivalent:@""];
         [menuItem setRepresentedObject:description];
         [menuItem setTarget:self];
 
@@ -689,8 +692,28 @@ static SSEMainWindowController *controller = nil;
     [topMenuItem retain];
     [nonretainedDestinationToolbarItem setMenuFormRepresentation:nil];
     [nonretainedDestinationToolbarItem setMenuFormRepresentation:topMenuItem];
-    [topMenuItem release];    
+    [topMenuItem release];
 }
+
+- (NSString *)titleForDestinationWithDescription:(NSDictionary *)description;
+{
+    NSString *title;
+    SMDestinationEndpoint *endpoint;
+
+    title = [description valueForKey:@"name"];
+    endpoint = [description valueForKey:@"endpoint"];
+
+    if (endpoint) {
+        NSArray *externalDeviceNames;
+
+        externalDeviceNames = [[endpoint connectedExternalDevices] arrayByPerformingSelector:@selector(name)];
+        if ([externalDeviceNames count] > 0)
+            title = [NSString stringWithFormat:@"%@ (%@)", title, [externalDeviceNames componentsJoinedByString:@", "]];
+    }
+
+    return title;
+}
+
 
 //
 // Library interaction
