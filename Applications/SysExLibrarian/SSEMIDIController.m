@@ -17,7 +17,7 @@
 - (void)sendPreferenceDidChange:(NSNotification *)notification;
 - (void)receivePreferenceDidChange:(NSNotification *)notification;
 
-- (void)endpointAppeared:(NSNotification *)notification;
+- (void)endpointsAppeared:(NSNotification *)notification;
 - (void)outputStreamEndpointDisappeared:(NSNotification *)notification;
 
 - (void)selectFirstAvailableDestinationWhenPossible;
@@ -80,7 +80,7 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
     [outputStream setSendsSysExAsynchronously:YES];
     [outputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a source for other programs", @"SysExLibrarian", [self bundle], "title of popup menu item for virtual source")];
 
-    [center addObserver:self selector:@selector(endpointAppeared:) name:SMEndpointAppearedNotification object:nil];
+    [center addObserver:self selector:@selector(endpointsAppeared:) name:SMEndpointsAppearedNotification object:nil];
     
     listenToMIDISetupChanges = YES;
 
@@ -342,13 +342,20 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
     [inputStream setSysExTimeOut:sysExReadTimeOut];
 }
 
-- (void)endpointAppeared:(NSNotification *)notification;
+- (void)endpointsAppeared:(NSNotification *)notification;
 {
-    SMEndpoint *endpoint;
+    NSArray *endpoints;
+    unsigned int endpointIndex, endpointCount;
 
-    endpoint = [notification object];
-    if ([endpoint isKindOfClass:[SMSourceEndpoint class]])
-        [inputStream addEndpoint:(SMSourceEndpoint *)endpoint];
+    endpoints = [notification object];
+    endpointCount = [endpoints count];
+    for (endpointIndex = 0; endpointIndex < endpointCount; endpointIndex++) {
+        id endpoint;
+
+        endpoint = [endpoints objectAtIndex:endpointIndex];
+        if ([endpoint isKindOfClass:[SMSourceEndpoint class]])
+            [inputStream addEndpoint:(SMSourceEndpoint *)endpoint];
+    }
 }
 
 - (void)outputStreamEndpointDisappeared:(NSNotification *)notification;
