@@ -33,6 +33,7 @@
 - (void)_showImportWarningForFiles:(NSArray *)filePaths andThenPerformSelector:(SEL)selector;
 - (void)_importWarningSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 - (void)_addFilesToLibraryInMainThread:(NSArray *)filePaths;
+- (void)_showErrorMessageForBadFiles:(NSArray *)badFilePaths;
 
 - (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
@@ -53,11 +54,11 @@
 - (void)_workThreadImportFiles:(NSArray *)filePaths;
 - (NSArray *)_workThreadExpandAndFilterDraggedFiles:(NSArray *)filePaths;
 
-- (NSArray *)_addFilesToLibrary:(NSArray *)filePaths;
+- (NSArray *)_addFilesToLibrary:(NSArray *)filePaths returningBadFiles:(NSArray **)badFilePathsPtr;
 
 - (void)_showImportSheet;
 - (void)_updateImportStatusDisplay;
-- (void)_doneImporting:(NSArray *)addedEntries;
+- (void)_doneImportingInWorkThreadWithAddedEntries:(NSArray *)addedEntries badFiles:(NSArray *)badFilePaths;
 
 - (void)_findMissingFilesAndPerformSelector:(SEL)selector;
 - (void)_missingFileAlertDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
@@ -914,10 +915,30 @@ static int libraryEntryComparator(id object1, id object2, void *context)
 - (void)_addFilesToLibraryInMainThread:(NSArray *)filePaths;
 {
     NSArray *newEntries;
+    NSArray *badFilePaths;
 
-    newEntries = [self _addFilesToLibrary:filePaths];
+    newEntries = [self _addFilesToLibrary:filePaths returningBadFiles:&badFilePaths];
     [self synchronizeLibrary];
-    [self _selectAndScrollToEntries:newEntries];    
+    [self _selectAndScrollToEntries:newEntries];
+
+    if ([badFilePaths count] > 0)
+        [self _showErrorMessageForBadFiles:badFilePaths];
+}
+
+- (void)_showErrorMessageForBadFiles:(NSArray *)badFilePaths;
+{
+    unsigned int badFileCount;
+    NSString *message;
+
+    badFileCount = [badFilePaths count];
+    OBASSERT(badFileCount > 0);
+
+    if (badFileCount == 1)
+        message = @"No SysEx data could be found in this file. It has not been added to the library.";
+    else
+        message = [NSString stringWithFormat:@"No SysEx data could be found in %u of the files. They have not been added to the library.", badFileCount];
+    
+    NSBeginInformationalAlertSheet(@"Could not read SysEx", nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"%@", message);    
 }
 
 - (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
@@ -1107,14 +1128,15 @@ static int libraryEntryComparator(id object1, id object2, void *context)
 {
     NSAutoreleasePool *pool;
     NSArray *addedEntries = nil;
+    NSArray *badFilePaths;
 
     pool = [[NSAutoreleasePool alloc] init];
     
     filePaths = [self _workThreadExpandAndFilterDraggedFiles:filePaths];
     if ([filePaths count] > 0)
-        addedEntries = [self _addFilesToLibrary:filePaths];
+        addedEntries = [self _addFilesToLibrary:filePaths returningBadFiles:&badFilePaths];
 
-    [self mainThreadPerformSelector:@selector(_doneImporting:) withObject:addedEntries];
+    [self mainThreadPerformSelector:@selector(_doneImportingInWorkThreadWithAddedEntries:badFiles:) withObject:addedEntries withObject:badFilePaths];
 
     [pool release];
 }
@@ -1176,14 +1198,18 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     return acceptableFilePaths;
 }
 
-- (NSArray *)_addFilesToLibrary:(NSArray *)filePaths;
+- (NSArray *)_addFilesToLibrary:(NSArray *)filePaths returningBadFiles:(NSArray **)badFilePathsPtr;
 {
     // NOTE: This may be happening in the main thread or a work thread.
 
     NSArray *existingEntries;
     unsigned int fileIndex, fileCount;
     NSMutableArray *addedEntries;
+    NSMutableArray *badFilePaths = nil;
 
+    if (badFilePathsPtr)
+        badFilePaths = [NSMutableArray array];
+    
     // Find the files which are already in the library, and pull them out.
     existingEntries = [library findEntriesForFiles:filePaths returningNonMatchingFiles:&filePaths];
 
@@ -1218,9 +1244,14 @@ static int libraryEntryComparator(id object1, id object2, void *context)
         addedEntry = [library addEntryForFile:filePath];
         if (addedEntry)
             [addedEntries addObject:addedEntry];
+        else
+            [badFilePaths addObject:filePath];
 
         [pool release];
     }
+
+    if (badFilePathsPtr)
+        *badFilePathsPtr = badFilePaths;
 
     return [addedEntries arrayByAddingObjectsFromArray:existingEntries];
 }
@@ -1264,14 +1295,17 @@ static int libraryEntryComparator(id object1, id object2, void *context)
         [importProgressIndexField setStringValue:[NSString stringWithFormat:@"%u of %u", fileIndex + 1, fileCount]];
     }
 }
-     
-- (void)_doneImporting:(NSArray *)addedEntries;
+
+- (void)_doneImportingInWorkThreadWithAddedEntries:(NSArray *)addedEntries badFiles:(NSArray *)badFilePaths;
 {
     if ([[self window] attachedSheet])
         [[NSApplication sharedApplication] endSheet:importSheetWindow];
 
     [self synchronizeInterface];
     [self _selectAndScrollToEntries:addedEntries];
+
+    if ([badFilePaths count] > 0)
+        [self _showErrorMessageForBadFiles:badFilePaths];
 }
 
 - (void)_findMissingFilesAndPerformSelector:(SEL)selector;
