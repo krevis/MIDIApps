@@ -128,7 +128,7 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     unsigned int historySize;
 
     dict = [NSMutableDictionary dictionary];
-    [dict setObject:[NSNumber numberWithInt:1] forKey:@"version"];
+    [dict setObject:[NSNumber numberWithInt:2] forKey:@"version"];
 
     streamSettings = [stream persistentSettings];
     if (streamSettings)
@@ -158,51 +158,64 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
 - (BOOL)loadDataRepresentation:(NSData *)data ofType:(NSString *)type;
 {
     NSDictionary *dict;
+    int version;
+    NSNumber *number;
+    NSString *string;
+    NSDictionary *streamSettings = nil;
 
     dict = [data propertyList];
-    if (dict && [dict isKindOfClass:[NSDictionary class]] && [[dict objectForKey:@"version"] intValue] == 1) {
-        NSNumber *number;
-        NSString *string;
-        NSDictionary *streamSettings;
-    
-        if ((streamSettings = [dict objectForKey:@"streamSettings"])) {
-            [missingSourceName release];
-            missingSourceName = [[stream takePersistentSettings:streamSettings] retain];
-            [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeSources)];
-        } else {
-            [self setSourceDescription:nil];
+    if (!dict || ![dict isKindOfClass:[NSDictionary class]])
+        return NO;
+
+    version = [[dict objectForKey:@"version"] intValue];    
+    if (version == 2) {
+        streamSettings = [dict objectForKey:@"streamSettings"];
+    } else if (version == 1) {
+        if ((number = [dict objectForKey:@"sourceEndpointUniqueID"])) {
+            streamSettings = [NSDictionary dictionaryWithObjectsAndKeys:number, @"portEndpointUniqueID", [dict objectForKey:@"sourceEndpointName"], @"portEndpointName", nil];
+            // NOTE: [dict objectForKey:@"sourceEndpointName"] may be nil--that's acceptable
+        } else if ((number = [dict objectForKey:@"virtualDestinationEndpointUniqueID"])) {
+            streamSettings = [NSDictionary dictionaryWithObject:number forKey:@"virtualEndpointUniqueID"];
         }
-
-        if ((number = [dict objectForKey:@"maxMessageCount"]))
-            [self setMaxMessageCount:[number unsignedIntValue]];
-        else
-            [self setMaxMessageCount:[SMMessageHistory defaultHistorySize]];
-            
-        if ((number = [dict objectForKey:@"filterMask"]))
-            [self _setFilterMask:[number unsignedIntValue]];
-        else
-            [self _setFilterMask:SMMessageTypeAllMask];
-
-        if ((number = [dict objectForKey:@"channelMask"]))
-            [self _setChannelMask:[number unsignedIntValue]];
-        else
-            [self _setChannelMask:SMChannelMaskAll];
-
-        if ((number = [dict objectForKey:@"isFilterShown"]))
-            [self setIsFilterShown:[number boolValue]];
-        else
-            [self setIsFilterShown:NO];
-
-        if ((string = [dict objectForKey:@"windowFrame"]))
-            [self setWindowFrameDescription:string];
-
-        // Doing the above caused undo actions to be remembered, but we don't want the user to see them
-        [self updateChangeCount:NSChangeCleared];
-
-        return YES;
     } else {
         return NO;
     }
+
+    if (streamSettings) {
+        [missingSourceName release];
+        missingSourceName = [[stream takePersistentSettings:streamSettings] retain];
+        [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeSources)];
+    } else {
+        [self setSourceDescription:nil];
+    }
+    
+    if ((number = [dict objectForKey:@"maxMessageCount"]))
+        [self setMaxMessageCount:[number unsignedIntValue]];
+    else
+        [self setMaxMessageCount:[SMMessageHistory defaultHistorySize]];
+        
+    if ((number = [dict objectForKey:@"filterMask"]))
+        [self _setFilterMask:[number unsignedIntValue]];
+    else
+        [self _setFilterMask:SMMessageTypeAllMask];
+
+    if ((number = [dict objectForKey:@"channelMask"]))
+        [self _setChannelMask:[number unsignedIntValue]];
+    else
+        [self _setChannelMask:SMChannelMaskAll];
+
+    if ((number = [dict objectForKey:@"isFilterShown"]))
+        [self setIsFilterShown:[number boolValue]];
+    else
+        [self setIsFilterShown:NO];
+
+    if ((string = [dict objectForKey:@"windowFrame"]))
+        [self setWindowFrameDescription:string];
+
+    // Doing the above caused undo actions to be remembered, but we don't want the user to see them
+    [self updateChangeCount:NSChangeCleared];
+
+    return YES;
 }
 
 - (void)updateChangeCount:(NSDocumentChangeType)change
