@@ -533,6 +533,7 @@
 			isa = PBXBuildFile;
 			settings = {
 				ATTRIBUTES = (
+					Public,
 				);
 			};
 		};

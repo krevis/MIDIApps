@@ -15,6 +15,7 @@
 #import <SnoizeMIDI/SMSequenceNote.h>
 #import <SnoizeMIDI/SMSequenceRunner.h>
 #import <SnoizeMIDI/SMOutputStream.h>
+#import <SnoizeMIDI/SMMessageParser.h>
 #import <SnoizeMIDI/SMPeriodicTimer.h>
 #import <SnoizeMIDI/SMPortInputStream.h>
 #import <SnoizeMIDI/SMPortOrVirtualStream.h>
