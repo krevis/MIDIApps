@@ -113,7 +113,6 @@
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = "";
 				LIBRARY_SEARCH_PATHS = "";
-				OPTIMIZATION_CFLAGS = "-O3";
 				OTHER_LDFLAGS = "-image_base 0x39000000";
 				PRODUCT_NAME = SnoizeMIDISpy;
 				SECTORDER_FLAGS = "";
@@ -350,8 +349,6 @@
 			buildSettings = {
 				EXPORTED_SYMBOLS_FILE = Driver/SpyingMIDIDriver.exp;
 				INSTALL_PATH = "/Library/Audio/MIDI Drivers";
-				OPTIMIZATION_CFLAGS = "-O3";
-				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-lstdc++";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = "MIDI Monitor";
