@@ -1,15 +1,7 @@
-//
-//  SMEndpoint.h
-//  SnoizeMIDI
-//
-//  Created by krevis on Sat Sep 22 2001.
-//  Copyright (c) 2001 __CompanyName__. All rights reserved.
-//
-
 #import <OmniFoundation/OFObject.h>
-#import <CoreMIDI/MIDIServices.h>
+#import <Foundation/Foundation.h>
+#import <CoreMIDI/CoreMIDI.h>
 
-@class NSArray, NSString;	// Foundation
 
 @interface SMEndpoint : OFObject
 {

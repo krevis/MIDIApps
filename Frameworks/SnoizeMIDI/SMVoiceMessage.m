@@ -1,14 +1,5 @@
-//
-//  SMVoiceMessage.m
-//  SnoizeMIDI
-//
-//  Created by krevis on Sat Dec 08 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
-
 #import "SMVoiceMessage.h"
-#import <CoreAudio/CoreAudio.h>
-#import <Foundation/Foundation.h>
+
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 

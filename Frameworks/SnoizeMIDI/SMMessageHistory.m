@@ -1,14 +1,5 @@
-//
-//  SMMessageHistory.m
-//  SnoizeMIDI
-//
-//  Created by krevis on Thu Dec 06 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
-
 #import "SMMessageHistory.h"
 
-#import <Foundation/Foundation.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 

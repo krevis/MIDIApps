@@ -1,16 +1,8 @@
-//
-//  SMMessageParser.h
-//  SnoizeMIDI.framework
-//
-//  Created by krevis on Sat Sep 08 2001.
-//  Copyright (c) 2001 __CompanyName__. All rights reserved.
-//
-
 #import <OmniFoundation/OFObject.h>
-#import <CoreMIDI/MIDIServices.h>
+#import <CoreMIDI/CoreMIDI.h>
+#import <Foundation/Foundation.h>
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 
-@class NSData, NSMutableData;		// Foundation
 
 @interface SMMessageParser : OFObject
 {

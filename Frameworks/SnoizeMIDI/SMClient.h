@@ -1,13 +1,6 @@
-//
-//  SMClient.h
-//  SnoizeMIDI.framework
-//
-//  Created by krevis on Sun Sep 16 2001.
-//  Copyright (c) 2001 __CompanyName__. All rights reserved.
-//
-
 #import <OmniFoundation/OFObject.h>
-#import <CoreMIDI/MIDIServices.h>
+#import <Foundation/Foundation.h>
+#import <CoreMIDI/CoreMIDI.h>
 
 
 @interface SMClient : OFObject

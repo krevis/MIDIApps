@@ -15,9 +15,9 @@
 					ActiveTab = 0;
 					Frame = "{{0, 23}, {1112, 917}}";
 					Split0 = {
-						Frame = "{{278, 0}, {834, 917}}";
+						Frame = "{{328, 0}, {784, 917}}";
 						Split0 = {
-							Frame = "{{0, 24}, {834, 893}}";
+							Frame = "{{0, 24}, {784, 893}}";
 						};
 						SplitCount = 1;
 						Tab0 = {
@@ -54,18 +54,18 @@
 							};
 						};
 						Tab2 = {
-							BuildMessageFrame = "{{0, 0}, {836, 240}}";
-							BuildTranscriptFrame = "{{0, 249}, {836, 80}}";
-							Frame = "{{0, 0}, {834, 327}}";
+							BuildMessageFrame = "{{0, 0}, {786, 240}}";
+							BuildTranscriptFrame = "{{0, 249}, {786, 80}}";
+							Frame = "{{0, 0}, {784, 327}}";
 						};
 						Tab3 = {
-							Frame = "{{0, 0}, {834, 296}}";
+							Frame = "{{0, 0}, {784, 296}}";
 						};
 						TabCount = 4;
 					};
 					SplitCount = 1;
 					Tab0 = {
-						Frame = "{{0, 0}, {254, 917}}";
+						Frame = "{{0, 0}, {304, 917}}";
 					};
 					Tab1 = {
 						ClassesFrame = "{{0, 0}, {202, 56}}";

@@ -1,15 +1,8 @@
-//
-//  SMSequence.m
-//  SnoizeMIDI
-//
-//  Created by Kurt Revis on Sat Dec 15 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
-
 #import "SMSequence.h"
-#import <Foundation/Foundation.h>
+
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
+
 #import "SMSequenceNote.h"
 #import "SMSequenceNote-Internal.h"
 

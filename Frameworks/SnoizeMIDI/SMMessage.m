@@ -1,14 +1,6 @@
-//
-//  SMMessage.m
-//  SnoizeMIDI.framework
-//
-//  Created by krevis on Thu Aug 30 2001.
-//  Copyright (c) 2001 __CompanyName__. All rights reserved.
-//
-
 #import "SMMessage.h"
+
 #import <CoreAudio/CoreAudio.h>
-#import <Foundation/Foundation.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 
@@ -34,8 +26,13 @@ static NSDateFormatter *timeStampDateFormatter;
 
 + (void)didLoad
 {
+    // Establish a base of what host time corresponds to what clock time.
+    // TODO We should do this a few times and average the results, and also try to be careful not to get
+    // scheduled out during this process. We may need to switch ourself to be a time-constraint thread temporarily
+    // in order to do this. See discussion in the CoreAudio-API archives.
     startHostTime = AudioGetCurrentHostTime();
     startTimeInterval = [NSDate timeIntervalSinceReferenceDate];
+
     timeStampDateFormatter = [[NSDateFormatter alloc] initWithDateFormat:@"%H:%M:%S.%F" allowNaturalLanguage:NO];
 }
 

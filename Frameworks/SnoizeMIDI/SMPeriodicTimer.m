@@ -1,12 +1,5 @@
-//
-//  SMPeriodicTimer.m
-//  SnoizeMIDI
-//
-//  Created by Kurt Revis on Mon Dec 17 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
-
 #import "SMPeriodicTimer.h"
+
 #import <mach/mach.h>
 #import <mach/mach_error.h>
 #import <mach/mach_time.h>

@@ -1,15 +1,6 @@
-//
-//  SMMessage.h
-//  SnoizeMIDI.framework
-//
-//  Created by krevis on Thu Aug 30 2001.
-//  Copyright (c) 2001 __CompanyName__. All rights reserved.
-//
-
 #import <OmniFoundation/OFObject.h>
-#import <CoreMIDI/MIDIServices.h>
-
-@class NSData;	// Foundation
+#import <Foundation/Foundation.h>
+#import <CoreMIDI/CoreMIDI.h>
 
 
 typedef enum _SMMessageType {

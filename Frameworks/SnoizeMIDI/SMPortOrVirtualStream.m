@@ -1,19 +1,11 @@
-//
-//  SMPortOrVirtualStream.m
-//  SnoizeMIDI
-//
-//  Created by krevis on Fri Dec 07 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
-
 #import "SMPortOrVirtualStream.h"
 
-#import <Foundation/Foundation.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 
 #import "SMEndpoint.h"
 #import "SMPortInputStream.h"		// For declaration of -endpoint -- could be output stream too, doesn't matter
+
 
 @interface SMPortOrVirtualStream (Private)
 

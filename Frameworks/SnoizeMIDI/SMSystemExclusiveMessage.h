@@ -1,14 +1,7 @@
-//
-//  SMSystemExclusiveMessage.h
-//  SnoizeMIDI
-//
-//  Created by krevis on Sat Dec 08 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
-
 #import <SnoizeMIDI/SMMessage.h>
+#import <Foundation/Foundation.h>
+#import <CoreMIDI/CoreMIDI.h>
 
-@class NSData, NSMutableData;
 
 @interface SMSystemExclusiveMessage : SMMessage
     // TODO Should this be a SMSystemCommonMessage too? Would we gain anything from that?

@@ -1,15 +1,5 @@
-//
-//  SMMessageParser.m
-//  SnoizeMIDI.framework
-//
-//  Created by krevis on Sat Sep 08 2001.
-//  Copyright (c) 2001 __CompanyName__. All rights reserved.
-//
-
 #import "SMMessageParser.h"
 
-#import <Foundation/Foundation.h>
-#import <CoreAudio/CoreAudio.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 

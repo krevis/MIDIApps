@@ -1,17 +1,8 @@
-//
-//  SMPortOrVirtualStream.h
-//  SnoizeMIDI
-//
-//  Created by krevis on Fri Dec 07 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
-
 #import <OmniFoundation/OFObject.h>
-#import <CoreMIDI/CoreMIDI.h>
-#import <SnoizeMIDI/SMMessageDestinationProtocol.h>
+#import <Foundation/Foundation.h>
 
-@class NSArray, NSDictionary, NSNotification, NSString;
 @class SMEndpoint;
+
 
 @interface SMPortOrVirtualStream : OFObject
 {

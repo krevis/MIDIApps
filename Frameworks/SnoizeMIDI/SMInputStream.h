@@ -1,16 +1,10 @@
-//
-//  SMInputStream.h
-//  SnoizeMIDI
-//
-//  Created by krevis on Wed Nov 28 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
-
 #import <OmniFoundation/OFObject.h>
-#import <CoreMIDI/MIDIServices.h>
+#import <CoreMIDI/CoreMIDI.h>
+#import <Foundation/Foundation.h>
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 
 @class SMMessageParser;
+
 
 @interface SMInputStream : OFObject
 {

@@ -1,15 +1,5 @@
-//
-//  SMPortOutputStream.m
-//  SnoizeMIDI
-//
-//  Created by krevis on Tue Dec 04 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
-
 #import "SMPortOutputStream.h"
 
-#import <Foundation/Foundation.h>
-#import <CoreAudio/CoreAudio.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 

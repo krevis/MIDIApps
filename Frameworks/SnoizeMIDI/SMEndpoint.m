@@ -1,13 +1,5 @@
-//
-//  SMEndpoint.m
-//  SnoizeMIDI
-//
-//  Created by krevis on Sat Sep 22 2001.
-//  Copyright (c) 2001 __CompanyName__. All rights reserved.
-//
-
 #import "SMEndpoint.h"
-#import <Foundation/Foundation.h>
+
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 

@@ -1,14 +1,5 @@
-//
-//  SMMessageFilter.m
-//  SnoizeMIDI.framework
-//
-//  Created by krevis on Sat Sep 08 2001.
-//  Copyright (c) 2001 __CompanyName__. All rights reserved.
-//
-
 #import "SMMessageFilter.h"
 
-#import <Foundation/Foundation.h>
 #import <OmniBase/OmniBase.h>
 
 

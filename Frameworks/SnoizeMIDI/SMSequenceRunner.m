@@ -1,17 +1,9 @@
-//
-//  SMSequenceRunner.m
-//  SnoizeMIDI
-//
-//  Created by Kurt Revis on Sat Dec 15 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
-
 #import "SMSequenceRunner.h"
-#import <Foundation/Foundation.h>
+
 #import <CoreAudio/CoreAudio.h>
-#import <CoreMIDI/CoreMIDI.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
+
 #import "SMPeriodicTimer.h"
 #import "SMSequence.h"
 #import "SMSequenceNote.h"

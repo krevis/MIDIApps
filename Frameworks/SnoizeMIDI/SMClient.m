@@ -1,13 +1,5 @@
-//
-//  SMClient.m
-//  SnoizeMIDI.framework
-//
-//  Created by krevis on Sun Sep 16 2001.
-//  Copyright (c) 2001 __CompanyName__. All rights reserved.
-//
-
 #import "SMClient.h"
-#import <Foundation/Foundation.h>
+
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 
@@ -25,14 +17,14 @@ static void getMIDINotification(const MIDINotification *message, void *refCon);
 
 @implementation SMClient
 
-static SMClient *sharedClient = nil;
-
 DEFINE_NSSTRING(SMClientSetupChangedInternalNotification);
 DEFINE_NSSTRING(SMClientSetupChangedNotification);
 DEFINE_NSSTRING(SMClientMIDINotification);
 DEFINE_NSSTRING(SMClientMIDINotificationID);
 DEFINE_NSSTRING(SMClientMIDINotificationData);
 
+
+static SMClient *sharedClient = nil;
 
 + (SMClient *)sharedClient;
 {

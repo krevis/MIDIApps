@@ -1,13 +1,6 @@
-//
-//  SMSequenceNote.h
-//  SnoizeMIDI
-//
-//  Created by Kurt Revis on Sat Dec 15 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
-
-#import <Foundation/Foundation.h>
 #import <OmniFoundation/OFObject.h>
+#import <Foundation/Foundation.h>
+
 
 @interface SMSequenceNote : OFObject
 {

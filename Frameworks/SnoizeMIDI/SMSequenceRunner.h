@@ -1,18 +1,11 @@
-//
-//  SMSequenceRunner.h
-//  SnoizeMIDI
-//
-//  Created by Kurt Revis on Sat Dec 15 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
-
+#import <OmniFoundation/OFObject.h>
 #import <Foundation/Foundation.h>
 #import <CoreMIDI/CoreMIDI.h>
-#import <OmniFoundation/OFObject.h>
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 #import <SnoizeMIDI/SMPeriodicTimer.h>
 
 @class SMSequence;
+
 
 @interface SMSequenceRunner : OFObject <SMPeriodicTimerListener>
 {

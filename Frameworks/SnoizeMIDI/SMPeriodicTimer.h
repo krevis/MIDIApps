@@ -1,13 +1,5 @@
-//
-//  SMPeriodicTimer.h
-//  SnoizeMIDI
-//
-//  Created by Kurt Revis on Mon Dec 17 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
-
-#import <Foundation/Foundation.h>
 #import <OmniFoundation/OFObject.h>
+#import <Foundation/Foundation.h>
 
 
 @protocol SMPeriodicTimerListener <NSObject>

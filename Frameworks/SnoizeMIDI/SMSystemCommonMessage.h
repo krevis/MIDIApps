@@ -1,12 +1,6 @@
-//
-//  SMSystemCommonMessage.h
-//  SnoizeMIDI
-//
-//  Created by krevis on Sat Dec 08 2001.
-//  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
-//
-
 #import <SnoizeMIDI/SMMessage.h>
+#import <Foundation/Foundation.h>
+#import <CoreMIDI/CoreMIDI.h>
 
 
 typedef enum _SMSystemCommonMessageType {
