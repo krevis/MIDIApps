@@ -12,9 +12,9 @@
     IBOutlet NSPopUpButton *destinationPopUpButton;
 
     IBOutlet NSWindow *recordSheetWindow;
-    IBOutlet NSTabView *recordTabView;
     IBOutlet NSProgressIndicator *recordProgressIndicator;
-    IBOutlet NSTextField *recordProgressField;    
+    IBOutlet NSTextField *recordProgressMessageField;
+    IBOutlet NSTextField *recordProgressBytesField;
 
     IBOutlet NSWindow *recordMultipleSheetWindow;
     IBOutlet NSTabView *recordMultipleTabView;

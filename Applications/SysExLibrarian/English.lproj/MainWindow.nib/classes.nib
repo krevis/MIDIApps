@@ -35,10 +35,10 @@
                 recordMultipleSheetWindow = NSWindow; 
                 recordMultipleTabView = NSTabView; 
                 recordMultipleTotalProgressField = NSTextField; 
-                recordProgressField = NSTextField; 
+                recordProgressBytesField = NSTextField; 
                 recordProgressIndicator = NSProgressIndicator; 
+                recordProgressMessageField = NSTextField; 
                 recordSheetWindow = NSWindow; 
-                recordTabView = NSTabView; 
                 sourcePopUpButton = NSPopUpButton; 
             }; 
             SUPERCLASS = NSWindowController; 

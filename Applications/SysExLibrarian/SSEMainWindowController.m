@@ -106,7 +106,7 @@ static SSEMainWindowController *controller;
 
 - (IBAction)recordOne:(id)sender;
 {
-    [recordTabView selectTabViewItemWithIdentifier:@"waiting"];    
+    [self _updateSingleSysExReadIndicatorWithMessageCount:0 bytesRead:0 totalBytesRead:0];
 
     [[NSApplication sharedApplication] beginSheet:recordSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];    
 
@@ -115,9 +115,7 @@ static SSEMainWindowController *controller;
 
 - (IBAction)recordMultiple:(id)sender;
 {
-    [recordMultipleTabView selectTabViewItemWithIdentifier:@"waiting"];
-    [recordMultipleDoneButton setEnabled:NO];
-    [recordMultipleTotalProgressField setStringValue:@""];
+    [self _updateMultipleSysExReadIndicatorWithMessageCount:0 bytesRead:0 totalBytesRead:0];
 
     [[NSApplication sharedApplication] beginSheet:recordMultipleSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 
@@ -313,18 +311,13 @@ static SSEMainWindowController *controller;
 
 - (void)_updateSingleSysExReadIndicatorWithMessageCount:(unsigned int)messageCount bytesRead:(unsigned int)bytesRead totalBytesRead:(unsigned int)totalBytesRead;
 {
-    BOOL isWaiting;
-    NSString *tabIdentifier;
-
-    isWaiting = (bytesRead == 0 && messageCount == 0);
-
-    tabIdentifier = isWaiting ? @"waiting" : @"receiving";
-    [recordTabView selectTabViewItemWithIdentifier:tabIdentifier];
-
-    if (!isWaiting) {
+    if ((bytesRead == 0 && messageCount == 0)) {
+        [recordProgressMessageField setStringValue:@"Waiting for SysEx message..."]; // TODO localize
+        [recordProgressBytesField setStringValue:@""];
+    } else {
         [recordProgressIndicator animate:nil];
-        [recordProgressField setStringValue:[@"Received " stringByAppendingString:[NSString abbreviatedStringForBytes:bytesRead + totalBytesRead]]];
-        // TODO localize
+        [recordProgressMessageField setStringValue:@"Receiving SysEx message..."];	// TODO localize
+        [recordProgressBytesField setStringValue:[NSString abbreviatedStringForBytes:bytesRead + totalBytesRead]];
     }
 }
 
