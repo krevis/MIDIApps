@@ -181,8 +181,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 
     status = MIDIObjectSetIntegerProperty(endpointRef, kMIDIPropertyUniqueID, value);
     if (status) {
-        // [NSException raise:NSGenericException format:@"Couldn't set endpoint's unique ID: error %ld", status];
-        // TODO Don't raise an exception here; this may be impossible in systems after 10.1.3.
+        // Ignore failure... not sure if this is the right thing to do or not.
     }
 
     // Refresh our idea of the unique ID since it may or may not have changed
