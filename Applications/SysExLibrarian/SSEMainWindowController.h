@@ -48,6 +48,7 @@
     NSArray *sortedLibraryEntries;
     
     // Transient data
+    NSString *libraryLoadErrorMessage;
     OFScheduledEvent *progressUpdateEvent;
     NSLock *importStatusLock;
     NSString *importFilePath;

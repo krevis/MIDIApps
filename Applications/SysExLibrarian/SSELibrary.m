@@ -12,8 +12,6 @@
 
 - (NSArray *)_fileTypesFromDocumentTypeDictionary:(NSDictionary *)documentTypeDict;
 
-- (void)_loadEntries;
-
 - (NSDictionary *)_entriesByFilePath;
 
 @end
@@ -31,12 +29,12 @@ NSString *SSESysExFileExtension = @"syx";
 
 + (NSString *)defaultPath;
 {
-    return [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"SysEx Library"] stringByAppendingPathComponent:@"SysEx Library.sXLb"];
+    return [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"SysEx Library"] stringByAppendingPathComponent:@"Library"];
 }
 
 + (NSString *)defaultFileDirectoryPath;
 {
-    return [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"SysEx Library"] stringByAppendingPathComponent:@"SysEx Files"];
+    return [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"SysEx Library"] stringByAppendingPathComponent:@"Files"];
 }
 
 - (id)init;
@@ -45,15 +43,6 @@ NSString *SSESysExFileExtension = @"syx";
 
     if (![super init])
         return nil;
-
-    libraryFilePath = [[self path] retain];
-    entries = [[NSMutableArray alloc] init];
-    flags.isDirty = NO;
-
-    [self _loadEntries];
-
-    // Ignore any changes that came from reading entries
-    flags.isDirty = NO;
 
     documentTypes = [[[self bundle] infoDictionary] objectForKey:@"CFBundleDocumentTypes"];
     if ([documentTypes count] > 0) {
@@ -69,6 +58,10 @@ NSString *SSESysExFileExtension = @"syx";
     }
     allowedFileTypes = [[rawSysExFileTypes arrayByAddingObjectsFromArray:standardMIDIFileTypes] retain];
     
+    libraryFilePath = [[self path] retain];
+    entries = [[NSMutableArray alloc] init];
+    flags.isDirty = NO;
+
     return self;
 }
 
@@ -108,6 +101,10 @@ NSString *SSESysExFileExtension = @"syx";
     if (!path)
         path = [[self class] defaultPath];
 
+    // TODO It is sort of unclear that we want things to work this way in future. If we set a library path, we don't necessarily want to keep track of it with an alias only, since the alias will no longer resolve if the file gets removed.
+    // (Is my assumption about this correct? yes--BDAlias will return nil, but the alias manager will in reality give us back an FSRef for a file which no longer exists, and return fnfErr.  So we might want to go down to alias manager level and do this ourself.)
+    // (that is: if the file gets removed we should create a new one at the same place as it was, not at the default path)
+
     return path;
 }
 
@@ -135,7 +132,48 @@ NSString *SSESysExFileExtension = @"syx";
 - (BOOL)isPathInFileDirectory:(NSString *)path;
 {
     return [path hasPrefix:[[self fileDirectoryPath] stringByAppendingString:@"/"]];
-    // TODO is this really the way to do this?
+}
+
+- (NSString *)loadEntriesReturningErrorMessage;
+{
+    BOOL isDirectory;
+    NSDictionary *libraryDictionary = nil;
+    NSArray *entryDicts;
+    unsigned int entryDictIndex, entryDictCount;
+
+    // We should only be called once at startup
+    OBASSERT([entries count] == 0);
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:libraryFilePath isDirectory:&isDirectory])
+        return nil;	// Nothing to load
+
+    if (isDirectory)
+        return @"There is a folder where the file should be.";
+
+    if (![[NSFileManager defaultManager] isReadableFileAtPath:libraryFilePath])
+        return @"The file's permissions do not allow reading.";
+
+    libraryDictionary = [NSDictionary dictionaryWithContentsOfFile:libraryFilePath];
+    if (!libraryDictionary)
+        return @"The file could not be read.";
+
+    // Now we can actually use the contents of the file...
+    entryDicts = [libraryDictionary objectForKey:@"Entries"];
+    entryDictCount = [entryDicts count];
+    for (entryDictIndex = 0; entryDictIndex < entryDictCount; entryDictIndex++) {
+        NSDictionary *entryDict;
+        SSELibraryEntry *entry;
+
+        entryDict = [entryDicts objectAtIndex:entryDictIndex];
+        entry = [[SSELibraryEntry alloc] initWithLibrary:self dictionary:entryDict];
+        [entries addObject:entry];
+        [entry release];
+    }
+
+    // Ignore any changes that came from reading entries
+    flags.isDirty = NO;
+
+    return nil;
 }
 
 - (NSArray *)entries;
@@ -214,6 +252,12 @@ NSString *SSESysExFileExtension = @"syx";
 
         [self noteEntryChanged];
     }
+}
+
+- (void)removeEntries:(NSArray *)entriesToRemove;
+{
+    [entries removeIdenticalObjectsFromArray:entriesToRemove];
+    [self noteEntryChanged];
 }
 
 - (void)noteEntryChanged;
@@ -356,12 +400,6 @@ NSString *SSESysExFileExtension = @"syx";
     // It doesn't work if there is already a file in the Trash with this name, and it doesn't make the Finder update.    
 }
 
-- (void)removeEntries:(NSArray *)entriesToRemove;
-{
-    [entries removeIdenticalObjectsFromArray:entriesToRemove];
-    [self noteEntryChanged];
-}
-
 @end
 
 
@@ -391,32 +429,6 @@ NSString *SSESysExFileExtension = @"syx";
     }
 
     return fileTypes;
-}
-
-- (void)_loadEntries;
-{
-    NSDictionary *libraryDictionary = nil;
-    NSArray *entryDicts;
-    unsigned int entryDictIndex, entryDictCount;
-
-    NS_DURING {
-        libraryDictionary = [NSDictionary dictionaryWithContentsOfFile:libraryFilePath];
-    } NS_HANDLER {
-        NSLog(@"Error loading library file \"%@\" : %@", libraryFilePath, localException);
-        // TODO we can of course do better than this
-    } NS_ENDHANDLER;
-
-    entryDicts = [libraryDictionary objectForKey:@"Entries"];
-    entryDictCount = [entryDicts count];
-    for (entryDictIndex = 0; entryDictIndex < entryDictCount; entryDictIndex++) {
-        NSDictionary *entryDict;
-        SSELibraryEntry *entry;
-
-        entryDict = [entryDicts objectAtIndex:entryDictIndex];
-        entry = [[SSELibraryEntry alloc] initWithLibrary:self dictionary:entryDict];
-        [entries addObject:entry];
-        [entry release];
-    }
 }
 
 - (NSDictionary *)_entriesByFilePath;
