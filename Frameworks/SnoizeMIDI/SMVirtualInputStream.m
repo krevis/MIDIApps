@@ -15,6 +15,9 @@
 
 @interface SMVirtualInputStream (Private)
 
+- (BOOL)_isActive;
+- (void)_setIsActive:(BOOL)value;
+
 - (void)_createEndpoint;
 - (void)_disposeEndpoint;
 
@@ -28,10 +31,10 @@
     if (!(self = [super init]))
         return nil;
 
-    name = [[[SMClient sharedClient] name] retain];
+    endpointName = [[[SMClient sharedClient] name] retain];
     uniqueID = [SMEndpoint generateNewUniqueID];
 
-    inputStreamSource = [[SMSimpleInputStreamSource alloc] initWithName:name];
+    inputStreamSource = [[SMSimpleInputStreamSource alloc] initWithName:endpointName];
 
     parser = [[self newParserWithOriginatingEndpoint:nil] retain];
 
@@ -40,8 +43,11 @@
 
 - (void)dealloc;
 {
-    [self setIsActive:NO];
+    [self _setIsActive:NO];
 
+    [endpointName release];
+    endpointName = nil;
+    
     [inputStreamSource release];
     inputStreamSource = nil;
     
@@ -51,26 +57,6 @@
     [super dealloc];
 }
 
-- (SMDestinationEndpoint *)endpoint;
-{
-    return endpoint;
-}
-
-- (BOOL)isActive;
-{
-    return (endpoint != nil);
-}
-
-- (void)setIsActive:(BOOL)value;
-{
-    if (value && !endpoint)
-        [self _createEndpoint];
-    else if (!value && endpoint)
-        [self _disposeEndpoint];
-
-    OBASSERT([self isActive] == value);
-}
-
 - (SInt32)uniqueID;
 {
     return uniqueID;
@@ -78,8 +64,30 @@
 
 - (void)setUniqueID:(SInt32)value;
 {
-    OBASSERT([self isActive] == NO);
     uniqueID = value;
+    if (endpoint)
+        [endpoint setUniqueID:value];
+}
+
+- (NSString *)virtualEndpointName;
+{
+    return endpointName;
+}
+
+- (void)setVirtualEndpointName:(NSString *)value;
+{
+    if (endpointName != value) {
+        [endpointName release];
+        endpointName = [value copy];
+
+        if (endpoint)
+            [endpoint setName:endpointName];
+    }
+}
+
+- (void)setInputSourceName:(NSString *)value;
+{
+    [inputStreamSource setName:value];
 }
 
 //
@@ -104,7 +112,7 @@
 
 - (NSArray *)selectedInputSources;
 {
-    if ([self isActive])
+    if ([self _isActive])
         return [self inputSources];
     else
         return [NSArray array];
@@ -112,7 +120,7 @@
 
 - (void)setSelectedInputSources:(NSArray *)sources;
 {
-    [self setIsActive:(sources && [sources indexOfObjectIdenticalTo:inputStreamSource] != NSNotFound)];
+    [self _setIsActive:(sources && [sources indexOfObjectIdenticalTo:inputStreamSource] != NSNotFound)];
 }
 
 //
@@ -121,7 +129,7 @@
 
 - (id)persistentSettings;
 {
-    if ([self isActive])
+    if ([self _isActive])
         return [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:uniqueID] forKey:@"uniqueID"];
     else
         return nil;
@@ -129,11 +137,11 @@
 
 - (NSArray *)takePersistentSettings:(id)settings;
 {
-    [self setIsActive:NO];
-
     if (settings) {
         [self setUniqueID:[[settings objectForKey:@"uniqueID"] intValue]];
-        [self setIsActive:YES];
+        [self _setIsActive:YES];
+    } else {
+        [self _setIsActive:NO];
     }
 
     return nil;
@@ -143,6 +151,21 @@
 
 
 @implementation SMVirtualInputStream (Private)
+
+- (BOOL)_isActive;
+{
+    return (endpoint != nil);
+}
+
+- (void)_setIsActive:(BOOL)value;
+{
+    if (value && !endpoint)
+        [self _createEndpoint];
+    else if (!value && endpoint)
+        [self _disposeEndpoint];
+
+    OBASSERT([self _isActive] == value);
+}
 
 - (void)_createEndpoint;
 {
@@ -158,7 +181,7 @@
     wasPostingExternalNotification = [client postsExternalSetupChangeNotification];
     [client setPostsExternalSetupChangeNotification:NO];
 
-    status = MIDIDestinationCreate([client midiClient], (CFStringRef)name, [self midiReadProc], self, &endpointRef);
+    status = MIDIDestinationCreate([client midiClient], (CFStringRef)endpointName, [self midiReadProc], self, &endpointRef);
     if (status) {
         [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't create a MIDI virtual destination (error %ld)", @"SnoizeMIDI", [self bundle], "exception with OSStatus if MIDIDestinationCreate() fails"), status];
     }
