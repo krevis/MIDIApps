@@ -60,7 +60,7 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
         message = NSLocalizedStringFromTableInBundle(@"There was a problem initializing the MIDI system. To try to fix this, log out and log back in, or restart the computer.", @"MIDIMonitor", [self bundle], "error message if MIDI initialization fails");
         quit = NSLocalizedStringFromTableInBundle(@"Quit", @"MIDIMonitor", [self bundle], "title of quit button");
 
-        NSRunCriticalAlertPanel(title, message, quit, nil, nil);
+        NSRunCriticalAlertPanel(title, @"%@", quit, nil, nil, message);
         [NSApp terminate:nil];
     } else {
         shouldOpenUntitledDocument = YES;        
@@ -135,7 +135,7 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
         NSString *title;
 
         title = NSLocalizedStringFromTableInBundle(@"Error", @"MIDIMonitor", [self bundle], "title of error alert");
-        NSRunAlertPanel(title, message, nil, nil, nil);
+        NSRunAlertPanel(title, @"%@", nil, nil, nil, message);
     }
 }
 
