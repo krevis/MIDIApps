@@ -49,6 +49,7 @@
     status = NewMusicSequence(&sequence);
     if (status == noErr) {
         status = MusicSequenceLoadSMF(sequence, &fsSpec);
+            // NOTE: This leaks quite badly as of Mac OS X 10.1.2--see Apple bug #2848166.
         if (status == noErr) {
             UInt32 trackCount, trackIndex;
             
