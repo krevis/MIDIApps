@@ -28,54 +28,13 @@ NSString *SSESysExFileExtension = @"syx";
 
 + (NSString *)defaultPath;
 {
-    return [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"SysEx Librarian"] stringByAppendingPathComponent:@"SysEx Library.sXLb"];
-}
-
-+ (NSString *)path;
-{
-    NSData *aliasData;
-    NSString *path = nil;
-
-    aliasData = [[NSUserDefaults standardUserDefaults] objectForKey:@"LibraryAlias"];
-    if (aliasData) {
-        BDAlias *alias;
-
-        alias = [BDAlias aliasWithData:aliasData];
-        path = [alias fullPath];        
-    }
-    // TODO We don't save this alias in the user defaults yet, but we need to.
-    
-    if (!path)
-        path = [self defaultPath];
-
-    return path;
+    return [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"SysEx Library"] stringByAppendingPathComponent:@"SysEx Library.sXLb"];
 }
 
 + (NSString *)defaultFileDirectoryPath;
 {
-    return [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"SysEx Librarian"] stringByAppendingPathComponent:@"SysEx Files"];
+    return [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"SysEx Library"] stringByAppendingPathComponent:@"SysEx Files"];
 }
-
-+ (NSString *)fileDirectoryPath;
-{
-    NSData *aliasData;
-    NSString *path = nil;
-
-    aliasData = [[NSUserDefaults standardUserDefaults] objectForKey:@"LibraryFileDirectoryAlias"];
-    if (aliasData) {
-        BDAlias *alias;
-
-        alias = [BDAlias aliasWithData:aliasData];
-        path = [alias fullPath];
-    }
-    // TODO We don't save this alias in the user defaults yet, but we need to.
-
-    if (!path)
-        path = [self defaultFileDirectoryPath];
-
-    return path;
-}
-
 
 - (id)init;
 {
@@ -84,7 +43,7 @@ NSString *SSESysExFileExtension = @"syx";
     if (![super init])
         return nil;
 
-    libraryFilePath = [[[self class] path] retain];
+    libraryFilePath = [[self path] retain];
     entries = [[NSMutableArray alloc] init];
     flags.isDirty = NO;
 
@@ -124,6 +83,48 @@ NSString *SSESysExFileExtension = @"syx";
     allowedFileTypes = nil;
     
     [super dealloc];
+}
+
+- (NSString *)path;
+{
+    // TODO why do we have this method, but keep the libraryFilePath ivar too?
+    
+    NSData *aliasData;
+    NSString *path = nil;
+
+    aliasData = [[NSUserDefaults standardUserDefaults] objectForKey:@"LibraryAlias"];
+    if (aliasData) {
+        BDAlias *alias;
+
+        alias = [BDAlias aliasWithData:aliasData];
+        path = [alias fullPath];
+    }
+    // TODO We don't save this alias in the user defaults yet, but we need to.
+
+    if (!path)
+        path = [[self class] defaultPath];
+
+    return path;
+}
+
+- (NSString *)fileDirectoryPath;
+{
+    NSData *aliasData;
+    NSString *path = nil;
+
+    aliasData = [[NSUserDefaults standardUserDefaults] objectForKey:@"LibraryFileDirectoryAlias"];
+    if (aliasData) {
+        BDAlias *alias;
+
+        alias = [BDAlias aliasWithData:aliasData];
+        path = [alias fullPath];
+    }
+    // TODO We don't save this alias in the user defaults yet, but we need to.
+
+    if (!path)
+        path = [[self class] defaultFileDirectoryPath];
+
+    return path;
 }
 
 - (NSArray *)entries;
@@ -170,7 +171,7 @@ NSString *SSESysExFileExtension = @"syx";
     
     // TODO what name?  attach the date, perhaps?
     newFileName = @"New SysEx File";
-    newFilePath = [[[[self class] fileDirectoryPath] stringByAppendingPathComponent:newFileName] stringByAppendingPathExtension:SSESysExFileExtension];
+    newFilePath = [[[self fileDirectoryPath] stringByAppendingPathComponent:newFileName] stringByAppendingPathExtension:SSESysExFileExtension];
     newFilePath = [fileManager uniqueFilenameFromName:newFilePath];
 
     NS_DURING {

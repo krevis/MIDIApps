@@ -51,13 +51,21 @@
 - (void)_missingFileAlertDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 - (void)_findMissingFileOpenPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
+- (void)_deleteWarningSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)_deleteStep2;
+- (void)_deleteLibraryFilesWarningSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)_deleteSelectedEntriesMovingLibraryFilesToTrash:(BOOL)shouldMoveToTrash;
 
 @end
 
 
 @implementation SSEMainWindowController
 
+DEFINE_NSSTRING(SSEShowWarningOnDelete);
+DEFINE_NSSTRING(SSEShowWarningOnDeleteFilesInLibrary);
+
 static SSEMainWindowController *controller;
+
 
 + (SSEMainWindowController *)mainWindowController;
 {
@@ -141,31 +149,11 @@ static SSEMainWindowController *controller;
 
 - (IBAction)delete:(id)sender;
 {
-    // TODO
-    // should we have a confirmation dialog?
-    // ask whether to delete the file or just the reference? (see how Project Builder or iTunes do it)
-
-    NSEnumerator *selectedRowEnumerator;
-    NSNumber *rowNumber;
-    NSMutableArray *entriesToRemove;
-    unsigned int entryIndex;
-
-    entriesToRemove = [NSMutableArray array];
-    selectedRowEnumerator = [libraryTableView selectedRowEnumerator];
-    while ((rowNumber = [selectedRowEnumerator nextObject])) {
-        SSELibraryEntry *entry;
-
-        entry = [sortedLibraryEntries objectAtIndex:[rowNumber intValue]];
-        [entriesToRemove addObject:entry];
-    }
-
-    entryIndex = [entriesToRemove count];
-    while (entryIndex--) {
-        [library removeEntry:[entriesToRemove objectAtIndex:entryIndex]];
-    }
-
-    [libraryTableView deselectAll:nil];
-    [self synchronizeInterface];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SSEShowWarningOnDelete]) {
+        [[NSApplication sharedApplication] beginSheet:deleteWarningSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_deleteWarningSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+    } else {
+        [self _deleteStep2];
+    } 
 }
 
 - (IBAction)recordOne:(id)sender;
@@ -244,6 +232,21 @@ static SSEMainWindowController *controller;
 {
     // No need to lock just to set a boolean
     importCancelled = YES;
+}
+
+- (IBAction)endSheetWithReturnCodeFromSenderTag:(id)sender;
+{
+    [[NSApplication sharedApplication] endSheet:[[self window] attachedSheet] returnCode:[sender tag]];
+}
+
+- (IBAction)setShowDeleteWarningInFuture:(id)sender;
+{
+    [[NSUserDefaults standardUserDefaults] setBool:(![sender intValue]) forKey:SSEShowWarningOnDelete];
+}
+
+- (IBAction)setShowDeleteLibraryFileWarningInFuture:(id)sender;
+{
+    [[NSUserDefaults standardUserDefaults] setBool:(![sender intValue]) forKey:SSEShowWarningOnDeleteFilesInLibrary];
 }
 
 //
@@ -1023,6 +1026,70 @@ static int libraryEntryComparator(id object1, id object2, void *context)
         [entriesWithMissingFiles release];
         entriesWithMissingFiles = nil;
     }
+}
+
+- (void)_deleteWarningSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+{
+    [sheet orderOut:nil];
+    if (returnCode == NSOKButton) {
+        [self _deleteStep2];
+    }
+}
+
+- (void)_deleteStep2;
+{
+    NSArray *selectedEntries;
+    unsigned int entryIndex;
+    BOOL areAnyFilesInLibraryDirectory = NO;
+
+    selectedEntries = [self _selectedEntries];
+    entryIndex = [selectedEntries count];
+    while (entryIndex--) {
+        if ([[selectedEntries objectAtIndex:entryIndex] isFileInLibraryDirectory]) {
+            areAnyFilesInLibraryDirectory = YES;
+            break;
+        }
+    }
+
+    if (areAnyFilesInLibraryDirectory && [[NSUserDefaults standardUserDefaults] boolForKey:SSEShowWarningOnDeleteFilesInLibrary]) {
+        [[NSApplication sharedApplication] beginSheet:deleteLibraryFilesWarningSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_deleteLibraryFilesWarningSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+    } else {
+        // TODO Should this be YES or NO? Should it be the what the user chose when they last saw the warning dialog?  See what iTunes does.
+        [self _deleteSelectedEntriesMovingLibraryFilesToTrash:NO];
+    }
+}
+
+- (void)_deleteLibraryFilesWarningSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+{
+    [sheet orderOut:nil];
+    if (returnCode == NSAlertDefaultReturn) {
+        // "Yes" button
+        [self _deleteSelectedEntriesMovingLibraryFilesToTrash:YES];
+    } else if (returnCode == NSAlertAlternateReturn) {
+        // "No" button
+        [self _deleteSelectedEntriesMovingLibraryFilesToTrash:NO];
+    }
+}
+
+- (void)_deleteSelectedEntriesMovingLibraryFilesToTrash:(BOOL)shouldMoveToTrash;
+{
+    NSArray *entriesToRemove;
+    unsigned int entryIndex;
+
+    entriesToRemove = [self _selectedEntries];
+    entryIndex = [entriesToRemove count];
+    while (entryIndex--) {
+        SSELibraryEntry *entry;
+
+        entry = [entriesToRemove objectAtIndex:entryIndex];
+        if (shouldMoveToTrash && [entry isFileInLibraryDirectory]) {
+            [entry moveFileToTrash];
+        }
+        [library removeEntry:entry];
+    }
+
+    [libraryTableView deselectAll:nil];
+    [self synchronizeInterface];
 }
 
 @end

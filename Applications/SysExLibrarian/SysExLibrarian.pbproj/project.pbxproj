@@ -322,6 +322,20 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>sXLb</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>SysEx Librarian Library</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>sXLb</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>SysEx Librarian</string>
@@ -341,6 +355,19 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>OFRegistrations</key>
+	<dict>
+		<key>NSUserDefaults</key>
+		<dict>
+			<key>defaultsDictionary</key>
+			<dict>
+				<key>SSEShowWarningOnDelete</key>
+				<true/>
+				<key>SSEShowWarningOnDeleteFilesInLibrary</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
 </dict>
 </plist>
 ";

@@ -18,28 +18,31 @@
     IBOutlet NSButton *deleteButton;
     IBOutlet NSButton *showFileButton;
     
-    IBOutlet NSWindow *recordSheetWindow;
+    IBOutlet NSPanel *recordSheetWindow;
     IBOutlet NSProgressIndicator *recordProgressIndicator;
     IBOutlet NSTextField *recordProgressMessageField;
     IBOutlet NSTextField *recordProgressBytesField;
 
-    IBOutlet NSWindow *recordMultipleSheetWindow;
+    IBOutlet NSPanel *recordMultipleSheetWindow;
     IBOutlet NSProgressIndicator *recordMultipleProgressIndicator;
     IBOutlet NSTextField *recordMultipleProgressMessageField;
     IBOutlet NSTextField *recordMultipleProgressBytesField;
     IBOutlet NSTextField *recordMultipleTotalProgressField;
     IBOutlet NSButton *recordMultipleDoneButton;
     
-    IBOutlet NSWindow *playSheetWindow;
+    IBOutlet NSPanel *playSheetWindow;
     IBOutlet NSProgressIndicator *playProgressIndicator;
     IBOutlet NSTextField *playProgressMessageField;
     IBOutlet NSTextField *playProgressBytesField;
 
-    IBOutlet NSWindow *importSheetWindow;
+    IBOutlet NSPanel *importSheetWindow;
     IBOutlet NSProgressIndicator *importProgressIndicator;
     IBOutlet NSTextField *importProgressMessageField;
     IBOutlet NSTextField *importProgressIndexField;
 
+    IBOutlet NSPanel *deleteWarningSheetWindow;
+    IBOutlet NSPanel *deleteLibraryFilesWarningSheetWindow;
+    
     // Library
     SSELibrary *library;
     NSArray *sortedLibraryEntries;
@@ -75,6 +78,11 @@
 
 - (IBAction)cancelImportSheet:(id)sender;
 
+- (IBAction)endSheetWithReturnCodeFromSenderTag:(id)sender;
+
+- (IBAction)setShowDeleteWarningInFuture:(id)sender;
+- (IBAction)setShowDeleteLibraryFileWarningInFuture:(id)sender;
+
 // Other API
 
 - (void)synchronizeInterface;
@@ -94,3 +102,7 @@
 - (void)hideSysExSendStatusWithSuccess:(BOOL)success;
 
 @end
+
+// Preferences keys
+extern NSString *SSEShowWarningOnDelete;
+extern NSString *SSEShowWarningOnDeleteFilesInLibrary;

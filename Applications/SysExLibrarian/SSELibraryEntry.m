@@ -209,6 +209,59 @@
     return [self isFilePresent];
 }
 
+- (BOOL)isFileInLibraryDirectory;
+{
+    if (![self isFilePresentIgnoringCachedValue])
+        return NO;
+    
+    return ([[[self path] stringByDeletingLastPathComponent] isEqualToString:[nonretainedLibrary fileDirectoryPath]]);
+    // TODO is this really the way to do this?
+}
+
+/*
+OSStatus makeFinderUpdateTrash()
+{
+    NSString *trashPath;
+    OSStatus status;
+    FSRef trashRef;
+    BOOL isDirectory;
+
+    trashPath = [NSHomeDirectory() stringByAppendingPathComponent:@".Trash"];
+
+    status = FSPathMakeRef((const unsigned char*)[trashPath fileSystemRepresentation], &trashRef, &isDirectory);
+    if (status != noErr || !isDirectory)
+        return status;
+
+    status = FNNotify(&trashRef, kFNDirectoryModifiedMessage, kNilOptions);
+    if (status != noErr)
+        NSLog(@"FNNotify status: %ld", status);
+
+    return status;
+}
+*/
+
+- (void)moveFileToTrash;
+{
+    NSString *path;
+    BOOL success;
+    int tag;
+
+    if (![self isFilePresentIgnoringCachedValue])
+        return;
+
+    path = [self path];
+    success = [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:[path stringByDeletingLastPathComponent] destination:@"" files:[NSArray arrayWithObject:[path lastPathComponent]] tag:&tag];
+    NSLog(@"move to trash success: %d  tag: %d", success, tag);
+    /* Returns tag < 0 on failure, 0 if sync, > 0 if async */
+
+    // TODO This doesn't work if there is already a file in the Trash with this name (0 will be returned). This is stupid.
+    // TODO Also it doesn't make the Finder update.
+
+//    if (success)
+//        makeFinderUpdateTrash();
+    // TODO The above has no effect...
+}
+
 @end
 
 
