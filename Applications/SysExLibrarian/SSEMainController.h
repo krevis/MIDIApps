@@ -14,11 +14,16 @@
     
     // Transient data
     BOOL listenToMIDISetupChanges;
-    unsigned int sysExBytesRead;
-    BOOL waitingForSysExMessage;
 
-    SMSystemExclusiveMessage *sysExMessage;
+    // ... for listening for sysex 
+    BOOL listeningToMessages;
+    BOOL listenToMultipleMessages;
 
+    NSMutableArray *messages;
+    unsigned int messageBytesRead;
+    unsigned int totalBytesRead;
+
+    // ... for sending sysex
     SMSysExSendRequest *currentSendRequest;
 }
 
@@ -30,11 +35,19 @@
 - (NSDictionary *)destinationDescription;
 - (void)setDestinationDescription:(NSDictionary *)destinationDescription;
 
-- (void)waitForOneSysExMessage;
-- (void)cancelSysExMessageWait;
+// Listening to sysex messages
 
-- (void)playSysExMessage;
-- (unsigned int)sysExBytesSent;
-- (void)cancelPlayingSysExMessage;
+- (void)listenForOneMessage;
+- (void)listenForMultipleMessages;
+- (void)cancelMessageListen;
+- (void)doneWithMultipleMessageListen;
+
+- (void)getMessageCount:(unsigned int *)messageCountPtr bytesRead:(unsigned int *)bytesReadPtr totalBytesRead:(unsigned int *)totalBytesReadPtr;
+
+// Sending sysex messages
+
+- (void)sendMessage;
+- (unsigned int)bytesSent;
+- (void)cancelSendingMessage;
 
 @end

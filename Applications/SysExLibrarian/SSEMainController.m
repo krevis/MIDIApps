@@ -16,11 +16,9 @@
 - (void)_selectFirstAvailableSource;
 - (void)_selectFirstAvailableDestination;
 
+- (void)_startListening;
 - (void)_readingSysEx:(NSNotification *)notification;
-- (void)_mainThreadReadingSysEx;
-
-- (void)_doneReadingSysEx:(NSNotification *)notification;
-- (void)_mainThreadDoneReadingSysEx:(NSNumber *)bytesReadNumber;
+- (void)_mainThreadTakeMIDIMessages:(NSArray *)messagesToTake;
 
 - (void)_willStartSendingSysEx:(NSNotification *)notification;
 - (void)_doneSendingSysEx:(NSNotification *)notification;
@@ -42,7 +40,7 @@
     inputStream = [[SMPortOrVirtualInputStream alloc] init];
     [center addObserver:self selector:@selector(_inputStreamEndpointWasRemoved:) name:SMPortOrVirtualStreamEndpointWasRemovedNotification object:inputStream];
     [center addObserver:self selector:@selector(_readingSysEx:) name:SMInputStreamReadingSysExNotification object:inputStream];
-    [center addObserver:self selector:@selector(_doneReadingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:inputStream];
+    [center addObserver:self selector:@selector(_readingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:inputStream];
     [inputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"SysExLibrarian", [self bundle], "title of popup menu item for virtual destination")];
     [inputStream setVirtualEndpointName:@"SysEx Librarian"];	// TODO get this from somewhere
     [inputStream setMessageDestination:self];
@@ -57,8 +55,13 @@
     [outputStream setVirtualEndpointName:@"SysEx Librarian"];	// TODO get this from somewhere
     
     listenToMIDISetupChanges = YES;
-    sysExBytesRead = 0;
-    waitingForSysExMessage = NO;
+
+    messages = [[NSMutableArray alloc] init];    
+    messageBytesRead = 0;
+    totalBytesRead = 0;
+
+    listeningToMessages = NO;
+    listenToMultipleMessages = NO;
 
     [center addObserver:self selector:@selector(_midiSetupDidChange:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
 
@@ -77,8 +80,8 @@
     inputStream = nil;
     [outputStream release];
     outputStream = nil;
-    [sysExMessage release];
-    sysExMessage = nil;
+    [messages release];
+    messages = nil;
     [currentSendRequest release];
     currentSendRequest = nil;
 
@@ -153,31 +156,69 @@
     [windowController synchronizeDestinations];
 }
 
-- (void)waitForOneSysExMessage;
+//
+// Listening to sysex messages
+//
+
+- (void)listenForOneMessage;
 {
+    listenToMultipleMessages = NO;
+    [self _startListening];
+}
+
+- (void)listenForMultipleMessages;
+{
+    listenToMultipleMessages = YES;
+    [self _startListening];
+}
+
+- (void)cancelMessageListen;
+{
+    listeningToMessages = NO;
     [inputStream cancelReceivingSysExMessage];
-        // In case a sysex message is currently being received
-    waitingForSysExMessage = YES;
+
+    [messages removeAllObjects];
+    messageBytesRead = 0;
+    totalBytesRead = 0;
 }
 
-- (void)cancelSysExMessageWait;
+- (void)doneWithMultipleMessageListen;
 {
-    waitingForSysExMessage = NO;
+    listeningToMessages = NO;
     [inputStream cancelReceivingSysExMessage];
 }
 
-- (void)playSysExMessage;
+- (void)getMessageCount:(unsigned int *)messageCountPtr bytesRead:(unsigned int *)bytesReadPtr totalBytesRead:(unsigned int *)totalBytesReadPtr;
 {
-    if (sysExMessage)
-        [outputStream takeMIDIMessages:[NSArray arrayWithObject:sysExMessage]];
+    // There is no need to put a lock around these things, assuming that we are in the main thread.
+    // messageBytesRead gets changed in a different thread, but it gets changed atomically.
+    // messages and totalBytesRead are only modified in the main thread.
+    OBASSERT([NSThread inMainThread])    
+
+    if (messageCountPtr)
+        *messageCountPtr = [messages count];
+    if (bytesReadPtr)
+        *bytesReadPtr = messageBytesRead;
+    if (totalBytesReadPtr)
+        *totalBytesReadPtr = totalBytesRead;
 }
 
-- (unsigned int)sysExBytesSent;
+//
+// Sending sysex messages
+//
+
+- (void)sendMessage;
+{
+    if (messages && [messages count] > 0)
+        [outputStream takeMIDIMessages:messages];
+}
+
+- (unsigned int)bytesSent;
 {
     return [currentSendRequest bytesSent];
 }
 
-- (void)cancelPlayingSysExMessage;
+- (void)cancelSendingMessage;
 {
     [currentSendRequest cancel];
 }
@@ -187,25 +228,9 @@
 // SMMessageDestination protocol
 //
 
-- (void)takeMIDIMessages:(NSArray *)messages;
+- (void)takeMIDIMessages:(NSArray *)messagesToTake;
 {
-    unsigned int messageCount, messageIndex;
-
-    if (!waitingForSysExMessage)
-        return;
-
-    messageCount = [messages count];
-    for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {
-        SMMessage *message;
-
-        message = [messages objectAtIndex:messageIndex];
-        if ([message isKindOfClass:[SMSystemExclusiveMessage class]]) {
-            waitingForSysExMessage = NO;
-            [sysExMessage release];
-            sysExMessage = [message retain];
-            break;
-        }
-    }    
+    [self queueSelector:@selector(_mainThreadTakeMIDIMessages:) withObject:messagesToTake];
 }
 
 @end
@@ -251,36 +276,65 @@
         [outputStream setEndpointDescription:[descriptions objectAtIndex:0]];
 }
 
+
+//
+// Listening to sysex messages
+//
+
+- (void)_startListening;
+{
+    OBASSERT(listeningToMessages == NO);
+    
+    [inputStream cancelReceivingSysExMessage];
+        // In case a sysex message is currently being received
+
+    [messages removeAllObjects];
+    messageBytesRead = 0;
+    totalBytesRead = 0;
+
+    listeningToMessages = YES;
+}
+
 - (void)_readingSysEx:(NSNotification *)notification;
 {
     // NOTE This is happening in the MIDI thread
 
-    sysExBytesRead = [[[notification userInfo] objectForKey:@"length"] unsignedIntValue];
-    [self queueSelectorOnce:@selector(_mainThreadReadingSysEx)];
+    messageBytesRead = [[[notification userInfo] objectForKey:@"length"] unsignedIntValue];
+    [windowController queueSelectorOnce:@selector(updateSysExReadIndicator)];
         // We want multiple updates to get coalesced, so only queue it once
 }
 
-- (void)_mainThreadReadingSysEx;
+- (void)_mainThreadTakeMIDIMessages:(NSArray *)messagesToTake;
 {
-    [windowController updateSysExReadIndicatorWithBytes:sysExBytesRead];
+    unsigned int messageCount, messageIndex;
+
+    if (!listeningToMessages)
+        return;
+
+    messageCount = [messagesToTake count];
+    for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {
+        SMMessage *message;
+
+        message = [messagesToTake objectAtIndex:messageIndex];
+        if ([message isKindOfClass:[SMSystemExclusiveMessage class]]) {
+            [messages addObject:message];
+            totalBytesRead += messageBytesRead;
+            messageBytesRead = 0;
+
+            [windowController updateSysExReadIndicator];
+            if (listenToMultipleMessages == NO)  {
+                listeningToMessages = NO;
+                [windowController stopSysExReadIndicator];
+                break;
+            }
+        }
+    }
 }
 
-- (void)_doneReadingSysEx:(NSNotification *)notification;
-{
-    // NOTE This is happening in the MIDI thread
-    NSNumber *number;
 
-    number = [[notification userInfo] objectForKey:@"length"];
-    sysExBytesRead = [number unsignedIntValue];
-    [self queueSelector:@selector(_mainThreadDoneReadingSysEx:) withObject:number];
-        // We DON'T want this to get coalesced, so always queue it.
-        // Pass the number of bytes read down, since sysExBytesRead may be overwritten before _mainThreadDoneReadingSysEx gets called.
-}
-
-- (void)_mainThreadDoneReadingSysEx:(NSNumber *)bytesReadNumber;
-{
-    [windowController stopSysExReadIndicatorWithBytes:[bytesReadNumber unsignedIntValue]];
-}
+//
+// Sending sysex messages
+//
 
 - (void)_willStartSendingSysEx:(NSNotification *)notification;
 {

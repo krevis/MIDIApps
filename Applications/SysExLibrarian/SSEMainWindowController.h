@@ -1,5 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
+@class OFScheduledEvent;
 @class SSEMainController;
 
 
@@ -11,16 +12,23 @@
     IBOutlet NSPopUpButton *destinationPopUpButton;
 
     IBOutlet NSWindow *recordSheetWindow;
-    IBOutlet NSTabView *recordSheetTabView;
+    IBOutlet NSTabView *recordTabView;
     IBOutlet NSProgressIndicator *recordProgressIndicator;
-    IBOutlet NSTextField *recordProgressField;
+    IBOutlet NSTextField *recordProgressField;    
 
+    IBOutlet NSWindow *recordMultipleSheetWindow;
+    IBOutlet NSTabView *recordMultipleTabView;
+    IBOutlet NSProgressIndicator *recordMultipleProgressIndicator;
+    IBOutlet NSTextField *recordMultipleProgressField;
+    IBOutlet NSTextField *recordMultipleTotalProgressField;
+    IBOutlet NSButton *recordMultipleDoneButton;
+    
     IBOutlet NSWindow *playSheetWindow;
     IBOutlet NSProgressIndicator *playProgressIndicator;
     IBOutlet NSTextField *playProgressField;
 
     // Transient data
-    NSDate *nextSysExAnimateDate;
+    OFScheduledEvent *progressUpdateEvent;
 }
 
 + (SSEMainWindowController *)mainWindowController;
@@ -33,10 +41,11 @@
 - (IBAction)open:(id)sender;
 - (IBAction)delete:(id)sender;
 - (IBAction)recordOne:(id)sender;
-- (IBAction)record:(id)sender;
+- (IBAction)recordMultiple:(id)sender;
 - (IBAction)play:(id)sender;
 
 - (IBAction)cancelRecordSheet:(id)sender;
+- (IBAction)doneWithRecordMultipleSheet:(id)sender;
 - (IBAction)cancelPlaySheet:(id)sender;
 
 // Other API
@@ -46,8 +55,8 @@
 - (void)synchronizeSources;
 - (void)synchronizeDestinations;
 
-- (void)updateSysExReadIndicatorWithBytes:(unsigned int)bytesRead;
-- (void)stopSysExReadIndicatorWithBytes:(unsigned int)bytesRead;
+- (void)updateSysExReadIndicator;
+- (void)stopSysExReadIndicator;
 
 - (void)showSysExSendStatusWithBytesToSend:(unsigned int)bytesToSend;
 - (void)hideSysExSendStatusWithBytesSent:(unsigned int)bytesSent;

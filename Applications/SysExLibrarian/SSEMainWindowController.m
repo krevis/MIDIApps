@@ -13,8 +13,11 @@
 
 - (void)_synchronizePopUpButton:(NSPopUpButton *)popUpButton withDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 
-- (void)_closeSheetNormally:(NSWindow *)sheet;
 - (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+
+- (void)_updateSysExReadIndicator;
+- (void)_updateSingleSysExReadIndicatorWithMessageCount:(unsigned int)messageCount bytesRead:(unsigned int)bytesRead totalBytesRead:(unsigned int)totalBytesRead;
+- (void)_updateMultipleSysExReadIndicatorWithMessageCount:(unsigned int)messageCount bytesRead:(unsigned int)bytesRead totalBytesRead:(unsigned int)totalBytesRead;
 
 - (void)_updatePlayProgress;
 - (void)_updatePlayProgressWithBytesSent:(unsigned int)bytesSent;
@@ -50,9 +53,9 @@ static SSEMainWindowController *controller;
 
 - (void)dealloc
 {
-    [nextSysExAnimateDate release];
-    nextSysExAnimateDate = nil;
-
+    [progressUpdateEvent release];
+    progressUpdateEvent = nil;
+    
     [super dealloc];
 }
 
@@ -104,16 +107,22 @@ static SSEMainWindowController *controller;
 
 - (IBAction)recordOne:(id)sender;
 {
-    [recordSheetTabView selectTabViewItemWithIdentifier:@"waiting"];    
+    [recordTabView selectTabViewItemWithIdentifier:@"waiting"];    
+
     [[NSApplication sharedApplication] beginSheet:recordSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];    
-    [mainController waitForOneSysExMessage];
+
+    [mainController listenForOneMessage];
 }
 
-- (IBAction)record:(id)sender;
+- (IBAction)recordMultiple:(id)sender;
 {
-    // TODO
-    // similar to recordOne:, but don't terminate the sheet after one message comes in.
-    // instead, keep recording the messages, until a "done" button is pressed (or cancel).
+    [recordMultipleTabView selectTabViewItemWithIdentifier:@"waiting"];
+    [recordMultipleDoneButton setEnabled:NO];
+    [recordMultipleTotalProgressField setStringValue:@""];
+
+    [[NSApplication sharedApplication] beginSheet:recordMultipleSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+
+    [mainController listenForMultipleMessages];
 }
 
 - (IBAction)play:(id)sender;
@@ -121,19 +130,25 @@ static SSEMainWindowController *controller;
     // TODO
     // disable if no files are selected.
 
-    [mainController playSysExMessage];
+    [mainController sendMessage];
 }
 
 - (IBAction)cancelRecordSheet:(id)sender;
 {
-    [mainController cancelSysExMessageWait];
-    [[NSApplication sharedApplication] endSheet:recordSheetWindow returnCode:NSRunAbortedResponse];
+    [mainController cancelMessageListen];
+    [[NSApplication sharedApplication] endSheet:[[self window] attachedSheet]];
+}
+
+- (IBAction)doneWithRecordMultipleSheet:(id)sender;
+{
+    [mainController doneWithMultipleMessageListen];
+    [[NSApplication sharedApplication] endSheet:recordMultipleSheetWindow];
 }
 
 - (IBAction)cancelPlaySheet:(id)sender;
 {
-    [mainController cancelPlayingSysExMessage];
-    [[NSApplication sharedApplication] endSheet:playSheetWindow returnCode:NSRunAbortedResponse];
+    [mainController cancelSendingMessage];
+    [[NSApplication sharedApplication] endSheet:playSheetWindow];
 }
 
 //
@@ -157,27 +172,21 @@ static SSEMainWindowController *controller;
     [self _synchronizePopUpButton:destinationPopUpButton withDescriptions:[mainController destinationDescriptions] currentDescription:[mainController destinationDescription]];
 }
 
-- (void)updateSysExReadIndicatorWithBytes:(unsigned int)bytesRead;
+- (void)updateSysExReadIndicator;
 {
-    [recordSheetTabView selectTabViewItemWithIdentifier:@"receiving"];    
-
-    if (!nextSysExAnimateDate || [[NSDate date] isAfterDate:nextSysExAnimateDate]) {
-        [recordProgressIndicator animate:nil];
-        [nextSysExAnimateDate release];
-        nextSysExAnimateDate = [[NSDate alloc] initWithTimeIntervalSinceNow:[recordProgressIndicator animationDelay]];
-
-        [recordProgressField setStringValue:[@"Received " stringByAppendingString:[NSString abbreviatedStringForBytes:bytesRead]]];
-        // TODO localize
+    if (!progressUpdateEvent) {
+        progressUpdateEvent = [[[OFScheduler mainScheduler] scheduleSelector:@selector(_updateSysExReadIndicator) onObject:self afterTime:[recordProgressIndicator animationDelay]] retain];
     }
 }
 
-- (void)stopSysExReadIndicatorWithBytes:(unsigned int)bytesRead;
+- (void)stopSysExReadIndicator;
 {
-    [nextSysExAnimateDate release];
-    nextSysExAnimateDate = nil;
+    // If there is an update pending, try to cancel it. If that succeeds, then we know the event never happened, and we do it ourself now.
+    if (progressUpdateEvent && [[OFScheduler mainScheduler] abortEvent:progressUpdateEvent])
+        [progressUpdateEvent invoke];
 
     // Close the sheet, after a little bit of a delay (makes it look nicer)
-    [self performSelector:@selector(_closeSheetNormally:) withObject:recordSheetWindow afterDelay:0.5];
+    [[NSApplication sharedApplication] performSelector:@selector(endSheet:) withObject:[[self window] attachedSheet] afterDelay:0.5];
 }
 
 - (void)showSysExSendStatusWithBytesToSend:(unsigned int)bytesToSend;
@@ -197,7 +206,7 @@ static SSEMainWindowController *controller;
     // Even if we have set the progress indicator to its maximum value, it won't get drawn on the screen that way immediately,
     // probably because it tries to smoothly animate to that state. The only way I have found to show the maximum value is to just
     // wait a little while for the animation to finish. This looks nice, too.
-    [self performSelector:@selector(_closeSheetNormally:) withObject:playSheetWindow afterDelay:0.5];
+    [[NSApplication sharedApplication] performSelector:@selector(endSheet:) withObject:playSheetWindow afterDelay:0.5];
 }
 
 @end
@@ -277,20 +286,77 @@ static SSEMainWindowController *controller;
     [[self window] setAutodisplay:wasAutodisplay];
 }
 
-- (void)_closeSheetNormally:(NSWindow *)sheet;
-{
-    [[NSApplication sharedApplication] endSheet:sheet returnCode:NSRunStoppedResponse];
-}
-
 - (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 {
     // At this point, we don't really care how this sheet ended
     [sheet orderOut:nil];
 }
 
+- (void)_updateSysExReadIndicator;
+{
+    unsigned int messageCount, bytesRead, totalBytesRead;
+
+    [mainController getMessageCount:&messageCount bytesRead:&bytesRead totalBytesRead:&totalBytesRead];
+
+    if ([[self window] attachedSheet] == recordSheetWindow)
+        [self _updateSingleSysExReadIndicatorWithMessageCount:messageCount bytesRead:bytesRead totalBytesRead:totalBytesRead];
+    else
+        [self _updateMultipleSysExReadIndicatorWithMessageCount:messageCount bytesRead:bytesRead totalBytesRead:totalBytesRead];
+
+    [progressUpdateEvent release];
+    progressUpdateEvent = nil;
+}
+
+- (void)_updateSingleSysExReadIndicatorWithMessageCount:(unsigned int)messageCount bytesRead:(unsigned int)bytesRead totalBytesRead:(unsigned int)totalBytesRead;
+{
+    BOOL isWaiting;
+    NSString *tabIdentifier;
+
+    isWaiting = (bytesRead == 0 && messageCount == 0);
+
+    tabIdentifier = isWaiting ? @"waiting" : @"receiving";
+    [recordTabView selectTabViewItemWithIdentifier:tabIdentifier];
+
+    if (!isWaiting) {
+        [recordProgressIndicator animate:nil];
+        [recordProgressField setStringValue:[@"Received " stringByAppendingString:[NSString abbreviatedStringForBytes:bytesRead + totalBytesRead]]];
+        // TODO localize
+    }
+}
+
+- (void)_updateMultipleSysExReadIndicatorWithMessageCount:(unsigned int)messageCount bytesRead:(unsigned int)bytesRead totalBytesRead:(unsigned int)totalBytesRead;
+{
+    BOOL isWaiting;
+    NSString *tabIdentifier;
+    NSString *totalProgress;
+    BOOL hasAtLeastOneCompleteMessage;
+
+    isWaiting = (bytesRead == 0);
+
+    tabIdentifier = isWaiting ? @"waiting" : @"receiving";
+    [recordMultipleTabView selectTabViewItemWithIdentifier:tabIdentifier];
+
+    if (!isWaiting) {
+        [recordMultipleProgressIndicator animate:nil];
+        [recordMultipleProgressField setStringValue:[@"Received " stringByAppendingString:[NSString abbreviatedStringForBytes:bytesRead]]];
+        // TODO localize
+    }
+
+    hasAtLeastOneCompleteMessage = (messageCount > 0);
+    if (hasAtLeastOneCompleteMessage) {
+        totalProgress = [NSString stringWithFormat:@"Total: %u message%@, %@", messageCount, (messageCount > 1) ? @"s" : @"", [NSString abbreviatedStringForBytes:totalBytesRead]];
+        // TODO localize -- the "s" vs "" trick will have to change
+    } else {
+        totalProgress = @"";
+    }
+
+    [recordMultipleTotalProgressField setStringValue:totalProgress];
+    [recordMultipleDoneButton setEnabled:hasAtLeastOneCompleteMessage];
+}
+
 - (void)_updatePlayProgress;
 {
-    [self _updatePlayProgressWithBytesSent:[mainController sysExBytesSent]];
+    [self _updatePlayProgressWithBytesSent:[mainController bytesSent]];
 }
 
 - (void)_updatePlayProgressWithBytesSent:(unsigned int)bytesSent;
