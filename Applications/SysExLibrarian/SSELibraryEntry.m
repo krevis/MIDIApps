@@ -2,7 +2,16 @@
 
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
+#import <SnoizeMIDI/SnoizeMIDI.h>
 
+#import "SSELibrary.h"
+
+
+@interface SSELibraryEntry (Private)
+
+- (NSString *)_realPath;
+
+@end
 
 
 @implementation SSELibraryEntry
@@ -65,6 +74,31 @@
 - (NSString *)name;
 {
     return [path lastPathComponent];
+}
+
+- (NSArray *)messages;
+{
+    NSString *realPath;
+    NSData *data;
+    NSArray *messages;
+
+    realPath = [self _realPath];
+    data = [NSData dataWithContentsOfFile:realPath];
+    messages = [SMSystemExclusiveMessage systemExclusiveMessagesInData:data];
+    return messages;
+}
+
+@end
+
+
+@implementation SSELibraryEntry (Private)
+
+- (NSString *)_realPath;
+{
+    // TODO this might be a partial path, or alias, or something
+    // return the real path on the real filesystem
+    // This is completely wrong as it stands
+    return [[SSELibrary defaultFileDirectory] stringByAppendingPathComponent:path];
 }
 
 @end

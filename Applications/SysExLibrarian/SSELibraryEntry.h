@@ -17,4 +17,6 @@
 
 - (NSString *)name;
 
+- (NSArray *)messages;
+
 @end

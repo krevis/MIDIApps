@@ -26,6 +26,7 @@
                 destinationPopUpButton = NSPopUpButton; 
                 libraryTableView = NSTableView; 
                 mainController = SSEMainController; 
+                playButton = NSButton; 
                 playProgressBytesField = NSTextField; 
                 playProgressIndicator = NSProgressIndicator; 
                 playProgressMessageField = NSTextField; 

@@ -129,9 +129,14 @@ static SSEMainWindowController *controller;
 
 - (IBAction)play:(id)sender;
 {
-    // TODO
-    // disable if no files are selected
+    int selectedRow;
+    NSArray *messages;
 
+    selectedRow = [libraryTableView selectedRow];
+    OBASSERT(selectedRow != -1);
+
+    messages = [[[library entries] objectAtIndex:selectedRow] messages];
+    [mainController setMessages:messages];
     [mainController sendMessages];
 }
 
@@ -162,6 +167,7 @@ static SSEMainWindowController *controller;
     [self synchronizeSources];
     [self synchronizeDestinations];
     [self synchronizeLibrary];
+    [self synchronizePlayButton];
 }
 
 - (void)synchronizeSources;
@@ -179,6 +185,12 @@ static SSEMainWindowController *controller;
     // TODO may need code to keep selection
     [libraryTableView reloadData];
 }
+
+- (void)synchronizePlayButton;
+{
+    [playButton setEnabled:([libraryTableView numberOfSelectedRows] > 0)];
+}
+
 
 //
 // Reading SysEx
@@ -273,6 +285,15 @@ static SSEMainWindowController *controller;
 
     entry = [[library entries] objectAtIndex:row];
     return [entry name];
+}
+
+//
+// NSTableView notifications
+//
+
+- (void)tableViewSelectionDidChange:(NSNotification *)notification;
+{
+    [self synchronizePlayButton];
 }
 
 @end
