@@ -14,6 +14,8 @@
 
 - (void)_endpointAppeared:(NSNotification *)notification;
 
+- (void)_spyNotification:(NSNotification *)notification;
+
 @end
 
 
@@ -47,6 +49,9 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
     // Listen for new endpoints. Don't do this earlier--we only are interested in ones
     // that appear after we've been launched.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_endpointAppeared:) name:SMEndpointAppearedNotification object:nil];
+
+    // TODO temporary
+    [[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(_spyNotification:) name:@"SpyingMIDIDriverNotification" object:nil suspensionBehavior:NSNotificationSuspensionBehaviorDeliverImmediately];
 }
 
 - (IBAction)showPreferences:(id)sender;
@@ -131,6 +136,11 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
             [document showWindows];
         }
     }
+}
+
+- (void)_spyNotification:(NSNotification *)notification;
+{
+    NSLog(@"Got spy notification: %@", notification);
 }
 
 @end
