@@ -1,6 +1,7 @@
 #import <Cocoa/Cocoa.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
+@class OFScheduledEvent;
 @class SSEMainWindowController;
 
 
@@ -11,7 +12,7 @@
     // MIDI processing
     SMPortOrVirtualInputStream *inputStream;
     SMPortOrVirtualOutputStream *outputStream;
-    
+        
     // Transient data
     BOOL listenToMIDISetupChanges;
 
@@ -24,12 +25,14 @@
     unsigned int totalBytesRead;
 
     // ... for sending sysex
+    NSTimeInterval pauseTimeBetweenMessages;
     NSLock *sendProgressLock;
     SMSysExSendRequest *nonretainedCurrentSendRequest;
     unsigned int sendingMessageCount;
     unsigned int sendingMessageIndex;
     unsigned int bytesToSend;
     unsigned int bytesSent;
+    OFScheduledEvent *sendNextMessageEvent;
 }
 
 - (NSArray *)sourceDescriptions;
@@ -39,6 +42,9 @@
 - (NSArray *)destinationDescriptions;
 - (NSDictionary *)destinationDescription;
 - (void)setDestinationDescription:(NSDictionary *)destinationDescription;
+
+- (NSTimeInterval)pauseTimeBetweenMessages;
+- (void)setPauseTimeBetweenMessages:(NSTimeInterval)value;
 
 // Listening to sysex messages
 

@@ -20,6 +20,7 @@
 - (void)_readingSysEx:(NSNotification *)notification;
 - (void)_mainThreadTakeMIDIMessages:(NSArray *)messagesToTake;
 
+- (void)_sendNextSysExMessage;
 - (void)_willStartSendingSysEx:(NSNotification *)notification;
 - (void)_doneSendingSysEx:(NSNotification *)notification;
 
@@ -60,9 +61,15 @@
     messageBytesRead = 0;
     totalBytesRead = 0;
 
+    // TODO testing
+    [messages addObject:[SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:[NSData randomDataOfLength:29826]]];
+    [messages addObject:[SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:[NSData randomDataOfLength:18106]]];
+    [messages addObject:[SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:[NSData randomDataOfLength:17574]]];
+    
     listeningToMessages = NO;
     listenToMultipleMessages = NO;
 
+    pauseTimeBetweenMessages = 0.150;	// 150 ms
     sendProgressLock = [[NSLock alloc] init];
     
     [center addObserver:self selector:@selector(_midiSetupDidChange:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
@@ -86,6 +93,8 @@
     messages = nil;
     [sendProgressLock release];
     sendProgressLock = nil;
+    [sendNextMessageEvent release];
+    sendNextMessageEvent = nil;
 
     [super dealloc];
 }
@@ -158,6 +167,16 @@
     [windowController synchronizeDestinations];
 }
 
+- (NSTimeInterval)pauseTimeBetweenMessages;
+{
+    return pauseTimeBetweenMessages;
+}
+
+- (void)setPauseTimeBetweenMessages:(NSTimeInterval)value;
+{
+    pauseTimeBetweenMessages = value;
+}
+
 //
 // Listening to sysex messages
 //
@@ -211,31 +230,38 @@
 
 - (void)sendMessages;
 {
-    if (!messages || [messages count] == 0)
+    unsigned int messageIndex, messageCount;
+
+    if (!messages || (messageCount = [messages count]) == 0)
         return;
 
+    if (![outputStream canSendSysExAsynchronously]) {
+        // Just dump all the messages out at once
+        [outputStream takeMIDIMessages:messages];
+        return;
+    }
+
     nonretainedCurrentSendRequest = nil;
-    sendingMessageCount = 0;
+    sendingMessageCount = messageCount;
     sendingMessageIndex = 0;
     bytesToSend = 0;
     bytesSent = 0;
-    
-    [outputStream takeMIDIMessages:messages];
 
-    if (sendingMessageCount > 0) {
-        unsigned int messageIndex;
+    for (messageIndex = 0; messageIndex < messageCount; messageIndex++)
+        bytesToSend += [[messages objectAtIndex:messageIndex] fullMessageDataLength];
 
-        bytesToSend = 0;
-        for (messageIndex = 0; messageIndex < sendingMessageCount; messageIndex++)
-            bytesToSend += [[messages objectAtIndex:messageIndex] fullMessageDataLength];
+    [self _sendNextSysExMessage];
 
-        [windowController showSysExSendStatus];
-    }
+    [windowController showSysExSendStatus];
 }
 
 - (void)cancelSendingMessages;
 {
-    [outputStream cancelPendingSysExSendRequests];
+    if (sendNextMessageEvent && [[OFScheduler mainScheduler] abortEvent:sendNextMessageEvent]) {
+        [windowController mainThreadPerformSelector:@selector(hideSysExSendStatusWithSuccess:) withBool:NO];
+    } else {
+        [outputStream cancelPendingSysExSendRequests];
+    }
 }
 
 - (void)getMessageCount:(unsigned int *)messageCountPtr messageIndex:(unsigned int *)messageIndexPtr bytesToSend:(unsigned int *)bytesToSendPtr bytesSent:(unsigned int *)bytesSentPtr;
@@ -354,6 +380,7 @@
         message = [messagesToTake objectAtIndex:messageIndex];
         if ([message isKindOfClass:[SMSystemExclusiveMessage class]]) {
             [messages addObject:message];
+            NSLog(@"got message with total length: %u", [message fullMessageDataLength]);
             totalBytesRead += messageBytesRead;
             messageBytesRead = 0;
 
@@ -372,16 +399,18 @@
 // Sending sysex messages
 //
 
+- (void)_sendNextSysExMessage;
+{
+    [sendNextMessageEvent release];
+    sendNextMessageEvent = nil;
+    
+    [outputStream takeMIDIMessages:[NSArray arrayWithObject:[messages objectAtIndex:sendingMessageIndex]]];
+}
+
 - (void)_willStartSendingSysEx:(NSNotification *)notification;
 {
-    [sendProgressLock lock];
-
-    sendingMessageCount++;
-
-    if (!nonretainedCurrentSendRequest)
-        nonretainedCurrentSendRequest = [outputStream currentSysExSendRequest];
-
-    [sendProgressLock unlock];
+    OBASSERT(nonretainedCurrentSendRequest == nil);
+    nonretainedCurrentSendRequest = [[notification userInfo] objectForKey:@"sendRequest"];
 }
 
 - (void)_doneSendingSysEx:(NSNotification *)notification;
@@ -391,19 +420,21 @@
     SMSysExSendRequest *sendRequest;
 
     sendRequest = [[notification userInfo] objectForKey:@"sendRequest"];
+    OBASSERT(sendRequest == nonretainedCurrentSendRequest);
 
     [sendProgressLock lock];
 
     bytesSent += [sendRequest bytesSent];
     sendingMessageIndex++;
-    nonretainedCurrentSendRequest = [outputStream currentSysExSendRequest];
+    nonretainedCurrentSendRequest = nil;
     
     [sendProgressLock unlock];
-
-    if (!nonretainedCurrentSendRequest) {
-        OBASSERT(sendingMessageIndex == sendingMessageCount);
-        // We're done.
-        [windowController mainThreadPerformSelector:@selector(hideSysExSendStatusWithSuccess:) withBool:(bytesSent == bytesToSend)];
+    
+    if (sendingMessageIndex < sendingMessageCount && [sendRequest wereAllBytesSent]) {
+        sendNextMessageEvent = [[[OFScheduler mainScheduler] scheduleSelector:@selector(_sendNextSysExMessage) onObject:self afterTime:pauseTimeBetweenMessages] retain];
+            // TODO pause should be configurable
+    } else {
+        [windowController mainThreadPerformSelector:@selector(hideSysExSendStatusWithSuccess:) withBool:[sendRequest wereAllBytesSent]];
     }
 }
 
