@@ -7,9 +7,21 @@
 #import "SMMessage.h"
 
 
+#define LIMITED_PACKET_LIST_SIZE 1
+// Workaround Apple bug #2830198, which is present as of Mac OS X 10.1.2 (and probably earlier).
+// This bug causes the CoreMIDI MIDIServer process to crash if we try to use MIDISend() on a packet list which is >= 1024 bytes long. Packet lists should be effectively unlimited in length.
+// We work around the problem by splitting into multiple small packet lists.
+// Doug Wyatt <dwyatt@apple.com> claims this has been fixed; we'll see.
+
+
 @interface SMOutputStream (Private)
 
+#if LIMITED_PACKET_LIST_SIZE
+- (void)_sendMessagesWithLimitedPacketListSize:(NSArray *)messages;
+- (void)_addMessage:(SMMessage *)message withDataSize:(unsigned int)dataSize toPacketList:(MIDIPacketList *)packetList packet:(MIDIPacket *)packet;
+#else
 - (MIDIPacketList *)_packetListForMessages:(NSArray *)messages;
+#endif
 
 @end
 
@@ -47,6 +59,12 @@
 
 - (void)takeMIDIMessages:(NSArray *)messages;
 {
+#if LIMITED_PACKET_LIST_SIZE
+
+    [self _sendMessagesWithLimitedPacketListSize:messages];
+
+#else
+
     MIDIPacketList *packetList;
 
     if ([messages count] == 0)
@@ -54,7 +72,9 @@
 
     packetList = [self _packetListForMessages:messages];
     [self sendMIDIPacketList:packetList];
-    NSZoneFree(NSDefaultMallocZone(), packetList);
+    NSZoneFree(NSDefaultMallocZone(), packetList);    
+
+#endif
 }
 
 //
@@ -71,10 +91,131 @@
 
 @implementation SMOutputStream (Private)
 
-const unsigned int maxPacketSize = 512;   //1010;
-    // NOTE: This should be 65535, since the storage for the packet length is an UInt16. However, large packets (> 1040 bytes) crash the MIDIServer quite reliably under 10.1.2.
-    // Also, the MIDIServer splits large packets into packets of <= 1010 bytes, so we might as well not make it do that. (1010 bytes of data in a message, packaged as one packet in a packet list, comes out to 1024 bytes of packet list.)
-    // TODO BUT! It seems that sending a single packet list of > 1024 bytes causes crashes, too, no matter how big the individual packets are. This is pretty stupid.  Need to look into it more.
+#if LIMITED_PACKET_LIST_SIZE
+
+static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
+
+- (void)_sendMessagesWithLimitedPacketListSize:(NSArray *)messages;
+{
+    unsigned int messageIndex, messageCount;
+    MIDIPacketList *packetList;
+    MIDIPacket *packet;
+    unsigned int packetListSize;
+
+    messageCount = [messages count];
+    if (messageCount == 0)
+        return;
+
+    packetList = malloc(MAX_PACKET_LIST_SIZE);
+    packetList->numPackets = 0;
+    packet = &packetList->packet[0];
+    packetListSize = offsetof(MIDIPacketList, packet);
+
+    for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {
+        SMMessage *message;
+        unsigned int dataSize, packetSize;
+
+        message = [messages objectAtIndex:messageIndex];
+        dataSize = 1 + [message otherDataLength];
+        // All messages are at least 1 byte long; otherDataLength is on top of that.
+        packetSize = offsetof(MIDIPacket, data) + dataSize;
+        // And each packet has some overhead.
+
+        // Is there room in this packet list for the whole of this message?
+        if (packetListSize + packetSize <= MAX_PACKET_LIST_SIZE) {
+            // Put this message in a packet.
+            [self _addMessage:message withDataSize:dataSize toPacketList:packetList packet:packet];
+            packetListSize += packetSize;
+            packet = MIDIPacketNext(packet);
+
+        } else {
+            if (dataSize <= 3) {
+                // This is a small message; we don't want to split it up.
+                // We will start a new packet list, and then put this message in it.
+
+                // We're finished with this packet list, so send it
+                [self sendMIDIPacketList:packetList];
+
+                // and start a new one
+                packetList->numPackets = 0;
+                packet = &packetList->packet[0];
+                packetListSize = offsetof(MIDIPacketList, packet);
+
+                // and add this message's packet to it
+                [self _addMessage:message withDataSize:dataSize toPacketList:packetList packet:packet];
+                packetListSize += packetSize;
+                packet = MIDIPacketNext(packet);
+
+            } else {
+                // This is a large sysex message. We can split it up.
+                // Put as much as will fit into the current packet list.
+                // Then start a new packet list, and put as much as will fit into it.
+                // Repeat until we've done all the data in the message.
+
+                const Byte *messageData;
+                unsigned int dataRemaining;
+                BOOL isFirstPacket = YES;
+
+                messageData = [[message otherData] bytes];
+                dataRemaining = dataSize;
+
+                while (dataRemaining > 0) {
+                    unsigned int partialSize;
+
+                    partialSize = MIN(MAX_PACKET_LIST_SIZE - packetListSize - offsetof(MIDIPacket, data), dataRemaining);
+
+                    // add data to packet
+                    packet->timeStamp = (flags.ignoresTimeStamps ? AudioGetCurrentHostTime() : [message timeStamp]);
+                    packet->length = partialSize;
+                    if (isFirstPacket) {
+                        isFirstPacket = NO;
+                        packet->data[0] = [message statusByte];
+                        memcpy(&packet->data[1], messageData, partialSize - 1);
+                        messageData += partialSize - 1;
+                    } else {
+                        memcpy(&packet->data[0], messageData, partialSize);
+                        messageData += partialSize;
+                    }
+                    dataRemaining -= partialSize;
+                    packetListSize += offsetof(MIDIPacket, data) + partialSize;
+                    packetList->numPackets++;
+
+                    if (packetListSize == MAX_PACKET_LIST_SIZE) {
+                        // We're finished with this packet list, so send it
+                        [self sendMIDIPacketList:packetList];
+
+                        // and start a new one
+                        packetList->numPackets = 0;
+                        packet = &packetList->packet[0];
+                        packetListSize = offsetof(MIDIPacketList, packet);
+                    }
+                }
+            }
+        }
+    }
+
+    if (packetList->numPackets > 0) {
+        // We're finished with this packet list, so send it
+        [self sendMIDIPacketList:packetList];
+    }
+    
+    free(packetList);
+}
+
+- (void)_addMessage:(SMMessage *)message withDataSize:(unsigned int)dataSize toPacketList:(MIDIPacketList *)packetList packet:(MIDIPacket *)packet;
+{
+    packet->timeStamp = (flags.ignoresTimeStamps ? AudioGetCurrentHostTime() : [message timeStamp]);
+    packet->length = dataSize;
+    packet->data[0] = [message statusByte];
+    if (dataSize > 1)
+        memcpy(&packet->data[1], [[message otherData] bytes], dataSize - 1);
+
+    packetList->numPackets++;
+}
+
+#else  // ! LIMITED_PACKET_LIST_SIZE
+
+const unsigned int maxPacketSize = 65535;
 
 - (MIDIPacketList *)_packetListForMessages:(NSArray *)messages;
 {
@@ -131,7 +272,7 @@ const unsigned int maxPacketSize = 512;   //1010;
             else
                 packet->timeStamp = [message timeStamp];
 
-            if (messagePacketIndex + 1 == messagePacketCount)		// last packet for this message
+            if (messagePacketIndex + 1 == messagePacketCount)   // last packet for this message
                 packet->length = remainingLength;
             else
                 packet->length = maxPacketSize;
@@ -154,5 +295,7 @@ const unsigned int maxPacketSize = 512;   //1010;
     
     return packetList;
 }
+
+#endif
 
 @end
