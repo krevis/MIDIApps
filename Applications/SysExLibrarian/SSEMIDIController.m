@@ -185,7 +185,7 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
     
     if (value != messages) {
         [messages release];
-        messages = [value copy];
+        messages = [value mutableCopy];
     }
 }
 
@@ -398,7 +398,7 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
     [inputStream cancelReceivingSysExMessage];
         // In case a sysex message is currently being received
 
-    [messages removeAllObjects];
+    [self setMessages:[NSMutableArray array]];
     messageBytesRead = 0;
     totalBytesRead = 0;
 
