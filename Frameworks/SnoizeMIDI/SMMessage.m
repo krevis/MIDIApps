@@ -106,15 +106,15 @@ static NSDateFormatter *timeStampDateFormatter;
         // We could create a new string for the controllerNumber and look that up in the dictionary, but that gets expensive to do all the time.
         // Instead, we just scan through the dictionary once, and build an NSArray which is quicker to index into.
 
-        unknownName = NSLocalizedStringFromTableInBundle(@"Controller", @"SnoizeMIDI", [self bundle], "name of unknown controller");
+        unknownName = NSLocalizedStringFromTableInBundle(@"Controller %u", @"SnoizeMIDI", [self bundle], "format of unknown controller");
 
         controllerNames = [[NSMutableArray alloc] initWithCapacity:128];
         for (controllerIndex = 0; controllerIndex <= 127; controllerIndex++) {
             NSString *name;
             
-            name = [controllerNameDict objectForKey:[NSString stringWithFormat:@"%d", controllerIndex]];
+            name = [controllerNameDict objectForKey:[NSString stringWithFormat:@"%u", controllerIndex]];
             if (!name)
-                name = unknownName;
+                name = [NSString stringWithFormat:unknownName, controllerIndex];
 
             [controllerNames addObject:name];
         }        
