@@ -48,6 +48,9 @@ typedef enum _SSELibraryFileType {
 
 - (NSArray *)findEntriesForFiles:(NSArray *)filePaths returningNonMatchingFiles:(NSArray **)nonMatchingFilePathsPtr;
 
+- (BOOL)moveFilesInLibraryDirectoryToTrashForEntries:(NSArray *)entriesToTrash;
+- (void)removeEntries:(NSArray *)entriesToRemove;
+
 @end
 
 // Notifications

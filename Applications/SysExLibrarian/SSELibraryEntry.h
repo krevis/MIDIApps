@@ -46,6 +46,5 @@
 - (BOOL)isFilePresentIgnoringCachedValue;
 
 - (BOOL)isFileInLibraryFileDirectory;
-- (void)moveFileToTrash;
 
 @end

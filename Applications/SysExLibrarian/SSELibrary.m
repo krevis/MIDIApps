@@ -5,6 +5,7 @@
 
 #import "SSELibraryEntry.h"
 #import "BDAlias.h"
+#import "NSWorkspace-Extensions.h"
 
 
 @interface SSELibrary (Private)
@@ -327,6 +328,36 @@ NSString *SSESysExFileExtension = @"syx";
         *nonMatchingFilePathsPtr = nonMatchingFilePaths;
 
     return matchingEntries;
+}
+
+- (BOOL)moveFilesInLibraryDirectoryToTrashForEntries:(NSArray *)entriesToTrash;
+{
+    unsigned int entryCount, entryIndex;
+    NSMutableArray *filesToTrash;
+
+    entryCount = [entriesToTrash count];
+    filesToTrash = [NSMutableArray arrayWithCapacity:entryCount];
+    for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+        SSELibraryEntry *entry;
+
+        entry = [entriesToTrash objectAtIndex:entryIndex];
+        if ([entry isFileInLibraryFileDirectory])
+            [filesToTrash addObject:[entry path]];
+    }
+
+    if ([filesToTrash count] > 0)
+        return [[NSWorkspace sharedWorkspace] moveFilesToTrash:filesToTrash];
+    else
+        return YES;
+
+    // NOTE We do the above because -[NSWorkspace performFileOperation:NSWorkspaceRecycleOperation] is broken.
+    // It doesn't work if there is already a file in the Trash with this name, and it doesn't make the Finder update.    
+}
+
+- (void)removeEntries:(NSArray *)entriesToRemove;
+{
+    [entries removeIdenticalObjectsFromArray:entriesToRemove];
+    [self noteEntryChanged];
 }
 
 @end

@@ -1294,19 +1294,12 @@ static int libraryEntryComparator(id object1, id object2, void *context)
 - (void)_deleteSelectedEntriesMovingLibraryFilesToTrash:(BOOL)shouldMoveToTrash;
 {
     NSArray *entriesToRemove;
-    unsigned int entryIndex;
 
     entriesToRemove = [self _selectedEntries];
-    entryIndex = [entriesToRemove count];
-    while (entryIndex--) {
-        SSELibraryEntry *entry;
 
-        entry = [entriesToRemove objectAtIndex:entryIndex];
-        if (shouldMoveToTrash && [entry isFileInLibraryFileDirectory]) {
-            [entry moveFileToTrash];
-        }
-        [library removeEntry:entry];
-    }
+    if (shouldMoveToTrash)
+        [library moveFilesInLibraryDirectoryToTrashForEntries:entriesToRemove];
+    [library removeEntries:entriesToRemove];
 
     [libraryTableView deselectAll:nil];
     [self synchronizeInterface];

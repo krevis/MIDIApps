@@ -6,7 +6,6 @@
 
 #import "BDAlias.h"
 #import "SSELibrary.h"
-#import "NSWorkspace-Extensions.h"
 
 
 @interface SSELibraryEntry (Private)
@@ -292,25 +291,6 @@
         return NO;
 
     return [nonretainedLibrary isPathInFileDirectory:[self path]];
-}
-
-- (void)moveFileToTrash;
-{
-    if (![self isFilePresentIgnoringCachedValue])
-        return;
-
-    [[NSWorkspace sharedWorkspace] moveFileToTrash:[self path]];
-
-    // NOTE We do the above because -[NSWorkspace performFileOperation:NSWorkspaceRecycleOperation] is broken.
-    // It doesn't work if there is already a file in the Trash with this name, and it doesn't make the Finder update.
-    // Here's how we would like to do it:
-#if 0
-    NSString *path;
-    int tag;
-    
-    path = [self path];
-    [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:[path stringByDeletingLastPathComponent] destination:@"" files:[NSArray arrayWithObject:[path lastPathComponent]] tag:&tag];
-#endif
 }
 
 @end
