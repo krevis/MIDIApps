@@ -105,6 +105,8 @@ static OSStatus PathToFSRef(CFStringRef inPath, FSRef *outRef)
     }
     
     gotRef = CFURLGetFSRef(tempURL, outRef);
+
+    CFRelease(tempURL);
     
     if (gotRef == false) {
         return fnfErr;
