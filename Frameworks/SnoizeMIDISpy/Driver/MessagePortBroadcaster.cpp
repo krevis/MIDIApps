@@ -42,6 +42,11 @@ MessagePortBroadcaster::MessagePortBroadcaster(CFStringRef broadcasterName, Mess
 
 MessagePortBroadcaster::~MessagePortBroadcaster()
 {
+    // As we delete our dictionaries, any leftover remote CFMessagePorts will get invalidated.
+    // But we want to bypass the usual invalidation code (since we're just taking everything
+    // down anyway), so we set sOneBroadcaster to NULL. MessagePortWasInvalidated() will
+    // still get called, but it won't be able to call back into this C++ object.
+    // NOTE When restructuring to get rid of sOneBroadcaster, you'll need to rethink this.
     sOneBroadcaster = NULL;
 
     pthread_mutex_destroy(&mListenerStructuresMutex);
@@ -165,6 +170,7 @@ void	MessagePortBroadcaster::AddListener(CFDataRef listenerIdentifierData)
 
         CFRelease(remotePort);
 
+        // TODO we don't really want to do this here -- we want to do it when the client adds a channel
         if (mDelegate && CFDictionaryGetCount(mListenersByIdentifier) == 1)
             mDelegate->BroadcasterListenerCountChanged(this, true);
     }
@@ -228,7 +234,8 @@ void MessagePortWasInvalidated(CFMessagePortRef messagePort, void *info)
     fprintf(stderr, "MessagePortBroadcaster: remote port was invalidated\n");
 #endif
 
-    sOneBroadcaster->RemoveListenerWithRemotePort(messagePort);
+    if (sOneBroadcaster)
+        sOneBroadcaster->RemoveListenerWithRemotePort(messagePort);
 }
 
 void	MessagePortBroadcaster::RemoveListenerWithRemotePort(CFMessagePortRef remotePort)
@@ -247,6 +254,7 @@ void	MessagePortBroadcaster::RemoveListenerWithRemotePort(CFMessagePortRef remot
 
     pthread_mutex_unlock(&mListenerStructuresMutex);
 
+    // TODO we don't really want to do this here -- we want to do it when a client removes a channel
     if (mDelegate && CFDictionaryGetCount(mListenersByIdentifier) == 0)
         mDelegate->BroadcasterListenerCountChanged(this, false);    
 }
