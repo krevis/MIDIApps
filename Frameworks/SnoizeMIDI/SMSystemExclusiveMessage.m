@@ -470,7 +470,7 @@
     Byte *bytes;
 
     length = [someData length];
-    dataWithStartByte = [[NSMutableData alloc] initWithLength:1 + length];
+    dataWithStartByte = [NSMutableData dataWithLength:1 + length];
     bytes = [dataWithStartByte mutableBytes];
 
     *bytes = 0xF0;
