@@ -162,6 +162,7 @@
 				F5BCCEC4023F486D01000164,
 				F53956F00256D06A01000164,
 				F5B4DD97025DA07801000164,
+				F5B4DD9C025DB5CA01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -179,6 +180,7 @@
 			files = (
 				08FB77B5FE84181DC02AAC07,
 				F5B4DD95025DA04101000164,
+				F5B4DD9D025DB5CA01000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -237,6 +239,8 @@
 				08FB77B4FE84181DC02AAC07,
 				F5B4DD96025DA07801000164,
 				F5B4DD94025DA04101000164,
+				F5B4DD9A025DB5CA01000164,
+				F5B4DD9B025DB5CA01000164,
 			);
 			isa = PBXGroup;
 			name = Source;
@@ -387,7 +391,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>0.0.1d2</string>
+	<string>0.0.1d3</string>
 	<key>CFPlugInFactories</key>
 	<dict>
 		<key>4FA13C6B-2D94-11D6-8C2F-000A27B4965C</key>
@@ -677,6 +681,28 @@
 		};
 		F5B4DD97025DA07801000164 = {
 			fileRef = F5B4DD96025DA07801000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5B4DD9A025DB5CA01000164 = {
+			isa = PBXFileReference;
+			path = MoreFilesX.h;
+			refType = 4;
+		};
+		F5B4DD9B025DB5CA01000164 = {
+			isa = PBXFileReference;
+			path = MoreFilesX.c;
+			refType = 4;
+		};
+		F5B4DD9C025DB5CA01000164 = {
+			fileRef = F5B4DD9A025DB5CA01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5B4DD9D025DB5CA01000164 = {
+			fileRef = F5B4DD9B025DB5CA01000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
