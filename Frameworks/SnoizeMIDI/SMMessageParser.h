@@ -34,7 +34,7 @@
 - (void)takePacketList:(const MIDIPacketList *)packetList;
 
 - (BOOL)cancelReceivingSysExMessage;
-    // Returns YES if it can successfully cancel a sysex message which is being received, and NO otherwise.
+    // Returns YES if it successfully cancels a sysex message which is being received, and NO otherwise.
 
 @end
 
