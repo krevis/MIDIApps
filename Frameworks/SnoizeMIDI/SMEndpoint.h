@@ -97,6 +97,7 @@
 // SMInputStreamSource protocol
 - (NSString *)inputStreamSourceName;
 - (NSNumber *)inputStreamSourceUniqueID;
+- (NSArray *)inputStreamSourceExternalDeviceNames;
 
 @end
 

@@ -943,6 +943,9 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
     return endpoint;
 }
 
+//
+// SMInputStreamSource protocol
+//
 
 - (NSString *)inputStreamSourceName;
 {
@@ -952,6 +955,11 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
 - (NSNumber *)inputStreamSourceUniqueID;
 {
     return [NSNumber numberWithInt:[self uniqueID]];
+}
+
+- (NSArray *)inputStreamSourceExternalDeviceNames;
+{
+    return [[self connectedExternalDevices] arrayByPerformingSelector:@selector(name)];
 }
 
 @end

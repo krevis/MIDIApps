@@ -10,6 +10,7 @@
 
 - (NSString *)inputStreamSourceName;
 - (NSNumber *)inputStreamSourceUniqueID;
+- (NSArray *)inputStreamSourceExternalDeviceNames;
 
 @end
 
@@ -24,6 +25,9 @@
 - (NSString *)inputStreamSourceName;
 - (NSNumber *)inputStreamSourceUniqueID;
     // just returns nil
+
+- (NSArray *)inputStreamSourceExternalDeviceNames;
+    // returns an empty array
 
 - (void)setName:(NSString *)value;
 

@@ -35,6 +35,11 @@
     return nil;
 }
 
+- (NSArray *)inputStreamSourceExternalDeviceNames;
+{
+    return [NSArray array];
+}
+
 - (void)setName:(NSString *)value;
 {
     if (name != value) {
