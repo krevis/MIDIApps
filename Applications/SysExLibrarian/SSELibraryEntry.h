@@ -42,5 +42,6 @@
 - (NSNumber *)size;
 - (NSNumber *)messageCount;
 - (BOOL)isFilePresent;
+- (BOOL)isFilePresentIgnoringCachedValue;
 
 @end

@@ -203,6 +203,12 @@
     return flags.isFilePresent;
 }
 
+- (BOOL)isFilePresentIgnoringCachedValue;
+{
+    flags.hasLookedForFile = NO;
+    return [self isFilePresent];
+}
+
 @end
 
 
