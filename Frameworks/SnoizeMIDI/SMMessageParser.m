@@ -278,7 +278,10 @@
                                 break;
                                 
                             case 0xF7:
-                                // System exclusive ends--already handled
+                                // System exclusive ends--already handled above.
+                                // But if this is showing up outside of sysex, it's invalid.
+                                if (!message)
+                                    byteIsInvalid = YES;
                                 break;
                             
                             case SMSystemCommonMessageTypeTimeCodeQuarterFrame:
