@@ -5,16 +5,19 @@
 
 @implementation NSPopUpButton (SMMExtensions)
 
-- (void)addItemWithTitle:(NSString *)title representedObject:(id)object;
+- (id <NSMenuItem>)addItemWithTitle:(NSString *)title representedObject:(id)object;
 {
     // NOTE We should just do this, but as of 10.1.3 (and before) it can fail:
     //    [self addItemWithTitle:title];
     // If there is already an item with the same title in the menu, it will be removed when this one is added.
-
+    id <NSMenuItem> item;
+    
     [self addItemWithTitle:@"*** Placeholder ***"];
-    [[self lastItem] setTitle:title];
+    item = [self lastItem];
+    [item setTitle:title];
+    [item setRepresentedObject:object];
 
-    [[self lastItem] setRepresentedObject:object];
+    return item;
 }
 
 - (void)addSeparatorItem;
