@@ -587,7 +587,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
             externalDeviceNames = [(id<SMInputStreamSource>)item inputStreamSourceExternalDeviceNames];
 
             if ([externalDeviceNames count] > 0) {
-                return [NSString stringWithFormat:@"%@ (%@)", name, [externalDeviceNames componentsJoinedByString:@", "]];
+                return [[name stringByAppendingString:[NSString emdashString]] stringByAppendingString:[externalDeviceNames componentsJoinedByString:@", "]];
             } else {
                 return name;
             }
