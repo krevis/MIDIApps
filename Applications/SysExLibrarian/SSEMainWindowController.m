@@ -19,6 +19,7 @@
 - (void)_libraryDidChange:(NSNotification *)notification;
 - (void)_sortLibraryEntries;
 
+- (NSArray *)_selectedEntries;
 - (void)_selectAndScrollToEntries:(NSArray *)entries;
 
 - (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
@@ -183,21 +184,17 @@ static SSEMainWindowController *controller;
 
 - (IBAction)play:(id)sender;
 {
-    NSEnumerator *selectedRowEnumerator;
-    NSNumber *rowNumber;
-    NSArray *messages = nil;
+    NSArray *selectedEntries;
+    NSMutableArray *messages;
+    unsigned int entryCount, entryIndex;
 
-    selectedRowEnumerator = [libraryTableView selectedRowEnumerator];
-    while ((rowNumber = [selectedRowEnumerator nextObject])) {
-        NSArray *entryMessages;
-
-        entryMessages = [[sortedLibraryEntries objectAtIndex:[rowNumber intValue]] messages];
-        if (messages)
-            messages = [messages arrayByAddingObjectsFromArray:entryMessages];
-        else
-            messages = entryMessages;
+    selectedEntries = [self _selectedEntries];
+    messages = [NSMutableArray array];
+    entryCount = [selectedEntries count];
+    for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+        [messages addObjectsFromArray:[[selectedEntries objectAtIndex:entryIndex] messages]];
     }
-
+    
     [midiController setMessages:messages];
     [midiController sendMessages];
 }
@@ -262,11 +259,19 @@ static SSEMainWindowController *controller;
 
 - (void)synchronizeLibrary;
 {
+    NSArray *selectedEntries;
+
+    selectedEntries = [self _selectedEntries];
+    
     // TODO this results in too many sorts, I think... can we do this less often?
     [self _sortLibraryEntries];
 
-    // TODO may need code to keep selection
+    // NOTE Some entries in selectedEntries may no longer be present in sortedLibraryEntries.
+    // We don't need to manually take them out of selectedEntries because _selectAndScrollToEntries can deal with
+    // entries that are missing.
+    
     [libraryTableView reloadData];
+    [self _selectAndScrollToEntries:selectedEntries];
 }
 
 - (void)synchronizePlayButton;
@@ -574,23 +579,44 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     [sortedLibraryEntries retain];
 }
 
+- (NSArray *)_selectedEntries;
+{
+    NSMutableArray *selectedEntries;
+    NSEnumerator *selectedRowEnumerator;
+    NSNumber *rowNumber;
+
+    selectedEntries = [NSMutableArray array];
+
+    selectedRowEnumerator = [libraryTableView selectedRowEnumerator];
+    while ((rowNumber = [selectedRowEnumerator nextObject])) {
+        [selectedEntries addObject:[sortedLibraryEntries objectAtIndex:[rowNumber intValue]]];
+    }
+
+    return selectedEntries;
+}
+
 - (void)_selectAndScrollToEntries:(NSArray *)entries;
 {
     unsigned int entryCount, entryIndex;
+    unsigned int lowestRow = UINT_MAX;
 
-    entryCount = [sortedLibraryEntries count];
+    [libraryTableView deselectAll:nil];
+    
+    entryCount = [entries count];
+    if (entryCount == 0)
+        return;
+    
     for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
         unsigned int row;
 
         row = [sortedLibraryEntries indexOfObjectIdenticalTo:[entries objectAtIndex:entryIndex]];
-
-        if (entryIndex == 0) {
-            [libraryTableView selectRow:row byExtendingSelection:NO];
-            [libraryTableView scrollRowToVisible:row];
-        } else {
+        if (row != NSNotFound) {
+            lowestRow = MIN(lowestRow, row);
             [libraryTableView selectRow:row byExtendingSelection:YES];
         }
     }
+
+    [libraryTableView scrollRowToVisible:lowestRow];
 }
 
 - (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
