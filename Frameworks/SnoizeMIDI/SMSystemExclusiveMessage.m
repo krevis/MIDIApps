@@ -109,6 +109,7 @@
 }
 
 + (NSData *)dataForSystemExclusiveMessages:(NSArray *)messages;
+#if SLOW_WAY
 {
     unsigned int messageCount, messageIndex;
     NSData *allData = nil;
@@ -126,6 +127,47 @@
 
     return allData;
 }
+#else
+{
+    // This is about a million times faster than the naive implementation above (which can take *minutes* for about 4500 60-byte messages).
+    // Calculate the size of the total data buffer first and only do one malloc, instead of continually appending data (which causes lots of mallocs).
+    unsigned int messageCount, messageIndex;
+    unsigned int totalDataLength;
+    NSMutableData *totalData;
+    Byte *totalBytes, *p;
+
+    messageCount = [messages count];
+    if (messageCount == 0)
+        return nil;
+    else if (messageCount == 1)
+        return [[messages objectAtIndex:0] fullMessageData];
+    
+    totalDataLength = 0;
+    for (messageIndex = 0; messageIndex < messageCount; messageIndex++)
+        totalDataLength += ([[[messages objectAtIndex:messageIndex] data] length] + 2);
+
+    totalData = [NSMutableData dataWithLength:totalDataLength];
+    totalBytes = [totalData mutableBytes];
+
+    p = totalBytes;
+    for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {
+        SMSystemExclusiveMessage *message;
+        NSData *messageData;
+        unsigned int messageDataLength;
+
+        message = [messages objectAtIndex:messageIndex];
+        messageData = [message data];
+        messageDataLength = [messageData length];
+
+        *p++ = 0xF0;
+        memcpy(p, [messageData bytes], messageDataLength);
+        p += messageDataLength;
+        *p++ = 0xF7;
+    }
+
+    return totalData;    
+}
+#endif
 
 + (BOOL)writeSystemExclusiveMessages:(NSArray *)messages toStandardMIDIFile:(NSString *)path;
 {
