@@ -124,6 +124,9 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 
 - (void)dealloc;
 {
+    if (endpointRef && [self isOwnedByThisProcess])
+        MIDIEndpointDispose(endpointRef);
+    
     [cachedName release];
     cachedName = nil;
     [cachedManufacturerName release];
@@ -164,6 +167,15 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     }
     
     [self setOwnerPID:getpid()];
+}
+
+- (void)remove;
+{
+    if (![self isOwnedByThisProcess])
+        return;
+
+    MIDIEndpointDispose(endpointRef);
+    endpointRef = NULL;
 }
 
 - (SInt32)uniqueID;
@@ -826,6 +838,44 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
     return (SMSourceEndpoint *)[self endpointForEndpointRef:anEndpointRef];
 }
 
++ (SMSourceEndpoint *)createVirtualSourceEndpointWithName:(NSString *)newName uniqueID:(SInt32)newUniqueID;
+{
+    SMClient *client;
+    OSStatus status;
+    MIDIEndpointRef newEndpointRef;
+    BOOL wasPostingExternalNotification;
+    SMSourceEndpoint *endpoint;
+
+    client = [SMClient sharedClient];
+
+    // We are going to be making a lot of changes, so turn off external notifications
+    // for a while (until we're done).  Internal notifications are still necessary and aren't very slow.
+    wasPostingExternalNotification = [client postsExternalSetupChangeNotification];
+    [client setPostsExternalSetupChangeNotification:NO];
+
+    status = MIDISourceCreate([client midiClient], (CFStringRef)newName, &newEndpointRef);
+    if (status)
+        return nil;
+
+    [self reloadEndpoints];
+
+    // And try to get the new endpoint
+    endpoint = [SMSourceEndpoint sourceEndpointWithEndpointRef:newEndpointRef];
+    if (!endpoint) 
+        return nil;
+
+    [endpoint setIsOwnedByThisProcess];
+    [endpoint setUniqueID:newUniqueID];
+    [endpoint setManufacturerName:@"Snoize"];
+
+    // Do this before the last modification, so one setup change notification will still happen
+    [client setPostsExternalSetupChangeNotification:wasPostingExternalNotification];
+
+    [endpoint setModelName:[client name]];
+
+    return endpoint;
+}
+
 
 - (NSString *)inputStreamSourceName;
 {
@@ -899,6 +949,43 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
 + (SMDestinationEndpoint *)destinationEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
 {
     return (SMDestinationEndpoint *)[self endpointForEndpointRef:anEndpointRef];
+}
+
++ (SMDestinationEndpoint *)createVirtualDestinationEndpointWithName:(NSString *)endpointName readProc:(MIDIReadProc)readProc readProcRefCon:(void *)readProcRefCon uniqueID:(SInt32)newUniqueID
+{
+    SMClient *client;
+    OSStatus status;
+    MIDIEndpointRef newEndpointRef;
+    BOOL wasPostingExternalNotification;
+    SMDestinationEndpoint *endpoint;
+
+    client = [SMClient sharedClient];
+
+    // We are going to be making a lot of changes, so turn off external notifications
+    // for a while (until we're done).  Internal notifications are still necessary and aren't very slow.
+    wasPostingExternalNotification = [client postsExternalSetupChangeNotification];
+    [client setPostsExternalSetupChangeNotification:NO];
+
+    status = MIDIDestinationCreate([client midiClient], (CFStringRef)endpointName, readProc, readProcRefCon, &newEndpointRef);
+    if (status)
+        return nil;
+
+    [self reloadEndpoints];
+
+    endpoint = [SMDestinationEndpoint destinationEndpointWithEndpointRef:newEndpointRef];
+    if (!endpoint)
+        return nil;
+
+    [endpoint setIsOwnedByThisProcess];
+    [endpoint setUniqueID:newUniqueID];
+    [endpoint setManufacturerName:@"Snoize"];
+
+    // Do this before the last modification, so one setup change notification will still happen
+    [client setPostsExternalSetupChangeNotification:wasPostingExternalNotification];
+
+    [endpoint setModelName:[client name]];
+
+    return endpoint;
 }
 
 @end

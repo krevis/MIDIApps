@@ -163,55 +163,22 @@
         [self createEndpoint];
     else if (!value && endpoint)
         [self disposeEndpoint];
-
-    OBASSERT([self isActive] == value);
 }
 
 - (void)createEndpoint;
 {
-    SMClient *client;
-    OSStatus status;
-    MIDIEndpointRef endpointRef;
-    BOOL wasPostingExternalNotification;
+    endpoint = [[SMDestinationEndpoint createVirtualDestinationEndpointWithName:endpointName readProc:[self midiReadProc] readProcRefCon:self uniqueID:uniqueID] retain];
+    if (endpoint)
+        [parser setOriginatingEndpoint:endpoint];
 
-    client = [SMClient sharedClient];
-
-    // We are going to be making a lot of changes, so turn off external notifications
-    // for a while (until we're done).  Internal notifications are still necessary and aren't very slow.
-    wasPostingExternalNotification = [client postsExternalSetupChangeNotification];
-    [client setPostsExternalSetupChangeNotification:NO];
-
-    status = MIDIDestinationCreate([client midiClient], (CFStringRef)endpointName, [self midiReadProc], self, &endpointRef);
-    if (status) {
-        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't create a MIDI virtual destination (error %ld)", @"SnoizeMIDI", [self bundle], "exception with OSStatus if MIDIDestinationCreate() fails"), status];
-    }
-
-    endpoint = [[SMDestinationEndpoint destinationEndpointWithEndpointRef:endpointRef] retain];
-    if (!endpoint) {
-        // NOTE If you see this fire, it is probably because we are being called in the middle of handling a MIDI setup change notification.
-        // Don't do that.
-        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't find the virtual destination endpoint after creating it", @"SnoizeMIDI", [self bundle], "exception if we can't find an SMDestinationEndpoint after calling MIDIDestinationCreate")];
-    }
-
-    [endpoint setIsOwnedByThisProcess];
-    [endpoint setUniqueID:uniqueID];
-    [endpoint setManufacturerName:@"Snoize"];
-
-    // Do this before the last modification, so one setup change notification will still happen
-    [client setPostsExternalSetupChangeNotification:wasPostingExternalNotification];
-
-    [endpoint setModelName:[client name]];
-
-    [parser setOriginatingEndpoint:endpoint];
+    // NOTE We are failing silently if the endpoint can't be created. I'm not sure that's a good idea.
 }
 
 - (void)disposeEndpoint;
 {
     OBASSERT(endpoint != nil);
-    if (!endpoint)
-        return;
 
-    MIDIEndpointDispose([endpoint endpointRef]);
+    [endpoint remove];
     [endpoint release];
     endpoint = nil;
 

@@ -37,6 +37,7 @@
 - (BOOL)isVirtual;
 - (BOOL)isOwnedByThisProcess;
 - (void)setIsOwnedByThisProcess;
+- (void)remove;	// only works on virtual endpoints owned by this process
 
 - (SInt32)uniqueID;
 - (void)setUniqueID:(SInt32)value;
@@ -84,6 +85,8 @@
 + (SMSourceEndpoint *)sourceEndpointWithName:(NSString *)name;
 + (SMSourceEndpoint *)sourceEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
 
++ (SMSourceEndpoint *)createVirtualSourceEndpointWithName:(NSString *)newName uniqueID:(SInt32)newUniqueID;
+
 // SMInputStreamSource protocol
 - (NSString *)inputStreamSourceName;
 - (NSNumber *)inputStreamSourceUniqueID;
@@ -99,6 +102,8 @@
 + (SMDestinationEndpoint *)destinationEndpointWithUniqueID:(SInt32)uniqueID;
 + (SMDestinationEndpoint *)destinationEndpointWithName:(NSString *)aName;
 + (SMDestinationEndpoint *)destinationEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
+
++ (SMDestinationEndpoint *)createVirtualDestinationEndpointWithName:(NSString *)endpointName readProc:(MIDIReadProc)readProc readProcRefCon:(void *)readProcRefCon uniqueID:(SInt32)newUniqueID;
 
 @end
 
