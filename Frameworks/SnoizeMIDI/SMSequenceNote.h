@@ -11,7 +11,7 @@
     Byte noteNumber;
     Byte onVelocity;
     Byte offVelocity;
-    Float64 position;		// beats
+    Float64 position;	// beats
     Float64 duration;	// beats
 }
 
