@@ -30,7 +30,6 @@
 - (IBAction)changeNoteFormat:(id)sender;
 - (IBAction)changeControllerFormat:(id)sender;
 - (IBAction)changeDataFormat:(id)sender;
-- (IBAction)changeSysExBytesPerRow:(id)sender;
 - (IBAction)changeAutoSelectFirstSourceInNewDocument:(id)sender;
 - (IBAction)changeAutoSelectFirstSourceIfSourceDisappears:(id)sender;
 - (IBAction)changeOpenWindowsForNewSources:(id)sender;

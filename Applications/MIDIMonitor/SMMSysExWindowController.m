@@ -57,6 +57,8 @@ static NSMutableArray *controllers = nil;
     message = [inMessage retain];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_displayPreferencesDidChange:) name:SMMDisplayPreferenceChangedNotification object:nil];
+
+    [self setShouldCascadeWindows:NO];
     
     return self;
 }
@@ -78,8 +80,6 @@ static NSMutableArray *controllers = nil;
 - (void)awakeFromNib
 {
     [[self window] setFrameAutosaveName:[self windowNibName]];
-    // TODO We are not setting the window frame from this setting, though, it doesn't seem. Probably we should do that.
-    // (still need to cascade)
 }
 
 - (void)windowDidLoad
@@ -95,11 +95,6 @@ static NSMutableArray *controllers = nil;
 {
     return message;
 }
-
-//
-// Actions
-//
-
 
 @end
 
@@ -152,7 +147,7 @@ static NSMutableArray *controllers = nil;
 {
     [timeField setStringValue:[message timeStampForDisplay]];
     [manufacturerNameField setStringValue:[message manufacturerName]];
-    [sizeField setStringValue:[SMMessage formatLength:[message receivedDataLength]]];
+    [sizeField setStringValue:[NSString stringWithFormat:@"%@ bytes", [SMMessage formatLength:[message receivedDataLength]]]];
 }
 
 - (NSString *)_formatSysExData:(NSData *)data;
@@ -181,7 +176,7 @@ static NSMutableArray *controllers = nil;
     formattedString = [NSMutableString string];
     for (dataIndex = 0; dataIndex < dataLength; dataIndex += 16) {
         static const char hexchars[] = "0123456789ABCDEF";
-        char lineBuffer[64];
+        char lineBuffer[100];
         char *p;
         unsigned int index;
         NSString *lineString;
@@ -191,17 +186,35 @@ static NSMutableArray *controllers = nil;
         p = lineBuffer;
         p += sprintf(p, "%.*X", lengthDigitCount, dataIndex);
         
-        for (index = dataIndex; index < dataIndex+16 && index < dataLength; index++) {
-            unsigned char byte;
-
+        for (index = dataIndex; index < dataIndex+16; index++) {
             *p++ = ' ';
             if (index % 8 == 0)
                 *p++ = ' ';
 
-            byte = bytes[index];
-            *p++ = hexchars[(byte & 0xF0) >> 4];
-            *p++ = hexchars[byte & 0x0F];
+            if (index < dataLength) {
+                unsigned char byte;
+
+                byte = bytes[index];
+                *p++ = hexchars[(byte & 0xF0) >> 4];
+                *p++ = hexchars[byte & 0x0F];
+            } else {
+                *p++ = ' ';
+                *p++ = ' ';                                
+            }
         }
+
+        *p++ = ' ';
+        *p++ = ' ';
+        *p++ = '|';
+
+        for (index = dataIndex; index < dataIndex+16 && index < dataLength; index++) {
+            unsigned char byte;
+
+            byte = bytes[index];
+            *p++ = (isprint(byte) ? byte : ' ');
+        }        
+        
+        *p++ = '|';
         *p++ = '\n';
         *p++ = 0;
 

@@ -9,20 +9,18 @@
                 changeDataFormat = id; 
                 changeNoteFormat = id; 
                 changeOpenWindowsForNewSources = id; 
-                changeSysExBytesPerRow = id; 
                 changeTimeFormat = id; 
             }; 
             CLASS = SMMPreferencesWindowController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
-                autoSelectFirstSourceIfSourceDisappearsCheckbox = id; 
-                autoSelectFirstSourceInNewDocumentMatrix = id; 
-                controllerFormatMatrix = id; 
-                dataFormatMatrix = id; 
-                noteFormatMatrix = id; 
-                openWindowsForNewSourcesCheckbox = id; 
-                sysExBytesPerRowMatrix = id; 
-                timeFormatMatrix = id; 
+                autoSelectFirstSourceIfSourceDisappearsCheckbox = NSButton; 
+                autoSelectFirstSourceInNewDocumentMatrix = NSMatrix; 
+                controllerFormatMatrix = NSMatrix; 
+                dataFormatMatrix = NSMatrix; 
+                noteFormatMatrix = NSMatrix; 
+                openWindowsForNewSourcesCheckbox = NSButton; 
+                timeFormatMatrix = NSMatrix; 
             }; 
             SUPERCLASS = NSWindowController; 
         }

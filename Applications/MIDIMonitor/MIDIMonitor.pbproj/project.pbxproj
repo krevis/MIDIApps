@@ -163,8 +163,6 @@
 				F53A1C07015EB24301000164,
 				F56E05CA0206BAB401000164,
 				F56E05CB0206BAB401000164,
-				F559BACD018A51A301000164,
-				F559BACE018A51A301000164,
 				F571C56C01903F3301000164,
 			);
 			isa = PBXGroup;
@@ -650,16 +648,6 @@
 			isa = PBXBuildFile;
 			settings = {
 			};
-		};
-		F559BACD018A51A301000164 = {
-			isa = PBXFileReference;
-			path = SMMSysExRow.h;
-			refType = 4;
-		};
-		F559BACE018A51A301000164 = {
-			isa = PBXFileReference;
-			path = SMMSysExRow.m;
-			refType = 4;
 		};
 		F55BB2140188FED601000164 = {
 			isa = PBXFileReference;

@@ -120,11 +120,6 @@ static SMMPreferencesWindowController *controller;
     [self _sendDisplayPreferenceChangedNotification];
 }
 
-- (IBAction)changeSysExBytesPerRow:(id)sender;
-{
-    // TODO get rid of this
-}
-
 - (IBAction)changeAutoSelectFirstSourceInNewDocument:(id)sender;
 {
     [autoSelectFirstSourceInNewDocumentPreference setBoolValue:[[sender selectedCell] tag]];
