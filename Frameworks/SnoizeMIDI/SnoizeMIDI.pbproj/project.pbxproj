@@ -119,7 +119,7 @@
 				OTHER_LDFLAGS = "-image_base 0x38000000";
 				PRODUCT_NAME = SnoizeMIDI;
 				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas -Wparentheses";
 				WRAPPER_EXTENSION = framework;
 			};
 			dependencies = (

@@ -10,14 +10,14 @@
 		);
 		perUserDictionary = {
 			PBXWorkspaceConfiguration = {
-				ContentSize = "{1112, 998}";
+				ContentSize = "{1112, 940}";
 				LeftSlideOut = {
 					ActiveTab = 0;
-					Frame = "{{0, 23}, {1112, 975}}";
+					Frame = "{{0, 23}, {1112, 917}}";
 					Split0 = {
-						Frame = "{{278, 0}, {834, 975}}";
+						Frame = "{{278, 0}, {834, 917}}";
 						Split0 = {
-							Frame = "{{0, 24}, {834, 951}}";
+							Frame = "{{0, 24}, {834, 893}}";
 						};
 						SplitCount = 1;
 						Tab0 = {
@@ -59,13 +59,13 @@
 							Frame = "{{0, 0}, {834, 327}}";
 						};
 						Tab3 = {
-							Frame = "{{0, 0}, {705, 295}}";
+							Frame = "{{0, 0}, {834, 295}}";
 						};
 						TabCount = 4;
 					};
 					SplitCount = 1;
 					Tab0 = {
-						Frame = "{{0, 0}, {254, 975}}";
+						Frame = "{{0, 0}, {254, 917}}";
 					};
 					Tab1 = {
 						ClassesFrame = "{{0, 0}, {202, 56}}";
