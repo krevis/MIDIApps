@@ -14,7 +14,10 @@
     
     // Transient data
     BOOL listenToMIDISetupChanges;
-    unsigned int sysExBytesRead;    
+    unsigned int sysExBytesRead;
+    BOOL waitingForSysExMessage;
+
+    SMSystemExclusiveMessage *sysExMessage;
 }
 
 - (NSArray *)sourceDescriptions;
@@ -24,5 +27,10 @@
 - (NSArray *)destinationDescriptions;
 - (NSDictionary *)destinationDescription;
 - (void)setDestinationDescription:(NSDictionary *)destinationDescription;
+
+- (void)waitForOneSysExMessage;
+- (void)cancelSysExMessageWait;
+
+- (void)playSysExMessage;
 
 @end

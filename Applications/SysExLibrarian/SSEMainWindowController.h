@@ -14,6 +14,9 @@
     IBOutlet NSProgressIndicator *sysExProgressIndicator;
     IBOutlet NSTextField *sysExProgressField;
     IBOutlet NSBox *sysExProgressBox;
+
+    // Transient data
+    NSDate *nextSysExAnimateDate;
 }
 
 + (SSEMainWindowController *)mainWindowController;
@@ -29,11 +32,16 @@
 - (IBAction)record:(id)sender;
 - (IBAction)play:(id)sender;
 
+- (IBAction)cancelRecordSheet:(id)sender;
+
 // Other API
 
 - (void)synchronizeInterface;
     // Calls each of the following
 - (void)synchronizeSources;
 - (void)synchronizeDestinations;
+
+- (void)updateSysExReadIndicatorWithBytes:(unsigned int)bytesRead;
+- (void)stopSysExReadIndicatorWithBytes:(unsigned int)bytesRead;
 
 @end

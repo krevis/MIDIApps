@@ -13,6 +13,8 @@
 
 - (void)_synchronizePopUpButton:(NSPopUpButton *)popUpButton withDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 
+- (void)_showSysExProgressIndicator;
+- (void)_hideSysExProgressIndicator;
 - (void)_recordSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
 @end
@@ -46,6 +48,9 @@ static SSEMainWindowController *controller;
 
 - (void)dealloc
 {
+    [nextSysExAnimateDate release];
+    nextSysExAnimateDate = nil;
+
     [super dealloc];
 }
 
@@ -102,6 +107,7 @@ static SSEMainWindowController *controller;
     // disable the rest of the UI... right?
     // put up a sheet with status info and a cancel button
 
+    [self _hideSysExProgressIndicator];
     [[NSApplication sharedApplication] beginSheet:recordSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_recordSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];    
     [mainController waitForOneSysExMessage];
 }
@@ -119,7 +125,13 @@ static SSEMainWindowController *controller;
     // play back the selected sysex file(s) via the selected output.
     // disable if no files are selected.
 
-    [mainController playFromBuffer];
+    [mainController playSysExMessage];
+}
+
+- (IBAction)cancelRecordSheet:(id)sender;
+{
+    [mainController cancelSysExMessageWait];
+    [[NSApplication sharedApplication] endSheet:recordSheetWindow returnCode:NSRunAbortedResponse];
 }
 
 //
@@ -141,6 +153,27 @@ static SSEMainWindowController *controller;
 - (void)synchronizeDestinations;
 {
     [self _synchronizePopUpButton:destinationPopUpButton withDescriptions:[mainController destinationDescriptions] currentDescription:[mainController destinationDescription]];
+}
+
+- (void)updateSysExReadIndicatorWithBytes:(unsigned int)bytesRead;
+{
+    [self _showSysExProgressIndicator];
+
+    if (!nextSysExAnimateDate || [[NSDate date] isAfterDate:nextSysExAnimateDate]) {
+        [sysExProgressIndicator animate:nil];
+        [nextSysExAnimateDate release];
+        nextSysExAnimateDate = [[NSDate alloc] initWithTimeIntervalSinceNow:[sysExProgressIndicator animationDelay]];
+    }
+}
+
+- (void)stopSysExReadIndicatorWithBytes:(unsigned int)bytesRead;
+{
+    // TODO probably this isn't entirely what we want
+    [self _hideSysExProgressIndicator];
+    [nextSysExAnimateDate release];
+    nextSysExAnimateDate = nil;
+
+    [[NSApplication sharedApplication] endSheet:recordSheetWindow returnCode:NSRunStoppedResponse];
 }
 
 @end
@@ -220,9 +253,47 @@ static SSEMainWindowController *controller;
     [[self window] setAutodisplay:wasAutodisplay];
 }
 
+- (void)_showSysExProgressIndicator;
+{
+    if (![sysExProgressIndicator superview]) {
+        [sysExProgressBox addSubview:sysExProgressIndicator];
+        [sysExProgressIndicator release];
+
+        [sysExProgressBox addSubview:sysExProgressField];
+        [sysExProgressField release];
+    }
+}
+
+- (void)_hideSysExProgressIndicator;
+{
+    if ([sysExProgressIndicator superview]) {
+        [sysExProgressIndicator retain];
+        [sysExProgressIndicator removeFromSuperview];
+
+        [sysExProgressField retain];
+        [sysExProgressField removeFromSuperview];
+    }
+}
+
 - (void)_recordSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 {
-    
+    switch (returnCode) {
+        case NSRunAbortedResponse:
+            // User pressed "cancel"
+            // TODO
+            break;
+
+        case NSRunStoppedResponse:
+            // Success
+            // TODO
+            break;
+
+        default:
+            NSLog(@"Unknown return code in -[%@ %@]: %d", NSStringFromClass([self class]), NSStringFromSelector(_cmd), returnCode);
+            break;
+    }
+
+    [sheet orderOut:nil];
 }
 
 @end

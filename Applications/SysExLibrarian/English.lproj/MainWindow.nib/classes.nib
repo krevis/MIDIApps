@@ -8,13 +8,26 @@
             SUPERCLASS = NSObject; 
         }, 
         {
-            ACTIONS = {selectDestination = id; selectSource = id; }; 
+            ACTIONS = {
+                cancelRecordSheet = id; 
+                delete = id; 
+                open = id; 
+                play = id; 
+                record = id; 
+                recordOne = id; 
+                selectDestination = id; 
+                selectSource = id; 
+            }; 
             CLASS = SSEMainWindowController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 destinationPopUpButton = NSPopUpButton; 
                 mainController = SSEMainController; 
+                recordSheetWindow = NSWindow; 
                 sourcePopUpButton = NSPopUpButton; 
+                sysExProgressBox = NSBox; 
+                sysExProgressField = NSTextField; 
+                sysExProgressIndicator = NSProgressIndicator; 
             }; 
             SUPERCLASS = NSWindowController; 
         }
