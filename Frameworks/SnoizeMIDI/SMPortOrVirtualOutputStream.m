@@ -91,15 +91,24 @@
 
 - (id)newPortStream;
 {
-    SMPortOutputStream *stream;
+    SMPortOutputStream *stream = nil;
 
-    stream = [[SMPortOutputStream alloc] init];
-    [stream setIgnoresTimeStamps:flags.ignoresTimeStamps];
-    [stream setSendsSysExAsynchronously:flags.sendsSysExAsynchronously];
+    NS_DURING {
+        stream = [[SMPortOutputStream alloc] init];
+        [stream setIgnoresTimeStamps:flags.ignoresTimeStamps];
+        [stream setSendsSysExAsynchronously:flags.sendsSysExAsynchronously];
+    } NS_HANDLER {
+        [stream release];
+        stream = nil;
+    } NS_ENDHANDLER;
+
+    if (!stream)
+        return nil;
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(portStreamEndpointDisappeared:) name:SMPortOutputStreamEndpointDisappearedNotification object:stream];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(repostNotification:) name:SMPortOutputStreamWillStartSysExSendNotification object:stream];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(repostNotification:) name:SMPortOutputStreamFinishedSysExSendNotification object:stream];
-
+        
     return [stream autorelease];
 }
 
