@@ -52,7 +52,7 @@
     [center addObserver:self selector:@selector(_willStartSendingSysEx:) name:SMPortOutputStreamWillStartSysExSendNotification object:outputStream];
     [center addObserver:self selector:@selector(_doneSendingSysEx:) name:SMPortOutputStreamFinishedSysExSendNotification object:outputStream];
     [outputStream setIgnoresTimeStamps:YES];
-    [outputStream setSendsSysExAsynchronously:YES];	// TODO frob this  ... sending synchronously seems faster
+    [outputStream setSendsSysExAsynchronously:YES];
     [outputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a source for other programs", @"SysExLibrarian", [self bundle], "title of popup menu item for virtual source")];
     [outputStream setVirtualEndpointName:@"SysEx Librarian"];	// TODO get this from somewhere
     
@@ -155,6 +155,8 @@
 
 - (void)waitForOneSysExMessage;
 {
+    [inputStream cancelReceivingSysExMessage];
+        // In case a sysex message is currently being received
     waitingForSysExMessage = YES;
 }
 
@@ -201,9 +203,6 @@
             waitingForSysExMessage = NO;
             [sysExMessage release];
             sysExMessage = [message retain];
-            // TODO need to send a notification or something... do it in the main thread
-
-//            NSLog(@"received sysex: %lu bytes, checksum %@", [(SMSystemExclusiveMessage *)message fullMessageDataLength], [[[(SMSystemExclusiveMessage *)message fullMessageData] md5Signature] unadornedLowercaseHexString]);
             break;
         }
     }    
@@ -288,10 +287,7 @@
     OBASSERT(currentSendRequest == nil);
 
     currentSendRequest = [[[notification userInfo] objectForKey:@"sendRequest"] retain];
-//    if ([currentSendRequest totalBytes] >= 3125) {  //  TODO...
-        // This send will probably take a second or more, so let's show the status as it goes out.
-        [windowController showSysExSendStatusWithBytesToSend:[currentSendRequest totalBytes]];
-//    }
+    [windowController showSysExSendStatusWithBytesToSend:[currentSendRequest totalBytes]];
 }
 
 - (void)_doneSendingSysEx:(NSNotification *)notification;
@@ -302,7 +298,7 @@
     sendRequest = [[notification userInfo] objectForKey:@"sendRequest"];
     OBASSERT(currentSendRequest == sendRequest);
 
-    [windowController queueSelector:@selector(hideSysExSendStatus)];
+    [windowController queueSelector:@selector(hideSysExSendStatusWithBytesSent:) withInt:[currentSendRequest bytesSent]];
 
     [currentSendRequest release];
     currentSendRequest = nil;

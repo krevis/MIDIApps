@@ -50,6 +50,6 @@
 - (void)stopSysExReadIndicatorWithBytes:(unsigned int)bytesRead;
 
 - (void)showSysExSendStatusWithBytesToSend:(unsigned int)bytesToSend;
-- (void)hideSysExSendStatus;
+- (void)hideSysExSendStatusWithBytesSent:(unsigned int)bytesSent;
 
 @end

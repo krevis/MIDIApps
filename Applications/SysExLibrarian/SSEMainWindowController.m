@@ -13,10 +13,11 @@
 
 - (void)_synchronizePopUpButton:(NSPopUpButton *)popUpButton withDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 
-- (void)_recordSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-- (void)_playSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)_closeSheetNormally:(NSWindow *)sheet;
+- (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
 - (void)_updatePlayProgress;
+- (void)_updatePlayProgressWithBytesSent:(unsigned int)bytesSent;
 
 @end
 
@@ -104,7 +105,7 @@ static SSEMainWindowController *controller;
 - (IBAction)recordOne:(id)sender;
 {
     [recordSheetTabView selectTabViewItemWithIdentifier:@"waiting"];    
-    [[NSApplication sharedApplication] beginSheet:recordSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_recordSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];    
+    [[NSApplication sharedApplication] beginSheet:recordSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];    
     [mainController waitForOneSysExMessage];
 }
 
@@ -175,7 +176,8 @@ static SSEMainWindowController *controller;
     [nextSysExAnimateDate release];
     nextSysExAnimateDate = nil;
 
-    [[NSApplication sharedApplication] endSheet:recordSheetWindow returnCode:NSRunStoppedResponse];
+    // Close the sheet, after a little bit of a delay (makes it look nicer)
+    [self performSelector:@selector(_closeSheetNormally:) withObject:recordSheetWindow afterDelay:0.5];
 }
 
 - (void)showSysExSendStatusWithBytesToSend:(unsigned int)bytesToSend;
@@ -183,16 +185,19 @@ static SSEMainWindowController *controller;
     [playProgressIndicator setMinValue:0.0];
     [playProgressIndicator setMaxValue:bytesToSend];
 
-    [self _updatePlayProgress];
-    [[NSApplication sharedApplication] beginSheet:playSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_playSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+    [self _updatePlayProgressWithBytesSent:0];
+    [[NSApplication sharedApplication] beginSheet:playSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
-- (void)hideSysExSendStatus;
+- (void)hideSysExSendStatusWithBytesSent:(unsigned int)bytesSent;
 {
+    [self _updatePlayProgressWithBytesSent:bytesSent];
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_updatePlayProgress) object:nil];
-    [self _updatePlayProgress];
 
-    [[NSApplication sharedApplication] endSheet:playSheetWindow returnCode:NSRunStoppedResponse];
+    // Even if we have set the progress indicator to its maximum value, it won't get drawn on the screen that way immediately,
+    // probably because it tries to smoothly animate to that state. The only way I have found to show the maximum value is to just
+    // wait a little while for the animation to finish. This looks nice, too.
+    [self performSelector:@selector(_closeSheetNormally:) withObject:playSheetWindow afterDelay:0.5];
 }
 
 @end
@@ -272,28 +277,12 @@ static SSEMainWindowController *controller;
     [[self window] setAutodisplay:wasAutodisplay];
 }
 
-- (void)_recordSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)_closeSheetNormally:(NSWindow *)sheet;
 {
-    switch (returnCode) {
-        case NSRunAbortedResponse:
-            // User pressed "cancel"
-            // TODO
-            break;
-
-        case NSRunStoppedResponse:
-            // Success
-            // TODO
-            break;
-
-        default:
-            NSLog(@"Unknown return code in -[%@ %@]: %d", NSStringFromClass([self class]), NSStringFromSelector(_cmd), returnCode);
-            break;
-    }
-
-    [sheet orderOut:nil];
+    [[NSApplication sharedApplication] endSheet:sheet returnCode:NSRunStoppedResponse];
 }
 
-- (void)_playSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 {
     // At this point, we don't really care how this sheet ended
     [sheet orderOut:nil];
@@ -301,14 +290,16 @@ static SSEMainWindowController *controller;
 
 - (void)_updatePlayProgress;
 {
-    unsigned int bytesSent;
+    [self _updatePlayProgressWithBytesSent:[mainController sysExBytesSent]];
+}
 
-    bytesSent = [mainController sysExBytesSent];
+- (void)_updatePlayProgressWithBytesSent:(unsigned int)bytesSent;
+{
     [playProgressIndicator setDoubleValue:bytesSent];
     [playProgressField setStringValue:[@"Sent " stringByAppendingString:[NSString abbreviatedStringForBytes:bytesSent]]];
     // TODO localize
 
-    [self performSelector:_cmd withObject:nil afterDelay:[playProgressIndicator animationDelay]];
+    [self performSelector:@selector(_updatePlayProgress) withObject:nil afterDelay:[playProgressIndicator animationDelay]];
 }
 
 @end
