@@ -22,7 +22,7 @@ static void completionProc(MIDISysexSendRequest *request);
 
 @implementation SMSysExSendRequest
 
-DEFINE_NSSTRING(SMSysExSendRequestFinishedNotification);
+NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedNotification";
 
 + (SMSysExSendRequest *)sysExSendRequestWithMessage:(SMSystemExclusiveMessage *)aMessage endpoint:(SMDestinationEndpoint *)endpoint;
 {

@@ -30,9 +30,9 @@
 
 @implementation SMPortOutputStream
 
-DEFINE_NSSTRING(SMPortOutputStreamEndpointDisappearedNotification);
-DEFINE_NSSTRING(SMPortOutputStreamWillStartSysExSendNotification);
-DEFINE_NSSTRING(SMPortOutputStreamFinishedSysExSendNotification);
+NSString *SMPortOutputStreamEndpointDisappearedNotification = @"SMPortOutputStreamEndpointDisappearedNotification";
+NSString *SMPortOutputStreamWillStartSysExSendNotification = @"SMPortOutputStreamWillStartSysExSendNotification";
+NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStreamFinishedSysExSendNotification";
 
 
 - (id)init;

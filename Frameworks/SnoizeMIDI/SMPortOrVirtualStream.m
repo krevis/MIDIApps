@@ -31,7 +31,7 @@
 
 @implementation SMPortOrVirtualStream
 
-DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
+NSString *SMPortOrVirtualStreamEndpointDisappearedNotification = @"SMPortOrVirtualStreamEndpointDisappearedNotification";
 
 
 - (id)init;

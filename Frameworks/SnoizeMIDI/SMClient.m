@@ -21,12 +21,12 @@ static void getMIDINotification(const MIDINotification *message, void *refCon);
 
 @implementation SMClient
 
-DEFINE_NSSTRING(SMClientCreatedInternalNotification);
-DEFINE_NSSTRING(SMClientSetupChangedInternalNotification);
-DEFINE_NSSTRING(SMClientSetupChangedNotification);
-DEFINE_NSSTRING(SMClientMIDINotification);
-DEFINE_NSSTRING(SMClientMIDINotificationID);
-DEFINE_NSSTRING(SMClientMIDINotificationData);
+NSString *SMClientCreatedInternalNotification = @"SMClientCreatedInternalNotification";
+NSString *SMClientSetupChangedInternalNotification = @"SMClientSetupChangedInternalNotification";
+NSString *SMClientSetupChangedNotification = @"SMClientSetupChangedNotification";
+NSString *SMClientMIDINotification = @"SMClientMIDINotification";
+NSString *SMClientMIDINotificationID = @"SMClientMIDINotificationID";
+NSString *SMClientMIDINotificationData = @"SMClientMIDINotificationData";
 
 
 static SMClient *sharedClient = nil;

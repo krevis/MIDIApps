@@ -71,12 +71,12 @@ static int endpointOrdinalComparator(id endpoint1, id endpoint2, void *context);
 
 @implementation SMEndpoint
 
-DEFINE_NSSTRING(SMEndpointsAppearedNotification);
-DEFINE_NSSTRING(SMEndpointDisappearedNotification);
-DEFINE_NSSTRING(SMEndpointWasReplacedNotification);
-DEFINE_NSSTRING(SMEndpointReplacement);
+NSString *SMEndpointsAppearedNotification = @"SMEndpointsAppearedNotification";
+NSString *SMEndpointDisappearedNotification = @"SMEndpointDisappearedNotification";
+NSString *SMEndpointWasReplacedNotification = @"SMEndpointWasReplacedNotification";
+NSString *SMEndpointReplacement = @"SMEndpointReplacement";
 
-DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
+NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 
 
 + (SInt32)generateNewUniqueID;

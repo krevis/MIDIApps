@@ -18,8 +18,8 @@
 
 @implementation SMMessageHistory
 
-DEFINE_NSSTRING(SMMessageHistoryChangedNotification);
-DEFINE_NSSTRING(SMMessageHistoryWereMessagesAdded);
+NSString *SMMessageHistoryChangedNotification = @"SMMessageHistoryChangedNotification";
+NSString *SMMessageHistoryWereMessagesAdded = @"SMMessageHistoryWereMessagesAdded";
 
 
 + (unsigned int)defaultHistorySize;

@@ -25,9 +25,9 @@ static void midiReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, vo
 
 @implementation SMInputStream
 
-DEFINE_NSSTRING(SMInputStreamReadingSysExNotification);
-DEFINE_NSSTRING(SMInputStreamDoneReadingSysExNotification);
-DEFINE_NSSTRING(SMInputStreamSelectedInputSourceDisappearedNotification);
+NSString *SMInputStreamReadingSysExNotification = @"SMInputStreamReadingSysExNotification";
+NSString *SMInputStreamDoneReadingSysExNotification = @"SMInputStreamDoneReadingSysExNotification";
+NSString *SMInputStreamSelectedInputSourceDisappearedNotification = @"SMInputStreamSelectedInputSourceDisappearedNotification";
 
 
 - (id)init;
