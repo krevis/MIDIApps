@@ -123,6 +123,14 @@
     flags.wasReceivedWithEOX = value;
 }
 
+- (NSData *)receivedData;
+{
+    if ([self wasReceivedWithEOX])
+        return [self otherData];	// With EOX
+    else
+        return [self data];		// Without EOX
+}
+
 - (NSData *)manufacturerIdentifier;
 {
     unsigned int length;
@@ -159,7 +167,7 @@
     manufacturerName = [self manufacturerName];
     lengthString = [NSString stringWithFormat:
         NSLocalizedStringFromTableInBundle(@"%@ bytes", @"SnoizeMIDI", [self bundle], "SysEx length format string"),
-        [SMMessage formatLength:[self otherDataLength]]];
+        [SMMessage formatLength:[[self receivedData] length]]];
 
     return [[manufacturerName stringByAppendingString:@"\t"] stringByAppendingString:lengthString];
 }

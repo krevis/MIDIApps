@@ -37,6 +37,9 @@
 - (BOOL)wasReceivedWithEOX;
 - (void)setWasReceivedWithEOX:(BOOL)value;
 
+- (NSData *)receivedData;
+    // Data as received -- may or may not include EOX
+
 - (NSData *)manufacturerIdentifier;
     // May be 1 to 3 bytes in length, or nil if a value can't be determined
 - (NSString *)manufacturerName;
