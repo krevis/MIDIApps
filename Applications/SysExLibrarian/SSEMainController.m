@@ -386,7 +386,7 @@
 
     if (sendingMessageIndex + 1 >= sendingMessageCount) {
         // We're done.
-        [windowController hideSysExSendStatus];
+        [windowController hideSysExSendStatusWithSuccess:(bytesSent == bytesToSend)];
     } else {
         sendingMessageIndex++;
     }

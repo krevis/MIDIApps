@@ -60,6 +60,6 @@
 - (void)stopSysExReadIndicator;
 
 - (void)showSysExSendStatus;
-- (void)hideSysExSendStatus;
+- (void)hideSysExSendStatusWithSuccess:(BOOL)success;
 
 @end

@@ -145,7 +145,7 @@ static SSEMainWindowController *controller;
 - (IBAction)cancelPlaySheet:(id)sender;
 {
     [mainController cancelSendingMessages];
-    [[NSApplication sharedApplication] endSheet:playSheetWindow];  // TODO is this needed?
+    // -hideSysExSendStatusWithSuccess: will get called soon; it will end the sheet
 }
 
 //
@@ -199,16 +199,21 @@ static SSEMainWindowController *controller;
     [[NSApplication sharedApplication] beginSheet:playSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
-- (void)hideSysExSendStatus;
+- (void)hideSysExSendStatusWithSuccess:(BOOL)success;
 {
     [self _updatePlayProgress];
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_updatePlayProgress) object:nil];
-        // TODO the above is really clunky
+        // TODO the above is really clunky... we ask to perform a request then immediately terminate it
+
+    if (!success) {
+        [playProgressMessageField setStringValue:@"Cancelled."];
+            // TODO localize
+    }
 
     // Even if we have set the progress indicator to its maximum value, it won't get drawn on the screen that way immediately,
     // probably because it tries to smoothly animate to that state. The only way I have found to show the maximum value is to just
     // wait a little while for the animation to finish. This looks nice, too.
-    [[NSApplication sharedApplication] performSelector:@selector(endSheet:) withObject:playSheetWindow afterDelay:0.5];
+    [[NSApplication sharedApplication] performSelector:@selector(endSheet:) withObject:playSheetWindow afterDelay:0.5];    
 }
 
 @end
