@@ -151,6 +151,4 @@ void mainThreadRunLoopSourceCallback(void *info)
     }
 
     CFRelease(copiedQueueArray);
-    
-    return;
 }

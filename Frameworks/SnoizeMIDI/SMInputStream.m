@@ -310,7 +310,7 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
     pendingPacketList->srcConnRefCon = srcConnRefCon;
     memcpy(&pendingPacketList->packetList, packetList, packetListSize);
 
-    // Queue the data; receiveFromMessageQueue() will be called in the secondary MIDI thread.
+    // Queue the data; receivePendingPacketList() will be called in the secondary MIDI thread.
     AddToMessageQueue((CFDataRef)data);
     
     [data release];
