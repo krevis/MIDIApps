@@ -5,6 +5,15 @@
 # Display commands as they happen -- useful for debugging
 #setopt XTRACE
 
+# build output directory -- change this to whatever you like
+BUILD_OUTPUT_DIR=${HOME}/MIDIMonitorBuild
+
+INSTALL_DIRECTORY=${BUILD_OUTPUT_DIR}/PackagedSource
+
+PACKAGED_SOURCE_NAME=MIDI\ Monitor\ Source
+PACKAGED_SOURCE_ARCHIVE_NAME=MIDIMonitorSource
+
+
 #ThisScriptDir=`dirname ${PWD}/$0`
 
 SourceRoot=~/Source
@@ -13,12 +22,6 @@ SnoizeFrameworkSource=${SnoizeSource}/Frameworks
 SnoizeAppSource=${SnoizeSource}/Applications
 SnoizeScriptSource=${SnoizeSource}/Scripts
 SnoizeDocsSource=${SnoizeSource}/Documentation
-
-
-PUBLIC=/Users/Shared
-INSTALL_DIRECTORY=$PUBLIC/$USER/PackagedSource
-PACKAGED_SOURCE_NAME=MIDI\ Monitor\ Source
-PACKAGED_SOURCE_ARCHIVE_NAME=MIDIMonitorSource
 
 
 mkdir -p "$INSTALL_DIRECTORY" || {echo "Couldn't create install directory!"; exit 1}
@@ -44,6 +47,7 @@ cp -R $SnoizeScriptSource/BuildMIDIMonitor .
 cd ..
 
 cp -R $SnoizeDocsSource/MIDIMonitor/Source/README .
+cp -R $SnoizeDocsSource/MIDIMonitor/Source/LICENSE .
 
 #
 # Remove extra junk from the source
