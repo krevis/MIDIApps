@@ -1,5 +1,5 @@
 //
-// Copyright 2001-2002 Kurt Revis. All rights reserved.
+// Copyright 2003 Kurt Revis. All rights reserved.
 //
 
 #import "SMInvalidMessage.h"
