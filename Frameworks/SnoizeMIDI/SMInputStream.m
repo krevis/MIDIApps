@@ -78,7 +78,7 @@ DEFINE_NSSTRING(SMInputStreamDoneReadingSysExNotification);
     NSDictionary *userInfo;
     
     userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-        [NSNumber numberWithUnsignedInt:[[message receivedData] length]], @"length",
+        [NSNumber numberWithUnsignedInt:1 + [[message receivedData] length]], @"length",
         [NSNumber numberWithBool:[message wasReceivedWithEOX]], @"valid", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:SMInputStreamDoneReadingSysExNotification object:self userInfo:userInfo];
 }

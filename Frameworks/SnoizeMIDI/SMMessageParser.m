@@ -159,9 +159,9 @@
 
                         [readingSysExData appendBytes:&byte length:1];
 
-                        length = [readingSysExData length];
-                        // Tell the delegate we're still reading, every 256 bytes (starting with the first byte)
-                        if (length % 256 == 1)
+                        length = 1 + [readingSysExData length];
+                        // Tell the delegate we're still reading, every 256 bytes
+                        if (length % 256 == 0)
                             [nonretainedDelegate parser:self isReadingSysExWithLength:length];
                     }
                     [readingSysExLock unlock];
@@ -224,6 +224,7 @@
                                 // System exclusive
                                 readingSysExData = [[NSMutableData alloc] init];  // This is atomic, so there's no need to lock
                                 startSysExTimeStamp = packet->timeStamp;
+                                [nonretainedDelegate parser:self isReadingSysExWithLength:1];
                                 break;
                                 
                             case 0xF7:
