@@ -393,11 +393,24 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
     [self checkForUniqueNames];
 }
 
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
+static BOOL sRefreshAllObjectsDisabled = NO;
+
++ (void)refreshAllObjects
+{
+    if (!sRefreshAllObjectsDisabled) {
+        [super refreshAllObjects];
+        [self checkForUniqueNames];
+    }
+}
+#else
+
 + (void)refreshAllObjects
 {
     [super refreshAllObjects];
     [self checkForUniqueNames];
 }
+#endif
 
 + (SMMIDIObject *)immediatelyAddObjectWithObjectRef:(MIDIObjectRef)anObjectRef;
 {
@@ -637,26 +650,32 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
 
 + (SMSourceEndpoint *)createVirtualSourceEndpointWithName:(NSString *)newName uniqueID:(MIDIUniqueID)newUniqueID;
 {
-    SMClient *client;
+    SMClient *client = [SMClient sharedClient];
     OSStatus status;
     MIDIEndpointRef newEndpointRef;
     BOOL wasPostingExternalNotification;
     SMSourceEndpoint *endpoint;
-
-    client = [SMClient sharedClient];
-
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
+    BOOL needDumbWorkaround = [client coreMIDIUsesWrongRunLoop];
+#endif
+    
     // We are going to be making a lot of changes, so turn off external notifications
     // for a while (until we're done).  Internal notifications are still necessary and aren't very slow.
     wasPostingExternalNotification = [client postsExternalSetupChangeNotification];
     [client setPostsExternalSetupChangeNotification:NO];
 
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
+    if (needDumbWorkaround)
+        sRefreshAllObjectsDisabled = YES;
+#endif
+    
     status = MIDISourceCreate([client midiClient], (CFStringRef)newName, &newEndpointRef);
     if (status)
         return nil;
 
-    // We want to get at the SMSourceEndpoint immediately.
+    // We want to get at the SMEndpoint immediately.
     // CoreMIDI will send us a notification that something was added, and then we will create an SMSourceEndpoint.
-    // However, those notifications are posted in the run loop's main mode, and we don't want to wait for it to be run.
+    // However, the notification from CoreMIDI is posted in the run loop's main mode, and we don't want to wait for it to be run.
     // So we need to manually add the new endpoint, now.
     endpoint = (SMSourceEndpoint *)[self immediatelyAddObjectWithObjectRef:newEndpointRef];
     if (!endpoint) {
@@ -681,6 +700,11 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
     // Do this before the last modification, so one setup change notification will still happen
     [client setPostsExternalSetupChangeNotification:wasPostingExternalNotification];
 
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
+    if (needDumbWorkaround)
+        sRefreshAllObjectsDisabled = NO;
+#endif
+    
     [endpoint setModelName:[client name]];
 
     return endpoint;
@@ -757,28 +781,34 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
 
 + (SMDestinationEndpoint *)createVirtualDestinationEndpointWithName:(NSString *)endpointName readProc:(MIDIReadProc)readProc readProcRefCon:(void *)readProcRefCon uniqueID:(MIDIUniqueID)newUniqueID
 {
-    SMClient *client;
+    SMClient *client = [SMClient sharedClient];
     OSStatus status;
     MIDIEndpointRef newEndpointRef;
     BOOL wasPostingExternalNotification;
     SMDestinationEndpoint *endpoint;
-
-    client = [SMClient sharedClient];
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
+    BOOL needDumbWorkaround = [client coreMIDIUsesWrongRunLoop];
+#endif
 
     // We are going to be making a lot of changes, so turn off external notifications
     // for a while (until we're done).  Internal notifications are still necessary and aren't very slow.
     wasPostingExternalNotification = [client postsExternalSetupChangeNotification];
     [client setPostsExternalSetupChangeNotification:NO];
 
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
+    if (needDumbWorkaround)
+        sRefreshAllObjectsDisabled = YES;
+#endif
+    
     status = MIDIDestinationCreate([client midiClient], (CFStringRef)endpointName, readProc, readProcRefCon, &newEndpointRef);
     if (status)
         return nil;
 
-    // We want to get at the SMSourceEndpoint immediately.
+    // We want to get at the new SMEndpoint immediately.
     // CoreMIDI will send us a notification that something was added, and then we will create an SMSourceEndpoint.
-    // However, those notifications are posted in the run loop's main mode, and we don't want to wait for it to be run.
+    // However, the notification from CoreMIDI is posted in the run loop's main mode, and we don't want to wait for it to be run.
     // So we need to manually add the new endpoint, now.
-    endpoint = (SMDestinationEndpoint *)[self immediatelyAddObjectWithObjectRef:newEndpointRef];
+    endpoint = (SMDestinationEndpoint *)[self immediatelyAddObjectWithObjectRef:newEndpointRef];    
     if (!endpoint) {
         NSLog(@"%@ couldn't find its virtual endpoint after it was created", NSStringFromClass(self));
         return nil;
@@ -801,6 +831,11 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
     // Do this before the last modification, so one setup change notification will still happen
     [client setPostsExternalSetupChangeNotification:wasPostingExternalNotification];
 
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
+    if (needDumbWorkaround)
+        sRefreshAllObjectsDisabled = NO;
+#endif
+    
     [endpoint setModelName:[client name]];
 
     return endpoint;
