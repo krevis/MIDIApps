@@ -7,7 +7,7 @@
 	objects = {
 		021A59B6FFCC560311CA0CBA = {
 			isa = PBXBundleReference;
-			path = DisclosableViewPalette.palette;
+			path = DisclosableView.palette;
 			refType = 3;
 		};
 		0259C573FE90428111CA0C5A = {
@@ -115,13 +115,12 @@
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "";
 				HEADER_SEARCH_PATHS = "";
-				INSTALL_PATH = "$(HOME)/Developer/Palettes";
+				INSTALL_PATH = "$(HOME)/Library/Palettes";
 				LIBRARY_SEARCH_PATHS = "";
-				OPTIMIZATION_CFLAGS = "-O1";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-bundle";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = DisclosableViewPalette;
+				PRODUCT_NAME = DisclosableView;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
 				WRAPPER_EXTENSION = palette;
@@ -130,7 +129,7 @@
 			);
 			isa = PBXBundleTarget;
 			name = DisclosableViewPalette;
-			productInstallPath = "$(HOME)/Developer/Palettes";
+			productInstallPath = "$(HOME)/Library/Palettes";
 			productName = DisclosableViewPalette;
 			productReference = 021A59B6FFCC560311CA0CBA;
 			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
@@ -140,7 +139,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string></string>
+	<string>DisclosableView</string>
 	<key>CFBundleGetInfoString</key>
 	<string></string>
 	<key>CFBundleIconFile</key>
@@ -291,7 +290,8 @@
 			);
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				OPTIMIZATION_CFLAGS = "-O1";
+				OPTIMIZATION_FLAGS = "-O0";
+				OTHER_CFLAGS = "\U0001-DDEBUG";
 			};
 			isa = PBXBuildStyle;
 			name = Development;
