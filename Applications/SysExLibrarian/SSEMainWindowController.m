@@ -43,6 +43,8 @@
 - (void)_updatePlayProgressAndRepeat;
 - (void)_updatePlayProgress;
 
+- (void)_showDetailsOfSelectedEntries;
+
 - (BOOL)_areAnyFilesAcceptable:(NSArray *)filePaths;
 - (BOOL)_areAnyFilesDirectories:(NSArray *)filePaths;
 - (void)_importFilesShowingProgress:(NSArray *)filePaths;
@@ -55,8 +57,9 @@
 - (void)_updateImportStatusDisplay;
 - (void)_doneImporting:(NSArray *)addedEntries;
 
-- (void)_findMissingFilesAndPlay;
+- (void)_findMissingFilesAndPerformSelector:(SEL)selector;
 - (void)_missingFileAlertDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)_runOpenSheetForMissingFileWithContextInfo:(void *)contextInfo;
 - (void)_findMissingFileOpenPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
 - (void)_deleteWarningSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
@@ -178,9 +181,9 @@ static SSEMainWindowController *controller;
     else if (action == @selector(delete:))
         return ([libraryTableView numberOfSelectedRows] > 0);
     else if (action == @selector(showFileInFinder:))
-        return ([libraryTableView numberOfSelectedRows] == 1);
+        return ([libraryTableView numberOfSelectedRows] == 1 && [[[self _selectedEntries] objectAtIndex:0] isFilePresent]);
     else if (action == @selector(rename:))
-        return ([libraryTableView numberOfSelectedRows] == 1);
+        return ([libraryTableView numberOfSelectedRows] == 1 && [[[self _selectedEntries] objectAtIndex:0] isFilePresent]);
     else if (action == @selector(showDetails:))
         return ([libraryTableView numberOfSelectedRows] > 0);
     else
@@ -259,27 +262,10 @@ static SSEMainWindowController *controller;
 
 - (IBAction)play:(id)sender;
 {
-    NSArray *selectedEntries;
-    unsigned int entryCount, entryIndex;
-
     if ([self _finishEditingResultsInError])
         return;
 
-    selectedEntries = [self _selectedEntries];
-
-    // Which entries can't find their associated file?
-    entryCount = [selectedEntries count];
-    [entriesWithMissingFiles release];
-    entriesWithMissingFiles = [[NSMutableArray alloc] initWithCapacity:entryCount];
-    for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
-        SSELibraryEntry *entry;
-
-        entry = [selectedEntries objectAtIndex:entryIndex];
-        if (![entry isFilePresentIgnoringCachedValue])
-            [entriesWithMissingFiles addObject:entry];
-    }
-
-    [self _findMissingFilesAndPlay];
+    [self _findMissingFilesAndPerformSelector:@selector(_playSelectedEntries)];
 }
 
 - (IBAction)showFileInFinder:(id)sender;
@@ -293,42 +279,33 @@ static SSEMainWindowController *controller;
     selectedEntries = [self _selectedEntries];
     OBASSERT([selectedEntries count] == 1);
 
-    if ((path = [[selectedEntries objectAtIndex:0] path])) {
+    if ((path = [[selectedEntries objectAtIndex:0] path]))
         [[NSWorkspace sharedWorkspace] selectFile:path inFileViewerRootedAtPath:@""];
-    }
-    // TODO Handle case when the file can't be found    
+    else
+        NSBeep();	// Turns out the file isn't there after all
 }
 
 - (IBAction)rename:(id)sender;
 {
-    // TODO Handle case when the file can't be found    
-
     if ([libraryTableView editedRow] >= 0) {
         // We are already editing the table view, so don't do anything
     } else  {
         [self finishEditingInWindow];  // In case we are editing something else
-        
-        [libraryTableView editColumn:0 row:[libraryTableView selectedRow] withEvent:nil select:YES];
+
+        // Make sure that the file really exists right now before we try to rename it
+        if ([[[self _selectedEntries] objectAtIndex:0] isFilePresentIgnoringCachedValue])
+            [libraryTableView editColumn:0 row:[libraryTableView selectedRow] withEvent:nil select:YES];
+        else
+            NSBeep();
     }
 }
 
 - (IBAction)showDetails:(id)sender;
 {
-    NSArray *selectedEntries;
-    unsigned int entryCount, entryIndex;
-
     if ([self _finishEditingResultsInError])
         return;
 
-    selectedEntries = [self _selectedEntries];
-    entryCount = [selectedEntries count];
-    for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
-        SSELibraryEntry *entry;
-
-        entry = [selectedEntries objectAtIndex:entryIndex];
-        [[SSEDetailsWindowController detailsWindowControllerWithEntry:entry] showWindow:nil];
-        // TODO Handle case when the file can't be found    
-    }
+    [self _findMissingFilesAndPerformSelector:@selector(_showDetailsOfSelectedEntries)];
 }
 
 - (IBAction)cancelRecordSheet:(id)sender;
@@ -407,6 +384,9 @@ static SSEMainWindowController *controller;
     
     [libraryTableView reloadData];
     [self _selectAndScrollToEntries:selectedEntries];
+
+    // Sometimes, apparently, reloading the table view will not mark the window as needing update. Weird.
+    [NSApp setWindowsNeedUpdate:YES];
 }
 
 - (void)importFiles:(NSArray *)filePaths showingProgress:(BOOL)showProgress;
@@ -461,8 +441,6 @@ static SSEMainWindowController *controller;
     if (entry) {
         [self synchronizeLibrary];
         [self _selectAndScrollToEntries:[NSArray arrayWithObject:entry]];
-        // Make sure that the toolbar gets updated. Yes, this is actually necessary.
-        [NSApp setWindowsNeedUpdate:YES];
     } else {
         NSWindow *attachedSheet;
         
@@ -567,12 +545,10 @@ static SSEMainWindowController *controller;
         return;
     
     entry = [sortedLibraryEntries objectAtIndex:row];
-    if ([entry isFilePresentIgnoringCachedValue]) {
-        if ([entry renameFileTo:newName]) {
-            [entry setName:newName];
-        } else {
-            NSBeginAlertSheet(@"Error", nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"The file for this item could not be renamed to \"%@\".", newName);
-        }
+    if ([entry renameFileTo:newName]) {
+        [entry setName:newName];
+    } else {
+        NSBeginAlertSheet(@"Error", nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"The file for this item could not be renamed.");
     }
     
     [self synchronizeLibrary];
@@ -754,7 +730,9 @@ static SSEMainWindowController *controller;
 
 - (void)_libraryDidChange:(NSNotification *)notification;
 {
-    [self synchronizeLibrary];
+    // Reloading the table view will wipe out the edit session, so don't do that if we're editing
+    if ([libraryTableView editedRow] == -1)
+        [self synchronizeLibrary];
 }
 
 static int libraryEntryComparator(id object1, id object2, void *context)
@@ -992,6 +970,21 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     [playProgressMessageField setStringValue:message];
 }
 
+- (void)_showDetailsOfSelectedEntries;
+{
+    NSArray *selectedEntries;
+    unsigned int entryCount, entryIndex;
+
+    selectedEntries = [self _selectedEntries];
+    entryCount = [selectedEntries count];
+    for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+        SSELibraryEntry *entry;
+
+        entry = [selectedEntries objectAtIndex:entryIndex];
+        [[SSEDetailsWindowController detailsWindowControllerWithEntry:entry] showWindow:nil];
+    }
+}
+
 - (BOOL)_areAnyFilesAcceptable:(NSArray *)filePaths;
 {
     NSFileManager *fileManager;
@@ -1224,59 +1217,113 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     [self _selectAndScrollToEntries:addedEntries];
 }
 
-- (void)_findMissingFilesAndPlay;
+- (void)_findMissingFilesAndPerformSelector:(SEL)selector;
 {
     // Ask the user to find each missing file.
-    // If we go through them all successfully, call [self _playSelectedEntries].
+    // If we go through them all successfully, perform the selector on ourself.
     // If we cancel at any point of the process, don't do anything.
 
+    if (!entriesWithMissingFiles) {
+        NSArray *selectedEntries;
+        unsigned int entryCount, entryIndex;
+
+        selectedEntries = [self _selectedEntries];
+
+        // Which entries can't find their associated file?
+        entryCount = [selectedEntries count];
+        [entriesWithMissingFiles release];
+        entriesWithMissingFiles = [[NSMutableArray alloc] initWithCapacity:entryCount];
+        for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+            SSELibraryEntry *entry;
+
+            entry = [selectedEntries objectAtIndex:entryIndex];
+            if (![entry isFilePresentIgnoringCachedValue])
+                [entriesWithMissingFiles addObject:entry];
+        }
+    }
+
     if ([entriesWithMissingFiles count] == 0) {
-        [self _playSelectedEntries];
+        [self performSelector:selector];
+        [entriesWithMissingFiles release];
+        entriesWithMissingFiles = nil;
     } else {
         SSELibraryEntry *entry;
 
         entry = [entriesWithMissingFiles objectAtIndex:0];
 
-        NSBeginAlertSheet(@"Missing File", @"Yes", @"Cancel", nil, [self window], self, @selector(_missingFileAlertDidEnd:returnCode:contextInfo:), NULL, NULL, @"The file for the item \"%@\" could not be found. Would you like to locate it?", [entry name]);
+        NSBeginAlertSheet(@"Missing File", @"Yes", @"Cancel", nil, [self window], self, @selector(_missingFileAlertDidEnd:returnCode:contextInfo:), NULL, selector, @"The file for the item \"%@\" could not be found. Would you like to locate it?", [entry name]);
     }
 }
 
 - (void)_missingFileAlertDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 {
     if (returnCode == NSAlertDefaultReturn) {
-        // Try to locate the file
-        NSOpenPanel *openPanel;
-
         // Get this sheet out of the way before we open another one
         [sheet orderOut:nil];
 
-        openPanel = [NSOpenPanel openPanel];
-        [openPanel beginSheetForDirectory:nil file:nil types:[library allowedFileTypes] modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_findMissingFileOpenPanelDidEnd:returnCode:contextInfo:) contextInfo:nil];
+        // Try to locate the file
+        [self _runOpenSheetForMissingFileWithContextInfo:contextInfo];
     } else {
-        // Cancel the whole _findMissingFilesAndPlay process
+        // Cancel the whole _findMissingFilesAndPerformSelector: process
         [entriesWithMissingFiles release];
         entriesWithMissingFiles = nil;
     }
 }
 
+- (void)_runOpenSheetForMissingFileWithContextInfo:(void *)contextInfo;
+{
+    NSOpenPanel *openPanel;
+
+    openPanel = [NSOpenPanel openPanel];
+    [openPanel beginSheetForDirectory:nil file:nil types:[library allowedFileTypes] modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_findMissingFileOpenPanelDidEnd:returnCode:contextInfo:) contextInfo:contextInfo];
+}
+
 - (void)_findMissingFileOpenPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 {
-    if (returnCode == NSOKButton) {
-        SSELibraryEntry *entry;
+    BOOL cancelled = NO;
 
-        [openPanel orderOut:nil];
-        
-        OBASSERT([entriesWithMissingFiles count] > 0);
-        entry = [entriesWithMissingFiles objectAtIndex:0];
-
-        [entry setPath:[[openPanel filenames] objectAtIndex:0]];
-
-        [entriesWithMissingFiles removeObjectAtIndex:0];
-
-        // Go on to the next file (if any)
-        [self _findMissingFilesAndPlay];
+    if (returnCode != NSOKButton) {
+        cancelled = YES;
     } else {
-        // Cancel the whole _findMissingFilesAndPlay process
+        SSELibraryEntry *entry;
+        NSString *filePath;
+        NSArray *matchingEntries;
+
+        OBASSERT([entriesWithMissingFiles count] > 0);
+        entry = [entriesWithMissingFiles objectAtIndex:0];        
+
+        filePath = [[openPanel filenames] objectAtIndex:0];
+
+        // Is this file in use by any entries?  (It might be in use by *this* entry if the file has gotten put in place again!)
+        matchingEntries = [library findEntriesForFiles:[NSArray arrayWithObject:filePath] returningNonMatchingFiles:NULL];
+        if ([matchingEntries count] > 0 && [matchingEntries indexOfObject:entry] == NSNotFound) {
+            int returnCode2;
+
+            returnCode2 = NSRunAlertPanel(@"In Use", @"That file is already in the library. Please choose another one.", @"OK", @"Cancel", nil);
+            [openPanel orderOut:nil];
+            if (returnCode2 == NSAlertDefaultReturn) {
+                // Run the open sheet again
+                [self _runOpenSheetForMissingFileWithContextInfo:contextInfo];
+            } else {
+                // Cancel out of the whole process
+                cancelled = YES;
+            }
+
+        } else {
+            [openPanel orderOut:nil];
+            
+            [entry setPath:filePath];
+            [entry setNameFromFile];
+    
+            [entriesWithMissingFiles removeObjectAtIndex:0];
+    
+            // Go on to the next file (if any)
+            [self _findMissingFilesAndPerformSelector:(SEL)contextInfo];
+        }
+    }
+
+    if (cancelled) {
+        // Cancel the whole _findMissingFilesAndPerformSelector: process
         [entriesWithMissingFiles release];
         entriesWithMissingFiles = nil;
     }
