@@ -6,12 +6,11 @@
 #import <Foundation/Foundation.h>
 #import <CoreMIDI/CoreMIDI.h>
 #import <SnoizeMIDI/SMInputStreamSource.h>
+#import <SnoizeMIDI/SMMIDIObject.h>
 
 
-@interface SMEndpoint : OFObject <SMInputStreamSource>
+@interface SMEndpoint : SMMIDIObject <SMInputStreamSource>
 {
-    MIDIEndpointRef endpointRef;
-    SInt32 uniqueID;
     MIDIDeviceRef deviceRef;
     struct {
         unsigned int hasLookedForDevice:1;
@@ -19,32 +18,23 @@
         unsigned int hasCachedManufacturerName:1;
         unsigned int hasCachedModelName:1;
         unsigned int hasCachedDeviceName:1;
-    } flags;
+    } endpointFlags;
     unsigned int ordinal;
 
-    NSString *cachedName;
     NSString *cachedManufacturerName;
     NSString *cachedModelName;
     NSString *cachedDeviceName;
 }
 
-+ (SInt32)generateNewUniqueID;
++ (MIDIUniqueID)generateNewUniqueID;
 
 - (id)initWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
-
 - (MIDIEndpointRef)endpointRef;
 
 - (BOOL)isVirtual;
 - (BOOL)isOwnedByThisProcess;
 - (void)setIsOwnedByThisProcess;
 - (void)remove;	// only works on virtual endpoints owned by this process
-
-- (SInt32)uniqueID;
-- (void)setUniqueID:(SInt32)value;
-
-- (NSString *)name;
-- (void)setName:(NSString *)value;
-    // Endpoint name, as returned by CoreMIDI (kMIDIPropertyName)
     
 - (NSString *)manufacturerName;
 - (void)setManufacturerName:(NSString *)value;
@@ -67,8 +57,6 @@
 - (SInt32)advanceScheduleTime;
 - (void)setAdvanceScheduleTime:(SInt32)newValue;
     // Value is in milliseconds
-
-- (NSDictionary *)allProperties;
 
 - (BOOL)needsSysExWorkaround;
     // Returns YES if the endpoint is provided by the broken MIDIMAN driver, which can't send more than 3 bytes of sysex at once
@@ -93,11 +81,11 @@
 }
 
 + (NSArray *)sourceEndpoints;
-+ (SMSourceEndpoint *)sourceEndpointWithUniqueID:(SInt32)uniqueID;
++ (SMSourceEndpoint *)sourceEndpointWithUniqueID:(MIDIUniqueID)uniqueID;
 + (SMSourceEndpoint *)sourceEndpointWithName:(NSString *)name;
 + (SMSourceEndpoint *)sourceEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
 
-+ (SMSourceEndpoint *)createVirtualSourceEndpointWithName:(NSString *)newName uniqueID:(SInt32)newUniqueID;
++ (SMSourceEndpoint *)createVirtualSourceEndpointWithName:(NSString *)newName uniqueID:(MIDIUniqueID)newUniqueID;
 
 @end
 
@@ -107,11 +95,11 @@
 }
 
 + (NSArray *)destinationEndpoints;
-+ (SMDestinationEndpoint *)destinationEndpointWithUniqueID:(SInt32)uniqueID;
++ (SMDestinationEndpoint *)destinationEndpointWithUniqueID:(MIDIUniqueID)uniqueID;
 + (SMDestinationEndpoint *)destinationEndpointWithName:(NSString *)aName;
 + (SMDestinationEndpoint *)destinationEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
 
-+ (SMDestinationEndpoint *)createVirtualDestinationEndpointWithName:(NSString *)endpointName readProc:(MIDIReadProc)readProc readProcRefCon:(void *)readProcRefCon uniqueID:(SInt32)newUniqueID;
++ (SMDestinationEndpoint *)createVirtualDestinationEndpointWithName:(NSString *)endpointName readProc:(MIDIReadProc)readProc readProcRefCon:(void *)readProcRefCon uniqueID:(MIDIUniqueID)newUniqueID;
 
 @end
 

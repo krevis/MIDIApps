@@ -14,10 +14,6 @@
 + (NSArray *)allExternalDevices;
 + (void)reloadExternalDevices;
 
-- (void)updateUniqueID;
-
-- (NSString *)stringForProperty:(CFStringRef)property;
-
 - (void)setOrdinal:(unsigned int)value;
 - (unsigned int)ordinal;
 static int externalDeviceOrdinalComparator(id object1, id object2, void *context);
@@ -40,8 +36,10 @@ static NSMapTable *staticExternalDevicesMapTable = nil;
     return [[self allExternalDevices] sortedArrayUsingFunction:externalDeviceOrdinalComparator context:NULL];
 }
 
-+ (SMExternalDevice *)externalDeviceWithUniqueID:(SInt32)aUniqueID;
++ (SMExternalDevice *)externalDeviceWithUniqueID:(MIDIUniqueID)aUniqueID;
 {
+    // TODO We may want to change this to use MIDIObjectFindByUniqueID() where it is available (10.2 and greater).
+    // However, I bet it's cheaper to look at the local list of unique IDs instead of making a roundtrip to the MIDIServer.
     NSArray *allExtDevices;
     unsigned int extDeviceIndex;
 
@@ -68,19 +66,9 @@ static NSMapTable *staticExternalDevicesMapTable = nil;
 
 - (id)initWithDeviceRef:(MIDIDeviceRef)aDeviceRef;
 {
-    if (!(self = [super init]))
+    if (!(self = [super initWithObjectRef:(MIDIObjectRef)aDeviceRef]))
         return nil;
 
-    if (!aDeviceRef) {
-        [self release];
-        return nil;
-    }
-
-    deviceRef = aDeviceRef;
-
-    // Save the uniqueID, since it could become inaccessible later (if the ext. device goes away).
-    [self updateUniqueID];
-    
     return self;
 }
 
@@ -91,17 +79,7 @@ static NSMapTable *staticExternalDevicesMapTable = nil;
 
 - (MIDIDeviceRef)deviceRef;
 {
-    return deviceRef;
-}
-
-- (SInt32)uniqueID;
-{
-    return uniqueID;
-}
-
-- (NSString *)name;
-{
-    return [self stringForProperty:kMIDIPropertyName];
+    return (MIDIDeviceRef)objectRef;
 }
 
 - (NSString *)manufacturerName;
@@ -114,17 +92,12 @@ static NSMapTable *staticExternalDevicesMapTable = nil;
     return [self stringForProperty:kMIDIPropertyModel];
 }
 
-- (NSDictionary *)allProperties;
-{
-    id propertyList;
-
-    if (noErr != MIDIObjectGetProperties(deviceRef, (CFPropertyListRef *)&propertyList, NO /* not deep */))
-        propertyList = nil;
-
-    return [propertyList autorelease];    
-}
-
 - (NSString *)pathToImageFile;
+#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_2
+{
+    return [self stringForProperty:kMIDIPropertyImage];
+}
+#else
 {
     // NOTE CoreMIDI's symbol kMIDIPropertyImage is new to 10.2, but we can't link against it directly
     // because that will cause us to fail to run on 10.1. So, instead, we try to look up the address of
@@ -138,6 +111,7 @@ static NSMapTable *staticExternalDevicesMapTable = nil;
     else
         return nil;
 }
+#endif
 
 @end
 
@@ -224,22 +198,6 @@ static NSMapTable *staticExternalDevicesMapTable = nil;
     staticExternalDevicesMapTable = newMapTable;
 
     // TODO post notifications etc (see SMEndpoint version)
-}
-
-- (void)updateUniqueID;
-{
-    if (noErr != MIDIObjectGetIntegerProperty(deviceRef, kMIDIPropertyUniqueID, &uniqueID))
-        uniqueID = 0;
-}
-
-- (NSString *)stringForProperty:(CFStringRef)property;
-{
-    NSString *string;
-
-    if (noErr == MIDIObjectGetStringProperty(deviceRef, property, (CFStringRef *)&string))
-        return [string autorelease];
-    else
-        return nil;
 }
 
 - (void)setOrdinal:(unsigned int)value;
