@@ -131,6 +131,7 @@
 				4A9504D0FFE6A4CB11CA0CBA,
 				4A9504D1FFE6A4CB11CA0CBA,
 			);
+			hasScannedForEncodings = 1;
 			isa = PBXProject;
 			mainGroup = 2A37F4AAFDCFA73011CA2CEA;
 			projectDirPath = "";
@@ -172,11 +173,13 @@
 			refType = 4;
 		};
 		2A37F4ACFDCFA73011CA2CEA = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMDocument.m;
 			refType = 4;
 		};
 		2A37F4AEFDCFA73011CA2CEA = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMDocument.h;
 			refType = 4;
@@ -192,6 +195,7 @@
 			refType = 4;
 		};
 		2A37F4B0FDCFA73011CA2CEA = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = main.m;
 			refType = 4;
@@ -389,7 +393,6 @@
 </dict>
 </plist>
 ";
-			shouldUseHeadermap = 1;
 		};
 		2A37F4C7FDCFA73011CA2CEA = {
 			buildActionMask = 2147483647;
@@ -524,11 +527,13 @@
 //F53
 //F54
 		F53A1C06015EB24301000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMPreferencesWindowController.h;
 			refType = 4;
 		};
 		F53A1C07015EB24301000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMPreferencesWindowController.m;
 			refType = 4;
@@ -576,6 +581,7 @@
 			refType = 4;
 		};
 		F53BB4AF015D96A501000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			name = English;
 			path = English.lproj/MIDIMonitor.strings;
@@ -621,11 +627,13 @@
 			};
 		};
 		F53D4AB5015AAA2C01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMMonitorWindowController.h;
 			refType = 4;
 		};
 		F53D4AB6015AAA2C01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMMonitorWindowController.m;
 			refType = 4;
@@ -643,11 +651,13 @@
 			};
 		};
 		F53D4AB9015AAB7E01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMAppController.h;
 			refType = 4;
 		};
 		F53D4ABA015AAB7E01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMAppController.m;
 			refType = 4;
@@ -676,6 +686,7 @@
 			};
 		};
 		F547DDD90318496E01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = PrecompHeader.h;
 			refType = 4;
@@ -687,11 +698,13 @@
 			};
 		};
 		F55462270263619E01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMFastAnimatingWindow.h;
 			refType = 4;
 		};
 		F55462280263619E01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMFastAnimatingWindow.m;
 			refType = 4;
@@ -709,11 +722,13 @@
 			};
 		};
 		F55C9C140244CE3701000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMCombinationInputStream.h;
 			refType = 4;
 		};
 		F55C9C150244CE3701000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMCombinationInputStream.m;
 			refType = 4;
@@ -737,11 +752,13 @@
 			};
 		};
 		F562148D02408B2D01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMSpyingInputStream.h;
 			refType = 4;
 		};
 		F562148E02408B2D01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMSpyingInputStream.m;
 			refType = 4;
@@ -781,11 +798,13 @@
 			};
 		};
 		F56E05CA0206BAB401000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMSysExWindowController.h;
 			refType = 4;
 		};
 		F56E05CB0206BAB401000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMSysExWindowController.m;
 			refType = 4;
@@ -867,16 +886,19 @@
 			};
 		};
 		F57B0567026BB81F01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = "Read Me.html";
 			refType = 4;
 		};
 		F57F628A0261C8FC01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMSourcesOutlineView.h;
 			refType = 4;
 		};
 		F57F628B0261C8FC01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMSourcesOutlineView.m;
 			refType = 4;
@@ -894,11 +916,13 @@
 			};
 		};
 		F57F628F0261D5A701000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMNonHighlightingCells.h;
 			refType = 4;
 		};
 		F57F62900261D5A701000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMNonHighlightingCells.m;
 			refType = 4;
@@ -936,6 +960,7 @@
 			refType = 4;
 		};
 		F5A43ED00192896501000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			name = English;
 			path = English.lproj/Credits.html;
@@ -977,11 +1002,13 @@
 			};
 		};
 		F5DCBE8E02E6064E01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMWindowController.h;
 			refType = 4;
 		};
 		F5DCBE8F02E6064E01000164 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = SMMWindowController.m;
 			refType = 4;
