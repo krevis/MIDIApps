@@ -102,6 +102,9 @@ OSStatus SpyingMIDIDriver::Monitor(MIDIEndpointRef destination, const MIDIPacket
         AddToMessageQueue(dataToBroadcast);
         CFRelease(dataToBroadcast);
     }
+    // TODO The above code needs to create an object which could block on the global malloc lock.
+    // It would be better to avoid allocation by using a shared lockless ring buffer.
+    // Once we get that working in SnoizeMIDI, we ought to be able to reuse it here.
 
     #if DEBUG && 0
         fprintf(stderr, "SpyingMIDIDriver: Monitor: done\n");
