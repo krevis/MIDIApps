@@ -180,6 +180,44 @@ OSStatus MIDISpyClientCreate(MIDISpyClientRef *outClientRefPtr)
 }
 
 
+OSStatus MIDISpyClientInvalidate(MIDISpyClientRef clientRef)
+{
+    // NOTE
+    // Why is this a separately callable function from MIDISpyClientDispose()?
+    // Because we need to invalidate our local port BEFORE the regular MIDIClient ports get invalidated
+    // (which happens automatically when the app dies, or when MIDIClientDispose() is called).
+    // Why is that?
+    // Because the MIDIServer has a bug: if the internal MIDIClient that our driver uses gets disposed of
+    // after all of the external MIDIClients, the MIDIServer process keeps running (even though it should terminate).
+    // So, we invalidate our local port, causing the driver's remote port to get invalidated, causing the driver
+    // to dispose of its MIDIClient.
+    // Sigh!
+    
+    if (!clientRef)
+        return paramErr;
+
+    if (clientRef->runLoopSource) {
+        CFRunLoopSourceInvalidate(clientRef->runLoopSource);
+        CFRelease(clientRef->runLoopSource);
+        clientRef->runLoopSource = NULL;
+    }
+
+    if (clientRef->localPort) {
+        CFMessagePortInvalidate(clientRef->localPort);
+        CFRelease(clientRef->localPort);
+        clientRef->localPort = NULL;
+    }
+
+    if (clientRef->driverPort) {
+        CFMessagePortInvalidate(clientRef->driverPort);
+        CFRelease(clientRef->driverPort);
+        clientRef->driverPort = NULL;
+    }
+
+    return noErr;
+}
+
+
 OSStatus MIDISpyClientDispose(MIDISpyClientRef clientRef)
 {
     if (!clientRef)
@@ -203,20 +241,7 @@ OSStatus MIDISpyClientDispose(MIDISpyClientRef clientRef)
         CFRelease(clientRef->endpointConnections);
     }
 
-    if (clientRef->runLoopSource) {
-        CFRunLoopSourceInvalidate(clientRef->runLoopSource);
-        CFRelease(clientRef->runLoopSource);
-    }
-
-    if (clientRef->localPort) {
-        CFMessagePortInvalidate(clientRef->localPort);
-        CFRelease(clientRef->localPort);        
-    }
-
-    if (clientRef->driverPort) {
-        CFMessagePortInvalidate(clientRef->driverPort);
-        CFRelease(clientRef->driverPort);
-    }
+    MIDISpyClientInvalidate(clientRef);
     
     free(clientRef);
     return noErr;
@@ -255,7 +280,7 @@ OSStatus MIDISpyPortDispose(MIDISpyPortRef spyPortRef)
 {
     CFMutableArrayRef ports;
     CFIndex portIndex;
-
+            
     if (!spyPortRef)
         return paramErr;
 
@@ -274,11 +299,11 @@ OSStatus MIDISpyPortDispose(MIDISpyPortRef spyPortRef)
         CFRelease(spyPortRef->connections);
     }
 
-    // Remove this port from the client's array of ports    
+    // Remove this port from the client's array of ports
     ports = spyPortRef->client->ports;
     portIndex = CFArrayGetFirstIndexOfValue(ports, CFRangeMake(0, CFArrayGetCount(ports)), spyPortRef);
     if (portIndex != kCFNotFound)
-        CFArrayRemoveValueAtIndex(ports, portIndex);
+        CFArrayRemoveValueAtIndex(ports, portIndex);            
 
     free(spyPortRef);
 
@@ -497,8 +522,9 @@ void SetClientSubscribesToDataFromEndpoint(MIDISpyClientRef clientRef, MIDIEndpo
         return;
     *(UInt32 *)dataBuffer = clientRef->clientIdentifier;
     *(SInt32 *)(dataBuffer + sizeof(UInt32)) = endpointUniqueID;
-        
-    CFMessagePortSendRequest(clientRef->driverPort, msgid, messageData, 300, 0, NULL, NULL);
+
+    if (clientRef->driverPort)
+        CFMessagePortSendRequest(clientRef->driverPort, msgid, messageData, 300, 0, NULL, NULL);
 }
 
 static CFDataRef LocalMessagePortCallback(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info)

@@ -22,6 +22,8 @@ enum {
 
 
 extern OSStatus MIDISpyClientCreate(MIDISpyClientRef *outClientRefPtr);
+extern OSStatus MIDISpyClientInvalidate(MIDISpyClientRef clientRef);
+    // NOTE MIDISpyClientInvalidate() is really only present as a bug workaround -- see source for notes
 extern OSStatus MIDISpyClientDispose(MIDISpyClientRef clientRef);
 
 extern OSStatus MIDISpyPortCreate(MIDISpyClientRef clientRef, MIDIReadProc readProc, void *refCon, MIDISpyPortRef *outSpyPortRefPtr);
