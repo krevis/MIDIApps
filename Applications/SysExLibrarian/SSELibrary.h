@@ -19,4 +19,7 @@
 
 - (void)addEntryForFile:(NSString *)filePath;
 
+- (void)autosave;
+- (void)save;
+
 @end

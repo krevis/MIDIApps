@@ -15,6 +15,7 @@
 
 @implementation SSELibrary
 
+
 + (NSString *)defaultPath;
 {
     return [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"SysEx Librarian"] stringByAppendingPathComponent:@"SysEx Library.plist"];
@@ -65,6 +66,40 @@
     [entry release];
 
     flags.isDirty = YES;
+    [self autosave];
+}
+
+- (void)autosave;
+{
+    [self performSelector:@selector(save) withObject:nil afterDelay:0];
+}
+
+- (void)save;
+{
+    NSMutableDictionary *dictionary;
+    NSMutableArray *entryDicts;
+    unsigned int entryCount, entryIndex;
+    
+    if (!flags.isDirty)
+        return;
+
+    dictionary = [NSMutableDictionary dictionary];
+    entryDicts = [NSMutableArray array];
+
+    entryCount = [entries count];
+    for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+        NSDictionary *entryDict;
+
+        entryDict = [[entries objectAtIndex:entryIndex] dictionaryValues];
+        if (entryDict)
+            [entryDicts addObject:entryDict];
+    }
+
+    [dictionary setObject:entryDicts forKey:@"Entries"];
+
+    [dictionary writeToFile:libraryFilePath atomically:YES];
+    
+    flags.isDirty = NO;
 }
 
 @end
