@@ -47,7 +47,7 @@
     messages = [NSMutableArray array];
 
     status = NewMusicSequence(&sequence);
-    if (status == noErr) {                
+    if (status == noErr) {
         status = MusicSequenceLoadSMF(sequence, &fsSpec);
         if (status == noErr) {
             UInt32 trackCount, trackIndex;
