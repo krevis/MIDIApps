@@ -630,11 +630,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
     else
         [newSelectedSources minusSet:[NSSet setWithArray:sources]];
 
-    // We will see the checkbox draw in its old state (briefly) before changing to the new state, and that little flash is really irritating.
-    // So disable window flushing until everything gets refreshed.
-    [[self window] disableFlushWindow];
     [(SMMDocument *)[self document] setSelectedInputSources:newSelectedSources];
-    [[self window] enableFlushWindow];    
 }
 
 
