@@ -167,6 +167,8 @@
 				F571C56C01903F3301000164,
 				F562148D02408B2D01000164,
 				F562148E02408B2D01000164,
+				F55C9C140244CE3701000164,
+				F55C9C150244CE3701000164,
 			);
 			isa = PBXGroup;
 			name = Classes;
@@ -399,6 +401,7 @@
 				F571C56901903A6B01000164,
 				F56E05CC0206BAB401000164,
 				F562148F02408B2D01000164,
+				F55C9C160244CE3701000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -441,6 +444,7 @@
 				F571C56A01903A6B01000164,
 				F56E05CD0206BAB401000164,
 				F562149002408B2D01000164,
+				F55C9C170244CE3701000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -673,6 +677,28 @@
 		};
 		F55BB2170188FED601000164 = {
 			fileRef = F55BB2150188FED601000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F55C9C140244CE3701000164 = {
+			isa = PBXFileReference;
+			path = SMMCombinationInputStream.h;
+			refType = 4;
+		};
+		F55C9C150244CE3701000164 = {
+			isa = PBXFileReference;
+			path = SMMCombinationInputStream.m;
+			refType = 4;
+		};
+		F55C9C160244CE3701000164 = {
+			fileRef = F55C9C140244CE3701000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F55C9C170244CE3701000164 = {
+			fileRef = F55C9C150244CE3701000164;
 			isa = PBXBuildFile;
 			settings = {
 			};

@@ -1,12 +1,13 @@
 #import <Cocoa/Cocoa.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
-@class SMMSpyingInputStream;
+@class SMMCombinationInputStream;
+
 
 @interface SMMDocument : NSDocument
 {
     // MIDI processing
-    SMPortOrVirtualInputStream *stream;
+    SMMCombinationInputStream *stream;
     SMMessageFilter *messageFilter;
     SMMessageHistory *history;
 
@@ -18,14 +19,12 @@
     BOOL listenToMIDISetupChanges;
     NSString *missingSourceName;
     unsigned int sysExBytesRead;
-
-    // TODO temp
-    SMMSpyingInputStream *spyingInputStream;
 }
 
-- (NSArray *)sourceDescriptions;
-- (NSDictionary *)sourceDescription;
-- (void)setSourceDescription:(NSDictionary *)sourceDescription;
+- (NSArray *)groupedInputSources;
+    // Returns an array of arrays; each is a list of valid source descriptions for each input stream
+- (NSArray *)selectedInputSources;
+- (void)setSelectedInputSources:(NSArray *)inputSources;
 
 - (unsigned int)maxMessageCount;
 - (void)setMaxMessageCount:(unsigned int)newValue;

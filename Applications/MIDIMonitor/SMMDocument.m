@@ -5,8 +5,8 @@
 #import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
+#import "SMMCombinationInputStream.h"
 #import "SMMMonitorWindowController.h"
-#import "SMMSpyingInputStream.h"
 
 
 @interface SMMDocument (Private)
@@ -51,21 +51,15 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
 
     center = [NSNotificationCenter defaultCenter];
 
-    stream = [[SMPortOrVirtualInputStream alloc] init];
-    [center addObserver:self selector:@selector(_streamEndpointDisappeared:) name:SMPortOrVirtualStreamEndpointDisappearedNotification object:stream];
+    stream = [[SMMCombinationInputStream alloc] init];
+    [center addObserver:self selector:@selector(_streamEndpointDisappeared:) name:SMPortInputStreamEndpointDisappeared object:stream];
     [center addObserver:self selector:@selector(_readingSysEx:) name:SMInputStreamReadingSysExNotification object:stream];
     [center addObserver:self selector:@selector(_doneReadingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:stream];
-    [stream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"MIDIMonitor", [self bundle], "title of popup menu item for virtual destination")];
+//    [stream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"MIDIMonitor", [self bundle], "title of popup menu item for virtual destination")];	// TODO the equivalent
     [self _updateVirtualEndpointName];
 
-    spyingInputStream = [[SMMSpyingInputStream alloc] init];
-    [center addObserver:self selector:@selector(_readingSysEx:) name:SMInputStreamReadingSysExNotification object:spyingInputStream];
-    [center addObserver:self selector:@selector(_doneReadingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:spyingInputStream];
-    
     messageFilter = [[SMMessageFilter alloc] init];
-    // TODO temporarily removing the old stream and putting in the spying stream
-//    [stream setMessageDestination:messageFilter];
-    [spyingInputStream setMessageDestination:messageFilter];
+    [stream setMessageDestination:messageFilter];
     [messageFilter setFilterMask:SMMessageTypeAllMask];
     [messageFilter setChannelMask:SMChannelMaskAll];
 
@@ -103,8 +97,6 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     missingSourceName = nil;
     [history release];
     history = nil;
-    [spyingInputStream release];
-    spyingInputStream = nil;
 
     [super dealloc];
 }
@@ -196,7 +188,8 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
         missingSourceName = [[stream takePersistentSettings:streamSettings] retain];
         [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeSources)];
     } else {
-        [self setSourceDescription:nil];
+        // TODO anything to do here?
+        // [self setSourceDescription:nil];
     }
     
     if ((number = [dict objectForKey:@"maxMessageCount"]))
@@ -248,35 +241,35 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
 // API for SMMMonitorWindowController
 //
 
-- (NSArray *)sourceDescriptions;
+- (NSArray *)groupedInputSources
 {
-    return [stream endpointDescriptions];
+    return [stream groupedInputSources];
 }
 
-- (NSDictionary *)sourceDescription;
+- (NSArray *)selectedInputSources;
 {
-    return [stream endpointDescription];
+    return [stream selectedInputSources];
 }
 
-- (void)setSourceDescription:(NSDictionary *)description;
+- (void)setSelectedInputSources:(NSArray *)inputSources;
 {
-    NSDictionary *oldDescription;
+    NSArray *oldInputSources;
     BOOL savedListenFlag;
-    
-    oldDescription = [self sourceDescription];
-    if (oldDescription == description || [oldDescription isEqual:description])
+
+    oldInputSources = [self selectedInputSources];
+    if (oldInputSources == inputSources || [oldInputSources isEqual:inputSources])
         return;
 
     savedListenFlag = listenToMIDISetupChanges;
     listenToMIDISetupChanges = NO;
+    
+    [stream setSelectedInputSources:inputSources];
 
-    [stream setEndpointDescription:description];
-
-    [[[self undoManager] prepareWithInvocationTarget:self] setSourceDescription:oldDescription];
+    [[[self undoManager] prepareWithInvocationTarget:self] setSelectedInputSources:oldInputSources];
     [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Source", @"MIDIMonitor", [self bundle], "change source undo action")];
 
     listenToMIDISetupChanges = savedListenFlag;
-    
+
     [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeSources)];
 }
 
@@ -445,11 +438,13 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
 
 - (void)_updateVirtualEndpointName;
 {
-    NSString *applicationName, *endpointName;
-    
+    // TODO for SMMCombinationInputStream
+/*    NSString *applicationName, *endpointName;
+
     applicationName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleNameKey];
     endpointName = [NSString stringWithFormat:@"%@ (%@)", applicationName, [self displayName]];
     [stream setVirtualEndpointName:endpointName];
+    */
 }
 
 - (void)_streamEndpointDisappeared:(NSNotification *)notification;
@@ -475,12 +470,15 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
 
 - (void)_selectFirstAvailableSource;
 {
+    // TODO  We probably want the combination input stream to choose the 1st selected port
+/*
     NSArray *descriptions;
 
     descriptions = [stream endpointDescriptions];
     if ([descriptions count] > 0) {
         [self setSourceDescription:[descriptions objectAtIndex:0]];
     }
+ */
 }
 
 - (void)_historyDidChange:(NSNotification *)notification;

@@ -123,6 +123,9 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 
 - (void)_endpointAppeared:(NSNotification *)notification;
 {
+    // TODO reimplement this
+    /*
+
     if ([[OFPreference preferenceForKey:SMMOpenWindowsForNewSourcesPreferenceKey] boolValue]) {
         SMEndpoint *endpoint;
         
@@ -152,6 +155,7 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
             [document showWindows];
         }
     }
+     */
 }
 
 @end

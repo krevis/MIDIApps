@@ -9,8 +9,11 @@
 @interface SMMSpyingInputStream : SMInputStream
 {
     MIDISpyClientRef spyClient;
-    SMMessageParser *parser;
+    SMSimpleInputStreamSource *inputStreamSource;
+    SMMessageParser *parser;    
 }
 
+- (BOOL)isActive;
+- (void)setIsActive:(BOOL)value;
 
 @end

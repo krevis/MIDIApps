@@ -125,7 +125,20 @@
 
 - (IBAction)selectSource:(id)sender;
 {
-    [[self document] setSourceDescription:[(NSMenuItem *)[sender selectedItem] representedObject]];
+    SMMDocument *document;
+    id source;
+    NSArray *selectedSources;
+
+    source = [(NSMenuItem *)[sender selectedItem] representedObject];
+    NSLog(@"selected source: %@ (%@)", source, [source inputStreamSourceName]);
+    
+    document = [self document];
+    selectedSources = [document selectedInputSources];
+    if ([selectedSources indexOfObject:source] == NSNotFound) {
+        [document setSelectedInputSources:[selectedSources arrayByAddingObject:source]];
+    } else {
+        [document setSelectedInputSources:[selectedSources arrayByRemovingObjectIdenticalTo:source]];        
+    }
 }
 
 - (IBAction)clearMessages:(id)sender;
@@ -231,43 +244,45 @@
 
 - (void)synchronizeSources;
 {
-    NSDictionary *currentDescription;
     BOOL wasAutodisplay;
-    NSArray *descriptions;
-    unsigned int sourceCount, sourceIndex;
-    BOOL foundSource = NO;
-    BOOL addedSeparatorBetweenPortAndVirtual = NO;
-
-    currentDescription = [[self document] sourceDescription];
+    int itemCount;
+    NSArray *groupedSources;
+    NSArray *selectedSources;
+    unsigned int groupCount, groupIndex;
 
     // The pop up button redraws whenever it's changed, so turn off autodisplay to stop the blinkiness
     wasAutodisplay = [[self window] isAutodisplay];
     [[self window] setAutodisplay:NO];
 
-    [sourcePopUpButton removeAllItems];
+    // Remove all items in the menu except for the first one (which is displayed as the title)
+    for (itemCount = [sourcePopUpButton numberOfItems]; itemCount > 1; itemCount--)
+        [sourcePopUpButton removeItemAtIndex:itemCount - 1];
 
-    descriptions = [[self document] sourceDescriptions];
-    sourceCount = [descriptions count];
-    for (sourceIndex = 0; sourceIndex < sourceCount; sourceIndex++) {
-        NSDictionary *description;
+    groupedSources = [[self document] groupedInputSources];
+    selectedSources = [[self document] selectedInputSources];
+
+    groupCount = [groupedSources count];
+    for (groupIndex = 0; groupIndex < groupCount; groupIndex++) {
+        NSArray *sources;
+        unsigned int sourceCount, sourceIndex;
+
+        sources = [groupedSources objectAtIndex:groupIndex];
+        sourceCount = [sources count];
+
+        if ([sourcePopUpButton numberOfItems] > 1 && sourceCount > 0)
+            [sourcePopUpButton addSeparatorItem];
         
-        description = [descriptions objectAtIndex:sourceIndex];
-        if (!addedSeparatorBetweenPortAndVirtual && [description objectForKey:@"endpoint"] == nil) {
-            if (sourceIndex > 0)
-                [sourcePopUpButton addSeparatorItem];
-            addedSeparatorBetweenPortAndVirtual = YES;
-        }
-        [sourcePopUpButton addItemWithTitle:[description objectForKey:@"name"] representedObject:description];
+        for (sourceIndex = 0; sourceIndex < sourceCount; sourceIndex++) {
+            id <SMInputStreamSource> source;
+            id <NSMenuItem> item;
 
-        if (!foundSource && [description isEqual:currentDescription]) {
-            [sourcePopUpButton selectItemAtIndex:[sourcePopUpButton numberOfItems] - 1];
-                // Don't use sourceIndex because it may be off by one (because of the separator item)
-            foundSource = YES;
+            source = [sources objectAtIndex:sourceIndex];
+            item = [sourcePopUpButton addItemWithTitle:[source inputStreamSourceName] representedObject:source];
+
+            if ([selectedSources indexOfObject:source] != NSNotFound)
+                [item setState:NSOnState];
         }
     }
-
-    if (!foundSource)
-        [sourcePopUpButton selectItem:nil];
         
     // ...and turn autodisplay on again
     if (wasAutodisplay)
@@ -428,6 +443,8 @@
     identifier = [tableColumn identifier];
     if ([identifier isEqualToString:@"timeStamp"]) {
         return [message timeStampForDisplay];
+    } else if ([identifier isEqualToString:@"source"]) {
+        return @"";  // TODO
     } else if ([identifier isEqualToString:@"type"]) {
         return [message typeForDisplay];
     } else if ([identifier isEqualToString:@"channel"]) {
