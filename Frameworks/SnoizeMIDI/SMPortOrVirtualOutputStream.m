@@ -52,6 +52,19 @@
         [[self stream] setSendsSysExAsynchronously:value];    
 }
 
+- (void)cancelPendingSysExSendRequests;
+{
+    if ([[self stream] respondsToSelector:@selector(cancelPendingSysExSendRequests)])
+        [[self stream] cancelPendingSysExSendRequests];
+}
+
+- (SMSysExSendRequest *)currentSysExSendRequest;
+{
+    if ([[self stream] respondsToSelector:@selector(currentSysExSendRequest)])
+        return [[self stream] currentSysExSendRequest];
+    else
+        return nil;
+}
 
 //
 // SMPortOrVirtualStream subclass methods

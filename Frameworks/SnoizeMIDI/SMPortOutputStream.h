@@ -3,6 +3,7 @@
 #import <Foundation/Foundation.h>
 
 @class SMDestinationEndpoint;
+@class SMSysExSendRequest;
 
 
 @interface SMPortOutputStream : SMOutputStream
@@ -26,8 +27,7 @@
     // Otherwise, use plain old MIDI packets.
 
 - (void)cancelPendingSysExSendRequests;
-
-// TODO It might be nice to be able to find out about the status of pending sysex send requests, somehow.
+- (SMSysExSendRequest *)currentSysExSendRequest;
 
 @end
 

@@ -108,6 +108,14 @@ DEFINE_NSSTRING(SMPortOutputStreamFinishedSysExSendNotification);
     [sysExSendRequests makeObjectsPerformSelector:@selector(cancel)];
 }
 
+- (SMSysExSendRequest *)currentSysExSendRequest;
+{
+    if ([sysExSendRequests count] > 0)
+        return [sysExSendRequests objectAtIndex:0];
+    else
+        return nil;
+}
+
 //
 // SMOutputStream overrides
 //
@@ -231,11 +239,15 @@ DEFINE_NSSTRING(SMPortOutputStreamFinishedSysExSendNotification);
     SMSysExSendRequest *sendRequest;
 
     sendRequest = [notification object];
+    OBASSERT(sendRequest == [self currentSysExSendRequest]);
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:sendRequest];
+    [sendRequest retain];
+    [sysExSendRequests removeObjectIdenticalTo:sendRequest];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:SMPortOutputStreamFinishedSysExSendNotification object:self userInfo:[NSDictionary dictionaryWithObject:sendRequest forKey:@"sendRequest"]];
-    
-    [sysExSendRequests removeObjectIdenticalTo:sendRequest];
+
+    [sendRequest release];
 }
 
 @end

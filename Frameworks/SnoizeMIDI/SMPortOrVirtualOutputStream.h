@@ -1,6 +1,9 @@
 #import <SnoizeMIDI/SMPortOrVirtualStream.h>
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 
+@class SMSysExSendRequest;
+
+
 @interface SMPortOrVirtualOutputStream : SMPortOrVirtualStream <SMMessageDestination>
 {
     struct {
@@ -17,6 +20,10 @@
 - (void)setSendsSysExAsynchronously:(BOOL)value;
     // If YES, then use MIDISendSysex() to send sysex messages. Otherwise, use plain old MIDI packets.
     // (This can only work on port streams, not virtual ones.)
+
+- (void)cancelPendingSysExSendRequests;
+- (SMSysExSendRequest *)currentSysExSendRequest;
+    // More methods which are passed on the port stream if possible.
 
 @end
 
