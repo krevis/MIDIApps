@@ -4,6 +4,7 @@
 #import <OmniFoundation/OmniFoundation.h>
 
 #import "SSEMainWindowController.h"
+#import "SSECombinationOutputStream.h"
 #import "SSEPreferencesWindowController.h"
 
 
@@ -73,8 +74,8 @@ NSString *SSEMIDIControllerSendFinishedNotification = @"SSEMIDIControllerSendFin
     while (sourceIndex--)
         [inputStream addEndpoint:[sources objectAtIndex:sourceIndex]];
 
-    outputStream = [[SMPortOrVirtualOutputStream alloc] init];
-    [center addObserver:self selector:@selector(outputStreamEndpointDisappeared:) name:SMPortOrVirtualStreamEndpointDisappearedNotification object:outputStream];
+    outputStream = [[SSECombinationOutputStream alloc] init];
+    [center addObserver:self selector:@selector(outputStreamEndpointDisappeared:) name:SSECombinationOutputStreamEndpointDisappearedNotification object:outputStream];
     [center addObserver:self selector:@selector(willStartSendingSysEx:) name:SMPortOutputStreamWillStartSysExSendNotification object:outputStream];
     [center addObserver:self selector:@selector(doneSendingSysEx:) name:SMPortOutputStreamFinishedSysExSendNotification object:outputStream];
     [outputStream setIgnoresTimeStamps:YES];
@@ -85,7 +86,7 @@ NSString *SSEMIDIControllerSendFinishedNotification = @"SSEMIDIControllerSendFin
     
     listenToMIDISetupChanges = YES;
 
-    messages = [[NSMutableArray alloc] init];    
+    messages = [[NSMutableArray alloc] init];
     messageBytesRead = 0;
     totalBytesRead = 0;
 
@@ -140,29 +141,29 @@ NSString *SSEMIDIControllerSendFinishedNotification = @"SSEMIDIControllerSendFin
 // API for SSEMainWindowController
 //
 
-- (NSArray *)destinationDescriptions;
+- (NSArray *)destinations;
 {
-    return [outputStream endpointDescriptions];
+    return [outputStream destinations];
 }
 
-- (NSDictionary *)destinationDescription;
+- (id <SSEOutputStreamDestination>)selectedDestination;
 {
-    return [outputStream endpointDescription];
+    return [outputStream selectedDestination];
 }
 
-- (void)setDestinationDescription:(NSDictionary *)description;
+- (void)setSelectedDestination:(id <SSEOutputStreamDestination>)destination;
 {
-    NSDictionary *oldDescription;
+    id <SSEOutputStreamDestination> oldDestination;
     BOOL savedListenFlag;
 
-    oldDescription = [self destinationDescription];
-    if (oldDescription == description || [oldDescription isEqual:description])
+    oldDestination = [self selectedDestination];
+    if (oldDestination == destination || [oldDestination isEqual:destination])
         return;
 
     savedListenFlag = listenToMIDISetupChanges;
     listenToMIDISetupChanges = NO;
 
-    [outputStream setEndpointDescription:description];
+    [outputStream setSelectedDestination:destination];
 
     listenToMIDISetupChanges = savedListenFlag;
 
@@ -170,7 +171,7 @@ NSString *SSEMIDIControllerSendFinishedNotification = @"SSEMIDIControllerSendFin
 
     [[OFPreference preferenceForKey:SSESelectedDestinationPreferenceKey] setDictionaryValue:[outputStream persistentSettings]];
 
-    if ([(SMEndpoint *)[description objectForKey:@"endpoint"] needsSysExWorkaround]) {
+    if ([destination outputStreamDestinationNeedsSysExWorkaround]) {
         if ([[OFPreference preferenceForKey:SSEHasShownSysExWorkaroundWarningPreferenceKey] boolValue] == NO) {
             [nonretainedMainWindowController showSysExWorkaroundWarning];
         }
@@ -383,11 +384,11 @@ NSString *SSEMIDIControllerSendFinishedNotification = @"SSEMIDIControllerSendFin
 
 - (void)selectFirstAvailableDestination;
 {
-    NSArray *descriptions;
+    NSArray *destinations;
 
-    descriptions = [outputStream endpointDescriptions];
-    if ([descriptions count] > 0)
-        [self setDestinationDescription:[descriptions objectAtIndex:0]];
+    destinations = [outputStream destinations];
+    if ([destinations count] > 0)
+        [self setSelectedDestination:[destinations objectAtIndex:0]];
 }
 
 

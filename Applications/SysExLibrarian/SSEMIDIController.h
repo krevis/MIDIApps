@@ -1,8 +1,10 @@
 #import <Cocoa/Cocoa.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
+#import "SSEOutputStreamDestination.h"
 
 @class OFScheduledEvent;
 @class SSEMainWindowController;
+@class SSECombinationOutputStream;
 
 
 @interface SSEMIDIController : NSObject <SMMessageDestination>
@@ -11,7 +13,7 @@
 
     // MIDI processing
     SMPortInputStream *inputStream;
-    SMPortOrVirtualOutputStream *outputStream;
+    SSECombinationOutputStream *outputStream;
         
     // Transient data
     BOOL listenToMIDISetupChanges;
@@ -37,9 +39,9 @@
 
 - (id)initWithWindowController:(SSEMainWindowController *)mainWindowController;
 
-- (NSArray *)destinationDescriptions;
-- (NSDictionary *)destinationDescription;
-- (void)setDestinationDescription:(NSDictionary *)destinationDescription;
+- (NSArray *)destinations;
+- (id <SSEOutputStreamDestination>)selectedDestination;
+- (void)setSelectedDestination:(id <SSEOutputStreamDestination>)destination;
 
 - (NSArray *)messages;
 - (void)setMessages:(NSArray *)value;

@@ -25,9 +25,9 @@
 
 - (BOOL)finishEditingResultsInError;
 
-- (void)synchronizeDestinationPopUpWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
-- (void)synchronizeDestinationToolbarMenuWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
-- (NSString *)titleForDestinationWithDescription:(NSDictionary *)description;
+- (void)synchronizeDestinationPopUpWithDestinations:(NSArray *)destinations currentDestination:(id <SSEOutputStreamDestination>)currentDestination;
+- (void)synchronizeDestinationToolbarMenuWithDestinations:(NSArray *)destinations currentDestination:(id <SSEOutputStreamDestination>)currentDestination;
+- (NSString *)titleForDestination:(id <SSEOutputStreamDestination>)destination;
 
 - (void)libraryDidChange:(NSNotification *)notification;
 - (void)sortLibraryEntries;
@@ -196,12 +196,12 @@ static SSEMainWindowController *controller = nil;
 
 - (IBAction)selectDestinationFromPopUpButton:(id)sender;
 {
-    [midiController setDestinationDescription:[(NSMenuItem *)[sender selectedItem] representedObject]];
+    [midiController setSelectedDestination:[(NSMenuItem *)[sender selectedItem] representedObject]];
 }
 
 - (IBAction)selectDestinationFromMenuItem:(id)sender;
 {
-    [midiController setDestinationDescription:[(NSMenuItem *)sender representedObject]];
+    [midiController setSelectedDestination:[(NSMenuItem *)sender representedObject]];
 }
 
 - (IBAction)selectAll:(id)sender;
@@ -326,14 +326,14 @@ static SSEMainWindowController *controller = nil;
 
 - (void)synchronizeDestinations;
 {
-    NSArray *descriptions;
-    NSDictionary *currentDescription;
+    NSArray *destinations;
+    id <SSEOutputStreamDestination> currentDestination;
 
-    descriptions = [midiController destinationDescriptions];
-    currentDescription = [midiController destinationDescription];
+    destinations = [midiController destinations];
+    currentDestination = [midiController selectedDestination];
 
-    [self synchronizeDestinationPopUpWithDescriptions:descriptions currentDescription:currentDescription];
-    [self synchronizeDestinationToolbarMenuWithDescriptions:descriptions currentDescription:currentDescription];
+    [self synchronizeDestinationPopUpWithDestinations:destinations currentDestination:currentDestination];
+    [self synchronizeDestinationToolbarMenuWithDestinations:destinations currentDestination:currentDestination];
 }
 
 - (void)synchronizeLibrarySortIndicator;
@@ -592,7 +592,7 @@ static SSEMainWindowController *controller = nil;
 // Destination selections (popup and toolbar menu)
 //
 
-- (void)synchronizeDestinationPopUpWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
+- (void)synchronizeDestinationPopUpWithDestinations:(NSArray *)destinations currentDestination:(id <SSEOutputStreamDestination>)currentDestination;
 {
     BOOL wasAutodisplay;
     unsigned int count, index;
@@ -605,23 +605,24 @@ static SSEMainWindowController *controller = nil;
 
     [destinationPopUpButton removeAllItems];
 
-    count = [descriptions count];
+    count = [destinations count];
     for (index = 0; index < count; index++) {
-        NSDictionary *description;
+        id <SSEOutputStreamDestination> destination;
         NSString *title;
 
-        description = [descriptions objectAtIndex:index];
+        destination = [destinations objectAtIndex:index];
 
-        if (!addedSeparatorBetweenPortAndVirtual && [description objectForKey:@"endpoint"] == nil) {
+        // TODO do this better
+        if (!addedSeparatorBetweenPortAndVirtual && ![destination isKindOfClass:[SMDestinationEndpoint class]]) {
             if (index > 0)
                 [destinationPopUpButton addSeparatorItem];
             addedSeparatorBetweenPortAndVirtual = YES;
         }
 
-        title = [self titleForDestinationWithDescription:description];
-        [destinationPopUpButton addItemWithTitle:title representedObject:description];
+        title = [self titleForDestination:destination];
+        [destinationPopUpButton addItemWithTitle:title representedObject:destination];
 
-        if (!found && [description isEqual:currentDescription]) {
+        if (!found && (destination == currentDestination)) {
             [destinationPopUpButton selectItemAtIndex:[destinationPopUpButton numberOfItems] - 1];
             // Don't use index because it may be off by one (because of the separator item)
             found = YES;
@@ -637,7 +638,7 @@ static SSEMainWindowController *controller = nil;
     [[self window] setAutodisplay:wasAutodisplay];
 }
 
-- (void)synchronizeDestinationToolbarMenuWithDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
+- (void)synchronizeDestinationToolbarMenuWithDestinations:(NSArray *)destinations currentDestination:(id <SSEOutputStreamDestination>)currentDestination;
 {
     // Set the title to "Destination: <Whatever>"
     // Then set up the submenu items
@@ -651,7 +652,7 @@ static SSEMainWindowController *controller = nil;
     
     topMenuItem = [nonretainedDestinationToolbarItem menuFormRepresentation];
 
-    selectedDestinationTitle = [self titleForDestinationWithDescription:currentDescription];
+    selectedDestinationTitle = [self titleForDestination:currentDestination];
     if (!selectedDestinationTitle)
         selectedDestinationTitle = NSLocalizedStringFromTableInBundle(@"None", @"SysExLibrarian", [self bundle], "none");
 
@@ -663,26 +664,27 @@ static SSEMainWindowController *controller = nil;
     while (index--)
         [submenu removeItemAtIndex:index];
 
-    count = [descriptions count];
+    count = [destinations count];
     for (index = 0; index < count; index++) {
-        NSDictionary *description;
+        id <SSEOutputStreamDestination> destination;
         NSString *title;
         NSMenuItem *menuItem;
 
-        description = [descriptions objectAtIndex:index];
+        destination = [destinations objectAtIndex:index];
 
-        if (!addedSeparatorBetweenPortAndVirtual && [description objectForKey:@"endpoint"] == nil) {
+        // TODO do this better
+        if (!addedSeparatorBetweenPortAndVirtual && ![destination isKindOfClass:[SMDestinationEndpoint class]]) {
             if (index > 0)
                 [submenu addItem:[NSMenuItem separatorItem]];
             addedSeparatorBetweenPortAndVirtual = YES;
         }
 
-        title = [self titleForDestinationWithDescription:description];
+        title = [self titleForDestination:destination];
         menuItem = [submenu addItemWithTitle:title action:@selector(selectDestinationFromMenuItem:) keyEquivalent:@""];
-        [menuItem setRepresentedObject:description];
+        [menuItem setRepresentedObject:destination];
         [menuItem setTarget:self];
 
-        if (!found && [description isEqual:currentDescription]) {
+        if (!found && (destination == currentDestination)) {
             [menuItem setState:NSOnState];
             found = YES;
         }
@@ -695,21 +697,15 @@ static SSEMainWindowController *controller = nil;
     [topMenuItem release];
 }
 
-- (NSString *)titleForDestinationWithDescription:(NSDictionary *)description;
+- (NSString *)titleForDestination:(id <SSEOutputStreamDestination>)destination;
 {
     NSString *title;
-    SMDestinationEndpoint *endpoint;
+    NSArray *externalDeviceNames;
 
-    title = [description valueForKey:@"name"];
-    endpoint = [description valueForKey:@"endpoint"];
-
-    if (endpoint) {
-        NSArray *externalDeviceNames;
-
-        externalDeviceNames = [[endpoint connectedExternalDevices] arrayByPerformingSelector:@selector(name)];
-        if ([externalDeviceNames count] > 0)
-            title = [NSString stringWithFormat:@"%@ (%@)", title, [externalDeviceNames componentsJoinedByString:@", "]];
-    }
+    title = [destination outputStreamDestinationName];
+    externalDeviceNames = [destination outputStreamDestinationExternalDeviceNames];
+    if ([externalDeviceNames count] > 0)
+        title = [NSString stringWithFormat:@"%@ (%@)", title, [externalDeviceNames componentsJoinedByString:@", "]];
 
     return title;
 }

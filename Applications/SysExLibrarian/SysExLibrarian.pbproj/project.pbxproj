@@ -152,6 +152,7 @@
 				F5308FE20232DC6B01000164,
 				F5308FE30232DC6B01000164,
 				F565B6ED01E1567501000164,
+				F56B11970324C47201000164,
 			);
 			isa = PBXGroup;
 			name = Classes;
@@ -426,6 +427,9 @@
 				F53090140233540701000164,
 				F5DFAC8502F7715701000164,
 				F547DDDD03184C5C01000164,
+				F56B119A0324C4A901000164,
+				F56B119E0324C89D01000164,
+				F56B11A40324D5AA01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -487,6 +491,9 @@
 				F53090150233540701000164,
 				F5DFAC8602F7715701000164,
 				F547E0550318528A01000164,
+				F56B119B0324C4A901000164,
+				F56B119F0324C89D01000164,
+				F56B11A50324D5AA01000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1304,6 +1311,86 @@
 		};
 		F565B6F101E1567501000164 = {
 			fileRef = F565B6EF01E1567501000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F56B11970324C47201000164 = {
+			children = (
+				F56B11980324C4A901000164,
+				F56B11990324C4A901000164,
+				F56B119C0324C89D01000164,
+				F56B119D0324C89D01000164,
+				F56B11A20324D5AA01000164,
+				F56B11A30324D5AA01000164,
+			);
+			isa = PBXGroup;
+			name = "SnoizeMIDI Extensions ";
+			path = "";
+			refType = 4;
+		};
+		F56B11980324C4A901000164 = {
+			isa = PBXFileReference;
+			path = SSECombinationOutputStream.h;
+			refType = 4;
+		};
+		F56B11990324C4A901000164 = {
+			isa = PBXFileReference;
+			path = SSECombinationOutputStream.m;
+			refType = 4;
+		};
+		F56B119A0324C4A901000164 = {
+			fileRef = F56B11980324C4A901000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F56B119B0324C4A901000164 = {
+			fileRef = F56B11990324C4A901000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F56B119C0324C89D01000164 = {
+			isa = PBXFileReference;
+			path = SSEOutputStreamDestination.h;
+			refType = 4;
+		};
+		F56B119D0324C89D01000164 = {
+			isa = PBXFileReference;
+			path = SSEOutputStreamDestination.m;
+			refType = 4;
+		};
+		F56B119E0324C89D01000164 = {
+			fileRef = F56B119C0324C89D01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F56B119F0324C89D01000164 = {
+			fileRef = F56B119D0324C89D01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F56B11A20324D5AA01000164 = {
+			isa = PBXFileReference;
+			path = "SMDestinationEndpoint-SSEOutputStreamDestination.h";
+			refType = 4;
+		};
+		F56B11A30324D5AA01000164 = {
+			isa = PBXFileReference;
+			path = "SMDestinationEndpoint-SSEOutputStreamDestination.m";
+			refType = 4;
+		};
+		F56B11A40324D5AA01000164 = {
+			fileRef = F56B11A20324D5AA01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F56B11A50324D5AA01000164 = {
+			fileRef = F56B11A30324D5AA01000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
