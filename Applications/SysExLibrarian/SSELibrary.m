@@ -215,7 +215,7 @@ NSString *SSESysExFileExtension = @"syx";
 
     if ([fileManager createFileAtPath:newFilePath contents:sysexData attributes:newFileAttributes]) {
         entry = [self addEntryForFile:newFilePath];
-        // TODO We will write out the file and then immediately read it in again to get the messages. Pretty inefficient.
+        // TODO We will write out the file and then soon afterwards read it in again to get the messages. Pretty inefficient.
     } else {
         [NSException raise:NSGenericException format:@"Couldn't create the file %@", newFilePath];
     }
