@@ -3,6 +3,7 @@
 
 @interface SMMAppController : NSObject
 {
+    BOOL shouldOpenUntitledDocument;
 }
 
 - (IBAction)showPreferences:(id)sender;

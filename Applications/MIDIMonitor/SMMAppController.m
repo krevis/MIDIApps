@@ -21,12 +21,29 @@
 
 NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSources";
 
-
-- (void)applicationDidFinishLaunching:(NSNotification *)notification;
+- (void)applicationWillFinishLaunching:(NSNotification *)notification;
 {
     // Make sure we go multithreaded, and that our scheduler starts up
     [OFScheduler mainScheduler];
-    
+
+    // Initialize CoreMIDI while the app's icon is still bouncing, so we don't have a large pause after it stops bouncing
+    // but before the app's window opens.  (CoreMIDI needs to find and possibly start its server process, which can take a while.)
+    if ([SMClient sharedClient] == nil) {
+        shouldOpenUntitledDocument = NO;
+        NSRunCriticalAlertPanel(@"Error", @"%@", @"Quit", nil, nil, @"There was a problem initializing the MIDI system. To try to fix this, log out and log back in, or restart the computer.");
+        [NSApp terminate:nil];
+    } else {
+        shouldOpenUntitledDocument = YES;        
+    }
+}
+
+- (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender;
+{
+    return shouldOpenUntitledDocument;
+}
+
+- (void)applicationDidFinishLaunching:(NSNotification *)notification;
+{
     // Listen for new endpoints. Don't do this earlier--we only are interested in ones
     // that appear after we've been launched.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_endpointAppeared:) name:SMEndpointAppearedNotification object:nil];
