@@ -4,6 +4,7 @@
 
 #import <SnoizeMIDI/SMClient.h>
 #import <SnoizeMIDI/SMEndpoint.h>
+#import <SnoizeMIDI/SMHostTime.h>
 #import <SnoizeMIDI/SMInputStream.h>
 #import <SnoizeMIDI/SMMessage.h>
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>

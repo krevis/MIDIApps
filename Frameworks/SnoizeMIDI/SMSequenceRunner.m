@@ -4,10 +4,10 @@
 
 #import "SMSequenceRunner.h"
 
-#import <CoreAudio/CoreAudio.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 
+#import "SMHostTime.h"
 #import "SMPeriodicTimer.h"
 #import "SMSequence.h"
 #import "SMSequenceNote.h"
@@ -92,7 +92,7 @@
     [tempoLock lock];    
     tempo = value;
     // Convert from beats/minute to seconds/beat to host clock units/beat.
-    beatDuration = AudioConvertNanosToHostTime((60.0 / tempo) * 1.0e9);
+    beatDuration = SMConvertNanosToHostTime((60.0 / tempo) * 1.0e9);
     [tempoLock unlock];
 }
 
@@ -143,7 +143,7 @@
         SMMessage *message;
         
         // Send a MIDI Start message first (immediately).
-        message = [SMSystemRealTimeMessage systemRealTimeMessageWithTimeStamp:AudioGetCurrentHostTime() type:SMSystemRealTimeMessageTypeStart];
+        message = [SMSystemRealTimeMessage systemRealTimeMessageWithTimeStamp:SMGetCurrentHostTime() type:SMSystemRealTimeMessageTypeStart];
         [nonretainedMessageDestination takeMIDIMessages:[NSArray arrayWithObject:message]];
 
         // Then wait 100 ms for devices to receive the Start message and get ready.
@@ -298,7 +298,7 @@
     SMVoiceMessage *message;
 
     if (isImmediate)
-        timeStamp = AudioGetCurrentHostTime();
+        timeStamp = SMGetCurrentHostTime();
     else
         timeStamp = [self _timeStampForBeat:[note endPosition]];
 

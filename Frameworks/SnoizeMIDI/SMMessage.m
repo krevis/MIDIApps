@@ -4,9 +4,9 @@
 
 #import "SMMessage.h"
 
-#import <CoreAudio/CoreAudio.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
+#import "SMHostTime.h"
 
 
 @interface SMMessage (Private)
@@ -34,7 +34,7 @@ static NSDateFormatter *timeStampDateFormatter;
     // TODO We should do this a few times and average the results, and also try to be careful not to get
     // scheduled out during this process. We may need to switch ourself to be a time-constraint thread temporarily
     // in order to do this. See discussion in the CoreAudio-API archives.
-    startHostTime = AudioGetCurrentHostTime();
+    startHostTime = SMGetCurrentHostTime();
     startTimeInterval = [NSDate timeIntervalSinceReferenceDate];
 
     timeStampDateFormatter = [[NSDateFormatter alloc] initWithDateFormat:@"%H:%M:%S.%F" allowNaturalLanguage:NO];
@@ -268,12 +268,12 @@ static NSDateFormatter *timeStampDateFormatter;
         {
             char buf[21];
             
-            snprintf(buf, 21, "%llu", AudioConvertHostTimeToNanos(aTimeStamp));
+            snprintf(buf, 21, "%llu", SMConvertHostTimeToNanos(aTimeStamp));
             return [NSString stringWithCString:buf];
         }
 
         case SMTimeFormatHostTimeSeconds:
-            return [NSString stringWithFormat:@"%.3lf", AudioConvertHostTimeToNanos(aTimeStamp) / 1.0e9];
+            return [NSString stringWithFormat:@"%.3lf", SMConvertHostTimeToNanos(aTimeStamp) / 1.0e9];
 
         case SMTimeFormatClockTime:
         default:
@@ -284,7 +284,7 @@ static NSDateFormatter *timeStampDateFormatter;
                 NSTimeInterval timeStampInterval;
                 NSDate *date;
                     
-                timeStampInterval = AudioConvertHostTimeToNanos(aTimeStamp - startHostTime) / 1.0e9;
+                timeStampInterval = SMConvertHostTimeToNanos(aTimeStamp - startHostTime) / 1.0e9;
                 date = [NSDate dateWithTimeIntervalSinceReferenceDate:(startTimeInterval + timeStampInterval)];
                 return [timeStampDateFormatter stringForObjectValue:date];
             }
@@ -332,7 +332,7 @@ static NSDateFormatter *timeStampDateFormatter;
 
 - (void)setTimeStampToNow;
 {
-    [self setTimeStamp:AudioGetCurrentHostTime()];
+    [self setTimeStamp:SMGetCurrentHostTime()];
 }
 
 - (Byte)statusByte

@@ -4,10 +4,10 @@
 
 #import "SMOutputStream.h"
 
-#import <CoreAudio/CoreAudio.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 
+#import "SMHostTime.h"
 #import "SMMessage.h"
 
 
@@ -172,7 +172,7 @@ static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
                     partialSize = MIN(MAX_PACKET_LIST_SIZE - packetListSize - offsetof(MIDIPacket, data), dataRemaining);
 
                     // add data to packet
-                    packet->timeStamp = (flags.ignoresTimeStamps ? AudioGetCurrentHostTime() : [message timeStamp]);
+                    packet->timeStamp = (flags.ignoresTimeStamps ? SMGetCurrentHostTime() : [message timeStamp]);
                     packet->length = partialSize;
                     if (isFirstPacket) {
                         isFirstPacket = NO;
@@ -216,7 +216,7 @@ static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
 
 - (void)_addMessage:(SMMessage *)message withDataSize:(unsigned int)dataSize toPacketList:(MIDIPacketList *)packetList packet:(MIDIPacket *)packet;
 {
-    packet->timeStamp = (flags.ignoresTimeStamps ? AudioGetCurrentHostTime() : [message timeStamp]);
+    packet->timeStamp = (flags.ignoresTimeStamps ? SMGetCurrentHostTime() : [message timeStamp]);
     packet->length = dataSize;
     packet->data[0] = [message statusByte];
     if (dataSize > 1)
@@ -261,7 +261,7 @@ const unsigned int maxPacketSize = 65535;
     packetList->numPackets = packetCount;
 
     if (flags.ignoresTimeStamps)
-        now = AudioGetCurrentHostTime();
+        now = SMGetCurrentHostTime();
 
     packet = &(packetList->packet[0]);
     for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {

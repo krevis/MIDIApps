@@ -4,12 +4,12 @@
 
 #import "SMPortOutputStream.h"
 
-#import <CoreAudio/CoreAudio.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 
 #import "SMClient.h"
 #import "SMEndpoint.h"
+#import "SMHostTime.h"
 #import "SMMessage.h"
 #import "SMSystemExclusiveMessage.h"
 #import "SMSysExSendRequest.h"
@@ -190,7 +190,7 @@ DEFINE_NSSTRING(SMPortOutputStreamFinishedSysExSendNotification);
     NSMutableArray *normalMessages = nil;
     MIDITimeStamp now;
 
-    now = AudioGetCurrentHostTime();
+    now = SMGetCurrentHostTime();
 
     messageCount = [messages count];
     for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {

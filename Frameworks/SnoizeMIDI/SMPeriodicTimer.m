@@ -7,9 +7,10 @@
 #import <mach/mach.h>
 #import <mach/mach_error.h>
 #import <mach/mach_time.h>
-#import <CoreAudio/CoreAudio.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
+
+#import "SMHostTime.h"
 
 
 @interface SMPeriodicTimer (Private)
@@ -98,14 +99,14 @@ static const UInt64 sliceTimeNanoseconds = 10.0e-3 * 1.0e9;	// 10 ms
 
     [self _setThreadSchedulingPolicy];
 
-    sliceTime = AudioConvertNanosToHostTime(sliceTimeNanoseconds);
+    sliceTime = SMConvertNanosToHostTime(sliceTimeNanoseconds);
 
     while (1) {
         NSAutoreleasePool *pool2;
         UInt64 currentTime;
         UInt64 processStartTime;
 
-        currentTime = AudioGetCurrentHostTime();
+        currentTime = SMGetCurrentHostTime();
 
         if (!started) {
             // We are starting.
@@ -154,7 +155,7 @@ static const UInt64 sliceTimeNanoseconds = 10.0e-3 * 1.0e9;	// 10 ms
         } else {
             UInt64 currentTimeAtEnd;
 
-            currentTimeAtEnd = AudioGetCurrentHostTime();
+            currentTimeAtEnd = SMGetCurrentHostTime();
             if (processStartTime > currentTimeAtEnd) {
                 // Wait for a while.
                 kern_return_t error;
@@ -215,8 +216,8 @@ static const UInt64 sliceTimeNanoseconds = 10.0e-3 * 1.0e9;	// 10 ms
         operation, as it involves a kernel transition).
     */
 
-    policy.period = AudioConvertNanosToHostTime(sliceTimeNanoseconds);
-    policy.computation = AudioConvertNanosToHostTime(sliceTimeNanoseconds / 2);
+    policy.period = SMConvertNanosToHostTime(sliceTimeNanoseconds);
+    policy.computation = SMConvertNanosToHostTime(sliceTimeNanoseconds / 2);
         // TODO No great thought went into this. I bet we don't really need this much time.
     policy.constraint = 2 * policy.computation;
         // This is a reasonable setting (the default time-constraint policy is like this, as is the CoreMIDI thread)

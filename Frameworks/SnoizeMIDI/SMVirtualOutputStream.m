@@ -4,7 +4,6 @@
 
 #import "SMVirtualOutputStream.h"
 
-#import <CoreAudio/CoreAudio.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 

@@ -204,6 +204,7 @@
 				F558450D021E15F801000164,
 				F558450E021E15F801000164,
 				F540F195022133F901000164,
+				F5ADD9F8023189AE01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -244,6 +245,7 @@
 				F556F68301E1C21A01000164,
 				F560977301E564B401000164,
 				F540F196022133F901000164,
+				F5ADD9F9023189AE01000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -252,7 +254,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F53D4A8E015A950D01000164,
-				F53D4A8F015A950D01000164,
 				F53D4A90015A950D01000164,
 				F53D4A93015A953401000164,
 				F53D4A94015A953401000164,
@@ -308,6 +309,8 @@
 				F53D4A96015A960601000164,
 				F53BB49D015D4AC001000164,
 				F53BB49E015D4AC001000164,
+				F5ADD9F6023189AE01000164,
+				F5ADD9F7023189AE01000164,
 				F53D4A99015A960601000164,
 				F561536201C240C501000164,
 				F556F67F01E1C21A01000164,
@@ -332,7 +335,6 @@
 			children = (
 				0867D69BFE84028FC02AAC07,
 				F56B1FC501F1006301000164,
-				F53D4A8C015A950D01000164,
 				F53D4A8D015A950D01000164,
 				F56B1FC301F0F66D01000164,
 				F53D4A91015A953401000164,
@@ -405,12 +407,6 @@
 			settings = {
 			};
 		};
-		F53D4A8C015A950D01000164 = {
-			isa = PBXFrameworkReference;
-			name = CoreAudio.framework;
-			path = /System/Library/Frameworks/CoreAudio.framework;
-			refType = 0;
-		};
 		F53D4A8D015A950D01000164 = {
 			isa = PBXFrameworkReference;
 			name = CoreMIDI.framework;
@@ -419,12 +415,6 @@
 		};
 		F53D4A8E015A950D01000164 = {
 			fileRef = 0867D69BFE84028FC02AAC07;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F53D4A8F015A950D01000164 = {
-			fileRef = F53D4A8C015A950D01000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1244,6 +1234,31 @@
 		};
 		F58C3E9A01B60AD801000164 = {
 			fileRef = F58C3E9101B605C301000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5ADD9F6023189AE01000164 = {
+			isa = PBXFileReference;
+			path = SMHostTime.h;
+			refType = 4;
+		};
+		F5ADD9F7023189AE01000164 = {
+			isa = PBXFileReference;
+			path = SMHostTime.m;
+			refType = 4;
+		};
+		F5ADD9F8023189AE01000164 = {
+			fileRef = F5ADD9F6023189AE01000164;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		F5ADD9F9023189AE01000164 = {
+			fileRef = F5ADD9F7023189AE01000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
