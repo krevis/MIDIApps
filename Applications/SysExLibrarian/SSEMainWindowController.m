@@ -304,6 +304,7 @@ static SSEMainWindowController *controller;
         SSELibraryEntry *entry;
 
         entry = [library addNewEntryWithData:allSysexData];
+        // TODO If this fails for some reason, nil will be returned; need to show some UI in that case
         [self synchronizeLibrary];
         if (entry)
             [self _selectAndScrollToEntries:[NSArray arrayWithObject:entry]];

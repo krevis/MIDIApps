@@ -9,6 +9,10 @@
 
 @implementation SSEAppController
 
+//
+// Application delegate
+//
+
 - (void)applicationDidFinishLaunching:(NSNotification *)notification;
 {
     // Make sure we go multithreaded, and that our scheduler starts up
@@ -16,6 +20,21 @@
 
     [self showMainWindow:nil];
 }
+
+- (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename;
+{
+    // TODO
+    // If the file is a library, need to use it
+    // If the file is a sysex file, need to add it to the library if it's not already there,
+    // and then select it in the library  (and perhaps play it?)
+    // NOTE: If the user double-clicks a file to launch us, this will get sent before -applicationDidFinishLaunching!
+    // So we may need to remember the filename here and do something with it later.
+    return NO;
+}
+
+//
+// Actions
+//
 
 - (IBAction)showPreferences:(id)sender;
 {

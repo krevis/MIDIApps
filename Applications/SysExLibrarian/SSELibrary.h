@@ -24,7 +24,9 @@ typedef enum _SSELibraryFileType {
 }
 
 + (NSString *)defaultPath;
-+ (NSString *)defaultFileDirectory;
++ (NSString *)path;
++ (NSString *)defaultFileDirectoryPath;
++ (NSString *)fileDirectoryPath;
 
 - (NSArray *)entries;
 

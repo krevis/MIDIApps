@@ -4,6 +4,7 @@
 #import <OmniFoundation/OmniFoundation.h>
 
 #import "SSELibraryEntry.h"
+#import "BDAlias.h"
 
 
 @interface SSELibrary (Private)
@@ -19,15 +20,60 @@
 
 DEFINE_NSSTRING(SSELibraryDidChangeNotification);
 
+const FourCharCode SSEApplicationCreatorCode = 'SnSX';
+const FourCharCode SSELibraryFileTypeCode = 'sXLb';
+const FourCharCode SSESysExFileTypeCode = 'sysX';
+NSString *SSESysExFileExtension = @"syx";
+
 
 + (NSString *)defaultPath;
 {
-    return [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"SysEx Librarian"] stringByAppendingPathComponent:@"SysEx Library.plist"];
+    return [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"SysEx Librarian"] stringByAppendingPathComponent:@"SysEx Library.sXLb"];
 }
 
-+ (NSString *)defaultFileDirectory;
++ (NSString *)path;
+{
+    NSData *aliasData;
+    NSString *path = nil;
+
+    aliasData = [[NSUserDefaults standardUserDefaults] objectForKey:@"LibraryAlias"];
+    if (aliasData) {
+        BDAlias *alias;
+
+        alias = [BDAlias aliasWithData:aliasData];
+        path = [alias fullPath];        
+    }
+    // TODO We don't save this alias in the user defaults yet, but we need to.
+    
+    if (!path)
+        path = [self defaultPath];
+
+    return path;
+}
+
++ (NSString *)defaultFileDirectoryPath;
 {
     return [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"SysEx Librarian"] stringByAppendingPathComponent:@"SysEx Files"];
+}
+
++ (NSString *)fileDirectoryPath;
+{
+    NSData *aliasData;
+    NSString *path = nil;
+
+    aliasData = [[NSUserDefaults standardUserDefaults] objectForKey:@"LibraryFileDirectoryAlias"];
+    if (aliasData) {
+        BDAlias *alias;
+
+        alias = [BDAlias aliasWithData:aliasData];
+        path = [alias fullPath];
+    }
+    // TODO We don't save this alias in the user defaults yet, but we need to.
+
+    if (!path)
+        path = [self defaultFileDirectoryPath];
+
+    return path;
 }
 
 
@@ -38,7 +84,7 @@ DEFINE_NSSTRING(SSELibraryDidChangeNotification);
     if (![super init])
         return nil;
 
-    libraryFilePath = [[[self class] defaultPath] retain];
+    libraryFilePath = [[[self class] path] retain];
     entries = [[NSMutableArray alloc] init];
     flags.isDirty = NO;
 
@@ -115,6 +161,7 @@ DEFINE_NSSTRING(SSELibraryDidChangeNotification);
 - (SSELibraryEntry *)addNewEntryWithData:(NSData *)sysexData;
 {
     NSFileManager *fileManager;
+    NSString *newFileName;
     NSString *newFilePath;
     NSDictionary *newFileAttributes;
     SSELibraryEntry *entry = nil;
@@ -122,20 +169,25 @@ DEFINE_NSSTRING(SSELibraryDidChangeNotification);
     fileManager = [NSFileManager defaultManager];
     
     // TODO what name?  attach the date, perhaps?
-    // TODO also get the file directory for real, not the default
-    newFilePath = [[SSELibrary defaultFileDirectory] stringByAppendingPathComponent:@"New SysEx File.syx"];
+    newFileName = @"New SysEx File";
+    newFilePath = [[[[self class] fileDirectoryPath] stringByAppendingPathComponent:newFileName] stringByAppendingPathExtension:SSESysExFileExtension];
     newFilePath = [fileManager uniqueFilenameFromName:newFilePath];
 
-    [fileManager createPathToFile:newFilePath attributes:nil];
+    NS_DURING {
+        [fileManager createPathToFile:newFilePath attributes:nil];
+    } NS_HANDLER {
+        // TODO the above will raise if it fails; need to handle that
+        NS_VALUERETURN(nil, SSELibraryEntry*);
+    } NS_ENDHANDLER;
 
     newFileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-        [NSNumber numberWithUnsignedLong:'sysX'], NSFileHFSTypeCode,
-        [NSNumber numberWithUnsignedLong:'SnSX'], NSFileHFSCreatorCode,
+        [NSNumber numberWithUnsignedLong:SSESysExFileTypeCode], NSFileHFSTypeCode,
+        [NSNumber numberWithUnsignedLong:SSEApplicationCreatorCode], NSFileHFSCreatorCode,
         [NSNumber numberWithBool:YES], NSFileExtensionHidden, nil];
 
-    if ([fileManager atomicallyCreateFileAtPath:newFilePath contents:sysexData attributes:newFileAttributes]) {
+    if ([fileManager atomicallyCreateFileAtPath:newFilePath contents:sysexData attributes:newFileAttributes])
         entry = [self addEntryForFile:newFilePath];
-    }
+    // TODO once again, need to handle the case when this fails
 
     return entry;
 }
@@ -170,6 +222,8 @@ DEFINE_NSSTRING(SSELibraryDidChangeNotification);
     NSMutableDictionary *dictionary;
     NSMutableArray *entryDicts;
     unsigned int entryCount, entryIndex;
+    NSFileManager *fileManager;
+    NSDictionary *fileAttributes;
     
     if (!flags.isDirty)
         return;
@@ -188,8 +242,21 @@ DEFINE_NSSTRING(SSELibraryDidChangeNotification);
 
     [dictionary setObject:entryDicts forKey:@"Entries"];
 
-    [[NSFileManager defaultManager] createPathToFile:libraryFilePath attributes:nil];
-    [dictionary writeToFile:libraryFilePath atomically:YES];
+    fileManager = [NSFileManager defaultManager];
+    
+    NS_DURING {
+        [fileManager createPathToFile:libraryFilePath attributes:nil];
+    } NS_HANDLER {
+        // TODO The above will raise if it fails. Need to tell the user in that case.
+    } NS_ENDHANDLER;
+
+    fileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
+        [NSNumber numberWithUnsignedLong:SSELibraryFileTypeCode], NSFileHFSTypeCode,
+        [NSNumber numberWithUnsignedLong:SSEApplicationCreatorCode], NSFileHFSCreatorCode,
+        [NSNumber numberWithBool:YES], NSFileExtensionHidden, nil];
+
+    [fileManager atomicallyCreateFileAtPath:libraryFilePath contents:[dictionary xmlPropertyListData] attributes:fileAttributes];    
+    // TODO Need to handle the case of the above failing, too
     
     flags.isDirty = NO;
 }
