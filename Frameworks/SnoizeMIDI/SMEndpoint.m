@@ -41,6 +41,12 @@ typedef struct EndpointUniqueNamesFlags {
 
 NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 
+// Dumb hack to work around CoreMIDI run loop bugs in 10.1
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
+#define WORK_AROUND_COREMIDI_RUNLOOP_BUG 1
+static BOOL sRefreshAllObjectsDisabled = NO;
+#endif
+
 
 + (ItemCount)endpointCountForEntity:(MIDIEntityRef)entity;
 {
@@ -153,6 +159,13 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 - (void)remove;
 {
     if (objectRef && [self isOwnedByThisProcess]) {
+#if WORK_AROUND_COREMIDI_RUNLOOP_BUG
+        BOOL needDumbWorkaround = [[SMClient sharedClient] coreMIDIUsesWrongRunLoop];
+
+        if (needDumbWorkaround)
+            sRefreshAllObjectsDisabled = YES;
+#endif        
+        
         MIDIEndpointDispose((MIDIEndpointRef)objectRef);
 
         // This object still hangs around in the endpoint lists until CoreMIDI gets around to posting a notification.
@@ -161,6 +174,13 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 
         // Now we can forget the objectRef (not earlier!)
         objectRef = NULL;
+
+#if WORK_AROUND_COREMIDI_RUNLOOP_BUG
+        if (needDumbWorkaround) {
+            sRefreshAllObjectsDisabled = NO;
+            [[self class] refreshAllObjects];
+        }
+#endif
     }
 }
 
@@ -393,24 +413,16 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
     [self checkForUniqueNames];
 }
 
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
-static BOOL sRefreshAllObjectsDisabled = NO;
-
 + (void)refreshAllObjects
 {
-    if (!sRefreshAllObjectsDisabled) {
+#if WORK_AROUND_COREMIDI_RUNLOOP_BUG
+    if (!sRefreshAllObjectsDisabled)
+#endif
+    {
         [super refreshAllObjects];
         [self checkForUniqueNames];
     }
 }
-#else
-
-+ (void)refreshAllObjects
-{
-    [super refreshAllObjects];
-    [self checkForUniqueNames];
-}
-#endif
 
 + (SMMIDIObject *)immediatelyAddObjectWithObjectRef:(MIDIObjectRef)anObjectRef;
 {
@@ -655,7 +667,7 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
     MIDIEndpointRef newEndpointRef;
     BOOL wasPostingExternalNotification;
     SMSourceEndpoint *endpoint;
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
+#if WORK_AROUND_COREMIDI_RUNLOOP_BUG
     BOOL needDumbWorkaround = [client coreMIDIUsesWrongRunLoop];
 #endif
     
@@ -664,7 +676,7 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
     wasPostingExternalNotification = [client postsExternalSetupChangeNotification];
     [client setPostsExternalSetupChangeNotification:NO];
 
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
+#if WORK_AROUND_COREMIDI_RUNLOOP_BUG
     if (needDumbWorkaround)
         sRefreshAllObjectsDisabled = YES;
 #endif
@@ -700,7 +712,7 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
     // Do this before the last modification, so one setup change notification will still happen
     [client setPostsExternalSetupChangeNotification:wasPostingExternalNotification];
 
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
+#if WORK_AROUND_COREMIDI_RUNLOOP_BUG
     if (needDumbWorkaround)
         sRefreshAllObjectsDisabled = NO;
 #endif
@@ -786,7 +798,7 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
     MIDIEndpointRef newEndpointRef;
     BOOL wasPostingExternalNotification;
     SMDestinationEndpoint *endpoint;
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
+#if WORK_AROUND_COREMIDI_RUNLOOP_BUG
     BOOL needDumbWorkaround = [client coreMIDIUsesWrongRunLoop];
 #endif
 
@@ -795,7 +807,7 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
     wasPostingExternalNotification = [client postsExternalSetupChangeNotification];
     [client setPostsExternalSetupChangeNotification:NO];
 
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
+#if WORK_AROUND_COREMIDI_RUNLOOP_BUG
     if (needDumbWorkaround)
         sRefreshAllObjectsDisabled = YES;
 #endif
@@ -831,7 +843,7 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
     // Do this before the last modification, so one setup change notification will still happen
     [client setPostsExternalSetupChangeNotification:wasPostingExternalNotification];
 
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
+#if WORK_AROUND_COREMIDI_RUNLOOP_BUG
     if (needDumbWorkaround)
         sRefreshAllObjectsDisabled = NO;
 #endif
