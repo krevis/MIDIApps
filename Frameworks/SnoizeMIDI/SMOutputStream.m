@@ -14,6 +14,7 @@
 // This bug causes the CoreMIDI MIDIServer process to crash if we try to use MIDISend() on a packet list which is >= 1024 bytes long. Packet lists should be effectively unlimited in length.
 // We work around the problem by splitting into multiple small packet lists.
 // Doug Wyatt <dwyatt@apple.com> claims this has been fixed; we'll see.
+// TODO make this test at runtime and change our behavior accordingly
 
 
 @interface SMOutputStream (Private)
