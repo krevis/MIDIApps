@@ -79,7 +79,7 @@ DEFINE_NSSTRING(SSEMIDIControllerSendFinishedNotification);
     [center addObserver:self selector:@selector(doneSendingSysEx:) name:SMPortOutputStreamFinishedSysExSendNotification object:outputStream];
     [outputStream setIgnoresTimeStamps:YES];
     [outputStream setSendsSysExAsynchronously:YES];
-    [outputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a source for other programs", @"SysExLibrarian", [self bundle], "title of popup menu item for virtual source")];
+    [outputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a source for other programs", @"SysExLibrarian", [self bundle], "display name of virtual source")];
 
     [center addObserver:self selector:@selector(endpointsAppeared:) name:SMEndpointsAppearedNotification object:nil];
     

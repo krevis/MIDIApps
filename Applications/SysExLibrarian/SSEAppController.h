@@ -10,6 +10,7 @@
 - (IBAction)showPreferences:(id)sender;
 - (IBAction)showAboutBox:(id)sender;
 - (IBAction)showHelp:(id)sender;
+- (IBAction)sendFeedback:(id)sender;
 - (IBAction)showMainWindow:(id)sender;
 - (IBAction)showMainWindowAndAddToLibrary:(id)sender;
 

@@ -37,4 +37,8 @@
 - (void)observeMIDIController;
 - (void)stopObservingMIDIController;
 
+// To be used by subclasses
+- (NSString *)waitingForSysexMessage;
+- (NSString *)receivingSysexMessage;
+
 @end

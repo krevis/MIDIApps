@@ -156,7 +156,7 @@ DEFINE_NSSTRING(SSELibraryEntryNameDidChangeNotification);
         newName = [[NSFileManager defaultManager] displayNameAtPath:path];
 
     if (!newName)
-        newName = @"Unknown";
+        newName = NSLocalizedStringFromTableInBundle(@"Unknown", @"SysExLibrarian", [self bundle], "Unknown");
 
     [self setName:newName];
 }
@@ -348,13 +348,13 @@ DEFINE_NSSTRING(SSELibraryEntryNameDidChangeNotification);
         if (!newManufacturer) {
             newManufacturer = messageManufacturer;
         } else if (![messageManufacturer isEqualToString:newManufacturer]) {
-            newManufacturer = @"Various";
+            newManufacturer = NSLocalizedStringFromTableInBundle(@"Various", @"SysExLibrarian", [self bundle], "Various");
             break;
         }
     }
 
     if (!newManufacturer)
-        newManufacturer = @"Unknown";	// TODO localize or get from SnoizeMIDI framework
+        newManufacturer = NSLocalizedStringFromTableInBundle(@"Unknown", @"SysExLibrarian", [self bundle], "Unknown");
 
     return newManufacturer;
 }

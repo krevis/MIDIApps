@@ -122,7 +122,7 @@
     }
 
     if (!success)
-        [progressMessageField setStringValue:@"Cancelled."];
+        [progressMessageField setStringValue:NSLocalizedStringFromTableInBundle(@"Cancelled.", @"SysExLibrarian", [self bundle], "Cancelled.")];
 
     // Even if we have set the progress indicator to its maximum value, it won't get drawn on the screen that way immediately,
     // probably because it tries to smoothly animate to that state. The only way I have found to show the maximum value is to just
@@ -142,9 +142,19 @@
 
 - (void)updateProgress;
 {
+    static NSString *sendingFormatString = nil;
+    static NSString *sendingString = nil;
+    static NSString *doneString = nil;
     unsigned int messageIndex, messageCount, bytesToSend, bytesSent;
     NSString *message;
 
+    if (!sendingFormatString)
+        sendingFormatString = [NSLocalizedStringFromTableInBundle(@"Sending message %u of %u...", @"SysExLibrarian", [self bundle], "format for progress message when sending multiple sysex messages") retain];
+    if (!sendingString)
+        sendingString = [NSLocalizedStringFromTableInBundle(@"Sending message...", @"SysExLibrarian", [self bundle], "progress message when sending one sysex message") retain];
+    if (!doneString)
+        doneString = [NSLocalizedStringFromTableInBundle(@"Done.", @"SysExLibrarian", [self bundle], "Done.") retain];    
+    
     [nonretainedMIDIController getMessageCount:&messageCount messageIndex:&messageIndex bytesToSend:&bytesToSend bytesSent:&bytesSent];
 
     OBASSERT(bytesSent >= [progressIndicator doubleValue]);
@@ -154,11 +164,11 @@
     [progressBytesField setStringValue:[NSString abbreviatedStringForBytes:bytesSent]];
     if (bytesSent < bytesToSend) {
         if (messageCount > 1)
-            message = [NSString stringWithFormat:@"Sending message %u of %u...", messageIndex+1, messageCount];
+            message = [NSString stringWithFormat:sendingFormatString, messageIndex+1, messageCount];
         else
-            message = @"Sending message...";
+            message = sendingString;
     } else {
-        message = @"Done.";
+        message = doneString;
     }
     [progressMessageField setStringValue:message];
 }

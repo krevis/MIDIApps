@@ -111,6 +111,30 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:SSEMIDIControllerReadStatusChangedNotification object:nonretainedMIDIController];
 }
 
+//
+// To be used by subclasses
+//
+
+- (NSString *)waitingForSysexMessage;
+{
+    static NSString *waitingForSysexString = nil;
+
+    if (!waitingForSysexString)
+        waitingForSysexString = [NSLocalizedStringFromTableInBundle(@"Waiting for SysEx message...", @"SysExLibrarian", [self bundle], "message when waiting for sysex") retain];
+
+    return waitingForSysexString;    
+}
+
+- (NSString *)receivingSysexMessage;
+{
+    static NSString *receivingSysexString = nil;
+
+    if (!receivingSysexString)
+        receivingSysexString = [NSLocalizedStringFromTableInBundle(@"Receiving SysEx message...", @"SysExLibrarian", [self bundle], "message when receiving sysex") retain];
+    
+    return receivingSysexString;
+}
+
 @end
 
 

@@ -216,9 +216,16 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
 
 - (void)updateImportStatusDisplay;
 {
+    static NSString *scanningString = nil;
+    static NSString *xOfYFormatString = nil;
     NSString *filePath;
     unsigned int fileIndex, fileCount;
 
+    if (!scanningString)
+        scanningString = [NSLocalizedStringFromTableInBundle(@"Scanning...", @"SysExLibrarian", [self bundle], "Scanning...") retain];
+    if (!xOfYFormatString)
+        xOfYFormatString = [NSLocalizedStringFromTableInBundle(@"%u of %u", @"SysExLibrarian", [self bundle], "importing sysex: x of y") retain];
+    
     [importStatusLock lock];
     filePath = [[importFilePath retain] autorelease];
     fileIndex = importFileIndex;
@@ -229,7 +236,7 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
         [progressIndicator setIndeterminate:YES];
         [progressIndicator setUsesThreadedAnimation:YES];
         [progressIndicator startAnimation:nil];
-        [progressMessageField setStringValue:@"Scanning..."];
+        [progressMessageField setStringValue:scanningString];
         [progressIndexField setStringValue:@""];
     } else {
         if ([progressIndicator isIndeterminate]) {
@@ -238,7 +245,7 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
         }
         [progressIndicator setDoubleValue:fileIndex + 1];
         [progressMessageField setStringValue:[[NSFileManager defaultManager] displayNameAtPath:filePath]];
-        [progressIndexField setStringValue:[NSString stringWithFormat:@"%u of %u", fileIndex + 1, fileCount]];
+        [progressIndexField setStringValue:[NSString stringWithFormat:xOfYFormatString, fileIndex + 1, fileCount]];
     }
 }
 
@@ -410,21 +417,27 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
 - (void)showErrorMessageForFilesWithNoSysEx:(NSArray *)badFilePaths;
 {
     unsigned int badFileCount;
+    NSString *title;
     NSString *message;
 
     badFileCount = [badFilePaths count];
     OBASSERT(badFileCount > 0);
 
-    if (badFileCount == 1)
-        message = @"No SysEx data could be found in this file. It has not been added to the library.";
-    else
-        message = [NSString stringWithFormat:@"No SysEx data could be found in %u of the files. They have not been added to the library.", badFileCount];
+    if (badFileCount == 1) {
+        message = NSLocalizedStringFromTableInBundle(@"No SysEx data could be found in this file. It has not been added to the library.", @"SysExLibrarian", [self bundle], "message when no sysex data found in file");
+    } else {
+        NSString *format;
+        
+        format = NSLocalizedStringFromTableInBundle(@"No SysEx data could be found in %u of the files. They have not been added to the library.", @"SysExLibrarian", [self bundle], "format of message when no sysex data found in files");
+        message = [NSString stringWithFormat:format, badFileCount];
+    }
 
     OBASSERT([[nonretainedMainWindowController window] attachedSheet] == nil);
     if ([[nonretainedMainWindowController window] attachedSheet])
         return;
 
-    NSBeginInformationalAlertSheet(@"Could not read SysEx", nil, nil, nil, [nonretainedMainWindowController window], nil, NULL, NULL, NULL, @"%@", message);
+    title = NSLocalizedStringFromTableInBundle(@"Could not read SysEx", @"SysExLibrarian", [self bundle], "title of alert when can't read a sysex file");
+    NSBeginInformationalAlertSheet(title, nil, nil, nil, [nonretainedMainWindowController window], nil, NULL, NULL, NULL, @"%@", message);
 }
 
 @end

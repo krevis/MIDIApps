@@ -66,9 +66,17 @@
 {
     if ([entriesWithMissingFiles count] > 0) {
         SSELibraryEntry *entry;
+        NSString *title, *message;
+        NSString *yes, *cancel;
 
         entry = [entriesWithMissingFiles objectAtIndex:0];
-        NSBeginAlertSheet(@"Missing File", @"Yes", @"Cancel", nil, [nonretainedMainWindowController window], self, @selector(missingFileAlertDidEnd:returnCode:contextInfo:), NULL, NULL, @"The file for the item \"%@\" could not be found. Would you like to locate it?", [entry name]);
+
+        title = NSLocalizedStringFromTableInBundle(@"Missing File", @"SysExLibrarian", [self bundle], "title of alert for missing file");
+        message = NSLocalizedStringFromTableInBundle(@"The file for the item \"%@\" could not be found. Would you like to locate it?", @"SysExLibrarian", [self bundle], "format of message for missing file");
+        yes = NSLocalizedStringFromTableInBundle(@"Yes", @"SysExLibrarian", [self bundle], "Yes");
+        cancel = NSLocalizedStringFromTableInBundle(@"Cancel", @"SysExLibrarian", [self bundle], "Cancel");
+        
+        NSBeginAlertSheet(title, yes, cancel, nil, [nonretainedMainWindowController window], self, @selector(missingFileAlertDidEnd:returnCode:contextInfo:), NULL, NULL, message, [entry name]);
     } else {
         [nonretainedMainWindowController performSelector:finishingSelector];
     }
@@ -116,9 +124,15 @@
         // Is this file in use by any entries?  (It might be in use by *this* entry if the file has gotten put in place again!)
         matchingEntries = [nonretainedLibrary findEntriesForFiles:[NSArray arrayWithObject:filePath] returningNonMatchingFiles:NULL];
         if ([matchingEntries count] > 0 && [matchingEntries indexOfObject:entry] == NSNotFound) {
+            NSString *title, *message, *ok, *cancel;
             int returnCode2;
 
-            returnCode2 = NSRunAlertPanel(@"In Use", @"That file is already in the library. Please choose another one.", @"OK", @"Cancel", nil);
+            title = NSLocalizedStringFromTableInBundle(@"In Use", @"SysExLibrarian", [self bundle], "title of alert for file already in library");
+            message = NSLocalizedStringFromTableInBundle(@"That file is already in the library. Please choose another one.", @"SysExLibrarian", [self bundle], "message for file already in library");
+            ok = NSLocalizedStringFromTableInBundle(@"OK", @"SysExLibrarian", [self bundle], "OK");
+            cancel = NSLocalizedStringFromTableInBundle(@"Cancel", @"SysExLibrarian", [self bundle], "Cancel");
+            
+            returnCode2 = NSRunAlertPanel(title, message, ok, cancel, nil);
             [openPanel orderOut:nil];
             if (returnCode2 == NSAlertDefaultReturn) {
                 // Run the open sheet again

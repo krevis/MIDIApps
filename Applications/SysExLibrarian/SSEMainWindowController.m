@@ -52,7 +52,7 @@
 
 NSString *SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey = @"SSEAbbreviateFileSizesInLibraryTableView";
 
-static SSEMainWindowController *controller;
+static SSEMainWindowController *controller = nil;
 
 
 + (SSEMainWindowController *)mainWindowController;
@@ -132,6 +132,7 @@ static SSEMainWindowController *controller;
 - (void)speciallyInitializeToolbarItem:(NSToolbarItem *)toolbarItem;
 {
     float height;
+    NSString *menuTitle;
     NSMenuItem *menuItem;
     NSMenu *submenu;
 
@@ -143,7 +144,8 @@ static SSEMainWindowController *controller;
     [toolbarItem setMinSize:NSMakeSize(150, height)];
     [toolbarItem setMaxSize:NSMakeSize(1000, height)];
 
-    menuItem = [[NSMenuItem alloc] initWithTitle:@"Destination" action:NULL keyEquivalent:@""];
+    menuTitle = NSLocalizedStringFromTableInBundle(@"Destination", @"SysExLibrarian", [self bundle], "title of destination toolbar item");
+    menuItem = [[NSMenuItem alloc] initWithTitle:menuTitle action:NULL keyEquivalent:@""];
     submenu = [[NSMenu alloc] initWithTitle:@""];
     [menuItem setSubmenu:submenu];
     [submenu release];
@@ -396,9 +398,12 @@ static SSEMainWindowController *controller;
         [self showNewEntries:[NSArray arrayWithObject:entry]];
     } else {
         NSWindow *attachedSheet;
-        
-        if (!exceptionReason)
-            exceptionReason = @"Unknown error";   // NOTE I don't see how this could happen, but let's handle it...
+        NSString *title, *message;
+
+        if (!exceptionReason) {
+            // NOTE I don't see how this could happen, but let's handle it...
+            exceptionReason = NSLocalizedStringFromTableInBundle(@"Unknown error", @"SysExLibrarian", [self bundle], "unknown exception when adding newly recorded messages to library");
+        }
 
         // We need to get rid of the sheet right away, instead of after the delay (see -[SSERecordOneController readFinished]).
         if ((attachedSheet = [[self window] attachedSheet])) {
@@ -408,12 +413,18 @@ static SSEMainWindowController *controller;
 
         // Now we can start another sheet.
         OBASSERT([[self window] attachedSheet] == nil);
-        NSBeginAlertSheet(@"Error", nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"The file could not be created.\n%@", exceptionReason);
+        
+        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", [self bundle], "title of error alert");
+        message = NSLocalizedStringFromTableInBundle(@"The file could not be created.\n%@", @"SysExLibrarian", [self bundle], "message of alert when recording to a new file fails");
+
+        NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, message, exceptionReason);
     }
 }
 
 - (void)showSysExWorkaroundWarning;
-{    
+{
+    NSString *title, *message;
+
     if (![[self window] isVisible]) {
         showSysExWarningWhenShowingWindow = YES;
         return;
@@ -423,7 +434,10 @@ static SSEMainWindowController *controller;
     if ([[self window] attachedSheet])
         return;
 
-    NSBeginAlertSheet(@"Warning", nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"The driver for this MIDIMAN device has problems sending SysEx messages. SysEx Librarian will attempt to work around the problems, but please be warned that you may still experience unpredictable hangs or crashes, and sending large amounts of data will be slow.\n\nPlease check the manufacturer's web site to see if an updated driver is available.");
+    title = NSLocalizedStringFromTableInBundle(@"Warning", @"SysExLibrarian", [self bundle], "title of warning alert");
+    message = NSLocalizedStringFromTableInBundle(@"The driver for this MIDIMAN device has problems sending SysEx messages. SysEx Librarian will attempt to work around the problems, but please be warned that you may still experience unpredictable hangs or crashes, and sending large amounts of data will be slow.\n\nPlease check the manufacturer's web site to see if an updated driver is available.", @"SysExLibrarian", [self bundle], "message for buggy MIDIMAN device");
+    
+    NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"%@", message);
 
     [[OFPreference preferenceForKey:SSEHasShownSysExWorkaroundWarningPreferenceKey] setBoolValue:YES];
     [[NSUserDefaults standardUserDefaults] autoSynchronize];
@@ -480,7 +494,12 @@ static SSEMainWindowController *controller;
     
     entry = [sortedLibraryEntries objectAtIndex:row];
     if (![entry renameFileTo:newName]) {
-        NSBeginAlertSheet(@"Error", nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"The file for this item could not be renamed.");
+        NSString *title, *message;
+
+        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", [self bundle], "title of error alert");
+        message = NSLocalizedStringFromTableInBundle(@"The file for this item could not be renamed.", @"SysExLibrarian", [self bundle], "message of alert when renaming a file fails");
+        
+        NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"%@", message);
     }
     
     [self synchronizeLibrary];
@@ -617,6 +636,8 @@ static SSEMainWindowController *controller;
 {
     // Set the title to "Destination: <Whatever>"
     // Then set up the submenu items
+    static NSString *noDestinationName = nil;
+    static NSString *destinationBaseTitle = nil;    
     NSMenuItem *topMenuItem;
     NSString *destinationName;
     NSMenu *submenu;
@@ -624,12 +645,19 @@ static SSEMainWindowController *controller;
     BOOL found = NO;
     BOOL addedSeparatorBetweenPortAndVirtual = NO;
 
+    if (!noDestinationName)
+        noDestinationName = [NSLocalizedStringFromTableInBundle(@"None", @"SysExLibrarian", [self bundle], "none") retain];
+    if (!destinationBaseTitle) {
+        destinationBaseTitle = NSLocalizedStringFromTableInBundle(@"Destination", @"SysExLibrarian", [self bundle], "title of destination toolbar item");
+        destinationBaseTitle = [[destinationBaseTitle stringByAppendingString:@": "] retain];
+    }
+    
     topMenuItem = [nonretainedDestinationToolbarItem menuFormRepresentation];
     
     destinationName = [currentDescription objectForKey:@"name"];
     if (!destinationName)
-        destinationName = @"None";
-    [topMenuItem setTitle:[@"Destination: " stringByAppendingString:destinationName]];
+        destinationName = noDestinationName;
+    [topMenuItem setTitle:[destinationBaseTitle stringByAppendingString:destinationName]];
 
     submenu = [topMenuItem submenu];
     index = [submenu numberOfItems];

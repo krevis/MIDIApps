@@ -33,11 +33,11 @@
 - (void)updateIndicatorsWithMessageCount:(unsigned int)messageCount bytesRead:(unsigned int)bytesRead totalBytesRead:(unsigned int)totalBytesRead;
 {
     if ((bytesRead == 0 && messageCount == 0)) {
-        [progressMessageField setStringValue:@"Waiting for SysEx message..."];
+        [progressMessageField setStringValue:[self waitingForSysexMessage]];
         [progressBytesField setStringValue:@""];
     } else {
         [progressIndicator animate:nil];
-        [progressMessageField setStringValue:@"Receiving SysEx message..."];
+        [progressMessageField setStringValue:[self receivingSysexMessage]];
         [progressBytesField setStringValue:[NSString abbreviatedStringForBytes:bytesRead + totalBytesRead]];
     }
 }

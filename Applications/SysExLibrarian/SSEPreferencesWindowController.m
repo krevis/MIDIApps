@@ -30,7 +30,7 @@ DEFINE_NSSTRING(SSESysExSendPreferenceChangedNotification);
 DEFINE_NSSTRING(SSESysExReceivePreferenceChangedNotification);
 
 
-static SSEPreferencesWindowController *controller;
+static SSEPreferencesWindowController *controller = nil;
 
 + (SSEPreferencesWindowController *)preferencesWindowController;
 {
@@ -147,10 +147,18 @@ static SSEPreferencesWindowController *controller;
 
 - (NSString *)formatMilliseconds:(int)msec;
 {
+    static NSString *oneSecond = nil;
+    static NSString *millisecondsFormat = nil;
+
+    if (!oneSecond)
+        oneSecond =  [NSLocalizedStringFromTableInBundle(@"1 second", @"SysExLibrarian", [self bundle], "one second (formatting of milliseconds)") retain];
+    if (!millisecondsFormat)
+        millisecondsFormat = [NSLocalizedStringFromTableInBundle(@"%d milliseconds", @"SysExLibrarian", [self bundle], "format for milliseconds") retain];
+    
     if (msec == 1000)
-        return @"1 second";
+        return oneSecond;
     else
-        return [NSString stringWithFormat:@"%d milliseconds", msec];
+        return [NSString stringWithFormat:millisecondsFormat, msec];
 }
 
 - (void)openPanelDidEnd:(NSOpenPanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;

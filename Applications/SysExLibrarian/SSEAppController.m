@@ -40,7 +40,13 @@
     // Initialize CoreMIDI while the app's icon is still bouncing, so we don't have a large pause after it stops bouncing
     // but before the app's window opens.  (CoreMIDI needs to find and possibly start its server process, which can take a while.)
     if ([SMClient sharedClient] == nil) {
-        NSRunCriticalAlertPanel(@"Error", @"%@", @"Quit", nil, nil, @"There was a problem initializing the MIDI system. To try to fix this, log out and log back in, or restart the computer.");
+        NSString *title, *message, *quit;
+
+        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", [self bundle], "title of error alert");
+        message = NSLocalizedStringFromTableInBundle(@"There was a problem initializing the MIDI system. To try to fix this, log out and log back in, or restart the computer.", @"SysExLibrarian", [self bundle], "error message if MIDI initialization fails");
+        quit = NSLocalizedStringFromTableInBundle(@"Quit", @"SysExLibrarian", [self bundle], "title of quit button");
+
+        NSRunCriticalAlertPanel(title, @"%@", quit, nil, nil, message);
         [NSApp terminate:nil];
     }
 }
@@ -53,7 +59,12 @@
 
     preflightError = [[SSELibrary sharedLibrary] preflightAndLoadEntries];
     if (preflightError) {
-        NSRunCriticalAlertPanel(@"Error", @"%@", @"Quit", nil, nil, preflightError);
+        NSString *title, *quit;
+        
+        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", [self bundle], "title of error alert");
+        quit = NSLocalizedStringFromTableInBundle(@"Quit", @"SysExLibrarian", [self bundle], "title of quit button");
+
+        NSRunCriticalAlertPanel(title, @"%@", quit, nil, nil, preflightError);
         [NSApp terminate:nil];
     } else {
         [self showMainWindow:nil];
@@ -133,11 +144,49 @@
 - (IBAction)showHelp:(id)sender;
 {
     NSString *path;
-    
+    NSString *message = nil;
+
     path = [[self bundle] pathForResource:@"docs" ofType:@"htmld"];
     if (path) {
         path = [path stringByAppendingPathComponent:@"index.html"];
-        [[NSWorkspace sharedWorkspace] openFile:path];
+        if (![[NSWorkspace sharedWorkspace] openFile:path]) {
+            message = NSLocalizedStringFromTableInBundle(@"The help file could not be opened.", @"SysExLibrarian", [self bundle], "error message if opening the help file fails");
+        }
+    } else {
+        message = NSLocalizedStringFromTableInBundle(@"The help file could not be found.", @"SysExLibrarian", [self bundle], "error message if help file can't be found");
+    }
+
+    if (message) {
+        NSString *title;
+
+        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", [self bundle], "title of error alert");
+        NSRunAlertPanel(title, @"%@", nil, nil, nil, message);
+    }
+}
+
+- (IBAction)sendFeedback:(id)sender;
+{
+    NSString *feedbackEmailAddress, *feedbackEmailSubject;
+    NSString *mailToURLString;
+    NSURL *mailToURL;
+    BOOL success = NO;
+
+    feedbackEmailAddress = @"SysExLibrarian@snoize.com";	// Don't localize this
+    feedbackEmailSubject = NSLocalizedStringFromTableInBundle(@"SysEx Librarian Feedback", @"SysExLibrarian", [self bundle], "subject of feedback email");
+    mailToURLString = [[NSString stringWithFormat:@"mailto:%@?Subject=%@", feedbackEmailAddress, feedbackEmailSubject] fullyEncodeAsIURI];
+    mailToURL = [NSURL URLWithString:mailToURLString];
+    if (mailToURL)
+        success = [[NSWorkspace sharedWorkspace] openURL:mailToURL];
+
+    if (!success) {
+        NSString *message, *title;
+
+        NSLog(@"Couldn't send feedback: url string was <%@>, url was <%@>", mailToURLString, mailToURL);
+
+        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", [self bundle], "title of error alert");
+        message = NSLocalizedStringFromTableInBundle(@"SysEx Librarian could not ask your email application to create a new message, so you will have to do it yourself. Please send your email to this address:\n%@\nThank you!", @"SysExLibrarian", [self bundle], "message of alert when can't send feedback email");
+
+        NSRunAlertPanel(title, message, nil, nil, nil, feedbackEmailAddress);
     }
 }
 

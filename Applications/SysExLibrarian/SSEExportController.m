@@ -1,5 +1,7 @@
 #import "SSEExportController.h"
 #import "SSEMainWindowController.h"
+#import <OmniBase/OmniBase.h>
+#import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 
@@ -25,14 +27,18 @@
 - (void)exportMessages:(NSArray *)messages;
 {
     NSSavePanel *savePanel;
+    NSString *defaultFileName;
     
     // Pick a file name to export to.
     [messages retain];
 
     savePanel = [NSSavePanel savePanel];
     [savePanel setRequiredFileType:@"mid"];    
+
+    defaultFileName = NSLocalizedStringFromTableInBundle(@"SysEx", @"SysExLibrarian", [self bundle], "default file name for exported standard MIDI file (w/o extension)");
+    defaultFileName = [defaultFileName stringByAppendingPathExtension:@"mid"];
     
-    [savePanel beginSheetForDirectory:nil file:@"SysEx.mid" modalForWindow:[nonretainedMainWindowController window] modalDelegate:self didEndSelector:@selector(saveSheetDidEnd:returnCode:contextInfo:) contextInfo:messages];
+    [savePanel beginSheetForDirectory:nil file:defaultFileName modalForWindow:[nonretainedMainWindowController window] modalDelegate:self didEndSelector:@selector(saveSheetDidEnd:returnCode:contextInfo:) contextInfo:messages];
 }
 
 @end
@@ -51,8 +57,14 @@
         path = [sheet filename];
         success = [SMSystemExclusiveMessage writeSystemExclusiveMessages:messages toStandardMIDIFile:path];
 
-        if (!success)
-            NSRunAlertPanel(@"Error", @"The file could not be saved.", nil, nil, nil);
+        if (!success) {
+            NSString *title, *message;
+
+            title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", [self bundle], "title of error alert");
+            message = NSLocalizedStringFromTableInBundle(@"The file could not be saved.",  @"SysExLibrarian", [self bundle], "message if sysex can't be exported");
+            
+            NSRunAlertPanel(title, @"%@", nil, nil, nil, message);
+        }
     }
 
     [messages release];
