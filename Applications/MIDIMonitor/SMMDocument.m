@@ -484,7 +484,7 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
 
     sysExBytesRead = [[[notification userInfo] objectForKey:@"length"] unsignedIntValue];
     [self queueSelectorOnce:@selector(_mainThreadReadingSysEx)];
-        // We don't mind if this gets coalesced
+        // We want multiple updates to get coalesced, so only queue it once
 }
 
 - (void)_mainThreadReadingSysEx;
@@ -500,7 +500,8 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     number = [[notification userInfo] objectForKey:@"length"];
     sysExBytesRead = [number unsignedIntValue];
     [self queueSelector:@selector(_mainThreadDoneReadingSysEx:) withObject:number];
-        // We DO mind if this gets coalesced, so always queue it
+        // We DON'T want this to get coalesced, so always queue it.
+        // Pass the number of bytes read down, since sysExBytesRead may be overwritten before _mainThreadDoneReadingSysEx gets called.
 }
 
 - (void)_mainThreadDoneReadingSysEx:(NSNumber *)bytesReadNumber;
