@@ -6,6 +6,7 @@
 
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
+#import "SMDestinationEndpoint-Additions.h"
 
 
 @interface SMMSpyingInputStream (Private)
@@ -199,13 +200,12 @@
 {
     SMDestinationEndpoint *endpoint;
 
-    endpoint = [notification object];
+    endpoint = [[[notification object] retain] autorelease];
     OBASSERT([endpoints indexOfObjectIdenticalTo:endpoint] != NSNotFound);
 
     [self removeEndpoint:endpoint];
 
-    // TODO need to post a notification?
-    //[[NSNotificationCenter defaultCenter] postNotificationName:SMPortInputStreamEndpointDisappeared object:self];
+    [self postSelectedInputStreamSourceDisappearedNotification:endpoint];
 }
 
 - (void)endpointWasReplaced:(NSNotification *)notification;
