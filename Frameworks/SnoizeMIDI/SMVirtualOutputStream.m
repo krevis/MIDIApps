@@ -44,15 +44,11 @@
 - (void)sendMIDIPacketList:(MIDIPacketList *)packetList;
 {
     MIDIEndpointRef endpointRef;
-    OSStatus status;
 
     if (!(endpointRef = [endpoint endpointRef]))
         return;
 
-    status = MIDIReceived(endpointRef, packetList);
-    if (status) {
-        NSLog(@"MIDIReceived(%p, %p) returned error: %ld", endpointRef, packetList, status);
-    }
+    MIDIReceived(endpointRef, packetList);
 }
 
 @end
