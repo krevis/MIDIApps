@@ -16,6 +16,8 @@
 
 - (void)_synchronizePopUpButton:(NSPopUpButton *)popUpButton withDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 
+- (void)_selectAndScrollToEntries:(NSArray *)entries;
+
 - (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
 
 - (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
@@ -29,8 +31,14 @@
 
 - (BOOL)_areAnyDraggedFilesAcceptable:(NSArray *)filePaths;
 - (void)_dragFilesIntoLibrary:(NSArray *)filePaths;
-- (NSArray *)_expandAndFilterDraggedFiles:(NSArray *)filePaths;
-- (void)_addFilesToLibrary:(NSArray *)filePaths;
+
+- (void)_workThreadImportFiles:(NSArray *)filePaths;
+- (NSArray *)_workThreadExpandAndFilterDraggedFiles:(NSArray *)filePaths;
+- (NSArray *)_workThreadAddFilesToLibrary:(NSArray *)filePaths;
+
+- (void)_showImportSheet;
+- (void)_updateImportStatusDisplay;
+- (void)_doneImporting:(NSArray *)addedEntries;
 
 @end
 
@@ -54,6 +62,8 @@ static SSEMainWindowController *controller;
 
     library = [[SSELibrary alloc] init];
 
+    importStatusLock = [[NSLock alloc] init];
+
     return self;
 }
 
@@ -67,6 +77,10 @@ static SSEMainWindowController *controller;
 {
     [progressUpdateEvent release];
     progressUpdateEvent = nil;
+    [importStatusLock release];
+    importStatusLock = nil;
+    [importStatusText release];
+    importStatusText = nil;
     
     [super dealloc];
 }
@@ -195,6 +209,12 @@ static SSEMainWindowController *controller;
     // -hideSysExSendStatusWithSuccess: will get called soon; it will end the sheet
 }
 
+- (IBAction)cancelImportSheet:(id)sender;
+{
+    // No need to lock just to set a boolean
+    importCancelled = YES;
+}
+
 //
 // Other API
 //
@@ -265,9 +285,8 @@ static SSEMainWindowController *controller;
         SSELibraryEntry *entry;
 
         entry = [library addNewEntryWithData:allSysexData];
-        // TODO then select the row for this entry
-
         [self synchronizeLibrary];
+        [self _selectAndScrollToEntries:[NSArray arrayWithObject:entry]];
     }
 }
 
@@ -403,7 +422,8 @@ static SSEMainWindowController *controller;
         NSArray *filePaths;
 
         filePaths = [pasteboard propertyListForType:NSFilenamesPboardType];
-        [self performSelector:@selector(_dragFilesIntoLibrary:) withObject:filePaths afterDelay:0.1];
+        [self _dragFilesIntoLibrary:filePaths];
+//        [self performSelector:@selector(_dragFilesIntoLibrary:) withObject:filePaths afterDelay:0.1];
             // Let the drag finish before we start importing
 
         return YES;
@@ -484,10 +504,33 @@ static SSEMainWindowController *controller;
     [[self window] setAutodisplay:wasAutodisplay];
 }
 
+- (void)_selectAndScrollToEntries:(NSArray *)entries;
+{
+    unsigned int entryCount, entryIndex;
+    NSArray *allEntries;
+
+    entryCount = [entries count];
+    allEntries = [library entries];
+
+    for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+        unsigned int row;
+
+        row = [allEntries indexOfObjectIdenticalTo:[entries objectAtIndex:entryIndex]];
+
+        if (entryIndex == 0) {
+            [libraryTableView selectRow:row byExtendingSelection:NO];
+            [libraryTableView scrollRowToVisible:row];
+        } else {
+            [libraryTableView selectRow:row byExtendingSelection:YES];
+        }
+    }
+}
+
 - (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
 {
     if (returnCode == NSOKButton)
-        [self _addFilesToLibrary:[openPanel filenames]];
+        [self _workThreadImportFiles:[openPanel filenames]];
+    // TODO rename this method since we're really doing it in the main thread...
 }
 
 - (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
@@ -609,34 +652,33 @@ static SSEMainWindowController *controller;
 
 - (void)_dragFilesIntoLibrary:(NSArray *)filePaths;
 {
-    NSDate *startDate, *expandedDate, *finishedDate;
+    importStatusText = @"Scanning...";
+    importFileIndex = 0;
+    importFileCount = 0;
+    importCancelled = NO;
 
-    NSLog(@"starting import");
-    // TODO could pull up a sheet or something to show progress
-    // What we should do:  Set a timer or scheduled event to happen in a second or two.
-    // If it fires, then open a sheet showing our current status.
-    // (Could be "reading filesystem" with indeterminate progress bar --  or "importing N of M: file.mid" with determinate progress bar)
-    // If we finish before the scheduled event, then cancel it.
-    // Should provide a cancel button on the sheet.
-    // We are going to have to do the actual import in another thread, which could be a little scary.
-    // Or we can keep a list of things to do and do them, one at a time, in the main thread... which is sort of a pain,
-    // but each one of them individually should not take too long.
+    [self _showImportSheet];
 
-    startDate = [NSDate date];
-
-    filePaths = [self _expandAndFilterDraggedFiles:filePaths];
-    expandedDate = [NSDate date];
-
-    if ([filePaths count] > 0)
-        [self _addFilesToLibrary:filePaths];
-
-    finishedDate = [NSDate date];
-
-    NSLog(@"time to expand: %g", [expandedDate timeIntervalSinceDate:startDate]);
-    NSLog(@"time to finish: %g", [finishedDate timeIntervalSinceDate:expandedDate]);
+    [NSThread detachNewThreadSelector:@selector(_workThreadImportFiles:) toTarget:self withObject:filePaths];
 }
 
-- (NSArray *)_expandAndFilterDraggedFiles:(NSArray *)filePaths;
+- (void)_workThreadImportFiles:(NSArray *)filePaths;
+{
+    NSAutoreleasePool *pool;
+    NSArray *addedEntries = nil;
+
+    pool = [[NSAutoreleasePool alloc] init];
+    
+    filePaths = [self _workThreadExpandAndFilterDraggedFiles:filePaths];
+    if ([filePaths count] > 0)
+        addedEntries = [self _workThreadAddFilesToLibrary:filePaths];
+
+    [self mainThreadPerformSelector:@selector(_doneImporting:) withObject:addedEntries];
+
+    [pool release];
+}
+
+- (NSArray *)_workThreadExpandAndFilterDraggedFiles:(NSArray *)filePaths;
 {
     NSFileManager *fileManager;
     unsigned int fileIndex, fileCount;
@@ -649,75 +691,142 @@ static SSEMainWindowController *controller;
     for (fileIndex = 0; fileIndex < fileCount; fileIndex++) {
         NSString *filePath;
         BOOL isDirectory;
+        NSAutoreleasePool *pool;
+
+        if (![NSThread inMainThread]) {
+            if (importCancelled) {
+                [acceptableFilePaths removeAllObjects];
+                break;
+            }
+        }
 
         filePath = [filePaths objectAtIndex:fileIndex];
-
         if ([fileManager fileExistsAtPath:filePath isDirectory:&isDirectory] == NO)
             continue;
         
-        if (isDirectory) {
-            NSDirectoryEnumerator *enumerator;
-            NSString *childFilePath;
+        pool = [[NSAutoreleasePool alloc] init];
 
-            enumerator = [fileManager enumeratorAtPath:filePath];
-            while ((childFilePath = [enumerator nextObject])) {
-                childFilePath = [filePath stringByAppendingPathComponent:childFilePath];
-                if ([fileManager isReadableFileAtPath:childFilePath] && [library typeOfFileAtPath:childFilePath] != SSELibraryFileTypeUnknown) {
-                    [acceptableFilePaths addObject:childFilePath];
-                }
+        if (isDirectory) {
+            // Handle this directory's contents recursively
+            
+            NSMutableArray *children;
+            unsigned int childIndex, childCount;
+            NSArray *acceptableChildren;
+            
+            children = [NSMutableArray arrayWithArray:[fileManager directoryContentsAtPath:filePath]];
+            childCount = [children count];
+            for (childIndex = 0; childIndex < childCount; childIndex++) {
+                NSString *childPath;
+
+                childPath = [filePath stringByAppendingPathComponent:[children objectAtIndex:childIndex]];
+                [children replaceObjectAtIndex:childIndex withObject:childPath];
             }
+            acceptableChildren = [self _workThreadExpandAndFilterDraggedFiles:children];
+            [acceptableFilePaths addObjectsFromArray:acceptableChildren];            
         } else {
             if ([fileManager isReadableFileAtPath:filePath] && [library typeOfFileAtPath:filePath] != SSELibraryFileTypeUnknown) {
                 [acceptableFilePaths addObject:filePath];
             }
         }
+
+        [pool release];
     }
     
     return acceptableFilePaths;
 }
 
-- (void)_addFilesToLibrary:(NSArray *)filePaths;
+- (NSArray *)_workThreadAddFilesToLibrary:(NSArray *)filePaths;
 {
     unsigned int fileIndex, fileCount;
     NSMutableArray *addedEntries;
-    unsigned int entryCount;
 
-    // Add the files to the library, keeping track of the successful ones.    
+    // Try to add each file to the library, keeping track of the successful ones.
+
     addedEntries = [NSMutableArray array];
 
     fileCount = [filePaths count];
     for (fileIndex = 0; fileIndex < fileCount; fileIndex++) {
+        NSAutoreleasePool *pool;
+        NSString *filePath;
         SSELibraryEntry *addedEntry;
-        
-        addedEntry = [library addEntryForFile:[filePaths objectAtIndex:fileIndex]];
+
+        pool = [[NSAutoreleasePool alloc] init];
+
+        filePath = [filePaths objectAtIndex:fileIndex];
+
+        if (![NSThread inMainThread]) {
+            [importStatusLock lock];
+            importStatusText = [filePath retain];
+            importFileIndex = fileIndex;
+            importFileCount = fileCount;
+            [importStatusLock unlock];
+
+            if (importCancelled) {
+                [pool release];
+                break;
+            }
+    
+            [self mainThreadPerformSelectorOnce:@selector(_updateImportStatusDisplay)];
+        }
+
+        addedEntry = [library addEntryForFile:filePath];
         if (addedEntry)
             [addedEntries addObject:addedEntry];
+
+        [pool release];
     }
 
-    // Redisplay the UI    
-    [self synchronizeInterface];
+    return addedEntries;
+}
 
-    // And select and scroll to the new items in the table view
-    entryCount = [addedEntries count];
-    if (entryCount  > 0) {
-        NSArray *entries;
-        unsigned int entryIndex;
+- (void)_showImportSheet;
+{
+    [self _updateImportStatusDisplay];
 
-        entries = [library entries];
+    // Bring the application and window to the front, so the sheet doesn't trigger the dock to bounce our icon
+    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+    [[self window] makeKeyAndOrderFront:nil];
+    
+    [[NSApplication sharedApplication] beginSheet:importSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_sheetDidEnd:returnCode:contextInfo:) contextInfo:nil];
+}
 
-        for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
-            unsigned int row;
+- (void)_updateImportStatusDisplay;
+{
+    NSString *filePath, *message;
+    unsigned int fileIndex, fileCount;
+    
+    [importStatusLock lock];
+    filePath = [importStatusText retain];
+    fileIndex = importFileIndex;
+    fileCount = importFileCount;
+    [importStatusLock unlock];
 
-            row = [entries indexOfObjectIdenticalTo:[addedEntries objectAtIndex:entryIndex]];
+    message = [[NSFileManager defaultManager] displayNameAtPath:filePath];
+    [filePath release];
+    [importProgressMessageField setStringValue:message];
 
-            if (entryIndex == 0) {
-                [libraryTableView selectRow:row byExtendingSelection:NO];
-                [libraryTableView scrollRowToVisible:row];
-            } else {
-                [libraryTableView selectRow:row byExtendingSelection:YES];                
-            }
+    if (fileCount == 0) {
+        [importProgressIndicator setIndeterminate:YES];
+        [importProgressIndicator setUsesThreadedAnimation:YES];
+        [importProgressIndicator startAnimation:nil];
+        [importProgressIndexField setStringValue:@""];
+    } else {
+        if ([importProgressIndicator isIndeterminate]) {
+            [importProgressIndicator setIndeterminate:NO];
+            [importProgressIndicator setMaxValue:fileCount];
         }
+        [importProgressIndicator setDoubleValue:fileIndex + 1];
+        [importProgressIndexField setStringValue:[NSString stringWithFormat:@"%u of %u", fileIndex + 1, fileCount]];
     }
+}
+     
+- (void)_doneImporting:(NSArray *)addedEntries;
+{
+    if ([[self window] attachedSheet])
+        [[NSApplication sharedApplication] endSheet:importSheetWindow];
+
+    [self synchronizeInterface];
+    [self _selectAndScrollToEntries:addedEntries];
 }
 
 @end

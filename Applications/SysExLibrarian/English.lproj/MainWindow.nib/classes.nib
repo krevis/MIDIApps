@@ -9,6 +9,7 @@
         }, 
         {
             ACTIONS = {
+                cancelImportSheet = id; 
                 cancelPlaySheet = id; 
                 cancelRecordSheet = id; 
                 delete = id; 
@@ -25,7 +26,11 @@
             OUTLETS = {
                 deleteButton = NSButton; 
                 destinationPopUpButton = NSPopUpButton; 
-                libraryTableView = NSTableView; 
+                importProgressIndexField = NSTextField; 
+                importProgressIndicator = NSProgressIndicator; 
+                importProgressMessageField = NSTextField; 
+                importSheetWindow = NSWindow; 
+                libraryTableView = SSETableView; 
                 mainController = SSEMainController; 
                 playButton = NSButton; 
                 playProgressBytesField = NSTextField; 

@@ -35,11 +35,21 @@
     IBOutlet NSTextField *playProgressMessageField;
     IBOutlet NSTextField *playProgressBytesField;
 
+    IBOutlet NSWindow *importSheetWindow;
+    IBOutlet NSProgressIndicator *importProgressIndicator;
+    IBOutlet NSTextField *importProgressMessageField;
+    IBOutlet NSTextField *importProgressIndexField;
+
     // Library
     SSELibrary *library;
     
     // Transient data
     OFScheduledEvent *progressUpdateEvent;
+    NSLock *importStatusLock;
+    NSString *importStatusText;
+    unsigned int importFileIndex;
+    unsigned int importFileCount;
+    BOOL importCancelled;
 }
 
 + (SSEMainWindowController *)mainWindowController;
@@ -58,6 +68,8 @@
 - (IBAction)cancelRecordSheet:(id)sender;
 - (IBAction)doneWithRecordMultipleSheet:(id)sender;
 - (IBAction)cancelPlaySheet:(id)sender;
+
+- (IBAction)cancelImportSheet:(id)sender;
 
 // Other API
 
