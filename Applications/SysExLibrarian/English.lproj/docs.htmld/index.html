@@ -80,12 +80,47 @@
 
 <P><BR><BR><a name="Troubleshooting"><font size="+1" face="arial, helvetica"><b>Troubleshooting</b></font></a>
 
-<P>You must have a Mac OS X driver for your MIDI interface; Mac OS 9 drivers will <i>not</i> work. Please check with the manufacturer of your device for drivers.
+<P>Please note two things:
+<ul>
+<li><B>SysEx Librarian is absolutely dependent on the MIDI interface's driver</B>
+<li><B>MIDI drivers can and do have bugs, especially when dealing with SysEx messages</B>
+</ul>
 
-<P>If you have a device hooked up, and the proper driver, but you don't see it in the menu, you may be running into a problem with the Classic environment. Classic tends to grab USB devices for its own exclusive use, and doesn't let programs on the native Mac OS X side get to them. Try shutting down Classic and starting SysEx Librarian again. (If SysEx Librarian is started first, and is running when Classic starts, you will not encounter this problem.)
+<P>If you're having problems, your first step should be to <b>get the latest version of the driver for your MIDI interface.</b>  Almost all manufacturers have web sites where the drivers can be downloaded -- please check with the manufacturer of your particular device.
 
-<P>Notes on specific interfaces:
+<P>You must have a Mac OS X driver for your MIDI interface; Mac OS 9 drivers will <i>not</i> work.
 
+<P>Because MIDI is a very old and primitive communications protocol, it doesn't have the kind of error checking that we take for granted in more modern systems.  When SysEx Librarian records a message coming from your device, it has almost no way of checking that it received the message correctly.  The message could have been corrupted while in transit -- either by the MIDI hardware or by the software in the driver -- but SysEx Librarian cannot tell the difference between a correct message and a bogus one.  Similarly, when SysEx Librarian sends a message to a MIDI device, it cannot tell whether the message was successfully received.
+
+<P>As a result, many apparent "bugs" in SysEx Librarian really turn out to be bugs in the MIDI driver.
+
+<P><b><i>I can send SysEx to my device, but it doesn't recognize the message. Why?</i></b>
+<BR>In order to trace this problem, we need to know two things:
+<ul>
+<li>Is the SysEx message correct? (not corrupted somehow -- e.g. missing bytes, containing extra bytes, etc.)
+<p>Where did your SysEx file originally come from?  If you downloaded it from the Internet, chances are that it is good (although that's not a certainty).  If you recorded it using SysEx Librarian, it may have been corrupted on the way in.  If you can, try to find a file that you know is correct.
+</li>
+
+<li>Is your MIDI interface is correctly sending the data that SysEx Librarian tells it to?
+<P>Here's a way to see if SysEx Librarian is sending the right data, and to see if the MIDI interface is sending what SysEx Librarian tells it to send. 
+<ol>
+<li>Run my program <a href="http://www.snoize.com/MIDIMonitor/">MIDI Monitor</a>.
+<li>Make sure it's listening to MIDI input.  Press a button or turn a knob on your MIDI device--anything that would send a MIDI message. The message should appear in MIDI Monitor.
+<li>Hook up a MIDI cable from the output of your MIDI interface, <b>directly</b> back to an input on the same MIDI interface.
+<li>In the MIDI Monitor window, in the Sources section, open the "Spy on output to destinations" section and check the box for your MIDI interface.
+<li>Run SysEx Librarian, and have it send to your MIDI interface.
+</ol>
+<br>You should see two sysex messages in the MIDI Monitor window, one labeled "To <i>your MIDI interface</i>" and one labeled "From <i>your MIDI interface</i>". They should have the same length and the same contents, and they should be the same as the message that appears in SysEx Librarian.
+<p>If the "To <i>your MIDI interface</i>" message is different from the one in SysEx Librarian, then SysEx Librarian is doing the wrong thing.  I don't think this will happen, but if it does, please let me know.
+<p>If the "From <i>your MIDI interface</i>" message is different from the "To <i>your MIDI interface</i>" message, then the driver either didn't send the same thing that SysEx Librarian told it to, or it couldn't receive the same message back again without corrupting it.   Either way, it's a bug in the driver.
+
+</li>
+</ul>
+
+<P><b><i>My MIDI interface is plugged in, and the driver is installed, but I don't see my device in the menu.</i></b>
+<br>You may be running into a problem with Classic, the Mac OS 9 compatibility layer. Classic tends to grab USB devices for its own exclusive use, and doesn't let programs on the native Mac OS X side get to them. Try shutting down Classic and starting SysEx Librarian again. (If SysEx Librarian is started first, and is running when Classic starts, you will not encounter this problem.)
+
+<P><b><i>Notes on specific interfaces:</i></b>
 <ul>
 <li>The driver for Edirol/Roland MIDI interfaces (such as the UM-1, UM-1S, UM-2, and UM-4) has had problems sending SysEx data. I have a report that the latest version of the driver fixes this problem, so please <a href="http://www.edirol.com/support/drivers.html">download the latest version</a> if necessary. (The good driver is version 1.1.0, released 6 November 2002.)
 
@@ -93,7 +128,9 @@
 <li>MIDIMAN's drivers have had problems handling SysEx, but the latest driver (3.0b1, 16 August 2002) appears to work correctly. If you are using an older version of the driver, getting the new one is highly recommended.
 </ul>
 
-<P>Having other problems? Please let me know and I'll try to help find a solution.  SysEx Librarian is a young program, and there are a lot of very weird MIDI devices out there that it hasn't yet been tested with.  I want to get it working as well as possible, but I can't do that unless you tell me about problems that you encounter.
+<P><b><i>Having other problems?</i></b>
+<BR>Please let me know and I'll try to help find a solution.  SysEx Librarian is a young program, and there are a lot of very weird MIDI devices out there that it hasn't yet been tested with.  I want to get it working as well as possible, but I can't do that unless you tell me about problems that you encounter.
+
 
 <P><BR><BR><font size="+1" face="arial, helvetica"><b>Contact</b></font>
 <P>Please send questions or comments to: <a href="mailto:SysExLibrarian@snoize.com">SysExLibrarian@snoize.com</a>
