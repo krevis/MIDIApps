@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include "MoreFilesX.h"
+#include "MoreFilesXSubset.h"
 
 
 //
@@ -17,8 +17,8 @@ static CFStringRef kSpyingMIDIDriverPlugInIdentifier = NULL;
 static void InitializeConstantStrings(void)  __attribute__ ((constructor));
 void InitializeConstantStrings(void)
 {
-    kSpyingMIDIDriverPlugInName = CFSTR("SpyingMIDIDriver.plugin");
-    kSpyingMIDIDriverPlugInIdentifier = CFSTR("com.snoize.SpyingMIDIDriver");
+    kSpyingMIDIDriverPlugInName = CFSTR("MIDI Monitor.plugin");
+    kSpyingMIDIDriverPlugInIdentifier = CFSTR("com.snoize.MIDIMonitorDriver");
 }
 
 
