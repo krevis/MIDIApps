@@ -2,9 +2,10 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            ACTIONS = {beep = id; }; 
+            ACTIONS = {setHiddenHeight = id; }; 
             CLASS = SNDisclosableViewInspector; 
             LANGUAGE = ObjC; 
+            OUTLETS = {hiddenHeightField = NSTextField; }; 
             SUPERCLASS = IBInspector; 
         }
     ); 

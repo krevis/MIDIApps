@@ -28,9 +28,11 @@
 				0259C577FE90428111CA0C5A,
 				0259C57CFE90428111CA0C5A,
 				0259C578FE90428111CA0C5A,
+				F58CF5CA02DF1CC701000164,
+				F58CF5CB02DF1CC701000164,
 				0259C582FE90428111CA0C5A,
-				1ED78706FE9D4A0611CA0C5A,
 				2E58F364FFB232C311CA0CBA,
+				1ED78706FE9D4A0611CA0C5A,
 			);
 			isa = PBXGroup;
 			name = DisclosableViewPalette;
@@ -167,6 +169,7 @@
 			files = (
 				0259C58CFE90434211CA0C5A,
 				0259C58DFE90434211CA0C5A,
+				F51FB7C902E024B401000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -217,6 +220,7 @@
 			files = (
 				0259C594FE90434211CA0C5A,
 				0259C595FE90434211CA0C5A,
+				F51FB7CA02E024B401000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -355,6 +359,18 @@
 //F52
 //F53
 //F54
+		F51FB7C902E024B401000164 = {
+			fileRef = F58CF5CA02DF1CC701000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F51FB7CA02E024B401000164 = {
+			fileRef = F58CF5CB02DF1CC701000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		F54FF60F02DEF76301000164 = {
 			isa = PBXFrameworkReference;
 			path = DisclosableView.framework;
@@ -376,6 +392,16 @@
 			isa = PBXBuildFile;
 			settings = {
 			};
+		};
+		F58CF5CA02DF1CC701000164 = {
+			isa = PBXFileReference;
+			path = "SNDisclosableView-Additions.h";
+			refType = 4;
+		};
+		F58CF5CB02DF1CC701000164 = {
+			isa = PBXFileReference;
+			path = "SNDisclosableView-Additions.m";
+			refType = 4;
 		};
 	};
 	rootObject = 0259C573FE90428111CA0C5A;

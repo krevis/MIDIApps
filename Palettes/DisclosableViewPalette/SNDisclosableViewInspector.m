@@ -14,26 +14,22 @@
 
 - (id)init
 {
-    self = [super init];
+    if (!(self = [super init]))
+        return nil;
+    
     [NSBundle loadNibNamed:@"DisclosableViewInspector" owner:self];
     return self;
 }
 
-- (void)ok:(id)sender
-{
-    /* Your code Here */
-    [super ok:sender];
-}
-
 - (void)revert:(id)sender
 {
-    /* Your code Here */
     [super revert:sender];
+    [hiddenHeightField setFloatValue:[[self object] hiddenHeight]]; 
 }
 
-- (IBAction)beep:(id)sender
+- (IBAction)setHiddenHeight:(id)sender
 {
-    NSBeep();
+    [(SNDisclosableView *)[self object] setHiddenHeight:[sender floatValue]];
 }
 
 @end

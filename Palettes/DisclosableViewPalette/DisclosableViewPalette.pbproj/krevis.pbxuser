@@ -96,5 +96,31 @@
 	};
 	0259C589FE90434211CA0C5A = {
 		activeExec = 0;
+		customExecs = {
+			macosx = (
+				F5CFE25702E1B7C101000164,
+			);
+		};
+	};
+	F5CFE25702E1B7C101000164 = {
+		activeArgIndex = 2147483647;
+		argumentStrings = (
+		);
+		debuggerPlugin = GDBDebugging;
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		isa = PBXExecutable;
+		launchableReference = F5CFE25802E1B7C101000164;
+		shlibInfoDictList = (
+		);
+		sourceDirectories = (
+		);
+	};
+	F5CFE25802E1B7C101000164 = {
+		isa = PBXApplicationReference;
+		name = "Interface Builder.app";
+		path = "/Developer/Applications/Interface Builder.app";
+		refType = 0;
 	};
 }

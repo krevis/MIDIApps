@@ -10,8 +10,9 @@
 
 @interface SNDisclosableViewInspector : IBInspector
 {
+    IBOutlet NSTextField *hiddenHeightField;
 }
 
-- (IBAction)beep:(id)sender;
+- (IBAction)setHiddenHeight:(id)sender;
 
 @end
