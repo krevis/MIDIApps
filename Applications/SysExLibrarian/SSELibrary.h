@@ -41,3 +41,6 @@ typedef enum _SSELibraryFileType {
 - (SSELibraryFileType)typeOfFileAtPath:(NSString *)filePath;
 
 @end
+
+// Notifications
+extern NSString *SSELibraryDidChangeNotification;

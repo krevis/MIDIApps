@@ -17,6 +17,8 @@
 
 @implementation SSELibrary
 
+DEFINE_NSSTRING(SSELibraryDidChangeNotification);
+
 
 + (NSString *)defaultPath;
 {
@@ -154,6 +156,8 @@
 {
     flags.isDirty = YES;
     [self autosave];
+    
+    [[NSNotificationQueue defaultQueue] enqueueNotificationName:SSELibraryDidChangeNotification object:self postingStyle:NSPostWhenIdle];
 }
 
 - (void)autosave;
@@ -268,8 +272,7 @@
         SSELibraryEntry *entry;
 
         entryDict = [entryDicts objectAtIndex:entryDictIndex];
-        entry = [[SSELibraryEntry alloc] initWithLibrary:self];
-        [entry takeValuesFromDictionary:entryDict];
+        entry = [[SSELibraryEntry alloc] initWithLibrary:self dictionary:entryDict];
         [entries addObject:entry];
         [entry release];
     }

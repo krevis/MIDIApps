@@ -16,6 +16,8 @@
 
 - (void)_synchronizePopUpButton:(NSPopUpButton *)popUpButton withDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 
+- (void)_libraryDidChange:(NSNotification *)notification;
+
 - (void)_selectAndScrollToEntries:(NSArray *)entries;
 
 - (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
@@ -62,6 +64,7 @@ static SSEMainWindowController *controller;
         return nil;
 
     library = [[SSELibrary alloc] init];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_libraryDidChange:) name:SSELibraryDidChangeNotification object:library];
 
     importStatusLock = [[NSLock alloc] init];
 
@@ -287,7 +290,8 @@ static SSEMainWindowController *controller;
 
         entry = [library addNewEntryWithData:allSysexData];
         [self synchronizeLibrary];
-        [self _selectAndScrollToEntries:[NSArray arrayWithObject:entry]];
+        if (entry)
+            [self _selectAndScrollToEntries:[NSArray arrayWithObject:entry]];
     }
 }
 
@@ -496,6 +500,11 @@ static SSEMainWindowController *controller;
     [[self window] setAutodisplay:wasAutodisplay];
 }
 
+- (void)_libraryDidChange:(NSNotification *)notification;
+{
+    [self synchronizeLibrary];
+}
+
 - (void)_selectAndScrollToEntries:(NSArray *)entries;
 {
     unsigned int entryCount, entryIndex;
@@ -520,8 +529,13 @@ static SSEMainWindowController *controller;
 
 - (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
 {
-    if (returnCode == NSOKButton)
-        [self _addFilesToLibrary:[openPanel filenames]];
+    if (returnCode == NSOKButton) {
+        NSArray *newEntries;
+        
+        newEntries = [self _addFilesToLibrary:[openPanel filenames]];        
+        [self synchronizeLibrary];
+        [self _selectAndScrollToEntries:newEntries];
+    }
 }
 
 - (void)_sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;

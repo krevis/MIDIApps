@@ -10,11 +10,17 @@
 
 @interface SSELibraryEntry (Private)
 
++ (NSString *)_manufacturerNameFromMessages:(NSArray *)messages;
++ (NSNumber *)_sizeFromMessages:(NSArray *)messages;
++ (NSNumber *)_messageCountFromMessages:(NSArray *)messages;
+
+- (void)_takeValuesFromDictionary:(NSDictionary *)dict;
+
 - (void)_updateDerivedInformationFromMessages:(NSArray *)messages;
 
-- (void)_updateManufacturerNameFromMessages:(NSArray *)messages;
-- (void)_updateSizeFromMessages:(NSArray *)messages;
-- (void)_updateMessageCountFromMessages:(NSArray *)messages;
+- (void)_setManufacturerName:(NSString *)value;
+- (void)_setSize:(NSNumber *)value;
+- (void)_setMessageCount:(NSNumber *)value;
 
 @end
 
@@ -27,7 +33,18 @@
         return nil;
 
     nonretainedLibrary = library;
-    isFilePresent = NO;
+    flags.hasLookedForFile = NO;
+    flags.isFilePresent = NO;
+
+    return self;
+}
+
+- (id)initWithLibrary:(SSELibrary *)library dictionary:(NSDictionary *)dict;
+{
+    if (![self initWithLibrary:library])
+        return nil;
+
+    [self _takeValuesFromDictionary:dict];
     
     return self;
 }
@@ -67,8 +84,6 @@
     if (name)
         [dict setObject:name forKey:@"name"];
 
-    [self updateDerivedInformation];
-
     if (manufacturerName)
         [dict setObject:manufacturerName forKey:@"manufacturerName"];
     if (sizeNumber)
@@ -79,66 +94,30 @@
     return dict;
 }
 
-- (void)takeValuesFromDictionary:(NSDictionary *)dict;
-{
-    id data, string, number;
-
-    data = [dict objectForKey:@"alias"];
-    if (data && [data isKindOfClass:[NSData class]])  {
-        [alias release];
-        alias = [[BDAlias alloc] initWithData:data];
-    }
-
-    string = [dict objectForKey:@"name"];
-    if (string && [string isKindOfClass:[NSString class]]) {
-        [name release];
-        name = [string retain];
-    } else {
-        [self setNameFromFile];
-    }
-
-    string = [dict objectForKey:@"manufacturerName"];
-    if (string && [string isKindOfClass:[NSString class]]) {
-        [manufacturerName release];
-        manufacturerName = [string retain];
-    }
-
-    number = [dict objectForKey:@"size"];
-    if (number && [number isKindOfClass:[NSNumber class]]) {
-        [sizeNumber release];
-        sizeNumber = [number retain];
-    }
-
-    number = [dict objectForKey:@"messageCount"];
-    if (number && [number isKindOfClass:[NSNumber class]]) {
-        [messageCountNumber release];
-        messageCountNumber = [number retain];
-    }    
-}
-
 - (NSString *)path;
 {
+    BOOL wasFilePresent;
     NSString *path;
+
+    wasFilePresent = flags.hasLookedForFile && flags.isFilePresent;
     
     path = [alias fullPath];
-    isFilePresent = (path != nil);
+
+    flags.hasLookedForFile = YES;
+    flags.isFilePresent = (path && [[NSFileManager defaultManager] fileExistsAtPath:path]);
+
+    if (flags.isFilePresent != wasFilePresent)
+        [nonretainedLibrary noteEntryChanged];
 
     return path;
 }
 
 - (void)setPath:(NSString *)value;
 {
-    NSString *path;
+    [alias release];
+    alias = [[BDAlias alloc] initWithPath:value];
 
-    path = [self path];
-    if (value != path && ![value isEqualToString:path]) {
-        [alias release];
-        alias = [[BDAlias alloc] initWithPath:value];
-
-        [nonretainedLibrary noteEntryChanged];
-
-        isFilePresent = [[NSFileManager defaultManager] fileExistsAtPath:value];
-    }
+    [nonretainedLibrary noteEntryChanged];
 }
 
 - (NSString *)name;
@@ -200,11 +179,6 @@
     return messages;
 }
 
-- (void)updateDerivedInformation;
-{
-    [self _updateDerivedInformationFromMessages:[self messages]];
-}
-
 - (NSString *)manufacturerName;
 {
     return manufacturerName;
@@ -222,7 +196,11 @@
 
 - (BOOL)isFilePresent;
 {
-    return isFilePresent;
+    if (!flags.hasLookedForFile)
+        [self path];
+
+    OBASSERT(flags.hasLookedForFile);
+    return flags.isFilePresent;
 }
 
 @end
@@ -230,19 +208,10 @@
 
 @implementation SSELibraryEntry (Private)
 
-- (void)_updateDerivedInformationFromMessages:(NSArray *)messages;
-{
-    [self _updateManufacturerNameFromMessages:messages];
-    [self _updateSizeFromMessages:messages];
-    [self _updateMessageCountFromMessages:messages];
-}
-
-- (void)_updateManufacturerNameFromMessages:(NSArray *)messages;
++ (NSString *)_manufacturerNameFromMessages:(NSArray *)messages;
 {
     unsigned int messageIndex;
-
-    [manufacturerName release];
-    manufacturerName = nil;
+    NSString *newName = nil;
 
     messageIndex = [messages count];
     while (messageIndex--) {
@@ -252,22 +221,22 @@
         if (!messageManufacturerName)
             continue;
 
-        if (!manufacturerName) {
-            manufacturerName = messageManufacturerName;
-        } else if (![messageManufacturerName isEqualToString:manufacturerName]) {
-            manufacturerName = @"Various";
+        if (!newName) {
+            newName = messageManufacturerName;
+        } else if (![messageManufacturerName isEqualToString:newName]) {
+            newName = @"Various";
             // TODO localize
             break;
         }
     }
 
-    if (!manufacturerName)
-        manufacturerName = @"Unknown";	// TODO localize or get from SnoizeMIDI framework
+    if (!newName)
+        newName = @"Unknown";	// TODO localize or get from SnoizeMIDI framework
 
-    [manufacturerName retain];
+    return newName;
 }
 
-- (void)_updateSizeFromMessages:(NSArray *)messages;
++ (NSNumber *)_sizeFromMessages:(NSArray *)messages;
 {
     unsigned int messageIndex;
     unsigned int size = 0;
@@ -276,14 +245,85 @@
     while (messageIndex--)
         size += [[messages objectAtIndex:messageIndex] fullMessageDataLength];
 
-    [sizeNumber release];
-    sizeNumber = [[NSNumber alloc] initWithUnsignedInt:size];
+    return [NSNumber numberWithUnsignedInt:size];
 }
 
-- (void)_updateMessageCountFromMessages:(NSArray *)messages;
++ (NSNumber *)_messageCountFromMessages:(NSArray *)messages;
 {
-    [messageCountNumber release];
-    messageCountNumber = [[NSNumber alloc] initWithUnsignedInt:[messages count]];
+    return [NSNumber numberWithUnsignedInt:[messages count]];
+}
+
+- (void)_takeValuesFromDictionary:(NSDictionary *)dict;
+{
+    id data, string, number;
+
+    OBASSERT(alias == nil);
+    data = [dict objectForKey:@"alias"];
+    if (data && [data isKindOfClass:[NSData class]])
+        alias = [[BDAlias alloc] initWithData:data];
+
+    OBASSERT(name == nil);
+    string = [dict objectForKey:@"name"];
+    if (string && [string isKindOfClass:[NSString class]]) {
+        name = [string retain];
+    } else {
+        [self setNameFromFile];
+    }
+
+    OBASSERT(manufacturerName == nil);
+    string = [dict objectForKey:@"manufacturerName"];
+    if (string && [string isKindOfClass:[NSString class]]) {
+        manufacturerName = [string retain];
+    }
+
+    OBASSERT(sizeNumber == nil);
+    number = [dict objectForKey:@"size"];
+    if (number && [number isKindOfClass:[NSNumber class]]) {
+        sizeNumber = [number retain];
+    }
+
+    OBASSERT(messageCountNumber == nil);
+    number = [dict objectForKey:@"messageCount"];
+    if (number && [number isKindOfClass:[NSNumber class]]) {
+        messageCountNumber = [number retain];
+    }
+}
+
+- (void)_updateDerivedInformationFromMessages:(NSArray *)messages;
+{
+    [self _setManufacturerName:[[self class] _manufacturerNameFromMessages:messages]];
+    [self _setSize:[[self class] _sizeFromMessages:messages]];
+    [self _setMessageCount:[[self class] _messageCountFromMessages:messages]];
+}
+
+- (void)_setManufacturerName:(NSString *)value;
+{
+    if (value != manufacturerName && ![manufacturerName isEqualToString:value]) {
+        [manufacturerName release];
+        manufacturerName = [value retain];
+
+        [nonretainedLibrary noteEntryChanged];
+    }
+}
+
+- (void)_setSize:(NSNumber *)value;
+{
+    if (value != sizeNumber && ![sizeNumber isEqual:value]) {
+        [sizeNumber release];
+        sizeNumber = [value retain];
+        
+        [nonretainedLibrary noteEntryChanged];
+    }
+}
+
+- (void)_setMessageCount:(NSNumber *)value;
+{
+    if (value != messageCountNumber && ![messageCountNumber isEqual:value]) {
+        [messageCountNumber release];
+        messageCountNumber = [value retain];
+
+        [nonretainedLibrary noteEntryChanged];
+    }
 }
 
 @end

@@ -16,13 +16,16 @@
     NSString *manufacturerName;
     NSNumber *sizeNumber;
     NSNumber *messageCountNumber;
-    BOOL isFilePresent;
+    struct {
+        unsigned int isFilePresent:1;
+        unsigned int hasLookedForFile:1;
+    } flags;
 }
 
 - (id)initWithLibrary:(SSELibrary *)library;
+- (id)initWithLibrary:(SSELibrary *)library dictionary:(NSDictionary *)dict;
 
 - (NSDictionary *)dictionaryValues;
-- (void)takeValuesFromDictionary:(NSDictionary *)dict;
 
 - (NSString *)path;
 - (void)setPath:(NSString *)value;
@@ -34,8 +37,6 @@
 - (NSArray *)messages;
 
 // Derived information (comes from messages, but gets cached in the entry)
-
-- (void)updateDerivedInformation;
 
 - (NSString *)manufacturerName;
 - (unsigned int)size;
