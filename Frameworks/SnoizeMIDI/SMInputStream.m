@@ -5,7 +5,9 @@
 
 #import "SMClient.h"
 #import "SMEndpoint.h"
+#import "SMMessage.h"
 #import "SMMessageParser.h"
+#import "SMSystemExclusiveMessage.h"
 
 
 @interface SMInputStream (Private)
@@ -49,6 +51,11 @@ DEFINE_NSSTRING(SMInputStreamDoneReadingSysExNotification);
     [parser setMessageDestination:messageDestination];
 }
 
+- (BOOL)cancelReceivingSysExMessage;
+{
+    return [parser cancelReceivingSysExMessage];
+}
+
 - (MIDIReadProc)midiReadProc;
 {
     return midiReadProc;
@@ -58,19 +65,21 @@ DEFINE_NSSTRING(SMInputStreamDoneReadingSysExNotification);
 // Parser delegate
 //
 
-- (void)parser:(SMMessageParser *)parser isReadingSysExData:(NSData *)sysExData;
+- (void)parser:(SMMessageParser *)parser isReadingSysExWithLength:(unsigned int)length;
 {
     NSDictionary *userInfo;
     
-    userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithUnsignedInt:[sysExData length]] forKey:@"length"];
+    userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithUnsignedInt:length] forKey:@"length"];
     [[NSNotificationCenter defaultCenter] postNotificationName:SMInputStreamReadingSysExNotification object:self userInfo:userInfo];
 }
 
-- (void)parser:(SMMessageParser *)parser finishedReadingSysExData:(NSData *)sysExData validEOX:(BOOL)wasValid;
+- (void)parser:(SMMessageParser *)parser finishedReadingSysExMessage:(SMSystemExclusiveMessage *)message;
 {
     NSDictionary *userInfo;
     
-    userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:[sysExData length]], @"length", [NSNumber numberWithBool:wasValid], @"valid", nil];
+    userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+        [NSNumber numberWithUnsignedInt:[[message receivedData] length]], @"length",
+        [NSNumber numberWithBool:[message wasReceivedWithEOX]], @"valid", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:SMInputStreamDoneReadingSysExNotification object:self userInfo:userInfo];
 }
 

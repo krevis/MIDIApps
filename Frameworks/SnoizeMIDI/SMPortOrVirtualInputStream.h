@@ -10,6 +10,8 @@
 - (id<SMMessageDestination>)messageDestination;
 - (void)setMessageDestination:(id<SMMessageDestination>)messageDestination;
 
+- (BOOL)cancelReceivingSysExMessage;
+
 @end
 
 // Notifications

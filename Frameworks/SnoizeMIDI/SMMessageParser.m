@@ -24,6 +24,8 @@
     if (!(self = [super init]))
         return nil;
 
+    readingSysExLock = [[NSLock alloc] init];
+    
     return self;
 }
 
@@ -31,6 +33,8 @@
 {
     [readingSysExData release];
     readingSysExData = nil;
+    [readingSysExLock release];
+    readingSysExLock = nil;
     
     nonretainedMessageDestination = nil;
 
@@ -87,6 +91,23 @@
         [nonretainedMessageDestination takeMIDIMessages:messages];
 }
 
+- (BOOL)cancelReceivingSysExMessage;
+{
+    BOOL cancelled = NO;
+
+    [readingSysExLock lock];
+
+    if (readingSysExData) {
+        [readingSysExData release];
+        readingSysExData = nil;
+        cancelled = YES;
+    }
+
+    [readingSysExLock unlock];
+
+    return cancelled;
+}
+
 @end
 
 
@@ -132,11 +153,18 @@
         } else {
             if (byte < 0x80) {
                 if (readingSysExData) {
-                    [readingSysExData appendBytes:&byte length:1];
+                    [readingSysExLock lock];
+                    if (readingSysExData) {
+                        unsigned int length;
 
-                    // Tell the delegate we're still reading, every 256 bytes (starting with the first byte)
-                    if ([readingSysExData length] % 256 == 1)
-                        [nonretainedDelegate parser:self isReadingSysExData:readingSysExData];
+                        [readingSysExData appendBytes:&byte length:1];
+
+                        length = [readingSysExData length];
+                        // Tell the delegate we're still reading, every 256 bytes (starting with the first byte)
+                        if (length % 256 == 1)
+                            [nonretainedDelegate parser:self isReadingSysExWithLength:length];
+                    }
+                    [readingSysExLock unlock];
                 } else if (pendingDataIndex < pendingDataLength) {
                     pendingData[pendingDataIndex] = byte;
                     pendingDataIndex++;
@@ -155,16 +183,20 @@
                 }
             } else {
                 if (readingSysExData) {
-                    // NOTE: If we want, we could refuse sysex messages that don't end in 0xF7.
-                    // The MIDI spec says that messages should end with this byte, but apparently that is not always the case in practice.
-                    BOOL wasValidEOX = (byte == 0xF7);
-                    
-                    message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:startSysExTimeStamp data:readingSysExData];
-                    [(SMSystemExclusiveMessage *)message setWasReceivedWithEOX:wasValidEOX];
-                    [nonretainedDelegate parser:self finishedReadingSysExData:readingSysExData validEOX:wasValidEOX];
-
-                    [readingSysExData release];
-                    readingSysExData = nil;                    
+                    [readingSysExLock lock];
+                    if (readingSysExData) {
+                        // NOTE: If we want, we could refuse sysex messages that don't end in 0xF7.
+                        // The MIDI spec says that messages should end with this byte, but apparently that is not always the case in practice.
+                        BOOL wasValidEOX = (byte == 0xF7);
+    
+                        message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:startSysExTimeStamp data:readingSysExData];
+                        [(SMSystemExclusiveMessage *)message setWasReceivedWithEOX:wasValidEOX];
+                        [nonretainedDelegate parser:self finishedReadingSysExMessage:(SMSystemExclusiveMessage *)message];
+    
+                        [readingSysExData release];
+                        readingSysExData = nil;
+                    }
+                    [readingSysExLock unlock];
                 }
 
                 pendingMessageStatus = byte;
@@ -190,7 +222,7 @@
                         switch (byte) {
                             case 0xF0:
                                 // System exclusive
-                                readingSysExData = [[NSMutableData alloc] init];
+                                readingSysExData = [[NSMutableData alloc] init];  // This is atomic, so there's no need to lock
                                 startSysExTimeStamp = packet->timeStamp;
                                 break;
                                 

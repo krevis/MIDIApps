@@ -3,10 +3,13 @@
 #import <Foundation/Foundation.h>
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 
+@class SMSystemExclusiveMessage;
+
 
 @interface SMMessageParser : OFObject
 {
     NSMutableData *readingSysExData;
+    NSLock *readingSysExLock;
     MIDITimeStamp startSysExTimeStamp;
     
     id<SMMessageDestination> nonretainedMessageDestination;
@@ -21,12 +24,15 @@
 
 - (void)takePacketList:(const MIDIPacketList *)packetList;
 
+- (BOOL)cancelReceivingSysExMessage;
+    // Returns YES if it can successfully cancel a sysex message which is being received, and NO otherwise.
+
 @end
 
 
 @interface NSObject (SMMessageParserDelegate)
 
-- (void)parser:(SMMessageParser *)parser isReadingSysExData:(NSData *)sysExData;
-- (void)parser:(SMMessageParser *)parser finishedReadingSysExData:(NSData *)sysExData validEOX:(BOOL)wasValid;
+- (void)parser:(SMMessageParser *)parser isReadingSysExWithLength:(unsigned int)length;
+- (void)parser:(SMMessageParser *)parser finishedReadingSysExMessage:(SMSystemExclusiveMessage *)message;
 
 @end

@@ -31,6 +31,11 @@
     [[self stream] setMessageDestination:messageDestination];
 }
 
+- (BOOL)cancelReceivingSysExMessage;
+{
+    return [[self stream] cancelReceivingSysExMessage];
+}
+
 //
 // SMPortOrVirtualStream subclass methods
 //

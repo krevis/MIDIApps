@@ -14,6 +14,9 @@
 - (id<SMMessageDestination>)messageDestination;
 - (void)setMessageDestination:(id<SMMessageDestination>)messageDestination;
 
+- (BOOL)cancelReceivingSysExMessage;
+    // Returns YES if it can successfully cancel a sysex message which is being received, and NO otherwise.
+
 // For subclasses only
 - (MIDIReadProc)midiReadProc;
 
