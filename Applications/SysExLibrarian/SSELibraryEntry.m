@@ -234,7 +234,7 @@
 {
     NSString *path;
     SSELibraryFileType fileType;
-    NSArray *messages;
+    NSArray *messages = nil;
 
     path = [self path];
     if (!path)
