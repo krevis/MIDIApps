@@ -323,20 +323,16 @@ static SSEMainWindowController *controller;
 
 - (void)_updateMultipleSysExReadIndicatorWithMessageCount:(unsigned int)messageCount bytesRead:(unsigned int)bytesRead totalBytesRead:(unsigned int)totalBytesRead;
 {
-    BOOL isWaiting;
-    NSString *tabIdentifier;
     NSString *totalProgress;
     BOOL hasAtLeastOneCompleteMessage;
 
-    isWaiting = (bytesRead == 0);
-
-    tabIdentifier = isWaiting ? @"waiting" : @"receiving";
-    [recordMultipleTabView selectTabViewItemWithIdentifier:tabIdentifier];
-
-    if (!isWaiting) {
+    if (bytesRead == 0) {
+        [recordMultipleProgressMessageField setStringValue:@"Waiting for SysEx message..."]; 	// TODO localize
+        [recordMultipleProgressBytesField setStringValue:@""];
+    } else {
         [recordMultipleProgressIndicator animate:nil];
-        [recordMultipleProgressField setStringValue:[@"Received " stringByAppendingString:[NSString abbreviatedStringForBytes:bytesRead]]];
-        // TODO localize
+        [recordMultipleProgressMessageField setStringValue:@"Receiving SysEx message..."]; 	// TODO localize
+        [recordMultipleProgressBytesField setStringValue:[NSString abbreviatedStringForBytes:bytesRead]];
     }
 
     hasAtLeastOneCompleteMessage = (messageCount > 0);

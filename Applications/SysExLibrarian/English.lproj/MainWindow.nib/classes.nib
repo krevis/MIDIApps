@@ -30,10 +30,10 @@
                 playProgressMessageField = NSTextField; 
                 playSheetWindow = NSWindow; 
                 recordMultipleDoneButton = NSButton; 
-                recordMultipleProgressField = NSTextField; 
+                recordMultipleProgressBytesField = NSTextField; 
                 recordMultipleProgressIndicator = NSProgressIndicator; 
+                recordMultipleProgressMessageField = NSTextField; 
                 recordMultipleSheetWindow = NSWindow; 
-                recordMultipleTabView = NSTabView; 
                 recordMultipleTotalProgressField = NSTextField; 
                 recordProgressBytesField = NSTextField; 
                 recordProgressIndicator = NSProgressIndicator; 

@@ -17,9 +17,9 @@
     IBOutlet NSTextField *recordProgressBytesField;
 
     IBOutlet NSWindow *recordMultipleSheetWindow;
-    IBOutlet NSTabView *recordMultipleTabView;
     IBOutlet NSProgressIndicator *recordMultipleProgressIndicator;
-    IBOutlet NSTextField *recordMultipleProgressField;
+    IBOutlet NSTextField *recordMultipleProgressMessageField;
+    IBOutlet NSTextField *recordMultipleProgressBytesField;
     IBOutlet NSTextField *recordMultipleTotalProgressField;
     IBOutlet NSButton *recordMultipleDoneButton;
     
