@@ -13,6 +13,7 @@
 @interface SMEndpoint (Private)
 
 + (void)_earlyMIDISetup;
++ (void)_midiClientCreated:(NSNotification *)notification;
 + (void)_midiSetupChanged:(NSNotification *)notification;
 
 + (NSMapTable **)_endpointMapTablePtr;
@@ -273,6 +274,11 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 @implementation SMEndpoint (Private)
 
 + (void)_earlyMIDISetup;
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_midiClientCreated:) name:SMClientCreatedInternalNotification object:nil];
+}
+
++ (void)_midiClientCreated:(NSNotification *)notification;
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_midiSetupChanged:) name:SMClientSetupChangedInternalNotification object:[SMClient sharedClient]];
     [self _midiSetupChanged:nil];

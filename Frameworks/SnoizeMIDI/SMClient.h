@@ -29,6 +29,7 @@
 
 // Notifications
 
+extern NSString *SMClientCreatedInternalNotification;
 extern NSString *SMClientSetupChangedInternalNotification;
 extern NSString *SMClientSetupChangedNotification;
     // No userInfo

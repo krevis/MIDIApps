@@ -21,6 +21,7 @@ static void getMIDINotification(const MIDINotification *message, void *refCon);
 
 @implementation SMClient
 
+DEFINE_NSSTRING(SMClientCreatedInternalNotification);
 DEFINE_NSSTRING(SMClientSetupChangedInternalNotification);
 DEFINE_NSSTRING(SMClientSetupChangedNotification);
 DEFINE_NSSTRING(SMClientMIDINotification);
@@ -32,8 +33,11 @@ static SMClient *sharedClient = nil;
 
 + (SMClient *)sharedClient;
 {
-    if (!sharedClient)
+    if (!sharedClient) {
         sharedClient = [[self alloc] init];
+        if (sharedClient)
+            [[NSNotificationCenter defaultCenter] postNotificationName:SMClientCreatedInternalNotification object:sharedClient];
+    }
     
     return sharedClient;
 }
@@ -48,19 +52,26 @@ static SMClient *sharedClient = nil;
     name = [[self _processName] retain];
     postsExternalSetupChangeNotification = YES;
     isHandlingSetupChange = NO;
-    
+
     status = MIDIClientCreate((CFStringRef)name, getMIDINotification, self, &midiClient);
-    if (status != noErr)
-        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't create a MIDI client (error %ld)", @"SnoizeMIDI", [self bundle], "exception with OSStatus if MIDIClientCreate() fails"), status];
+    if (status != noErr) {
+        NSLog(@"Couldn't create a MIDI client (error %ld)", status);
+        [self release];
+        return nil;
+    }
 
     return self;
 }
 
 - (void)dealloc
 {
-#if DEBUG
-    NSLog(@"SMClient should not be deallocated; ignoring");
-#endif
+    if (midiClient)
+        MIDIClientDispose(midiClient);
+
+    [name release];
+    name = nil;
+
+    [super dealloc];
 }
 
 - (MIDIClientRef)midiClient;
