@@ -58,7 +58,8 @@
 - (IBAction)setChannel:(id)sender;
 - (IBAction)toggleSourcesShown:(id)sender;
 - (IBAction)toggleFilterShown:(id)sender;
-- (IBAction)showSelectedMessageDetails:(id)sender;
+- (IBAction)showDetailsOfSelectedMessages:(id)sender;
+- (IBAction)copy:(id)sender;
 
 // Other API
 

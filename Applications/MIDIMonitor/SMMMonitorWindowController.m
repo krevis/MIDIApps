@@ -27,7 +27,8 @@
 - (void)showSysExProgressIndicator;
 - (void)hideSysExProgressIndicator;
 
-- (BOOL)canShowSelectedMessageDetails;
+- (BOOL)canShowDetailsOfAnySelectedMessages;
+- (NSArray *)selectedMessagesWithDetails;
 
 - (NSCellStateValue)buttonStateForInputSources:(NSArray *)sources;
 
@@ -141,7 +142,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
     [messagesTableView setAutosaveName:@"MessagesTableView2"];
     [messagesTableView setAutosaveTableColumns:YES];
     [messagesTableView setTarget:self];
-    [messagesTableView setDoubleAction:@selector(showSelectedMessageDetails:)];
+    [messagesTableView setDoubleAction:@selector(showDetailsOfSelectedMessages:)];
 
     [self hideSysExProgressIndicator];
 }
@@ -160,8 +161,13 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
 
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem;
 {
-    if ([anItem action] == @selector(showSelectedMessageDetails:)) {
-        return [self canShowSelectedMessageDetails];
+    if ([anItem action] == @selector(copy:)) {
+        if ([[self window] firstResponder] == messagesTableView)
+            return ([messagesTableView numberOfSelectedRows] > 0);
+        else
+            return NO;
+    } else if ([anItem action] == @selector(showDetailsOfSelectedMessages:)) {
+        return [self canShowDetailsOfAnySelectedMessages];
     } else {
         return YES;
     }
@@ -251,15 +257,56 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
     [[self document] setAreSourcesShown:!isShown];
 }
 
-- (IBAction)showSelectedMessageDetails:(id)sender;
+- (IBAction)showDetailsOfSelectedMessages:(id)sender;
 {
-    if ([self canShowSelectedMessageDetails]) {
-        SMSystemExclusiveMessage *message;
+    NSArray *messages;
+    NSEnumerator *enumerator;
+    SMSystemExclusiveMessage *message;
+
+    messages = [self selectedMessagesWithDetails];
+    enumerator = [messages objectEnumerator];
+    while ((message = [enumerator nextObject])) {
         SMMSysExWindowController *sysExWindowController;
 
-        message = [displayedMessages objectAtIndex:[messagesTableView selectedRow]];
         sysExWindowController = [SMMSysExWindowController sysExWindowControllerWithMessage:message];
-        [sysExWindowController showWindow:nil];        
+        [sysExWindowController showWindow:nil];            
+    }    
+}
+
+- (IBAction)copy:(id)sender;
+{
+    if ([[self window] firstResponder] == messagesTableView) {
+        NSMutableString *totalString;
+        NSArray *columns;
+        NSEnumerator *rowEnumerator;
+        NSNumber *rowNumber;
+        NSPasteboard *pasteboard;
+    
+        totalString = [NSMutableString string];
+        columns = [messagesTableView tableColumns];
+        
+        rowEnumerator = [messagesTableView selectedRowEnumerator];
+        while ((rowNumber = [rowEnumerator nextObject])) {
+            unsigned int row = [rowNumber intValue];
+            NSMutableArray *columnStrings;
+            NSEnumerator *columnEnumerator;
+            NSTableColumn *column;
+
+            columnStrings = [[NSMutableArray alloc] init];
+            
+            columnEnumerator = [columns objectEnumerator];
+            while ((column = [columnEnumerator nextObject]))
+                [columnStrings addObject:[self tableView:messagesTableView objectValueForTableColumn:column row:row]];
+
+            [totalString appendString:[columnStrings componentsJoinedByString:@"\t"]];
+            [totalString appendString:@"\n"];
+
+            [columnStrings release];
+        }
+
+        pasteboard = [NSPasteboard generalPasteboard];
+        [pasteboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
+        [pasteboard setString:totalString forType:NSStringPboardType];
     }
 }
 
@@ -541,7 +588,6 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
 
             if ([externalDeviceNames count] > 0) {
                 return [NSString stringWithFormat:@"%@ (%@)", name, [externalDeviceNames componentsJoinedByString:@", "]];
-                // TODO do we need to retain this? because I don't think NSOutlineView will do it for us
             } else {
                 return name;
             }
@@ -620,7 +666,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
             fromOrTo = ([endpoint isKindOfClass:[SMSourceEndpoint class]] ? kFromString : kToString);
             return [[fromOrTo stringByAppendingString:@" "] stringByAppendingString:[endpoint alwaysUniqueName]];
         } else {
-            return nil;            
+            return @"";            
         }
     } else if ([identifier isEqualToString:@"type"]) {
         return [message typeForDisplay];
@@ -734,15 +780,49 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
     }
 }
 
-- (BOOL)canShowSelectedMessageDetails;
+- (BOOL)canShowDetailsOfAnySelectedMessages;
 {
-    int selectedRow;
+    int selectedRowCount;
+    NSEnumerator *rowEnumerator;
+    NSNumber *rowNumber;
 
-    selectedRow = [messagesTableView selectedRow];
-    if (selectedRow < 0)
+    selectedRowCount = [messagesTableView numberOfSelectedRows];
+    if (selectedRowCount == 0)
         return NO;
 
-    return [[displayedMessages objectAtIndex:selectedRow] isKindOfClass:[SMSystemExclusiveMessage class]];
+    rowEnumerator = [messagesTableView selectedRowEnumerator];
+    while ((rowNumber = [rowEnumerator nextObject])) {
+        unsigned int row = [rowNumber unsignedIntValue];
+        if ([[displayedMessages objectAtIndex:row] isKindOfClass:[SMSystemExclusiveMessage class]])
+            return YES;
+    }
+
+    return NO;
+}
+
+- (NSArray *)selectedMessagesWithDetails;
+{
+    int selectedRowCount;
+    NSEnumerator *rowEnumerator;
+    NSNumber *rowNumber;
+    NSMutableArray *messages;
+
+    selectedRowCount = [messagesTableView numberOfSelectedRows];
+    if (selectedRowCount == 0)
+        return [NSArray array];
+
+    messages = [NSMutableArray arrayWithCapacity:selectedRowCount];
+
+    rowEnumerator = [messagesTableView selectedRowEnumerator];
+    while ((rowNumber = [rowEnumerator nextObject])) {
+        unsigned int row = [rowNumber unsignedIntValue];
+        id message = [displayedMessages objectAtIndex:row];
+        
+        if ([message isKindOfClass:[SMSystemExclusiveMessage class]])
+            [messages addObject:message];
+    }
+
+    return messages;
 }
 
 - (NSCellStateValue)buttonStateForInputSources:(NSArray *)sources;
