@@ -22,16 +22,9 @@
 
 - (void)selectItemWithTag:(int)tag
 {
-    NSArray *array;
-    int index, count;
-
-    array = [self itemArray];
-    count = [array count];
-    for (index = 0; index < count; index++)
-        if ([[array objectAtIndex:index] tag] == tag) {
-            [self selectItemAtIndex:index];
-            return;
-        }
+    int index = [self indexOfItemWithTag:tag];
+    if (tag != -1)
+        [self selectItemAtIndex:index];
 }
 
 @end
