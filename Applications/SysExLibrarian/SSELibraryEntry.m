@@ -147,7 +147,6 @@
     if (!newName)
         newName = @"Unknown";
         // TODO do we really want this when the file isn't present?
-        // TODO localize
 
     [self setName:newName];
 }
@@ -336,7 +335,6 @@
             newManufacturer = messageManufacturer;
         } else if (![messageManufacturer isEqualToString:newManufacturer]) {
             newManufacturer = @"Various";
-            // TODO localize
             break;
         }
     }

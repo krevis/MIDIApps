@@ -61,7 +61,6 @@ DEFINE_NSSTRING(SSESelectedDestination);
     [outputStream setIgnoresTimeStamps:YES];
     [outputStream setSendsSysExAsynchronously:YES];
     [outputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a source for other programs", @"SysExLibrarian", [self bundle], "title of popup menu item for virtual source")];
-    [outputStream setVirtualEndpointName:@"SysEx Librarian"];	// TODO get this from somewhere
 
     [center addObserver:self selector:@selector(_endpointAppeared:) name:SMEndpointAppearedNotification object:nil];
     
@@ -138,7 +137,7 @@ DEFINE_NSSTRING(SSESelectedDestination);
     listenToMIDISetupChanges = NO;
 
     [outputStream setEndpointDescription:description];
-    // TODO we don't have an undo manager yet
+    // TODO we aren't handling undo yet
     //    [[[self undoManager] prepareWithInvocationTarget:self] setSourceDescription:oldDescription];
     //    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Source", @"SysExLibrarian", [self bundle], "change source undo action")];
 
@@ -324,7 +323,6 @@ DEFINE_NSSTRING(SSESelectedDestination);
 
 - (void)_outputStreamEndpointDisappeared:(NSNotification *)notification;
 {
-    // TODO should print a message?
     [self _selectFirstAvailableDestinationWhenPossible];
 }
 

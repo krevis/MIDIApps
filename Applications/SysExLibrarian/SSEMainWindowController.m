@@ -476,10 +476,8 @@ static SSEMainWindowController *controller;
         progressUpdateEvent = nil;
     }
     
-    if (!success) {
+    if (!success)
         [playProgressMessageField setStringValue:@"Cancelled."];
-            // TODO localize
-    }
 
     // Even if we have set the progress indicator to its maximum value, it won't get drawn on the screen that way immediately,
     // probably because it tries to smoothly animate to that state. The only way I have found to show the maximum value is to just
@@ -868,11 +866,11 @@ static int libraryEntryComparator(id object1, id object2, void *context)
 - (void)_updateSingleSysExReadIndicatorWithMessageCount:(unsigned int)messageCount bytesRead:(unsigned int)bytesRead totalBytesRead:(unsigned int)totalBytesRead;
 {
     if ((bytesRead == 0 && messageCount == 0)) {
-        [recordProgressMessageField setStringValue:@"Waiting for SysEx message..."]; // TODO localize
+        [recordProgressMessageField setStringValue:@"Waiting for SysEx message..."];
         [recordProgressBytesField setStringValue:@""];
     } else {
         [recordProgressIndicator animate:nil];
-        [recordProgressMessageField setStringValue:@"Receiving SysEx message..."];	// TODO localize
+        [recordProgressMessageField setStringValue:@"Receiving SysEx message..."];
         [recordProgressBytesField setStringValue:[NSString abbreviatedStringForBytes:bytesRead + totalBytesRead]];
     }
 }
@@ -883,18 +881,17 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     BOOL hasAtLeastOneCompleteMessage;
 
     if (bytesRead == 0) {
-        [recordMultipleProgressMessageField setStringValue:@"Waiting for SysEx message..."]; 	// TODO localize
+        [recordMultipleProgressMessageField setStringValue:@"Waiting for SysEx message..."];
         [recordMultipleProgressBytesField setStringValue:@""];
     } else {
         [recordMultipleProgressIndicator animate:nil];
-        [recordMultipleProgressMessageField setStringValue:@"Receiving SysEx message..."]; 	// TODO localize
+        [recordMultipleProgressMessageField setStringValue:@"Receiving SysEx message..."];
         [recordMultipleProgressBytesField setStringValue:[NSString abbreviatedStringForBytes:bytesRead]];
     }
 
     hasAtLeastOneCompleteMessage = (messageCount > 0);
     if (hasAtLeastOneCompleteMessage) {
         totalProgress = [NSString stringWithFormat:@"Total: %u message%@, %@", messageCount, (messageCount > 1) ? @"s" : @"", [NSString abbreviatedStringForBytes:totalBytesRead]];
-        // TODO localize -- the "s" vs "" trick will have to change
     } else {
         totalProgress = @"";
     }
@@ -949,7 +946,6 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     } else {
         message = @"Done.";
     }
-        // TODO localize all of the above
     [playProgressMessageField setStringValue:message];
 }
 
@@ -1163,7 +1159,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
         [importProgressIndicator setIndeterminate:YES];
         [importProgressIndicator setUsesThreadedAnimation:YES];
         [importProgressIndicator startAnimation:nil];
-        [importProgressMessageField setStringValue:@"Scanning..."];	// TODO localize
+        [importProgressMessageField setStringValue:@"Scanning..."];
         [importProgressIndexField setStringValue:@""];
     } else {
         if ([importProgressIndicator isIndeterminate]) {
