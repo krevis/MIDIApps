@@ -207,6 +207,7 @@
 				F587526F0214CEDD01000164,
 				F5308FEC0233012701000164,
 				F5D90FE4021630C101000164,
+				F597D8FC026BC47A01000164,
 			);
 			isa = PBXGroup;
 			name = Resources;
@@ -1466,6 +1467,11 @@
 			isa = PBXBuildFile;
 			settings = {
 			};
+		};
+		F597D8FC026BC47A01000164 = {
+			isa = PBXFileReference;
+			path = "Read Me.html";
+			refType = 4;
 		};
 		F59F89CE02154ADE01000164 = {
 			isa = PBXFileReference;
