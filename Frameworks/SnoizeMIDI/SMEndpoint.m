@@ -49,7 +49,7 @@
 
 @implementation SMEndpoint
 
-DEFINE_NSSTRING(SMEndpointWasAddedNotification);
+DEFINE_NSSTRING(SMEndpointAppearedNotification);
 DEFINE_NSSTRING(SMEndpointDisappearedNotification);
 DEFINE_NSSTRING(SMEndpointWasReplacedNotification);
 DEFINE_NSSTRING(SMEndpointReplacement);
@@ -554,7 +554,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 
 - (void)_postAddedNotification;
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMEndpointWasAddedNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMEndpointAppearedNotification object:self];
 }
 
 @end
