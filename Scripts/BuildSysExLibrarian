@@ -2,6 +2,9 @@
 #
 # Script to build the release version of the SysEx Librarian application.
 
+# Display commands as they happen -- useful for debugging
+# setopt XTRACE
+
 ThisScriptDir=`dirname ${PWD}/$0`
 
 SourceRoot=~/Source
@@ -64,16 +67,16 @@ fi
 if [[ $DO_CLEAN -eq 1 ]] ; then
 
 	cd ${OmniFrameworkSource}/OmniBase
-	pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE clean || (echo "Build failed!"; exit 1)
+	pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE clean || {echo "Build failed!"; exit 1}
 
 	cd ${OmniFrameworkSource}/OmniFoundation
-	pbxbuild -target "OmniFoundation (MIDIMonitor subset framework)" -buildstyle $FRAMEWORK_BUILDSTYLE clean || (echo "Build failed!"; exit 1)
+	pbxbuild -target "OmniFoundation (MIDIMonitor subset framework)" -buildstyle $FRAMEWORK_BUILDSTYLE clean || {echo "Build failed!"; exit 1}
 
 	cd ${SnoizeFrameworkSource}/SnoizeMIDI
-	pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE clean || (echo "Build failed!"; exit 1)
+	pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE clean || {echo "Build failed!"; exit 1}
 
 	cd ${SnoizeAppSource}/SysExLibrarian
-	pbxbuild -buildstyle $APP_BUILDSTYLE clean || (echo "Build failed!"; exit 1)
+	pbxbuild -buildstyle $APP_BUILDSTYLE clean || {echo "Build failed!"; exit 1}
 
 fi
 
@@ -87,16 +90,16 @@ if [[ $DO_INSTALL -eq 1 ]] ; then
 fi
 
 cd ${OmniFrameworkSource}/OmniBase
-pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE $BUILD_ACTION || (echo "Build failed!"; exit 1)
+pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION || {echo "Build failed!"; exit 1}
 
 cd ${OmniFrameworkSource}/OmniFoundation
-pbxbuild -target "OmniFoundation (MIDIMonitor subset framework)" -buildstyle $FRAMEWORK_BUILDSTYLE $BUILD_ACTION || (echo "Build failed!"; exit 1)
+pbxbuild -target "OmniFoundation (MIDIMonitor subset framework)" -buildstyle $FRAMEWORK_BUILDSTYLE INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION || {echo "Build failed!"; exit 1}
 
 cd ${SnoizeFrameworkSource}/SnoizeMIDI
-pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE $BUILD_ACTION || (echo "Build failed!"; exit 1)
+pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION || {echo "Build failed!"; exit 1}
 
 cd ${SnoizeAppSource}/SysExLibrarian
-pbxbuild -buildstyle $APP_BUILDSTYLE DSTROOT= INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION || (echo "Build failed!"; exit 1)
+pbxbuild -buildstyle $APP_BUILDSTYLE DSTROOT=/ INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION || {echo "Build failed!"; exit 1}
 	# NOTE: We are relying on the app's project having an INSTALL_PATH
 	# set to $INSTALL_DIRECTORY. For some reason, if it is set to nothing in the project,
 	# setting it here will not cause the install to happen.
@@ -110,7 +113,7 @@ pbxbuild -buildstyle $APP_BUILDSTYLE DSTROOT= INSTALL_MODE_FLAG=go-w,a+rX $BUILD
 #
 
 if [[ $DO_INSTALL -eq 1 ]]; then
-	cd "$INSTALL_DIRECTORY/$APP_WRAPPER_NAME"
+	cd "$INSTALL_DIRECTORY/$APP_WRAPPER_NAME" || {echo "Couldn't cd to app wrapper!"; exit 1}
 	# Nobody needs the headers
 	find . -name 'Headers' -exec rm -rf {} \; -prune
 	# We don't need non-English localizations right now
@@ -123,11 +126,11 @@ fi
 #
 
 if [[ $DO_INSTALL -eq 1 ]]; then
-	cd "$INSTALL_DIRECTORY/$APP_WRAPPER_NAME/Contents/MacOS"
-	redo_prebinding -e "$PWD" ../Frameworks/OmniBase.framework/Versions/Current/OmniBase
-	redo_prebinding -e "$PWD" ../Frameworks/OmniFoundation.framework/Versions/Current/OmniFoundation
-	redo_prebinding -e "$PWD" ../Frameworks/SnoizeMIDI.framework/Versions/Current/SnoizeMIDI
-	redo_prebinding -e "$PWD" "./$APP_EXECUTABLE_NAME"
+	cd "$INSTALL_DIRECTORY/$APP_WRAPPER_NAME/Contents/MacOS" || {echo "Couldn't cd to app's Contents/MacOS!"; exit 1}
+	redo_prebinding -e "$PWD" ../Frameworks/OmniBase.framework/Versions/Current/OmniBase || exit 1
+	redo_prebinding -e "$PWD" ../Frameworks/OmniFoundation.framework/Versions/Current/OmniFoundation || exit 1
+	redo_prebinding -e "$PWD" ../Frameworks/SnoizeMIDI.framework/Versions/Current/SnoizeMIDI || exit 1
+	redo_prebinding -e "$PWD" "./$APP_EXECUTABLE_NAME" || exit 1
 fi
 
 #

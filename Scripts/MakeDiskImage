@@ -17,7 +17,7 @@ READ_ME_FILE_PATH="$3"
 VOLUME_NAME=$APP_EXECUTABLE_NAME
 
 # TODO This stupid Finder is broken as of 10.1.1
-DO_APPLESCRIPT=0
+DO_APPLESCRIPT=1
 
 echo "Building disk image"
 
@@ -74,7 +74,8 @@ if [[ $DO_APPLESCRIPT -eq 1 ]] ; then
 	tell application "Finder"
 		set theDisk to the disk "$VOLUME_NAME"
 		set theWindow to the container window of theDisk
-		set theApp to application file "$APP_WRAPPER_NAME" of theDisk	
+		set theApp to application file "$APP_WRAPPER_NAME" of theDisk
+		set theReadMe to file "${READ_ME_FILE_PATH:t}" of theDisk
 	
 		-- Set the window to icon view, with big icons
 		set current view of theWindow to icon view
@@ -83,8 +84,9 @@ if [[ $DO_APPLESCRIPT -eq 1 ]] ; then
 		set arrangement of theOptions to not arranged
 
 		-- Set the window size/position and the icon position
-		set bounds of theWindow to {100, 100, 350, 300}
-		set position of theApp to {120, 80}
+		set bounds of theWindow to {100, 100, 422, 280}
+		set position of theApp to {80, 71}
+		set position of theReadMe to {240, 71}
 	end tell
 	EndOfScript
 
