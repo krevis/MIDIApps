@@ -12,7 +12,7 @@
 
 @interface SMMAppController (Private)
 
-- (void)_endpointWasAdded:(NSNotification *)notification;
+- (void)_endpointAppeared:(NSNotification *)notification;
 
 @end
 
@@ -29,7 +29,7 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
     
     // Listen for new endpoints. Don't do this earlier--we only are interested in ones
     // that appear after we've been launched.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_endpointWasAdded:) name:SMEndpointWasAddedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_endpointAppeared:) name:SMEndpointAppearedNotification object:nil];
 }
 
 - (IBAction)showPreferences:(id)sender;
@@ -83,7 +83,7 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 
 @implementation SMMAppController (Private)
 
-- (void)_endpointWasAdded:(NSNotification *)notification;
+- (void)_endpointAppeared:(NSNotification *)notification;
 {
     if ([[OFPreference preferenceForKey:SMMOpenWindowsForNewSourcesPreferenceKey] boolValue]) {
         SMEndpoint *endpoint;
