@@ -157,6 +157,20 @@ static NSMutableArray *controllers = nil;
     [self _synchronizeMessageDataDisplay];
 }
 
+//
+// NSSplitView delegate
+//
+
+- (float)splitView:(NSSplitView *)sender constrainMaxCoordinate:(float)proposedMax ofSubviewAt:(int)offset;
+{
+    return MIN(proposedMax, NSHeight([sender frame]) - 32);    
+}
+
+- (float)splitView:(NSSplitView *)sender constrainMinCoordinate:(float)proposedMin ofSubviewAt:(int)offset;
+{
+    return MAX(proposedMin, 32);
+}
+
 @end
 
 
