@@ -24,7 +24,6 @@ SInt32 MIDISpyInstallDriverIfNecessary();
 MIDISpyClientRef MIDISpyClientCreate(MIDISpyClientCallBack callBack, void *refCon);
 void MIDISpyClientDispose(MIDISpyClientRef clientRef);
 
-// TODO functions for putting the spy driver in place, etc.
 
 
 #if defined(__cplusplus)
