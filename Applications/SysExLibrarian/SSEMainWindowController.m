@@ -47,7 +47,7 @@ static SSEMainWindowController *controller;
         return nil;
 
     library = [[SSELibrary alloc] init];
-    
+
     return self;
 }
 
@@ -97,9 +97,8 @@ static SSEMainWindowController *controller;
 
     openPanel = [NSOpenPanel openPanel];
     [openPanel setAllowsMultipleSelection:YES];
-    [openPanel beginSheetForDirectory:nil file:nil types:nil modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_openPanelDidEnd:returnCode:contextInfo:) contextInfo:nil];
-    // TODO should specify types
-    // TODO it would be cool to be able to specify a directory, and then get all the appropriate files out of it
+
+    [openPanel beginSheetForDirectory:nil file:nil types:[library allowedFileTypes] modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_openPanelDidEnd:returnCode:contextInfo:) contextInfo:nil];
 }
 
 - (IBAction)delete:(id)sender;

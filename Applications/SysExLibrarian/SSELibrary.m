@@ -8,6 +8,8 @@
 
 @interface SSELibrary (Private)
 
+- (NSArray *)_fileTypesFromDocumentTypeDictionary:(NSDictionary *)documentTypeDict;
+
 - (void)_loadEntries;
 
 @end
@@ -29,6 +31,8 @@
 
 - (id)init;
 {
+    NSArray *documentTypes;
+
     if (![super init])
         return nil;
 
@@ -41,6 +45,19 @@
     // Ignore any changes that came from reading entries
     flags.isDirty = NO;
 
+    documentTypes = [[[self bundle] infoDictionary] objectForKey:@"CFBundleDocumentTypes"];
+    if ([documentTypes count] > 0) {
+        NSDictionary *documentTypeDict;
+
+        documentTypeDict = [documentTypes objectAtIndex:0];
+        rawSysExFileTypes = [[self _fileTypesFromDocumentTypeDictionary:documentTypeDict] retain];
+
+        if ([documentTypes count] > 1) {
+            documentTypeDict = [documentTypes objectAtIndex:1];
+            standardMIDIFileTypes = [[self _fileTypesFromDocumentTypeDictionary:documentTypeDict] retain];
+        }
+    }
+    
     return self;
 }
 
@@ -50,7 +67,11 @@
     libraryFilePath = nil;
     [entries release];
     entries = nil;
-
+    [rawSysExFileTypes release];
+    rawSysExFileTypes = nil;
+    [standardMIDIFileTypes release];
+    standardMIDIFileTypes = nil;
+    
     [super dealloc];
 }
 
@@ -144,10 +165,51 @@
     flags.isDirty = NO;
 }
 
+- (NSArray *)rawSysExFileTypes;
+{
+    return rawSysExFileTypes;
+}
+
+- (NSArray *)standardMIDIFileTypes;
+{
+    return standardMIDIFileTypes;
+}
+
+- (NSArray *)allowedFileTypes;
+{
+    return [rawSysExFileTypes arrayByAddingObjectsFromArray:standardMIDIFileTypes];
+}
+
 @end
 
 
 @implementation SSELibrary (Private)
+
+- (NSArray *)_fileTypesFromDocumentTypeDictionary:(NSDictionary *)documentTypeDict;
+{
+    NSMutableArray *fileTypes;
+    NSArray *extensions;
+    NSArray *osTypes;
+
+    fileTypes = [NSMutableArray array];
+
+    extensions = [documentTypeDict objectForKey:@"CFBundleTypeExtensions"];
+    if (extensions && [extensions isKindOfClass:[NSArray class]]) {
+        [fileTypes addObjectsFromArray:extensions];
+    }
+
+    osTypes = [documentTypeDict objectForKey:@"CFBundleTypeOSTypes"];
+    if (osTypes && [osTypes isKindOfClass:[NSArray class]]) {
+        unsigned int osTypeIndex, osTypeCount;
+
+        osTypeCount = [osTypes count];
+        for (osTypeIndex = 0; osTypeIndex < osTypeCount; osTypeIndex++) {
+            [fileTypes addObject:[NSString stringWithFormat:@"'%@'", [osTypes objectAtIndex:osTypeIndex]]];
+        }
+    }
+
+    return fileTypes;
+}
 
 - (void)_loadEntries;
 {

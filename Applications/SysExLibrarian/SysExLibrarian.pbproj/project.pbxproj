@@ -93,7 +93,7 @@
 //174
 		1758732AFF379DA111CA2CBB = {
 			isa = PBXApplicationReference;
-			path = SysExLibrarian.app;
+			path = "SysEx Librarian.app";
 			refType = 3;
 		};
 //170
@@ -265,7 +265,7 @@
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = SysExLibrarian;
+				PRODUCT_NAME = "SysEx Librarian";
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas -Wparentheses";
 				WRAPPER_EXTENSION = app;
@@ -283,8 +283,46 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>syx</string>
+				<string>SYX</string>
+				<string>Syx</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>SysEx Librarian Document</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>sysX</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>mid</string>
+				<string>MID</string>
+				<string>midi</string>
+				<string>MIDI</string>
+				<string>Midi</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>MIDI file</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>Midi</string>
+				<string>.WAV</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+	</array>
 	<key>CFBundleExecutable</key>
-	<string>SysExLibrarian</string>
+	<string>SysEx Librarian</string>
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>

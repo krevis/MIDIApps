@@ -10,6 +10,9 @@
     struct {
         unsigned int isDirty:1;
     } flags;
+
+    NSArray *rawSysExFileTypes;
+    NSArray *standardMIDIFileTypes;
 }
 
 + (NSString *)defaultPath;
@@ -25,5 +28,9 @@
 - (void)noteEntryChanged;
 - (void)autosave;
 - (void)save;
+
+- (NSArray *)rawSysExFileTypes;
+- (NSArray *)standardMIDIFileTypes;
+- (NSArray *)allowedFileTypes;
 
 @end
