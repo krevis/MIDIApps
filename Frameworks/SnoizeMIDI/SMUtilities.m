@@ -4,6 +4,7 @@
 
 #import "SMUtilities.h"
 #import <AvailabilityMacros.h>
+#import <objc/objc-class.h>
 
 
 void SMRequestConcreteImplementation(id self, SEL _cmd)
@@ -26,7 +27,7 @@ BOOL SMClassIsSubclassOfClass(Class class, Class potentialSuperclass)
     while (class) {
         if (class == potentialSuperclass)
             return YES;
-        class = [class superclass];
+        class = class->super_class;
     }
     
     return NO;
