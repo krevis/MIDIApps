@@ -154,6 +154,8 @@
 			children = (
 				F559F90201DEC14A01000164,
 				F559F90301DEC14A01000164,
+				F58752670214C25201000164,
+				F58752680214C25201000164,
 				F559F90601DEC1D801000164,
 				F559F90701DEC1D801000164,
 				F565B6E501E1419001000164,
@@ -208,6 +210,7 @@
 				2A37F4B6FDCFA73011CA2CEA,
 				F559F90A01DEC5E001000164,
 				F559F90F01DEFA9701000164,
+				F587526F0214CEDD01000164,
 				089C165FFE840EACC02AAC07,
 				F561AFAA0208780001000164,
 				F561AFAB0208780001000164,
@@ -215,6 +218,9 @@
 				F57D1E5B02127DF401000164,
 				F57D1E5C02127DF401000164,
 				F57D1E5D02127DF401000164,
+				F5499C4B0213555E01000164,
+				F5499C4C0213555E01000164,
+				F58752720214CF6F01000164,
 			);
 			isa = PBXGroup;
 			name = Resources;
@@ -397,6 +403,8 @@
 				F551751E01F3745B01000164,
 				F551752201F3ACED01000164,
 				F539E384020F19A501000164,
+				F58752690214C25201000164,
+				F587526D0214CA4E01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -415,6 +423,10 @@
 				F57D1E5E02127DF401000164,
 				F57D1E5F02127DF401000164,
 				F57D1E6002127DF401000164,
+				F5499C4D0213555E01000164,
+				F5499C4E0213555E01000164,
+				F58752710214CEDD01000164,
+				F58752730214CF6F01000164,
 			);
 			isa = PBXResourcesBuildPhase;
 			name = "Bundle Resources";
@@ -433,6 +445,8 @@
 				F551751F01F3745B01000164,
 				F551752301F3ACED01000164,
 				F539E385020F19A501000164,
+				F587526A0214C25201000164,
+				F587526E0214CA4E01000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -528,6 +542,28 @@
 		};
 		F539E387020F2C2F01000164 = {
 			fileRef = F539E386020F2C2F01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5499C4B0213555E01000164 = {
+			isa = PBXFileReference;
+			path = "pause-32.tiff";
+			refType = 4;
+		};
+		F5499C4C0213555E01000164 = {
+			isa = PBXFileReference;
+			path = "run-32.tiff";
+			refType = 4;
+		};
+		F5499C4D0213555E01000164 = {
+			fileRef = F5499C4B0213555E01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5499C4E0213555E01000164 = {
+			fileRef = F5499C4C0213555E01000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -776,6 +812,8 @@
 			children = (
 				F565B6EE01E1567501000164,
 				F565B6EF01E1567501000164,
+				F587526B0214CA4E01000164,
+				F587526C0214CA4E01000164,
 				F539E382020F19A501000164,
 				F539E383020F19A501000164,
 				F551752001F3ACED01000164,
@@ -891,6 +929,82 @@
 		};
 		F583CEBB01EE3E4501000164 = {
 			fileRef = F583CEB901EE3E4401000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F58752670214C25201000164 = {
+			isa = PBXFileReference;
+			path = SSEWindowController.h;
+			refType = 4;
+		};
+		F58752680214C25201000164 = {
+			isa = PBXFileReference;
+			path = SSEWindowController.m;
+			refType = 4;
+		};
+		F58752690214C25201000164 = {
+			fileRef = F58752670214C25201000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F587526A0214C25201000164 = {
+			fileRef = F58752680214C25201000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F587526B0214CA4E01000164 = {
+			isa = PBXFileReference;
+			path = "NSToolbarItem-Extensions.h";
+			refType = 4;
+		};
+		F587526C0214CA4E01000164 = {
+			isa = PBXFileReference;
+			path = "NSToolbarItem-Extensions.m";
+			refType = 4;
+		};
+		F587526D0214CA4E01000164 = {
+			fileRef = F587526B0214CA4E01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F587526E0214CA4E01000164 = {
+			fileRef = F587526C0214CA4E01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F587526F0214CEDD01000164 = {
+			children = (
+				F58752700214CEDD01000164,
+			);
+			isa = PBXVariantGroup;
+			name = MainWindow.toolbar;
+			path = "";
+			refType = 4;
+		};
+		F58752700214CEDD01000164 = {
+			isa = PBXFileReference;
+			name = English;
+			path = English.lproj/MainWindow.toolbar;
+			refType = 4;
+		};
+		F58752710214CEDD01000164 = {
+			fileRef = F587526F0214CEDD01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F58752720214CF6F01000164 = {
+			isa = PBXFileReference;
+			path = ToolbarPlaceholder.tiff;
+			refType = 4;
+		};
+		F58752730214CF6F01000164 = {
+			fileRef = F58752720214CF6F01000164;
 			isa = PBXBuildFile;
 			settings = {
 			};

@@ -1,4 +1,4 @@
-#import <Cocoa/Cocoa.h>
+#import "SSEWindowController.h"
 
 @class OFScheduledEvent;
 @class SSEMIDIController;
@@ -6,7 +6,7 @@
 @class SSETableView;
 
 
-@interface SSEMainWindowController : NSWindowController
+@interface SSEMainWindowController : SSEWindowController
 {
     IBOutlet SSEMIDIController *midiController;
 

@@ -1,9 +1,9 @@
-#import <Cocoa/Cocoa.h>
+#import "SSEWindowController.h"
 
 //@class OFPreference;		// OmniFoundation
 
 
-@interface SSEPreferencesWindowController : NSWindowController
+@interface SSEPreferencesWindowController : SSEWindowController
 {
 // TODO  for example:
 //    IBOutlet NSMatrix *timeFormatMatrix;

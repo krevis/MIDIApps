@@ -7,7 +7,6 @@
 @interface  SSEPreferencesWindowController (Private)
 
 - (void)_synchronizeDefaults;
-- (void)_autosaveWindowFrame;
 
 @end
 
@@ -49,7 +48,8 @@ static SSEPreferencesWindowController *controller;
 
 - (void)awakeFromNib
 {
-    [[self window] setFrameAutosaveName:[self windowNibName]];
+    [super awakeFromNib];
+    
 }
 
 - (void)windowDidLoad
@@ -75,42 +75,11 @@ static SSEPreferencesWindowController *controller;
 @end
 
 
-@implementation SSEPreferencesWindowController (NotificationsDelegatesDataSources)
-
-- (void)windowDidResize:(NSNotification *)notification;
-{
-    [self _autosaveWindowFrame];
-}
-
-- (void)windowDidMove:(NSNotification *)notification;
-{
-    [self _autosaveWindowFrame];
-}
-
-@end
-
-
 @implementation SSEPreferencesWindowController (Private)
 
 - (void)_synchronizeDefaults;
 {
     [[NSUserDefaults standardUserDefaults] autoSynchronize];
-}
-
-- (void)_autosaveWindowFrame;
-{
-    // Work around an AppKit bug: the frame that gets saved in NSUserDefaults is the window's old position, not the new one.
-    // We get notified after the window has been moved/resized and the defaults changed.
-
-    NSWindow *window;
-    NSString *autosaveName;
-    
-    window = [self window];
-    // Sometimes we get called before the window's autosave name is set (when the nib is loading), so check that.
-    if ((autosaveName = [window frameAutosaveName])) {
-        [window saveFrameUsingName:autosaveName];
-        [self _synchronizeDefaults];
-    }
 }
 
 @end

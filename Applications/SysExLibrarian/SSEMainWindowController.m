@@ -12,8 +12,6 @@
 
 @interface SSEMainWindowController (Private)
 
-- (void)_autosaveWindowFrame;
-
 - (void)_synchronizePopUpButton:(NSPopUpButton *)popUpButton withDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 
 - (void)_libraryDidChange:(NSNotification *)notification;
@@ -119,7 +117,8 @@ static SSEMainWindowController *controller;
 
 - (void)awakeFromNib
 {
-    [[self window] setFrameAutosaveName:[self windowNibName]];
+    [super awakeFromNib];
+
     [libraryTableView registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
     [libraryTableView setTarget:self];
     [libraryTableView setDoubleAction:@selector(play:)];
@@ -304,6 +303,17 @@ static SSEMainWindowController *controller;
     [renameButton setEnabled:(numberOfSelectedRows == 1)];
 }
 
+- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)theItem;
+{
+    SEL action;
+
+    action = [theItem action];
+
+    if (action == @selector(play:))
+        return ([libraryTableView numberOfSelectedRows] > 0);
+    else
+        return [super validateUserInterfaceItem:theItem];
+}
 
 //
 // Reading SysEx
@@ -384,20 +394,6 @@ static SSEMainWindowController *controller;
 
 
 @implementation SSEMainWindowController (NotificationsDelegatesDataSources)
-
-//
-// Window delegate
-//
-
-- (void)windowDidResize:(NSNotification *)notification;
-{
-    [self _autosaveWindowFrame];
-}
-
-- (void)windowDidMove:(NSNotification *)notification;
-{
-    [self _autosaveWindowFrame];
-}
 
 //
 // NSTableView data source
@@ -524,22 +520,6 @@ static SSEMainWindowController *controller;
 
 
 @implementation SSEMainWindowController (Private)
-
-- (void)_autosaveWindowFrame;
-{
-    // Work around an AppKit bug: the frame that gets saved in NSUserDefaults is the window's old position, not the new one.
-    // We get notified after the window has been moved/resized and the defaults changed.
-
-    NSWindow *window;
-    NSString *autosaveName;
-
-    window = [self window];
-    // Sometimes we get called before the window's autosave name is set (when the nib is loading), so check that.
-    if ((autosaveName = [window frameAutosaveName])) {
-        [window saveFrameUsingName:autosaveName];
-        [[NSUserDefaults standardUserDefaults] autoSynchronize];
-    }
-}
 
 - (void)_synchronizePopUpButton:(NSPopUpButton *)popUpButton withDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 {
