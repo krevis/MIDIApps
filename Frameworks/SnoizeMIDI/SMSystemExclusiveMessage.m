@@ -49,7 +49,6 @@
     status = NewMusicSequence(&sequence);
     if (status == noErr) {
         status = MusicSequenceLoadSMF(sequence, &fsSpec);
-            // NOTE: This leaks quite badly as of Mac OS X 10.1.2--see Apple bug #2848166.
         if (status == noErr) {
             UInt32 trackCount, trackIndex;
             
@@ -80,6 +79,21 @@
                 }
 
                 DisposeMusicEventIterator(iterator);
+            }
+        }
+
+        // Dispose of all the tracks in the sequence. We shouldn't have to do this (DisposeMusicSequence should do it)
+        // but apparently we have to. This works around bug #2848166.
+        {
+            UInt32 trackCount;
+
+            if (MusicSequenceGetTrackCount(sequence, &trackCount) == noErr) {
+                while (trackCount--) {
+                    MusicTrack track;
+    
+                    if (MusicSequenceGetIndTrack(sequence, trackCount, &track) == noErr)
+                        MusicSequenceDisposeTrack(sequence, track);
+                }
             }
         }
 
@@ -319,6 +333,11 @@
         return [self otherData];	// With EOX
     else
         return [self data];		// Without EOX
+}
+
+- (unsigned int)receivedDataLength;
+{
+    return [[self receivedData] length];
 }
 
 - (NSData *)fullMessageData;

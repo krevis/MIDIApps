@@ -38,6 +38,7 @@
 
 - (NSData *)receivedData;
     // Data as received -- may or may not include EOX
+- (unsigned int)receivedDataLength;
 
 - (NSData *)fullMessageData;
     // Data with leading 0xF0 and ending 0xF7
