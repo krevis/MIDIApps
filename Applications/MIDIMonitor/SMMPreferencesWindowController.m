@@ -5,7 +5,6 @@
 #import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
-#import "NSPopUpButton-MIDIMonitorExtensions.h"
 #import "SMMAppController.h"
 #import "SMMDocument.h"
 #import "SMMSysExWindowController.h"
