@@ -109,18 +109,26 @@ static SSEMainWindowController *controller;
     // should we have a confirmation dialog?
     // ask whether to delete the file or just the reference? (see how Project Builder or iTunes do it)
 
-    // TODO handle multiple row selection
+    NSEnumerator *selectedRowEnumerator;
+    NSNumber *rowNumber;
+    NSMutableArray *entriesToRemove;
+    unsigned int entryIndex;
 
-    int selectedRow;
-    SSELibraryEntry *entry;
+    entriesToRemove = [NSMutableArray array];
+    selectedRowEnumerator = [libraryTableView selectedRowEnumerator];
+    while ((rowNumber = [selectedRowEnumerator nextObject])) {
+        SSELibraryEntry *entry;
 
-    selectedRow = [libraryTableView selectedRow];
-    OBASSERT(selectedRow != -1);
+        entry = [[library entries] objectAtIndex:[rowNumber intValue]];
+        [entriesToRemove addObject:entry];
+    }
+
+    entryIndex = [entriesToRemove count];
+    while (entryIndex--) {
+        [library removeEntry:[entriesToRemove objectAtIndex:entryIndex]];
+    }
+
     [libraryTableView deselectAll:nil];
-
-    entry = [[library entries] objectAtIndex:selectedRow];
-    [library removeEntry:entry];
-
     [self synchronizeInterface];
 }
 
@@ -144,15 +152,21 @@ static SSEMainWindowController *controller;
 
 - (IBAction)play:(id)sender;
 {
-    int selectedRow;
-    NSArray *messages;
+    NSEnumerator *selectedRowEnumerator;
+    NSNumber *rowNumber;
+    NSArray *messages = nil;
 
-    // TODO handle multiple row selection
-    
-    selectedRow = [libraryTableView selectedRow];
-    OBASSERT(selectedRow != -1);
+    selectedRowEnumerator = [libraryTableView selectedRowEnumerator];
+    while ((rowNumber = [selectedRowEnumerator nextObject])) {
+        NSArray *entryMessages;
 
-    messages = [[[library entries] objectAtIndex:selectedRow] messages];
+        entryMessages = [[[library entries] objectAtIndex:[rowNumber intValue]] messages];
+        if (messages)
+            messages = [messages arrayByAddingObjectsFromArray:entryMessages];
+        else
+            messages = entryMessages;
+    }
+
     [mainController setMessages:messages];
     [mainController sendMessages];
 }
