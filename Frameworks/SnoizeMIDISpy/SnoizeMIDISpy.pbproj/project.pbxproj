@@ -161,6 +161,7 @@
 				F5BCCEC9023F631901000164,
 				F5BCCEC4023F486D01000164,
 				F53956F00256D06A01000164,
+				F5B4DD97025DA07801000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -177,6 +178,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				08FB77B5FE84181DC02AAC07,
+				F5B4DD95025DA04101000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -233,6 +235,8 @@
 				F5BCCEC8023F631901000164,
 				F5BCCEC3023F486D01000164,
 				08FB77B4FE84181DC02AAC07,
+				F5B4DD96025DA07801000164,
+				F5B4DD94025DA04101000164,
 			);
 			isa = PBXGroup;
 			name = Source;
@@ -528,14 +532,12 @@
 		};
 		F540CCBF023F42EA01000164 = {
 			children = (
-				F540CCAD023F41B101000164,
-				F540CCAE023F41B101000164,
+				F5B4DD92025D9F8C01000164,
 				F540CCAF023F41B101000164,
 				F540CCB0023F41B101000164,
 				F540CCB1023F41B101000164,
 				F540CCB2023F41B101000164,
-				F540CCB3023F41B101000164,
-				F540CCB4023F41B101000164,
+				F5B4DD93025D9FE201000164,
 			);
 			isa = PBXGroup;
 			name = Source;
@@ -638,6 +640,46 @@
 		F56214950240DB0501000164 = {
 			isa = PBXTargetDependency;
 			target = F540CCA7023F40E701000164;
+		};
+		F5B4DD92025D9F8C01000164 = {
+			children = (
+				F540CCAD023F41B101000164,
+				F540CCAE023F41B101000164,
+			);
+			isa = PBXGroup;
+			name = "Apple driver code";
+			refType = 4;
+		};
+		F5B4DD93025D9FE201000164 = {
+			children = (
+				F540CCB3023F41B101000164,
+				F540CCB4023F41B101000164,
+			);
+			isa = PBXGroup;
+			name = Obsolete;
+			refType = 4;
+		};
+		F5B4DD94025DA04101000164 = {
+			isa = PBXFileReference;
+			path = MIDISpyDriverInstallation.c;
+			refType = 4;
+		};
+		F5B4DD95025DA04101000164 = {
+			fileRef = F5B4DD94025DA04101000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5B4DD96025DA07801000164 = {
+			isa = PBXFileReference;
+			path = MIDISpyDriverInstallation.h;
+			refType = 4;
+		};
+		F5B4DD97025DA07801000164 = {
+			fileRef = F5B4DD96025DA07801000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		F5BCCEC1023F47DC01000164 = {
 			isa = PBXFrameworkReference;
