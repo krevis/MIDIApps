@@ -7,6 +7,7 @@
 			2A37F4C6FDCFA73011CA2CEA,
 		);
 		breakpoints = (
+			F513A036020B0BAF01000164,
 		);
 		perUserDictionary = {
 			PBXWorkspaceConfiguration = {
@@ -103,6 +104,11 @@
 				F53D4AAA015A994501000164,
 			);
 		};
+	};
+	F513A036020B0BAF01000164 = {
+		isa = PBXSymbolicBreakpoint;
+		state = 1;
+		symbolName = "-[NSException raise]";
 	};
 	F53D4AAA015A994501000164 = {
 		activeArgIndex = 2147483647;
