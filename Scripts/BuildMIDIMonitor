@@ -143,7 +143,7 @@ fi
 
 if [[ $DO_IMAGE -eq 1 ]]; then
 	if [[ -x "$ThisScriptDir/MakeDiskImage" ]] ; then
-		$ThisScriptDir/MakeDiskImage "MIDI Monitor" "MIDIMonitor"
+		$ThisScriptDir/MakeDiskImage "MIDI Monitor" "MIDIMonitor" "${SnoizeAppSource}/MIDIMonitor/Read Me.html"
 	else
 		echo "Error: Couldn't find MakeDiskImage script."
 	fi
