@@ -7,15 +7,10 @@
 //
 
 #import <InterfaceBuilder/InterfaceBuilder.h>
-#import <DisclosableView/SNDisclosableView.h>
 
 
 @interface SNDisclosableViewPalette : IBPalette
 {
 }
-@end
 
-
-@interface SNDisclosableView (IBPaletteInspector)
-- (NSString *)inspectorClassName;
 @end

@@ -107,6 +107,7 @@
 		argumentStrings = (
 		);
 		debuggerPlugin = GDBDebugging;
+		dylibVariantSuffix = "";
 		enableDebugStr = 1;
 		environmentEntries = (
 		);

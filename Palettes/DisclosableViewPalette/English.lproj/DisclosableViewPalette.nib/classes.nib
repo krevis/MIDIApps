@@ -7,7 +7,8 @@
             LANGUAGE = ObjC; 
             SUPERCLASS = NSView; 
         }, 
-        {CLASS = SNDisclosableViewPalette; LANGUAGE = ObjC; SUPERCLASS = IBPalette; }
+        {CLASS = SNDisclosableViewPalette; LANGUAGE = ObjC; SUPERCLASS = IBPalette; }, 
+        {CLASS = SNDisclosureButton; LANGUAGE = ObjC; SUPERCLASS = NSButton; }
     ); 
     IBVersion = 1; 
 }

@@ -7,7 +7,7 @@
 //
 
 #import "SNDisclosableViewInspector.h"
-#import <DisclosableView/SNDisclosableView.h>
+#import <DisclosableView/DisclosableView.h>
 
 
 @implementation SNDisclosableViewInspector

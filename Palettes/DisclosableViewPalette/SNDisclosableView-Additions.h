@@ -6,7 +6,7 @@
 //  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
 //
 
-#import <DisclosableView/SNDisclosableView.h>
+#import <DisclosableView/DisclosableView.h>
 
 
 @interface SNDisclosableView (IBPaletteAdditions)

@@ -13,21 +13,20 @@
 
 - (void)finishInstantiate
 {
-    /* `finishInstantiate' can be used to associate non-view objects with
-     * a view in the palette's nib.  For example:
-     *   [self associateObject:aNonUIObject ofType:IBObjectPboardType
-     *                withView:aView];
-     */
-}
+    // Send awakeFromNib to the objects in the palette.
+    // (Why doesn't IB do this by default?)
+    // SNDisclosureButton needs this to get set up properly.
 
-@end
+    NSArray *objects;
+    unsigned int objectIndex;
 
-
-@implementation SNDisclosableView (IBPaletteInspector)
-
-- (NSString *)inspectorClassName
-{
-    return @"SNDisclosableViewInspector";
+    objects = [[self paletteDocument] objects];
+    objectIndex = [objects count];
+    while (objectIndex--) {
+        id object = [objects objectAtIndex:objectIndex];
+        if ([object respondsToSelector:@selector(awakeFromNib)])
+            [object awakeFromNib];
+    }    
 }
 
 @end

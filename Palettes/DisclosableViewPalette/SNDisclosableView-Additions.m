@@ -107,6 +107,11 @@
     // when editing in IB, our subviews will not get erased when they are moved around.
 }
 
+- (NSString *)inspectorClassName;
+{
+    return @"SNDisclosableViewInspector";
+}
+
 // TODO When we resize this view in IB, its subviews may also get moved.
 // The editors for NSCustomView and NSBox do not do this (because it's kind of annoying).
 // I haven't yet figured out how to fix this, though.

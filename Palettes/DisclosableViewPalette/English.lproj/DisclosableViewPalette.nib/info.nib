@@ -4,6 +4,20 @@
 <dict>
 	<key>IBFramework Version</key>
 	<string>248.0</string>
+	<key>IBGroupedObjects</key>
+	<dict>
+		<key>1</key>
+		<array>
+			<string>37</string>
+			<string>39</string>
+		</array>
+	</dict>
+	<key>IBLastGroupID</key>
+	<string>2</string>
+	<key>IBLockedObjects</key>
+	<array>
+		<integer>2</integer>
+	</array>
 	<key>IBOpenObjects</key>
 	<array>
 		<integer>2</integer>
