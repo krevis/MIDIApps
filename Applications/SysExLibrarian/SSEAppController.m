@@ -69,8 +69,10 @@
         filesToImport = [[NSMutableArray alloc] init];
     [filesToImport addObject:filename];
 
-    if (hasFinishedLaunching)
+    if (hasFinishedLaunching) {
+        [self showMainWindow:nil];
         [self _importFiles];
+    }
 
     return YES;
 }
