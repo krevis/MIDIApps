@@ -134,15 +134,17 @@ Musicians will find it handy for tracking down confusing MIDI problems, and prog
 
 <BR clear="all">
 
-<P><BR><B>SysEx Preferences</B>
+<P><BR><B>Other Preferences</B>
 <BR><img src="preferencesWindow3.gif" align="right">
 
-<P><i>Save SysEx:</i> SysEx messages should always end with an EOX byte (hexadecimal F7). However, some devices do not send SysEx messages which end correctly. This option lets you control how SysEx messages are saved to files.
+<P><i>Save SysEx:</i> This option lets you control how SysEx messages are saved to files. SysEx messages should always end with an EOX byte (hexadecimal F7). However, some devices do not follow this rule. 
 <ul>
 <li><i>always with EOX byte ($F7):</I> The file will end with an EOX byte, even if the message didn't have one when it was received. This is the default, and the most useful setting (especially if you want to use the SysEx file in another application).
 <P>
 <li><i>as it was received:</I> Saves the message exactly the same way as it was received, with or without the EOX byte.
 </ul>
+
+<P><i>Ask to save when a changed window is closed:</i> When checked, MIDI Monitor will ask you to save a modified window when you close it, which is the standard Mac behavior. If you don't tend to save MIDI Monitor documents, this can get annoying, so uncheck this preference to turn off the warning.
 
 <BR clear="all">
 
@@ -158,7 +160,8 @@ Musicians will find it handy for tracking down confusing MIDI problems, and prog
 
 <P><BR><BR><font size="+1" face="arial, helvetica"><b>Advanced Features</b></font>
 
-<P>You can use the menu command &quot;Restart MIDI&quot;, in the &quot;Special&quot; menu, to reinitialize the entire MIDI system and look for available devices. Generally you shouldn't need to do this, but I've included it so driver authors can use it for testing. (Developers: the menu command just calls the MIDIRestart() function.)
+<P>You can use the menu command &quot;Rescan MIDI&quot;, in the &quot;Special&quot; menu, to reinitialize the entire MIDI system and look for available devices. Generally you shouldn't need to do this, but I've included it as a convenience.  The Audio MIDI Setup application (in Mac OS X 10.2 and higher) has a &quot;Rescan MIDI&quot; button that does exactly the same thing.
+(Developers: the menu command just calls CoreMIDI's MIDIRestart() function.)
 <BR>(Note: This command is only available on Mac OS X 10.1 and later.)
 
 
