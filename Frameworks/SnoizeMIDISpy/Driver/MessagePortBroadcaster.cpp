@@ -19,6 +19,10 @@ MessagePortBroadcaster::MessagePortBroadcaster(CFStringRef broadcasterName, Mess
 {
     CFMessagePortContext messagePortContext = { 0, (void *)this, NULL, NULL, NULL };
 
+#if DEBUG
+        fprintf(stderr, "MessagePortBroadcaster: creating\n");
+#endif
+        
     sOneBroadcaster = this;
         
     if (!broadcasterName)
@@ -42,6 +46,10 @@ MessagePortBroadcaster::MessagePortBroadcaster(CFStringRef broadcasterName, Mess
 
 MessagePortBroadcaster::~MessagePortBroadcaster()
 {
+#if DEBUG
+    fprintf(stderr, "MessagePortBroadcaster: destroying\n");
+#endif
+
     // As we delete our dictionaries, any leftover remote CFMessagePorts will get invalidated.
     // But we want to bypass the usual invalidation code (since we're just taking everything
     // down anyway), so we set sOneBroadcaster to NULL. MessagePortWasInvalidated() will
@@ -78,6 +86,10 @@ void MessagePortBroadcaster::Broadcast(CFDataRef data, SInt32 channel)
     CFArrayRef listeners;
     CFIndex listenerIndex;
 
+#if DEBUG
+    fprintf(stderr, "MessagePortBroadcaster: broadcast(%p, %p)\n", data, (void *)channel);
+#endif
+    
     pthread_mutex_lock(&mListenerStructuresMutex);
 
     listeners = (CFArrayRef)CFDictionaryGetValue(mListenerArraysByChannel, (void *)channel);
@@ -105,6 +117,10 @@ CFDataRef LocalMessagePortCallBack(CFMessagePortRef local, SInt32 msgid, CFDataR
     MessagePortBroadcaster *broadcaster = (MessagePortBroadcaster *)info;
     CFDataRef result = NULL;
 
+#if DEBUG
+    fprintf(stderr, "MessagePortBroadcaster: message port callback(msgid=%ld)\n", msgid);
+#endif
+    
     switch (msgid) {
         case kSpyingMIDIDriverGetNextListenerIdentifierMessageID:
             result = broadcaster->NextListenerIdentifier();
@@ -115,8 +131,11 @@ CFDataRef LocalMessagePortCallBack(CFMessagePortRef local, SInt32 msgid, CFDataR
             break;
 
         case kSpyingMIDIDriverConnectDestinationMessageID:
+            broadcaster->ChangeListenerChannelStatus(data, true);
+            break;
+
         case kSpyingMIDIDriverDisconnectDestinationMessageID:
-            broadcaster->ChangeListenerChannelStatus(data, (msgid == kSpyingMIDIDriverConnectDestinationMessageID));
+            broadcaster->ChangeListenerChannelStatus(data, false);
             break;
 
         default:

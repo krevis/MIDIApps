@@ -60,24 +60,47 @@ OSStatus SpyingMIDIDriver::Monitor(MIDIEndpointRef destination, const MIDIPacket
     SInt32 endpointUniqueID;
     CFDataRef dataToBroadcast;
 
+#if DEBUG
+    fprintf(stderr, "SpyingMIDIDriver: Monitor(destination %p, packet list %p)\n", destination, packetList);
+    fprintf(stderr, "SpyingMIDIDriver: Monitor: mNeedsMonitorPointerWorkaround is %d\n", mNeedsMonitorPointerWorkaround);
+#endif
+
     if (mNeedsMonitorPointerWorkaround) {
         // Under 10.1.3 and earlier, we are really given a pointer to a MIDIEndpointRef, not the MIDIEndpointRef itself.
         // This is Radar #2877457; Doug Wyatt claims the bug will be fixed "in the next rev".
         destination = *(MIDIEndpointRef *)destination;        
     }
+
+#if DEBUG
+    fprintf(stderr, "SpyingMIDIDriver: Monitor: dereferenced pointer successfully\n");
+#endif
     
     // Look up the unique ID for this destination. Lock around this in case we are modifying the endpoint dictionary in the main thread.
     pthread_mutex_lock(&mEndpointDictionaryMutex);
-    endpointUniqueID = (SInt32)CFDictionaryGetValue(mEndpointRefToUniqueIDDictionary, destination);
+    if (mEndpointRefToUniqueIDDictionary)
+        endpointUniqueID = (SInt32)CFDictionaryGetValue(mEndpointRefToUniqueIDDictionary, destination);
+    else
+        endpointUniqueID = 0;
     pthread_mutex_unlock(&mEndpointDictionaryMutex);
 
+#if DEBUG
+    fprintf(stderr, "SpyingMIDIDriver: Monitor: unique ID is %ld\n", endpointUniqueID);
+#endif
+    
     // Then package up the data (packet list and uniqueID) and broadcast it.
     dataToBroadcast = PackageMonitoredDataForBroadcast(packetList, endpointUniqueID);
     if (dataToBroadcast) {
+#if DEBUG
+        fprintf(stderr, "SpyingMIDIDriver: Monitor: broadcasting\n");
+#endif
         mBroadcaster->Broadcast(dataToBroadcast, endpointUniqueID);
         CFRelease(dataToBroadcast);
     }
-        
+
+#if DEBUG
+    fprintf(stderr, "SpyingMIDIDriver: Monitor: done\n");
+#endif
+    
     return noErr;
 }
 
@@ -154,6 +177,10 @@ void MIDIClientNotificationProc(const MIDINotification *message, void *refCon)
 #endif
 
     ((SpyingMIDIDriver *)refCon)->RebuildEndpointUniqueIDMappings();
+
+#if DEBUG
+    fprintf(stderr, "Spy driver: notification proc done\n");
+#endif
 }
 
 void SpyingMIDIDriver::RebuildEndpointUniqueIDMappings()
@@ -161,30 +188,63 @@ void SpyingMIDIDriver::RebuildEndpointUniqueIDMappings()
     CFMutableDictionaryRef newDictionary;
     ItemCount destinationCount, destinationIndex;
 
+#if DEBUG
+    fprintf(stderr, "Spy driver: calling MIDIGetNumberOfDestinations\n");
+#endif
     destinationCount = MIDIGetNumberOfDestinations();
-
+#if DEBUG
+    fprintf(stderr, "Spy driver: got %lu destinations\n", destinationCount);
+#endif
+    
     newDictionary = CFDictionaryCreateMutable(kCFAllocatorDefault, destinationCount, NULL, NULL);
 
     for (destinationIndex = 0; destinationIndex < destinationCount; destinationIndex++) {
         MIDIEndpointRef endpointRef;
 
+#if DEBUG
+        fprintf(stderr, "Spy driver: getting destination at index %lu\n", destinationIndex);
+#endif
         endpointRef = MIDIGetDestination(destinationIndex);
+#if DEBUG
+        fprintf(stderr, "Spy driver: destination at index %lu is %p\n", destinationIndex, endpointRef);
+#endif
         if (endpointRef) {
             SInt32 uniqueID;
 
+#if DEBUG
+            fprintf(stderr, "Spy driver: getting unique ID\n");
+#endif
             if (noErr == MIDIObjectGetIntegerProperty(endpointRef, kMIDIPropertyUniqueID, &uniqueID)) {
+#if DEBUG
+                fprintf(stderr, "Spy driver: got unique ID: %ld\n", uniqueID);
+#endif
                 CFDictionaryAddValue(newDictionary, (void *)endpointRef, (void *)uniqueID);
             }
         }
     }
 
+#if DEBUG
+    fprintf(stderr, "Spy driver: locking\n");
+#endif
     pthread_mutex_lock(&mEndpointDictionaryMutex);
+#if DEBUG
+    fprintf(stderr, "Spy driver: locked\n");
+#endif
 
+#if DEBUG
+    fprintf(stderr, "Spy driver: release old dict\n");
+#endif
     if (mEndpointRefToUniqueIDDictionary)
         CFRelease(mEndpointRefToUniqueIDDictionary);
     mEndpointRefToUniqueIDDictionary = newDictionary;
 
+#if DEBUG
+    fprintf(stderr, "Spy driver: unlocking\n");
+#endif
     pthread_mutex_unlock(&mEndpointDictionaryMutex);
+#if DEBUG
+    fprintf(stderr, "Spy driver: unlocked\n");
+#endif
 }
 
 void SpyingMIDIDriver::EnableMonitoring(Boolean enabled)
