@@ -95,7 +95,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
     if (virtualStream)
         return virtualStreamDestination;
     else if (portStream)
-        return [portStream endpoint];
+        return [[portStream endpoints] anyObject];
     else
         return nil;
 }
@@ -124,7 +124,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
     if (portStream) {
         SMDestinationEndpoint *endpoint;
         
-        if ((endpoint = [portStream endpoint])) {
+        if ((endpoint = [[portStream endpoints] anyObject])) {
             NSMutableDictionary *dict;
             NSString *name;
         
@@ -220,8 +220,8 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
 
 - (SMSysExSendRequest *)currentSysExSendRequest;
 {
-    if ([[self stream] respondsToSelector:@selector(currentSysExSendRequest)])
-        return [[self stream] currentSysExSendRequest];
+    if ([[self stream] respondsToSelector:@selector(pendingSysExSendRequests)])
+        return [[[self stream] pendingSysExSendRequests] anyObject];
     else
         return nil;
 }
@@ -246,7 +246,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
         // Set up the port stream
         if (!portStream)
             [self createPortStream];
-        [portStream setEndpoint:endpoint];
+        [portStream setEndpoints:[NSSet setWithObject:endpoint]];
 
         [self removeVirtualStream];
     } else {
