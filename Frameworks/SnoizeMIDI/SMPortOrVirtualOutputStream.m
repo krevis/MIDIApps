@@ -11,6 +11,27 @@
 
 @implementation SMPortOrVirtualOutputStream
 
+- (id)init;
+{
+    if (!(self = [super init]))
+        return nil;
+
+    flags.ignoresTimeStamps = NO;
+
+    return self;
+}
+
+- (BOOL)ignoresTimeStamps;
+{
+    return flags.ignoresTimeStamps;
+}
+
+- (void)setIgnoresTimeStamps:(BOOL)value;
+{
+    flags.ignoresTimeStamps = value;
+    [[self stream] setIgnoresTimeStamps:value];
+}
+
 //
 // SMPortOrVirtualStream subclass methods
 //
@@ -30,6 +51,7 @@
     SMPortOutputStream *stream;
 
     stream = [[SMPortOutputStream alloc] init];
+    [stream setIgnoresTimeStamps:flags.ignoresTimeStamps];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(portStreamEndpointWasRemoved:) name:SMPortOutputStreamEndpointWasRemoved object:stream];
 
     return [stream autorelease];
@@ -45,6 +67,7 @@
     SMVirtualOutputStream *stream;
 
     stream = [[SMVirtualOutputStream alloc] initWithName:virtualEndpointName uniqueID:virtualEndpointUniqueID];
+    [stream setIgnoresTimeStamps:flags.ignoresTimeStamps];
 
     return [stream autorelease];
 }
