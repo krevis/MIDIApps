@@ -1,3 +1,7 @@
+//
+// Copyright 2001-2002 Kurt Revis. All rights reserved.
+//
+
 #import <SnoizeMIDI/SMClient.h>
 #import <SnoizeMIDI/SMEndpoint.h>
 #import <SnoizeMIDI/SMInputStream.h>

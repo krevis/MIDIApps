@@ -1,3 +1,7 @@
+//
+// Copyright 2001-2002 Kurt Revis. All rights reserved.
+//
+
 #import "SMOutputStream.h"
 
 #import <CoreAudio/CoreAudio.h>

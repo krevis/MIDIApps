@@ -1,3 +1,7 @@
+//
+// Copyright 2001-2002 Kurt Revis. All rights reserved.
+//
+
 #import "SMSystemExclusiveMessage.h"
 
 #import <AudioToolbox/MusicPlayer.h>

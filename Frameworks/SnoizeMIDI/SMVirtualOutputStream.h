@@ -1,3 +1,7 @@
+//
+// Copyright 2001-2002 Kurt Revis. All rights reserved.
+//
+
 #import <SnoizeMIDI/SMOutputStream.h>
 #import <CoreMIDI/CoreMIDI.h>
 #import <Foundation/Foundation.h>

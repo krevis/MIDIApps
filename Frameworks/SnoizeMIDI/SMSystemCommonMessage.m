@@ -1,3 +1,7 @@
+//
+// Copyright 2001-2002 Kurt Revis. All rights reserved.
+//
+
 #import "SMSystemCommonMessage.h"
 
 #import <OmniBase/OmniBase.h>
