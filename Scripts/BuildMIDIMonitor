@@ -8,7 +8,6 @@
 ThisScriptDir=`dirname ${PWD}/$0`
 
 SourceRoot=~/Source
-OmniFrameworkSource=${SourceRoot}/OmniGroup/Frameworks
 SnoizeSource=${SourceRoot}/Snoize
 SnoizeFrameworkSource=${SnoizeSource}/Frameworks
 SnoizeAppSource=${SnoizeSource}/Applications
@@ -69,12 +68,6 @@ fi
 
 if [[ $DO_CLEAN -eq 1 ]] ; then
 
-	cd ${OmniFrameworkSource}/OmniBase
-	pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE clean $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
-
-	cd ${OmniFrameworkSource}/OmniFoundation
-	pbxbuild -target "OmniFoundation (MIDIMonitor subset framework)" -buildstyle $FRAMEWORK_BUILDSTYLE clean $EXTRA_SETTINGS || (echo "Build failed!"; exit 1)
-
 	cd ${SnoizeFrameworkSource}/SnoizeMIDI
 	pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE clean $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
 
@@ -97,12 +90,6 @@ if [[ $DO_INSTALL -eq 1 ]] ; then
 	mkdir -p "$INSTALL_DIRECTORY" || {echo "Couldn't cd to install directory!"; exit 1}
 	rm -rf "$INSTALL_DIRECTORY/$APP_WRAPPER_NAME" || {echo "Couldn't remove old installed app!"; exit 1}
 fi
-
-cd ${OmniFrameworkSource}/OmniBase
-pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
-
-cd ${OmniFrameworkSource}/OmniFoundation
-pbxbuild -target "OmniFoundation (MIDIMonitor subset framework)" -buildstyle $FRAMEWORK_BUILDSTYLE INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION $EXTRA_SETTINGS || (echo "Build failed!"; exit 1)
 
 cd ${SnoizeFrameworkSource}/SnoizeMIDI
 pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
@@ -144,8 +131,6 @@ fi
 
 if [[ $DO_INSTALL -eq 1 ]]; then
 	cd "$INSTALL_DIRECTORY/$APP_WRAPPER_NAME/Contents/MacOS" || {echo "Couldn't cd into installed app's Contents/MacOS!"; exit 1}
-	redo_prebinding -e "$PWD" ../Frameworks/OmniBase.framework/Versions/Current/OmniBase || exit 1
-	redo_prebinding -e "$PWD" ../Frameworks/OmniFoundation.framework/Versions/Current/OmniFoundation || exit 1
 	redo_prebinding -e "$PWD" ../Frameworks/SnoizeMIDI.framework/Versions/Current/SnoizeMIDI || exit 1
 	redo_prebinding -e "$PWD" ../Frameworks/SnoizeMIDISpy.framework/Versions/Current/SnoizeMIDISpy || exit 1
 	redo_prebinding -e "$PWD" ../Frameworks/DisclosableView.framework/Versions/Current/DisclosableView || exit 1
