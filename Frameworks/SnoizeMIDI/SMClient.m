@@ -169,6 +169,8 @@ static SMClient *sharedClient = nil;
 
 // NOTE: CoreMIDI.framework has CFBundleVersion "20" as of 10.2. This translates to 0x20008000.
 const UInt32 kCoreMIDIFrameworkVersionIn10_2 = 0x20008000;
+// CFBundleVersion is "26" as of 10.3 (WWDC build 7A179), which is 0x26008000.
+const UInt32 kCoreMIDIFrameworkVersionIn10_3 = 0x26008000;	// TODO find out what this in in 10.3 GM
 
 - (BOOL)postsObjectAddedAndRemovedNotifications;
 {
@@ -197,6 +199,11 @@ const UInt32 kCoreMIDIFrameworkVersionIn10_2 = 0x20008000;
 - (BOOL)coreMIDICanGetDeviceFromEntity;
 {
     return [self coreMIDIFrameworkVersion] >= kCoreMIDIFrameworkVersionIn10_2;        
+}
+
+- (BOOL)doesSendSysExRespectExternalDeviceSpeed
+{
+    return [self coreMIDIFrameworkVersion] >= kCoreMIDIFrameworkVersionIn10_3;
 }
 
 @end

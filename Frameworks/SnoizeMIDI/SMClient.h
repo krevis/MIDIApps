@@ -35,6 +35,7 @@
 - (BOOL)coreMIDIUsesWrongRunLoop;
 - (BOOL)coreMIDICanFindObjectByUniqueID;
 - (BOOL)coreMIDICanGetDeviceFromEntity;
+- (BOOL)doesSendSysExRespectExternalDeviceSpeed;
 
 @end
 
