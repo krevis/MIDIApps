@@ -32,7 +32,7 @@
         return nil;
 
     endpointName = [[[SMClient sharedClient] name] retain];
-    uniqueID = [SMEndpoint generateNewUniqueID];
+//    uniqueID = [SMEndpoint generateNewUniqueID];  // TODO
 
     inputStreamSource = [[SMSimpleInputStreamSource alloc] initWithName:endpointName];
 
@@ -176,7 +176,7 @@
     if (endpoint)
         [parser setOriginatingEndpoint:endpoint];
 
-    // NOTE We are failing silently if the endpoint can't be created. I'm not sure that's a good idea.
+    // TODO We are failing silently if the endpoint can't be created. I'm not sure that's a good idea.
 }
 
 - (void)disposeEndpoint;
