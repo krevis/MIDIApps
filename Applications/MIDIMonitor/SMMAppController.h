@@ -3,6 +3,7 @@
 
 @interface SMMAppController : NSObject
 {
+    BOOL shouldUseMIDISpy;
     BOOL shouldOpenUntitledDocument;
 }
 
@@ -11,6 +12,8 @@
 - (IBAction)showHelp:(id)sender;
 
 - (IBAction)restartMIDI:(id)sender;
+
+- (BOOL)shouldUseMIDISpy;
 
 @end
 
