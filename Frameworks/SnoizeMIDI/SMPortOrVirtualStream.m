@@ -9,7 +9,7 @@
 
 #import "SMClient.h"
 #import "SMEndpoint.h"
-#import "SMPortInputStream.h"		// For declaration of -endpoint -- could be output stream too, doesn't matter
+#import "SMPortOutputStream.h"		// For declaration of -endpoint and -setEndpoint:
 
 
 @interface SMPortOrVirtualStream (Private)

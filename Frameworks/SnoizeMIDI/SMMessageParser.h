@@ -6,22 +6,27 @@
 #import <CoreMIDI/CoreMIDI.h>
 #import <Foundation/Foundation.h>
 
+@class SMEndpoint;
 @class SMSystemExclusiveMessage;
 
 
 @interface SMMessageParser : OFObject
 {
+    SMEndpoint *nonretainedOriginatingEndpoint;
+    id nonretainedDelegate;
+
     NSMutableData *readingSysExData;
     NSLock *readingSysExLock;
     MIDITimeStamp startSysExTimeStamp;
     NSTimer *sysExTimeOutTimer;
     NSTimeInterval sysExTimeOut;
-    
-    id nonretainedDelegate;
 }
 
 - (id)delegate;
 - (void)setDelegate:(id)value;
+
+- (SMEndpoint *)originatingEndpoint;
+- (void)setOriginatingEndpoint:(SMEndpoint *)value;
 
 - (NSTimeInterval)sysExTimeOut;
 - (void)setSysExTimeOut:(NSTimeInterval)value;

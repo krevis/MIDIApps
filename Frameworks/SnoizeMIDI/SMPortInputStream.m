@@ -76,7 +76,7 @@ DEFINE_NSSTRING(SMPortInputStreamEndpointDisappeared);
     if ([endpoints indexOfObjectIdenticalTo:endpoint] != NSNotFound)
         return;
 
-    parser = [self newParser];
+    parser = [self newParserWithOriginatingEndpoint:endpoint];
     
     status = MIDIPortConnectSource(inputPort, [endpoint endpointRef], parser);
     if (status != noErr) {

@@ -33,7 +33,7 @@
 
     inputStreamSource = [[SMSimpleInputStreamSource alloc] initWithName:name];
 
-    parser = [[self newParser] retain];
+    parser = [[self newParserWithOriginatingEndpoint:nil] retain];
 
     return self;
 }
@@ -144,6 +144,8 @@
     [client setPostsExternalSetupChangeNotification:wasPostingExternalNotification];
 
     [endpoint setModelName:[client name]];
+
+    [parser setOriginatingEndpoint:endpoint];
 }
 
 - (void)_disposeEndpoint;
@@ -155,6 +157,8 @@
     MIDIEndpointDispose([endpoint endpointRef]);
     [endpoint release];
     endpoint = nil;
+
+    [parser setOriginatingEndpoint:nil];
 }
 
 @end

@@ -59,6 +59,16 @@
     nonretainedDelegate = value;
 }
 
+- (SMEndpoint *)originatingEndpoint;
+{
+    return nonretainedOriginatingEndpoint;
+}
+
+- (void)setOriginatingEndpoint:(SMEndpoint *)value;
+{
+    nonretainedOriginatingEndpoint = value;
+}
+
 - (NSTimeInterval)sysExTimeOut;
 {
     return sysExTimeOut;
@@ -272,6 +282,8 @@
         }
 
         if (message) {
+            [message setOriginatingEndpoint:nonretainedOriginatingEndpoint];
+            
             if (!messages)
                 messages = [NSMutableArray arrayWithObject:message];
             else

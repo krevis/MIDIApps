@@ -7,6 +7,7 @@
 #import <Foundation/Foundation.h>
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 
+@class SMEndpoint;
 @class SMMessageParser;
 
 
@@ -27,7 +28,7 @@
 
 // For subclasses only
 - (MIDIReadProc)midiReadProc;
-- (SMMessageParser *)newParser;
+- (SMMessageParser *)newParserWithOriginatingEndpoint:(SMEndpoint *)originatingEndpoint;
 
 // For subclasses to implement
 - (NSArray *)parsers;

@@ -316,7 +316,7 @@ static NSDateFormatter *timeStampDateFormatter;
 
 - (void)dealloc;
 {
-    [sourceEndpoint release];
+    [originatingEndpoint release];
     [super dealloc];
 }
 
@@ -325,7 +325,7 @@ static NSDateFormatter *timeStampDateFormatter;
     SMMessage *newMessage;
     
     newMessage = [[[self class] allocWithZone:zone] initWithTimeStamp:timeStamp statusByte:statusByte];
-    [newMessage setSourceEndpoint:sourceEndpoint];
+    [newMessage setOriginatingEndpoint:originatingEndpoint];
     return newMessage;
 }
 
@@ -383,16 +383,16 @@ static NSDateFormatter *timeStampDateFormatter;
         return nil;
 }
 
-- (SMSourceEndpoint *)sourceEndpoint;
+- (SMEndpoint *)originatingEndpoint;
 {
-    return sourceEndpoint;
+    return originatingEndpoint;
 }
 
-- (void)setSourceEndpoint:(SMSourceEndpoint *)value;
+- (void)setOriginatingEndpoint:(SMEndpoint *)value;
 {
-    if (sourceEndpoint != value) {
-        [sourceEndpoint release];
-        sourceEndpoint = [value retain];
+    if (originatingEndpoint != value) {
+        [originatingEndpoint release];
+        originatingEndpoint = [value retain];
     }
 }
 

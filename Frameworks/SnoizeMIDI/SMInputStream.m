@@ -89,13 +89,14 @@ DEFINE_NSSTRING(SMInputStreamDoneReadingSysExNotification);
     return midiReadProc;
 }
 
-- (SMMessageParser *)newParser;
+- (SMMessageParser *)newParserWithOriginatingEndpoint:(SMEndpoint *)originatingEndpoint;
 {
     SMMessageParser *parser;
 
     parser = [[[SMMessageParser alloc] init] autorelease];
     [parser setDelegate:self];
     [parser setSysExTimeOut:sysExTimeOut];
+    [parser setOriginatingEndpoint:originatingEndpoint];
 
     return parser;
 }
