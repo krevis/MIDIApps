@@ -19,9 +19,9 @@ MessagePortBroadcaster::MessagePortBroadcaster(CFStringRef broadcasterName, Mess
 {
     CFMessagePortContext messagePortContext = { 0, (void *)this, NULL, NULL, NULL };
 
-#if DEBUG
+    #if DEBUG
         fprintf(stderr, "MessagePortBroadcaster: creating\n");
-#endif
+    #endif
         
     sOneBroadcaster = this;
         
@@ -46,9 +46,9 @@ MessagePortBroadcaster::MessagePortBroadcaster(CFStringRef broadcasterName, Mess
 
 MessagePortBroadcaster::~MessagePortBroadcaster()
 {
-#if DEBUG
-    fprintf(stderr, "MessagePortBroadcaster: destroying\n");
-#endif
+    #if DEBUG
+        fprintf(stderr, "MessagePortBroadcaster: destroying\n");
+    #endif
 
     // As we delete our dictionaries, any leftover remote CFMessagePorts will get invalidated.
     // But we want to bypass the usual invalidation code (since we're just taking everything
@@ -86,9 +86,9 @@ void MessagePortBroadcaster::Broadcast(CFDataRef data, SInt32 channel)
     CFArrayRef listeners;
     CFIndex listenerIndex;
 
-#if DEBUG
-    fprintf(stderr, "MessagePortBroadcaster: broadcast(%p, %p)\n", data, (void *)channel);
-#endif
+    #if DEBUG
+        fprintf(stderr, "MessagePortBroadcaster: broadcast(%p, %p)\n", data, (void *)channel);
+    #endif
     
     pthread_mutex_lock(&mListenerStructuresMutex);
 
@@ -117,9 +117,9 @@ CFDataRef LocalMessagePortCallBack(CFMessagePortRef local, SInt32 msgid, CFDataR
     MessagePortBroadcaster *broadcaster = (MessagePortBroadcaster *)info;
     CFDataRef result = NULL;
 
-#if DEBUG
-    fprintf(stderr, "MessagePortBroadcaster: message port callback(msgid=%ld)\n", msgid);
-#endif
+    #if DEBUG
+        fprintf(stderr, "MessagePortBroadcaster: message port callback(msgid=%ld)\n", msgid);
+    #endif
     
     switch (msgid) {
         case kSpyingMIDIDriverGetNextListenerIdentifierMessageID:
@@ -249,9 +249,9 @@ void MessagePortWasInvalidated(CFMessagePortRef messagePort, void *info)
     // Thus, we have to assume we have one MessagePortBroadcaster, which we look up statically. Lame!
     // TODO come up with a better solution to this
 
-#if DEBUG
-    fprintf(stderr, "MessagePortBroadcaster: remote port was invalidated\n");
-#endif
+    #if DEBUG
+        fprintf(stderr, "MessagePortBroadcaster: remote port was invalidated\n");
+    #endif
 
     if (sOneBroadcaster)
         sOneBroadcaster->RemoveListenerWithRemotePort(messagePort);
