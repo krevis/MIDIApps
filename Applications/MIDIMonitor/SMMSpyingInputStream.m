@@ -10,6 +10,7 @@
 
 @interface SMMSpyingInputStream (Private)
 
+- (void)endpointListChanged:(NSNotification *)notification;
 - (void)endpointDisappeared:(NSNotification *)notification;
 - (void)endpointWasReplaced:(NSNotification *)notification;
 
@@ -43,6 +44,8 @@
     endpoints = [[NSMutableSet alloc] init];
 
     parsersForEndpoints = NSCreateMapTable(NSNonRetainedObjectMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endpointListChanged:) name:SMMIDIObjectListChangedNotification object:[SMDestinationEndpoint class]];
 
     return self;
 }
@@ -180,7 +183,7 @@
     inputSourceIndex = [inputSources count];
     while (inputSourceIndex--) {
         if ([[inputSources objectAtIndex:inputSourceIndex] isOwnedByThisProcess])
-            [inputSources removeObjectAtIndex:inputSourceIndex];        
+            [inputSources removeObjectAtIndex:inputSourceIndex];
     }
 
     return inputSources;
@@ -200,6 +203,11 @@
 
 
 @implementation SMMSpyingInputStream (Private)
+
+- (void)endpointListChanged:(NSNotification *)notification;
+{
+    [self postSourceListChangedNotification];
+}
 
 - (void)endpointDisappeared:(NSNotification *)notification;
 {

@@ -38,4 +38,11 @@
 @end
 
 // Notifications
-// This class will repost notifications from its streams, with self as object.
+//
+// This class will repost these notifications from its streams (with self as object):
+//	SMInputStreamReadingSysExNotification
+//	SMInputStreamDoneReadingSysExNotification
+//	SMInputStreamSelectedInputSourceDisappearedNotification
+//
+// It will also listen to SMInputStreamSourceListChangedNotification from its streams,
+// and coalesce them into a single notification (with the same name) from this object.

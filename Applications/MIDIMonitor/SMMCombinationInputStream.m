@@ -15,6 +15,7 @@
 - (void)observeNotificationsWithCenter:(NSNotificationCenter *)center object:(id)object;
 
 - (void)repostNotification:(NSNotification *)notification;
+- (void)inputSourceListChanged:(NSNotification *)notification;
 
 - (NSSet *)intersectionOfSet:(NSSet *)set1 andArray:(NSArray *)array2;
 
@@ -247,11 +248,23 @@
     [center addObserver:self selector:@selector(repostNotification:) name:SMInputStreamReadingSysExNotification object:object];
     [center addObserver:self selector:@selector(repostNotification:) name:SMInputStreamDoneReadingSysExNotification object:object];
     [center addObserver:self selector:@selector(repostNotification:) name:SMInputStreamSelectedInputSourceDisappearedNotification object:object];
+    [center addObserver:self selector:@selector(inputSourceListChanged:) name:SMInputStreamSourceListChangedNotification object:object];
 }
 
 - (void)repostNotification:(NSNotification *)notification;
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:[notification name] object:self userInfo:[notification userInfo]];
+}
+
+- (void)inputSourceListChanged:(NSNotification *)notification;
+{
+    // We may get this notification from more than one of our streams, so create our own notification and queue it with coalescing.
+    // This way we coalesce all the notifications from all of the streams into one notification from us.
+    NSNotification *newNotification;
+
+    newNotification = [NSNotification notificationWithName:SMInputStreamSourceListChangedNotification object:self];
+
+    [[NSNotificationQueue defaultQueue] enqueueNotification:newNotification postingStyle:NSPostWhenIdle coalesceMask:(NSNotificationCoalescingOnName | NSNotificationCoalescingOnSender) forModes:[NSArray arrayWithObject:NSDefaultRunLoopMode]];
 }
 
 - (NSSet *)intersectionOfSet:(NSSet *)set1 andArray:(NSArray *)array2;
