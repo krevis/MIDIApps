@@ -73,4 +73,6 @@
 - (void)updateSysExReadIndicatorWithBytes:(NSNumber *)bytesReadNumber;
 - (void)stopSysExReadIndicatorWithBytes:(NSNumber *)bytesReadNumber;
 
+- (void)revealInputSources:(NSSet *)inputSources;
+
 @end

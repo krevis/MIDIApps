@@ -285,7 +285,7 @@ static NSString *kToString = nil;
         [groupedInputSources release];
         groupedInputSources = [newGroupedInputSources retain];
     }
-        
+
     [sourcesOutlineView reloadData];
 }
 
@@ -419,6 +419,41 @@ static NSString *kToString = nil;
     [self _hideSysExProgressIndicator];
     [nextSysExAnimateDate release];
     nextSysExAnimateDate = nil;
+}
+
+- (void)revealInputSources:(NSSet *)inputSources;
+{
+    // Of all of the input sources, find the first one which is in the given set.
+    // Then expand the outline view to show this source, and scroll it to be visible.
+
+    unsigned int groupCount, groupIndex;
+
+    groupCount = [groupedInputSources count];
+    for (groupIndex = 0; groupIndex < groupCount; groupIndex++) {
+        NSDictionary *group;
+        
+        group = [groupedInputSources objectAtIndex:groupIndex];
+        if (![[group objectForKey:@"isNotExpandable"] boolValue]) {
+            NSArray *groupSources;
+            unsigned int groupSourceCount, groupSourceIndex;
+
+            groupSources = [group objectForKey:@"sources"];
+            groupSourceCount = [groupSources count];
+            for (groupSourceIndex = 0; groupSourceIndex < groupSourceCount; groupSourceIndex++) {
+                id source;
+
+                source = [groupSources objectAtIndex:groupSourceIndex];
+                if ([inputSources containsObject:source]) {
+                    // Found one!
+                    [sourcesOutlineView expandItem:group];
+                    [sourcesOutlineView scrollRowToVisible:[sourcesOutlineView rowForItem:source]];
+
+                    // And now we're done
+                    return;
+                }
+            }            
+        }
+    }
 }
 
 @end

@@ -26,6 +26,7 @@
     // Returns an array of dictionaries; each has a string for key @"name" and an array of source descriptions for key @"sources"
 - (NSSet *)selectedInputSources;
 - (void)setSelectedInputSources:(NSSet *)inputSources;
+- (void)revealInputSources:(NSSet *)inputSources;
 
 - (unsigned int)maxMessageCount;
 - (void)setMaxMessageCount:(unsigned int)newValue;

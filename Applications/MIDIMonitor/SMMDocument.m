@@ -287,6 +287,11 @@ NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoS
     [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeSources)];
 }
 
+- (void)revealInputSources:(NSSet *)inputSources;
+{
+    [[self windowControllers] makeObjectsPerformSelector:@selector(revealInputSources:) withObject:inputSources];
+}
+
 - (unsigned int)maxMessageCount;
 {
     return [history historySize];
