@@ -88,31 +88,48 @@ static SMPeriodicTimer *sharedPeriodicTimer = nil;
 
 @implementation SMPeriodicTimer (Private)
 
-static const UInt64 sleepTimeNanoseconds = 10.0e-3 * 1.0e9;	// 10 ms
+static const UInt64 sliceTimeNanoseconds = 10.0e-3 * 1.0e9;	// 10 ms
 
 - (void)_runInThread:(id)object;
 {
     NSAutoreleasePool *pool;
-    UInt64 sleepTime;
-    UInt64 lastFireTime = 0;
+    UInt64 sliceTime;
+    BOOL started = NO;
+    UInt64 processEndTime;
 
     pool = [[NSAutoreleasePool alloc] init];
 
     [self _setThreadSchedulingPolicy];
 
-    sleepTime = AudioConvertNanosToHostTime(sleepTimeNanoseconds);
+    sliceTime = AudioConvertNanosToHostTime(sliceTimeNanoseconds);
 
     while (1) {
         NSAutoreleasePool *pool2;
-        UInt64 currentTime, nextFireTime;
-        UInt64 currentTimeAtEnd;
+        UInt64 currentTime;
+        UInt64 processStartTime;
 
         currentTime = AudioGetCurrentHostTime();
-        nextFireTime = lastFireTime + sleepTime;
-        if (nextFireTime <= currentTime) {
-            // We must have taken far too long to wake up. Oh well.
-            // TODO is this the right thing to do? I doubt it... esp. check processing start/end time
-            nextFireTime = currentTime + sleepTime;
+
+        if (!started) {
+            // We are starting.
+            // Right now, we want to process all events from now up until the end of the next slice.
+            processStartTime = currentTime;
+            processEndTime = currentTime + sliceTime;
+
+            // And come back around a second time, a little later.
+        } else {
+            // We are still running.
+            // Hopefully, the current time is earlier than the last processEndTime.
+
+            processStartTime = processEndTime;	// last processEndTime
+            if (currentTime < processStartTime) {
+                // We are ahead of time, as we should be
+                processEndTime = processStartTime + sliceTime;
+            } else {
+                // We are falling behind, and missed the opportunity to send some messages on time.
+                // Do some extra work to try to get ahead again.
+                processEndTime = currentTime + sliceTime;
+            }
         }
 
         pool2 = [[NSAutoreleasePool alloc] init];
@@ -121,11 +138,11 @@ static const UInt64 sleepTimeNanoseconds = 10.0e-3 * 1.0e9;	// 10 ms
         NS_DURING {
             unsigned int listenerCount, listenerIndex;
 
-            // Our listeners should process events which will happen between processingStartTime and processingEndTime.
-
+            // Our listeners should process events which will happen in the next slice in the future.
+            // That is, in the interval (processStartTime, processEndTime].
             listenerCount = [listeners count];
             for (listenerIndex = 0; listenerIndex < listenerCount; listenerIndex++) {
-                [[listeners objectAtIndex:listenerIndex] periodicTimerFiredForStart:nextFireTime end:nextFireTime + sleepTime];
+                [[listeners objectAtIndex:listenerIndex] periodicTimerFiredForStart:processStartTime end:processEndTime];
             }
         } NS_HANDLER {
             NSLog(@"SMPeriodicTimer: A listener raised an exception: %@", localException);
@@ -134,24 +151,26 @@ static const UInt64 sleepTimeNanoseconds = 10.0e-3 * 1.0e9;	// 10 ms
 
         [pool2 release];
 
-        currentTimeAtEnd = AudioGetCurrentHostTime();
-        if (nextFireTime > currentTimeAtEnd) {
-            // Wait for the next fire time.
-            kern_return_t error;
-            
-            error = mach_wait_until(nextFireTime);
-            if (error) {
-                mach_error("SMPeriodicTimer: mach_wait_until error: ", error);
-            }
+        if (!started) {
+            started = YES;
+            // Go on and process another slice immediately
         } else {
-            // Processing took too much time.
-            NSLog(@"SMPeriodicTimer: Listeners took too much time!  %lu ticks vs %lu", (unsigned long)(currentTimeAtEnd - currentTime), (unsigned long)sleepTime);
+            UInt64 currentTimeAtEnd;
 
-            // Just continue on instead of waiting (but give other threads some time first).
-            sched_yield();	// TODO is this really necessary? It seems like the Nice Thing To Do.
+            currentTimeAtEnd = AudioGetCurrentHostTime();
+            if (processStartTime > currentTimeAtEnd) {
+                // Wait for a while.
+                kern_return_t error;
+
+                error = mach_wait_until(processStartTime);
+                if (error)
+                    mach_error("SMPeriodicTimer: mach_wait_until error: ", error);
+            } else {
+                // We took longer than we would have liked.
+                // Continue on instead of waiting (but give some other threads some time first);
+                sched_yield();	// TODO is this really necessary? It seems like the Nice Thing To Do.
+            }
         }
-
-        lastFireTime = nextFireTime;
     }
         
     [pool release];
@@ -199,8 +218,8 @@ static const UInt64 sleepTimeNanoseconds = 10.0e-3 * 1.0e9;	// 10 ms
         operation, as it involves a kernel transition).
     */
 
-    policy.period = AudioConvertNanosToHostTime(sleepTimeNanoseconds);
-    policy.computation = AudioConvertNanosToHostTime(sleepTimeNanoseconds / 2);
+    policy.period = AudioConvertNanosToHostTime(sliceTimeNanoseconds);
+    policy.computation = AudioConvertNanosToHostTime(sliceTimeNanoseconds / 2);
         // TODO No great thought went into this. I bet we don't really need this much time.
     policy.constraint = 2 * policy.computation;
         // This is a reasonable setting (the default time-constraint policy is like this, as is the CoreMIDI thread)
