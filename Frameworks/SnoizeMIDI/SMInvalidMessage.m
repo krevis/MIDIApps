@@ -14,6 +14,7 @@
     SMInvalidMessage *message;
     
     message = [[[SMInvalidMessage alloc] initWithTimeStamp:aTimeStamp statusByte:0x00] autorelease];
+    // statusByte is ignored
     [message setData:aData];
 
     return message;
@@ -65,6 +66,12 @@
     return NSLocalizedStringFromTableInBundle(@"Invalid", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of Invalid event");
 }
 
+- (NSString*)dataForDisplay
+{
+    return [[[self sizeForDisplay] stringByAppendingString:@"\t"] stringByAppendingString:[super dataForDisplay]];
+}
+
+
 //
 // Additional API
 //
@@ -80,6 +87,13 @@
         [data release];
         data = [newData retain];
     }
+}
+
+- (NSString *)sizeForDisplay;
+{
+    return [NSString stringWithFormat:
+        NSLocalizedStringFromTableInBundle(@"%@ bytes", @"SnoizeMIDI", SMBundleForObject(self), "Invalid message length format string"),
+        [SMMessage formatLength:[self otherDataLength]]];
 }
 
 @end

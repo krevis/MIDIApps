@@ -17,4 +17,6 @@
 - (NSData *)data;
 - (void)setData:(NSData *)newData;
 
+- (NSString *)sizeForDisplay;
+
 @end
