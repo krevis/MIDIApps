@@ -67,6 +67,8 @@
 - (IBAction)selectDestinationFromPopUpButton:(id)sender;
 - (IBAction)selectDestinationFromMenuItem:(id)sender;
 
+- (IBAction)selectAll:(id)sender;
+
 - (IBAction)addToLibrary:(id)sender;
 - (IBAction)delete:(id)sender;
 - (IBAction)recordOne:(id)sender;
@@ -91,7 +93,7 @@
 - (void)synchronizeLibrarySortIndicator;
 - (void)synchronizeLibrary;
 
-- (void)importFiles:(NSArray *)filePaths;
+- (void)importFiles:(NSArray *)filePaths showingProgress:(BOOL)showProgress;
 
 - (void)updateSysExReadIndicator;
 - (void)stopSysExReadIndicator;

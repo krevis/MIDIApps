@@ -39,7 +39,8 @@
 - (void)_updatePlayProgressAndRepeat;
 - (void)_updatePlayProgress;
 
-- (BOOL)_areAnyDraggedFilesAcceptable:(NSArray *)filePaths;
+- (BOOL)_areAnyFilesAcceptable:(NSArray *)filePaths;
+- (BOOL)_areAnyFilesDirectories:(NSArray *)filePaths;
 - (void)_importFilesShowingProgress:(NSArray *)filePaths;
 - (void)_workThreadImportFiles:(NSArray *)filePaths;
 - (NSArray *)_workThreadExpandAndFilterDraggedFiles:(NSArray *)filePaths;
@@ -190,6 +191,12 @@ static SSEMainWindowController *controller;
 - (IBAction)selectDestinationFromMenuItem:(id)sender;
 {
     [midiController setDestinationDescription:[(NSMenuItem *)sender representedObject]];
+}
+
+- (IBAction)selectAll:(id)sender;
+{
+    // Forward to the library table view, even if it isn't the first responder
+    [libraryTableView selectAll:sender];
 }
 
 - (IBAction)addToLibrary:(id)sender;
@@ -372,9 +379,16 @@ static SSEMainWindowController *controller;
     [self _selectAndScrollToEntries:selectedEntries];
 }
 
-- (void)importFiles:(NSArray *)filePaths;
+- (void)importFiles:(NSArray *)filePaths showingProgress:(BOOL)showProgress;
 {
-    [self _showImportWarningForFiles:filePaths andThenPerformSelector:@selector(_importFilesShowingProgress:)];
+    SEL selector;
+
+    if (![self _areAnyFilesDirectories:filePaths])
+        showProgress = NO;
+
+    selector = showProgress ? @selector(_importFilesShowingProgress:) : @selector(_addFilesToLibraryInMainThread:);
+    [self _showImportWarningForFiles:filePaths andThenPerformSelector:selector];
+    // TODO it is possible some of these files are already in the library. we should just select their entry instead of creating a new one.
 }
 
 
@@ -519,7 +533,7 @@ static SSEMainWindowController *controller;
 
 - (NSDragOperation)tableView:(SSETableView *)tableView draggingEntered:(id <NSDraggingInfo>)sender;
 {
-    if ([self _areAnyDraggedFilesAcceptable:[[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType]])
+    if ([self _areAnyFilesAcceptable:[[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType]])
         return NSDragOperationGeneric;
     else
         return NSDragOperationNone;
@@ -530,7 +544,7 @@ static SSEMainWindowController *controller;
     NSArray *filePaths;
 
     filePaths = [[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType];
-    [self importFiles:filePaths];
+    [self importFiles:filePaths showingProgress:YES];
 
     return YES;
 }
@@ -757,7 +771,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
 {
     if (returnCode == NSOKButton) {
         [openPanel orderOut:nil];
-        [self _showImportWarningForFiles:[openPanel filenames] andThenPerformSelector:@selector(_addFilesToLibraryInMainThread:)];
+        [self importFiles:[openPanel filenames] showingProgress:NO];
     }
 }
 
@@ -919,7 +933,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     [playProgressMessageField setStringValue:message];
 }
 
-- (BOOL)_areAnyDraggedFilesAcceptable:(NSArray *)filePaths;
+- (BOOL)_areAnyFilesAcceptable:(NSArray *)filePaths;
 {
     NSFileManager *fileManager;
     unsigned int fileIndex, fileCount;
@@ -939,6 +953,29 @@ static int libraryEntryComparator(id object1, id object2, void *context)
             return YES;
 
         if ([fileManager isReadableFileAtPath:filePath] && [library typeOfFileAtPath:filePath] != SSELibraryFileTypeUnknown)
+            return YES;
+    }
+
+    return NO;
+}
+
+- (BOOL)_areAnyFilesDirectories:(NSArray *)filePaths;
+{
+    NSFileManager *fileManager;
+    unsigned int fileIndex, fileCount;
+
+    fileManager = [NSFileManager defaultManager];
+
+    fileCount = [filePaths count];
+    for (fileIndex = 0; fileIndex < fileCount; fileIndex++) {
+        NSString *filePath;
+        BOOL isDirectory;
+
+        filePath = [filePaths objectAtIndex:fileIndex];
+        if ([fileManager fileExistsAtPath:filePath isDirectory:&isDirectory] == NO)
+            continue;
+
+        if (isDirectory)
             return YES;
     }
 

@@ -10,7 +10,7 @@
 
 @interface SSEAppController (Private)
 
-- (void)_openFiles:(NSArray *)filenames;
+- (void)_importFiles;
 
 @end
 
@@ -33,6 +33,9 @@
 
 - (void)applicationWillFinishLaunching:(NSNotification *)notification;
 {
+    // Make sure we go multithreaded, and that our scheduler starts up
+    [OFScheduler mainScheduler];
+
     // Initialize CoreMIDI while the app's icon is still bouncing, so we don't have a large pause after it stops bouncing
     // but before the app's window opens.  (CoreMIDI needs to find and possibly start its server process, which can take a while.)
     [SMClient sharedClient];
@@ -42,28 +45,20 @@
 {
     hasFinishedLaunching = YES;
     
-    // Make sure we go multithreaded, and that our scheduler starts up
-    [OFScheduler mainScheduler];
-
     [self showMainWindow:nil];
 
-    if (filesToOpenAfterLaunch) {
-        [[SSEMainWindowController mainWindowController] importFiles:filesToOpenAfterLaunch];
-        [filesToOpenAfterLaunch release];
-        filesToOpenAfterLaunch = nil;
-    }
+    if (filesToImport)
+        [self _importFiles];
 }
 
 - (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename;
 {
-    if (hasFinishedLaunching) {
-        [[SSEMainWindowController mainWindowController] importFiles:[NSArray arrayWithObject:filename]];
-    } else {
-        if (!filesToOpenAfterLaunch)
-            filesToOpenAfterLaunch = [[NSMutableArray alloc] init];
+    if (!filesToImport)
+        filesToImport = [[NSMutableArray alloc] init];
+    [filesToImport addObject:filename];
 
-        [filesToOpenAfterLaunch addObject:filename];
-    }
+    if (hasFinishedLaunching)
+        [self _importFiles];
 
     return YES;
 }
@@ -127,6 +122,18 @@
     controller = [SSEMainWindowController mainWindowController];
     [controller showWindow:nil];
     [controller addToLibrary:sender];
+}
+
+@end
+
+
+@implementation SSEAppController (Private)
+
+- (void)_importFiles;
+{
+    [[SSEMainWindowController mainWindowController] importFiles:filesToImport showingProgress:NO];
+    [filesToImport release];
+    filesToImport = nil;
 }
 
 @end

@@ -4,7 +4,7 @@
 @interface SSEAppController : NSObject
 {
     BOOL hasFinishedLaunching;
-    NSMutableArray *filesToOpenAfterLaunch;
+    NSMutableArray *filesToImport;
 }
 
 - (IBAction)showPreferences:(id)sender;
