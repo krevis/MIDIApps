@@ -95,6 +95,7 @@ NSString *SSESysExFileExtension = @"syx";
     NSData *aliasData;
     NSString *path = nil;
 
+    // TODO define a string for this, and use OFPreference
     aliasData = [[NSUserDefaults standardUserDefaults] objectForKey:@"LibraryAlias"];
     if (aliasData) {
         BDAlias *alias;
@@ -115,6 +116,7 @@ NSString *SSESysExFileExtension = @"syx";
     NSData *aliasData;
     NSString *path = nil;
 
+    // TODO define a string for this, and use OFPreference
     aliasData = [[NSUserDefaults standardUserDefaults] objectForKey:@"LibraryFileDirectoryAlias"];
     if (aliasData) {
         BDAlias *alias;
