@@ -555,6 +555,7 @@
 			};
 		};
 		167B884206ED4D650053D305 = {
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = text.xml;
 			path = "Info-MIDIMonitor__Upgraded_.plist";

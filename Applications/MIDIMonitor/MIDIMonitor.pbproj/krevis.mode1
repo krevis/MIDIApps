@@ -298,6 +298,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
+									<integer>6</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -319,7 +320,7 @@
 							<real>247</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>16 156 1205 662 0 0 1280 832 </string>
+						<string>55 152 1205 662 0 0 1280 832 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -335,7 +336,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>PrecompHeader.h</string>
+								<string>Info-MIDIMonitor__Upgraded_.plist</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -343,9 +344,9 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>PrecompHeader.h</string>
+										<string>Info-MIDIMonitor__Upgraded_.plist</string>
 										<key>bookmark</key>
-										<string>1621673006ED7F290050903A</string>
+										<string>16FF039706F43951006B9432</string>
 										<key>history</key>
 										<array>
 											<string>16F20EE706EA9BD900D9C507</string>
@@ -368,7 +369,6 @@
 											<string>167B87F306ED4B180053D305</string>
 											<string>167B884C06ED4EDD0053D305</string>
 											<string>167B885906ED4FAA0053D305</string>
-											<string>167B886806ED52A70053D305</string>
 											<string>167B886906ED52A70053D305</string>
 											<string>167B887A06ED56220053D305</string>
 											<string>162166E106ED7C420050903A</string>
@@ -405,7 +405,8 @@
 											<string>1621670006ED7C420050903A</string>
 											<string>1621670106ED7C420050903A</string>
 											<string>1621670206ED7C420050903A</string>
-											<string>1621670306ED7C420050903A</string>
+											<string>16FF039106F43951006B9432</string>
+											<string>16FF039206F43951006B9432</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -447,32 +448,8 @@
 											<string>167B885C06ED4FAA0053D305</string>
 											<string>167B887C06ED56220053D305</string>
 											<string>167B887D06ED56220053D305</string>
-											<string>1621670406ED7C420050903A</string>
-											<string>1621670506ED7C420050903A</string>
-											<string>1621670606ED7C420050903A</string>
-											<string>1621670706ED7C420050903A</string>
-											<string>1621670806ED7C420050903A</string>
-											<string>1621670906ED7C420050903A</string>
-											<string>1621670A06ED7C420050903A</string>
-											<string>1621670B06ED7C420050903A</string>
-											<string>1621670C06ED7C420050903A</string>
-											<string>1621670D06ED7C420050903A</string>
-											<string>1621670E06ED7C420050903A</string>
 											<string>1621670F06ED7C420050903A</string>
-											<string>1621671006ED7C420050903A</string>
-											<string>1621671106ED7C420050903A</string>
-											<string>1621671206ED7C420050903A</string>
 											<string>1621671306ED7C420050903A</string>
-											<string>1621671406ED7C420050903A</string>
-											<string>1621671506ED7C420050903A</string>
-											<string>1621671606ED7C420050903A</string>
-											<string>1621671706ED7C420050903A</string>
-											<string>1621671806ED7C420050903A</string>
-											<string>1621671906ED7C420050903A</string>
-											<string>1621671A06ED7C420050903A</string>
-											<string>1621671B06ED7C420050903A</string>
-											<string>1621671C06ED7C420050903A</string>
-											<string>1621671D06ED7C420050903A</string>
 											<string>1621671E06ED7C420050903A</string>
 											<string>1621671F06ED7C420050903A</string>
 											<string>1621672006ED7C420050903A</string>
@@ -482,13 +459,8 @@
 											<string>1621672406ED7C420050903A</string>
 											<string>1621672506ED7C420050903A</string>
 											<string>1621672606ED7C420050903A</string>
-											<string>1621672706ED7C420050903A</string>
-											<string>1621672806ED7C420050903A</string>
-											<string>1621672906ED7C420050903A</string>
-											<string>1621672A06ED7C420050903A</string>
-											<string>1621672B06ED7C420050903A</string>
 											<string>1621672C06ED7C420050903A</string>
-											<string>1621672D06ED7C420050903A</string>
+											<string>16FF039306F43951006B9432</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -502,7 +474,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {913, 463}}</string>
 								<key>RubberWindowFrame</key>
-								<string>16 156 1205 662 0 0 1280 832 </string>
+								<string>55 152 1205 662 0 0 1280 832 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -522,7 +494,7 @@
 								<key>Frame</key>
 								<string>{{0, 470}, {913, 150}}</string>
 								<key>RubberWindowFrame</key>
-								<string>16 156 1205 662 0 0 1280 832 </string>
+								<string>55 152 1205 662 0 0 1280 832 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -546,9 +518,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>162166D006ED63A10050903A</string>
+				<string>16FF039506F43951006B9432</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>162166D106ED63A10050903A</string>
+				<string>16FF039606F43951006B9432</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -561,7 +533,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>116220789.23314637</real>
+	<real>116668632.14740187</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>1</integer>
 	<key>ToolbarIsVisible</key>
@@ -575,9 +547,11 @@
 	<key>WindowJustification</key>
 	<integer>5</integer>
 	<key>WindowOrderList</key>
-	<array/>
+	<array>
+		<string>/Users/krevis/Source/Snoize/Applications/MIDIMonitor/MIDIMonitor.pbproj</string>
+	</array>
 	<key>WindowString</key>
-	<string>16 156 1205 662 0 0 1280 832 </string>
+	<string>55 152 1205 662 0 0 1280 832 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>
