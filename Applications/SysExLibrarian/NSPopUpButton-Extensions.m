@@ -1,7 +1,7 @@
 #import "NSPopUpButton-Extensions.h"
 
 
-@implementation NSPopUpButton (SMMExtensions)
+@implementation NSPopUpButton (SSEExtensions)
 
 - (void)addItemWithTitle:(NSString *)title representedObject:(id)object;
 {
