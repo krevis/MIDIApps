@@ -78,6 +78,7 @@ DEFINE_NSSTRING(SSESelectedDestination);
     
     [center addObserver:self selector:@selector(_midiSetupDidChange:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
 
+    didSetDestinationFromDefaults = NO;
     destinationSettings = [[NSUserDefaults standardUserDefaults] objectForKey:SSESelectedDestination];
     if (destinationSettings) {
         NSString *missingDestinationName;
@@ -137,9 +138,6 @@ DEFINE_NSSTRING(SSESelectedDestination);
     listenToMIDISetupChanges = NO;
 
     [outputStream setEndpointDescription:description];
-    // TODO we aren't handling undo yet
-    //    [[[self undoManager] prepareWithInvocationTarget:self] setSourceDescription:oldDescription];
-    //    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Source", @"SysExLibrarian", [self bundle], "change source undo action")];
 
     listenToMIDISetupChanges = savedListenFlag;
 
