@@ -488,7 +488,7 @@ static NSString *kToString = nil;
             NSString *fromOrTo;
 
             fromOrTo = ([endpoint isKindOfClass:[SMSourceEndpoint class]] ? kFromString : kToString);
-            return [[fromOrTo stringByAppendingString:@" "] stringByAppendingString:[endpoint shortName]];
+            return [[fromOrTo stringByAppendingString:@" "] stringByAppendingString:[endpoint alwaysUniqueName]];
         } else {
             return nil;            
         }
