@@ -30,6 +30,7 @@ SnoizeAppSource=${SnoizeSource}/Applications
 
 PUBLIC=/Users/Shared
 INSTALL_DIRECTORY=$PUBLIC/$USER/InstalledProducts
+INSTALL_BUILD_DIRECTORY=$PUBLIC/$USER/InstallBuild
 APP_EXECUTABLE_NAME="SysEx Librarian"
 APP_WRAPPER_NAME="${APP_EXECUTABLE_NAME}.app"
 
@@ -54,10 +55,12 @@ if [[ $DO_INSTALL -eq 1 ]] ; then
 	FRAMEWORK_BUILDSTYLE="DeploymentInApp"
 	APP_BUILDSTYLE="Deployment"
 	BUILD_ACTION=install
+	EXTRA_SETTINGS=(SYMROOT="${INSTALL_BUILD_DIRECTORY}" OBJROOT="${INSTALL_BUILD_DIRECTORY}/Builds")
 else
 	FRAMEWORK_BUILDSTYLE="Development"
 	APP_BUILDSTYLE="Development"
 	BUILD_ACTION=
+	EXTRA_SETTINGS=
 fi
 
 #
@@ -67,16 +70,16 @@ fi
 if [[ $DO_CLEAN -eq 1 ]] ; then
 
 	cd ${OmniFrameworkSource}/OmniBase
-	pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE clean || {echo "Build failed!"; exit 1}
+	pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE clean $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
 
 	cd ${OmniFrameworkSource}/OmniFoundation
-	pbxbuild -target "OmniFoundation (MIDIMonitor subset framework)" -buildstyle $FRAMEWORK_BUILDSTYLE clean || {echo "Build failed!"; exit 1}
+	pbxbuild -target "OmniFoundation (MIDIMonitor subset framework)" -buildstyle $FRAMEWORK_BUILDSTYLE clean $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
 
 	cd ${SnoizeFrameworkSource}/SnoizeMIDI
-	pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE clean || {echo "Build failed!"; exit 1}
+	pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE clean $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
 
 	cd ${SnoizeAppSource}/SysExLibrarian
-	pbxbuild -buildstyle $APP_BUILDSTYLE clean || {echo "Build failed!"; exit 1}
+	pbxbuild -buildstyle $APP_BUILDSTYLE clean $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
 
 fi
 
@@ -90,16 +93,16 @@ if [[ $DO_INSTALL -eq 1 ]] ; then
 fi
 
 cd ${OmniFrameworkSource}/OmniBase
-pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION || {echo "Build failed!"; exit 1}
+pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
 
 cd ${OmniFrameworkSource}/OmniFoundation
-pbxbuild -target "OmniFoundation (MIDIMonitor subset framework)" -buildstyle $FRAMEWORK_BUILDSTYLE INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION || {echo "Build failed!"; exit 1}
+pbxbuild -target "OmniFoundation (MIDIMonitor subset framework)" -buildstyle $FRAMEWORK_BUILDSTYLE INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
 
 cd ${SnoizeFrameworkSource}/SnoizeMIDI
-pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION || {echo "Build failed!"; exit 1}
+pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
 
 cd ${SnoizeAppSource}/SysExLibrarian
-pbxbuild -buildstyle $APP_BUILDSTYLE DSTROOT=/ INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION || {echo "Build failed!"; exit 1}
+pbxbuild -buildstyle $APP_BUILDSTYLE DSTROOT=/ INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
 	# NOTE: We are relying on the app's project having an INSTALL_PATH
 	# set to $INSTALL_DIRECTORY. For some reason, if it is set to nothing in the project,
 	# setting it here will not cause the install to happen.
