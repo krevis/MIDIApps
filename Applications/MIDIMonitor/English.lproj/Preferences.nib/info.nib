@@ -5,10 +5,12 @@
 	<key>IBDocumentLocation</key>
 	<string>33 25 356 240 0 0 1600 1178 </string>
 	<key>IBFramework Version</key>
-	<string>219.0</string>
+	<string>248.0</string>
+	<key>IBOpenObjects</key>
+	<array>
+		<integer>155</integer>
+	</array>
 	<key>IBSystem Version</key>
-	<string>5M28</string>
-	<key>IBUserGuides</key>
-	<dict/>
+	<string>5P48</string>
 </dict>
 </plist>
