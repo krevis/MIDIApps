@@ -41,8 +41,8 @@
 - (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;
 
 - (NSArray *)inputSources;
-- (NSArray *)selectedInputSources;
-- (void)setSelectedInputSources:(NSArray *)sources;
+- (NSSet *)selectedInputSources;
+- (void)setSelectedInputSources:(NSSet *)sources;
 
 @end
 

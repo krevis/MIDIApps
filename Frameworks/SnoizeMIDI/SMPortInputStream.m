@@ -34,7 +34,7 @@
     if (status != noErr)
         [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't create a MIDI input port (error %ld)", @"SnoizeMIDI", [self bundle], "exception with OSStatus if MIDIInputPortCreate() fails"), status];
 
-    endpoints = [[NSMutableArray alloc] init];
+    endpoints = [[NSMutableSet alloc] init];
 
     parsersForEndpoints = NSCreateMapTable(NSNonRetainedObjectMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
 
@@ -58,9 +58,9 @@
     [super dealloc];
 }
 
-- (NSArray *)endpoints;
+- (NSSet *)endpoints;
 {
-    return [NSArray arrayWithArray:endpoints];
+    return [NSSet setWithSet:endpoints];
 }
 
 - (void)addEndpoint:(SMSourceEndpoint *)endpoint;
@@ -72,7 +72,7 @@
     if (!endpoint)
         return;
     
-    if ([endpoints indexOfObjectIdenticalTo:endpoint] != NSNotFound)
+    if ([endpoints containsObject:endpoint])
         return;
 
     parser = [self newParserWithOriginatingEndpoint:endpoint];
@@ -100,7 +100,7 @@
     if (!endpoint)
         return;
 
-    if ([endpoints indexOfObjectIdenticalTo:endpoint] == NSNotFound)
+    if (![endpoints containsObject:endpoint])
         return;
     
     status = MIDIPortDisconnectSource(inputPort, [endpoint endpointRef]);
@@ -114,30 +114,31 @@
     [center removeObserver:self name:SMEndpointDisappearedNotification object:endpoint];
     [center removeObserver:self name:SMEndpointWasReplacedNotification object:endpoint];
 
-    [endpoints removeObjectIdenticalTo:endpoint];
+    [endpoints removeObject:endpoint];
 }
 
-- (void)setEndpoints:(NSArray *)newEndpoints;
+- (void)setEndpoints:(NSSet *)newEndpoints;
 {
-    NSMutableArray *endpointsToRemove;
-    NSMutableArray *endpointsToAdd;
-    unsigned int index;
+    NSMutableSet *endpointsToRemove;
+    NSMutableSet *endpointsToAdd;
+    NSEnumerator *enumerator;
+    SMSourceEndpoint *endpoint;
 
     // remove (endpoints - newEndpoints)
-    endpointsToRemove = [NSMutableArray arrayWithArray:endpoints];
-    [endpointsToRemove removeIdenticalObjectsFromArray:newEndpoints];
+    endpointsToRemove = [NSMutableSet setWithSet:endpoints];
+    [endpointsToRemove minusSet:newEndpoints];
 
     // add (newEndpoints - endpoints)
-    endpointsToAdd = [NSMutableArray arrayWithArray:newEndpoints];
-    [endpointsToAdd removeIdenticalObjectsFromArray:endpoints];
+    endpointsToAdd = [NSMutableSet setWithSet:newEndpoints];
+    [endpointsToAdd minusSet:endpoints];
 
-    index = [endpointsToRemove count];
-    while (index--)
-        [self removeEndpoint:[endpointsToRemove objectAtIndex:index]];
+    enumerator = [endpointsToRemove objectEnumerator];
+    while ((endpoint = [enumerator nextObject]))
+        [self removeEndpoint:endpoint];
 
-    index = [endpointsToAdd count];
-    while (index--)
-        [self addEndpoint:[endpointsToAdd objectAtIndex:index]];    
+    enumerator = [endpointsToAdd objectEnumerator];
+    while ((endpoint = [enumerator nextObject]))
+        [self addEndpoint:endpoint];
 }
 
 
@@ -160,12 +161,12 @@
     return [SMSourceEndpoint sourceEndpoints];
 }
 
-- (NSArray *)selectedInputSources;
+- (NSSet *)selectedInputSources;
 {
     return [self endpoints];
 }
 
-- (void)setSelectedInputSources:(NSArray *)sources;
+- (void)setSelectedInputSources:(NSSet *)sources;
 {
     [self setEndpoints:sources];
 }
@@ -180,7 +181,7 @@
     SMSourceEndpoint *endpoint;
 
     endpoint = [[[notification object] retain] autorelease];
-    OBASSERT([endpoints indexOfObjectIdenticalTo:endpoint] != NSNotFound);
+    OBASSERT([endpoints containsObject:endpoint]);
 
     [self removeEndpoint:endpoint];
 
@@ -192,7 +193,7 @@
     SMSourceEndpoint *oldEndpoint, *newEndpoint;
 
     oldEndpoint = [notification object];
-    OBASSERT([endpoints indexOfObjectIdenticalTo:oldEndpoint] != NSNotFound);    
+    OBASSERT([endpoints containsObject:oldEndpoint]);
 
     newEndpoint = [[notification userInfo] objectForKey:SMEndpointReplacement];
 

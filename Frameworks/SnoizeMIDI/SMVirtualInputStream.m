@@ -110,17 +110,17 @@
     return [NSArray arrayWithObject:inputStreamSource];
 }
 
-- (NSArray *)selectedInputSources;
+- (NSSet *)selectedInputSources;
 {
     if ([self _isActive])
-        return [self inputSources];
+        return [NSSet setWithObject:inputStreamSource];
     else
-        return [NSArray array];
+        return [NSSet set];
 }
 
-- (void)setSelectedInputSources:(NSArray *)sources;
+- (void)setSelectedInputSources:(NSSet *)sources;
 {
-    [self _setIsActive:(sources && [sources indexOfObjectIdenticalTo:inputStreamSource] != NSNotFound)];
+    [self _setIsActive:(sources && [sources containsObject:inputStreamSource])];
 }
 
 //

@@ -12,13 +12,13 @@
 @interface SMPortInputStream : SMInputStream
 {
     MIDIPortRef inputPort;
-    NSMutableArray *endpoints;
+    NSMutableSet *endpoints;
     NSMapTable *parsersForEndpoints;
 }
 
-- (NSArray *)endpoints;
+- (NSSet *)endpoints;
 - (void)addEndpoint:(SMSourceEndpoint *)endpoint;
 - (void)removeEndpoint:(SMSourceEndpoint *)endpoint;
-- (void)setEndpoints:(NSArray *)newEndpoints;
+- (void)setEndpoints:(NSSet *)newEndpoints;
 
 @end

@@ -85,8 +85,10 @@ DEFINE_NSSTRING(SMInputStreamSelectedInputSourceDisappearedNotification);
 
 - (id)persistentSettings;
 {
-    NSArray *selectedInputSources;
-    unsigned int sourcesIndex, sourcesCount;
+    NSSet *selectedInputSources;
+    unsigned int sourcesCount;
+    NSEnumerator *sourceEnumerator;
+    id <SMInputStreamSource> source;
     NSMutableArray *persistentSettings;
 
     selectedInputSources = [self selectedInputSources];
@@ -95,19 +97,19 @@ DEFINE_NSSTRING(SMInputStreamSelectedInputSourceDisappearedNotification);
         return nil;
     persistentSettings = [NSMutableArray arrayWithCapacity:sourcesCount];
 
-    for (sourcesIndex = 0; sourcesIndex < sourcesCount; sourcesIndex++) {
-        id <SMInputStreamSource> source;
+    sourceEnumerator = [selectedInputSources objectEnumerator];
+    while ((source = [sourceEnumerator nextObject])) {
         NSMutableDictionary *dict;
         id object;
 
-        source = [selectedInputSources objectAtIndex:sourcesIndex];
         dict = [NSMutableDictionary dictionary];
         if ((object = [source inputStreamSourceUniqueID]))
             [dict setObject:object forKey:@"uniqueID"];
         if ((object = [source inputStreamSourceName]))
             [dict setObject:object forKey:@"name"];
 
-        [persistentSettings addObject:dict];
+        if ([dict count] > 0)
+            [persistentSettings addObject:dict];
     }
     
     return persistentSettings;
@@ -118,11 +120,11 @@ DEFINE_NSSTRING(SMInputStreamSelectedInputSourceDisappearedNotification);
     // If any endpoints couldn't be found, their names are returned
     NSArray *settingsArray = (NSArray *)settings;
     unsigned int settingsCount, settingsIndex;
-    NSMutableArray *newInputSources;
+    NSMutableSet *newInputSources;
     NSMutableArray *missingNames = nil;
 
     settingsCount = [settingsArray count];
-    newInputSources = [NSMutableArray arrayWithCapacity:settingsCount];
+    newInputSources = [NSMutableSet setWithCapacity:settingsCount];
     for (settingsIndex = 0; settingsIndex < settingsCount; settingsIndex++) {
         NSDictionary *dict;
         NSString *name;
@@ -196,13 +198,13 @@ DEFINE_NSSTRING(SMInputStreamSelectedInputSourceDisappearedNotification);
     return nil;
 }
 
-- (NSArray *)selectedInputSources;
+- (NSSet *)selectedInputSources;
 {
     OBRequestConcreteImplementation(self, _cmd);
     return nil;
 }
 
-- (void)setSelectedInputSources:(NSArray *)sources;
+- (void)setSelectedInputSources:(NSSet *)sources;
 {
     OBRequestConcreteImplementation(self, _cmd);
     return;
