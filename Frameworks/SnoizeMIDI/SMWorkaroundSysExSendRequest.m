@@ -65,10 +65,12 @@ static void workaroundCompletionProc(MIDISysexSendRequest *request);
 
 static void workaroundCompletionProc(MIDISysexSendRequest *request)
 {
+// NOTE There is no need for an autorelease pool here, so let's not make one and slow things down.
 //    NSAutoreleasePool *pool;
+//    pool = [[NSAutoreleasePool alloc] init];
 
-//   pool = [[NSAutoreleasePool alloc] init];
     [(SMWorkaroundSysExSendRequest *)(request->completionRefCon) _workaroundCompletionProc];
+
 //    [pool release];
 }
 
