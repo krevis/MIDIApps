@@ -1,0 +1,17 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = SSEDetailsWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {messagesTableView = NSTableView; textView = NSTextView; }; 
+            SUPERCLASS = SSEWindowController; 
+        }, 
+        {
+            CLASS = SSEWindowController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

@@ -4,6 +4,7 @@
 #import <OmniFoundation/OmniFoundation.h>
 
 #import "NSPopUpButton-Extensions.h"
+#import "SSEDetailsWindowController.h"
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
 #import "SSEMIDIController.h"
@@ -180,6 +181,8 @@ static SSEMainWindowController *controller;
         return ([libraryTableView numberOfSelectedRows] == 1);
     else if (action == @selector(rename:))
         return ([libraryTableView numberOfSelectedRows] == 1);
+    else if (action == @selector(showDetails:))
+        return ([libraryTableView numberOfSelectedRows] > 0);
     else
         return [super validateUserInterfaceItem:theItem];
 }
@@ -293,16 +296,38 @@ static SSEMainWindowController *controller;
     if ((path = [[selectedEntries objectAtIndex:0] path])) {
         [[NSWorkspace sharedWorkspace] selectFile:path inFileViewerRootedAtPath:@""];
     }
+    // TODO Handle case when the file can't be found    
 }
 
 - (IBAction)rename:(id)sender;
 {
+    // TODO Handle case when the file can't be found    
+
     if ([libraryTableView editedRow] >= 0) {
         // We are already editing the table view, so don't do anything
     } else  {
         [self finishEditingInWindow];  // In case we are editing something else
         
         [libraryTableView editColumn:0 row:[libraryTableView selectedRow] withEvent:nil select:YES];
+    }
+}
+
+- (IBAction)showDetails:(id)sender;
+{
+    NSArray *selectedEntries;
+    unsigned int entryCount, entryIndex;
+
+    if ([self _finishEditingResultsInError])
+        return;
+
+    selectedEntries = [self _selectedEntries];
+    entryCount = [selectedEntries count];
+    for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+        SSELibraryEntry *entry;
+
+        entry = [selectedEntries objectAtIndex:entryIndex];
+        [[SSEDetailsWindowController detailsWindowControllerWithEntry:entry] showWindow:nil];
+        // TODO Handle case when the file can't be found    
     }
 }
 

@@ -76,6 +76,7 @@
 - (IBAction)play:(id)sender;
 - (IBAction)showFileInFinder:(id)sender;
 - (IBAction)rename:(id)sender;
+- (IBAction)showDetails:(id)sender;
 
 - (IBAction)cancelRecordSheet:(id)sender;
 - (IBAction)doneWithRecordMultipleSheet:(id)sender;
