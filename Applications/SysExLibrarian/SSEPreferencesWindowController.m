@@ -45,7 +45,7 @@ static SSEPreferencesWindowController *controller;
     if (!(self = [super initWithWindowNibName:@"Preferences"]))
         return nil;
 
-    sizeFormatPreference = [[OFPreference preferenceForKey:SSEAbbreviateFileSizesInLibraryTableView] retain];
+    sizeFormatPreference = [[OFPreference preferenceForKey:SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey] retain];
     readTimeOutPreference = [[OFPreference preferenceForKey:SSESysExReadTimeOutPreferenceKey] retain];
     intervalBetweenSentMessagesPreference = [[OFPreference preferenceForKey:SSESysExIntervalBetweenSentMessagesPreferenceKey] retain];
 

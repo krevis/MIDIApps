@@ -75,9 +75,9 @@
 
 @implementation SSEMainWindowController
 
-DEFINE_NSSTRING(SSEShowWarningOnDelete);
-DEFINE_NSSTRING(SSEShowWarningOnImport);
-DEFINE_NSSTRING(SSEAbbreviateFileSizesInLibraryTableView);
+NSString *SSEShowWarningOnDeletePreferenceKey = @"SSEShowWarningOnDelete";
+NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
+NSString *SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey = @"SSEAbbreviateFileSizesInLibraryTableView";
 
 static SSEMainWindowController *controller;
 
@@ -243,7 +243,7 @@ static SSEMainWindowController *controller;
     if ([self _finishEditingResultsInError])
         return;
 
-    if ([[OFPreference preferenceForKey:SSEShowWarningOnDelete] boolValue]) {
+    if ([[OFPreference preferenceForKey:SSEShowWarningOnDeletePreferenceKey] boolValue]) {
         [doNotWarnOnDeleteAgainCheckbox setIntValue:0];
         [[NSApplication sharedApplication] beginSheet:deleteWarningSheetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(_deleteWarningSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
     } else {
@@ -561,7 +561,7 @@ static SSEMainWindowController *controller;
         NSNumber *entrySize;
 
         entrySize = [entry size];
-        if ([[OFPreference preferenceForKey:SSEAbbreviateFileSizesInLibraryTableView] boolValue])
+        if ([[OFPreference preferenceForKey:SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey] boolValue])
             return [NSString abbreviatedStringForBytes:[entrySize unsignedIntValue]];
         else
             return [entrySize stringValue];
@@ -883,7 +883,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
         }
     }
 
-    if (areAllFilesInLibraryDirectory || [[OFPreference preferenceForKey:SSEShowWarningOnImport] boolValue] == NO) {
+    if (areAllFilesInLibraryDirectory || [[OFPreference preferenceForKey:SSEShowWarningOnImportPreferenceKey] boolValue] == NO) {
         [self performSelector:selector withObject:filePaths];
     } else {
         OFInvocation *invocation;
@@ -903,7 +903,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
         OFInvocation *invocation = (OFInvocation *)contextInfo;
 
         if ([doNotWarnOnImportAgainCheckbox intValue] == 1)
-            [[OFPreference preferenceForKey:SSEShowWarningOnImport] setBoolValue:NO];
+            [[OFPreference preferenceForKey:SSEShowWarningOnImportPreferenceKey] setBoolValue:NO];
 
         [invocation invoke];
         [invocation release];
@@ -1423,7 +1423,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     [sheet orderOut:nil];
     if (returnCode == NSOKButton) {
         if ([doNotWarnOnDeleteAgainCheckbox intValue] == 1)
-            [[OFPreference preferenceForKey:SSEShowWarningOnImport] setBoolValue:NO];
+            [[OFPreference preferenceForKey:SSEShowWarningOnDeletePreferenceKey] setBoolValue:NO];
 
         [self _deleteStep2];
     }
