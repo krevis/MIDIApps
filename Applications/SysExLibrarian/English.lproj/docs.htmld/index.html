@@ -2,22 +2,22 @@
 <head>
 <title>SysEx Librarian Documentation</title>
 </head>
-<body bgcolor=white>
+<body bgcolor="white">
 
-<table height="98%" width="100%" border=0>
+<table height="98%" width="100%" border="0">
 
 <tr>
-<td width=200 valign=top>
+<td width="200" valign="top">
 </td>
-<td align=center>
+<td align="center">
 <img src="icon.gif" border="0">
 <P><font size="+3" face="helvetica"><b>SysEx Librarian</b></font>
 <P><font size="+1" face="helvetica"><b>Documentation</b></font>
 </td>
-<td width=200></td>
+<td width="200"></td>
 </tr>
 
-<tr align=left><td colspan=3>
+<tr align="left"><td colspan="3">
 
 <P><BR><BR><font size="+1" face="helvetica"><b>Basics</b></font>
 
@@ -44,11 +44,11 @@
 
 <P>To add files to the library, use the Add... button to open the standard Mac open dialog.  You may also drag files or folders from the Finder into the list of files, or onto the SysEx Librarian icon in the dock.  SysEx Librarian understands raw SysEx files (which often have the .syx extension) and can also read SysEx messages from standard MIDI files (which usually have the extension .mid).
 
-<P>You can change a file's name by double-clicking its name, or by selecting it and choosing "Change Name" from the menu.  Use the Delete button or the Delete key on your keyboard to delete a file from the library.  To see the actual file on your disk, choose it and press the Show File button (or use the Show SysEx File menu command); the Finder will select the file and show it to you.
+<P>You can change a file's name by double-clicking its name, or by selecting it and choosing &quot;Change Name&quot; from the menu.  Use the Delete button or the Delete key on your keyboard to delete a file from the library.  To see the actual file on your disk, choose it and press the Show File button (or use the Show SysEx File menu command); the Finder will select the file and show it to you.
 
-<P>To send SysEx to a device, select a file by clicking on it. (Shift-click or command-click to select more than one file.) Then press the Play button, and the SysEx messages in the selected files will be sent to the selected destination.
+<P>To send SysEx to a device, select a file by clicking on it. (Shift-click or command-click to select more than one file.) Then press the Play button, and the SysEx messages in the selected files will be sent to the selected destination.  A progress indicator will show the number of messages and amount of data sent.
 
-<P>(If you choose the destination named &quot;Act as a source for other programs&quot;, other MIDI programs running on the computer will see an input source named "SysEx Librarian". You can then play SysEx messages to those programs.)
+<P>(If you choose the destination named &quot;Act as a source for other programs&quot;, other MIDI programs running on the computer will see an input source named &quot;SysEx Librarian&quot;. You can then play SysEx messages to those programs. Sending will happen instantaneously, so no progress indicator will be shown.)
 
 <P>To record a new file, press the Record One or Record Many button.  Record One records just one SysEx message, and then automatically stops recording. Record Many will keep recording messages until you tell it to stop. SysEx Librarian listens to all input ports on all MIDI interfaces connected to your computer, so you don't need to select any one in particular.
 
@@ -91,7 +91,7 @@
 <li><a href="http://www.evolution.co.uk/">Evolution keyboards</a> (some older models may require a patch&mdash;see the web site)
 </ul>
 
-<P>Note: Sending SysEx does <i>not</i> work well with MIDIMAN's drivers. The original driver could be made to send SysEx, but will sometimes hang the whole machine for a few seconds, or just plain crash. The newer driver (as of 20 February 2002) will send the first few bytes of SysEx data, but then stops sending any output at all.  Until the driver is fixed there is nothing SysEx Librarian, or any application, can do about this. If this bothers you, contact MIDIMAN's tech support and let them know you want a driver that actually works.
+<P>Note: Sending SysEx does <i>not</i> work well with MIDIMAN's drivers. The original driver could be made to send SysEx, but will sometimes hang the whole machine for a few seconds, or just plain crash. The newer driver (as of 20 February 2002) will send small SysEx messages correctly, but longer messages cause it to stop sending any output at all.  Until the driver is fixed there is nothing SysEx Librarian, or any application, can do about this. If this bothers you, contact MIDIMAN's tech support and let them know you want a driver that works.
 
 <P>If you have a device hooked up, and the proper driver, but you don't see it in the menu, you may be running into a problem with the Classic environment. Classic tends to grab USB devices for its own exclusive use, and doesn't let programs on the native Mac OS X side get to them. Try shutting down Classic and starting SysEx Librarian again. (If SysEx Librarian is started first, and is running when Classic starts, you will not encounter this problem.)
 
@@ -109,7 +109,7 @@
 <li>BDAlias, from <a href="http://www.bdistributed.com/">bDistributed.com, Inc.</a> (<a href="BDAliasLicense.html">copyright and license</a>)
 </ul>
 Thanks to the authors for saving me a bunch of time.
-<P>Also: Thanks to the folks on the <a href="http://www.lists.apple.com/coreaudio-api">CoreAudio-API mailing list</a> for all the help they have provided.
+<P>Also: Thanks to the folks on the <a href="http://www.lists.apple.com/coreaudio-api">CoreAudio-API mailing list</a> for all the help they have provided, and to everyone who has sent in bug reports and feature requests.
 
 <P><BR><BR>
 
