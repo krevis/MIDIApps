@@ -370,6 +370,9 @@
 			fileRef = F5DCD534039EFE1B01000164;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		1637C042041F239500100005 = {
@@ -382,6 +385,9 @@
 			fileRef = F5DCD539039F007801000164;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		1637C044041F239600100005 = {
@@ -418,6 +424,9 @@
 			fileRef = 16DA873904BA853C00100005;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		16DA873C04BA853C00100005 = {

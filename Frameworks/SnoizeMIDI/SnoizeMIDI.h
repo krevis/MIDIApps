@@ -9,6 +9,7 @@
 #import <SnoizeMIDI/SMHostTime.h>
 #import <SnoizeMIDI/SMInputStream.h>
 #import <SnoizeMIDI/SMInputStreamSource.h>
+#import <SnoizeMIDI/SMInvalidMessage.h>
 #import <SnoizeMIDI/SMMessage.h>
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 #import <SnoizeMIDI/SMMessageFilter.h>
@@ -27,3 +28,5 @@
 #import <SnoizeMIDI/SMVirtualInputStream.h>
 #import <SnoizeMIDI/SMVirtualOutputStream.h>
 #import <SnoizeMIDI/SMVoiceMessage.h>
+#import <SnoizeMIDI/NSArray-SMExtensions.h>
+#import <SnoizeMIDI/NSData-SMExtensions.h>
