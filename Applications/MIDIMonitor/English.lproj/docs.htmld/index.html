@@ -11,7 +11,7 @@
 </td>
 <td align="center">
 <img src="icon.gif" border="1">
-<BR><font size="+3" face="helvetica"><b>MIDI Monitor</b></font>
+<P><font size="+3" face="helvetica"><b>MIDI Monitor</b></font>
 <P><font size="+1" face="helvetica"><b>Documentation</b></font>
 </td>
 <td width="200"></td>
@@ -20,11 +20,9 @@
 <tr align="left"><td colspan="3">
 
 <P><BR><BR><font size="+1" face="helvetica"><b>Basics</b></font>
-<P><b>MIDI Monitor</b> is a utility for Mac OS X
-which displays incoming MIDI signals in a variety of formats,
-with filtering by message type and channel.
-Musicians will find it handy for tracking down confusing MIDI problems,
-and programmers can use it to test MIDI drivers and applications.
+<P><b>MIDI Monitor</b> is a utility for Mac OS X which displays MIDI signals in a variety of formats. It can watch both incoming and outgoing MIDI streams, and can filter them by message type and channel.
+<P>
+Musicians will find it handy for tracking down confusing MIDI problems, and programmers can use it to test MIDI drivers and applications.
 <P>MIDI Monitor is FREE to download and use.
 <P>The MIDI Monitor web page can be found at this URL:
 <BR><a href="http://www.snoize.com/MIDIMonitor/">http://www.snoize.com/MIDIMonitor/</A>
@@ -32,47 +30,66 @@ and programmers can use it to test MIDI drivers and applications.
 
 <P><BR><BR><font size="+1" face="helvetica"><b>How to use it</b></font>
 
-<P>When you start up MIDI Monitor, it will automatically open a new document, which listens to all of the available sources of MIDI data.
+<P><B>Parts of the window</B>
 
-<P><img src="mainWindow.gif">
+<img src="mainWindow.gif" align="right">
 
-<!-- TODO Rewrite starting here 
-<P>At the top of the window is a popup menu, which contains one item for each input port on your MIDI interface. Use this menu to select the MIDI source to watch.
-<BR>(If your MIDI devices don't appear in the menu, see the <a href="#Troubleshooting">Troubleshooting</a> section.)
+<P>When you launch MIDI Monitor, it will automatically open a new document. The window shows you the MIDI events that MIDI Monitor receives. There are also two sections, <i>Sources</i> and <i>Filter</i>, which start out hidden; click the gray arrows to expand them.
 
-<P>Other applications on the computer may also appear in this menu, if they are running and can provide MIDI data.
+<P>MIDI Monitor uses the standard Mac interface for dealing with documents; just open, close, and save as usual. A MIDI Monitor document saves its settings, but <i>not</i> the MIDI events which it is displaying.
 
-<P>At the bottom of the Source menu is an item named &quot;Act as destination for other programs&quot;. If you choose this, other applications will be able to send their output to this MIDI Monitor window. (In the other applications, the output's name will be the same as the name of the window.) 
+<BR clear="all">
 
--->
+<P><B>Events</B>
 
 <P>The main part of the window is a list of events that MIDI Monitor has received, in chronological order. The columns are as follows:
-<br><i>Time:</i> When the event was received by the computer
+<P><i>Time:</i> When the event was received by the computer
+<br><i>Source:</i> Where the event came from
 <br><i>Message:</i> What kind of event happened (e.g. note on, note off, controller)
 <br><i>Chan:</I> What channel the event was on. (Some types of messages do not have a channel.)
 <br><i>Data:</i> The specific data in the event. The format depends on the type of message. (Some messages have no data.)
 
 <P>You can clear the list of events by pressing the Clear button, using the Events>Clear Events menu command, or typing Command-K.  You can also change the number of events that the list will remember by changing the number in the text field.
 
-<p>To display the contents of a System Exclusive (or SysEx) event, double-click it, or use the Events->Show SysEx Data menu command. (More on this later.)
+<p>To display the contents of a System Exclusive (or SysEx) event, double-click it, or use the Events->Show SysEx Data menu command. (More on that later.)
 
-<!-- TODO rewrite here too
-<P>MIDI Monitor also provides a filter, so you can see only the events you are interested in. To show the filter controls, click the button at the bottom of the window (with the triangle).
--->
+<P><B>Sources</B>
+
+<img src="sources.gif" align="right">
+
+<P>This section lets you choose the sources of MIDI events that this window listens to.  The sources come in three categories:
+<br clear="all">
+
+<ul>
+<li><i>MIDI sources:</i> These are ordinary MIDI sources, such as the input ports on your MIDI interface.  Other applications on the computer may also appear in the list, if they are running and can act as MIDI sources.
+<BR>(If your MIDI devices don't appear in this list, see the <a href="#Troubleshooting">Troubleshooting</a> section.)
+<P>
+<li><i>Act as destination for other programs:</i> If you choose this, other applications will be able to send their output to this MIDI Monitor window, as though it was a MIDI output port.
+<P>
+<li><i>Spy on output to destinations:</i> Each MIDI destination on your computer is listed: this includes MIDI output ports and applications which act as destinations.  Selecting a destination lets you "spy" on all of the data that is sent to that destination. This happens outside of the system's normal MIDI processing. so the application which sends the data does not know that it is being spied upon.
+<P>(In order to do this, MIDI Monitor installs a MIDI driver in the Library/Audio/MIDI Drivers folder in your home folder. This driver does not have any effect on other applications, and does nothing when MIDI Monitor is not using it.)
+</ul>
+
+<P><B>Filter</B>
+
+<img src="filter.gif" align="right">
+
+<P>MIDI Monitor also provides a filter, so you can see only the events you are interested in. 
 <P>New windows start with all of the checkboxes checked, meaning that all messages are displayed. The large checkboxes control the filters for a whole category of messages; the small checkboxes each control the filter for one specific type of message. For "voice" messages, which include a channel number, you can also choose whether to listen to all channels or just one.
 
-<P>MIDI Monitor uses the standard Mac interface for dealing with documents; just open, close, and save as usual. A MIDI Monitor document saves the selected sources, number of events to remember, filter settings, and window position. MIDI events are <i>not</i> saved as part of the document.
+<br clear="all">
 
 <P><BR><BR><font size="+1" face="helvetica"><b>Preferences</b></font>
 
 <P>The preferences window lets you change the way that MIDI Monitor displays values, as well as some other behavior. Changes in this window take effect immediately, and are automatically saved.
 
 <P><BR><B>Display Preferences</B>
-<BR><img src="preferencesWindow1.gif">
+<BR><img src="preferencesWindow1.gif" align="right">
 
 <P><i>Time format:</i> The method of displaying the timestamps of events.
 <ul>
 <li><i>Clock time:</i> Shows the timestamp in terms of normal human time, to the nearest 0.001 second. This is the most useful setting.
+<P>
 <li><i>Host time:</i> Shows the timestamp in terms of the computer's internal timebase. This is not very interesting for humans, but programmers may find it useful.
 <ul>
 <li><i>Integer:</I> the time as returned by AudioGetCurrentHostTime() or UpTime(). This is an unsigned, 64-bit integer, which starts at 0 when the computer is started. This number will always increase at the same rate while the machine is running; however, one unit may represent different amounts of time on different machines, or different revisions of the operating system.
@@ -84,26 +101,32 @@ and programmers can use it to test MIDI drivers and applications.
 <P><i>Note format:</I> The method of displaying the musical note associated with note-on and note-off events.
 <ul>
 <li><i>Note (Middle C = C3):</I> The name of the note in musical notation. Middle C (note 60) is displayed as C3, and the full range is from C-2 to G8. Yamaha uses this convention for naming notes, as do some (most?) other manufacturers.
+<P>
 <li><i>Note (Middle C = C4):</I> As above, but displayed an octave higher. Middle C (note 60) is displayed as C4, and the full range is from C-1 to G9. Roland uses this convention.
+<P>
 <li><i>Decimal number:</I> The note number in base 10, from 0 to 127.
+<P>
 <li><i>Hexadecimal number:</I> The note number in base 16, from $00 to $7F.
 </ul>
 
 <P><i>Controller format:</I> The method of displaying the name or number of control events.
 <ul>
 <li><i>Standard name:</I> The name of this controller as given in the MIDI standard. For example, controller 72 means &quot;Release Time&quot;. Controllers without standard names are displayed as decimal numbers. Some controllers come in pairs; one controller conveys the &quot;coarse&quot; value (or high byte) and the other conveys the &quot;fine&quot; value (or low byte).
+<P>
 <li><i>Decimal number:</I> The controller number in base 10, from 0 to 127.
+<P>
 <li><i>Hexadecimal number:</I> The controller number in base 16, from $00 to $7F.
 </ul>
 
 <P><i>Data format:</I> The method of displaying any other data in events.
 <ul>
 <li><i>Decimal number:</I> The value in base 10. One byte values range from 0 to 127; signed two byte values range from -8192 to 8191.
+<P>
 <li><i>Hexadecimal number:</I> The value in base 16. One byte values range from $00 to $7F; two byte values range from $0000 to $3FFF, with $2000 as the &quot;center&quot; value.
 </ul>
 
 <P><BR><B>Sources Preferences</B>
-<BR><img src="preferencesWindow2.gif" align="left">
+<BR><img src="preferencesWindow2.gif" align="right">
 
 <P><i>New windows will use these sources:</i> When new windows are created, all of the sources in each of the checked categories will be selected.
 
@@ -112,11 +135,12 @@ and programmers can use it to test MIDI drivers and applications.
 <BR clear="all">
 
 <P><BR><B>SysEx Preferences</B>
-<BR><img src="preferencesWindow3.gif" align="left"><!-- TODO need this image -->
+<BR><img src="preferencesWindow3.gif" align="right">
 
 <P><i>Save SysEx:</i> SysEx messages should always end with an EOX byte (hexadecimal F7). However, some devices do not send SysEx messages which end correctly. This option lets you control how SysEx messages are saved to files.
 <ul>
 <li><i>always with EOX byte ($F7):</I> The file will end with an EOX byte, even if the message didn't have one when it was received. This is the default, and the most useful setting (especially if you want to use the SysEx file in another application).
+<P>
 <li><i>as it was received:</I> Saves the message exactly the same way as it was received, with or without the EOX byte.
 </ul>
 
@@ -124,7 +148,7 @@ and programmers can use it to test MIDI drivers and applications.
 
 
 <P><BR><BR><font size="+1" face="helvetica"><b>SysEx Data</b></font>
-<BR><img src="sysexWindow.gif" align="left">
+<BR><img src="sysexWindow.gif" align="right">
 
 <P>To see the contents of a SysEx event, double-click it, or select it and use the Events->Show SysEx Data menu command.
 
@@ -140,7 +164,7 @@ and programmers can use it to test MIDI drivers and applications.
 
 <P><BR><BR><a name="Troubleshooting"><font size="+1" face="helvetica"><b>Troubleshooting</b></font></a>
 
-<P>If the Source menu is blank, then there are no MIDI devices available. You must have a Mac OS X driver for your device; Mac OS 9 drivers will <i>not</i> work. At the time of this writing, Mac OS X drivers are available for these devices:
+<P>If nothing is listed under <i>MIDI Sources</i> in the Sources section, then there are no MIDI devices available. You must have Mac OS X drivers for your devices; Mac OS 9 drivers will <i>not</i> work. At the time of this writing, Mac OS X drivers are available for these devices:
 <ul>
 <li><a href="http://www.midiman.com/">MIDIMAN</a> USB interfaces
 <li><a href="http://www.motu.com/">Mark of the Unicorn (MOTU)</a> USB interfaces
@@ -153,7 +177,7 @@ and programmers can use it to test MIDI drivers and applications.
 <li><a href="http://www.evolution.co.uk/">Evolution keyboards</a> (some older models may require a patch&mdash;see the web site)
 </ul>
 
-<P>Note: If you have a device hooked up, and the proper driver, but you don't see it in the menu, you may be running into a problem with the Classic environment. Classic tends to grab USB devices for its own exclusive use, and doesn't let programs on the native Mac OS X side get to them. Try shutting down Classic and starting MIDI Monitor again. (If MIDI Monitor is started first, and is running when Classic starts, you will not encounter this problem.)
+<P>Note: If you don't see your device in the list, even though it is plugged in and the proper driver is installed, you may be running into a problem with the Classic environment. Classic tends to grab USB devices for its own exclusive use, and doesn't let programs on the native Mac OS X side get to them. Try shutting down Classic and starting MIDI Monitor again. (If MIDI Monitor is started first, and is running when Classic starts, you will not encounter this problem.)
 
 <P>Note: The current MOTU driver (as of 29 December 2001) provides a source named "All Ports" for some devices. It has been reported that this source doesn't work--the interface's lights blink, but nothing is shown in MIDI Monitor. This is most likely a bug in the driver, and not MIDI Monitor's fault.
 
