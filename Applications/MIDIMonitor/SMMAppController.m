@@ -12,7 +12,7 @@
 
 @interface SMMAppController (Private)
 
-- (void)_endpointAppeared:(NSNotification *)notification;
+- (void)_endpointsAppeared:(NSNotification *)notification;
 
 @end
 
@@ -75,7 +75,7 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 {
     // Listen for new endpoints. Don't do this earlier--we only are interested in ones
     // that appear after we've been launched.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_endpointAppeared:) name:SMEndpointAppearedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_endpointsAppeared:) name:SMEndpointsAppearedNotification object:nil];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification;
@@ -145,41 +145,35 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 
 @implementation SMMAppController (Private)
 
-- (void)_endpointAppeared:(NSNotification *)notification;
+- (void)_endpointsAppeared:(NSNotification *)notification;
 {
-    // TODO reimplement this
-    /*
+    NSArray *endpoints;
+    unsigned int endpointIndex, endpointCount;
+    NSMutableSet *sourceEndpointSet;
 
-    if ([[OFPreference preferenceForKey:SMMOpenWindowsForNewSourcesPreferenceKey] boolValue]) {
-        SMEndpoint *endpoint;
-        
-        endpoint = [notification object];
-        if ([endpoint isKindOfClass:[SMSourceEndpoint class]]) {
-            SMMDocument *document;
-            NSArray *sourceDescriptions;
-            unsigned int descriptionIndex;
-            
-            document = [[NSDocumentController sharedDocumentController] openUntitledDocumentOfType:@"MIDI Monitor Document" display:NO];
+    if (![[OFPreference preferenceForKey:SMMOpenWindowsForNewSourcesPreferenceKey] boolValue])
+        return;
 
-            // Find the source description which has this endpoint, and tell the document to use it
-            sourceDescriptions = [document sourceDescriptions];
-            descriptionIndex = [sourceDescriptions count];
-            while (descriptionIndex--) {
-                NSDictionary *description;
-                SMEndpoint *descriptionEndpoint;
-                
-                description = [sourceDescriptions objectAtIndex:descriptionIndex];
-                descriptionEndpoint = [description objectForKey:@"endpoint"];
-                if (descriptionEndpoint && descriptionEndpoint == endpoint) {
-                    [document setSourceDescription:description];
-                    break;
-                }            
-            }
+    endpoints = [notification object];
+    endpointCount = [endpoints count];
+    sourceEndpointSet = [NSMutableSet setWithCapacity:endpointCount];
+    for (endpointIndex = 0; endpointIndex < endpointCount; endpointIndex++) {
+        id endpoint;
 
-            [document showWindows];
-        }
+        endpoint = [endpoints objectAtIndex:endpointIndex];
+        if ([endpoint isKindOfClass:[SMSourceEndpoint class]])
+            [sourceEndpointSet addObject:endpoint];
     }
-     */
+
+    if ([sourceEndpointSet count] > 0) {
+        SMMDocument *document;
+
+        document = [[NSDocumentController sharedDocumentController] openUntitledDocumentOfType:@"MIDI Monitor Document" display:NO];
+        [document setSelectedInputSources:sourceEndpointSet];
+        [document showWindows];
+        [document setAreSourcesShown:YES];
+        // TODO it would be cool to have the Sources section of the outline view reveal itself and perhaps scroll to the first of the new sources!
+    }
 }
 
 @end
