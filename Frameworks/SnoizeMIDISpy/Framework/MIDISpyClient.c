@@ -1,4 +1,5 @@
 #include "MIDISpyClient.h"
+#include "MIDISpyShared.h"
 
 #include <Carbon/Carbon.h>
 #include <unistd.h>
@@ -6,20 +7,55 @@
 #include <sys/wait.h>
 
 
+//
+// Definitions of publicly accessible structures
+//
+
 typedef struct __MIDISpyClient
 {
-    MIDISpyClientCallBack clientCallBack;
-    void *clientRefCon;
+    CFMessagePortRef driverPort;
     CFMessagePortRef localPort;
     CFRunLoopSourceRef runLoopSource;
+    CFMutableArrayRef ports;
+    CFMutableDictionaryRef endpointConnections;
 } MIDISpyClient;
 
+typedef struct __MIDISpyPort
+{
+    MIDISpyClientRef client;
+    MIDIReadProc readProc;
+    void *refCon;
+    CFMutableArrayRef connections;
+} MIDISpyPort;
+
+
+//
+// Definitions of private structures
+//
+
+typedef struct __MIDISpyPortConnection
+{
+    MIDISpyPortRef port;
+    MIDIEndpointRef endpoint;
+    void *refCon;
+} MIDISpyPortConnection;
+
+
+//
+// Constant string declarations
+//
+
+extern void InitializeConstantStrings(void);
+#pragma CALL_ON_MODULE_BIND InitializeConstantStrings
 
 static CFStringRef kSpyingMIDIDriverPlugInName = NULL;
 static CFStringRef kSpyingMIDIDriverPlugInIdentifier = NULL;
 static CFStringRef kSpyingMIDIDriverPortName = NULL;
-static const SInt32 kSpyingMIDIDriverNextSequenceNumberMessageID = 0; 
-static const SInt32 kSpyingMIDIDriverAddListenerMessageID = 1; 
+
+
+//
+// Private method declarations
+//
 
 static Boolean FindDriverInFramework(CFURLRef *urlPtr, UInt32 *versionPtr);
 static Boolean FindInstalledDriver(CFURLRef *urlPtr, UInt32 *versionPtr);
@@ -30,8 +66,31 @@ static Boolean CopyDirectory(CFURLRef sourceDirectoryURL, CFURLRef targetDirecto
 
 static Boolean ForkAndExec(char * const argv[]);
 
+static void ReceiveMIDINotification(const MIDINotification *message, void *refCon);
+static void RebuildEndpointUniqueIDDictionary();
+static MIDIEndpointRef EndpointWithUniqueID(SInt32 uniqueID);
+
+static MIDISpyPortConnection *GetPortConnection(MIDISpyPortRef spyPortRef, MIDIEndpointRef destinationEndpoint);
+static void DisconnectConnection(MIDISpyPortRef spyPortRef, MIDISpyPortConnection *connection);
+
+static void ClientAddConnection(MIDISpyClientRef clientRef, MIDISpyPortConnection *connection);
+static void ClientRemoveConnection(MIDISpyClientRef clientRef, MIDISpyPortConnection *connection);
+static CFMutableArrayRef GetConnectionsToEndpoint(MIDISpyClientRef clientRef, MIDIEndpointRef endpoint);
+
 static CFDataRef LocalMessagePortCallback(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info);
 
+
+//
+// Static variables
+//
+
+static MIDIClientRef sMIDIClientRef = NULL;
+static CFMutableDictionaryRef sUniqueIDToEndpointDictionary = NULL;
+
+
+//
+// Public methods
+//
 
 SInt32 MIDISpyInstallDriverIfNecessary()
 {
@@ -40,11 +99,6 @@ SInt32 MIDISpyInstallDriverIfNecessary()
     UInt32 ourDriverVersion;
     CFURLRef installedDriverURL = NULL;
     UInt32 installedDriverVersion;
-
-    if (!kSpyingMIDIDriverPlugInName)
-        kSpyingMIDIDriverPlugInName = CFSTR("SpyingMIDIDriver.plugin");
-    if (!kSpyingMIDIDriverPlugInIdentifier)
-        kSpyingMIDIDriverPlugInIdentifier = CFSTR("com.snoize.SpyingMIDIDriver");
 
     if (!FindDriverInFramework(&ourDriverURL, &ourDriverVersion)) {
         returnStatus =  kMIDISpyDriverInstallationFailed;
@@ -80,110 +134,126 @@ done:
 }
 
 
-MIDISpyClientRef MIDISpyClientCreate(MIDISpyClientCallBack callBack, void *refCon)
+OSStatus MIDISpyClientCreate(MIDISpyClientRef *outClientRefPtr)
 {
     MIDISpyClientRef clientRef = NULL;
     CFMessagePortRef driverPort;
     SInt32 sendStatus;
     CFDataRef sequenceNumberData = NULL;
     int success = 0;
+    
+    if (!outClientRefPtr)
+        return paramErr;
+    *outClientRefPtr = NULL;
 
-    // TODO There must be a better way to do this.
-    if (!kSpyingMIDIDriverPortName)
-        kSpyingMIDIDriverPortName = CFSTR("Spying MIDI Driver");
+    // Create a CoreMIDI client (if we haven't already), so we can receive a notification when the setup changes.
+    if (!sMIDIClientRef) {
+        OSStatus status;
+
+        status = MIDIClientCreate(CFSTR("MIDISpyClient"), ReceiveMIDINotification, NULL, &sMIDIClientRef);
+        if (status != noErr)
+            return status;
+
+        RebuildEndpointUniqueIDDictionary();
+    }
     
     // Look for the message port which our MIDI driver provides
     driverPort = CFMessagePortCreateRemote(kCFAllocatorDefault, kSpyingMIDIDriverPortName);
     if (!driverPort) {
-#if DEBUG
-        fprintf(stderr, "MIDISpyClientCreate: Couldn't find message port for Spying MIDI Driver\n");
-#endif
-        return NULL;
+        debug_string("MIDISpyClientCreate: Couldn't find message port for Spying MIDI Driver");
+        return kMIDISpyDriverMissing;
     }
 
-    clientRef = (MIDISpyClientRef)malloc(sizeof(MIDISpyClient));
+    clientRef = (MIDISpyClientRef)calloc(1, sizeof(MIDISpyClient));
+    if (!clientRef)
+        return memFullErr;
+    clientRef->driverPort = driverPort;
     
     // Ask for the next sequence number
     sendStatus = CFMessagePortSendRequest(driverPort, kSpyingMIDIDriverNextSequenceNumberMessageID, NULL, 300, 300, kCFRunLoopDefaultMode, &sequenceNumberData);
+
     if (sendStatus != kCFMessagePortSuccess) {
-#if DEBUG
-        fprintf(stderr, "MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverNextSequenceNumberMessageID) returned error: %ld\n", sendStatus);
-#endif
+        debug_string("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverNextSequenceNumberMessageID) returned error");
     } else if (!sequenceNumberData) {
-#if DEBUG
-        fprintf(stderr, "MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverNextSequenceNumberMessageID) returned no data!\n");
-#endif
+        debug_string("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverNextSequenceNumberMessageID) returned no data!");
     } else if (CFDataGetLength(sequenceNumberData) != sizeof(UInt32)) {
-#if DEBUG
-        fprintf(stderr, "MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverNextSequenceNumberMessageID) returned %lu bytes, not %lu!\n", CFDataGetLength(sequenceNumberData), sizeof(UInt32));
-#endif
+        debug_string("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverNextSequenceNumberMessageID) returned wrong number of bytes");
     } else {
         UInt32 sequenceNumber;
         CFStringRef localPortName;
-        CFMessagePortContext context = { 0, clientRef, NULL, NULL, NULL };
-        CFMessagePortRef localPort;
-        CFRunLoopSourceRef runLoopSource;
+        CFMessagePortContext context = { 0, NULL, NULL, NULL, NULL };
 
         // Now get the sequence number and use it to name a newly created local port
         sequenceNumber = *(UInt32 *)CFDataGetBytePtr(sequenceNumberData);
         localPortName = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%@-%lu"), kSpyingMIDIDriverPortName, sequenceNumber);
 
-        localPort = CFMessagePortCreateLocal(kCFAllocatorDefault, localPortName, LocalMessagePortCallback, &context, FALSE);
+        context.info = clientRef;
+        clientRef->localPort = CFMessagePortCreateLocal(kCFAllocatorDefault, localPortName, LocalMessagePortCallback, &context, FALSE);
         CFRelease(localPortName);
-        if (!localPort) {
-#if DEBUG
-            fprintf(stderr, "MIDISpyClientCreate: CFMessagePortCreateLocal failed!\n");
-#endif
+
+        if (!clientRef->localPort) {
+            debug_string("MIDISpyClientCreate: CFMessagePortCreateLocal failed!");
         } else {
             // Add the local port to the current run loop, in common modes
-            runLoopSource = CFMessagePortCreateRunLoopSource(kCFAllocatorDefault, localPort, 0);
-            if (!runLoopSource) {
-#if DEBUG
-                fprintf(stderr, "MIDISpyClientCreate: CFMessagePortCreateRunLoopSource failed!\n");
-#endif
+            clientRef->runLoopSource = CFMessagePortCreateRunLoopSource(kCFAllocatorDefault, clientRef->localPort, 0);
+
+            if (!clientRef->runLoopSource) {
+                debug_string("MIDISpyClientCreate: CFMessagePortCreateRunLoopSource failed!");
             } else {
-                CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopCommonModes);
+                CFRunLoopAddSource(CFRunLoopGetCurrent(), clientRef->runLoopSource, kCFRunLoopCommonModes);
     
                 // And now tell the spying driver to add us as a listener. Don't wait for a response.
                 sendStatus = CFMessagePortSendRequest(driverPort, kSpyingMIDIDriverAddListenerMessageID, sequenceNumberData, 300, 0, NULL, NULL);
                 if (sendStatus != kCFMessagePortSuccess) {
-#if DEBUG
-                    fprintf(stderr, "MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverAddListenerMessageID) returned error: %ld\n", sendStatus);
-#endif
+                    debug_string("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverAddListenerMessageID) returned error");
                 } else {
-                    // Success!
-                    success = 1;
-                    clientRef->clientCallBack = callBack;
-                    clientRef->clientRefCon = refCon;
-                    CFRetain(localPort);
-                    clientRef->localPort = localPort;
-                    CFRetain(runLoopSource);
-                    clientRef->runLoopSource = runLoopSource;
+                    // Now create the array of ports, and dictionary of connnections for each endpoint
+                    clientRef->ports = CFArrayCreateMutable(kCFAllocatorDefault, 0, NULL);
+                    clientRef->endpointConnections = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
+                    
+                    // Success! (probably)
+                    success = (clientRef->ports != NULL && clientRef->endpointConnections != NULL);
                 }
-
-                CFRelease(runLoopSource);
             }
-
-            CFRelease(localPort);
         }
     }
 
     if (sequenceNumberData)
         CFRelease(sequenceNumberData);
 
-    CFRelease(driverPort);
-
     if (!success) {
-        free(clientRef);
-        clientRef = NULL;
+        MIDISpyClientDispose(clientRef);
+        return kMIDISpyDriverCouldNotCommunicate;
     }
-    
-    return clientRef;
+
+    *outClientRefPtr = clientRef;
+    return noErr;
 }
 
 
-void MIDISpyClientDispose(MIDISpyClientRef clientRef)
+OSStatus MIDISpyClientDispose(MIDISpyClientRef clientRef)
 {
+    if (!clientRef)
+        return paramErr;
+
+    if (clientRef->endpointConnections) {
+        CFRelease(clientRef->endpointConnections);
+    }
+            
+    if (clientRef->ports) {
+        CFIndex portIndex;
+
+        portIndex = CFArrayGetCount(clientRef->ports);
+        while (portIndex--) {
+            MIDISpyPortRef port;
+
+            port = (MIDISpyPortRef)CFArrayGetValueAtIndex(clientRef->ports, portIndex);
+            MIDISpyPortDispose(port);
+        }
+        
+        CFRelease(clientRef->ports);
+    }
+    
     if (clientRef->runLoopSource) {
         CFRunLoopSourceInvalidate(clientRef->runLoopSource);
         CFRelease(clientRef->runLoopSource);
@@ -193,14 +263,138 @@ void MIDISpyClientDispose(MIDISpyClientRef clientRef)
         CFMessagePortInvalidate(clientRef->localPort);
         CFRelease(clientRef->localPort);        
     }
+
+    if (clientRef->driverPort) {
+        CFMessagePortInvalidate(clientRef->driverPort);
+        CFRelease(clientRef->driverPort);
+    }
     
     free(clientRef);
+    return noErr;
+}
+
+
+OSStatus MIDISpyPortCreate(MIDISpyClientRef clientRef, MIDIReadProc readProc, void *refCon, MIDISpyPortRef *outSpyPortRefPtr)
+{
+    MIDISpyPort *spyPortRef;
+
+    if (!clientRef || !readProc || !outSpyPortRefPtr )
+        return paramErr;
+
+    spyPortRef = (MIDISpyPort *)malloc(sizeof(MIDISpyPort));
+    if (!spyPortRef)
+        return memFullErr;
+    
+    spyPortRef->client = clientRef;
+    spyPortRef->readProc = readProc;
+    spyPortRef->refCon = refCon;
+
+    spyPortRef->connections = CFArrayCreateMutable(kCFAllocatorDefault, 0, NULL);
+    if (!spyPortRef->connections) {
+        free(spyPortRef);
+        return memFullErr;        
+    }
+
+    CFArrayAppendValue(clientRef->ports, spyPortRef);
+
+    *outSpyPortRefPtr = spyPortRef;
+    return noErr;
+}
+
+
+OSStatus MIDISpyPortDispose(MIDISpyPortRef spyPortRef)
+{
+    CFMutableArrayRef ports;
+    CFIndex portIndex;
+
+    if (!spyPortRef)
+        return paramErr;
+
+    // Disconnect all of this port's connections
+    if (spyPortRef->connections) {
+        CFIndex connectionIndex;
+
+        connectionIndex = CFArrayGetCount(spyPortRef->connections);
+        while (connectionIndex--) {
+            MIDISpyPortConnection *connection;
+
+            connection = (MIDISpyPortConnection *)CFArrayGetValueAtIndex(spyPortRef->connections, connectionIndex);
+            DisconnectConnection(spyPortRef, connection);
+        }
+
+        CFRelease(spyPortRef->connections);
+    }
+
+    // Remove this port from the client's array of ports    
+    ports = spyPortRef->client->ports;
+    portIndex = CFArrayGetFirstIndexOfValue(ports, CFRangeMake(0, CFArrayGetCount(ports)), spyPortRef);
+    if (portIndex != kCFNotFound)
+        CFArrayRemoveValueAtIndex(ports, portIndex);
+
+    free(spyPortRef);
+
+    return noErr;
+}
+
+
+OSStatus MIDISpyPortConnectDestination(MIDISpyPortRef spyPortRef, MIDIEndpointRef destinationEndpoint, void *connectionRefCon)
+{
+    MIDISpyPortConnection *connection;
+
+    if (!spyPortRef || !destinationEndpoint)
+        return paramErr;
+
+    // See if this port is already connected to this destination. If so, return an error.
+    connection = GetPortConnection(spyPortRef, destinationEndpoint);
+    if (connection)
+        return kMIDISpyConnectionAlreadyExists;
+    
+    // Create a "connection" record for this port/endpoint pair, with the connectionRefCon in it.
+    connection = (MIDISpyPortConnection *)malloc(sizeof(MIDISpyPortConnection));
+    connection->port = spyPortRef;
+    connection->endpoint = destinationEndpoint;
+    connection->refCon = connectionRefCon;
+
+    // Add the connection to the port's array of connections.
+    CFArrayAppendValue(spyPortRef->connections, connection);
+
+    ClientAddConnection(spyPortRef->client, connection);
+
+    return noErr;
+}
+
+
+OSStatus MIDISpyPortDisconnectDestination(MIDISpyPortRef spyPortRef, MIDIEndpointRef destinationEndpoint)
+{
+    MIDISpyPortConnection *connection;
+
+    if (!spyPortRef || !destinationEndpoint)
+        return paramErr;
+
+    // See if this port is actually connected to this destination. If not, return an error.
+    connection = GetPortConnection(spyPortRef, destinationEndpoint);
+    if (!connection)
+        return kMIDISpyConnectionDoesNotExist;
+
+    DisconnectConnection(spyPortRef, connection);
+    
+    return noErr;
 }
 
 
 //
 // Private functions
 //
+
+void InitializeConstantStrings(void)
+{
+    kSpyingMIDIDriverPlugInName = CFSTR("SpyingMIDIDriver.plugin");   
+    kSpyingMIDIDriverPlugInIdentifier = CFSTR("com.snoize.SpyingMIDIDriver");   
+    kSpyingMIDIDriverPortName = CFSTR("Spying MIDI Driver");   
+}
+
+
+// Driver installation
 
 static Boolean FindDriverInFramework(CFURLRef *urlPtr, UInt32 *versionPtr)
 {
@@ -212,25 +406,19 @@ static Boolean FindDriverInFramework(CFURLRef *urlPtr, UInt32 *versionPtr)
     // Find this framework's bundle
     frameworkBundle = CFBundleGetBundleWithIdentifier(CFSTR("com.snoize.MIDISpyFramework"));
     if (!frameworkBundle) {
-#if DEBUG
-        fprintf(stderr, "MIDISpyClient: Couldn't find our own framework's bundle!\n");
-#endif
+        debug_string("MIDISpyClient: Couldn't find our own framework's bundle!");
     } else {
         // Find the copy of the plugin in the framework's resources
         driverURL = CFBundleCopyResourceURL(frameworkBundle, kSpyingMIDIDriverPlugInName, NULL, NULL);
         if (!driverURL) {
-#if DEBUG
-            fprintf(stderr, "MIDISpyClient: Couldn't find the copy of the plugin in our framework!\n");
-#endif
+            debug_string("MIDISpyClient: Couldn't find the copy of the plugin in our framework!");
         } else {
             // Make a CFBundle with it.
             CFBundleRef driverBundle;
 
             driverBundle = CFBundleCreate(kCFAllocatorDefault, driverURL);
             if (!driverBundle) {
-#if DEBUG
-                fprintf(stderr, "MIDISpyClient: Couldn't create a CFBundle for the copy of the plugin in our framework!\n");
-#endif
+                debug_string("MIDISpyClient: Couldn't create a CFBundle for the copy of the plugin in our framework!");
                 CFRelease(driverURL);
                 driverURL = NULL;
             } else {
@@ -266,9 +454,7 @@ static Boolean FindInstalledDriver(CFURLRef *urlPtr, UInt32 *versionPtr)
     // See if the driver is installed anywhere.
     driverBundle = CFBundleGetBundleWithIdentifier(kSpyingMIDIDriverPlugInIdentifier);
     if (!driverBundle) {
-#if DEBUG
-        fprintf(stderr, "MIDISpyClient: Couldn't find an installed driver\n");
-#endif
+        debug_string("MIDISpyClient: Couldn't find an installed driver");
     } else {
         // Remember the URL and version of the bundle.
         driverURL = CFBundleCopyBundleURL(driverBundle);
@@ -318,9 +504,7 @@ static Boolean RemoveInstalledDriver(CFURLRef driverURL)
     char *argv[] = { "/bin/rm", "-rf", driverPath, NULL };
 
     if (!CFURLGetFileSystemRepresentation(driverURL, FALSE, (UInt8 *)driverPath, PATH_MAX)) {
-#if DEBUG
-        fprintf(stderr, "MIDISpy: CFURLGetFileSystemRepresentation(driverPath) failed\n");
-#endif
+        debug_string("MIDISpy: CFURLGetFileSystemRepresentation(driverPath) failed");
         return FALSE;
     }
 
@@ -337,9 +521,7 @@ static Boolean InstallDriver(CFURLRef ourDriverURL)
     // Find the directory "~/Library/Audio/MIDI Drivers". If it doesn't exist, create it.
     error = FSFindFolder(kUserDomain, kMIDIDriversFolderType, kCreateFolder, &folderFSRef);
     if (error != noErr) {
-#if DEBUG
-        fprintf(stderr, "MIDISpy: FSFindFolder(kUserDomain, kMIDIDriversFolderType, kCreateFolder) returned error: %hd\n", error);
-#endif
+        debug_string("MIDISpy: FSFindFolder(kUserDomain, kMIDIDriversFolderType, kCreateFolder) returned error");
     } else {
         CFURLRef folderURL;
 
@@ -360,16 +542,12 @@ static Boolean CopyDirectory(CFURLRef sourceDirectoryURL, CFURLRef targetDirecto
     char *argv[] = { "/bin/cp", "-Rf", sourcePath, targetPath, NULL };
 
     if (!CFURLGetFileSystemRepresentation(sourceDirectoryURL, FALSE, (UInt8 *)sourcePath, PATH_MAX)) {
-#if DEBUG
-            fprintf(stderr, "MIDISpy: CFURLGetFileSystemRepresentation(sourceDirectoryURL) failed\n");
-#endif
+        debug_string("MIDISpy: CFURLGetFileSystemRepresentation(sourceDirectoryURL) failed");
         return FALSE;
     }
 
     if (!CFURLGetFileSystemRepresentation(targetDirectoryURL, FALSE, (UInt8 *)targetPath, PATH_MAX)) {
-#if DEBUG
-        fprintf(stderr, "MIDISpy: CFURLGetFileSystemRepresentation(targetDirectoryURL) failed\n");
-#endif
+        debug_string("MIDISpy: CFURLGetFileSystemRepresentation(targetDirectoryURL) failed");
         return FALSE;
     }
 
@@ -409,38 +587,189 @@ static Boolean ForkAndExec(char * const argv[])
 }
 
 
+// Keeping track of endpoints
+
+void ReceiveMIDINotification(const MIDINotification *message, void *refCon)
+{
+    static Boolean retryAfterDone = FALSE;
+    static Boolean isHandlingNotification = FALSE;
+
+    if (!message || message->messageID != kMIDIMsgSetupChanged)
+        return;
+        
+    if (isHandlingNotification) {
+        retryAfterDone = TRUE;
+        return;
+    }
+
+    do {
+        isHandlingNotification = TRUE;
+        retryAfterDone = FALSE;
+
+        RebuildEndpointUniqueIDDictionary();
+
+        isHandlingNotification = FALSE;
+    } while (retryAfterDone);
+}
+
+void RebuildEndpointUniqueIDDictionary()
+{
+    // Make a dictionary which maps from an endpoint's uniqueID to its MIDIEndpointRef.
+    ItemCount endpointIndex, endpointCount;
+
+    endpointCount = MIDIGetNumberOfDestinations();
+
+    if (sUniqueIDToEndpointDictionary)
+        CFRelease(sUniqueIDToEndpointDictionary);
+    sUniqueIDToEndpointDictionary = CFDictionaryCreateMutable(kCFAllocatorDefault, endpointCount, NULL, NULL);
+    
+    for (endpointIndex = 0; endpointIndex < endpointCount; endpointIndex++) {
+        MIDIEndpointRef endpoint;
+
+        endpoint = MIDIGetDestination(endpointIndex);
+        if (endpoint) {
+            SInt32 uniqueID;
+
+            if (noErr == MIDIObjectGetIntegerProperty(endpoint, kMIDIPropertyUniqueID, &uniqueID))
+                CFDictionaryAddValue(sUniqueIDToEndpointDictionary, (void *)uniqueID, (void *)endpoint);
+        }        
+    }
+}
+
+MIDIEndpointRef EndpointWithUniqueID(SInt32 uniqueID)
+{
+    if (sUniqueIDToEndpointDictionary)
+        return (MIDIEndpointRef)CFDictionaryGetValue(sUniqueIDToEndpointDictionary, (void *)uniqueID);
+    else
+        return NULL;
+}
+
+
+// Connection management
+
+MIDISpyPortConnection *GetPortConnection(MIDISpyPortRef spyPortRef, MIDIEndpointRef destinationEndpoint)
+{
+    CFArrayRef connections;
+    CFIndex connectionIndex;
+
+    connections = spyPortRef->connections;
+    connectionIndex = CFArrayGetCount(connections);
+    while (connectionIndex--) {
+        MIDISpyPortConnection *connection;
+
+        connection = (MIDISpyPortConnection *)CFArrayGetValueAtIndex(connections, connectionIndex);
+        if (connection->endpoint == destinationEndpoint)
+            return connection;
+    }
+
+    return NULL;
+}
+
+void DisconnectConnection(MIDISpyPortRef spyPortRef, MIDISpyPortConnection *connection)
+{
+    CFMutableArrayRef connections;
+    CFIndex connectionIndex;
+
+    connections = spyPortRef->connections;
+    connectionIndex = CFArrayGetFirstIndexOfValue(connections, CFRangeMake(0, CFArrayGetCount(connections)), connection);
+    if (connectionIndex != kCFNotFound)
+        CFArrayRemoveValueAtIndex(connections, connectionIndex);
+
+    ClientRemoveConnection(spyPortRef->client, connection);
+    
+    free(connection);
+}
+
+void ClientAddConnection(MIDISpyClientRef clientRef, MIDISpyPortConnection *connection)
+{
+    CFMutableArrayRef connections;
+
+    connections = GetConnectionsToEndpoint(clientRef, connection->endpoint);
+    if (!connections) {
+        connections = CFArrayCreateMutable(kCFAllocatorDefault, 0, NULL);
+        CFDictionarySetValue(clientRef->endpointConnections, connection->endpoint, connections);
+        CFRelease(connections);
+    }
+    CFArrayAppendValue(connections, connection);
+    
+    // TODO
+    // is this the first connection to this endpoint?
+    // if so, then send a request to the driver to start sending info about the endpoint to us
+    // need to send a request to the driver
+    // 	kSpyingMIDIDriverConnectDestinationMessageID
+}
+
+void ClientRemoveConnection(MIDISpyClientRef clientRef, MIDISpyPortConnection *connection)
+{
+    CFMutableArrayRef connections;
+
+    connections = GetConnectionsToEndpoint(clientRef, connection->endpoint);
+    if (connections) {
+        CFIndex connectionIndex;
+
+        connectionIndex = CFArrayGetFirstIndexOfValue(connections, CFRangeMake(0, CFArrayGetCount(connections)), connection);
+        if (connectionIndex != kCFNotFound)
+            CFArrayRemoveValueAtIndex(connections, connectionIndex);
+    }
+    
+    // TODO
+    // are there any more connections to this endpoint?
+    // If not, then send a request to the driver to stop sending info about the endpoint to us.
+    // Need to send a request to the driver
+    //     kSpyingMIDIDriverDisconnectDestinationMessageID = 3
+}
+
+CFMutableArrayRef GetConnectionsToEndpoint(MIDISpyClientRef clientRef, MIDIEndpointRef endpoint)
+{
+    return (CFMutableArrayRef)CFDictionaryGetValue(clientRef->endpointConnections, endpoint);
+}
+
+
+// Communication with driver
+
 static CFDataRef LocalMessagePortCallback(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info)
 {
     const UInt8 *bytes;
     SInt32 endpointUniqueID;
-    const char *endpointNameCString;
     const MIDIPacketList *packetList;
-    CFStringRef endpointName;
+    MIDIEndpointRef endpoint;
     MIDISpyClientRef clientRef = (MIDISpyClientRef)info;
 
     if (!data) {
-#if DEBUG
-        fprintf(stderr, "MIDISpyClient: Got empty data from driver!\n");
-#endif
+        debug_string("MIDISpyClient: Got empty data from driver!");
         return NULL;
-    } else if (CFDataGetLength(data) < (sizeof(SInt32) + 1 + sizeof(UInt32))) {
-#if DEBUG
-        fprintf(stderr, "MIDISpyClient: Got too-small data from driver! (%ld bytes)\n", CFDataGetLength(data));
-#endif
+    } else if (CFDataGetLength(data) < (sizeof(SInt32) + sizeof(UInt32))) {
+        debug_string("MIDISpyClient: Got too-small data from driver!");
         return NULL;
     }
 
     bytes = CFDataGetBytePtr(data);
-    
+
     endpointUniqueID = *(SInt32 *)bytes;
-    endpointNameCString = (const char *)(bytes + sizeof(SInt32));
-    packetList = (const MIDIPacketList *)(bytes + sizeof(SInt32) + strlen(endpointNameCString) + 1);
+    packetList = (const MIDIPacketList *)(bytes + sizeof(SInt32));
 
-    endpointName = CFStringCreateWithCString(kCFAllocatorDefault, endpointNameCString, kCFStringEncodingUTF8);
+    // Find the endpoint with this unique ID.
+    // Then find all ports which are connected to this endpoint,
+    // and for each, call port->readProc(packetList, port->refCon, connection->refCon)
 
-    clientRef->clientCallBack(endpointUniqueID, endpointName, packetList, clientRef->clientRefCon);
+    endpoint = EndpointWithUniqueID(endpointUniqueID);
+    if (endpoint) {
+        CFArrayRef connections;
 
-    CFRelease(endpointName);
-    
+        if ((connections = GetConnectionsToEndpoint(clientRef, endpoint))) {
+            CFIndex connectionIndex;
+
+            connectionIndex = CFArrayGetCount(connections);
+            while (connectionIndex--) {
+                MIDISpyPortConnection *connection;
+
+                connection = (MIDISpyPortConnection *)CFArrayGetValueAtIndex(connections, connectionIndex);
+                connection->port->readProc(packetList, connection->port->refCon, connection->refCon);
+            }
+        }        
+    }
+
+    // No reply
     return NULL;
 }
+

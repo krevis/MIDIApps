@@ -7,11 +7,11 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif
+
     
 typedef struct __MIDISpyClient * MIDISpyClientRef;
-
-typedef void (*MIDISpyClientCallBack)(SInt32 endpointUniqueID, CFStringRef endpointName, const MIDIPacketList *packetList, void *refCon);
-
+typedef struct __MIDISpyPort * MIDISpyPortRef;
+    
 enum {
     kMIDISpyDriverAlreadyInstalled = 0,
     kMIDISpyDriverInstalledSuccessfully = 1,
@@ -19,11 +19,24 @@ enum {
     kMIDISpyDriverCouldNotRemoveOldDriver = 3
 };
 
-SInt32 MIDISpyInstallDriverIfNecessary();
+enum {
+    kMIDISpyDriverMissing = 1,
+    kMIDISpyDriverCouldNotCommunicate = 2,
+    kMIDISpyConnectionAlreadyExists = 3,
+    kMIDISpyConnectionDoesNotExist = 4
+};
 
-MIDISpyClientRef MIDISpyClientCreate(MIDISpyClientCallBack callBack, void *refCon);
-void MIDISpyClientDispose(MIDISpyClientRef clientRef);
 
+extern SInt32 MIDISpyInstallDriverIfNecessary();
+
+extern OSStatus MIDISpyClientCreate(MIDISpyClientRef *outClientRefPtr);
+extern OSStatus MIDISpyClientDispose(MIDISpyClientRef clientRef);
+
+extern OSStatus MIDISpyPortCreate(MIDISpyClientRef clientRef, MIDIReadProc readProc, void *refCon, MIDISpyPortRef *outSpyPortRefPtr);
+extern OSStatus MIDISpyPortDispose(MIDISpyPortRef spyPortRef);
+
+extern OSStatus MIDISpyPortConnectDestination(MIDISpyPortRef spyPortRef, MIDIEndpointRef destinationEndpoint, void *connectionRefCon);
+extern OSStatus MIDISpyPortDisconnectDestination(MIDISpyPortRef spyPortRef, MIDIEndpointRef destinationEndpoint);
 
 
 #if defined(__cplusplus)

@@ -1,4 +1,5 @@
 #include "MessagePortBroadcaster.h"
+#include "MIDISpyShared.h"
 
 extern "C" {
     static CFDataRef registrationCallBack(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info);
@@ -69,9 +70,9 @@ static CFDataRef registrationCallBack(CFMessagePortRef local, SInt32 msgid, CFDa
 {
     MessagePortBroadcaster *broadcaster = (MessagePortBroadcaster *)info;
 
-    if (msgid == 0) {
+    if (msgid == kSpyingMIDIDriverNextSequenceNumberMessageID) {
         return broadcaster->NextSequenceNumber();
-    } else if (msgid == 1) {
+    } else if (msgid == kSpyingMIDIDriverAddListenerMessageID) {
         broadcaster->AddListener(data);
         return NULL;
     } else {
