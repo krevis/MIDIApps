@@ -152,7 +152,25 @@
 
 - (void)keyDown:(NSEvent *)theEvent;
 {
-    [self interpretKeyEvents:[NSArray arrayWithObject:theEvent]];
+    NSString *characters;
+    unichar firstCharacter;
+
+    // We would like to use -interpretKeyEvents:, but then *all* key events would get interpreted into selectors,
+    // and NSTableView does not implement the proper selectors (like moveUp: for up arrow). Instead it apparently
+    // checks key codes manually in -keyDown. So, we do the same.
+    // Key codes are taken from /System/Library/Frameworks/AppKit.framework/Resources/StandardKeyBinding.dict.
+
+    characters = [theEvent characters];
+    firstCharacter = [characters characterAtIndex:0];
+
+    if (firstCharacter == 0x08 || firstCharacter == 0x7F)
+        // ^H (backspace, BS) or Delete key (DEL)
+        [self deleteBackward:self];
+    else if (firstCharacter == 0x04 || firstCharacter == 0xF728)
+        // ^D (forward delete emacs keybinding) or keypad delete key (which is  0xEF 0x9C 0xA8 in UTF-8)
+        [self deleteForward:self];
+    else
+        [super keyDown:theEvent];
 }
 
 - (void)deleteForward:(id)sender;
