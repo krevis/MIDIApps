@@ -205,9 +205,14 @@
 				F557E37401BEC38401000164,
 				F561536001C23FE001000164,
 				F540F195022133F901000164,
-				F5920EC503850B7E01000164,
-				F5DCD536039EFE1B01000164,
-				F5DCD53B039F007801000164,
+				F5ADD9F8023189AE01000164,
+				F55C9C1A0244DE3401000164,
+				F5DAB1E6030DE98E01000164,
+				F547E05403184DAA01000164,
+				F5F915F1032A465A01000164,
+				F57A4EEC0354B9FC01000164,
+				F57A51AF0354D62F01000164,
+				F587D6CFC5B0447501527BD6,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -250,10 +255,8 @@
 				F5DAB1E7030DE98E01000164,
 				F51DC11C0328B28901000164,
 				F5F915F2032A465A01000164,
-				F5920EC403850B7E01000164,
-				F5DCD52F039EF3B001000164,
-				F5DCD537039EFE1B01000164,
-				F5DCD53C039F007801000164,
+				F587D6D0C5B0447501527BD6,
+				F5ACCB4703EE5A5201100002,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1005,6 +1008,28 @@
 			settings = {
 			};
 		};
+		F587D6CDC5B0447501527BD6 = {
+			isa = PBXFileReference;
+			path = VirtualRingBuffer.h;
+			refType = 4;
+		};
+		F587D6CEC5B0447501527BD6 = {
+			isa = PBXFileReference;
+			path = VirtualRingBuffer.m;
+			refType = 4;
+		};
+		F587D6CFC5B0447501527BD6 = {
+			fileRef = F587D6CDC5B0447501527BD6;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F587D6D0C5B0447501527BD6 = {
+			fileRef = F587D6CEC5B0447501527BD6;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		F58C3E8901B5F8F001000164 = {
 			isa = PBXFileReference;
 			path = SMPortInputStream.h;
@@ -1044,6 +1069,8 @@
 			children = (
 				F58C3E9501B606CB01000164,
 				F58C3E9601B606CB01000164,
+				F587D6CDC5B0447501527BD6,
+				F587D6CEC5B0447501527BD6,
 				F5920EC303850B7E01000164,
 				F5920EC203850B7E01000164,
 				F55C9C180244DE3401000164,
@@ -1110,14 +1137,8 @@
 			path = MessageQueue.h;
 			refType = 4;
 		};
-		F5920EC403850B7E01000164 = {
-			fileRef = F5920EC203850B7E01000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F5920EC503850B7E01000164 = {
-			fileRef = F5920EC303850B7E01000164;
+		F5ACCB4703EE5A5201100002 = {
+			fileRef = F5DCD52D039EF3B001000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1191,12 +1212,6 @@
 				);
 			};
 		};
-		F5DCD52F039EF3B001000164 = {
-			fileRef = F5DCD52D039EF3B001000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		F5DCD530039EF3C801000164 = {
 			children = (
 				F5DCD534039EFE1B01000164,
@@ -1218,18 +1233,6 @@
 			path = "NSArray-SMExtensions.m";
 			refType = 4;
 		};
-		F5DCD536039EFE1B01000164 = {
-			fileRef = F5DCD534039EFE1B01000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F5DCD537039EFE1B01000164 = {
-			fileRef = F5DCD535039EFE1B01000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		F5DCD539039F007801000164 = {
 			isa = PBXFileReference;
 			path = "NSData-SMExtensions.h";
@@ -1239,18 +1242,6 @@
 			isa = PBXFileReference;
 			path = "NSData-SMExtensions.m";
 			refType = 4;
-		};
-		F5DCD53B039F007801000164 = {
-			fileRef = F5DCD539039F007801000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F5DCD53C039F007801000164 = {
-			fileRef = F5DCD53A039F007801000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		F5E4BDD0018FCA6301000164 = {
 			buildRules = (
