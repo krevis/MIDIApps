@@ -33,6 +33,7 @@
 
     libraryFilePath = [[[self class] defaultPath] retain];
     entries = [[NSMutableArray alloc] init];
+    flags.isDirty = NO;
 
     [self _loadEntries];
     
@@ -52,6 +53,18 @@
 - (NSArray *)entries;
 {
     return entries;
+}
+
+- (void)addEntryForFile:(NSString *)filePath;
+{
+    SSELibraryEntry *entry;
+
+    entry = [[SSELibraryEntry alloc] init];
+    [entry setPath:filePath];
+    [entries addObject:entry];
+    [entry release];
+
+    flags.isDirty = YES;
 }
 
 @end

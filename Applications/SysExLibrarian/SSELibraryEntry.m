@@ -106,7 +106,10 @@
     // TODO this might be a partial path, or alias, or something
     // return the real path on the real filesystem
     // This is completely wrong as it stands
-    return [[SSELibrary defaultFileDirectory] stringByAppendingPathComponent:path];
+    if ([path isAbsolutePath])
+        return path;
+    else
+        return [[SSELibrary defaultFileDirectory] stringByAppendingPathComponent:path];
 }
 
 @end
