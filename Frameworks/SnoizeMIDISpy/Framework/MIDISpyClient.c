@@ -185,10 +185,6 @@ OSStatus MIDISpyClientDispose(MIDISpyClientRef clientRef)
     if (!clientRef)
         return paramErr;
 
-    if (clientRef->endpointConnections) {
-        CFRelease(clientRef->endpointConnections);
-    }
-            
     if (clientRef->ports) {
         CFIndex portIndex;
 
@@ -202,7 +198,11 @@ OSStatus MIDISpyClientDispose(MIDISpyClientRef clientRef)
         
         CFRelease(clientRef->ports);
     }
-    
+
+    if (clientRef->endpointConnections) {
+        CFRelease(clientRef->endpointConnections);
+    }
+
     if (clientRef->runLoopSource) {
         CFRunLoopSourceInvalidate(clientRef->runLoopSource);
         CFRelease(clientRef->runLoopSource);
