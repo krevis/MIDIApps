@@ -581,7 +581,7 @@
 			refType = 4;
 		};
 		F53BB4AF015D96A501000164 = {
-			fileEncoding = 4;
+			fileEncoding = 10;
 			isa = PBXFileReference;
 			name = English;
 			path = English.lproj/MIDIMonitor.strings;
