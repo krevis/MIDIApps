@@ -455,7 +455,7 @@ static NSString *kToString = nil;
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item;
 {
-    return [item isKindOfClass:[NSDictionary class]];
+    return ([item isKindOfClass:[NSDictionary class]] && ![[item objectForKey:@"isNotExpandable"] boolValue]);
 }
 
 - (int)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item;

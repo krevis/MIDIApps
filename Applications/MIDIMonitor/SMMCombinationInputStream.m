@@ -32,10 +32,9 @@ static NSString *spyingGroupName = nil;
 
 + (void)didLoad;
 {
-    // TODO rename all of these? I don't much like them...
-    sourcesGroupName = NSLocalizedStringFromTableInBundle(@"Sources", @"MIDIMonitor", [self bundle], "name of group for ordinary sources");
-    virtualGroupName = NSLocalizedStringFromTableInBundle(@"Virtual Destination", @"MIDIMonitor", [self bundle], "name of group for virtual destination");
-    spyingGroupName = NSLocalizedStringFromTableInBundle(@"Spy on output to Destinations", @"MIDIMonitor", [self bundle], "name of group for spying on destinations");
+    sourcesGroupName = NSLocalizedStringFromTableInBundle(@"MIDI sources", @"MIDIMonitor", [self bundle], "name of group for ordinary sources");
+    virtualGroupName = NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"MIDIMonitor", [self bundle], "name of source item for virtual destination");
+    spyingGroupName = NSLocalizedStringFromTableInBundle(@"Spy on output to destinations", @"MIDIMonitor", [self bundle], "name of group for spying on destinations");
 }
 
 
@@ -56,7 +55,6 @@ static NSString *spyingGroupName = nil;
     virtualInputStream = [[SMVirtualInputStream alloc] init];
     [virtualInputStream setMessageDestination:self];
     [self _observeNotificationsWithCenter:center object:virtualInputStream];
-    [virtualInputStream setInputSourceName:NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"MIDIMonitor", [self bundle], "title of popup menu item for virtual destination")];
 
     if ((spyClient = [[NSApp delegate] midiSpyClient])) {
         spyingInputStream = [[SMMSpyingInputStream alloc] initWithMIDISpyClient:spyClient];
@@ -114,7 +112,7 @@ static NSString *spyingGroupName = nil;
     dictionary = [NSDictionary dictionaryWithObjectsAndKeys:sourcesGroupName, @"name", [portInputStream inputSources], @"sources", nil];    
     [groupedInputSources addObject:dictionary];
 
-    dictionary = [NSDictionary dictionaryWithObjectsAndKeys:virtualGroupName, @"name", [virtualInputStream inputSources], @"sources", nil];
+    dictionary = [NSDictionary dictionaryWithObjectsAndKeys:virtualGroupName, @"name", [virtualInputStream inputSources], @"sources", [NSNumber numberWithBool:YES], @"isNotExpandable", nil];
     [groupedInputSources addObject:dictionary];
 
     if (spyingInputStream) {
