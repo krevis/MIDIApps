@@ -55,7 +55,7 @@
     SMPortInputStream *stream;
     
     stream = [[SMPortInputStream alloc] init];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(portStreamEndpointWasRemoved:) name:SMPortInputStreamEndpointWasRemoved object:stream];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(portStreamEndpointDisappeared:) name:SMPortInputStreamEndpointDisappeared object:stream];
     [stream setMessageDestination:nonretainedMessageDestination];
     [self _observeSysExNotificationsFromStream:stream];
 
@@ -64,7 +64,7 @@
 
 - (void)willRemovePortStream;
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:SMPortInputStreamEndpointWasRemoved object:portStream];        
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:SMPortInputStreamEndpointDisappeared object:portStream];        
     [self _stopObservingSysExNotificationsFromStream:portStream];
 }
 

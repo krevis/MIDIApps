@@ -8,15 +8,17 @@
 @interface SMPortInputStream : SMInputStream
 {
     MIDIPortRef inputPort;
-    SMSourceEndpoint *endpoint;
+    NSMutableArray *endpoints;
+    NSMapTable *parsersForEndpoints;
 }
 
-- (SMSourceEndpoint *)endpoint;
-- (void)setEndpoint:(SMSourceEndpoint *)newEndpoint;
+- (NSArray *)endpoints;
+- (void)addEndpoint:(SMSourceEndpoint *)endpoint;
+- (void)removeEndpoint:(SMSourceEndpoint *)endpoint;
 
 @end
 
 // Notifications
 
-extern NSString *SMPortInputStreamEndpointWasRemoved;
-    // Sent if the stream's source endpoint goes away
+extern NSString *SMPortInputStreamEndpointDisappeared;
+    // Sent if one of the stream's source endpoints goes away

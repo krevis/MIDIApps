@@ -28,32 +28,32 @@ DEFINE_NSSTRING(SMInputStreamDoneReadingSysExNotification);
     if (!(self = [super init]))
         return nil;
 
-    parser = [[SMMessageParser alloc] init];
-    [parser setDelegate:self];
+    //    parser = [[SMMessageParser alloc] init];
+    //    [parser setDelegate:self];
 
     return self;
 }
 
 - (void)dealloc;
 {
-    [parser release];
-
     [super dealloc];
 }
 
 - (id<SMMessageDestination>)messageDestination;
 {
-    return [parser messageDestination];
+    return nonretainedMessageDestination;
 }
 
 - (void)setMessageDestination:(id<SMMessageDestination>)messageDestination;
 {
-    [parser setMessageDestination:messageDestination];
+    nonretainedMessageDestination = messageDestination;
 }
 
 - (BOOL)cancelReceivingSysExMessage;
 {
-    return [parser cancelReceivingSysExMessage];
+    [[self parsers] makeObjectsPerformSelector:@selector(cancelReceivingSysExMessage)];
+    // TODO is the return value really used anywhere?  (need to AND or OR the results together?)
+    return YES;
 }
 
 - (MIDIReadProc)midiReadProc;
@@ -62,8 +62,29 @@ DEFINE_NSSTRING(SMInputStreamDoneReadingSysExNotification);
 }
 
 //
+// For subclasses to implement
+//
+
+- (NSArray *)parsers;
+{
+    OBRequestConcreteImplementation(self, _cmd);
+    return nil;
+}
+
+- (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;
+{
+    OBRequestConcreteImplementation(self, _cmd);
+    return nil;
+}
+
+//
 // Parser delegate
 //
+
+- (void)parser:(SMMessageParser *)parser didReadMessages:(NSArray *)messages;
+{
+    [nonretainedMessageDestination takeMIDIMessages:messages];
+}
 
 - (void)parser:(SMMessageParser *)parser isReadingSysExWithLength:(unsigned int)length;
 {
@@ -96,7 +117,7 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
     NSAutoreleasePool *pool;
 
     pool = [[NSAutoreleasePool alloc] init];
-    [self->parser takePacketList:packetList];
+    [[self parserForSourceConnectionRefCon:srcConnRefCon] takePacketList:packetList];
     [pool release];
 }
 

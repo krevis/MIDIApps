@@ -13,7 +13,7 @@
 
 @interface SMPortOutputStream (Private)
 
-- (void)_endpointWasRemoved:(NSNotification *)notification;
+- (void)_endpointDisappeared:(NSNotification *)notification;
 - (void)_endpointWasReplaced:(NSNotification *)notification;
 
 - (void)_splitMessages:(NSArray *)messages intoCurrentSysex:(NSArray **)sysExMessagesPtr andNormal:(NSArray **)normalMessagesPtr;
@@ -26,7 +26,7 @@
 
 @implementation SMPortOutputStream
 
-DEFINE_NSSTRING(SMPortOutputStreamEndpointWasRemovedNotification);
+DEFINE_NSSTRING(SMPortOutputStreamEndpointDisappearedNotification);
 DEFINE_NSSTRING(SMPortOutputStreamWillStartSysExSendNotification);
 DEFINE_NSSTRING(SMPortOutputStreamFinishedSysExSendNotification);
 
@@ -80,7 +80,7 @@ DEFINE_NSSTRING(SMPortOutputStreamFinishedSysExSendNotification);
     center = [NSNotificationCenter defaultCenter];
 
     if (endpoint) {
-        [center removeObserver:self name:SMEndpointWasRemovedNotification object:endpoint];
+        [center removeObserver:self name:SMEndpointDisappearedNotification object:endpoint];
         [center removeObserver:self name:SMEndpointWasReplacedNotification object:endpoint];
     }
     
@@ -88,7 +88,7 @@ DEFINE_NSSTRING(SMPortOutputStreamFinishedSysExSendNotification);
     endpoint = [newEndpoint retain];
     
     if (endpoint) {
-        [center addObserver:self selector:@selector(_endpointWasRemoved:) name:SMEndpointWasRemovedNotification object:endpoint];
+        [center addObserver:self selector:@selector(_endpointDisappeared:) name:SMEndpointDisappearedNotification object:endpoint];
         [center addObserver:self selector:@selector(_endpointWasReplaced:) name:SMEndpointWasReplacedNotification object:endpoint];
     }
 }
@@ -160,13 +160,13 @@ DEFINE_NSSTRING(SMPortOutputStreamFinishedSysExSendNotification);
 
 @implementation SMPortOutputStream (Private)
 
-- (void)_endpointWasRemoved:(NSNotification *)notification;
+- (void)_endpointDisappeared:(NSNotification *)notification;
 {
     OBASSERT([notification object] == endpoint);
 
     [self setEndpoint:nil];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMPortOutputStreamEndpointWasRemovedNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMPortOutputStreamEndpointDisappearedNotification object:self];
 }
 
 - (void)_endpointWasReplaced:(NSNotification *)notification;

@@ -5,13 +5,12 @@
 
 #import "SMClient.h"
 #import "SMEndpoint.h"
+#import "SMMessageParser.h"
 
 
 @interface SMPortInputStream (Private)
 
-- (void)_setEndpoint:(SMSourceEndpoint *)newEndpoint;
-
-- (void)_endpointWasRemoved:(NSNotification *)notification;
+- (void)_endpointDisappeared:(NSNotification *)notification;
 - (void)_endpointWasReplaced:(NSNotification *)notification;
 
 @end
@@ -19,7 +18,7 @@
 
 @implementation SMPortInputStream
 
-DEFINE_NSSTRING(SMPortInputStreamEndpointWasRemoved);
+DEFINE_NSSTRING(SMPortInputStreamEndpointDisappeared);
 
 
 - (id)init;
@@ -33,6 +32,10 @@ DEFINE_NSSTRING(SMPortInputStreamEndpointWasRemoved);
     if (status != noErr)
         [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't create a MIDI input port (error %ld)", @"SnoizeMIDI", [self bundle], "exception with OSStatus if MIDIInputPortCreate() fails"), status];
 
+    endpoints = [[NSMutableArray alloc] init];
+
+    parsersForEndpoints = NSCreateMapTable(NSNonRetainedObjectMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
+
     return self;
 }
 
@@ -43,39 +46,86 @@ DEFINE_NSSTRING(SMPortInputStreamEndpointWasRemoved);
     MIDIPortDispose(inputPort);
     inputPort = NULL;
 
-    [self _setEndpoint:nil];
+    [endpoints release];
+    endpoints = nil;
 
+    NSFreeMapTable(parsersForEndpoints);
+    
     [super dealloc];
 }
 
-- (SMSourceEndpoint *)endpoint;
+- (NSArray *)endpoints;
 {
-    return endpoint;
+    return [NSArray arrayWithArray:endpoints];
 }
 
-- (void)setEndpoint:(SMSourceEndpoint *)newEndpoint;
+- (void)addEndpoint:(SMSourceEndpoint *)endpoint;
 {
+    SMMessageParser *parser;
     OSStatus status;
+    NSNotificationCenter *center;
 
-    if (newEndpoint == endpoint)
+    if (!endpoint)
+        return;
+    
+    if ([endpoints indexOfObjectIdenticalTo:endpoint] != NSNotFound)
         return;
 
-    if (endpoint) {
-        status = MIDIPortDisconnectSource(inputPort, [endpoint endpointRef]);
-        if (status != noErr) {
-            // This can happen in normal circumstances (if the sourceEndpoint has disappeared on us)
-            // so don't log a message and try to go on.
-        }
+    parser = [[[SMMessageParser alloc] init] autorelease];
+    [parser setDelegate:self];
+    
+    status = MIDIPortConnectSource(inputPort, [endpoint endpointRef], parser);
+    if (status != noErr) {
+        NSLog(@"Error from MIDIPortConnectSource: %d", status);
+        return;
     }
 
-    [self _setEndpoint:newEndpoint];
-    if (endpoint) {
-        status = MIDIPortConnectSource(inputPort, [endpoint endpointRef], NULL);
-        if (status != noErr) {
-            NSLog(@"Error from MIDIPortConnectSource: %d", status);
-            [self _setEndpoint:nil];
-        }
+    NSMapInsert(parsersForEndpoints, endpoint, parser);
+
+    center = [NSNotificationCenter defaultCenter];
+    [center addObserver:self selector:@selector(_endpointDisappeared:) name:SMEndpointDisappearedNotification object:endpoint];
+    [center addObserver:self selector:@selector(_endpointWasReplaced:) name:SMEndpointWasReplacedNotification object:endpoint];
+
+    [endpoints addObject:endpoint];
+}
+
+- (void)removeEndpoint:(SMSourceEndpoint *)endpoint;
+{
+    OSStatus status;
+    NSNotificationCenter *center;
+
+    if (!endpoint)
+        return;
+
+    if ([endpoints indexOfObjectIdenticalTo:endpoint] == NSNotFound)
+        return;
+    
+    status = MIDIPortDisconnectSource(inputPort, [endpoint endpointRef]);
+    if (status != noErr) {
+        // An error can happen in normal circumstances (if the endpoint has disappeared), so ignore it.
     }
+
+    NSMapRemove(parsersForEndpoints, endpoint);
+    
+    center = [NSNotificationCenter defaultCenter];
+    [center removeObserver:self name:SMEndpointDisappearedNotification object:endpoint];
+    [center removeObserver:self name:SMEndpointWasReplacedNotification object:endpoint];
+
+    [endpoints removeObjectIdenticalTo:endpoint];
+}
+
+//
+// SMInputStream subclass
+//
+
+- (NSArray *)parsers;
+{
+    return NSAllMapTableValues(parsersForEndpoints);
+}
+
+- (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;
+{
+    return (SMMessageParser *)refCon;
 }
 
 @end
@@ -83,46 +133,29 @@ DEFINE_NSSTRING(SMPortInputStreamEndpointWasRemoved);
 
 @implementation SMPortInputStream (Private)
 
-- (void)_setEndpoint:(SMSourceEndpoint *)newEndpoint
+- (void)_endpointDisappeared:(NSNotification *)notification;
 {
-    NSNotificationCenter *center;
+    SMSourceEndpoint *endpoint;
 
-    if (endpoint == newEndpoint)
-        return;
+    endpoint = [notification object];
+    OBASSERT([endpoints indexOfObjectIdenticalTo:endpoint] != NSNotFound);
 
-    center = [NSNotificationCenter defaultCenter];
+    [self removeEndpoint:endpoint];
 
-    if (endpoint) {
-        [center removeObserver:self name:SMEndpointWasRemovedNotification object:endpoint];
-        [center removeObserver:self name:SMEndpointWasReplacedNotification object:endpoint];
-    }
-    
-    [endpoint release];
-    endpoint = [newEndpoint retain];
-    
-    if (endpoint) {
-        [center addObserver:self selector:@selector(_endpointWasRemoved:) name:SMEndpointWasRemovedNotification object:endpoint];
-        [center addObserver:self selector:@selector(_endpointWasReplaced:) name:SMEndpointWasReplacedNotification object:endpoint];
-    }
-}
-
-- (void)_endpointWasRemoved:(NSNotification *)notification;
-{
-    OBASSERT([notification object] == endpoint);
-
-    [self _setEndpoint:nil];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMPortInputStreamEndpointWasRemoved object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMPortInputStreamEndpointDisappeared object:self];
 }
 
 - (void)_endpointWasReplaced:(NSNotification *)notification;
 {
-    SMSourceEndpoint *newEndpoint;
+    SMSourceEndpoint *oldEndpoint, *newEndpoint;
 
-    OBASSERT([notification object] == endpoint);
+    oldEndpoint = [notification object];
+    OBASSERT([endpoints indexOfObjectIdenticalTo:oldEndpoint] != NSNotFound);    
 
     newEndpoint = [[notification userInfo] objectForKey:SMEndpointReplacement];
-    [self setEndpoint:newEndpoint];
+
+    [self removeEndpoint:oldEndpoint];
+    [self addEndpoint:newEndpoint];    
 }
 
 @end

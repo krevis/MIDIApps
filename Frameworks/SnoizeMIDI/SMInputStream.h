@@ -8,7 +8,7 @@
 
 @interface SMInputStream : OFObject
 {
-    SMMessageParser *parser;
+    id<SMMessageDestination> nonretainedMessageDestination;
 }
 
 - (id<SMMessageDestination>)messageDestination;
@@ -19,6 +19,10 @@
 
 // For subclasses only
 - (MIDIReadProc)midiReadProc;
+
+// For subclasses to implement
+- (NSArray *)parsers;
+- (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;
 
 @end
 

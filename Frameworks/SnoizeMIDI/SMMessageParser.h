@@ -1,7 +1,6 @@
 #import <OmniFoundation/OFObject.h>
 #import <CoreMIDI/CoreMIDI.h>
 #import <Foundation/Foundation.h>
-#import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 
 @class SMSystemExclusiveMessage;
 
@@ -14,12 +13,8 @@
     NSTimer *sysExTimeOutTimer;
     NSTimeInterval sysExTimeOut;
     
-    id<SMMessageDestination> nonretainedMessageDestination;
     id nonretainedDelegate;
 }
-
-- (id<SMMessageDestination>)messageDestination;
-- (void)setMessageDestination:(id<SMMessageDestination>)aMessageDestination;
 
 - (id)delegate;
 - (void)setDelegate:(id)value;
@@ -37,6 +32,7 @@
 
 @interface NSObject (SMMessageParserDelegate)
 
+- (void)parser:(SMMessageParser *)parser didReadMessages:(NSArray *)messages;
 - (void)parser:(SMMessageParser *)parser isReadingSysExWithLength:(unsigned int)length;
 - (void)parser:(SMMessageParser *)parser finishedReadingSysExMessage:(SMSystemExclusiveMessage *)message;
 

@@ -92,7 +92,7 @@
     stream = [[SMPortOutputStream alloc] init];
     [stream setIgnoresTimeStamps:flags.ignoresTimeStamps];
     [stream setSendsSysExAsynchronously:flags.sendsSysExAsynchronously];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(portStreamEndpointWasRemoved:) name:SMPortOutputStreamEndpointWasRemovedNotification object:stream];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(portStreamEndpointDisappeared:) name:SMPortOutputStreamEndpointDisappearedNotification object:stream];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_repostNotification:) name:SMPortOutputStreamWillStartSysExSendNotification object:stream];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_repostNotification:) name:SMPortOutputStreamFinishedSysExSendNotification object:stream];
 

@@ -42,19 +42,7 @@
     [sysExTimeOutTimer release];
     sysExTimeOutTimer = nil;
     
-    nonretainedMessageDestination = nil;
-
     [super dealloc];
-}
-
-- (id<SMMessageDestination>)messageDestination;
-{
-    return nonretainedMessageDestination;
-}
-
-- (void)setMessageDestination:(id<SMMessageDestination>)aMessageDestination;
-{
-    nonretainedMessageDestination = aMessageDestination;
 }
 
 - (id)delegate;
@@ -109,7 +97,7 @@
     }
 
     if (messages)
-        [nonretainedMessageDestination takeMIDIMessages:messages];
+        [nonretainedDelegate parser:self didReadMessages:messages];
 
     if (readingSysExData) {
         CFRunLoopRef runLoop;
@@ -323,7 +311,7 @@
 
     message = [self _finishSysExMessageWithValidEnd:NO];
     if (message)
-        [nonretainedMessageDestination takeMIDIMessages:[NSArray arrayWithObject:message]];
+        [nonretainedDelegate parser:self didReadMessages:[NSArray arrayWithObject:message]];
 }
 
 @end

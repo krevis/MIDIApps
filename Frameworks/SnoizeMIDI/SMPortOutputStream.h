@@ -33,7 +33,7 @@
 
 // Notifications
 
-extern NSString *SMPortOutputStreamEndpointWasRemovedNotification;
+extern NSString *SMPortOutputStreamEndpointDisappearedNotification;
     // Sent if the stream's destination endpoint goes away
 
 extern NSString *SMPortOutputStreamWillStartSysExSendNotification;

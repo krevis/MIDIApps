@@ -39,9 +39,9 @@
 - (void)willRemoveVirtualStream;
 
 // To be used only by subclasses (TODO move to a private header or something)
-- (void)portStreamEndpointWasRemoved:(NSNotification *)notification;
+- (void)portStreamEndpointDisappeared:(NSNotification *)notification;
 
 @end
 
 // Notifications
-extern NSString *SMPortOrVirtualStreamEndpointWasRemovedNotification;
+extern NSString *SMPortOrVirtualStreamEndpointDisappearedNotification;

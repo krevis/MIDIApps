@@ -24,7 +24,7 @@
 
 @implementation SMPortOrVirtualStream
 
-DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointWasRemovedNotification);
+DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
 
 
 - (id)init;
@@ -238,9 +238,9 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointWasRemovedNotification);
 // To be used only by subclasses (TODO move to a private header or something)
 //
 
-- (void)portStreamEndpointWasRemoved:(NSNotification *)notification;
+- (void)portStreamEndpointDisappeared:(NSNotification *)notification;
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMPortOrVirtualStreamEndpointWasRemovedNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMPortOrVirtualStreamEndpointDisappearedNotification object:self];
 }
 
 @end
