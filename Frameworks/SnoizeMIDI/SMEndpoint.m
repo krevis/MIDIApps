@@ -214,7 +214,8 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 
         cachedManufacturerName = [self _stringForProperty:kMIDIPropertyManufacturer];
         // NOTE This fails sometimes on 10.1.3 and earlier (see bug #2865704).
-        // So we fall back to asking for the device's manufacturer name if necessary.        
+        // So we fall back to asking for the device's manufacturer name if necessary.
+        // (This bug is fixed in 10.1.5.)
         if (!cachedManufacturerName)
             cachedManufacturerName = [self _deviceStringForProperty:kMIDIPropertyManufacturer];
 
