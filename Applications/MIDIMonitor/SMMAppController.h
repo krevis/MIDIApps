@@ -1,10 +1,11 @@
 #import <Cocoa/Cocoa.h>
+#import <SnoizeMIDISpy/SnoizeMIDISpy.h>
 
 
 @interface SMMAppController : NSObject
 {
-    BOOL shouldUseMIDISpy;
     BOOL shouldOpenUntitledDocument;
+    MIDISpyClientRef midiSpyClient;
 }
 
 - (IBAction)showPreferences:(id)sender;
@@ -13,7 +14,7 @@
 
 - (IBAction)restartMIDI:(id)sender;
 
-- (BOOL)shouldUseMIDISpy;
+- (MIDISpyClientRef)midiSpyClient;
 
 @end
 

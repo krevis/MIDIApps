@@ -23,7 +23,9 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 
 - (void)applicationWillFinishLaunching:(NSNotification *)notification;
 {
+    BOOL shouldUseMIDISpy;
     SInt32 spyStatus;
+    OSStatus status;
     
     // Make sure we go multithreaded, and that our scheduler starts up
     [OFScheduler mainScheduler];
@@ -52,6 +54,16 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
     } else {
         shouldOpenUntitledDocument = YES;        
     }
+
+    if (shouldUseMIDISpy) {
+        // Create our client for spying on MIDI output.
+        status = MIDISpyClientCreate(&midiSpyClient);
+        if (status != noErr) {
+#if DEBUG
+            NSLog(@"Couldn't create a MIDI spy client: error %ld", status);
+#endif
+        }
+    }    
 }
 
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender;
@@ -112,9 +124,9 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
     return YES;
 }
 
-- (BOOL)shouldUseMIDISpy;
+- (MIDISpyClientRef)midiSpyClient;
 {
-    return shouldUseMIDISpy;
+    return midiSpyClient;
 }
 
 @end
