@@ -15,7 +15,8 @@ typedef void (*MIDISpyClientCallBack)(SInt32 endpointUniqueID, CFStringRef endpo
 enum {
     kMIDISpyDriverAlreadyInstalled = 0,
     kMIDISpyDriverInstalledSuccessfully = 1,
-    kMIDISpyDriverInstallationFailed = 2
+    kMIDISpyDriverInstallationFailed = 2,
+    kMIDISpyDriverCouldNotRemoveOldDriver = 3
 };
 
 SInt32 MIDISpyInstallDriverIfNecessary();

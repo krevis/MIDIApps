@@ -1,6 +1,9 @@
 #include "MIDISpyClient.h"
 
 #include <Carbon/Carbon.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 
 typedef struct __MIDISpyClient
@@ -21,7 +24,11 @@ static const SInt32 kSpyingMIDIDriverAddListenerMessageID = 1;
 static Boolean FindDriverInFramework(CFURLRef *urlPtr, UInt32 *versionPtr);
 static Boolean FindInstalledDriver(CFURLRef *urlPtr, UInt32 *versionPtr);
 static void CreateBundlesForDriversInDomain(short findFolderDomain, CFMutableArrayRef createdBundles);
+static Boolean RemoveInstalledDriver(CFURLRef driverURL);
 static Boolean InstallDriver(CFURLRef ourDriverURL);
+static Boolean CopyDirectory(CFURLRef sourceDirectoryURL, CFURLRef targetDirectoryURL);
+
+static Boolean ForkAndExec(char * const argv[]);
 
 static CFDataRef LocalMessagePortCallback(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info);
 
@@ -43,16 +50,18 @@ SInt32 MIDISpyInstallDriverIfNecessary()
         returnStatus =  kMIDISpyDriverInstallationFailed;
         goto done;
     }
-    
+
+    // TODO There might be more than one "installed" driver.
+    // TODO Or someone might have left a directory with our plugin name in the way, but w/o proper plugin files in it. Who knows.
     if (FindInstalledDriver(&installedDriverURL, &installedDriverVersion)) {
         if (installedDriverVersion == ourDriverVersion) {
             returnStatus = kMIDISpyDriverAlreadyInstalled;
             goto done;
         } else {
-            // TODO Try to remove the installed driver; if we fail, do stuff below.
-            fprintf(stderr, "MIDISpy: We are not even trying to delete an old copy of the driver\n");
-            returnStatus = kMIDISpyDriverInstallationFailed;
-            goto done;
+            if (!RemoveInstalledDriver(installedDriverURL)) {
+                returnStatus = kMIDISpyDriverCouldNotRemoveOldDriver;
+                goto done;                
+            }            
         }        
     }
 
@@ -300,6 +309,25 @@ static void CreateBundlesForDriversInDomain(short findFolderDomain, CFMutableArr
 }
 
 
+static Boolean RemoveInstalledDriver(CFURLRef driverURL)
+{
+    // TODO it would be better to do a recursive delete ourself.
+    // TODO it is possible that something in this path (or the file itself) is an alias (w/resource fork)
+    // so we should not use UNIX API/commands to delete it.
+    char driverPath[PATH_MAX];
+    char *argv[] = { "/bin/rm", "-rf", driverPath, NULL };
+
+    if (!CFURLGetFileSystemRepresentation(driverURL, FALSE, (UInt8 *)driverPath, PATH_MAX)) {
+#if DEBUG
+        fprintf(stderr, "MIDISpy: CFURLGetFileSystemRepresentation(driverPath) failed\n");
+#endif
+        return FALSE;
+    }
+
+    return ForkAndExec(argv);
+}
+
+
 static Boolean InstallDriver(CFURLRef ourDriverURL)
 {
     OSErr error;
@@ -314,41 +342,70 @@ static Boolean InstallDriver(CFURLRef ourDriverURL)
 #endif
     } else {
         CFURLRef folderURL;
-        char folderPath[PATH_MAX];
 
         folderURL = CFURLCreateFromFSRef(kCFAllocatorDefault, &folderFSRef);
-
-        if (!CFURLGetFileSystemRepresentation(folderURL, FALSE, (UInt8 *)folderPath, PATH_MAX)) {
-#if DEBUG
-            fprintf(stderr, "MIDISpy: CFURLGetFileSystemRepresentation(folderURL) failed\n");
-#endif
-        } else {
-            char driverPath[PATH_MAX];
-
-            if (!CFURLGetFileSystemRepresentation(ourDriverURL, FALSE, (UInt8 *)driverPath, PATH_MAX)) {
-#if DEBUG
-                fprintf(stderr, "MIDISpy: CFURLGetFileSystemRepresentation(ourDriverURL) failed\n");
-#endif
-            } else {
-                // Copy (recursively) from the directory of the driver in our resources directory.
-                // I know the driver doesn't contain any files with resource forks, so we are safe using the UNIX API for this.
-                // TODO what a pain, it's not as though there is good UNIX API for this either.
-                char command[2 * PATH_MAX + 10];
-
-                snprintf(command, sizeof(command), "cp -Rf \"%s\" \"%s\"", driverPath, folderPath);
-
-                success = (system(command) == 0);
-#if DEBUG
-                if (!success)
-                    fprintf(stderr, "MIDISpy: cp failed\n");
-#endif
-            }
-        }
+        success = CopyDirectory(ourDriverURL, folderURL);
 
         CFRelease(folderURL);
     }
  
     return success;
+}
+
+
+static Boolean CopyDirectory(CFURLRef sourceDirectoryURL, CFURLRef targetDirectoryURL)
+{
+    char sourcePath[PATH_MAX];
+    char targetPath[PATH_MAX];
+    char *argv[] = { "/bin/cp", "-Rf", sourcePath, targetPath, NULL };
+
+    if (!CFURLGetFileSystemRepresentation(sourceDirectoryURL, FALSE, (UInt8 *)sourcePath, PATH_MAX)) {
+#if DEBUG
+            fprintf(stderr, "MIDISpy: CFURLGetFileSystemRepresentation(sourceDirectoryURL) failed\n");
+#endif
+        return FALSE;
+    }
+
+    if (!CFURLGetFileSystemRepresentation(targetDirectoryURL, FALSE, (UInt8 *)targetPath, PATH_MAX)) {
+#if DEBUG
+        fprintf(stderr, "MIDISpy: CFURLGetFileSystemRepresentation(targetDirectoryURL) failed\n");
+#endif
+        return FALSE;
+    }
+
+    // Copy (recursively) from the source into the target.
+    // I know the driver doesn't contain any files with resource forks, so we are safe using UNIX commands for this.
+    return ForkAndExec(argv);
+}
+
+
+static Boolean ForkAndExec(char * const argv[])
+{
+    const char *path;
+    pid_t pid;
+    int status;
+
+    path = argv[0];
+    if (path == NULL)
+        return FALSE;
+
+    if ((pid = fork()) < 0) {
+        status = -1;
+    } else if (pid == 0) {
+        // child
+        execv(path, argv);
+        _exit(127);
+    } else {
+        // parent
+        while (waitpid(pid, &status, 0) < 0) {
+            if (errno != EINTR) {
+                status = -1;
+                break;
+            }
+        }
+    }
+
+    return (status == 0);
 }
 
 
