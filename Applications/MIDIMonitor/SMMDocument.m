@@ -187,7 +187,7 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
         missingSourceNames = [[stream takePersistentSettings:streamSettings] retain];
         [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeSources)];
     } else {
-        [self setSelectedInputSources:[NSArray array]];
+        [self setSelectedInputSources:[NSSet set]];
     }
     
     if ((number = [dict objectForKey:@"maxMessageCount"]))
@@ -244,14 +244,14 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     return [stream groupedInputSources];
 }
 
-- (NSArray *)selectedInputSources;
+- (NSSet *)selectedInputSources;
 {
     return [stream selectedInputSources];
 }
 
-- (void)setSelectedInputSources:(NSArray *)inputSources;
+- (void)setSelectedInputSources:(NSSet *)inputSources;
 {
-    NSArray *oldInputSources;
+    NSSet *oldInputSources;
     BOOL savedListenFlag;
 
     oldInputSources = [self selectedInputSources];
@@ -263,8 +263,10 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     
     [stream setSelectedInputSources:inputSources];
 
-    [[[self undoManager] prepareWithInvocationTarget:self] setSelectedInputSources:oldInputSources];
+    [(SMMDocument *)[[self undoManager] prepareWithInvocationTarget:self] setSelectedInputSources:oldInputSources];
     [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Source", @"MIDIMonitor", [self bundle], "change source undo action")];
+        // TODO change this name since there can now be multiple sources
+        // TODO and think about what happens if we undo back to a state where there were input sources that no longer exist
 
     listenToMIDISetupChanges = savedListenFlag;
 

@@ -8,7 +8,9 @@
 #import "NSPopUpButton-MIDIMonitorExtensions.h"
 #import "SMMDisclosableView.h"
 #import "SMMDocument.h"
+#import "SMMNonHighlightingCells.h"
 #import "SMMPreferencesWindowController.h"
+#import "SMMSourcesOutlineView.h"
 #import "SMMSysExWindowController.h"
 
 
@@ -24,6 +26,8 @@
 - (void)_hideSysExProgressIndicator;
 
 - (BOOL)_canShowSelectedMessageDetails;
+
+- (NSCellStateValue)_buttonStateForInputSources:(NSArray *)sources;
 
 @end
 
@@ -76,6 +80,8 @@ static NSString *kToString = nil;
     [filterCheckboxes release];
     [filterMatrixCells release];
 
+    [groupedInputSources release];
+
     [displayedMessages release];
 
     [nextSysExAnimateDate release];
@@ -86,8 +92,27 @@ static NSString *kToString = nil;
 
 - (void)windowDidLoad
 {
+    SMMNonHighlightingButtonCell *checkboxCell;
+    SMMNonHighlightingTextFieldCell *textFieldCell;
+    
     [super windowDidLoad];
 
+    [sourcesOutlineView setOutlineTableColumn:[sourcesOutlineView tableColumnWithIdentifier:@"name"]];
+    [sourcesOutlineView setAutoresizesOutlineColumn:NO];
+
+    checkboxCell = [[SMMNonHighlightingButtonCell alloc] initTextCell:@""];
+    [checkboxCell setButtonType:NSSwitchButton];
+    [checkboxCell setControlSize:NSSmallControlSize];
+    [checkboxCell setFont:[NSFont systemFontOfSize:[NSFont smallSystemFontSize]]];
+    [checkboxCell setAllowsMixedState:YES];
+    [[sourcesOutlineView tableColumnWithIdentifier:@"enabled"] setDataCell:checkboxCell];
+    [checkboxCell release];
+
+    textFieldCell = [[SMMNonHighlightingTextFieldCell alloc] initTextCell:@""];
+    [textFieldCell setFont:[NSFont systemFontOfSize:[NSFont smallSystemFontSize]]];
+    [[sourcesOutlineView tableColumnWithIdentifier:@"name"] setDataCell:textFieldCell];
+    [textFieldCell release];
+    
     filterCheckboxes = [[NSArray alloc] initWithObjects:voiceMessagesCheckBox, systemCommonCheckBox, realTimeCheckBox, systemExclusiveCheckBox, nil];
     filterMatrixCells = [[[[voiceMessagesMatrix cells] arrayByAddingObjectsFromArray:[systemCommonMatrix cells]] arrayByAddingObjectsFromArray:[realTimeMatrix cells]] retain];
 
@@ -132,25 +157,6 @@ static NSString *kToString = nil;
 //
 // Actions
 //
-
-- (IBAction)selectSource:(id)sender;
-{
-    SMMDocument *document;
-    id source;
-    NSArray *selectedSources;
-    NSArray *newSelectedSources;
-
-    source = [(NSMenuItem *)[sender selectedItem] representedObject];    
-    document = [self document];
-    selectedSources = [document selectedInputSources];
-
-    if ([selectedSources indexOfObject:source] == NSNotFound)
-        newSelectedSources = [selectedSources arrayByAddingObject:source];
-    else
-        newSelectedSources = [selectedSources arrayByRemovingObjectIdenticalTo:source];
-
-    [document setSelectedInputSources:newSelectedSources];
-}
 
 - (IBAction)clearMessages:(id)sender;
 {
@@ -255,50 +261,15 @@ static NSString *kToString = nil;
 
 - (void)synchronizeSources;
 {
-    BOOL wasAutodisplay;
-    int itemCount;
-    NSArray *groupedSources;
-    NSArray *selectedSources;
-    unsigned int groupCount, groupIndex;
+    NSArray *newGroupedInputSources;
 
-    // The pop up button redraws whenever it's changed, so turn off autodisplay to stop the blinkiness
-    wasAutodisplay = [[self window] isAutodisplay];
-    [[self window] setAutodisplay:NO];
-
-    // Remove all items in the menu except for the first one (which is displayed as the title)
-    for (itemCount = [sourcePopUpButton numberOfItems]; itemCount > 1; itemCount--)
-        [sourcePopUpButton removeItemAtIndex:itemCount - 1];
-
-    groupedSources = [[self document] groupedInputSources];
-    selectedSources = [[self document] selectedInputSources];
-
-    groupCount = [groupedSources count];
-    for (groupIndex = 0; groupIndex < groupCount; groupIndex++) {
-        NSArray *sources;
-        unsigned int sourceCount, sourceIndex;
-
-        sources = [groupedSources objectAtIndex:groupIndex];
-        sourceCount = [sources count];
-
-        if ([sourcePopUpButton numberOfItems] > 1 && sourceCount > 0)
-            [sourcePopUpButton addSeparatorItem];
-        
-        for (sourceIndex = 0; sourceIndex < sourceCount; sourceIndex++) {
-            id <SMInputStreamSource> source;
-            id <NSMenuItem> item;
-
-            source = [sources objectAtIndex:sourceIndex];
-            item = [sourcePopUpButton addItemWithTitle:[source inputStreamSourceName] representedObject:source];
-
-            if ([selectedSources indexOfObject:source] != NSNotFound)
-                [item setState:NSOnState];
-        }
+    newGroupedInputSources = [[self document] groupedInputSources];
+    if (newGroupedInputSources != groupedInputSources) {
+        [groupedInputSources release];
+        groupedInputSources = [newGroupedInputSources retain];
     }
         
-    // ...and turn autodisplay on again
-    if (wasAutodisplay)
-        [[self window] displayIfNeeded];
-    [[self window] setAutodisplay:wasAutodisplay];
+    [sourcesOutlineView reloadData];
 }
 
 - (void)synchronizeMaxMessageCount;
@@ -463,6 +434,92 @@ static NSString *kToString = nil;
 
 
 //
+// NSOutlineView data source
+//
+
+- (id)outlineView:(NSOutlineView *)outlineView child:(int)index ofItem:(id)item;
+{
+    if (item == nil)
+        return [groupedInputSources objectAtIndex:index];
+    else
+        return [[item objectForKey:@"sources"] objectAtIndex:index];
+}
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item;
+{
+    return [item isKindOfClass:[NSDictionary class]];
+}
+
+- (int)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item;
+{
+    if (item == nil)
+        return [groupedInputSources count];
+    else if ([item isKindOfClass:[NSDictionary class]])
+        return [[item objectForKey:@"sources"] count];
+    else
+        return nil;
+}
+
+- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item;
+{
+    NSString *identifier;
+    BOOL isCategory;
+
+    identifier = [tableColumn identifier];
+    isCategory = [item isKindOfClass:[NSDictionary class]];
+    
+    if ([identifier isEqualToString:@"name"]) {
+        if (isCategory)
+            return [item objectForKey:@"name"];
+        else
+            return [(id<SMInputStreamSource>)item inputStreamSourceName];
+        
+    } else if ([identifier isEqualToString:@"enabled"]) {
+        NSArray *sources;
+        
+        if (isCategory)
+            sources = [item objectForKey:@"sources"];
+        else
+            sources = [NSArray arrayWithObject:item];
+        
+        return [NSNumber numberWithInt:[self _buttonStateForInputSources:sources]];
+        
+    } else {
+        return nil;
+    }
+}
+
+- (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item;
+{
+    int newState;
+    NSArray *sources;
+    NSMutableSet *newSelectedSources;
+
+    newState = [object intValue];
+    // It doesn't make sense to switch from off to mixed, so go directly to on
+    if (newState == NSMixedState)
+        newState = NSOnState;
+
+    if ([item isKindOfClass:[NSDictionary class]])
+        sources = [item objectForKey:@"sources"];
+    else
+        sources = [NSArray arrayWithObject:item];
+
+    newSelectedSources = [NSMutableSet setWithSet:[(SMMDocument *)[self document] selectedInputSources]];
+    if (newState == NSOnState)
+        [newSelectedSources addObjectsFromArray:sources];
+    else
+        [newSelectedSources minusSet:[NSSet setWithArray:sources]];
+
+    // We will see the checkbox draw in its old state (briefly) before changing to the new state, and that little flash is really irritating.
+    // So disable window flushing until everything gets refreshed.
+    [[self window] disableFlushWindow];
+    [(SMMDocument *)[self document] setSelectedInputSources:newSelectedSources];
+    [[self window] enableFlushWindow];    
+}
+
+
+//
 // NSTableView data source
 //
 
@@ -581,6 +638,27 @@ static NSString *kToString = nil;
         return NO;
 
     return [[displayedMessages objectAtIndex:selectedRow] isKindOfClass:[SMSystemExclusiveMessage class]];
+}
+
+- (NSCellStateValue)_buttonStateForInputSources:(NSArray *)sources;
+{
+    NSSet *selectedSources;
+    unsigned int sourceIndex;
+    BOOL areAnySelected = NO, areAnyNotSelected = NO;
+    
+    selectedSources = [(SMMDocument *)[self document] selectedInputSources];
+    sourceIndex = [sources count];
+    while (sourceIndex--) {
+        if ([selectedSources containsObject:[sources objectAtIndex:sourceIndex]])
+            areAnySelected = YES;
+        else
+            areAnyNotSelected = YES;
+
+        if (areAnySelected && areAnyNotSelected)
+            return NSMixedState;
+    }
+
+    return areAnySelected ? NSOnState : NSOffState;
 }
 
 @end

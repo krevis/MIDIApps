@@ -1,11 +1,12 @@
 #import <Cocoa/Cocoa.h>
 
 @class SMMDisclosableView;
+@class SMMSourcesOutlineView;
 
 
 @interface SMMMonitorWindowController : NSWindowController
 {
-    IBOutlet NSPopUpButton *sourcePopUpButton;
+    IBOutlet SMMSourcesOutlineView *sourcesOutlineView;
     IBOutlet NSTableView *messagesTableView;
     IBOutlet NSButton *clearButton;
     IBOutlet NSTextField *maxMessageCountField;
@@ -31,6 +32,7 @@
     unsigned int oneChannel;
 
     // Transient data
+    NSArray *groupedInputSources;
     NSArray *displayedMessages;
     BOOL sendWindowFrameChangesToDocument;
     NSDate *nextSysExAnimateDate;
@@ -39,7 +41,6 @@
 - (id)init;
 
 // Actions
-- (IBAction)selectSource:(id)sender;
 - (IBAction)clearMessages:(id)sender;
 - (IBAction)setMaximumMessageCount:(id)sender;
 - (IBAction)changeFilter:(id)sender;

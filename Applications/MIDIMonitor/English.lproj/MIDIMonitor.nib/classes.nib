@@ -13,7 +13,6 @@
                 changeFilter = id; 
                 changeFilterFromMatrix = id; 
                 clearMessages = id; 
-                selectSource = id; 
                 setChannel = id; 
                 setChannelRadioButton = id; 
                 setMaximumMessageCount = id; 
@@ -32,7 +31,7 @@
                 oneChannelField = NSTextField; 
                 realTimeCheckBox = NSButton; 
                 realTimeMatrix = NSMatrix; 
-                sourcePopUpButton = NSPopUpButton; 
+                sourcesOutlineView = NSOutlineView; 
                 sysExProgressBox = NSBox; 
                 sysExProgressField = NSTextField; 
                 sysExProgressIndicator = NSProgressIndicator; 
@@ -43,7 +42,8 @@
                 voiceMessagesMatrix = NSMatrix; 
             }; 
             SUPERCLASS = NSWindowController; 
-        }
+        }, 
+        {CLASS = SMMSourcesOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }
     ); 
     IBVersion = 1; 
 }

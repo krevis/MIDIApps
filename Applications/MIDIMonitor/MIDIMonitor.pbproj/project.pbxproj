@@ -165,12 +165,7 @@
 				F56E05CA0206BAB401000164,
 				F56E05CB0206BAB401000164,
 				F571C56C01903F3301000164,
-				F562148D02408B2D01000164,
-				F562148E02408B2D01000164,
-				F55C9C140244CE3701000164,
-				F55C9C150244CE3701000164,
-				F54A343D02553A3301000164,
-				F54A343E02553A3301000164,
+				F57F62950261E14501000164,
 			);
 			isa = PBXGroup;
 			name = Classes;
@@ -405,6 +400,8 @@
 				F562148F02408B2D01000164,
 				F55C9C160244CE3701000164,
 				F54A343F02553A3301000164,
+				F57F628C0261C8FC01000164,
+				F57F62910261D5A701000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -449,6 +446,8 @@
 				F562149002408B2D01000164,
 				F55C9C170244CE3701000164,
 				F54A344002553A3301000164,
+				F57F628D0261C8FC01000164,
+				F57F62920261D5A701000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -880,6 +879,10 @@
 			children = (
 				F571C56701903A6B01000164,
 				F571C56801903A6B01000164,
+				F57F628A0261C8FC01000164,
+				F57F628B0261C8FC01000164,
+				F57F628F0261D5A701000164,
+				F57F62900261D5A701000164,
 			);
 			isa = PBXGroup;
 			name = "Cocoa Extensions";
@@ -895,6 +898,63 @@
 			isa = PBXBuildFile;
 			settings = {
 			};
+		};
+		F57F628A0261C8FC01000164 = {
+			isa = PBXFileReference;
+			path = SMMSourcesOutlineView.h;
+			refType = 4;
+		};
+		F57F628B0261C8FC01000164 = {
+			isa = PBXFileReference;
+			path = SMMSourcesOutlineView.m;
+			refType = 4;
+		};
+		F57F628C0261C8FC01000164 = {
+			fileRef = F57F628A0261C8FC01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F57F628D0261C8FC01000164 = {
+			fileRef = F57F628B0261C8FC01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F57F628F0261D5A701000164 = {
+			isa = PBXFileReference;
+			path = SMMNonHighlightingCells.h;
+			refType = 4;
+		};
+		F57F62900261D5A701000164 = {
+			isa = PBXFileReference;
+			path = SMMNonHighlightingCells.m;
+			refType = 4;
+		};
+		F57F62910261D5A701000164 = {
+			fileRef = F57F628F0261D5A701000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F57F62920261D5A701000164 = {
+			fileRef = F57F62900261D5A701000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F57F62950261E14501000164 = {
+			children = (
+				F562148D02408B2D01000164,
+				F562148E02408B2D01000164,
+				F54A343D02553A3301000164,
+				F54A343E02553A3301000164,
+				F55C9C140244CE3701000164,
+				F55C9C150244CE3701000164,
+			);
+			isa = PBXGroup;
+			name = "SnoizeMIDI Extensions";
+			refType = 4;
 		};
 		F5A43ECF0192896501000164 = {
 			children = (
