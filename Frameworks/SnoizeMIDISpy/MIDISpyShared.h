@@ -1,3 +1,7 @@
+#if !defined(__SNOIZE_MIDISPYSHARED__)
+#define __SNOIZE_MIDISPYSHARED__ 1
+
+
 //
 // Constants which are shared between the driver and the client framework
 //
@@ -9,3 +13,7 @@ enum {
     kSpyingMIDIDriverConnectDestinationMessageID = 2,
     kSpyingMIDIDriverDisconnectDestinationMessageID = 3
 };
+
+
+
+#endif /* ! __SNOIZE_MIDISPYSHARED__ */
