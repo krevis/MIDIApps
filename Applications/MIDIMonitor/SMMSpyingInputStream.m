@@ -95,8 +95,8 @@
     NSMapInsert(parsersForEndpoints, endpoint, parser);
 
     center = [NSNotificationCenter defaultCenter];
-    [center addObserver:self selector:@selector(endpointDisappeared:) name:SMEndpointDisappearedNotification object:endpoint];
-    [center addObserver:self selector:@selector(endpointWasReplaced:) name:SMEndpointWasReplacedNotification object:endpoint];
+    [center addObserver:self selector:@selector(endpointDisappeared:) name:SMMIDIObjectDisappearedNotification object:endpoint];
+    [center addObserver:self selector:@selector(endpointWasReplaced:) name:SMMIDIObjectWasReplacedNotification object:endpoint];
 
     [endpoints addObject:endpoint];
 }
@@ -121,8 +121,8 @@
     NSMapRemove(parsersForEndpoints, endpoint);
 
     center = [NSNotificationCenter defaultCenter];
-    [center removeObserver:self name:SMEndpointDisappearedNotification object:endpoint];
-    [center removeObserver:self name:SMEndpointWasReplacedNotification object:endpoint];
+    [center removeObserver:self name:SMMIDIObjectDisappearedNotification object:endpoint];
+    [center removeObserver:self name:SMMIDIObjectWasReplacedNotification object:endpoint];
 
     [endpoints removeObject:endpoint];
 }
@@ -220,7 +220,7 @@
     oldEndpoint = [notification object];
     OBASSERT([endpoints containsObject:oldEndpoint]);
 
-    newEndpoint = [[notification userInfo] objectForKey:SMEndpointReplacement];
+    newEndpoint = [[notification userInfo] objectForKey:SMMIDIObjectReplacement];
 
     [self removeEndpoint:oldEndpoint];
     [self addEndpoint:newEndpoint];

@@ -12,7 +12,7 @@
 
 @interface SMMAppController (Private)
 
-- (void)endpointsAppeared:(NSNotification *)notification;
+- (void)sourceEndpointsAppeared:(NSNotification *)notification;
 
 @end
 
@@ -94,9 +94,9 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification;
 {
-    // Listen for new endpoints. Don't do this earlier--we only are interested in ones
+    // Listen for new source endpoints. Don't do this earlier--we only are interested in ones
     // that appear after we've been launched.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endpointsAppeared:) name:SMEndpointsAppearedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sourceEndpointsAppeared:) name:SMMIDIObjectsAppearedNotification object:[SMSourceEndpoint class]];
 }
 
 - (IBAction)showPreferences:(id)sender;
@@ -198,35 +198,23 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 
 @implementation SMMAppController (Private)
 
-- (void)endpointsAppeared:(NSNotification *)notification;
+- (void)sourceEndpointsAppeared:(NSNotification *)notification;
 {
     NSArray *endpoints;
-    unsigned int endpointIndex, endpointCount;
-    NSMutableSet *sourceEndpointSet;
+    NSSet *endpointSet;
+    SMMDocument *document;
 
     if (![[OFPreference preferenceForKey:SMMOpenWindowsForNewSourcesPreferenceKey] boolValue])
         return;
 
-    endpoints = [notification object];
-    endpointCount = [endpoints count];
-    sourceEndpointSet = [NSMutableSet setWithCapacity:endpointCount];
-    for (endpointIndex = 0; endpointIndex < endpointCount; endpointIndex++) {
-        id endpoint;
+    endpoints = [[notification userInfo] objectForKey:SMMIDIObjectsThatAppeared];
+    endpointSet = [NSSet setWithArray:endpoints];
 
-        endpoint = [endpoints objectAtIndex:endpointIndex];
-        if ([endpoint isKindOfClass:[SMSourceEndpoint class]])
-            [sourceEndpointSet addObject:endpoint];
-    }
-
-    if ([sourceEndpointSet count] > 0) {
-        SMMDocument *document;
-
-        document = [[NSDocumentController sharedDocumentController] openUntitledDocumentOfType:@"MIDI Monitor Document" display:NO];
-        [document setSelectedInputSources:sourceEndpointSet];
-        [document showWindows];
-        [document setAreSourcesShown:YES];
-        [document revealInputSources:sourceEndpointSet];
-    }
+    document = [[NSDocumentController sharedDocumentController] openUntitledDocumentOfType:@"MIDI Monitor Document" display:NO];
+    [document setSelectedInputSources:endpointSet];
+    [document showWindows];
+    [document setAreSourcesShown:YES];
+    [document revealInputSources:endpointSet];
 }
 
 @end
