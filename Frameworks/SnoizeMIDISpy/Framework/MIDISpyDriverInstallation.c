@@ -250,6 +250,9 @@ static Boolean CopyDirectory(CFURLRef sourceDirectoryURL, CFURLRef targetDirecto
     // Copy (recursively) from the source into the target.
     // I know the driver doesn't contain any files with resource forks or interesting finder info, so we are safe using UNIX commands for this.
     // TODO This is sort of lame, though... but less error-prone than writing it myself, I bet.
+    // TODO There is now sample code for this at Apple:
+    // http://developer.apple.com/samplecode/Sample_Code/Files/FSCopyObject.htm
+    // Look into using it.  (It also has a routine to delete a full directory, so we should be able to replace the MoreFiles stuff with that.)
     
     char sourcePath[PATH_MAX];
     char targetPath[PATH_MAX];
