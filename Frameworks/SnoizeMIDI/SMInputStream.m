@@ -18,6 +18,8 @@
 
 static void midiReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, void *srcConnRefCon);
 
+- (id <SMInputStreamSource>)_findInputSourceWithName:(NSString *)desiredName uniqueID:(NSNumber *)desiredUniqueID;
+
 @end
 
 
@@ -78,6 +80,71 @@ DEFINE_NSSTRING(SMInputStreamDoneReadingSysExNotification);
     [[self parsers] makeObjectsPerformSelector:@selector(cancelReceivingSysExMessage)];
     // TODO is the return value really used anywhere?  (need to AND or OR the results together?)
     return YES;
+}
+
+- (id)persistentSettings;
+{
+    NSArray *selectedInputSources;
+    unsigned int sourcesIndex, sourcesCount;
+    NSMutableArray *persistentSettings;
+
+    selectedInputSources = [self selectedInputSources];
+    sourcesCount = [selectedInputSources count];
+    if (sourcesCount == 0)
+        return nil;
+    persistentSettings = [NSMutableArray arrayWithCapacity:sourcesCount];
+
+    for (sourcesIndex = 0; sourcesIndex < sourcesCount; sourcesIndex++) {
+        id <SMInputStreamSource> source;
+        NSMutableDictionary *dict;
+        id object;
+
+        source = [selectedInputSources objectAtIndex:sourcesIndex];
+        dict = [NSMutableDictionary dictionary];
+        if ((object = [source inputStreamSourceUniqueID]))
+            [dict setObject:object forKey:@"uniqueID"];
+        if ((object = [source inputStreamSourceName]))
+            [dict setObject:object forKey:@"name"];
+
+        [persistentSettings addObject:dict];
+    }
+    
+    return persistentSettings;
+}
+
+- (NSArray *)takePersistentSettings:(id)settings;
+{
+    // If any endpoints couldn't be found, their names are returned
+    NSArray *settingsArray = (NSArray *)settings;
+    unsigned int settingsCount, settingsIndex;
+    NSMutableArray *newInputSources;
+    NSMutableArray *missingNames = nil;
+
+    settingsCount = [settingsArray count];
+    newInputSources = [NSMutableArray arrayWithCapacity:settingsCount];
+    for (settingsIndex = 0; settingsIndex < settingsCount; settingsIndex++) {
+        NSDictionary *dict;
+        NSString *name;
+        NSNumber *uniqueID;
+        id <SMInputStreamSource> source;
+
+        dict = [settingsArray objectAtIndex:settingsIndex];
+        name = [dict objectForKey:@"name"];
+        uniqueID = [dict objectForKey:@"uniqueID"];
+        if ((source = [self _findInputSourceWithName:name uniqueID:uniqueID])) {
+            [newInputSources addObject:source];
+        } else {
+            if (!name)
+                name = NSLocalizedStringFromTableInBundle(@"Unknown", @"SnoizeMIDI", [self bundle], "name of missing endpoint if not specified in document");
+            if (!missingNames)
+                missingNames = [NSMutableArray array];
+            [missingNames addObject:name];
+        }
+    }
+
+    [self setSelectedInputSources:newInputSources];
+
+    return missingNames;
 }
 
 //
@@ -179,6 +246,30 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
     pool = [[NSAutoreleasePool alloc] init];
     [[self parserForSourceConnectionRefCon:srcConnRefCon] takePacketList:packetList];
     [pool release];
+}
+
+- (id <SMInputStreamSource>)_findInputSourceWithName:(NSString *)desiredName uniqueID:(NSNumber *)desiredUniqueID;
+{
+    // Find the input source with the desired unique ID. If there are no matches by uniqueID, return the first source whose name matches.
+    // Otherwise, return nil.
+
+    NSArray *inputSources;
+    unsigned int inputSourceCount, inputSourceIndex;
+    id <SMInputStreamSource> sourceWithMatchingName = nil;
+
+    inputSources = [self inputSources];
+    inputSourceCount = [inputSources count];
+    for (inputSourceIndex = 0; inputSourceIndex < inputSourceCount; inputSourceIndex++) {
+        id <SMInputStreamSource> source;
+
+        source = [inputSources objectAtIndex:inputSourceIndex];
+        if ([[source inputStreamSourceUniqueID] isEqual:desiredUniqueID])
+            return source;
+        else if (!sourceWithMatchingName && [[source inputStreamSourceName] isEqualToString:desiredName])
+            sourceWithMatchingName = source;
+    }
+
+    return sourceWithMatchingName;
 }
 
 @end

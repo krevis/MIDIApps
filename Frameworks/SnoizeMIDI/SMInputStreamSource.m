@@ -27,7 +27,12 @@
 
 - (NSString *)inputStreamSourceName
 {
-    return name;    
+    return name;
+}
+
+- (NSNumber *)inputStreamSourceUniqueID;
+{
+    return nil;
 }
 
 @end

@@ -26,6 +26,10 @@
 - (BOOL)cancelReceivingSysExMessage;
     // Returns YES if it can successfully cancel a sysex message which is being received, and NO otherwise.
 
+- (id)persistentSettings;
+- (NSArray *)takePersistentSettings:(id)settings;
+    // If any endpoints couldn't be found, their names are returned
+
 // For subclasses only
 - (MIDIReadProc)midiReadProc;
 - (SMMessageParser *)newParserWithOriginatingEndpoint:(SMEndpoint *)originatingEndpoint;

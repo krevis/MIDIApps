@@ -9,6 +9,7 @@
 @protocol SMInputStreamSource <NSObject>
 
 - (NSString *)inputStreamSourceName;
+- (NSNumber *)inputStreamSourceUniqueID;
 
 @end
 
@@ -21,5 +22,7 @@
 - (id)initWithName:(NSString *)aName;
 
 - (NSString *)inputStreamSourceName;
+- (NSNumber *)inputStreamSourceUniqueID;
+    // just returns nil
 
 @end
