@@ -1,5 +1,6 @@
 #import "SSELibrary.h"
 
+#import <Carbon/Carbon.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 
@@ -9,6 +10,8 @@
 
 
 @interface SSELibrary (Private)
+
+- (NSString *)_findFolder:(OSType)folderType;
 
 - (NSString *)_defaultFileDirectoryPath;
 
@@ -92,7 +95,26 @@ NSString *SSESysExFileExtension = @"syx";
     static NSString *libraryFilePath = nil;
 
     if (!libraryFilePath) {
-        libraryFilePath = [[[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"SysEx Library"] stringByAppendingPathComponent:@"Library.sXLb"] retain];
+        NSString *preferencesFolderPath;
+
+        preferencesFolderPath = [self _findFolder:kPreferencesFolderType];
+        // That shouldn't have failed, but let's be sure...
+        if (!preferencesFolderPath) {
+            NSArray *paths;
+            NSString *homeLibraryPath;
+
+            paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+            // That shouldn't have failed either, but who knows what could happen?
+            if ([paths count] > 0)
+                homeLibraryPath = [paths objectAtIndex:0];
+            else
+                homeLibraryPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library"];  // Fall back to hard-coded version
+
+            preferencesFolderPath = [homeLibraryPath stringByAppendingPathComponent:@"Preferences"];
+        }
+
+        libraryFilePath = [preferencesFolderPath stringByAppendingPathComponent:@"SysEx Librarian Library.sXLb"];
+        libraryFilePath = [[libraryFilePath stringByStandardizingPath] retain];
     }
 
     return libraryFilePath;
@@ -398,9 +420,37 @@ NSString *SSESysExFileExtension = @"syx";
 
 @implementation SSELibrary (Private)
 
+- (NSString *)_findFolder:(OSType)folderType;
+{
+    OSErr error;
+    FSRef folderFSRef;
+    NSString *path = nil;
+
+    error = FSFindFolder(kUserDomain, folderType, kCreateFolder, &folderFSRef);
+    if (error == noErr) {
+        CFURLRef url;
+
+        url = CFURLCreateFromFSRef(kCFAllocatorDefault, &folderFSRef);
+        if (url) {
+            path = [(NSString *)CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle) autorelease];
+            CFRelease(url);
+        }
+    }
+
+    return path;    
+}
+
 - (NSString *)_defaultFileDirectoryPath;
 {
-    return [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"SysEx Library"] stringByAppendingPathComponent:@"Files"];
+    NSString *documentsFolderPath;
+
+    documentsFolderPath = [self _findFolder:kDocumentsFolderType];
+    if (!documentsFolderPath) {
+        // Fall back to hard-coding it
+        documentsFolderPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
+    }
+
+    return [[documentsFolderPath stringByAppendingPathComponent:@"SysEx Librarian"] stringByStandardizingPath];
 }
 
 - (NSString *)_preflightLibrary;
