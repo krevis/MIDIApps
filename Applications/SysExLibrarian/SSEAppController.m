@@ -74,7 +74,7 @@
     
     path = [[self bundle] pathForResource:@"docs" ofType:@"htmld"];
     if (path) {
-        path = [path stringByAppendingString:@"/index.html"];
+        path = [path stringByAppendingPathComponent:@"index.html"];
         [[NSWorkspace sharedWorkspace] openFile:path];
     }
 }

@@ -216,6 +216,7 @@
 				F5499C4C0213555E01000164,
 				F59F89CE02154ADE01000164,
 				F59F89D002154AFF01000164,
+				F5D90FE4021630C101000164,
 			);
 			isa = PBXGroup;
 			name = Resources;
@@ -432,6 +433,7 @@
 				F59F89CF02154ADE01000164,
 				F59F89D102154AFF01000164,
 				F5D90FD3021628DF01000164,
+				F5D90FE6021630C101000164,
 			);
 			isa = PBXResourcesBuildPhase;
 			name = "Bundle Resources";
@@ -1062,6 +1064,27 @@
 		};
 		F5D90FD3021628DF01000164 = {
 			fileRef = F5D90FD1021628DF01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5D90FE4021630C101000164 = {
+			children = (
+				F5D90FE5021630C101000164,
+			);
+			isa = PBXVariantGroup;
+			name = docs.htmld;
+			path = "";
+			refType = 4;
+		};
+		F5D90FE5021630C101000164 = {
+			isa = PBXFolderReference;
+			name = English;
+			path = English.lproj/docs.htmld;
+			refType = 4;
+		};
+		F5D90FE6021630C101000164 = {
+			fileRef = F5D90FE4021630C101000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
