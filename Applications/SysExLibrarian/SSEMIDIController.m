@@ -210,7 +210,7 @@ DEFINE_NSSTRING(SSESelectedDestination);
     // There is no need to put a lock around these things, assuming that we are in the main thread.
     // messageBytesRead gets changed in a different thread, but it gets changed atomically.
     // messages and totalBytesRead are only modified in the main thread.
-    OBASSERT([NSThread inMainThread])    
+    OBASSERT([NSThread inMainThread]);
 
     if (messageCountPtr)
         *messageCountPtr = [messages count];
@@ -269,7 +269,7 @@ DEFINE_NSSTRING(SSESelectedDestination);
 
 - (void)getMessageCount:(unsigned int *)messageCountPtr messageIndex:(unsigned int *)messageIndexPtr bytesToSend:(unsigned int *)bytesToSendPtr bytesSent:(unsigned int *)bytesSentPtr;
 {
-    OBASSERT([NSThread inMainThread])
+    OBASSERT([NSThread inMainThread]);
 
     [sendProgressLock lock];
     
