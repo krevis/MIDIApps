@@ -13,6 +13,7 @@
 #import <SnoizeMIDI/SMMessageFilter.h>
 #import <SnoizeMIDI/SMMessageHistory.h>
 #import <SnoizeMIDI/SMMessageMult.h>
+#import <SnoizeMIDI/SMMIDIObject.h>
 #import <SnoizeMIDI/SMOutputStream.h>
 #import <SnoizeMIDI/SMMessageParser.h>
 #import <SnoizeMIDI/SMPortInputStream.h>

@@ -375,6 +375,9 @@
 			fileRef = F51DC1190328B28901000164;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F51DC11C0328B28901000164 = {
