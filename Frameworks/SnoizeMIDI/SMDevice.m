@@ -2,7 +2,7 @@
 // Copyright 2002 Kurt Revis. All rights reserved.
 //
 
-#import "SMExternalDevice.h"
+#import "SMDevice.h"
 #import "SMClient.h"
 
 
@@ -15,7 +15,7 @@
 */
 
 
-@implementation SMExternalDevice
+@implementation SMDevice
 
 //
 // SMMIDIObject requires that we subclass these methods:
@@ -23,36 +23,53 @@
 
 + (MIDIObjectType)midiObjectType;
 {
-    return kMIDIObjectType_ExternalDevice;
+    return kMIDIObjectType_Device;
 }
 
 + (ItemCount)midiObjectCount;
 {
-    return MIDIGetNumberOfExternalDevices();
+    return MIDIGetNumberOfDevices();
 }
 
 + (MIDIObjectRef)midiObjectAtIndex:(ItemCount)index;
 {
-    return (MIDIObjectRef)MIDIGetExternalDevice(index);
+    return (MIDIObjectRef)MIDIGetDevice(index);
+}
+
+//
+// Other SMMIDIObject overrides
+//
+
+- (void)propertyDidChange:(NSString *)propertyName;
+{
+    if ([propertyName isEqualToString:(NSString *)kMIDIPropertyOffline]) {
+        // TODO When this device goes online or offline, its endpoints do too.
+        // So we need this device to know what its entities and endpoints are so it can do what it needs to do with them.
+        // (although going online won't help...)
+        // Or we can just reload all endpoints and suck it up.
+        
+    }
+
+    [super propertyDidChange:propertyName];
 }
 
 //
 // New methods
 //
 
-+ (NSArray *)externalDevices;
++ (NSArray *)devices;
 {
     return [self allObjectsInOrder];
 }
 
-+ (SMExternalDevice *)externalDeviceWithUniqueID:(MIDIUniqueID)aUniqueID;
++ (SMDevice *)deviceWithUniqueID:(MIDIUniqueID)aUniqueID;
 {
-    return (SMExternalDevice *)[self objectWithUniqueID:aUniqueID];
+    return (SMDevice *)[self objectWithUniqueID:aUniqueID];
 }
 
-+ (SMExternalDevice *)externalDeviceWithDeviceRef:(MIDIDeviceRef)aDeviceRef;
++ (SMDevice *)deviceWithDeviceRef:(MIDIDeviceRef)aDeviceRef;
 {
-    return (SMExternalDevice *)[self objectWithObjectRef:(MIDIObjectRef)aDeviceRef];
+    return (SMDevice *)[self objectWithObjectRef:(MIDIObjectRef)aDeviceRef];
 }
 
 - (MIDIDeviceRef)deviceRef;

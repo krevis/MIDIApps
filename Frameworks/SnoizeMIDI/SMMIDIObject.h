@@ -15,8 +15,26 @@
     NSString *cachedName;
 }
 
-- (id)initWithObjectRef:(MIDIObjectRef)anObjectRef;
+// Subclasses must implement these methods so all instances of a their kind of MIDIObject can be found.
++ (MIDIObjectType)midiObjectType;
+    // Returns the CoreMIDI MIDIObjectType corresponding to this subclass
++ (ItemCount)midiObjectCount;
+    // Returns the number of this kind of MIDIObjectRef that are available
++ (MIDIObjectRef)midiObjectAtIndex:(ItemCount)index;
+    // Returns the MIDIObjectRef with this index
 
+// Accessors for all objects of this type
+
++ (NSArray *)allObjects;
++ (NSArray *)allObjectsInOrder;
++ (SMMIDIObject *)objectWithUniqueID:(MIDIUniqueID)aUniqueID;
++ (SMMIDIObject *)objectWithName:(NSString *)aName;
++ (SMMIDIObject *)objectWithObjectRef:(MIDIObjectRef)anObjectRef;
+    // NOTE: All of these methods do nothing in the base class. They work for subclasses of SMMIDIObject only.
+
+// Single object creation and accessors
+
+- (id)initWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(unsigned int)anOrdinal;
 - (MIDIObjectRef)objectRef;
 
 - (unsigned int)ordinal;
@@ -58,9 +76,7 @@
 - (void)updateUniqueID;
     // Call this if you believe this object's unique ID may have changed.
 
+- (void)propertyDidChange:(NSString *)propertyName;
+    // Called when a property of this object changes. Subclasses may override (be sure to call super's implementation).
+
 @end
-
-// Other functions
-
-extern int midiObjectOrdinalComparator(id object1, id object2, void *context);
-    // Use for sorting arrays of MIDIObjects

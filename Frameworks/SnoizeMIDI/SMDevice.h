@@ -8,13 +8,13 @@
 #import <SnoizeMIDI/SMMIDIObject.h>
 
 
-@interface SMExternalDevice : SMMIDIObject
+@interface SMDevice : SMMIDIObject
 {
 }
 
-+ (NSArray *)externalDevices;
-+ (SMExternalDevice *)externalDeviceWithUniqueID:(MIDIUniqueID)aUniqueID;
-+ (SMExternalDevice *)externalDeviceWithDeviceRef:(MIDIDeviceRef)aDeviceRef;
++ (NSArray *)devices;
++ (SMDevice *)deviceWithUniqueID:(MIDIUniqueID)aUniqueID;
++ (SMDevice *)deviceWithDeviceRef:(MIDIDeviceRef)aDeviceRef;
 
 - (MIDIDeviceRef)deviceRef;
 

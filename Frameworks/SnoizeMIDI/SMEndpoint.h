@@ -25,9 +25,10 @@
     NSString *cachedDeviceName;
 }
 
-+ (MIDIUniqueID)generateNewUniqueID;
+//+ (MIDIUniqueID)generateNewUniqueID;
+// TODO this is only used by SysExLibrarian on virtual endpoints; see about making this less general
+// (it should probably go on SMMIDIObject instead of here)
 
-- (id)initWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
 - (MIDIEndpointRef)endpointRef;
 
 - (BOOL)isVirtual;
