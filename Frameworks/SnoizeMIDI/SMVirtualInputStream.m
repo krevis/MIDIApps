@@ -71,6 +71,16 @@
     OBASSERT([self isActive] == value);
 }
 
+- (SInt32)uniqueID;
+{
+    return uniqueID;
+}
+
+- (void)setUniqueID:(SInt32)value;
+{
+    OBASSERT([self isActive] == NO);
+    uniqueID = value;
+}
 
 //
 // SMInputStream subclass
@@ -103,6 +113,30 @@
 - (void)setSelectedInputSources:(NSArray *)sources;
 {
     [self setIsActive:(sources && [sources indexOfObjectIdenticalTo:inputStreamSource] != NSNotFound)];
+}
+
+//
+// SMInputStream overrides
+//
+
+- (id)persistentSettings;
+{
+    if ([self isActive])
+        return [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:uniqueID] forKey:@"uniqueID"];
+    else
+        return nil;
+}
+
+- (NSArray *)takePersistentSettings:(id)settings;
+{
+    [self setIsActive:NO];
+
+    if (settings) {
+        [self setUniqueID:[[settings objectForKey:@"uniqueID"] intValue]];
+        [self setIsActive:YES];
+    }
+
+    return nil;
 }
 
 @end

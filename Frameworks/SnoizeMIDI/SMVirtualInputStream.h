@@ -25,4 +25,10 @@
 - (BOOL)isActive;
 - (void)setIsActive:(BOOL)value;
 
+- (SInt32)uniqueID;
+- (void)setUniqueID:(SInt32)value;
+
+// TODO Need a way to set the virtual endpoint's name
+// TODO and the name shown in the input stream source?
+
 @end
