@@ -309,7 +309,10 @@
 - (void)_outputStreamEndpointDisappeared:(NSNotification *)notification;
 {
     // TODO should print a message?
-    [self _selectFirstAvailableDestination];
+
+    // NOTE: We are handling a MIDI change notification right now. We might want to select a virtual destination
+    // but an SMVirtualOutputStream can't be created in the middle of handling this notification, so do it later.
+    [self performSelector:@selector(_selectFirstAvailableDestination) withObject:nil afterDelay:0];
 }
 
 - (void)_selectFirstAvailableDestination;
@@ -318,7 +321,7 @@
 
     descriptions = [outputStream endpointDescriptions];
     if ([descriptions count] > 0)
-        [outputStream setEndpointDescription:[descriptions objectAtIndex:0]];
+        [self setDestinationDescription:[descriptions objectAtIndex:0]];
 }
 
 
