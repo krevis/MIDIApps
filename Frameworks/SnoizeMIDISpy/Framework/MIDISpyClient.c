@@ -16,6 +16,7 @@ typedef struct __MIDISpyClient
     CFMessagePortRef driverPort;
     CFMessagePortRef localPort;
     CFRunLoopSourceRef runLoopSource;
+    UInt32 clientIdentifier;
     CFMutableArrayRef ports;
     CFMutableDictionaryRef endpointConnections;
 } MIDISpyClient;
@@ -140,7 +141,7 @@ OSStatus MIDISpyClientCreate(MIDISpyClientRef *outClientRefPtr)
     MIDISpyClientRef clientRef = NULL;
     CFMessagePortRef driverPort;
     SInt32 sendStatus;
-    CFDataRef sequenceNumberData = NULL;
+    CFDataRef identifierData = NULL;
     int success = 0;
     
     if (!outClientRefPtr)
@@ -170,23 +171,22 @@ OSStatus MIDISpyClientCreate(MIDISpyClientRef *outClientRefPtr)
         return memFullErr;
     clientRef->driverPort = driverPort;
     
-    // Ask for the next sequence number
-    sendStatus = CFMessagePortSendRequest(driverPort, kSpyingMIDIDriverNextSequenceNumberMessageID, NULL, 300, 300, kCFRunLoopDefaultMode, &sequenceNumberData);
+    // Ask for an identifier number from the driver
+    sendStatus = CFMessagePortSendRequest(driverPort, kSpyingMIDIDriverGetNextListenerIdentifierMessageID, NULL, 300, 300, kCFRunLoopDefaultMode, &identifierData);
 
     if (sendStatus != kCFMessagePortSuccess) {
-        debug_string("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverNextSequenceNumberMessageID) returned error");
-    } else if (!sequenceNumberData) {
-        debug_string("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverNextSequenceNumberMessageID) returned no data!");
-    } else if (CFDataGetLength(sequenceNumberData) != sizeof(UInt32)) {
-        debug_string("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverNextSequenceNumberMessageID) returned wrong number of bytes");
+        debug_string("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverGetNextListenerIdentifierMessageID) returned error");
+    } else if (!identifierData) {
+        debug_string("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverGetNextListenerIdentifierMessageID) returned no data!");
+    } else if (CFDataGetLength(identifierData) != sizeof(UInt32)) {
+        debug_string("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverGetNextListenerIdentifierMessageID) returned wrong number of bytes");
     } else {
-        UInt32 sequenceNumber;
         CFStringRef localPortName;
         CFMessagePortContext context = { 0, NULL, NULL, NULL, NULL };
 
-        // Now get the sequence number and use it to name a newly created local port
-        sequenceNumber = *(UInt32 *)CFDataGetBytePtr(sequenceNumberData);
-        localPortName = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%@-%lu"), kSpyingMIDIDriverPortName, sequenceNumber);
+        // Now get the identifier and use it to name a newly created local port
+        clientRef->clientIdentifier = *(UInt32 *)CFDataGetBytePtr(identifierData);
+        localPortName = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%@-%lu"), kSpyingMIDIDriverPortName, clientRef->clientIdentifier);
 
         context.info = clientRef;
         clientRef->localPort = CFMessagePortCreateLocal(kCFAllocatorDefault, localPortName, LocalMessagePortCallback, &context, FALSE);
@@ -204,7 +204,7 @@ OSStatus MIDISpyClientCreate(MIDISpyClientRef *outClientRefPtr)
                 CFRunLoopAddSource(CFRunLoopGetCurrent(), clientRef->runLoopSource, kCFRunLoopCommonModes);
     
                 // And now tell the spying driver to add us as a listener. Don't wait for a response.
-                sendStatus = CFMessagePortSendRequest(driverPort, kSpyingMIDIDriverAddListenerMessageID, sequenceNumberData, 300, 0, NULL, NULL);
+                sendStatus = CFMessagePortSendRequest(driverPort, kSpyingMIDIDriverAddListenerMessageID, identifierData, 300, 0, NULL, NULL);
                 if (sendStatus != kCFMessagePortSuccess) {
                     debug_string("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverAddListenerMessageID) returned error");
                 } else {
@@ -219,8 +219,8 @@ OSStatus MIDISpyClientCreate(MIDISpyClientRef *outClientRefPtr)
         }
     }
 
-    if (sequenceNumberData)
-        CFRelease(sequenceNumberData);
+    if (identifierData)
+        CFRelease(identifierData);
 
     if (!success) {
         MIDISpyClientDispose(clientRef);
@@ -729,14 +729,30 @@ CFMutableArrayRef GetConnectionsToEndpoint(MIDISpyClientRef clientRef, MIDIEndpo
 
 void SetClientSubscribesToDataFromEndpoint(MIDISpyClientRef clientRef, MIDIEndpointRef endpoint, Boolean subscribes)
 {
-    // TODO
+    // Send a request to the driver to start or stop sending info about the endpoint.
 
-    // Send a request to the driver to start or stop sending info about the endpoint to us
-    // need to send a request to the driver
-    // kSpyingMIDIDriverConnectDestinationMessageID
-    // kSpyingMIDIDriverDisconnectDestinationMessageID = 3
+    SInt32 msgid;
+    SInt32 endpointUniqueID;
+    CFIndex dataLength;
+    CFMutableDataRef messageData;
+    UInt8 *dataBuffer;
+
+    msgid = (subscribes ? kSpyingMIDIDriverConnectDestinationMessageID : kSpyingMIDIDriverDisconnectDestinationMessageID);
+
+    if (noErr != MIDIObjectGetIntegerProperty(endpoint, kMIDIPropertyUniqueID, &endpointUniqueID))
+        return;
+    
+    dataLength = sizeof(UInt32) + sizeof(SInt32);
+    messageData = CFDataCreateMutable(kCFAllocatorDefault, dataLength);
+    CFDataSetLength(messageData, dataLength);
+    dataBuffer = CFDataGetMutableBytePtr(messageData);
+    if (!dataBuffer)
+        return;
+    *(UInt32 *)dataBuffer = clientRef->clientIdentifier;
+    *(SInt32 *)(dataBuffer + sizeof(UInt32)) = endpointUniqueID;
+        
+    CFMessagePortSendRequest(clientRef->driverPort, msgid, messageData, 300, 0, NULL, NULL);
 }
-
 
 static CFDataRef LocalMessagePortCallback(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info)
 {
@@ -783,4 +799,3 @@ static CFDataRef LocalMessagePortCallback(CFMessagePortRef local, SInt32 msgid, 
     // No reply
     return NULL;
 }
-
