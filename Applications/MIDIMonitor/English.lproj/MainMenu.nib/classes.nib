@@ -7,7 +7,13 @@
             SUPERCLASS = NSObject; 
         }, 
         {
-            ACTIONS = {restartMIDI = id; showAboutBox = id; showHelp = id; showPreferences = id; }; 
+            ACTIONS = {
+                restartMIDI = id; 
+                sendFeedback = id; 
+                showAboutBox = id; 
+                showHelp = id; 
+                showPreferences = id; 
+            }; 
             CLASS = SMMAppController; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 

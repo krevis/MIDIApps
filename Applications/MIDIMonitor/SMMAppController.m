@@ -139,6 +139,33 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
     }
 }
 
+- (IBAction)sendFeedback:(id)sender;
+{
+    NSString *feedbackEmailAddress, *feedbackEmailSubject;
+    NSString *mailToURLString;
+    NSURL *mailToURL;
+    BOOL success = NO;
+
+    feedbackEmailAddress = @"MIDIMonitor@snoize.com";	// Don't localize this
+    feedbackEmailSubject = NSLocalizedStringFromTableInBundle(@"MIDI Monitor Feedback", @"MIDIMonitor", [self bundle], "subject of feedback email");    
+    mailToURLString = [[NSString stringWithFormat:@"mailto:%@?Subject=%@", feedbackEmailAddress, feedbackEmailSubject] fullyEncodeAsIURI];
+    mailToURL = [NSURL URLWithString:mailToURLString];
+    if (mailToURL)
+        success = [[NSWorkspace sharedWorkspace] openURL:mailToURL];
+    success = NO;
+
+    if (!success) {
+        NSString *message, *title;
+        
+        NSLog(@"Couldn't send feedback: url string was <%@>, url was <%@>", mailToURLString, mailToURL);
+
+        title = NSLocalizedStringFromTableInBundle(@"Error", @"MIDIMonitor", [self bundle], "title of error alert");
+        message = NSLocalizedStringFromTableInBundle(@"MIDI Monitor could not ask your email application to create a new message, so you will have to do it yourself. Please send your email to this address:\n%@\nThank you!", @"MIDIMonitor", [self bundle], "message of alert when can't send feedback email");
+        
+        NSRunAlertPanel(title, message, nil, nil, nil, feedbackEmailAddress);
+    }
+}
+
 - (IBAction)restartMIDI:(id)sender;
 {
     OSStatus status;
