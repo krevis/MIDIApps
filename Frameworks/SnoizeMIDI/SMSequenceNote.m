@@ -10,7 +10,7 @@
 #import <Foundation/Foundation.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
-
+#import "SMSequenceNote-Internal.h"
 
 @implementation SMSequenceNote
 
@@ -54,16 +54,6 @@
     offVelocity = value;
 }
 
-- (Float64)position;
-{
-    return position;
-}
-
-- (void)setPosition:(Float64)value;
-{
-    position = value;
-}
-
 - (Float64)duration;
 {
     return duration;
@@ -100,21 +90,19 @@
         return NSOrderedAscending;
 }
 
-- (NSComparisonResult)compareEndPosition:(SMSequenceNote *)otherNote;
-{
-    // TODO Do we actually use this anywhere?
-    // It seems like a bad idea to keep an array sorted by end position, if we think that someone else might change the note's duration/end position without knowing about that array.
-    Float64 ourEndPosition, otherEndPosition;
+@end
 
-    ourEndPosition = [self endPosition];
-    otherEndPosition = [otherNote endPosition];
-    
-    if (ourEndPosition == otherEndPosition)
-        return NSOrderedSame;
-    else if (ourEndPosition > otherEndPosition)
-        return NSOrderedDescending;
-    else
-        return NSOrderedAscending;
+
+@implementation SMSequenceNote (SnoizeMIDIInternal)
+
+- (Float64)position;
+{
+    return position;
+}
+
+- (void)setPosition:(Float64)value;
+{
+    position = value;
 }
 
 @end

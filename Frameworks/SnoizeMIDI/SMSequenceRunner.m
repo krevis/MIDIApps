@@ -45,7 +45,6 @@
     if (![super init])
         return nil;
 
-    sequenceLock = [[NSLock alloc] init];
     tempoLock = [[NSLock alloc] init];
 
     playingNotes = [[NSMutableArray alloc] init];
@@ -67,8 +66,6 @@
 
     [sequence release];
     sequence = nil;
-    [sequenceLock release];
-    sequenceLock = nil;
     [tempoLock release];
     tempoLock = nil;
     [playingNotes release];
@@ -113,13 +110,10 @@
     if (sequence == value)
         return;
 
-    [sequenceLock lock];
     [sequence release];
     sequence = [value retain];
-    [sequenceLock unlock];
 
-    // TODO should we allow this while playing?
-    // what about pending notes?
+    // TODO should we allow this while playing?  Need to lock around it, in that case...
 }
 
 - (BOOL)sendsMIDIClock;
@@ -258,13 +252,7 @@
 
 - (NSArray *)_notesStartingFromBeat:(Float64)blockStartBeat toBeat:(Float64)blockEndBeat;
 {
-    SMSequence *localSequence;
-
-    [sequenceLock lock];
-    localSequence = [[sequence retain] autorelease];
-    [sequenceLock unlock];
-
-    return [localSequence notesStartingFromBeat:blockStartBeat toBeat:blockEndBeat];
+    return [sequence notesStartingFromBeat:blockStartBeat toBeat:blockEndBeat];
 }
 
 - (NSArray *)_notesEndingBeforeBeat:(Float64)blockEndBeat;
@@ -285,6 +273,11 @@
             [notes addObject:note];
     }
 
+    // TODO this is not really correct. What if someone moves the note afterwards in time after it has been started, but before it ends,
+    // so that its end position won't get reached for another minute?
+    // We should always use the note's end position as it was when it started playing, EXCEPT if the duration changes.
+    // (Changes in the note's position should not have any effect on the playing note.)
+    
     return notes;
 }
 
@@ -293,7 +286,7 @@
     MIDITimeStamp timeStamp;
     SMVoiceMessage *message;
 
-    timeStamp = [self _timeStampForBeat:[note position]];
+    timeStamp = [self _timeStampForBeat:[sequence positionForNote:note]];
     message = [[[SMVoiceMessage alloc] initWithTimeStamp:timeStamp statusByte:0] autorelease];
     [message setStatus:SMVoiceMessageStatusNoteOn];
     [message setChannel:1];	// TODO

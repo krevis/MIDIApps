@@ -27,16 +27,13 @@
 - (Byte)offVelocity;
 - (void)setOffVelocity:(Byte)value;
 
-- (Float64)position;
-- (void)setPosition:(Float64)value;
-
 - (Float64)duration;
 - (void)setDuration:(Float64)value;
 
 - (Float64)endPosition;
 - (void)setEndPosition:(Float64)value;
+    // Keeps the note in the same position, and alters the duration
 
 - (NSComparisonResult)comparePosition:(SMSequenceNote *)otherNote;
-- (NSComparisonResult)compareEndPosition:(SMSequenceNote *)otherNote;
 
 @end

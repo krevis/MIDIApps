@@ -11,6 +11,7 @@
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 #import "SMSequenceNote.h"
+#import "SMSequenceNote-Internal.h"
 
 
 @interface SMSequence (Private)
@@ -43,13 +44,6 @@
     [super dealloc];
 }
 
-- (NSArray *)notes;
-{
-    // TODO need to lock notes, copy it, and then unlock?
-    // depends on who uses this accessor...
-    return notes;
-}
-
 - (void)addNote:(SMSequenceNote *)note;
 {
     [notesLock lock];
@@ -61,6 +55,31 @@
 {
     [notesLock lock];
     [notes removeObject:note fromArraySortedUsingSelector:@selector(comparePosition:)];
+    [notesLock unlock];
+}
+
+- (Float64)positionForNote:(SMSequenceNote *)note;
+{
+    OBASSERT([notes indexOfObjectIdenticalTo:note] != NSNotFound);
+
+    return [note position];
+}
+
+- (void)setPosition:(Float64)newPosition forNote:(SMSequenceNote *)note;
+{
+    OBASSERT([notes indexOfObjectIdenticalTo:note] != NSNotFound);
+
+    if (newPosition == [note position])
+        return;
+
+    [notesLock lock];
+
+    [note retain];
+    [notes removeObject:note fromArraySortedUsingSelector:@selector(comparePosition:)];
+    [note setPosition:newPosition];
+    [notes insertObject:note inArraySortedUsingSelector:@selector(comparePosition:)];
+    [note release];
+
     [notesLock unlock];
 }
 

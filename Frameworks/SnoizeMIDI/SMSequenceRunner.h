@@ -19,7 +19,6 @@
     id<SMMessageDestination> nonretainedMessageDestination;
 
     SMSequence *sequence;
-    NSLock *sequenceLock;
 
     Float64 tempo;
     MIDITimeStamp beatDuration;
