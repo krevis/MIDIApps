@@ -380,7 +380,10 @@ NSString *SSESysExFileExtension = @"syx";
     entriesByFilePath = [self _entriesByFilePath];
 
     filePathCount = [filePaths count];
-    nonMatchingFilePaths = [NSMutableArray arrayWithCapacity:filePathCount];
+    if (nonMatchingFilePathsPtr)
+        nonMatchingFilePaths = [NSMutableArray arrayWithCapacity:filePathCount];
+    else
+        nonMatchingFilePaths = nil;
     matchingEntries = [NSMutableArray arrayWithCapacity:filePathCount];
 
     for (filePathIndex = 0; filePathIndex < filePathCount; filePathIndex++) {
