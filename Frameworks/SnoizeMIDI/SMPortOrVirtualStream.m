@@ -243,7 +243,7 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointWasRemoved);
 
 //
 // To be used by subclasses only
-// TODO should move this and -stream to be declared in a private header
+// To be used only by subclasses (TODO move to a private header or something)
 //
 
 - (void)portStreamEndpointWasRemoved:(NSNotification *)notification;
