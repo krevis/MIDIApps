@@ -36,11 +36,7 @@ NSString *SSECombinationOutputStreamEndpointDisappearedNotification = @"SSECombi
 
     virtualEndpointName = [[[SMClient sharedClient] name] copy];
     virtualStreamDestination = [[SSESimpleOutputStreamDestination alloc] initWithName:virtualEndpointName];
-
-    // We will always keep the same unique ID for our virtual destination,
-    // even if we create and destroy it multiple times.
-//    virtualEndpointUniqueID = [SMEndpoint generateNewUniqueID];
-    // TODO need to redo this for new SnoizeMIDI
+    virtualEndpointUniqueID = 0;	// Let CoreMIDI assign the virtual endpoint a uniqueID
 
     flags.ignoresTimeStamps = NO;
     flags.sendsSysExAsynchronously = NO;
@@ -295,7 +291,13 @@ NSString *SSECombinationOutputStreamEndpointDisappearedNotification = @"SSECombi
     OBASSERT(virtualStream == nil);
 
     virtualStream = [[SMVirtualOutputStream alloc] initWithName:virtualEndpointName uniqueID:virtualEndpointUniqueID];
-    [virtualStream setIgnoresTimeStamps:flags.ignoresTimeStamps];
+    if (virtualStream) {
+        [virtualStream setIgnoresTimeStamps:flags.ignoresTimeStamps];
+
+        // We may not have specified a unique ID for the virtual endpoint, or it may not have actually stuck,
+        // so update our idea of what it is.
+        virtualEndpointUniqueID = [[virtualStream endpoint] uniqueID];
+    }
 }
 
 - (void)removeVirtualStream;
