@@ -9,90 +9,377 @@
 		breakpoints = (
 		);
 		perUserDictionary = {
-			PBXWorkspaceConfiguration = {
-				ContentSize = "{1112, 940}";
-				LeftSlideOut = {
-					ActiveTab = 0;
-					Frame = "{{0, 23}, {1112, 917}}";
-					Split0 = {
-						ActiveTab = 2;
-						Frame = "{{315, 0}, {797, 917}}";
+			PBXPerProjectTemplateStateSaveDate = 51250289;
+			PBXWorkspaceContents = (
+				{
+					LeftSlideOut = {
 						Split0 = {
-							Frame = "{{0, 351}, {797, 566}}";
+							Split0 = {
+								NavContent0 = {
+									bookmark = F59FB8F4030E049901000164;
+									history = (
+										F5DFACDC02F7A50901000164,
+										F5AE7F9702F8C88D01000164,
+										F5AE7F9802F8C88D01000164,
+										F5AE7F9902F8C88D01000164,
+										F5AE7F9A02F8C88D01000164,
+										F5AE7F9B02F8C88D01000164,
+										F5AE7F9C02F8C88D01000164,
+										F5D0565102FA055201000164,
+										F5D0565402FA055201000164,
+										F5D0565502FA055201000164,
+										F5D0565602FA055201000164,
+										F5D0565702FA055201000164,
+										F5DAB1E8030E031A01000164,
+										F5DAB1E9030E031A01000164,
+										F5DAB1EA030E031A01000164,
+										F5DAB1EB030E031A01000164,
+										F5DAB1EC030E031A01000164,
+										F5DAB1ED030E031A01000164,
+										F5DAB1F0030E031A01000164,
+										F5DAB1F1030E031A01000164,
+										F5DAB1F2030E031A01000164,
+										F5DAB1F3030E031A01000164,
+										F5DAB1F4030E031A01000164,
+										F5DAB1F5030E031A01000164,
+										F59FB8EF030E049901000164,
+										F59FB8F0030E049901000164,
+										F59FB8F1030E049901000164,
+									);
+									nextStack = (
+										F59FB8F3030E049901000164,
+									);
+									prevStack = (
+										F5DFACDE02F7A50901000164,
+										F5DFACDF02F7A50901000164,
+										F5AE7F9E02F8C88D01000164,
+										F5AE7F9F02F8C88D01000164,
+										F5AE7FA002F8C88D01000164,
+										F5AE7FA102F8C88D01000164,
+										F5AE7FA202F8C88D01000164,
+										F5AE7FA302F8C88D01000164,
+										F5AE7FA402F8C88D01000164,
+										F5AE7FA502F8C88D01000164,
+										F5D0565902FA055201000164,
+										F5D0565A02FA055201000164,
+										F5D0565B02FA055201000164,
+										F5D0565C02FA055201000164,
+										F5D0565D02FA055201000164,
+										F5D0565E02FA055201000164,
+										F5D0565F02FA055201000164,
+										F5D0566002FA055201000164,
+										F5DAB1F7030E031A01000164,
+										F5DAB1F8030E031A01000164,
+										F5DAB1F9030E031A01000164,
+										F5DAB1FA030E031A01000164,
+										F5DAB1FB030E031A01000164,
+										F5DAB1FC030E031A01000164,
+										F5DAB1FD030E031A01000164,
+										F5DAB1FE030E031A01000164,
+										F5DAB1FF030E031A01000164,
+										F5DAB200030E031A01000164,
+										F5DAB201030E031A01000164,
+										F5DAB202030E031A01000164,
+										F5DAB203030E031A01000164,
+										F5DAB204030E031A01000164,
+										F5DAB205030E031A01000164,
+										F5DAB206030E031A01000164,
+										F5DAB207030E031A01000164,
+										F5DAB208030E031A01000164,
+										F5DAB209030E031A01000164,
+										F5DAB20A030E031A01000164,
+										F5DAB20B030E031A01000164,
+										F5DAB20C030E031A01000164,
+										F5DAB20D030E031A01000164,
+										F5DAB20E030E031A01000164,
+										F5DAB20F030E031A01000164,
+										F5DAB210030E031A01000164,
+										F5DAB211030E031A01000164,
+										F5DAB212030E031A01000164,
+										F5DAB213030E031A01000164,
+										F5DAB214030E031A01000164,
+										F5DAB215030E031A01000164,
+										F5DAB216030E031A01000164,
+										F5DAB217030E031A01000164,
+										F5DAB218030E031A01000164,
+										F5DAB219030E031A01000164,
+										F5DAB21A030E031A01000164,
+										F5DAB21B030E031A01000164,
+										F5DAB21C030E031A01000164,
+										F5DAB21D030E031A01000164,
+										F5DAB21E030E031A01000164,
+										F5DAB21F030E031A01000164,
+										F5DAB220030E031A01000164,
+										F5DAB221030E031A01000164,
+										F5DAB222030E031A01000164,
+										F5DAB223030E031A01000164,
+										F5DAB224030E031A01000164,
+										F5DAB225030E031A01000164,
+										F5DAB226030E031A01000164,
+										F5DAB227030E031A01000164,
+										F5DAB228030E031A01000164,
+										F59FB8F2030E049901000164,
+									);
+								};
+								NavCount = 1;
+								NavGeometry0 = {
+									Frame = "{{0, 0}, {804, 876}}";
+									NavBarVisible = YES;
+								};
+							};
+							SplitCount = 1;
+							Tab0 = {
+								Debugger = {
+									Split0 = {
+										SplitCount = 2;
+									};
+									SplitCount = 1;
+									TabCount = 2;
+								};
+								LauncherConfigVersion = 7;
+							};
+							Tab1 = {
+								LauncherConfigVersion = 3;
+								Runner = {
+								};
+							};
+							TabCount = 4;
+						};
+						SplitCount = 1;
+						Tab1 = {
+							OptionsSetName = "Hierarchy, all classes";
+						};
+						TabCount = 5;
+					};
+				},
+			);
+			PBXWorkspaceGeometries = (
+				{
+					ContentSize = "{1088, 923}";
+					LeftSlideOut = {
+						ActiveTab = 0;
+						Collapsed = NO;
+						Frame = "{{0, 23}, {1088, 900}}";
+						Split0 = {
+							Collapsed = NO;
+							Frame = "{{284, 0}, {804, 900}}";
+							Split0 = {
+								Frame = "{{0, 24}, {804, 876}}";
+							};
+							SplitCount = 1;
+							Tab0 = {
+								Debugger = {
+									Collapsed = NO;
+									Frame = "{{0, 0}, {572, 214}}";
+									Split0 = {
+										Frame = "{{0, 24}, {572, 190}}";
+										Split0 = {
+											Frame = "{{0, 0}, {279, 190}}";
+										};
+										Split1 = {
+											DebugVariablesTableConfiguration = (
+												Name,
+												123,
+												Value,
+												85,
+												Summary,
+												62.123,
+											);
+											Frame = "{{288, 0}, {284, 190}}";
+										};
+										SplitCount = 2;
+									};
+									SplitCount = 1;
+									Tab0 = {
+										Frame = "{{0, 0}, {100, 50}}";
+									};
+									Tab1 = {
+										Frame = "{{0, 0}, {100, 50}}";
+									};
+									TabCount = 2;
+									TabsVisible = YES;
+								};
+								Frame = "{{0, 0}, {572, 214}}";
+								LauncherConfigVersion = 7;
+							};
+							Tab1 = {
+								Frame = "{{0, 0}, {572, 125}}";
+								LauncherConfigVersion = 3;
+								Runner = {
+									Frame = "{{0, 0}, {572, 125}}";
+								};
+							};
+							Tab2 = {
+								BuildMessageFrame = "{{0, 0}, {806, 120}}";
+								BuildTranscriptFrame = "{{0, 129}, {806, 0}}";
+								Frame = "{{0, 0}, {804, 127}}";
+							};
+							Tab3 = {
+								Frame = "{{0, 0}, {898, 265}}";
+							};
+							TabCount = 4;
+							TabsVisible = YES;
 						};
 						SplitCount = 1;
 						Tab0 = {
-							Debugger = {
-								ActiveTab = 1;
-								Frame = "{{0, 0}, {804, 511}}";
-								Split0 = {
-									Frame = "{{0, 229}, {804, 282}}";
-									Split0 = {
-										Frame = "{{0, 0}, {389, 282}}";
-									};
-									Split1 = {
-										Frame = "{{398, 0}, {406, 282}}";
-									};
-									SplitCount = 2;
-								};
-								SplitCount = 1;
-								Tab0 = {
-									Frame = "{{0, 0}, {100, 50}}";
-								};
-								Tab1 = {
-									Frame = "{{0, 0}, {804, 205}}";
-								};
-								TabCount = 2;
-							};
-							Frame = "{{0, 0}, {804, 511}}";
-							LauncherConfigVersion = 4;
+							Frame = "{{0, 0}, {260, 900}}";
+							GroupTreeTableConfiguration = (
+								TargetStatusColumn,
+								18,
+								MainColumn,
+								227,
+							);
 						};
 						Tab1 = {
-							Frame = "{{0, 0}, {804, 208}}";
-							LauncherConfigVersion = 3;
-							Runner = {
-								Frame = "{{0, 0}, {804, 208}}";
-							};
+							ClassesFrame = "{{0, 0}, {247, 330}}";
+							ClassesTreeTableConfiguration = (
+								PBXBookColumnIdentifier,
+								20,
+								PBXClassColumnIdentifier,
+								204,
+							);
+							Frame = "{{0, 0}, {245, 549}}";
+							MembersFrame = "{{0, 339}, {247, 210}}";
+							MembersTreeTableConfiguration = (
+								PBXBookColumnIdentifier,
+								20,
+								PBXMethodColumnIdentifier,
+								203,
+							);
 						};
 						Tab2 = {
-							BuildMessageFrame = "{{0, 0}, {799, 240}}";
-							BuildTranscriptFrame = "{{0, 249}, {799, 80}}";
-							Frame = "{{0, 0}, {797, 327}}";
+							Frame = "{{0, 0}, {226, 549}}";
 						};
 						Tab3 = {
-							Frame = "{{0, 0}, {797, 296}}";
+							Frame = "{{0, 0}, {191, 549}}";
+							TargetTableConfiguration = (
+								ActiveObject,
+								16,
+								ObjectNames,
+								202.296,
+							);
 						};
-						TabCount = 4;
-					};
-					SplitCount = 1;
-					Tab0 = {
-						Frame = "{{0, 0}, {291, 917}}";
-					};
-					Tab1 = {
-						ClassesFrame = "{{0, 0}, {202, 558}}";
-						Frame = "{{0, 0}, {200, 917}}";
-						MembersFrame = "{{0, 567}, {202, 350}}";
-						OptionsSetName = "Hierarchy, all classes";
-					};
-					Tab2 = {
-						Frame = "{{0, 0}, {200, 100}}";
-					};
-					Tab3 = {
-						Frame = "{{0, 0}, {200, 917}}";
-						Split0 = {
-							Frame = "{{0, 0}, {200, 447}}";
+						Tab4 = {
+							BreakpointsTreeTableConfiguration = (
+								breakpointColumn,
+								138,
+								enabledColumn,
+								31,
+							);
+							Frame = "{{0, 0}, {191, 896}}";
 						};
-						Split1 = {
-							Frame = "{{0, 456}, {200, 461}}";
-						};
-						SplitCount = 2;
+						TabCount = 5;
+						TabsVisible = YES;
 					};
-					Tab4 = {
-						Frame = "{{0, 0}, {250, 917}}";
-					};
-					TabCount = 5;
-				};
-			};
+					StatusViewVisible = YES;
+					Template = F5F68CF101725D4C0D7A8F4C;
+					ToolbarVisible = YES;
+					WindowLocation = "{40, 61}";
+				},
+			);
+			PBXWorkspaceStateSaveDate = 51250289;
+		};
+		perUserProjectItems = {
+			F59FB8EF030E049901000164 = F59FB8EF030E049901000164;
+			F59FB8F0030E049901000164 = F59FB8F0030E049901000164;
+			F59FB8F1030E049901000164 = F59FB8F1030E049901000164;
+			F59FB8F2030E049901000164 = F59FB8F2030E049901000164;
+			F59FB8F3030E049901000164 = F59FB8F3030E049901000164;
+			F59FB8F4030E049901000164 = F59FB8F4030E049901000164;
+			F5AE7F9702F8C88D01000164 = F5AE7F9702F8C88D01000164;
+			F5AE7F9802F8C88D01000164 = F5AE7F9802F8C88D01000164;
+			F5AE7F9902F8C88D01000164 = F5AE7F9902F8C88D01000164;
+			F5AE7F9A02F8C88D01000164 = F5AE7F9A02F8C88D01000164;
+			F5AE7F9B02F8C88D01000164 = F5AE7F9B02F8C88D01000164;
+			F5AE7F9C02F8C88D01000164 = F5AE7F9C02F8C88D01000164;
+			F5AE7F9E02F8C88D01000164 = F5AE7F9E02F8C88D01000164;
+			F5AE7F9F02F8C88D01000164 = F5AE7F9F02F8C88D01000164;
+			F5AE7FA002F8C88D01000164 = F5AE7FA002F8C88D01000164;
+			F5AE7FA102F8C88D01000164 = F5AE7FA102F8C88D01000164;
+			F5AE7FA202F8C88D01000164 = F5AE7FA202F8C88D01000164;
+			F5AE7FA302F8C88D01000164 = F5AE7FA302F8C88D01000164;
+			F5AE7FA402F8C88D01000164 = F5AE7FA402F8C88D01000164;
+			F5AE7FA502F8C88D01000164 = F5AE7FA502F8C88D01000164;
+			F5D0565102FA055201000164 = F5D0565102FA055201000164;
+			F5D0565402FA055201000164 = F5D0565402FA055201000164;
+			F5D0565502FA055201000164 = F5D0565502FA055201000164;
+			F5D0565602FA055201000164 = F5D0565602FA055201000164;
+			F5D0565702FA055201000164 = F5D0565702FA055201000164;
+			F5D0565902FA055201000164 = F5D0565902FA055201000164;
+			F5D0565A02FA055201000164 = F5D0565A02FA055201000164;
+			F5D0565B02FA055201000164 = F5D0565B02FA055201000164;
+			F5D0565C02FA055201000164 = F5D0565C02FA055201000164;
+			F5D0565D02FA055201000164 = F5D0565D02FA055201000164;
+			F5D0565E02FA055201000164 = F5D0565E02FA055201000164;
+			F5D0565F02FA055201000164 = F5D0565F02FA055201000164;
+			F5D0566002FA055201000164 = F5D0566002FA055201000164;
+			F5DAB1E8030E031A01000164 = F5DAB1E8030E031A01000164;
+			F5DAB1E9030E031A01000164 = F5DAB1E9030E031A01000164;
+			F5DAB1EA030E031A01000164 = F5DAB1EA030E031A01000164;
+			F5DAB1EB030E031A01000164 = F5DAB1EB030E031A01000164;
+			F5DAB1EC030E031A01000164 = F5DAB1EC030E031A01000164;
+			F5DAB1ED030E031A01000164 = F5DAB1ED030E031A01000164;
+			F5DAB1F0030E031A01000164 = F5DAB1F0030E031A01000164;
+			F5DAB1F1030E031A01000164 = F5DAB1F1030E031A01000164;
+			F5DAB1F2030E031A01000164 = F5DAB1F2030E031A01000164;
+			F5DAB1F3030E031A01000164 = F5DAB1F3030E031A01000164;
+			F5DAB1F4030E031A01000164 = F5DAB1F4030E031A01000164;
+			F5DAB1F5030E031A01000164 = F5DAB1F5030E031A01000164;
+			F5DAB1F7030E031A01000164 = F5DAB1F7030E031A01000164;
+			F5DAB1F8030E031A01000164 = F5DAB1F8030E031A01000164;
+			F5DAB1F9030E031A01000164 = F5DAB1F9030E031A01000164;
+			F5DAB1FA030E031A01000164 = F5DAB1FA030E031A01000164;
+			F5DAB1FB030E031A01000164 = F5DAB1FB030E031A01000164;
+			F5DAB1FC030E031A01000164 = F5DAB1FC030E031A01000164;
+			F5DAB1FD030E031A01000164 = F5DAB1FD030E031A01000164;
+			F5DAB1FE030E031A01000164 = F5DAB1FE030E031A01000164;
+			F5DAB1FF030E031A01000164 = F5DAB1FF030E031A01000164;
+			F5DAB200030E031A01000164 = F5DAB200030E031A01000164;
+			F5DAB201030E031A01000164 = F5DAB201030E031A01000164;
+			F5DAB202030E031A01000164 = F5DAB202030E031A01000164;
+			F5DAB203030E031A01000164 = F5DAB203030E031A01000164;
+			F5DAB204030E031A01000164 = F5DAB204030E031A01000164;
+			F5DAB205030E031A01000164 = F5DAB205030E031A01000164;
+			F5DAB206030E031A01000164 = F5DAB206030E031A01000164;
+			F5DAB207030E031A01000164 = F5DAB207030E031A01000164;
+			F5DAB208030E031A01000164 = F5DAB208030E031A01000164;
+			F5DAB209030E031A01000164 = F5DAB209030E031A01000164;
+			F5DAB20A030E031A01000164 = F5DAB20A030E031A01000164;
+			F5DAB20B030E031A01000164 = F5DAB20B030E031A01000164;
+			F5DAB20C030E031A01000164 = F5DAB20C030E031A01000164;
+			F5DAB20D030E031A01000164 = F5DAB20D030E031A01000164;
+			F5DAB20E030E031A01000164 = F5DAB20E030E031A01000164;
+			F5DAB20F030E031A01000164 = F5DAB20F030E031A01000164;
+			F5DAB210030E031A01000164 = F5DAB210030E031A01000164;
+			F5DAB211030E031A01000164 = F5DAB211030E031A01000164;
+			F5DAB212030E031A01000164 = F5DAB212030E031A01000164;
+			F5DAB213030E031A01000164 = F5DAB213030E031A01000164;
+			F5DAB214030E031A01000164 = F5DAB214030E031A01000164;
+			F5DAB215030E031A01000164 = F5DAB215030E031A01000164;
+			F5DAB216030E031A01000164 = F5DAB216030E031A01000164;
+			F5DAB217030E031A01000164 = F5DAB217030E031A01000164;
+			F5DAB218030E031A01000164 = F5DAB218030E031A01000164;
+			F5DAB219030E031A01000164 = F5DAB219030E031A01000164;
+			F5DAB21A030E031A01000164 = F5DAB21A030E031A01000164;
+			F5DAB21B030E031A01000164 = F5DAB21B030E031A01000164;
+			F5DAB21C030E031A01000164 = F5DAB21C030E031A01000164;
+			F5DAB21D030E031A01000164 = F5DAB21D030E031A01000164;
+			F5DAB21E030E031A01000164 = F5DAB21E030E031A01000164;
+			F5DAB21F030E031A01000164 = F5DAB21F030E031A01000164;
+			F5DAB220030E031A01000164 = F5DAB220030E031A01000164;
+			F5DAB221030E031A01000164 = F5DAB221030E031A01000164;
+			F5DAB222030E031A01000164 = F5DAB222030E031A01000164;
+			F5DAB223030E031A01000164 = F5DAB223030E031A01000164;
+			F5DAB224030E031A01000164 = F5DAB224030E031A01000164;
+			F5DAB225030E031A01000164 = F5DAB225030E031A01000164;
+			F5DAB226030E031A01000164 = F5DAB226030E031A01000164;
+			F5DAB227030E031A01000164 = F5DAB227030E031A01000164;
+			F5DAB228030E031A01000164 = F5DAB228030E031A01000164;
+			F5DFACDC02F7A50901000164 = F5DFACDC02F7A50901000164;
+			F5DFACDE02F7A50901000164 = F5DFACDE02F7A50901000164;
+			F5DFACDF02F7A50901000164 = F5DFACDF02F7A50901000164;
+		};
+		projectwideBuildSettings = {
 		};
 		userBookmarkGroup = F584CFF401CB836101000164;
 		wantsIndex = 1;
@@ -127,5 +414,1043 @@
 		rType = 0;
 		vrLen = 636;
 		vrLoc = 0;
+	};
+	F59FB8EF030E049901000164 = {
+		fRef = F5DAB1E5030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.m: midiClientCreated:";
+		rLen = 0;
+		rLoc = 3096;
+		rType = 0;
+		vrLen = 2077;
+		vrLoc = 2329;
+	};
+	F59FB8F0030E049901000164 = {
+		fRef = F53D4AB3015AA95101000164;
+		isa = PBXTextBookmark;
+		name = "SnoizeMIDI.h: 7";
+		rLen = 0;
+		rLoc = 168;
+		rType = 0;
+		vrLen = 1200;
+		vrLoc = 0;
+	};
+	F59FB8F1030E049901000164 = {
+		isa = PBXTargetBookmark;
+		trg = 0867D69CFE84028FC02AAC07;
+		uiCtxt = {
+			TOCViewDetailVisibleRect = "{{0, 0}, {548, 595}}";
+			TOCViewExpandedItems = (
+				"com.apple.target-editor-pane.settings",
+				"com.apple.target-editor-pane.settings.simple",
+				"com.apple.target-editor-pane.info-plist",
+				"com.apple.target-editor-pane.info-plist.simple",
+				"com.apple.target-editor-pane.buildphases",
+			);
+			TOCViewMasterVisibleRect = "{{0, 0}, {217, 822}}";
+			TOCViewSelectedItems = (
+				0867D69DFE84028FC02AAC07,
+			);
+		};
+	};
+	F59FB8F2030E049901000164 = {
+		fRef = F5DAB1E5030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.m: midiClientCreated:";
+		rLen = 0;
+		rLoc = 3096;
+		rType = 0;
+		vrLen = 2077;
+		vrLoc = 2329;
+	};
+	F59FB8F3030E049901000164 = {
+		fRef = F53D4AB3015AA95101000164;
+		isa = PBXTextBookmark;
+		name = "SnoizeMIDI.h: 7";
+		rLen = 0;
+		rLoc = 168;
+		rType = 0;
+		vrLen = 1200;
+		vrLoc = 0;
+	};
+	F59FB8F4030E049901000164 = {
+		isa = PBXTargetBookmark;
+		trg = 0867D69CFE84028FC02AAC07;
+		uiCtxt = {
+			TOCViewDetailVisibleRect = "{{0, 0}, {548, 595}}";
+			TOCViewExpandedItems = (
+				"com.apple.target-editor-pane.settings",
+				"com.apple.target-editor-pane.settings.simple",
+				"com.apple.target-editor-pane.info-plist",
+				"com.apple.target-editor-pane.info-plist.simple",
+				"com.apple.target-editor-pane.buildphases",
+			);
+			TOCViewMasterVisibleRect = "{{0, 0}, {217, 822}}";
+			TOCViewSelectedItems = (
+				0867D69DFE84028FC02AAC07,
+			);
+		};
+	};
+	F5AE7F9702F8C88D01000164 = {
+		fRef = F5AE7FA702F8C88D01000164;
+		isa = PBXTextBookmark;
+		name = "NSScanner.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1263;
+		vrLoc = 0;
+	};
+	F5AE7F9802F8C88D01000164 = {
+		fRef = F5AE7FA802F8C88D01000164;
+		isa = PBXTextBookmark;
+		name = "NSData.h: 67";
+		rLen = 0;
+		rLoc = 2027;
+		rType = 0;
+		vrLen = 1842;
+		vrLoc = 67;
+	};
+	F5AE7F9902F8C88D01000164 = {
+		fRef = F5AE7FA902F8C88D01000164;
+		isa = PBXTextBookmark;
+		name = "CFByteOrder.h: 147";
+		rLen = 20;
+		rLoc = 3550;
+		rType = 0;
+		vrLen = 1182;
+		vrLoc = 2941;
+	};
+	F5AE7F9A02F8C88D01000164 = {
+		fRef = F561536B01C2418301000164;
+		isa = PBXTextBookmark;
+		name = "SMSystemExclusiveMessage.h: dataForSystemExclusiveMessages:";
+		rLen = 41;
+		rLoc = 838;
+		rType = 0;
+		vrLen = 1956;
+		vrLoc = 0;
+	};
+	F5AE7F9B02F8C88D01000164 = {
+		fRef = F58C3E9601B606CB01000164;
+		isa = PBXTextBookmark;
+		name = "SMInputStream.m: midiReadProc";
+		rLen = 45;
+		rLoc = 7163;
+		rType = 0;
+		vrLen = 2609;
+		vrLoc = 5716;
+	};
+	F5AE7F9C02F8C88D01000164 = {
+		fRef = F53D4A9D015A960601000164;
+		isa = PBXTextBookmark;
+		name = "SMMessageParser.m: takePacketList:";
+		rLen = 29;
+		rLoc = 1775;
+		rType = 0;
+		vrLen = 1818;
+		vrLoc = 1020;
+	};
+	F5AE7F9E02F8C88D01000164 = {
+		fRef = F561536C01C2418301000164;
+		isa = PBXTextBookmark;
+		name = "SMSystemExclusiveMessage.m: dataForSystemExclusiveMessages:";
+		rLen = 0;
+		rLoc = 1328;
+		rType = 0;
+		vrLen = 2696;
+		vrLoc = 2639;
+	};
+	F5AE7F9F02F8C88D01000164 = {
+		fRef = F561536B01C2418301000164;
+		isa = PBXTextBookmark;
+		name = "SMSystemExclusiveMessage.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1955;
+		vrLoc = 0;
+	};
+	F5AE7FA002F8C88D01000164 = {
+		fRef = F561536C01C2418301000164;
+		isa = PBXTextBookmark;
+		name = "SMSystemExclusiveMessage.m: dataByAddingStartByte:";
+		rLen = 0;
+		rLoc = 16167;
+		rType = 0;
+		vrLen = 1399;
+		vrLoc = 18707;
+	};
+	F5AE7FA102F8C88D01000164 = {
+		fRef = F561536B01C2418301000164;
+		isa = PBXTextBookmark;
+		name = "SMSystemExclusiveMessage.h: otherDataLength";
+		rLen = 15;
+		rLoc = 1288;
+		rType = 0;
+		vrLen = 1955;
+		vrLoc = 0;
+	};
+	F5AE7FA202F8C88D01000164 = {
+		fRef = F561536C01C2418301000164;
+		isa = PBXTextBookmark;
+		name = "SMSystemExclusiveMessage.m: dataForSystemExclusiveMessages:";
+		rLen = 0;
+		rLoc = 1328;
+		rType = 0;
+		vrLen = 2027;
+		vrLoc = 715;
+	};
+	F5AE7FA302F8C88D01000164 = {
+		fRef = F561536B01C2418301000164;
+		isa = PBXTextBookmark;
+		name = "SMSystemExclusiveMessage.h: dataForSystemExclusiveMessages:";
+		rLen = 41;
+		rLoc = 838;
+		rType = 0;
+		vrLen = 1956;
+		vrLoc = 0;
+	};
+	F5AE7FA402F8C88D01000164 = {
+		fRef = F58C3E9601B606CB01000164;
+		isa = PBXTextBookmark;
+		name = "SMInputStream.m: midiReadProc";
+		rLen = 45;
+		rLoc = 7163;
+		rType = 0;
+		vrLen = 2609;
+		vrLoc = 5716;
+	};
+	F5AE7FA502F8C88D01000164 = {
+		fRef = F53D4A9D015A960601000164;
+		isa = PBXTextBookmark;
+		name = "SMMessageParser.m: takePacketList:";
+		rLen = 29;
+		rLoc = 1775;
+		rType = 0;
+		vrLen = 1818;
+		vrLoc = 1020;
+	};
+	F5AE7FA702F8C88D01000164 = {
+		isa = PBXFileReference;
+		name = NSScanner.h;
+		path = /System/Library/Frameworks/Foundation.framework/Versions/C/Headers/NSScanner.h;
+		refType = 0;
+	};
+	F5AE7FA802F8C88D01000164 = {
+		isa = PBXFileReference;
+		name = NSData.h;
+		path = /System/Library/Frameworks/Foundation.framework/Versions/C/Headers/NSData.h;
+		refType = 0;
+	};
+	F5AE7FA902F8C88D01000164 = {
+		isa = PBXFileReference;
+		name = CFByteOrder.h;
+		path = /System/Library/Frameworks/CoreFoundation.framework/Versions/A/Headers/CFByteOrder.h;
+		refType = 0;
+	};
+	F5D0565102FA055201000164 = {
+		fRef = F561536C01C2418301000164;
+		isa = PBXTextBookmark;
+		name = "SMSystemExclusiveMessage.m: smfDataForSystemExclusiveMessages:";
+		rLen = 0;
+		rLoc = 17100;
+		rType = 0;
+		vrLen = 1743;
+		vrLoc = 17539;
+	};
+	F5D0565402FA055201000164 = {
+		fRef = F58C3E9101B605C301000164;
+		isa = PBXTextBookmark;
+		name = "SMVirtualInputStream.m: disposeEndpoint";
+		rLen = 0;
+		rLoc = 3455;
+		rType = 0;
+		vrLen = 1293;
+		vrLoc = 2279;
+	};
+	F5D0565502FA055201000164 = {
+		fRef = F556F68101E1C21A01000164;
+		isa = PBXTextBookmark;
+		name = "SMPortOrVirtualStream.m: newVirtualStream";
+		rLen = 16;
+		rLoc = 6095;
+		rType = 0;
+		vrLen = 1297;
+		vrLoc = 5431;
+	};
+	F5D0565602FA055201000164 = {
+		fRef = F565B6F301E15D0B01000164;
+		isa = PBXTextBookmark;
+		name = "SMPortOrVirtualOutputStream.m: newVirtualStream";
+		rLen = 16;
+		rLoc = 2836;
+		rType = 0;
+		vrLen = 1868;
+		vrLoc = 1689;
+	};
+	F5D0565702FA055201000164 = {
+		fRef = F557E37301BEC38401000164;
+		isa = PBXTextBookmark;
+		name = "SMVirtualOutputStream.m: dealloc";
+		rLen = 0;
+		rLoc = 588;
+		rType = 0;
+		vrLen = 1095;
+		vrLoc = 0;
+	};
+	F5D0565902FA055201000164 = {
+		fRef = F561536C01C2418301000164;
+		isa = PBXTextBookmark;
+		name = "SMSystemExclusiveMessage.m: smfDataForSystemExclusiveMessages:";
+		rLen = 0;
+		rLoc = 17100;
+		rType = 0;
+		vrLen = 1743;
+		vrLoc = 17539;
+	};
+	F5D0565A02FA055201000164 = {
+		fRef = F53BB49E015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.m: __VERSION__";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 2020;
+		vrLoc = 0;
+	};
+	F5D0565B02FA055201000164 = {
+		fRef = F53BB49D015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.h: setIsOwnedByThisProcess";
+		rLen = 23;
+		rLoc = 908;
+		rType = 0;
+		vrLen = 1941;
+		vrLoc = 206;
+	};
+	F5D0565C02FA055201000164 = {
+		fRef = F53BB49E015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.m: uniqueID";
+		rLen = 6;
+		rLoc = 5043;
+		rType = 0;
+		vrLen = 1603;
+		vrLoc = 3586;
+	};
+	F5D0565D02FA055201000164 = {
+		fRef = F58C3E9101B605C301000164;
+		isa = PBXTextBookmark;
+		name = "SMVirtualInputStream.m: disposeEndpoint";
+		rLen = 0;
+		rLoc = 3455;
+		rType = 0;
+		vrLen = 1293;
+		vrLoc = 2279;
+	};
+	F5D0565E02FA055201000164 = {
+		fRef = F556F68101E1C21A01000164;
+		isa = PBXTextBookmark;
+		name = "SMPortOrVirtualStream.m: newVirtualStream";
+		rLen = 16;
+		rLoc = 6095;
+		rType = 0;
+		vrLen = 1297;
+		vrLoc = 5431;
+	};
+	F5D0565F02FA055201000164 = {
+		fRef = F565B6F301E15D0B01000164;
+		isa = PBXTextBookmark;
+		name = "SMPortOrVirtualOutputStream.m: newVirtualStream";
+		rLen = 16;
+		rLoc = 2836;
+		rType = 0;
+		vrLen = 1868;
+		vrLoc = 1689;
+	};
+	F5D0566002FA055201000164 = {
+		fRef = F557E37301BEC38401000164;
+		isa = PBXTextBookmark;
+		name = "SMVirtualOutputStream.m: dealloc";
+		rLen = 0;
+		rLoc = 588;
+		rType = 0;
+		vrLen = 1095;
+		vrLoc = 0;
+	};
+	F5DAB1E8030E031A01000164 = {
+		fRef = F557390B01CE7E8801000164;
+		isa = PBXTextBookmark;
+		name = "SMPeriodicTimer.m: processEndTime";
+		rLen = 0;
+		rLoc = 1869;
+		rType = 0;
+		vrLen = 1961;
+		vrLoc = 1377;
+	};
+	F5DAB1E9030E031A01000164 = {
+		fRef = F5DAB22C030E031A01000164;
+		isa = PBXTextBookmark;
+		name = "NSValue.h: 81";
+		rLen = 40;
+		rLoc = 2130;
+		rType = 0;
+		vrLen = 1938;
+		vrLoc = 648;
+	};
+	F5DAB1EA030E031A01000164 = {
+		fRef = F5DAB22B030E031A01000164;
+		isa = PBXTextBookmark;
+		name = "NSException.h: 95";
+		rLen = 14;
+		rLoc = 2928;
+		rType = 0;
+		vrLen = 2238;
+		vrLoc = 1625;
+	};
+	F5DAB1EB030E031A01000164 = {
+		fRef = F5ADD9F6023189AE01000164;
+		isa = PBXTextBookmark;
+		name = "SMHostTime.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 439;
+		vrLoc = 0;
+	};
+	F5DAB1EC030E031A01000164 = {
+		fRef = F5ADD9F7023189AE01000164;
+		isa = PBXTextBookmark;
+		name = "SMHostTime.m: __VERSION__";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 642;
+		vrLoc = 0;
+	};
+	F5DAB1ED030E031A01000164 = {
+		fRef = F53D4A99015A960601000164;
+		isa = PBXTextBookmark;
+		name = "SMMessageDestinationProtocol.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 194;
+		vrLoc = 0;
+	};
+	F5DAB1F0030E031A01000164 = {
+		fRef = F53BB49D015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.h: uniqueIDsOfConnectedThings";
+		rLen = 26;
+		rLoc = 2314;
+		rType = 0;
+		vrLen = 2166;
+		vrLoc = 817;
+	};
+	F5DAB1F1030E031A01000164 = {
+		fRef = F5DAB22A030E031A01000164;
+		isa = PBXTextBookmark;
+		name = "MIDIServices.h: 1264";
+		rLen = 24;
+		rLoc = 44554;
+		rType = 0;
+		vrLen = 2253;
+		vrLoc = 43367;
+	};
+	F5DAB1F2030E031A01000164 = {
+		fRef = F53BB49E015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.m: uniqueIDsOfConnectedThings";
+		rLen = 0;
+		rLoc = 11101;
+		rType = 0;
+		vrLen = 1600;
+		vrLoc = 28216;
+	};
+	F5DAB1F3030E031A01000164 = {
+		fRef = F5DAB1E4030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.h: 33";
+		rLen = 0;
+		rLoc = 704;
+		rType = 0;
+		vrLen = 704;
+		vrLoc = 0;
+	};
+	F5DAB1F4030E031A01000164 = {
+		fRef = F53D4A96015A960601000164;
+		isa = PBXTextBookmark;
+		name = "SMClient.m: SMClientSetupChangedNotification";
+		rLen = 32;
+		rLoc = 563;
+		rType = 0;
+		vrLen = 1549;
+		vrLoc = 0;
+	};
+	F5DAB1F5030E031A01000164 = {
+		fRef = F53D4A95015A960601000164;
+		isa = PBXTextBookmark;
+		name = "SMClient.h: SMClientSetupChangedInternalNotification";
+		rLen = 40;
+		rLoc = 644;
+		rType = 0;
+		vrLen = 1048;
+		vrLoc = 0;
+	};
+	F5DAB1F7030E031A01000164 = {
+		fRef = F557390B01CE7E8801000164;
+		isa = PBXTextBookmark;
+		name = "SMPeriodicTimer.m: processEndTime";
+		rLen = 0;
+		rLoc = 1869;
+		rType = 0;
+		vrLen = 1961;
+		vrLoc = 1377;
+	};
+	F5DAB1F8030E031A01000164 = {
+		fRef = F53BB49E015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.m: remove";
+		rLen = 6;
+		rLoc = 5043;
+		rType = 0;
+		vrLen = 2073;
+		vrLoc = 8214;
+	};
+	F5DAB1F9030E031A01000164 = {
+		fRef = F53BB49D015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.h: 76";
+		rLen = 15;
+		rLoc = 2185;
+		rType = 0;
+		vrLen = 2159;
+		vrLoc = 1062;
+	};
+	F5DAB1FA030E031A01000164 = {
+		fRef = F53BB49E015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.m: uniqueIDsOfConnectedThings";
+		rLen = 0;
+		rLoc = 11095;
+		rType = 0;
+		vrLen = 2398;
+		vrLoc = 9025;
+	};
+	F5DAB1FB030E031A01000164 = {
+		fRef = F53D4A95015A960601000164;
+		isa = PBXTextBookmark;
+		name = "SMClient.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1048;
+		vrLoc = 0;
+	};
+	F5DAB1FC030E031A01000164 = {
+		fRef = F53BB49D015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.h: uniqueIDsOfConnectedThings";
+		rLen = 26;
+		rLoc = 2314;
+		rType = 0;
+		vrLen = 2114;
+		vrLoc = 727;
+	};
+	F5DAB1FD030E031A01000164 = {
+		fRef = F53BB49E015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.m: uniqueIDsOfConnectedThings";
+		rLen = 0;
+		rLoc = 10790;
+		rType = 0;
+		vrLen = 2245;
+		vrLoc = 9408;
+	};
+	F5DAB1FE030E031A01000164 = {
+		fRef = F5DAB1E4030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 243;
+		vrLoc = 0;
+	};
+	F5DAB1FF030E031A01000164 = {
+		fRef = F5ADD9F6023189AE01000164;
+		isa = PBXTextBookmark;
+		name = "SMHostTime.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 439;
+		vrLoc = 0;
+	};
+	F5DAB200030E031A01000164 = {
+		fRef = F5ADD9F7023189AE01000164;
+		isa = PBXTextBookmark;
+		name = "SMHostTime.m: __VERSION__";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 642;
+		vrLoc = 0;
+	};
+	F5DAB201030E031A01000164 = {
+		fRef = F53D4A99015A960601000164;
+		isa = PBXTextBookmark;
+		name = "SMMessageDestinationProtocol.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 194;
+		vrLoc = 0;
+	};
+	F5DAB202030E031A01000164 = {
+		fRef = F5DAB1E4030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.h: 13";
+		rLen = 0;
+		rLoc = 199;
+		rType = 0;
+		vrLen = 243;
+		vrLoc = 0;
+	};
+	F5DAB203030E031A01000164 = {
+		fRef = F53BB49D015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.h: 16";
+		rLen = 0;
+		rLoc = 338;
+		rType = 0;
+		vrLen = 807;
+		vrLoc = 63;
+	};
+	F5DAB204030E031A01000164 = {
+		fRef = F53BB49E015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.m: uniqueIDsOfConnectedThings";
+		rLen = 0;
+		rLoc = 10790;
+		rType = 0;
+		vrLen = 1204;
+		vrLoc = 9408;
+	};
+	F5DAB205030E031A01000164 = {
+		fRef = F53BB49D015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.h: 16";
+		rLen = 0;
+		rLoc = 338;
+		rType = 0;
+		vrLen = 788;
+		vrLoc = 63;
+	};
+	F5DAB206030E031A01000164 = {
+		fRef = F53BB49E015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.m: uniqueIDsOfConnectedThings";
+		rLen = 0;
+		rLoc = 10790;
+		rType = 0;
+		vrLen = 1204;
+		vrLoc = 9408;
+	};
+	F5DAB207030E031A01000164 = {
+		fRef = F53BB49D015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.h: 17";
+		rLen = 0;
+		rLoc = 381;
+		rType = 0;
+		vrLen = 789;
+		vrLoc = 62;
+	};
+	F5DAB208030E031A01000164 = {
+		fRef = F53BB49E015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.m: uniqueIDsOfConnectedThings";
+		rLen = 0;
+		rLoc = 10790;
+		rType = 0;
+		vrLen = 842;
+		vrLoc = 2909;
+	};
+	F5DAB209030E031A01000164 = {
+		fRef = F53BB49D015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.h: 70";
+		rLen = 0;
+		rLoc = 1976;
+		rType = 0;
+		vrLen = 1133;
+		vrLoc = 1530;
+	};
+	F5DAB20A030E031A01000164 = {
+		fRef = F53BB49E015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.m: allEndpoints";
+		rLen = 0;
+		rLoc = 16892;
+		rType = 0;
+		vrLen = 1594;
+		vrLoc = 15758;
+	};
+	F5DAB20B030E031A01000164 = {
+		fRef = F5DAB1E4030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.h: deviceRef";
+		rLen = 28;
+		rLoc = 508;
+		rType = 0;
+		vrLen = 514;
+		vrLoc = 0;
+	};
+	F5DAB20C030E031A01000164 = {
+		isa = PBXTargetBookmark;
+		trg = 0867D69CFE84028FC02AAC07;
+	};
+	F5DAB20D030E031A01000164 = {
+		fRef = F53D4AB3015AA95101000164;
+		isa = PBXTextBookmark;
+		name = "SnoizeMIDI.h: 7";
+		rLen = 0;
+		rLoc = 168;
+		rType = 0;
+		vrLen = 1200;
+		vrLoc = 0;
+	};
+	F5DAB20E030E031A01000164 = {
+		fRef = F5DAB1E4030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.h: allProperties";
+		rLen = 13;
+		rLoc = 652;
+		rType = 0;
+		vrLen = 514;
+		vrLoc = 0;
+	};
+	F5DAB20F030E031A01000164 = {
+		fRef = F53D4AB3015AA95101000164;
+		isa = PBXTextBookmark;
+		name = "SnoizeMIDI.h: 7";
+		rLen = 0;
+		rLoc = 168;
+		rType = 0;
+		vrLen = 1200;
+		vrLoc = 0;
+	};
+	F5DAB210030E031A01000164 = {
+		fRef = F5DAB1E5030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.m: 25";
+		rLen = 0;
+		rLoc = 714;
+		rType = 0;
+		vrLen = 2423;
+		vrLoc = 3093;
+	};
+	F5DAB211030E031A01000164 = {
+		fRef = F5DAB1E4030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.h: 16";
+		rLen = 0;
+		rLoc = 455;
+		rType = 0;
+		vrLen = 514;
+		vrLoc = 0;
+	};
+	F5DAB212030E031A01000164 = {
+		fRef = F53BB49D015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.h: sourceEndpointWithUniqueID:";
+		rLen = 67;
+		rLoc = 2548;
+		rType = 0;
+		vrLen = 2284;
+		vrLoc = 1063;
+	};
+	F5DAB213030E031A01000164 = {
+		fRef = F5DAB1E4030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.h: 16";
+		rLen = 145;
+		rLoc = 310;
+		rType = 0;
+		vrLen = 659;
+		vrLoc = 0;
+	};
+	F5DAB214030E031A01000164 = {
+		fRef = F5DAB1E5030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.m: initWithDeviceRef:";
+		rLen = 0;
+		rLoc = 1124;
+		rType = 0;
+		vrLen = 1434;
+		vrLoc = 352;
+	};
+	F5DAB215030E031A01000164 = {
+		fRef = F5DAB1E4030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.h: 14";
+		rLen = 0;
+		rLoc = 276;
+		rType = 0;
+		vrLen = 700;
+		vrLoc = 0;
+	};
+	F5DAB216030E031A01000164 = {
+		fRef = F53BB49D015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.h: 23";
+		rLen = 26;
+		rLoc = 570;
+		rType = 0;
+		vrLen = 1915;
+		vrLoc = 62;
+	};
+	F5DAB217030E031A01000164 = {
+		fRef = F5DAB1E4030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.h: externalDevices";
+		rLen = 0;
+		rLoc = 277;
+		rType = 0;
+		vrLen = 706;
+		vrLoc = 0;
+	};
+	F5DAB218030E031A01000164 = {
+		fRef = F5DAB1E5030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.m: 208";
+		rLen = 0;
+		rLoc = 5690;
+		rType = 0;
+		vrLen = 2645;
+		vrLoc = 4041;
+	};
+	F5DAB219030E031A01000164 = {
+		fRef = F5DAB1E4030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.h: 18";
+		rLen = 26;
+		rLoc = 332;
+		rType = 0;
+		vrLen = 706;
+		vrLoc = 0;
+	};
+	F5DAB21A030E031A01000164 = {
+		fRef = F5DAB1E5030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.m: didLoad";
+		rLen = 0;
+		rLoc = 885;
+		rType = 0;
+		vrLen = 1709;
+		vrLoc = 108;
+	};
+	F5DAB21B030E031A01000164 = {
+		fRef = F5DAB1E4030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.h: externalDeviceWithDeviceRef:";
+		rLen = 27;
+		rLoc = 400;
+		rType = 0;
+		vrLen = 706;
+		vrLoc = 0;
+	};
+	F5DAB21C030E031A01000164 = {
+		fRef = F5DAB1E5030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.m: reloadExternalDevices";
+		rLen = 0;
+		rLoc = 4945;
+		rType = 0;
+		vrLen = 2738;
+		vrLoc = 3572;
+	};
+	F5DAB21D030E031A01000164 = {
+		fRef = F5DAB1E4030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.h: externalDeviceWithDeviceRef:";
+		rLen = 27;
+		rLoc = 400;
+		rType = 0;
+		vrLen = 706;
+		vrLoc = 0;
+	};
+	F5DAB21E030E031A01000164 = {
+		fRef = F5DAB1E5030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.m: replacedDevice";
+		rLen = 0;
+		rLoc = 5285;
+		rType = 0;
+		vrLen = 1208;
+		vrLoc = 1438;
+	};
+	F5DAB21F030E031A01000164 = {
+		fRef = F5DAB1E4030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.h: 33";
+		rLen = 0;
+		rLoc = 704;
+		rType = 0;
+		vrLen = 704;
+		vrLoc = 0;
+	};
+	F5DAB220030E031A01000164 = {
+		fRef = F53BB49D015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.h: uniqueIDsOfConnectedThings";
+		rLen = 26;
+		rLoc = 2314;
+		rType = 0;
+		vrLen = 2166;
+		vrLoc = 817;
+	};
+	F5DAB221030E031A01000164 = {
+		fRef = F53BB49E015D4AC001000164;
+		isa = PBXTextBookmark;
+		name = "SMEndpoint.m: uniqueIDsOfConnectedThings";
+		rLen = 0;
+		rLoc = 11101;
+		rType = 0;
+		vrLen = 1600;
+		vrLoc = 28216;
+	};
+	F5DAB222030E031A01000164 = {
+		fRef = F5DAB1E5030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.m: replacedDevice";
+		rLen = 0;
+		rLoc = 5285;
+		rType = 0;
+		vrLen = 1100;
+		vrLoc = 1438;
+	};
+	F5DAB223030E031A01000164 = {
+		fRef = F5DAB1E4030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.h: 33";
+		rLen = 0;
+		rLoc = 704;
+		rType = 0;
+		vrLen = 704;
+		vrLoc = 0;
+	};
+	F5DAB224030E031A01000164 = {
+		fRef = F53D4A96015A960601000164;
+		isa = PBXTextBookmark;
+		name = "SMClient.m: __VERSION__";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1549;
+		vrLoc = 0;
+	};
+	F5DAB225030E031A01000164 = {
+		fRef = F53D4A95015A960601000164;
+		isa = PBXTextBookmark;
+		name = "SMClient.h: SMClientSetupChangedInternalNotification";
+		rLen = 40;
+		rLoc = 644;
+		rType = 0;
+		vrLen = 1048;
+		vrLoc = 0;
+	};
+	F5DAB226030E031A01000164 = {
+		fRef = F5DAB1E5030DE98E01000164;
+		isa = PBXTextBookmark;
+		name = "SMExternalDevice.m: midiClientCreated:";
+		rLen = 40;
+		rLoc = 3292;
+		rType = 0;
+		vrLen = 2109;
+		vrLoc = 2392;
+	};
+	F5DAB227030E031A01000164 = {
+		fRef = F53D4A96015A960601000164;
+		isa = PBXTextBookmark;
+		name = "SMClient.m: SMClientSetupChangedNotification";
+		rLen = 32;
+		rLoc = 563;
+		rType = 0;
+		vrLen = 1549;
+		vrLoc = 0;
+	};
+	F5DAB228030E031A01000164 = {
+		fRef = F53D4A95015A960601000164;
+		isa = PBXTextBookmark;
+		name = "SMClient.h: SMClientSetupChangedInternalNotification";
+		rLen = 40;
+		rLoc = 644;
+		rType = 0;
+		vrLen = 1048;
+		vrLoc = 0;
+	};
+	F5DAB22A030E031A01000164 = {
+		isa = PBXFileReference;
+		name = MIDIServices.h;
+		path = /System/Library/Frameworks/CoreMIDI.framework/Versions/A/Headers/MIDIServices.h;
+		refType = 0;
+	};
+	F5DAB22B030E031A01000164 = {
+		isa = PBXFileReference;
+		name = NSException.h;
+		path = /System/Library/Frameworks/Foundation.framework/Versions/C/Headers/NSException.h;
+		refType = 0;
+	};
+	F5DAB22C030E031A01000164 = {
+		isa = PBXFileReference;
+		name = NSValue.h;
+		path = /System/Library/Frameworks/Foundation.framework/Versions/C/Headers/NSValue.h;
+		refType = 0;
+	};
+	F5DFACDC02F7A50901000164 = {
+		fRef = F5DFACE102F7A50A01000164;
+		isa = PBXTextBookmark;
+		name = "MusicPlayer.h: 341";
+		rLen = 38;
+		rLoc = 12277;
+		rType = 0;
+		vrLen = 1703;
+		vrLoc = 11533;
+	};
+	F5DFACDE02F7A50901000164 = {
+		fRef = F561536C01C2418301000164;
+		isa = PBXTextBookmark;
+		name = "SMSystemExclusiveMessage.m: writeSystemExclusiveMessages:toStandardMIDIFile:";
+		rLen = 0;
+		rLoc = 3867;
+		rType = 0;
+		vrLen = 2543;
+		vrLoc = 8428;
+	};
+	F5DFACDF02F7A50901000164 = {
+		fRef = F5DFACE202F7A50A01000164;
+		isa = PBXTextBookmark;
+		name = "MusicPlayer.h: 341";
+		rLen = 38;
+		rLoc = 12277;
+		rType = 0;
+		vrLen = 1703;
+		vrLoc = 11533;
+	};
+	F5DFACE102F7A50A01000164 = {
+		isa = PBXFileReference;
+		name = MusicPlayer.h;
+		path = /System/Library/Frameworks/AudioToolbox.framework/Versions/A/Headers/MusicPlayer.h;
+		refType = 0;
+	};
+	F5DFACE202F7A50A01000164 = {
+		isa = PBXFileReference;
+		name = MusicPlayer.h;
+		path = /System/Library/Frameworks/AudioToolbox.framework/Versions/A/Headers/MusicPlayer.h;
+		refType = 0;
 	};
 }

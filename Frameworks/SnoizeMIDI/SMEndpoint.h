@@ -73,6 +73,13 @@
 - (BOOL)needsSysExWorkaround;
     // Returns YES if the endpoint is provided by the broken MIDIMAN driver, which can't send more than 3 bytes of sysex at once
 
+- (NSString *)pathToImageFile;
+    // Returns a POSIX path to the image for this endpoint's device, or nil if there is no image.
+
+- (NSArray *)uniqueIDsOfConnectedThings;
+    // may be external devices, endpoints, or who knows what
+- (NSArray *)connectedExternalDevices;
+
 @end
 
 

@@ -8,6 +8,7 @@
 #import <OmniFoundation/OmniFoundation.h>
 
 #import "SMClient.h"
+#import "SMExternalDevice.h"
 
 
 @interface SMEndpoint (Private)
@@ -313,11 +314,9 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 
 - (id)allProperties;
 {
-    OSStatus status;
     id propertyList;
 
-    status = MIDIObjectGetProperties(endpointRef, (CFPropertyListRef *)&propertyList, NO);	// Not deep
-    if (status != noErr)
+    if (noErr != MIDIObjectGetProperties(endpointRef, (CFPropertyListRef *)&propertyList, NO /* not deep */))
         propertyList = nil;
 
     return [propertyList autorelease];
@@ -335,6 +334,74 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     // fixed in the next release.
 
     return ([[self manufacturerName] isEqualToString:@"MIDIMAN"] && [[self name] hasPrefix:@"MIDIMAN "]);
+}
+
+- (NSString *)pathToImageFile;
+{
+    // TODO kMIDIPropertyImage is new to 10.2, so we need to conditionalize this so we can still build and run on 10.1.
+    // The value of kMIDIPropertyImage is @"image".
+    return [self stringForProperty:kMIDIPropertyImage];
+}
+
+- (NSArray *)uniqueIDsOfConnectedThings;
+{
+    SInt32 oneUniqueID;
+    NSData *data;
+
+    // The property for kMIDIPropertyConnectionUniqueID may be an integer or a data object.
+    // Try getting it as data first.  (The data is an array of big-endian SInt32s.)
+    if (noErr == MIDIObjectGetDataProperty(endpointRef, kMIDIPropertyConnectionUniqueID, (CFDataRef *)&data)) {
+        unsigned int dataLength = [data length];
+        unsigned int count;
+        const SInt32 *p, *end;
+        NSMutableArray *array;
+        
+        // Make sure the data length makes sense
+        if (dataLength % sizeof(SInt32) != 0)
+            return [NSArray array];
+
+        count = dataLength / sizeof(SInt32);
+        array = [NSMutableArray arrayWithCapacity:count];
+        p = [data bytes];
+        for (end = p + count ; p < end; p++) {
+            oneUniqueID = ntohl(*p);
+            if (oneUniqueID != 0)
+                [array addObject:[NSNumber numberWithLong:oneUniqueID]];
+        }
+
+        return array;
+    }
+    
+    // Now try getting the property as an integer. (It is only valid if nonzero.)
+    if (noErr == MIDIObjectGetIntegerProperty(endpointRef, kMIDIPropertyConnectionUniqueID, &oneUniqueID)) {
+        if (oneUniqueID != 0)
+            return [NSArray arrayWithObject:[NSNumber numberWithLong:oneUniqueID]];
+    }
+
+    // Give up
+    return [NSArray array];
+}
+
+- (NSArray *)connectedExternalDevices;
+{
+    NSArray *uniqueIDs;
+    unsigned int uniqueIDIndex, uniqueIDCount;
+    NSMutableArray *externalDevices;
+
+    uniqueIDs = [self uniqueIDsOfConnectedThings];
+    uniqueIDCount = [uniqueIDs count];
+    externalDevices = [NSMutableArray arrayWithCapacity:uniqueIDCount];
+    
+    for (uniqueIDIndex = 0; uniqueIDIndex < uniqueIDCount; uniqueIDIndex++) {
+        SInt32 aUniqueID = [[uniqueIDs objectAtIndex:uniqueIDIndex] longValue];
+        SMExternalDevice *extDevice;
+
+        extDevice = [SMExternalDevice externalDeviceWithUniqueID:aUniqueID];
+        if (extDevice)
+            [externalDevices addObject:extDevice];
+    }    
+
+    return externalDevices;
 }
 
 @end

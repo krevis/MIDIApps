@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 34;
+	objectVersion = 38;
 	objects = {
 		014CEA440018CDF011CA2923 = {
 			buildRules = (
@@ -130,8 +130,8 @@
 			productName = SnoizeMIDI;
 			productReference = 034768E0FF38A50411DB9C8B;
 			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<!DOCTYPE plist SYSTEM \"file://localhost/System/Library/DTDs/PropertyList.dtd\">
-<plist version=\"0.9\">
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
@@ -206,10 +206,11 @@
 				F506401A02ECBB1C01000164,
 				F506401C02ECBB1C01000164,
 				F506401902ECBB1C01000164,
-				F5E92A5602FB34E701000164,
+				F5DAB1E6030DE98E01000164,
+				F59FB8EE030E048501000164,
 			);
 			isa = PBXHeadersBuildPhase;
-			name = Headers;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0867D69EFE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
@@ -220,7 +221,7 @@
 				F57722BE0166F16D01000164,
 			);
 			isa = PBXResourcesBuildPhase;
-			name = "Bundle Resources";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0867D69FFE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
@@ -248,9 +249,15 @@
 				F5ADD9F9023189AE01000164,
 				F55C9C1D0244F30F01000164,
 				F55C9C1F0244F91B01000164,
+				F5AB5EE002F0DEAB01000164,
+				F5AB5EE102F0DEAB01000164,
+				F5AB5EE202F0DEAB01000164,
+				F5AB5EE302F0DEAB01000164,
+				F5AB5EE402F0DEAB01000164,
+				F5DAB1E7030DE98E01000164,
 			);
 			isa = PBXSourcesBuildPhase;
-			name = Sources;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0867D6A0FE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
@@ -263,14 +270,14 @@
 				F56333CD0253E6A401000164,
 			);
 			isa = PBXFrameworksBuildPhase;
-			name = "Frameworks & Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0867D6A2FE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
 			files = (
 			);
 			isa = PBXRezBuildPhase;
-			name = "ResourceManager Resources";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		089C1665FE841158C02AAC07 = {
 			children = (
@@ -311,6 +318,8 @@
 				F53D4A96015A960601000164,
 				F53BB49D015D4AC001000164,
 				F53BB49E015D4AC001000164,
+				F5DAB1E4030DE98E01000164,
+				F5DAB1E5030DE98E01000164,
 				F5ADD9F6023189AE01000164,
 				F5ADD9F7023189AE01000164,
 				F53D4A99015A960601000164,
@@ -1248,6 +1257,15 @@
 			settings = {
 			};
 		};
+		F59FB8EE030E048501000164 = {
+			fileRef = F584CFF001CB7BA801000164;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
 		F5A066FC02E83B3D01000164 = {
 			isa = PBXFileReference;
 			path = SMPlayingNote.h;
@@ -1257,6 +1275,36 @@
 			isa = PBXFileReference;
 			path = SMPlayingNote.m;
 			refType = 4;
+		};
+		F5AB5EE002F0DEAB01000164 = {
+			fileRef = F557390B01CE7E8801000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5AB5EE102F0DEAB01000164 = {
+			fileRef = F584CFED01CB6BF101000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5AB5EE202F0DEAB01000164 = {
+			fileRef = F584CFF101CB7BA801000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5AB5EE302F0DEAB01000164 = {
+			fileRef = F584CFF701CB85F901000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5AB5EE402F0DEAB01000164 = {
+			fileRef = F5A066FD02E83B3D01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		F5ADD9F6023189AE01000164 = {
 			isa = PBXFileReference;
@@ -1283,6 +1331,31 @@
 			settings = {
 			};
 		};
+		F5DAB1E4030DE98E01000164 = {
+			isa = PBXFileReference;
+			path = SMExternalDevice.h;
+			refType = 4;
+		};
+		F5DAB1E5030DE98E01000164 = {
+			isa = PBXFileReference;
+			path = SMExternalDevice.m;
+			refType = 4;
+		};
+		F5DAB1E6030DE98E01000164 = {
+			fileRef = F5DAB1E4030DE98E01000164;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		F5DAB1E7030DE98E01000164 = {
+			fileRef = F5DAB1E5030DE98E01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		F5E4BDD0018FCA6301000164 = {
 			buildRules = (
 			);
@@ -1293,15 +1366,6 @@
 			};
 			isa = PBXBuildStyle;
 			name = DeploymentInApp;
-		};
-		F5E92A5602FB34E701000164 = {
-			fileRef = F584CFF001CB7BA801000164;
-			isa = PBXBuildFile;
-			settings = {
-				ATTRIBUTES = (
-					Public,
-				);
-			};
 		};
 	};
 	rootObject = 0867D690FE84028FC02AAC07;
