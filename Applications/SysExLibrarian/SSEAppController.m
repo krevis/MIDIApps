@@ -39,7 +39,10 @@
 
     // Initialize CoreMIDI while the app's icon is still bouncing, so we don't have a large pause after it stops bouncing
     // but before the app's window opens.  (CoreMIDI needs to find and possibly start its server process, which can take a while.)
-    [SMClient sharedClient];
+    if ([SMClient sharedClient] == nil) {
+        NSRunCriticalAlertPanel(@"Error", @"%@", @"Quit", nil, nil, @"There was a problem initializing the MIDI system. To try to fix this, log out and log back in, or restart the computer.");
+        [NSApp terminate:nil];
+    }
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification;
