@@ -1,4 +1,4 @@
-{\rtf1\mac\ansicpg10000\cocoartf100
+{\rtf1\mac\ansicpg10000\cocoartf102
 {\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;\f1\fswiss\fcharset77 Helvetica;\f2\fswiss\fcharset77 Helvetica-Oblique;
 }
 {\colortbl;\red255\green255\blue255;}
@@ -7,19 +7,22 @@
 
 \f0\b\fs36 \cf0 DisclosableView 
 \f1\b0\fs28 (a Cocoa view and palette)\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
 
-\fs24 \
+\fs24 \cf0 \
 Kurt Revis  <krevis@snoize.com>\
 \
-Version 1.0\
-16 July 2002\
+Version 1.1\
+3 September 2002\
 \
 \
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
 
-\f0\b\fs28 What it is\
+\f0\b\fs28 \cf0 What it is\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
 
-\f1\b0\fs24 \
-This code implements a Cocoa view which can dynamically hide and show its contents, resizing its window appropriately. This is a fairly common UI behavior; some examples are the save sheets in Cocoa applications, and the data-entry windows in the Address Book in Mac OS X 10.1. However, Cocoa does not provide a built-in class which implements this behavior.\
+\f1\b0\fs24 \cf0 \
+This code implements a Cocoa view which can dynamically hide and show its contents, resizing its window appropriately. This is a fairly common UI behavior; some examples are the save sheets in Cocoa applications, the data-entry windows in the Address Book in Mac OS X 10.1, and the Get Info windows in the Finder in 10.2. However, Cocoa does not provide a built-in class which implements this behavior.\
 \
 For an example of this code in action, see my application MIDI Monitor:\
 http://www.snoize.com/MIDIMonitor/\
@@ -29,10 +32,12 @@ This package includes a framework containing the class (SNDisclosableView), as w
 Built copies of the framework and palette are included, along with the source code. The code is distributed under the BSD license.\
 \
 \
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
 
-\f0\b\fs28 Installation instructions\
+\f0\b\fs28 \cf0 Installation instructions\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
 
-\f1\b0\fs24 \
+\f1\b0\fs24 \cf0 \
 This package includes a framework (DisclosableView.framework) and an Interface Builder palette (DisclosableView.palette). \
 \
 Copy the framework to /Library/Frameworks on your startup disk. (The palette requires that the framework be found in this location.)\
@@ -46,10 +51,12 @@ If you put the palette in any of these locations:\
 then Interface Builder will find it when it starts up.  Or, you can put the palette somewhere else, and tell IB where it is using the "Palettes" tab in the preferences.\
 \
 \
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
 
-\f0\b\fs28 Developing with it\
+\f0\b\fs28 \cf0 Developing with it\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
 
-\f1\b0\fs24 \
+\f1\b0\fs24 \cf0 \
 Here's a quick walk through the features.\
 \
 \'a5 Start Interface Builder, and make sure that the palette has been loaded.\
@@ -67,10 +74,12 @@ Note that SNDisclosableView manages the next-key-view loop correctly. When it hi
 That is: the view above the SNDisclosableView should have its nextKeyView pointing to the SNDisclosableView. Then, the SNDisclosableView's nextKeyView should point to the first of its subviews. The subviews are connected together as usual, and then the last subview's nextKeyView should point to the next view outside of the SNDisclosableView.\
 \
 \
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
 
-\f0\b\fs28 Using it in your application\
+\f0\b\fs28 \cf0 Using it in your application\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
 
-\f1\b0\fs24 \
+\f1\b0\fs24 \cf0 \
 To use SNDisclosableView and SNDisclosureButton in your application, you do 
 \f2\i NOT
 \f1\i0  need your end users to install the palette or the framework. Instead, you can include the framework inside of your application. To do this:\
@@ -86,21 +95,36 @@ Now when your application is built, the framework will be copied into the applic
 If you have problems with this, see the Project Builder help (the first item in the Help menu).\
 \
 \
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
 
-\f0\b\fs28 Notes and bugs\
+\f0\b\fs28 \cf0 Notes and bugs\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
 
-\f1\b0\fs24 \
-The disclosure button is not quite as nice as the one that Carbon provides. The most obvious drawback is that it doesn't animate nicely as the window expands and contracts.  I'm not spending much time worrying about this, since I expect Apple to provide this control in Cocoa sometime soon (after 10.1).  \
+\f1\b0\fs24 \cf0 \
+The disclosure button is not quite as nice as the one that Carbon provides. The most obvious drawback is that it doesn't animate nicely as the window expands and contracts.  I'm not spending much time worrying about this, since I expect Apple to provide this control in Cocoa sometime soon. (Of course, I expected it for 10.2, but that didn't happen...)\
 \
 Also note that SNDisclosableView is not tied to SNDisclosureButton in any way; the two objects go together nicely, but neither requires the other. So any button (or code) can be used to trigger the disclosable view.\
 \
 Resizing the SNDisclosableView in IB can cause its subviews to move, which is kind of annoying. Note that this doesn't happen to views inside of an NSBox or NSCustomView. I haven't managed to figure out exactly why this is happening or how to fix it--this aspect of IB is barely documented and is apparently something of a black art.\
 \
 \
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
 
-\f0\b\fs28 Comments\
+\f0\b\fs28 \cf0 History\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
 
-\f1\b0\fs24 \
+\f1\b0\fs24 \cf0 \
+Version 1.0 (16 July 2002) was the first public release.\
+\
+Version 1.1 (3 September 2002) adds new behavior on Mac OS X 10.2 ("Jaguar"), to match Apple's applications. The views inside of the SNDisclosableView remain visible while the window changes size, instead of disappearing.  The code still works on systems earlier than 10.2, with the old behavior.\
+\
+\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
+
+\f0\b\fs28 \cf0 Comments\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
+
+\f1\b0\fs24 \cf0 \
 Questions or comments? Let me know: email <krevis@snoize.com>.\
 I would especially like to hear from you if you use this code in a shipping app!\
 }
