@@ -892,7 +892,7 @@
 		};
 		F5460C1302E319C101000164 = {
 			isa = PBXFileReference;
-			lastKnownFileType = file;
+			lastKnownFileType = wrapper.framework;
 			path = DisclosableView.framework;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
