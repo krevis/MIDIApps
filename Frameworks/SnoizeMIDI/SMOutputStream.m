@@ -158,7 +158,7 @@ static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
 
                 messageData = [message otherDataBuffer];
                 dataRemaining = dataSize;
-
+                
                 while (dataRemaining > 0) {
                     unsigned int partialSize;
 
@@ -188,16 +188,17 @@ static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
                         packetList->numPackets = 0;
                         packet = &packetList->packet[0];
                         packetListSize = offsetof(MIDIPacketList, packet);
+                    } else {
+                        packet = MIDIPacketNext(packet);
                     }
                 }
             }
         }
     }
 
-    if (packetList->numPackets > 0) {
-        // We're finished with this packet list, so send it
+    // All messages have been processed, but we may still have an unsent packet list.
+    if (packetList->numPackets > 0)
         [self sendMIDIPacketList:packetList];
-    }
     
     free(packetList);
 }
