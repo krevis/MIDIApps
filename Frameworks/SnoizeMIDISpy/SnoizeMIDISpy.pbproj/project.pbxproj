@@ -1,0 +1,665 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 34;
+	objects = {
+		014CEA440018CDF011CA2923 = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "\U0001-DDEBUG";
+			};
+			isa = PBXBuildStyle;
+			name = Development;
+		};
+		014CEA450018CDF011CA2923 = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			isa = PBXBuildStyle;
+			name = Deployment;
+		};
+//010
+//011
+//012
+//013
+//014
+//030
+//031
+//032
+//033
+//034
+		034768DFFF38A50411DB9C8B = {
+			children = (
+				F540CCA6023F40E701000164,
+				034768E0FF38A50411DB9C8B,
+			);
+			isa = PBXGroup;
+			name = Products;
+			path = Framework;
+			refType = 4;
+		};
+		034768E0FF38A50411DB9C8B = {
+			isa = PBXFrameworkReference;
+			path = SnoizeMIDISpy.framework;
+			refType = 3;
+		};
+//030
+//031
+//032
+//033
+//034
+//080
+//081
+//082
+//083
+//084
+		0867D690FE84028FC02AAC07 = {
+			buildStyles = (
+				014CEA440018CDF011CA2923,
+				014CEA450018CDF011CA2923,
+				F5BCCEC7023F613D01000164,
+			);
+			isa = PBXProject;
+			mainGroup = 0867D691FE84028FC02AAC07;
+			productRefGroup = 034768DFFF38A50411DB9C8B;
+			projectDirPath = "";
+			targets = (
+				0867D69CFE84028FC02AAC07,
+				F540CCA7023F40E701000164,
+			);
+		};
+		0867D691FE84028FC02AAC07 = {
+			children = (
+				F540CCA4023F40E701000164,
+				F540CCA5023F40E701000164,
+				034768DFFF38A50411DB9C8B,
+			);
+			isa = PBXGroup;
+			name = MIDISpy;
+			refType = 4;
+		};
+		0867D69AFE84028FC02AAC07 = {
+			children = (
+				1058C7B0FEA5585E11CA2CBB,
+				1058C7B2FEA5585E11CA2CBB,
+			);
+			isa = PBXGroup;
+			name = "External Frameworks and Libraries";
+			path = "";
+			refType = 4;
+		};
+		0867D69CFE84028FC02AAC07 = {
+			buildPhases = (
+				0867D69DFE84028FC02AAC07,
+				0867D69EFE84028FC02AAC07,
+				0867D69FFE84028FC02AAC07,
+				0867D6A0FE84028FC02AAC07,
+				0867D6A2FE84028FC02AAC07,
+			);
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_VERSION = A;
+				HEADER_SEARCH_PATHS = "";
+				INSTALL_PATH = "";
+				LIBRARY_SEARCH_PATHS = "";
+				OPTIMIZATION_CFLAGS = "-O3";
+				OTHER_LDFLAGS = "-image_base 0x39000000";
+				PRODUCT_NAME = SnoizeMIDISpy;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+				WRAPPER_EXTENSION = framework;
+			};
+			dependencies = (
+			);
+			isa = PBXFrameworkTarget;
+			name = SnoizeMIDISpy.framework;
+			productInstallPath = "";
+			productName = MIDISpy;
+			productReference = 034768E0FF38A50411DB9C8B;
+			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist SYSTEM \"file://localhost/System/Library/DTDs/PropertyList.dtd\">
+<plist version=\"0.9\">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>SnoizeMIDISpy</string>
+	<key>CFBundleIconFile</key>
+	<string></string>
+	<key>CFBundleIdentifier</key>
+	<string></string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>FMWK</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>0.0.1d1</string>
+	<key>NSPrincipalClass</key>
+	<string></string>
+</dict>
+</plist>
+";
+			shouldUseHeadermap = 1;
+		};
+		0867D69DFE84028FC02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+				F5BCCEC9023F631901000164,
+				F5BCCEC4023F486D01000164,
+			);
+			isa = PBXHeadersBuildPhase;
+			name = Headers;
+		};
+		0867D69EFE84028FC02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+				089C1668FE841158C02AAC07,
+			);
+			isa = PBXResourcesBuildPhase;
+			name = "Bundle Resources";
+		};
+		0867D69FFE84028FC02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+				08FB77B5FE84181DC02AAC07,
+			);
+			isa = PBXSourcesBuildPhase;
+			name = Sources;
+		};
+		0867D6A0FE84028FC02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+				F5BCCEC2023F47DC01000164,
+				F5BCCEC6023F4AE501000164,
+			);
+			isa = PBXFrameworksBuildPhase;
+			name = "Frameworks & Libraries";
+		};
+		0867D6A2FE84028FC02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXRezBuildPhase;
+			name = "ResourceManager Resources";
+		};
+		089C1665FE841158C02AAC07 = {
+			children = (
+				089C1666FE841158C02AAC07,
+			);
+			isa = PBXGroup;
+			name = Resources;
+			path = "";
+			refType = 4;
+		};
+		089C1666FE841158C02AAC07 = {
+			children = (
+				089C1667FE841158C02AAC07,
+			);
+			isa = PBXVariantGroup;
+			name = InfoPlist.strings;
+			refType = 4;
+		};
+		089C1667FE841158C02AAC07 = {
+			fileEncoding = 10;
+			isa = PBXFileReference;
+			name = English;
+			path = English.lproj/InfoPlist.strings;
+			refType = 4;
+		};
+		089C1668FE841158C02AAC07 = {
+			fileRef = 089C1666FE841158C02AAC07;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		08FB77AEFE84172EC02AAC07 = {
+			children = (
+				F5BCCEC8023F631901000164,
+				08FB77B4FE84181DC02AAC07,
+				F5BCCEC3023F486D01000164,
+			);
+			isa = PBXGroup;
+			name = Source;
+			path = "";
+			refType = 4;
+		};
+		08FB77B4FE84181DC02AAC07 = {
+			isa = PBXFileReference;
+			path = MIDISpyClient.c;
+			refType = 4;
+		};
+		08FB77B5FE84181DC02AAC07 = {
+			fileRef = 08FB77B4FE84181DC02AAC07;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+//080
+//081
+//082
+//083
+//084
+//100
+//101
+//102
+//103
+//104
+		1058C7B0FEA5585E11CA2CBB = {
+			children = (
+				F5BCCEC1023F47DC01000164,
+				F5BCCEC5023F4AE501000164,
+			);
+			isa = PBXGroup;
+			name = "Linked Frameworks";
+			refType = 4;
+		};
+		1058C7B2FEA5585E11CA2CBB = {
+			children = (
+			);
+			isa = PBXGroup;
+			name = "Other Frameworks";
+			refType = 4;
+		};
+//100
+//101
+//102
+//103
+//104
+//F50
+//F51
+//F52
+//F53
+//F54
+		F540CCA4023F40E701000164 = {
+			children = (
+				F540CCBF023F42EA01000164,
+				F540CCC0023F42EA01000164,
+				F540CCC1023F42EA01000164,
+			);
+			isa = PBXGroup;
+			path = Driver;
+			refType = 4;
+		};
+		F540CCA5023F40E701000164 = {
+			children = (
+				08FB77AEFE84172EC02AAC07,
+				089C1665FE841158C02AAC07,
+				0867D69AFE84028FC02AAC07,
+			);
+			isa = PBXGroup;
+			path = Framework;
+			refType = 4;
+		};
+		F540CCA6023F40E701000164 = {
+			isa = PBXBundleReference;
+			path = SpyingMIDIDriver.plugin;
+			refType = 3;
+		};
+		F540CCA7023F40E701000164 = {
+			buildPhases = (
+				F540CCA8023F40E701000164,
+				F540CCA9023F40E701000164,
+				F540CCAA023F40E701000164,
+				F540CCAB023F40E701000164,
+				F540CCAC023F40E701000164,
+			);
+			buildSettings = {
+				EXPORTED_SYMBOLS_FILE = Driver/SpyingMIDIDriver.exp;
+				INSTALL_PATH = "/Library/Audio/MIDI Drivers";
+				OPTIMIZATION_CFLAGS = "-O3";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-lstdc++";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = SpyingMIDIDriver;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+				WRAPPER_EXTENSION = plugin;
+			};
+			dependencies = (
+			);
+			isa = PBXBundleTarget;
+			name = SpyingMIDIDriver;
+			productInstallPath = "/Library/Audio/MIDI Drivers";
+			productName = SpyingMIDIDriver;
+			productReference = F540CCA6023F40E701000164;
+			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist SYSTEM \"file://localhost/System/Library/DTDs/PropertyList.dtd\">
+<plist version=\"0.9\">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>SpyingMIDIDriver</string>
+	<key>CFBundleGetInfoString</key>
+	<string></string>
+	<key>CFBundleIconFile</key>
+	<string></string>
+	<key>CFBundleIdentifier</key>
+	<string>com.snoize.SpyingMIDIDriver</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string></string>
+	<key>CFBundlePackageType</key>
+	<string>BNDL</string>
+	<key>CFBundleShortVersionString</key>
+	<string></string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>0.0.1d1</string>
+	<key>CFPlugInFactories</key>
+	<dict>
+		<key>4FA13C6B-2D94-11D6-8C2F-000A27B4965C</key>
+		<string>NewSpyingMIDIDriver</string>
+	</dict>
+	<key>CFPlugInTypes</key>
+	<dict>
+		<key>ECDE9574-0FE4-11D4-BB1A-0050E4CEA526</key>
+		<array>
+			<string>4FA13C6B-2D94-11D6-8C2F-000A27B4965C</string>
+		</array>
+	</dict>
+</dict>
+</plist>
+";
+			shouldUseHeadermap = 0;
+		};
+		F540CCA8023F40E701000164 = {
+			buildActionMask = 2147483647;
+			files = (
+				F540CCB9023F41B101000164,
+				F540CCB8023F41B101000164,
+				F540CCB6023F41B101000164,
+				F540CCB7023F41B101000164,
+			);
+			isa = PBXHeadersBuildPhase;
+			name = Headers;
+		};
+		F540CCA9023F40E701000164 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXResourcesBuildPhase;
+			name = "Bundle Resources";
+		};
+		F540CCAA023F40E701000164 = {
+			buildActionMask = 2147483647;
+			files = (
+				F540CCBE023F41B101000164,
+				F540CCBC023F41B101000164,
+				F540CCBA023F41B101000164,
+				F540CCBB023F41B101000164,
+			);
+			isa = PBXSourcesBuildPhase;
+			name = Sources;
+		};
+		F540CCAB023F40E701000164 = {
+			buildActionMask = 2147483647;
+			files = (
+				F540CCC7023F42EA01000164,
+				F540CCC8023F42EA01000164,
+			);
+			isa = PBXFrameworksBuildPhase;
+			name = "Frameworks & Libraries";
+		};
+		F540CCAC023F40E701000164 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXRezBuildPhase;
+			name = "ResourceManager Resources";
+		};
+		F540CCAD023F41B101000164 = {
+			isa = PBXFileReference;
+			path = MIDIDriverClass.h;
+			refType = 4;
+		};
+		F540CCAE023F41B101000164 = {
+			isa = PBXFileReference;
+			path = MIDIDriver.cpp;
+			refType = 4;
+		};
+		F540CCAF023F41B101000164 = {
+			isa = PBXFileReference;
+			path = SpyingMIDIDriver.h;
+			refType = 4;
+		};
+		F540CCB0023F41B101000164 = {
+			isa = PBXFileReference;
+			path = SpyingMIDIDriver.cpp;
+			refType = 4;
+		};
+		F540CCB1023F41B101000164 = {
+			isa = PBXFileReference;
+			path = MessagePortBroadcaster.h;
+			refType = 4;
+		};
+		F540CCB2023F41B101000164 = {
+			isa = PBXFileReference;
+			path = MessagePortBroadcaster.cpp;
+			refType = 4;
+		};
+		F540CCB3023F41B101000164 = {
+			isa = PBXFileReference;
+			path = MessageQueue.h;
+			refType = 4;
+		};
+		F540CCB4023F41B101000164 = {
+			isa = PBXFileReference;
+			path = MessageQueue.c;
+			refType = 4;
+		};
+		F540CCB5023F41B101000164 = {
+			isa = PBXFileReference;
+			path = SpyingMIDIDriver.exp;
+			refType = 4;
+		};
+		F540CCB6023F41B101000164 = {
+			fileRef = F540CCB1023F41B101000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F540CCB7023F41B101000164 = {
+			fileRef = F540CCB3023F41B101000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F540CCB8023F41B101000164 = {
+			fileRef = F540CCAF023F41B101000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F540CCB9023F41B101000164 = {
+			fileRef = F540CCAD023F41B101000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F540CCBA023F41B101000164 = {
+			fileRef = F540CCB2023F41B101000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F540CCBB023F41B101000164 = {
+			fileRef = F540CCB4023F41B101000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F540CCBC023F41B101000164 = {
+			fileRef = F540CCB0023F41B101000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F540CCBE023F41B101000164 = {
+			fileRef = F540CCAE023F41B101000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F540CCBF023F42EA01000164 = {
+			children = (
+				F540CCAD023F41B101000164,
+				F540CCAE023F41B101000164,
+				F540CCAF023F41B101000164,
+				F540CCB0023F41B101000164,
+				F540CCB1023F41B101000164,
+				F540CCB2023F41B101000164,
+				F540CCB3023F41B101000164,
+				F540CCB4023F41B101000164,
+			);
+			isa = PBXGroup;
+			name = Source;
+			path = "";
+			refType = 4;
+		};
+		F540CCC0023F42EA01000164 = {
+			children = (
+				F540CCB5023F41B101000164,
+			);
+			isa = PBXGroup;
+			name = Other;
+			refType = 4;
+		};
+		F540CCC1023F42EA01000164 = {
+			children = (
+				F540CCC2023F42EA01000164,
+				F540CCC5023F42EA01000164,
+			);
+			isa = PBXGroup;
+			name = "External Frameworks and Libraries";
+			refType = 4;
+		};
+		F540CCC2023F42EA01000164 = {
+			children = (
+				F540CCC3023F42EA01000164,
+				F540CCC4023F42EA01000164,
+			);
+			isa = PBXGroup;
+			name = "Linked Frameworks";
+			refType = 4;
+		};
+		F540CCC3023F42EA01000164 = {
+			isa = PBXFrameworkReference;
+			name = CoreFoundation.framework;
+			path = /System/Library/Frameworks/CoreFoundation.framework;
+			refType = 0;
+		};
+		F540CCC4023F42EA01000164 = {
+			isa = PBXFrameworkReference;
+			name = CoreMIDIServer.framework;
+			path = /System/Library/Frameworks/CoreMIDIServer.framework;
+			refType = 0;
+		};
+		F540CCC5023F42EA01000164 = {
+			children = (
+				F540CCC6023F42EA01000164,
+			);
+			isa = PBXGroup;
+			name = "Other Frameworks";
+			path = "";
+			refType = 4;
+		};
+		F540CCC6023F42EA01000164 = {
+			isa = PBXFrameworkReference;
+			name = CoreMIDI.framework;
+			path = /System/Library/Frameworks/CoreMIDI.framework;
+			refType = 0;
+		};
+		F540CCC7023F42EA01000164 = {
+			fileRef = F540CCC3023F42EA01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F540CCC8023F42EA01000164 = {
+			fileRef = F540CCC4023F42EA01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5BCCEC1023F47DC01000164 = {
+			isa = PBXFrameworkReference;
+			name = CoreFoundation.framework;
+			path = /System/Library/Frameworks/CoreFoundation.framework;
+			refType = 0;
+		};
+		F5BCCEC2023F47DC01000164 = {
+			fileRef = F5BCCEC1023F47DC01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5BCCEC3023F486D01000164 = {
+			isa = PBXFileReference;
+			path = MIDISpyClient.h;
+			refType = 4;
+		};
+		F5BCCEC4023F486D01000164 = {
+			fileRef = F5BCCEC3023F486D01000164;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		F5BCCEC5023F4AE501000164 = {
+			isa = PBXFrameworkReference;
+			name = CoreMIDI.framework;
+			path = /System/Library/Frameworks/CoreMIDI.framework;
+			refType = 0;
+		};
+		F5BCCEC6023F4AE501000164 = {
+			fileRef = F5BCCEC5023F4AE501000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5BCCEC7023F613D01000164 = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				SKIP_INSTALL = YES;
+			};
+			isa = PBXBuildStyle;
+			name = DeploymentInApp;
+		};
+		F5BCCEC8023F631901000164 = {
+			isa = PBXFileReference;
+			path = SnoizeMIDISpy.h;
+			refType = 4;
+		};
+		F5BCCEC9023F631901000164 = {
+			fileRef = F5BCCEC8023F631901000164;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+	};
+	rootObject = 0867D690FE84028FC02AAC07;
+}
