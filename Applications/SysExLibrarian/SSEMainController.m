@@ -60,11 +60,6 @@
     messages = [[NSMutableArray alloc] init];    
     messageBytesRead = 0;
     totalBytesRead = 0;
-
-    // TODO testing
-    [messages addObject:[SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:[NSData randomDataOfLength:29826]]];
-    [messages addObject:[SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:[NSData randomDataOfLength:18106]]];
-    [messages addObject:[SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:[NSData randomDataOfLength:17574]]];
     
     listeningToMessages = NO;
     listenToMultipleMessages = NO;
@@ -380,7 +375,6 @@
         message = [messagesToTake objectAtIndex:messageIndex];
         if ([message isKindOfClass:[SMSystemExclusiveMessage class]]) {
             [messages addObject:message];
-            NSLog(@"got message with total length: %u", [message fullMessageDataLength]);
             totalBytesRead += messageBytesRead;
             messageBytesRead = 0;
 
@@ -432,7 +426,6 @@
     
     if (sendingMessageIndex < sendingMessageCount && [sendRequest wereAllBytesSent]) {
         sendNextMessageEvent = [[[OFScheduler mainScheduler] scheduleSelector:@selector(_sendNextSysExMessage) onObject:self afterTime:pauseTimeBetweenMessages] retain];
-            // TODO pause should be configurable
     } else {
         [windowController mainThreadPerformSelector:@selector(hideSysExSendStatusWithSuccess:) withBool:[sendRequest wereAllBytesSent]];
     }
