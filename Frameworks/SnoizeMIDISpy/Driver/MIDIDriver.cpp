@@ -169,6 +169,8 @@ static MIDIDriverInterface MIDIDriverInterfaceFtbl = {
 	NULL, // Required padding for COM
 	//
 	// These are the required COM functions
+	// NOTE: Warnings here about conversion from MIDIDriverInterface** to void* are nothing to worry about
+	// (although yucky)
 	MIDIDriverQueryInterface,
 	MIDIDriverAddRef,
 	MIDIDriverRelease,
