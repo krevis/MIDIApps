@@ -18,9 +18,9 @@
 
     OBASSERT(aLength <= 2);
     if (aLength >= 1)
-        message->dataBytes[0] = *aData;
+        message->dataBytes[0] = aData[0];
     if (aLength == 2)
-        message->dataBytes[1] = *(aData + 1);
+        message->dataBytes[1] = aData[1];
     
     return message;
 }
