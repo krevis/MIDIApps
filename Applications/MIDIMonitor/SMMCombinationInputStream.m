@@ -26,18 +26,6 @@
 
 @implementation SMMCombinationInputStream
 
-static NSString *sourcesGroupName = nil;
-static NSString *virtualGroupName = nil;
-static NSString *spyingGroupName = nil;
-
-+ (void)didLoad;
-{
-    sourcesGroupName = NSLocalizedStringFromTableInBundle(@"MIDI sources", @"MIDIMonitor", [self bundle], "name of group for ordinary sources");
-    virtualGroupName = NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"MIDIMonitor", [self bundle], "name of source item for virtual destination");
-    spyingGroupName = NSLocalizedStringFromTableInBundle(@"Spy on output to destinations", @"MIDIMonitor", [self bundle], "name of group for spying on destinations");
-}
-
-
 - (id)init;
 {
     NSNotificationCenter *center;
@@ -71,6 +59,9 @@ static NSString *spyingGroupName = nil;
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
+    [groupedInputSources release];
+    groupedInputSources = nil;
+    
     [portInputStream release];
     portInputStream = nil;
 
@@ -104,21 +95,30 @@ static NSString *spyingGroupName = nil;
 
 - (NSArray *)groupedInputSources;
 {
-    NSMutableArray *groupedInputSources;
-    NSDictionary *dictionary;
+    if (!groupedInputSources) {
+        NSDictionary *portGroup, *virtualGroup, *spyingGroup;
+        NSString *groupName;
 
-    groupedInputSources = [NSMutableArray array];
+        groupName = NSLocalizedStringFromTableInBundle(@"MIDI sources", @"MIDIMonitor", [self bundle], "name of group for ordinary sources");
+        portGroup = [NSMutableDictionary dictionaryWithObjectsAndKeys:groupName, @"name", nil];
 
-    dictionary = [NSDictionary dictionaryWithObjectsAndKeys:sourcesGroupName, @"name", [portInputStream inputSources], @"sources", nil];    
-    [groupedInputSources addObject:dictionary];
+        groupName = NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"MIDIMonitor", [self bundle], "name of source item for virtual destination");
+        virtualGroup = [NSMutableDictionary dictionaryWithObjectsAndKeys:groupName, @"name", [NSNumber numberWithBool:YES], @"isNotExpandable", nil];
 
-    dictionary = [NSDictionary dictionaryWithObjectsAndKeys:virtualGroupName, @"name", [virtualInputStream inputSources], @"sources", [NSNumber numberWithBool:YES], @"isNotExpandable", nil];
-    [groupedInputSources addObject:dictionary];
+        if (spyingInputStream) {
+            groupName = NSLocalizedStringFromTableInBundle(@"Spy on output to destinations", @"MIDIMonitor", [self bundle], "name of group for spying on destinations");
+            spyingGroup = [NSMutableDictionary dictionaryWithObjectsAndKeys:groupName, @"name", nil];
+        } else {
+            spyingGroup = nil;
+        }
 
-    if (spyingInputStream) {
-        dictionary = [NSDictionary dictionaryWithObjectsAndKeys:spyingGroupName, @"name", [spyingInputStream inputSources], @"sources", nil];
-        [groupedInputSources addObject:dictionary];
+        groupedInputSources = [[NSArray alloc] initWithObjects:portGroup, virtualGroup, spyingGroup, nil];
     }
+
+    [[groupedInputSources objectAtIndex:0] setObject:[portInputStream inputSources] forKey:@"sources"];
+    [[groupedInputSources objectAtIndex:1] setObject:[virtualInputStream inputSources] forKey:@"sources"];
+    if (spyingInputStream)
+        [[groupedInputSources objectAtIndex:2] setObject:[spyingInputStream inputSources] forKey:@"sources"];
 
     return groupedInputSources;
 }

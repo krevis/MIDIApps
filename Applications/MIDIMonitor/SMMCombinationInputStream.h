@@ -15,6 +15,8 @@
     SMPortInputStream *portInputStream;
     SMVirtualInputStream *virtualInputStream;
     SMMSpyingInputStream *spyingInputStream;
+
+    NSArray *groupedInputSources;
 }
 
 - (id<SMMessageDestination>)messageDestination;
