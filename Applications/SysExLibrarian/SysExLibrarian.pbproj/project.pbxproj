@@ -212,9 +212,9 @@
 				F57D1E5B02127DF401000164,
 				F57D1E5C02127DF401000164,
 				F57D1E5D02127DF401000164,
-				F5499C4B0213555E01000164,
 				F5499C4C0213555E01000164,
-				F58752720214CF6F01000164,
+				F59F89CE02154ADE01000164,
+				F59F89D002154AFF01000164,
 			);
 			isa = PBXGroup;
 			name = Resources;
@@ -417,10 +417,11 @@
 				F57D1E5E02127DF401000164,
 				F57D1E5F02127DF401000164,
 				F57D1E6002127DF401000164,
-				F5499C4D0213555E01000164,
 				F5499C4E0213555E01000164,
 				F58752710214CEDD01000164,
-				F58752730214CF6F01000164,
+				F5875278021531EF01000164,
+				F59F89CF02154ADE01000164,
+				F59F89D102154AFF01000164,
 			);
 			isa = PBXResourcesBuildPhase;
 			name = "Bundle Resources";
@@ -541,21 +542,10 @@
 			settings = {
 			};
 		};
-		F5499C4B0213555E01000164 = {
-			isa = PBXFileReference;
-			path = "pause-32.tiff";
-			refType = 4;
-		};
 		F5499C4C0213555E01000164 = {
 			isa = PBXFileReference;
-			path = "run-32.tiff";
+			path = ToolbarPlay.tiff;
 			refType = 4;
-		};
-		F5499C4D0213555E01000164 = {
-			fileRef = F5499C4B0213555E01000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		F5499C4E0213555E01000164 = {
 			fileRef = F5499C4C0213555E01000164;
@@ -995,17 +985,6 @@
 			settings = {
 			};
 		};
-		F58752720214CF6F01000164 = {
-			isa = PBXFileReference;
-			path = ToolbarPlaceholder.tiff;
-			refType = 4;
-		};
-		F58752730214CF6F01000164 = {
-			fileRef = F58752720214CF6F01000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		F58752740214D73401000164 = {
 			isa = PBXFileReference;
 			path = SSEValidatingButton.h;
@@ -1024,6 +1003,34 @@
 		};
 		F58752770214D73401000164 = {
 			fileRef = F58752750214D73401000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5875278021531EF01000164 = {
+			fileRef = 2A37F4B9FDCFA73011CA2CEA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F59F89CE02154ADE01000164 = {
+			isa = PBXFileReference;
+			path = ToolbarRecordOne.tiff;
+			refType = 4;
+		};
+		F59F89CF02154ADE01000164 = {
+			fileRef = F59F89CE02154ADE01000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F59F89D002154AFF01000164 = {
+			isa = PBXFileReference;
+			path = ToolbarRecordMultiple.tiff;
+			refType = 4;
+		};
+		F59F89D102154AFF01000164 = {
+			fileRef = F59F89D002154AFF01000164;
 			isa = PBXBuildFile;
 			settings = {
 			};

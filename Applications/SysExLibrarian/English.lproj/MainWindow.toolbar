@@ -4,33 +4,29 @@
         NSToolbarFlexibleSpaceItem, NSToolbarSeparatorItem, NSToolbarSpaceItem
     );
     defaultItemIdentifiers = (
-        Play, NSToolbarSpaceItem, DestinationPopup, NSToolbarSpaceItem, RecordOne, RecordMany
+        Play, NSToolbarSpaceItem, DestinationPopup, NSToolbarFlexibleSpaceItem, RecordOne, RecordMany
     );
     itemInfoByIdentifier = {
         Play = {
             action = "play:";
-            imageName = "run-32";
+            imageName = "ToolbarPlay";
             label = "Play";
-            paletteLabel = "";
             toolTip = "Play back the selected file(s)";
         };
         RecordOne = {
             action = "recordOne:";
-            imageName = "ToolbarPlaceholder";
+            imageName = "ToolbarRecordOne";
             label = "Record One";
-            paletteLabel = "";
             toolTip = "Record one SysEx message";
         };
         RecordMany = {
             action = "recordMultiple:";
-            imageName = "ToolbarPlaceholder";
-            label = "Record";
-            paletteLabel = "";
+            imageName = "ToolbarRecordMultiple";
+            label = "Record Many";
             toolTip = "Record one or more SysEx messages";
         };
         DestinationPopup = {
             label = "Destination";
-            paletteLabel = "";
             toolTip = "Where to send SysEx data";
             needsSpecialInitialization = YES;
         };
