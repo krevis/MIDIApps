@@ -117,8 +117,11 @@
 				OPTIMIZATION_CFLAGS = "-O3";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-image_base 0x38000000";
+				PRECOMPILE_PREFIX_HEADER = YES;
+				PREFIX_HEADER = PrecompHeader.h;
 				PRODUCT_NAME = SnoizeMIDI;
 				SECTORDER_FLAGS = "";
+				USE_GCC3_PFE_SUPPORT = YES;
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas -Wparentheses";
 				WRAPPER_EXTENSION = framework;
 			};
@@ -208,6 +211,7 @@
 				F506401902ECBB1C01000164,
 				F5DAB1E6030DE98E01000164,
 				F59FB8EE030E048501000164,
+				F547E05403184DAA01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -267,7 +271,6 @@
 				F53D4A93015A953401000164,
 				F53D4A94015A953401000164,
 				F56B1FC601F1006301000164,
-				F56333CD0253E6A401000164,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -313,6 +316,7 @@
 		};
 		08FB77AEFE84172EC02AAC07 = {
 			children = (
+				F547E05303184DAA01000164,
 				F53D4AB3015AA95101000164,
 				F53D4A95015A960601000164,
 				F53D4A96015A960601000164,
@@ -347,7 +351,6 @@
 				0867D69BFE84028FC02AAC07,
 				F56B1FC501F1006301000164,
 				F53D4A8D015A950D01000164,
-				F56B1FC301F0F66D01000164,
 				F53D4A91015A953401000164,
 				F53D4A92015A953401000164,
 			);
@@ -627,6 +630,17 @@
 		};
 		F540F196022133F901000164 = {
 			fileRef = F540F194022133F901000164;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F547E05303184DAA01000164 = {
+			isa = PBXFileReference;
+			path = PrecompHeader.h;
+			refType = 4;
+		};
+		F547E05403184DAA01000164 = {
+			fileRef = F547E05303184DAA01000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -919,12 +933,6 @@
 			name = Processors;
 			refType = 4;
 		};
-		F56333CD0253E6A401000164 = {
-			fileRef = F56B1FC301F0F66D01000164;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		F56435D501BDE8B701000164 = {
 			children = (
 				F56435D601BDE8B701000164,
@@ -1026,12 +1034,6 @@
 			isa = PBXBuildFile;
 			settings = {
 			};
-		};
-		F56B1FC301F0F66D01000164 = {
-			isa = PBXFrameworkReference;
-			name = AudioToolbox.framework;
-			path = /System/Library/Frameworks/AudioToolbox.framework;
-			refType = 0;
 		};
 		F56B1FC501F1006301000164 = {
 			isa = PBXFrameworkReference;

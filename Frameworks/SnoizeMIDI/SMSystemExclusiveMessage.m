@@ -4,7 +4,6 @@
 
 #import "SMSystemExclusiveMessage.h"
 
-#import <AudioToolbox/MusicPlayer.h>
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 

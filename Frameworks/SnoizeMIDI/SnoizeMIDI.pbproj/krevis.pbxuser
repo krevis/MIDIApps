@@ -9,7 +9,7 @@
 		breakpoints = (
 		);
 		perUserDictionary = {
-			PBXPerProjectTemplateStateSaveDate = 51250289;
+			PBXPerProjectTemplateStateSaveDate = 51924133;
 			PBXWorkspaceContents = (
 				{
 					LeftSlideOut = {
@@ -277,7 +277,7 @@
 					WindowLocation = "{40, 61}";
 				},
 			);
-			PBXWorkspaceStateSaveDate = 51250289;
+			PBXWorkspaceStateSaveDate = 51924133;
 		};
 		perUserProjectItems = {
 			F59FB8EF030E049901000164 = F59FB8EF030E049901000164;
@@ -438,20 +438,6 @@
 	F59FB8F1030E049901000164 = {
 		isa = PBXTargetBookmark;
 		trg = 0867D69CFE84028FC02AAC07;
-		uiCtxt = {
-			TOCViewDetailVisibleRect = "{{0, 0}, {548, 595}}";
-			TOCViewExpandedItems = (
-				"com.apple.target-editor-pane.settings",
-				"com.apple.target-editor-pane.settings.simple",
-				"com.apple.target-editor-pane.info-plist",
-				"com.apple.target-editor-pane.info-plist.simple",
-				"com.apple.target-editor-pane.buildphases",
-			);
-			TOCViewMasterVisibleRect = "{{0, 0}, {217, 822}}";
-			TOCViewSelectedItems = (
-				0867D69DFE84028FC02AAC07,
-			);
-		};
 	};
 	F59FB8F2030E049901000164 = {
 		fRef = F5DAB1E5030DE98E01000164;
@@ -476,20 +462,6 @@
 	F59FB8F4030E049901000164 = {
 		isa = PBXTargetBookmark;
 		trg = 0867D69CFE84028FC02AAC07;
-		uiCtxt = {
-			TOCViewDetailVisibleRect = "{{0, 0}, {548, 595}}";
-			TOCViewExpandedItems = (
-				"com.apple.target-editor-pane.settings",
-				"com.apple.target-editor-pane.settings.simple",
-				"com.apple.target-editor-pane.info-plist",
-				"com.apple.target-editor-pane.info-plist.simple",
-				"com.apple.target-editor-pane.buildphases",
-			);
-			TOCViewMasterVisibleRect = "{{0, 0}, {217, 822}}";
-			TOCViewSelectedItems = (
-				0867D69DFE84028FC02AAC07,
-			);
-		};
 	};
 	F5AE7F9702F8C88D01000164 = {
 		fRef = F5AE7FA702F8C88D01000164;
@@ -556,7 +528,7 @@
 		isa = PBXTextBookmark;
 		name = "SMSystemExclusiveMessage.m: dataForSystemExclusiveMessages:";
 		rLen = 0;
-		rLoc = 1328;
+		rLoc = 1291;
 		rType = 0;
 		vrLen = 2696;
 		vrLoc = 2639;
@@ -576,7 +548,7 @@
 		isa = PBXTextBookmark;
 		name = "SMSystemExclusiveMessage.m: dataByAddingStartByte:";
 		rLen = 0;
-		rLoc = 16167;
+		rLoc = 16130;
 		rType = 0;
 		vrLen = 1399;
 		vrLoc = 18707;
@@ -596,7 +568,7 @@
 		isa = PBXTextBookmark;
 		name = "SMSystemExclusiveMessage.m: dataForSystemExclusiveMessages:";
 		rLen = 0;
-		rLoc = 1328;
+		rLoc = 1291;
 		rType = 0;
 		vrLen = 2027;
 		vrLoc = 715;
@@ -654,7 +626,7 @@
 		isa = PBXTextBookmark;
 		name = "SMSystemExclusiveMessage.m: smfDataForSystemExclusiveMessages:";
 		rLen = 0;
-		rLoc = 17100;
+		rLoc = 17063;
 		rType = 0;
 		vrLen = 1743;
 		vrLoc = 17539;
@@ -704,7 +676,7 @@
 		isa = PBXTextBookmark;
 		name = "SMSystemExclusiveMessage.m: smfDataForSystemExclusiveMessages:";
 		rLen = 0;
-		rLoc = 17100;
+		rLoc = 17063;
 		rType = 0;
 		vrLen = 1743;
 		vrLoc = 17539;
@@ -1426,7 +1398,7 @@
 		isa = PBXTextBookmark;
 		name = "SMSystemExclusiveMessage.m: writeSystemExclusiveMessages:toStandardMIDIFile:";
 		rLen = 0;
-		rLoc = 3867;
+		rLoc = 3830;
 		rType = 0;
 		vrLen = 2543;
 		vrLoc = 8428;
