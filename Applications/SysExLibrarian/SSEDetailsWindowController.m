@@ -188,8 +188,8 @@ static NSMutableArray *controllers = nil;
 
 - (void)_synchronizeTitle;
 {
-    [[self window] setTitle:[NSString stringWithFormat:@"Details: %@", [entry name]]];
-    // TODO is this really the title we want?
+    [[self window] setTitle:[entry name]];
+    [[self window] setRepresentedFilename:[entry path]];
 }
 
 - (void)_displayPreferencesDidChange:(NSNotification *)notification;
