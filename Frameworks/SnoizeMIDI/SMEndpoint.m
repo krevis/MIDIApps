@@ -17,52 +17,53 @@ typedef struct EndpointUniqueNamesFlags {
     unsigned int haveNamesAlwaysBeenUnique:1;
 } EndpointUniqueNamesFlags;
 
-+ (void)_earlyMIDISetup;
-+ (void)_midiClientCreated:(NSNotification *)notification;
-+ (void)_midiSetupChanged:(NSNotification *)notification;
++ (void)earlyMIDISetup;
++ (void)midiClientCreate:(NSNotification *)notification;
++ (void)midiSetupChanged:(NSNotification *)notification;
 
-+ (NSMapTable **)_endpointMapTablePtr;
-+ (ItemCount)_endpointCount;
-+ (MIDIEndpointRef)_endpointAtIndex:(ItemCount)index;
-+ (ItemCount)_endpointCountForEntity:(MIDIEntityRef)entity;
-+ (MIDIEndpointRef)_endpointAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
++ (NSMapTable **)endpointMapTablePtr;
++ (EndpointUniqueNamesFlags *)endpointUniqueNamesFlagsPtr;
++ (ItemCount)endpointCount;
++ (MIDIEndpointRef)endpointAtIndex:(ItemCount)index;
++ (ItemCount)endpointCountForEntity:(MIDIEntityRef)entity;
++ (MIDIEndpointRef)endpointAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
 
-+ (void)_reloadEndpoints;
-+ (NSArray *)_allEndpoints;
-+ (NSArray *)_allEndpointsSortedByOrdinal;
-+ (SMEndpoint *)_endpointMatchingUniqueID:(SInt32)uniqueID;
-+ (SMEndpoint *)_endpointMatchingName:(NSString *)aName;
-+ (SMEndpoint *)_endpointForEndpointRef:(MIDIEndpointRef)anEndpointRef;
++ (void)reloadEndpoints;
++ (NSArray *)allEndpoints;
++ (NSArray *)allEndpointsSortedByOrdinal;
++ (SMEndpoint *)endpointMatchingUniqueID:(SInt32)uniqueID;
++ (SMEndpoint *)endpointMatchingName:(NSString *)aName;
++ (SMEndpoint *)endpointForEndpointRef:(MIDIEndpointRef)anEndpointRef;
 
-+ (BOOL)_doEndpointsHaveUniqueNames;
-+ (BOOL)_haveEndpointsAlwaysHadUniqueNames;
-+ (void)_checkForUniqueNames;
++ (BOOL)doEndpointsHaveUniqueNames;
++ (BOOL)haveEndpointsAlwaysHadUniqueNames;
++ (void)checkForUniqueNames;
 
-- (void)_updateUniqueID;
-- (void)_invalidateCachedProperties;
+- (void)updateUniqueID;
+- (void)invalidateCachedProperties;
 
-- (MIDIDeviceRef)_findDevice;
-- (MIDIDeviceRef)_device;
-- (NSString *)_deviceName;
-- (NSString *)_deviceStringForProperty:(CFStringRef)property;
+- (MIDIDeviceRef)findDevice;
+- (MIDIDeviceRef)device;
+- (NSString *)deviceName;
+- (NSString *)deviceStringForProperty:(CFStringRef)property;
 
-- (SInt32)_ownerPID;
-- (void)_setOwnerPID:(SInt32)value;
+- (SInt32)ownerPID;
+- (void)setOwnerPID:(SInt32)value;
 
-- (NSString *)_stringForProperty:(CFStringRef)property;
-- (void)_setString:(NSString *)value forProperty:(CFStringRef)property;
+- (NSString *)stringForProperty:(CFStringRef)property;
+- (void)setString:(NSString *)value forProperty:(CFStringRef)property;
 
-- (SInt32)_integerForProperty:(CFStringRef)property;
-- (void)_setInteger:(SInt32)value forProperty:(CFStringRef)property;
+- (SInt32)integerForProperty:(CFStringRef)property;
+- (void)setInteger:(SInt32)value forProperty:(CFStringRef)property;
 
-- (void)_setOrdinal:(unsigned int)value;
-- (unsigned int)_ordinal;
+- (void)setOrdinal:(unsigned int)value;
+- (unsigned int)ordinal;
 static int endpointOrdinalComparator(id endpoint1, id endpoint2, void *context);
 
-- (void)_checkIfPropertySetIsAllowed;
+- (void)checkIfPropertySetIsAllowed;
 
-- (void)_postRemovedNotification;
-- (void)_postReplacedNotificationWithReplacement:(SMEndpoint *)replacement;
+- (void)postRemovedNotification;
+- (void)postReplacedNotificationWithReplacement:(SMEndpoint *)replacement;
 
 @end
 
@@ -106,7 +107,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     endpointRef = anEndpointRef;
 
     // Save the endpoint's uniqueID, since it could become inaccessible later (if the endpoint goes away).
-    [self _updateUniqueID];
+    [self updateUniqueID];
 
     // We start out not knowing the endpoint's device (if it has one). We'll look it up on demand.
     deviceRef = NULL;
@@ -143,12 +144,12 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 - (BOOL)isVirtual;
 {
     // We are virtual if we have no device
-    return ([self _device] == NULL);
+    return ([self device] == NULL);
 }
 
 - (BOOL)isOwnedByThisProcess;
 {
-    return ([self isVirtual] && ([self _ownerPID] == getpid()));
+    return ([self isVirtual] && ([self ownerPID] == getpid()));
 }
 
 - (void)setIsOwnedByThisProcess;
@@ -162,7 +163,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
         [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Endpoint is not virtual, so it can't be owned by this process", @"SnoizeMIDI", [self bundle], "exception if someone calls -setIsOwnedByThisProcess on a non-virtual endpoint")];
     }
     
-    [self _setOwnerPID:getpid()];
+    [self setOwnerPID:getpid()];
 }
 
 - (SInt32)uniqueID;
@@ -177,7 +178,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     if (value == uniqueID)
         return;
 
-    [self _checkIfPropertySetIsAllowed];
+    [self checkIfPropertySetIsAllowed];
 
     status = MIDIObjectSetIntegerProperty(endpointRef, kMIDIPropertyUniqueID, value);
     if (status) {
@@ -185,14 +186,14 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     }
 
     // Refresh our idea of the unique ID since it may or may not have changed
-    [self _updateUniqueID];
+    [self updateUniqueID];
 }
 
 - (NSString *)name;
 {
     if (!flags.hasCachedName) {
         [cachedName release];
-        cachedName = [[self _stringForProperty:kMIDIPropertyName] retain];
+        cachedName = [[self stringForProperty:kMIDIPropertyName] retain];
         flags.hasCachedName = YES;
     }
     
@@ -202,7 +203,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 - (void)setName:(NSString *)value;
 {
     if (![value isEqualToString:[self name]]) {
-        [self _setString:value forProperty:kMIDIPropertyName];
+        [self setString:value forProperty:kMIDIPropertyName];
         flags.hasCachedName = NO;
     }
 }
@@ -212,12 +213,12 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     if (!flags.hasCachedManufacturerName) {
         [cachedManufacturerName release];
 
-        cachedManufacturerName = [self _stringForProperty:kMIDIPropertyManufacturer];
+        cachedManufacturerName = [self stringForProperty:kMIDIPropertyManufacturer];
         // NOTE This fails sometimes on 10.1.3 and earlier (see bug #2865704).
         // So we fall back to asking for the device's manufacturer name if necessary.
         // (This bug is fixed in 10.1.5.)
         if (!cachedManufacturerName)
-            cachedManufacturerName = [self _deviceStringForProperty:kMIDIPropertyManufacturer];
+            cachedManufacturerName = [self deviceStringForProperty:kMIDIPropertyManufacturer];
 
         [cachedManufacturerName retain];
         flags.hasCachedManufacturerName = YES;        
@@ -229,7 +230,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 - (void)setManufacturerName:(NSString *)value;
 {
     if (![value isEqualToString:[self manufacturerName]]) {
-        [self _setString:value forProperty:kMIDIPropertyManufacturer];
+        [self setString:value forProperty:kMIDIPropertyManufacturer];
         flags.hasCachedManufacturerName = NO;
     }
 }
@@ -238,7 +239,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 {
     if (!flags.hasCachedModelName) {
         [cachedModelName release];
-        cachedModelName = [[self _stringForProperty:kMIDIPropertyModel] retain];
+        cachedModelName = [[self stringForProperty:kMIDIPropertyModel] retain];
 
         flags.hasCachedModelName = YES;
     }
@@ -249,14 +250,14 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 - (void)setModelName:(NSString *)value;
 {
     if (![value isEqualToString:[self modelName]]) {
-        [self _setString:value forProperty:kMIDIPropertyModel];
+        [self setString:value forProperty:kMIDIPropertyModel];
         flags.hasCachedModelName = NO;
     }
 }
 
 - (NSString *)uniqueName;
 {
-    if ([[self class] _doEndpointsHaveUniqueNames])
+    if ([[self class] doEndpointsHaveUniqueNames])
         return [self name];
     else
         return [self longName];
@@ -264,7 +265,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 
 - (NSString *)alwaysUniqueName;
 {
-    if ([[self class] _haveEndpointsAlwaysHadUniqueNames])
+    if ([[self class] haveEndpointsAlwaysHadUniqueNames])
         return [self name];
     else
         return [self longName];    
@@ -279,7 +280,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     if ([self isVirtual]) {
         modelOrDeviceName = [self modelName];
     } else {
-        modelOrDeviceName = [self _deviceName];
+        modelOrDeviceName = [self deviceName];
     }
     
     if (modelOrDeviceName && [modelOrDeviceName length] > 0)
@@ -290,12 +291,12 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 
 - (SInt32)advanceScheduleTime;
 {
-    return [self _integerForProperty:kMIDIPropertyAdvanceScheduleTimeMuSec];
+    return [self integerForProperty:kMIDIPropertyAdvanceScheduleTimeMuSec];
 }
 
 - (void)setAdvanceScheduleTime:(SInt32)newValue;
 {
-    [self _setInteger:newValue forProperty:kMIDIPropertyAdvanceScheduleTimeMuSec];
+    [self setInteger:newValue forProperty:kMIDIPropertyAdvanceScheduleTimeMuSec];
 }
 
 - (id)allProperties;
@@ -329,68 +330,68 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
 
 @implementation SMEndpoint (Private)
 
-+ (void)_earlyMIDISetup;
++ (void)earlyMIDISetup;
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_midiClientCreated:) name:SMClientCreatedInternalNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(midiClientCreate:) name:SMClientCreatedInternalNotification object:nil];
 }
 
-+ (void)_midiClientCreated:(NSNotification *)notification;
++ (void)midiClientCreate:(NSNotification *)notification;
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_midiSetupChanged:) name:SMClientSetupChangedInternalNotification object:[SMClient sharedClient]];
-    [self _midiSetupChanged:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(midiSetupChanged:) name:SMClientSetupChangedInternalNotification object:[SMClient sharedClient]];
+    [self midiSetupChanged:nil];
 }
 
-+ (void)_midiSetupChanged:(NSNotification *)notification
++ (void)midiSetupChanged:(NSNotification *)notification
 {
-    [self _reloadEndpoints];
+    [self reloadEndpoints];
 }
 
-+ (NSMapTable **)_endpointMapTablePtr;
-{
-    OBRequestConcreteImplementation(self, _cmd);
-    return NULL;
-}
-
-+ (EndpointUniqueNamesFlags *)_endpointUniqueNamesFlagsPtr;
++ (NSMapTable **)endpointMapTablePtr;
 {
     OBRequestConcreteImplementation(self, _cmd);
     return NULL;
 }
 
-+ (ItemCount)_endpointCount;
++ (EndpointUniqueNamesFlags *)endpointUniqueNamesFlagsPtr;
+{
+    OBRequestConcreteImplementation(self, _cmd);
+    return NULL;
+}
+
++ (ItemCount)endpointCount;
 {
     OBRequestConcreteImplementation(self, _cmd);
     return 0;
 }
 
-+ (MIDIEndpointRef)_endpointAtIndex:(ItemCount)index;
++ (MIDIEndpointRef)endpointAtIndex:(ItemCount)index;
 {
     OBRequestConcreteImplementation(self, _cmd);
     return NULL;
 }
 
-+ (ItemCount)_endpointCountForEntity:(MIDIEntityRef)entity;
++ (ItemCount)endpointCountForEntity:(MIDIEntityRef)entity;
 {
     OBRequestConcreteImplementation(self, _cmd);
     return 0;
 }
 
-+ (MIDIEndpointRef)_endpointAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
++ (MIDIEndpointRef)endpointAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
 {
     OBRequestConcreteImplementation(self, _cmd);
     return NULL;
 }
 
-+ (void)_reloadEndpoints;
++ (void)reloadEndpoints;
 {
     NSMapTable **mapTablePtr;
     NSMapTable *oldMapTable, *newMapTable;
     ItemCount endpointIndex, endpointCount;
     NSMutableArray *removedEndpoints, *replacedEndpoints, *replacementEndpoints, *addedEndpoints;
 
-    endpointCount = [self _endpointCount];
+    endpointCount = [self endpointCount];
 
-    mapTablePtr = [self _endpointMapTablePtr];
+    mapTablePtr = [self endpointMapTablePtr];
     OBASSERT(mapTablePtr != NULL);
     oldMapTable = *mapTablePtr;
     newMapTable = NSCreateMapTable(NSNonOwnedPointerMapKeyCallBacks, NSObjectMapValueCallBacks, endpointCount);    
@@ -398,7 +399,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     // We start out assuming all endpoints have been removed, none have been replaced.
     // As we find out otherwise, we remove some endpoints from removedEndpoints,
     // and add some to replacedEndpoints.
-    removedEndpoints = [NSMutableArray arrayWithArray:[self _allEndpoints]];
+    removedEndpoints = [NSMutableArray arrayWithArray:[self allEndpoints]];
     replacedEndpoints = [NSMutableArray array];
     replacementEndpoints = [NSMutableArray array];
     addedEndpoints = [NSMutableArray array];
@@ -408,26 +409,26 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
         MIDIEndpointRef anEndpointRef;
         SMEndpoint *endpoint;
 
-        anEndpointRef = [self _endpointAtIndex:endpointIndex];
+        anEndpointRef = [self endpointAtIndex:endpointIndex];
         if (anEndpointRef == NULL)
             continue;
         
-        if ((endpoint = [self _endpointForEndpointRef:anEndpointRef])) {
+        if ((endpoint = [self endpointForEndpointRef:anEndpointRef])) {
             // This endpointRef existed previously.
             [removedEndpoints removeObjectIdenticalTo:endpoint];
             // It's possible that its uniqueID changed, though.
-            [endpoint _updateUniqueID];
+            [endpoint updateUniqueID];
             // And its ordinal may also have changed...
-            [endpoint _setOrdinal:endpointIndex];
+            [endpoint setOrdinal:endpointIndex];
         } else {
             SMEndpoint *replacedEndpoint;
 
             // This endpointRef did not previously exist, so create a new endpoint for it.
             endpoint = [[[self alloc] initWithEndpointRef:anEndpointRef] autorelease];
-            [endpoint _setOrdinal:endpointIndex];
+            [endpoint setOrdinal:endpointIndex];
             
             // If the new endpoint has the same uniqueID as an old endpoint, remember it.
-            if ((replacedEndpoint = [self _endpointMatchingUniqueID:[endpoint uniqueID]])) {
+            if ((replacedEndpoint = [self endpointMatchingUniqueID:[endpoint uniqueID]])) {
                 [replacedEndpoints addObject:replacedEndpoint];
                 [replacementEndpoints addObject:endpoint];
                 [removedEndpoints removeObjectIdenticalTo:replacedEndpoint];
@@ -444,28 +445,28 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     *mapTablePtr = newMapTable;
 
     // Make the new group of endpoints invalidate their cached properties (names and such).
-    [[self _allEndpoints] makeObjectsPerformSelector:@selector(_invalidateCachedProperties)];
+    [[self allEndpoints] makeObjectsPerformSelector:@selector(invalidateCachedProperties)];
 
     // And check if the names are unique or not
-    [self _checkForUniqueNames];
+    [self checkForUniqueNames];
 
     // Now everything is in place for the new regime. Have the endpoints post notifications of their change in status.
-    [removedEndpoints makeObjectsPerformSelector:@selector(_postRemovedNotification)];
+    [removedEndpoints makeObjectsPerformSelector:@selector(postRemovedNotification)];
 
     endpointIndex = [replacedEndpoints count];
     while (endpointIndex--) {
-        [[replacedEndpoints objectAtIndex:endpointIndex] _postReplacedNotificationWithReplacement:[replacementEndpoints objectAtIndex:endpointIndex]];
+        [[replacedEndpoints objectAtIndex:endpointIndex] postReplacedNotificationWithReplacement:[replacementEndpoints objectAtIndex:endpointIndex]];
     }
 
     if ([addedEndpoints count] > 0)
         [[NSNotificationCenter defaultCenter] postNotificationName:SMEndpointsAppearedNotification object:addedEndpoints];
 }
 
-+ (NSArray *)_allEndpoints;
++ (NSArray *)allEndpoints;
 {
     NSMapTable **mapTablePtr;
 
-    mapTablePtr = [self _endpointMapTablePtr];
+    mapTablePtr = [self endpointMapTablePtr];
     OBASSERT(mapTablePtr);
 
     if (*mapTablePtr)
@@ -474,17 +475,17 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
         return nil;
 }
 
-+ (NSArray *)_allEndpointsSortedByOrdinal;
++ (NSArray *)allEndpointsSortedByOrdinal;
 {
-    return [[self _allEndpoints] sortedArrayUsingFunction:endpointOrdinalComparator context:NULL];
+    return [[self allEndpoints] sortedArrayUsingFunction:endpointOrdinalComparator context:NULL];
 }
 
-+ (SMEndpoint *)_endpointMatchingUniqueID:(SInt32)aUniqueID;
++ (SMEndpoint *)endpointMatchingUniqueID:(SInt32)aUniqueID;
 {
     NSArray *allEndpoints;
     unsigned int endpointIndex;
 
-    allEndpoints = [self _allEndpoints];
+    allEndpoints = [self allEndpoints];
     endpointIndex = [allEndpoints count];
     while (endpointIndex--) {
         SMEndpoint *endpoint;
@@ -497,7 +498,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     return nil;
 }
 
-+ (SMEndpoint *)_endpointMatchingName:(NSString *)aName;
++ (SMEndpoint *)endpointMatchingName:(NSString *)aName;
 {
     NSArray *allEndpoints;
     unsigned int endpointIndex;
@@ -505,7 +506,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     if (!aName)
         return nil;
 
-    allEndpoints = [self _allEndpoints];
+    allEndpoints = [self allEndpoints];
     endpointIndex = [allEndpoints count];
     while (endpointIndex--) {
         SMEndpoint *endpoint;
@@ -518,11 +519,11 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     return nil;
 }
 
-+ (SMEndpoint *)_endpointForEndpointRef:(MIDIEndpointRef)anEndpointRef;
++ (SMEndpoint *)endpointForEndpointRef:(MIDIEndpointRef)anEndpointRef;
 {
     NSMapTable **mapTablePtr;
 
-    mapTablePtr = [self _endpointMapTablePtr];
+    mapTablePtr = [self endpointMapTablePtr];
     OBASSERT(mapTablePtr);
 
     if (*mapTablePtr)
@@ -531,41 +532,41 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
         return nil;        
 }
 
-+ (BOOL)_doEndpointsHaveUniqueNames;
++ (BOOL)doEndpointsHaveUniqueNames;
 {
-    return [self _endpointUniqueNamesFlagsPtr]->areNamesUnique;
+    return [self endpointUniqueNamesFlagsPtr]->areNamesUnique;
 }
 
-+ (BOOL)_haveEndpointsAlwaysHadUniqueNames;
++ (BOOL)haveEndpointsAlwaysHadUniqueNames;
 {
-    return [self _endpointUniqueNamesFlagsPtr]->haveNamesAlwaysBeenUnique;
+    return [self endpointUniqueNamesFlagsPtr]->haveNamesAlwaysBeenUnique;
 }
 
-+ (void)_checkForUniqueNames;
++ (void)checkForUniqueNames;
 {
     NSArray *endpoints;
     NSArray *nameArray, *nameSet;
     BOOL areNamesUnique;
     struct EndpointUniqueNamesFlags *flagsPtr;
 
-    endpoints = [self _allEndpoints];
+    endpoints = [self allEndpoints];
     nameArray = [endpoints arrayByPerformingSelector:@selector(name)];
     nameSet = [NSSet setWithArray:nameArray];
 
     areNamesUnique = ([nameArray count] == [nameSet count]);
 
-    flagsPtr = [self _endpointUniqueNamesFlagsPtr];
+    flagsPtr = [self endpointUniqueNamesFlagsPtr];
     flagsPtr->areNamesUnique = areNamesUnique;
     flagsPtr->haveNamesAlwaysBeenUnique = flagsPtr->haveNamesAlwaysBeenUnique && areNamesUnique;
 }
 
-- (void)_updateUniqueID;
+- (void)updateUniqueID;
 {
     if (noErr != MIDIObjectGetIntegerProperty(endpointRef, kMIDIPropertyUniqueID, &uniqueID))
         uniqueID = 0;
 }
 
-- (void)_invalidateCachedProperties;
+- (void)invalidateCachedProperties;
 {
     flags.hasLookedForDevice = NO;
     flags.hasCachedName = NO;
@@ -574,7 +575,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     flags.hasCachedDeviceName = NO;
 }
 
-- (MIDIDeviceRef)_findDevice;
+- (MIDIDeviceRef)findDevice;
 {
     // Walk the device/entity/endpoint tree, looking for the device which has our endpointRef.
     // CoreMIDI should provide an easier way to get at this.
@@ -595,11 +596,11 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
             ItemCount endpointCount, endpointIndex;
             
             entity = MIDIDeviceGetEntity(device, entityIndex);
-            endpointCount = [[self class] _endpointCountForEntity:entity];
+            endpointCount = [[self class] endpointCountForEntity:entity];
             for (endpointIndex = 0; endpointIndex < endpointCount; endpointIndex++) {
                 MIDIEndpointRef thisEndpoint;
                 
-                thisEndpoint = [[self class] _endpointAtIndex:endpointIndex forEntity:entity];
+                thisEndpoint = [[self class] endpointAtIndex:endpointIndex forEntity:entity];
                 if (thisEndpoint == endpointRef) {
                     // Found it!
                     return device;
@@ -612,21 +613,21 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     return NULL;
 }
 
-- (MIDIDeviceRef)_device;
+- (MIDIDeviceRef)device;
 {
     if (!flags.hasLookedForDevice) {
-        deviceRef = [self _findDevice];
+        deviceRef = [self findDevice];
         flags.hasLookedForDevice = YES;
     }
 
     return deviceRef;
 }
 
-- (NSString *)_deviceName;
+- (NSString *)deviceName;
 {
     if (!flags.hasCachedDeviceName) {
         [cachedDeviceName release];
-        cachedDeviceName = [[self _deviceStringForProperty:kMIDIPropertyName] retain];
+        cachedDeviceName = [[self deviceStringForProperty:kMIDIPropertyName] retain];
 
         flags.hasCachedDeviceName = YES;        
     }
@@ -634,19 +635,19 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     return cachedDeviceName;
 }
 
-- (NSString *)_deviceStringForProperty:(CFStringRef)property;
+- (NSString *)deviceStringForProperty:(CFStringRef)property;
 {
     MIDIDeviceRef device;
     NSString *string;
 
-    device = [self _device];
+    device = [self device];
     if (device && (noErr == MIDIObjectGetStringProperty(device, property, (CFStringRef *)&string)))
         return [string autorelease];
     else
         return nil;
 }
 
-- (SInt32)_ownerPID;
+- (SInt32)ownerPID;
 {
     OSStatus status;
     SInt32 ownerPID;
@@ -658,7 +659,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
         return ownerPID;
 }
 
-- (void)_setOwnerPID:(SInt32)value;
+- (void)setOwnerPID:(SInt32)value;
 {
     OSStatus status;
     
@@ -668,7 +669,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     }
 }
 
-- (NSString *)_stringForProperty:(CFStringRef)property;
+- (NSString *)stringForProperty:(CFStringRef)property;
 {
     NSString *string;
     
@@ -678,11 +679,11 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
         return nil;
 }
 
-- (void)_setString:(NSString *)value forProperty:(CFStringRef)property;
+- (void)setString:(NSString *)value forProperty:(CFStringRef)property;
 {
     OSStatus status;
     
-    [self _checkIfPropertySetIsAllowed];
+    [self checkIfPropertySetIsAllowed];
 
     status = MIDIObjectSetStringProperty(endpointRef, property, (CFStringRef)value);
     if (status) {
@@ -690,7 +691,7 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     }
 }
 
-- (SInt32)_integerForProperty:(CFStringRef)property;
+- (SInt32)integerForProperty:(CFStringRef)property;
 {
     OSStatus status;
     SInt32 value;
@@ -703,11 +704,11 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     return value;    
 }
 
-- (void)_setInteger:(SInt32)value forProperty:(CFStringRef)property;
+- (void)setInteger:(SInt32)value forProperty:(CFStringRef)property;
 {
     OSStatus status;
 
-    [self _checkIfPropertySetIsAllowed];
+    [self checkIfPropertySetIsAllowed];
     
     status = MIDIObjectSetIntegerProperty(endpointRef, property, value);
     if (status) {
@@ -715,12 +716,12 @@ DEFINE_NSSTRING(SMEndpointPropertyOwnerPID);
     }
 }
 
-- (void)_setOrdinal:(unsigned int)value;
+- (void)setOrdinal:(unsigned int)value;
 {
     ordinal = value;
 }
 
-- (unsigned int)_ordinal;
+- (unsigned int)ordinal;
 {
     return ordinal;
 }
@@ -729,8 +730,8 @@ static int endpointOrdinalComparator(id object1, id object2, void *context)
 {
     unsigned int ordinal1, ordinal2;
 
-    ordinal1 = [object1 _ordinal];
-    ordinal2 = [object2 _ordinal];
+    ordinal1 = [object1 ordinal];
+    ordinal2 = [object2 ordinal];
         
     if (ordinal1 > ordinal2)
         return NSOrderedDescending;
@@ -740,19 +741,19 @@ static int endpointOrdinalComparator(id object1, id object2, void *context)
         return NSOrderedAscending;
 }
 
-- (void)_checkIfPropertySetIsAllowed;
+- (void)checkIfPropertySetIsAllowed;
 {
     if (![self isOwnedByThisProcess]) {
         [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Can't set a property on an endpoint we don't own", @"SnoizeMIDI", [self bundle], "exception if someone tries to set a property on an endpoint we don't own")];
     }
 }
 
-- (void)_postRemovedNotification;
+- (void)postRemovedNotification;
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:SMEndpointDisappearedNotification object:self];
 }
 
-- (void)_postReplacedNotificationWithReplacement:(SMEndpoint *)replacement;
+- (void)postReplacedNotificationWithReplacement:(SMEndpoint *)replacement;
 {
     NSDictionary *userInfo;
     
@@ -771,35 +772,35 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
 
 + (void)didLoad
 {
-    [self _earlyMIDISetup];
+    [self earlyMIDISetup];
 }
 
-+ (NSMapTable **)_endpointMapTablePtr;
++ (NSMapTable **)endpointMapTablePtr;
 {
     return &sourceEndpointRefToSMEndpointMapTable;
 }
 
-+ (EndpointUniqueNamesFlags *)_endpointUniqueNamesFlagsPtr;
++ (EndpointUniqueNamesFlags *)endpointUniqueNamesFlagsPtr;
 {
     return &sourceEndpointUniqueNamesFlags;
 }
 
-+ (ItemCount)_endpointCount;
++ (ItemCount)endpointCount;
 {
     return MIDIGetNumberOfSources();
 }
 
-+ (MIDIEndpointRef)_endpointAtIndex:(ItemCount)index;
++ (MIDIEndpointRef)endpointAtIndex:(ItemCount)index;
 {
     return MIDIGetSource(index);
 }
 
-+ (ItemCount)_endpointCountForEntity:(MIDIEntityRef)entity;
++ (ItemCount)endpointCountForEntity:(MIDIEntityRef)entity;
 {
     return MIDIEntityGetNumberOfSources(entity);
 }
 
-+ (MIDIEndpointRef)_endpointAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
++ (MIDIEndpointRef)endpointAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
 {
     return MIDIEntityGetSource(entity, index);
 }
@@ -807,22 +808,22 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
 
 + (NSArray *)sourceEndpoints;
 {
-    return [self _allEndpointsSortedByOrdinal];
+    return [self allEndpointsSortedByOrdinal];
 }
 
 + (SMSourceEndpoint *)sourceEndpointWithUniqueID:(SInt32)aUniqueID;
 {
-    return (SMSourceEndpoint *)[self _endpointMatchingUniqueID:aUniqueID];
+    return (SMSourceEndpoint *)[self endpointMatchingUniqueID:aUniqueID];
 }
 
 + (SMSourceEndpoint *)sourceEndpointWithName:(NSString *)aName;
 {
-    return (SMSourceEndpoint *)[self _endpointMatchingName:aName];
+    return (SMSourceEndpoint *)[self endpointMatchingName:aName];
 }
 
 + (SMSourceEndpoint *)sourceEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
 {
-    return (SMSourceEndpoint *)[self _endpointForEndpointRef:anEndpointRef];
+    return (SMSourceEndpoint *)[self endpointForEndpointRef:anEndpointRef];
 }
 
 
@@ -846,35 +847,35 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
 
 + (void)didLoad
 {
-    [self _earlyMIDISetup];
+    [self earlyMIDISetup];
 }
 
-+ (NSMapTable **)_endpointMapTablePtr;
++ (NSMapTable **)endpointMapTablePtr;
 {
     return &destinationEndpointRefToSMEndpointMapTable;
 }
 
-+ (EndpointUniqueNamesFlags *)_endpointUniqueNamesFlagsPtr;
++ (EndpointUniqueNamesFlags *)endpointUniqueNamesFlagsPtr;
 {
     return &destinationEndpointUniqueNamesFlags;
 }
 
-+ (ItemCount)_endpointCount;
++ (ItemCount)endpointCount;
 {
     return MIDIGetNumberOfDestinations();
 }
 
-+ (MIDIEndpointRef)_endpointAtIndex:(ItemCount)index;
++ (MIDIEndpointRef)endpointAtIndex:(ItemCount)index;
 {
     return MIDIGetDestination(index);
 }
 
-+ (ItemCount)_endpointCountForEntity:(MIDIEntityRef)entity;
++ (ItemCount)endpointCountForEntity:(MIDIEntityRef)entity;
 {
     return MIDIEntityGetNumberOfDestinations(entity);
 }
 
-+ (MIDIEndpointRef)_endpointAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
++ (MIDIEndpointRef)endpointAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
 {
     return MIDIEntityGetDestination(entity, index);
 }
@@ -882,22 +883,22 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
 
 + (NSArray *)destinationEndpoints;
 {
-    return [self _allEndpointsSortedByOrdinal];
+    return [self allEndpointsSortedByOrdinal];
 }
 
 + (SMDestinationEndpoint *)destinationEndpointWithUniqueID:(SInt32)aUniqueID;
 {
-    return (SMDestinationEndpoint *)[self _endpointMatchingUniqueID:aUniqueID];
+    return (SMDestinationEndpoint *)[self endpointMatchingUniqueID:aUniqueID];
 }
 
 + (SMDestinationEndpoint *)destinationEndpointWithName:(NSString *)aName;
 {
-    return (SMDestinationEndpoint *)[self _endpointMatchingName:aName];
+    return (SMDestinationEndpoint *)[self endpointMatchingName:aName];
 }
 
 + (SMDestinationEndpoint *)destinationEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
 {
-    return (SMDestinationEndpoint *)[self _endpointForEndpointRef:anEndpointRef];
+    return (SMDestinationEndpoint *)[self endpointForEndpointRef:anEndpointRef];
 }
 
 @end

@@ -15,7 +15,7 @@
 
 @interface SMPortOrVirtualOutputStream (Private)
 
-- (void)_repostNotification:(NSNotification *)notification;
+- (void)repostNotification:(NSNotification *)notification;
 
 @end
 
@@ -97,8 +97,8 @@
     [stream setIgnoresTimeStamps:flags.ignoresTimeStamps];
     [stream setSendsSysExAsynchronously:flags.sendsSysExAsynchronously];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(portStreamEndpointDisappeared:) name:SMPortOutputStreamEndpointDisappearedNotification object:stream];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_repostNotification:) name:SMPortOutputStreamWillStartSysExSendNotification object:stream];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_repostNotification:) name:SMPortOutputStreamFinishedSysExSendNotification object:stream];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(repostNotification:) name:SMPortOutputStreamWillStartSysExSendNotification object:stream];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(repostNotification:) name:SMPortOutputStreamFinishedSysExSendNotification object:stream];
 
     return [stream autorelease];
 }
@@ -137,7 +137,7 @@
 
 @implementation SMPortOrVirtualOutputStream (Private)
 
-- (void)_repostNotification:(NSNotification *)notification;
+- (void)repostNotification:(NSNotification *)notification;
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:[notification name] object:self userInfo:[notification userInfo]];
 }

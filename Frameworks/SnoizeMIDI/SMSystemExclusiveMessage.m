@@ -11,8 +11,8 @@
 
 @interface SMSystemExclusiveMessage (Private)
 
-+ (NSArray *)_systemExclusiveMessagesInDataBuffer:(const Byte *)buffer withLength:(unsigned int)byteCount;
-- (NSData *)_dataByAddingStartByte:(NSData *)someData;
++ (NSArray *)systemExclusiveMessagesInDataBuffer:(const Byte *)buffer withLength:(unsigned int)byteCount;
+- (NSData *)dataByAddingStartByte:(NSData *)someData;
 
 @end
 
@@ -31,7 +31,7 @@
 
 + (NSArray *)systemExclusiveMessagesInData:(NSData *)someData;
 {
-    return [self _systemExclusiveMessagesInDataBuffer:[someData bytes] withLength:[someData length]];
+    return [self systemExclusiveMessagesInDataBuffer:[someData bytes] withLength:[someData length]];
 }
 
 + (NSArray *)systemExclusiveMessagesInStandardMIDIFile:(NSString *)path;
@@ -75,7 +75,7 @@
                     if (eventType == kMusicEventType_MIDIRawData) {
                         NSArray *eventMessages;
 
-                        eventMessages = [self _systemExclusiveMessagesInDataBuffer:eventData withLength:eventDataSize];
+                        eventMessages = [self systemExclusiveMessagesInDataBuffer:eventData withLength:eventDataSize];
                         if (eventMessages)
                             [messages addObjectsFromArray:eventMessages];
                     }
@@ -402,7 +402,7 @@
 
 - (NSData *)receivedDataWithStartByte;
 {
-    return [self _dataByAddingStartByte:[self receivedData]];
+    return [self dataByAddingStartByte:[self receivedData]];
 }
 
 - (unsigned int)receivedDataWithStartByteLength;
@@ -412,7 +412,7 @@
 
 - (NSData *)fullMessageData;
 {
-    return [self _dataByAddingStartByte:[self otherData]];
+    return [self dataByAddingStartByte:[self otherData]];
 }
 
 - (unsigned int)fullMessageDataLength;
@@ -461,7 +461,7 @@
 
 @implementation SMSystemExclusiveMessage (Private)
 
-+ (NSArray *)_systemExclusiveMessagesInDataBuffer:(const Byte *)buffer withLength:(unsigned int)byteCount;
++ (NSArray *)systemExclusiveMessagesInDataBuffer:(const Byte *)buffer withLength:(unsigned int)byteCount;
 {
     // Scan through someData and make messages out of it.
     // Messages must start with 0xF0.  Messages may end in any byte > 0x7F.
@@ -505,7 +505,7 @@
     return messages;
 }
 
-- (NSData *)_dataByAddingStartByte:(NSData *)someData;
+- (NSData *)dataByAddingStartByte:(NSData *)someData;
 {
     unsigned int length;
     NSMutableData *dataWithStartByte;

@@ -13,7 +13,7 @@
 
 @interface SMSequence (Private)
 
-- (unsigned int)_indexOfFirstNoteWithPositionGreaterThanOrEqualTo:(Float64)lowBeat atOrAfterIndex:(unsigned int)startIndex;
+- (unsigned int)indexOfFirstNoteWithPositionGreaterThanOrEqualTo:(Float64)lowBeat atOrAfterIndex:(unsigned int)startIndex;
 
 @end
 
@@ -113,7 +113,7 @@
     OBASSERT(startBeat < endBeat);
 
     // Find the index of the first note with position >= startBeat and position < endBeat
-    firstNoteIndex = [self _indexOfFirstNoteWithPositionGreaterThanOrEqualTo:startBeat atOrAfterIndex:0];
+    firstNoteIndex = [self indexOfFirstNoteWithPositionGreaterThanOrEqualTo:startBeat atOrAfterIndex:0];
     if (firstNoteIndex == NSNotFound || [[notes objectAtIndex:firstNoteIndex] position] >= endBeat) {
         // There are no notes in this interval
         notesInInterval = nil;
@@ -124,7 +124,7 @@
         } else {
             // Find the index of the first note after firstNoteIndex with position >= endBeat.
             // Then get the subarray from (firstNoteIndex, lastNoteIndex].
-            lastNoteIndex = [self _indexOfFirstNoteWithPositionGreaterThanOrEqualTo:endBeat atOrAfterIndex:firstNoteIndex + 1];
+            lastNoteIndex = [self indexOfFirstNoteWithPositionGreaterThanOrEqualTo:endBeat atOrAfterIndex:firstNoteIndex + 1];
             if (lastNoteIndex == NSNotFound)
                 lastNoteIndex = noteCount;
             notesInInterval = [notes subarrayWithRange:NSMakeRange(firstNoteIndex, lastNoteIndex - firstNoteIndex)];
@@ -176,7 +176,7 @@
 // TODO Turn this off before shipping
 
 #if TESTING
-- (unsigned int)_simpleIndexOfFirstNoteWithPositionGreaterThanOrEqualTo:(Float64)lowBeat atOrAfterIndex:(unsigned int)startIndex;
+- (unsigned int)simpleIndexOfFirstNoteWithPositionGreaterThanOrEqualTo:(Float64)lowBeat atOrAfterIndex:(unsigned int)startIndex;
 {
     unsigned int noteIndex, noteCount;
     
@@ -191,7 +191,7 @@
 }
 #endif
 
-- (unsigned int)_indexOfFirstNoteWithPositionGreaterThanOrEqualTo:(Float64)lowBeat atOrAfterIndex:(unsigned int)startIndex;
+- (unsigned int)indexOfFirstNoteWithPositionGreaterThanOrEqualTo:(Float64)lowBeat atOrAfterIndex:(unsigned int)startIndex;
 {
     // We know the array of notes is sorted by position, so we can do a binary search instead of a simple linear search.
     unsigned int count;
@@ -240,7 +240,7 @@
     {
         unsigned int correct;
 
-        correct = [self _simpleIndexOfFirstNoteWithPositionGreaterThanOrEqualTo:lowBeat atOrAfterIndex:startIndex];
+        correct = [self simpleIndexOfFirstNoteWithPositionGreaterThanOrEqualTo:lowBeat atOrAfterIndex:startIndex];
         if (returnIndex != correct) {
             NSLog(@"*** Failed!: lowBeat = %g, startIndex = %u, wrong = %u, right = %u", lowBeat, startIndex, returnIndex, correct);
         }

@@ -15,8 +15,8 @@
 
 @interface SMPeriodicTimer (Private)
 
-- (void)_runInThread:(id)object;
-- (void)_setThreadSchedulingPolicy;
+- (void)runInThread:(id)object;
+- (void)setThreadSchedulingPolicy;
 
 @end
 
@@ -52,7 +52,7 @@ static SMPeriodicTimer *sharedPeriodicTimer = nil;
     listeners = [[NSMutableArray alloc] init];
     listenersLock = [[NSLock alloc] init];
     
-    [NSThread detachNewThreadSelector:@selector(_runInThread:) toTarget:self withObject:nil];
+    [NSThread detachNewThreadSelector:@selector(runInThread:) toTarget:self withObject:nil];
 
     return self;
 }
@@ -88,7 +88,7 @@ static SMPeriodicTimer *sharedPeriodicTimer = nil;
 
 static const UInt64 sliceTimeNanoseconds = 10.0e-3 * 1.0e9;	// 10 ms
 
-- (void)_runInThread:(id)object;
+- (void)runInThread:(id)object;
 {
     NSAutoreleasePool *pool;
     UInt64 sliceTime;
@@ -97,7 +97,7 @@ static const UInt64 sliceTimeNanoseconds = 10.0e-3 * 1.0e9;	// 10 ms
 
     pool = [[NSAutoreleasePool alloc] init];
 
-    [self _setThreadSchedulingPolicy];
+    [self setThreadSchedulingPolicy];
 
     sliceTime = SMConvertNanosToHostTime(sliceTimeNanoseconds);
 
@@ -174,7 +174,7 @@ static const UInt64 sliceTimeNanoseconds = 10.0e-3 * 1.0e9;	// 10 ms
     [pool release];
 }
 
-- (void)_setThreadSchedulingPolicy;
+- (void)setThreadSchedulingPolicy;
 {
     kern_return_t error;
     thread_time_constraint_policy_data_t policy;

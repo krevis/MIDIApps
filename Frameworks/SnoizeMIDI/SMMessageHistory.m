@@ -10,8 +10,8 @@
 
 @interface SMMessageHistory (Private)
 
-- (void)_limitSavedMessages;
-- (void)_historyHasChangedWithNewMessages:(BOOL)wereNewMessages;
+- (void)limitSavedMessages;
+- (void)historyHasChangedWithNewMessages:(BOOL)wereNewMessages;
 
 @end
 
@@ -73,7 +73,7 @@ DEFINE_NSSTRING(SMMessageHistoryWereMessagesAdded);
     [savedMessagesLock unlock];
     
     if (wereMessages)
-        [self _historyHasChangedWithNewMessages:NO];
+        [self historyHasChangedWithNewMessages:NO];
 }
 
 - (unsigned int)historySize;
@@ -90,23 +90,23 @@ DEFINE_NSSTRING(SMMessageHistoryWereMessagesAdded);
     historySize = newHistorySize;
     
     oldMessageCount = [savedMessages count];
-    [self _limitSavedMessages];
+    [self limitSavedMessages];
     newMessageCount = [savedMessages count];
 
     [savedMessagesLock unlock];
 
     if (oldMessageCount != newMessageCount)
-        [self _historyHasChangedWithNewMessages:NO];
+        [self historyHasChangedWithNewMessages:NO];
 }
 
 - (void)takeMIDIMessages:(NSArray *)messages;
 {
     [savedMessagesLock lock];
     [savedMessages addObjectsFromArray:messages];
-    [self _limitSavedMessages];
+    [self limitSavedMessages];
     [savedMessagesLock unlock];
     
-    [self _historyHasChangedWithNewMessages:YES];
+    [self historyHasChangedWithNewMessages:YES];
 }
 
 @end
@@ -114,7 +114,7 @@ DEFINE_NSSTRING(SMMessageHistoryWereMessagesAdded);
 
 @implementation SMMessageHistory (Private)
 
-- (void)_limitSavedMessages;
+- (void)limitSavedMessages;
 {
     // NOTE We assume that this thread has taken the savedMessagesLock
     unsigned int messageCount;
@@ -128,7 +128,7 @@ DEFINE_NSSTRING(SMMessageHistoryWereMessagesAdded);
     }
 }
 
-- (void)_historyHasChangedWithNewMessages:(BOOL)wereNewMessages;
+- (void)historyHasChangedWithNewMessages:(BOOL)wereNewMessages;
 {
     NSDictionary *userInfo;
 

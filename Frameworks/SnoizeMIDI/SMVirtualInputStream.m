@@ -15,11 +15,11 @@
 
 @interface SMVirtualInputStream (Private)
 
-- (BOOL)_isActive;
-- (void)_setIsActive:(BOOL)value;
+- (BOOL)isActive;
+- (void)setIsActive:(BOOL)value;
 
-- (void)_createEndpoint;
-- (void)_disposeEndpoint;
+- (void)createEndpoint;
+- (void)disposeEndpoint;
 
 @end
 
@@ -43,7 +43,7 @@
 
 - (void)dealloc;
 {
-    [self _setIsActive:NO];
+    [self setIsActive:NO];
 
     [endpointName release];
     endpointName = nil;
@@ -112,7 +112,7 @@
 
 - (NSSet *)selectedInputSources;
 {
-    if ([self _isActive])
+    if ([self isActive])
         return [NSSet setWithObject:inputStreamSource];
     else
         return [NSSet set];
@@ -120,7 +120,7 @@
 
 - (void)setSelectedInputSources:(NSSet *)sources;
 {
-    [self _setIsActive:(sources && [sources containsObject:inputStreamSource])];
+    [self setIsActive:(sources && [sources containsObject:inputStreamSource])];
 }
 
 //
@@ -129,7 +129,7 @@
 
 - (id)persistentSettings;
 {
-    if ([self _isActive])
+    if ([self isActive])
         return [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:uniqueID] forKey:@"uniqueID"];
     else
         return nil;
@@ -139,9 +139,9 @@
 {
     if (settings) {
         [self setUniqueID:[[settings objectForKey:@"uniqueID"] intValue]];
-        [self _setIsActive:YES];
+        [self setIsActive:YES];
     } else {
-        [self _setIsActive:NO];
+        [self setIsActive:NO];
     }
 
     return nil;
@@ -152,22 +152,22 @@
 
 @implementation SMVirtualInputStream (Private)
 
-- (BOOL)_isActive;
+- (BOOL)isActive;
 {
     return (endpoint != nil);
 }
 
-- (void)_setIsActive:(BOOL)value;
+- (void)setIsActive:(BOOL)value;
 {
     if (value && !endpoint)
-        [self _createEndpoint];
+        [self createEndpoint];
     else if (!value && endpoint)
-        [self _disposeEndpoint];
+        [self disposeEndpoint];
 
-    OBASSERT([self _isActive] == value);
+    OBASSERT([self isActive] == value);
 }
 
-- (void)_createEndpoint;
+- (void)createEndpoint;
 {
     SMClient *client;
     OSStatus status;
@@ -205,7 +205,7 @@
     [parser setOriginatingEndpoint:endpoint];
 }
 
-- (void)_disposeEndpoint;
+- (void)disposeEndpoint;
 {
     OBASSERT(endpoint != nil);
     if (!endpoint)

@@ -9,7 +9,7 @@
 
 @interface SMMessageFilter (Private)
 
-- (NSArray *)_filterMessages:(NSArray *)messages;
+- (NSArray *)filterMessages:(NSArray *)messages;
 
 @end
 
@@ -80,7 +80,7 @@
 {
     NSArray *filteredMessages;
     
-    filteredMessages = [self _filterMessages:messages];
+    filteredMessages = [self filterMessages:messages];
     if ([filteredMessages count])
         [nonretainedMessageDestination takeMIDIMessages:filteredMessages];
 }
@@ -90,7 +90,7 @@
 
 @implementation SMMessageFilter (Private)
 
-- (NSArray *)_filterMessages:(NSArray *)messages;
+- (NSArray *)filterMessages:(NSArray *)messages;
 {
     unsigned int messageIndex, messageCount;
     NSMutableArray *filteredMessages;

@@ -15,7 +15,7 @@
 @interface SMSysExSendRequest (Private)
 
 static void completionProc(MIDISysexSendRequest *request);
-- (void)_completionProc;
+- (void)completionProc;
 
 @end
 
@@ -137,11 +137,11 @@ static void completionProc(MIDISysexSendRequest *request)
     NSAutoreleasePool *pool;
 
     pool = [[NSAutoreleasePool alloc] init];    
-    [(SMSysExSendRequest *)(request->completionRefCon) _completionProc];
+    [(SMSysExSendRequest *)(request->completionRefCon) completionProc];
     [pool release];
 }
 
-- (void)_completionProc;
+- (void)completionProc;
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:SMSysExSendRequestFinishedNotification object:self];
     [self release];

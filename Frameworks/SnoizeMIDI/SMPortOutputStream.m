@@ -17,13 +17,13 @@
 
 @interface SMPortOutputStream (Private)
 
-- (void)_endpointDisappeared:(NSNotification *)notification;
-- (void)_endpointWasReplaced:(NSNotification *)notification;
+- (void)endpointDisappeared:(NSNotification *)notification;
+- (void)endpointWasReplaced:(NSNotification *)notification;
 
-- (void)_splitMessages:(NSArray *)messages intoCurrentSysex:(NSArray **)sysExMessagesPtr andNormal:(NSArray **)normalMessagesPtr;
+- (void)splitMessages:(NSArray *)messages intoCurrentSysex:(NSArray **)sysExMessagesPtr andNormal:(NSArray **)normalMessagesPtr;
 
-- (void)_sendSysExMessagesAsynchronously:(NSArray *)sysExMessages;
-- (void)_sysExSendRequestFinished:(NSNotification *)notification;
+- (void)sendSysExMessagesAsynchronously:(NSArray *)sysExMessages;
+- (void)sysExSendRequestFinished:(NSNotification *)notification;
 
 @end
 
@@ -92,8 +92,8 @@ DEFINE_NSSTRING(SMPortOutputStreamFinishedSysExSendNotification);
     endpoint = [newEndpoint retain];
     
     if (endpoint) {
-        [center addObserver:self selector:@selector(_endpointDisappeared:) name:SMEndpointDisappearedNotification object:endpoint];
-        [center addObserver:self selector:@selector(_endpointWasReplaced:) name:SMEndpointWasReplacedNotification object:endpoint];
+        [center addObserver:self selector:@selector(endpointDisappeared:) name:SMEndpointDisappearedNotification object:endpoint];
+        [center addObserver:self selector:@selector(endpointWasReplaced:) name:SMEndpointWasReplacedNotification object:endpoint];
     }
 }
 
@@ -132,9 +132,9 @@ DEFINE_NSSTRING(SMPortOutputStreamFinishedSysExSendNotification);
         // Find the messages which are sysex and which have timestamps which are <= now,
         // and send them using MIDISendSysex(). Other messages get sent normally.
 
-        [self _splitMessages:messages intoCurrentSysex:&sysExMessages andNormal:&normalMessages];
+        [self splitMessages:messages intoCurrentSysex:&sysExMessages andNormal:&normalMessages];
 
-        [self _sendSysExMessagesAsynchronously:sysExMessages];
+        [self sendSysExMessagesAsynchronously:sysExMessages];
         [super takeMIDIMessages:normalMessages];
     } else {
         [super takeMIDIMessages:messages];
@@ -164,7 +164,7 @@ DEFINE_NSSTRING(SMPortOutputStreamFinishedSysExSendNotification);
 
 @implementation SMPortOutputStream (Private)
 
-- (void)_endpointDisappeared:(NSNotification *)notification;
+- (void)endpointDisappeared:(NSNotification *)notification;
 {
     OBASSERT([notification object] == endpoint);
 
@@ -173,7 +173,7 @@ DEFINE_NSSTRING(SMPortOutputStreamFinishedSysExSendNotification);
     [[NSNotificationCenter defaultCenter] postNotificationName:SMPortOutputStreamEndpointDisappearedNotification object:self];
 }
 
-- (void)_endpointWasReplaced:(NSNotification *)notification;
+- (void)endpointWasReplaced:(NSNotification *)notification;
 {
     SMDestinationEndpoint *newEndpoint;
 
@@ -183,7 +183,7 @@ DEFINE_NSSTRING(SMPortOutputStreamFinishedSysExSendNotification);
     [self setEndpoint:newEndpoint];
 }
 
-- (void)_splitMessages:(NSArray *)messages intoCurrentSysex:(NSArray **)sysExMessagesPtr andNormal:(NSArray **)normalMessagesPtr;
+- (void)splitMessages:(NSArray *)messages intoCurrentSysex:(NSArray **)sysExMessagesPtr andNormal:(NSArray **)normalMessagesPtr;
 {
     unsigned int messageIndex, messageCount;
     NSMutableArray *sysExMessages = nil;
@@ -214,7 +214,7 @@ DEFINE_NSSTRING(SMPortOutputStreamFinishedSysExSendNotification);
         *normalMessagesPtr = normalMessages;
 }
 
-- (void)_sendSysExMessagesAsynchronously:(NSArray *)messages;
+- (void)sendSysExMessagesAsynchronously:(NSArray *)messages;
 {
     MIDIEndpointRef endpointRef;
     unsigned int messageCount, messageIndex;
@@ -230,7 +230,7 @@ DEFINE_NSSTRING(SMPortOutputStreamFinishedSysExSendNotification);
         message = [messages objectAtIndex:messageIndex];
         sendRequest = [SMSysExSendRequest sysExSendRequestWithMessage:message endpoint:[self endpoint]];
         [sysExSendRequests addObject:sendRequest];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_sysExSendRequestFinished:) name:SMSysExSendRequestFinishedNotification object:sendRequest];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sysExSendRequestFinished:) name:SMSysExSendRequestFinishedNotification object:sendRequest];
 
         [[NSNotificationCenter defaultCenter] postNotificationName:SMPortOutputStreamWillStartSysExSendNotification object:self userInfo:[NSDictionary dictionaryWithObject:sendRequest forKey:@"sendRequest"]];
 
@@ -238,7 +238,7 @@ DEFINE_NSSTRING(SMPortOutputStreamFinishedSysExSendNotification);
     }
 }
 
-- (void)_sysExSendRequestFinished:(NSNotification *)notification;
+- (void)sysExSendRequestFinished:(NSNotification *)notification;
 {
     SMSysExSendRequest *sendRequest;
 

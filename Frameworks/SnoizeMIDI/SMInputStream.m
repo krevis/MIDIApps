@@ -18,7 +18,7 @@
 
 static void midiReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, void *srcConnRefCon);
 
-- (id <SMInputStreamSource>)_findInputSourceWithName:(NSString *)desiredName uniqueID:(NSNumber *)desiredUniqueID;
+- (id <SMInputStreamSource>)findInputSourceWithName:(NSString *)desiredName uniqueID:(NSNumber *)desiredUniqueID;
 
 @end
 
@@ -134,7 +134,7 @@ DEFINE_NSSTRING(SMInputStreamSelectedInputSourceDisappearedNotification);
         dict = [settingsArray objectAtIndex:settingsIndex];
         name = [dict objectForKey:@"name"];
         uniqueID = [dict objectForKey:@"uniqueID"];
-        if ((source = [self _findInputSourceWithName:name uniqueID:uniqueID])) {
+        if ((source = [self findInputSourceWithName:name uniqueID:uniqueID])) {
             [newInputSources addObject:source];
         } else {
             if (!name)
@@ -256,7 +256,7 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
     [pool release];
 }
 
-- (id <SMInputStreamSource>)_findInputSourceWithName:(NSString *)desiredName uniqueID:(NSNumber *)desiredUniqueID;
+- (id <SMInputStreamSource>)findInputSourceWithName:(NSString *)desiredName uniqueID:(NSNumber *)desiredUniqueID;
 {
     // Find the input source with the desired unique ID. If there are no matches by uniqueID, return the first source whose name matches.
     // Otherwise, return nil.

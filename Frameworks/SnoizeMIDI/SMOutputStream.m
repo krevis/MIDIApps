@@ -21,10 +21,10 @@
 @interface SMOutputStream (Private)
 
 #if LIMITED_PACKET_LIST_SIZE
-- (void)_sendMessagesWithLimitedPacketListSize:(NSArray *)messages;
-- (void)_addMessage:(SMMessage *)message withDataSize:(unsigned int)dataSize toPacketList:(MIDIPacketList *)packetList packet:(MIDIPacket *)packet;
+- (void)sendMessagesWithLimitedPacketListSize:(NSArray *)messages;
+- (void)addMessage:(SMMessage *)message withDataSize:(unsigned int)dataSize toPacketList:(MIDIPacketList *)packetList packet:(MIDIPacket *)packet;
 #else
-- (MIDIPacketList *)_packetListForMessages:(NSArray *)messages;
+- (MIDIPacketList *)packetListForMessages:(NSArray *)messages;
 #endif
 
 @end
@@ -65,7 +65,7 @@
 {
 #if LIMITED_PACKET_LIST_SIZE
 
-    [self _sendMessagesWithLimitedPacketListSize:messages];
+    [self sendMessagesWithLimitedPacketListSize:messages];
 
 #else
 
@@ -74,7 +74,7 @@
     if ([messages count] == 0)
         return;
 
-    packetList = [self _packetListForMessages:messages];
+    packetList = [self packetListForMessages:messages];
     [self sendMIDIPacketList:packetList];
     NSZoneFree(NSDefaultMallocZone(), packetList);    
 
@@ -99,7 +99,7 @@
 
 static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
 
-- (void)_sendMessagesWithLimitedPacketListSize:(NSArray *)messages;
+- (void)sendMessagesWithLimitedPacketListSize:(NSArray *)messages;
 {
     unsigned int messageIndex, messageCount;
     MIDIPacketList *packetList;
@@ -128,7 +128,7 @@ static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
         // Is there room in this packet list for the whole of this message?
         if (packetListSize + packetSize <= MAX_PACKET_LIST_SIZE) {
             // Put this message in a packet.
-            [self _addMessage:message withDataSize:dataSize toPacketList:packetList packet:packet];
+            [self addMessage:message withDataSize:dataSize toPacketList:packetList packet:packet];
             packetListSize += packetSize;
             packet = MIDIPacketNext(packet);
 
@@ -147,7 +147,7 @@ static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
                 packetListSize = offsetof(MIDIPacketList, packet);
 
                 // and add this message's packet to it
-                [self _addMessage:message withDataSize:dataSize toPacketList:packetList packet:packet];
+                [self addMessage:message withDataSize:dataSize toPacketList:packetList packet:packet];
                 packetListSize += packetSize;
                 packet = MIDIPacketNext(packet);
                 OBASSERT((Byte *)packet - (Byte *)packetList < MAX_PACKET_LIST_SIZE);
@@ -214,7 +214,7 @@ static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
     free(packetList);
 }
 
-- (void)_addMessage:(SMMessage *)message withDataSize:(unsigned int)dataSize toPacketList:(MIDIPacketList *)packetList packet:(MIDIPacket *)packet;
+- (void)addMessage:(SMMessage *)message withDataSize:(unsigned int)dataSize toPacketList:(MIDIPacketList *)packetList packet:(MIDIPacket *)packet;
 {
     packet->timeStamp = (flags.ignoresTimeStamps ? SMGetCurrentHostTime() : [message timeStamp]);
     packet->length = dataSize;
@@ -229,7 +229,7 @@ static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
 
 const unsigned int maxPacketSize = 65535;
 
-- (MIDIPacketList *)_packetListForMessages:(NSArray *)messages;
+- (MIDIPacketList *)packetListForMessages:(NSArray *)messages;
 {
     unsigned int messageIndex, messageCount;
     unsigned int packetListSize;

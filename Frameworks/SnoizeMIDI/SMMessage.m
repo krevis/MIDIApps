@@ -13,7 +13,7 @@
 
 @interface SMMessage (Private)
 
-static NSString *_formatNoteNumberWithBaseOctave(Byte noteNumber, int octave);
+static NSString *formatNoteNumberWithBaseOctave(Byte noteNumber, int octave);
 
 @end
 
@@ -59,11 +59,11 @@ static NSDateFormatter *timeStampDateFormatter;
 
         case SMNoteFormatNameMiddleC3:
             // Middle C ==  60 == "C3", so base == 0 == "C-2"
-            return _formatNoteNumberWithBaseOctave(noteNumber, -2);
+            return formatNoteNumberWithBaseOctave(noteNumber, -2);
 
         case SMNoteFormatNameMiddleC4:
             // Middle C == 60 == "C2", so base == 0 == "C-1" 
-            return _formatNoteNumberWithBaseOctave(noteNumber, -1);
+            return formatNoteNumberWithBaseOctave(noteNumber, -1);
     }
 }
 
@@ -425,7 +425,7 @@ static NSDateFormatter *timeStampDateFormatter;
 
 @implementation SMMessage (Private)
 
-static NSString *_formatNoteNumberWithBaseOctave(Byte noteNumber, int octave)
+static NSString *formatNoteNumberWithBaseOctave(Byte noteNumber, int octave)
 {
     // noteNumber 0 is note C in octave provided (should be -2 or -1)
 

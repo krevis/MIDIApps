@@ -16,10 +16,10 @@
 
 @interface SMMessageParser (Private)
 
-- (NSArray *)_messagesForPacket:(const MIDIPacket *)packet;
+- (NSArray *)messagesForPacket:(const MIDIPacket *)packet;
 
-- (SMSystemExclusiveMessage *)_finishSysExMessageWithValidEnd:(BOOL)isEndValid;
-- (void)_sysExTimedOut;
+- (SMSystemExclusiveMessage *)finishSysExMessageWithValidEnd:(BOOL)isEndValid;
+- (void)sysExTimedOut;
 
 @end
 
@@ -99,7 +99,7 @@
     while (packetCount--) {
         NSArray *messagesForPacket;
 
-        messagesForPacket = [self _messagesForPacket:packet];
+        messagesForPacket = [self messagesForPacket:packet];
         if (messagesForPacket) {
             if (!messages)
                 messages = [NSMutableArray arrayWithArray:messagesForPacket];
@@ -119,7 +119,7 @@
 
         // Add a timer to this thread's run loop, and make it fire in the current run loop mode.
         
-        sysExTimeOutTimer = [[NSTimer timerWithTimeInterval:sysExTimeOut target:self selector:@selector(_sysExTimedOut) userInfo:nil repeats:NO] retain];
+        sysExTimeOutTimer = [[NSTimer timerWithTimeInterval:sysExTimeOut target:self selector:@selector(sysExTimedOut) userInfo:nil repeats:NO] retain];
 
         runLoop = CFRunLoopGetCurrent();
         mode = CFRunLoopCopyCurrentMode(runLoop);
@@ -150,7 +150,7 @@
 
 @implementation SMMessageParser (Private)
 
-- (NSArray *)_messagesForPacket:(const MIDIPacket *)packet;
+- (NSArray *)messagesForPacket:(const MIDIPacket *)packet;
 {
     // Split this packet into separate MIDI messages    
     NSMutableArray *messages = nil;
@@ -220,7 +220,7 @@
                 }
             } else {
                 if (readingSysExData)
-                    message = [self _finishSysExMessageWithValidEnd:(byte == 0xF7)];
+                    message = [self finishSysExMessageWithValidEnd:(byte == 0xF7)];
 
                 pendingMessageStatus = byte;
                 pendingDataLength = 0;
@@ -294,7 +294,7 @@
     return messages;
 }
 
-- (SMSystemExclusiveMessage *)_finishSysExMessageWithValidEnd:(BOOL)isEndValid;
+- (SMSystemExclusiveMessage *)finishSysExMessageWithValidEnd:(BOOL)isEndValid;
 {
     SMSystemExclusiveMessage *message = nil;
 
@@ -318,14 +318,14 @@
     return message;
 }
 
-- (void)_sysExTimedOut;
+- (void)sysExTimedOut;
 {
     SMSystemExclusiveMessage *message = nil;
 
     [sysExTimeOutTimer release];
     sysExTimeOutTimer = nil;
 
-    message = [self _finishSysExMessageWithValidEnd:NO];
+    message = [self finishSysExMessageWithValidEnd:NO];
     if (message)
         [nonretainedDelegate parser:self didReadMessages:[NSArray arrayWithObject:message]];
 }

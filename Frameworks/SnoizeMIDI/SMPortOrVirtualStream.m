@@ -14,17 +14,17 @@
 
 @interface SMPortOrVirtualStream (Private)
 
-- (void)_createPortStream;
-- (void)_removePortStream;
-- (void)_createVirtualStream;
-- (void)_removeVirtualStream;
+- (void)createPortStream;
+- (void)removePortStream;
+- (void)createVirtualStream;
+- (void)removeVirtualStream;
 
-- (NSDictionary *)_descriptionForVirtual;
-- (NSDictionary *)_descriptionForEndpoint:(SMEndpoint *)endpoint;
+- (NSDictionary *)descriptionForVirtual;
+- (NSDictionary *)descriptionForEndpoint:(SMEndpoint *)endpoint;
 
-- (SMEndpoint *)_endpointWithName:(NSString *)name;
+- (SMEndpoint *)endpointWithName:(NSString *)name;
 
-- (void)_selectEndpoint:(SMEndpoint *)endpoint;
+- (void)selectEndpoint:(SMEndpoint *)endpoint;
 
 @end
 
@@ -80,10 +80,10 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
         
         endpoint = [endpoints objectAtIndex:endpointIndex];
         if (![endpoint isOwnedByThisProcess])
-            [descriptions addObject:[self _descriptionForEndpoint:endpoint]];
+            [descriptions addObject:[self descriptionForEndpoint:endpoint]];
     }
 
-    [descriptions addObject:[self _descriptionForVirtual]];
+    [descriptions addObject:[self descriptionForVirtual]];
     
     return descriptions;
 }
@@ -91,9 +91,9 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
 - (NSDictionary *)endpointDescription;
 {
     if (virtualStream)
-        return [self _descriptionForVirtual];
+        return [self descriptionForVirtual];
     else if (portStream)
-        return [self _descriptionForEndpoint:[portStream endpoint]];
+        return [self descriptionForEndpoint:[portStream endpoint]];
     else
         return nil;
 }
@@ -101,10 +101,10 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
 - (void)setEndpointDescription:(NSDictionary *)description;
 {
     if (description) {
-        [self _selectEndpoint:[description objectForKey:@"endpoint"]];
+        [self selectEndpoint:[description objectForKey:@"endpoint"]];
     } else {
-        [self _removePortStream];
-        [self _removeVirtualStream];
+        [self removePortStream];
+        [self removeVirtualStream];
     }
 }
 
@@ -170,16 +170,16 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
 
         endpoint = [self endpointWithUniqueID:[number intValue]];
         if (endpoint) {
-            [self _selectEndpoint:endpoint];
+            [self selectEndpoint:endpoint];
         } else {
             NSString *endpointName;
         
             endpointName = [settings objectForKey:@"portEndpointName"];
             if (endpointName) {
                 // Maybe an endpoint with this name still exists, but with a different unique ID.
-                endpoint = [self _endpointWithName:endpointName];
+                endpoint = [self endpointWithName:endpointName];
                 if (endpoint)
-                    [self _selectEndpoint:endpoint];
+                    [self selectEndpoint:endpoint];
                 else
                     return endpointName;
             } else {
@@ -187,9 +187,9 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
             }
         }
     } else if ((number = [settings objectForKey:@"virtualEndpointUniqueID"])) {
-        [self _removeVirtualStream];
+        [self removeVirtualStream];
         virtualEndpointUniqueID = [number intValue];
-        [self _selectEndpoint:nil];
+        [self selectEndpoint:nil];
     }
 
     return nil;
@@ -261,14 +261,14 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
 
 @implementation SMPortOrVirtualStream (Private)
 
-- (void)_createPortStream;
+- (void)createPortStream;
 {
     OBASSERT(portStream == nil);
 
     portStream = [[self newPortStream] retain];
 }
 
-- (void)_removePortStream;
+- (void)removePortStream;
 {
     if (portStream) {
         [self willRemovePortStream];
@@ -278,14 +278,14 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
     }
 }
 
-- (void)_createVirtualStream;
+- (void)createVirtualStream;
 {
     OBASSERT(virtualStream == nil);
 
     virtualStream = [[self newVirtualStream] retain];
 }
 
-- (void)_removeVirtualStream;
+- (void)removeVirtualStream;
 {
     if (virtualStream) {
         [self willRemoveVirtualStream];
@@ -295,12 +295,12 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
     }
 }
 
-- (NSDictionary *)_descriptionForVirtual;
+- (NSDictionary *)descriptionForVirtual;
 {
     return [NSDictionary dictionaryWithObject:virtualDisplayName forKey:@"name"];
 }
 
-- (NSDictionary *)_descriptionForEndpoint:(SMEndpoint *)endpoint;
+- (NSDictionary *)descriptionForEndpoint:(SMEndpoint *)endpoint;
 {
     if (endpoint)
         return [NSDictionary dictionaryWithObjectsAndKeys:endpoint, @"endpoint", [endpoint uniqueName], @"name", nil];
@@ -308,7 +308,7 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
         return nil;
 }
 
-- (SMEndpoint *)_endpointWithName:(NSString *)name;
+- (SMEndpoint *)endpointWithName:(NSString *)name;
 {
     NSArray *allEndpoints;
     unsigned int endpointIndex;
@@ -326,21 +326,21 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
     return nil;
 }
  
-- (void)_selectEndpoint:(SMEndpoint *)endpoint;
+- (void)selectEndpoint:(SMEndpoint *)endpoint;
 {
     if (endpoint) {
         // Set up the port stream
         if (!portStream)
-            [self _createPortStream];
+            [self createPortStream];
         [portStream setEndpoint:(id)endpoint];
     
-        [self _removeVirtualStream];
+        [self removeVirtualStream];
     } else {
         // Set up the virtual stream
         if (!virtualStream)
-            [self _createVirtualStream];
+            [self createVirtualStream];
     
-        [self _removePortStream];
+        [self removePortStream];
     }
 } 
 

@@ -14,7 +14,7 @@
 @interface SMWorkaroundSysExSendRequest (Private)
 
 static void workaroundCompletionProc(MIDISysexSendRequest *request);
-- (void)_workaroundCompletionProc;
+- (void)workaroundCompletionProc;
 
 @end
 
@@ -69,12 +69,12 @@ static void workaroundCompletionProc(MIDISysexSendRequest *request)
 //    NSAutoreleasePool *pool;
 //    pool = [[NSAutoreleasePool alloc] init];
 
-    [(SMWorkaroundSysExSendRequest *)(request->completionRefCon) _workaroundCompletionProc];
+    [(SMWorkaroundSysExSendRequest *)(request->completionRefCon) workaroundCompletionProc];
 
 //    [pool release];
 }
 
-- (void)_workaroundCompletionProc;
+- (void)workaroundCompletionProc;
 {
     realBytesToSend -= (bytesInLastPacket - request.bytesToSend);
     if (realBytesToSend == 0)

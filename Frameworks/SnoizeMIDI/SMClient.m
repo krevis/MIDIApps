@@ -10,11 +10,11 @@
 
 @interface SMClient (Private)
 
-- (NSString *)_processName;
+- (NSString *)processName;
 
 static void getMIDINotification(const MIDINotification *message, void *refCon);
-- (void)_midiSetupChanged;
-- (void)_broadcastUnknownMIDINotification:(const MIDINotification *)message;
+- (void)midiSetupChanged;
+- (void)broadcastUnknownMIDINotification:(const MIDINotification *)message;
 
 @end
 
@@ -49,7 +49,7 @@ static SMClient *sharedClient = nil;
     if (!(self = [super init]))
         return nil;
 
-    name = [[self _processName] retain];
+    name = [[self processName] retain];
     postsExternalSetupChangeNotification = YES;
     isHandlingSetupChange = NO;
 
@@ -104,7 +104,7 @@ static SMClient *sharedClient = nil;
 
 @implementation SMClient (Private)
 
-- (NSString *)_processName;
+- (NSString *)processName;
 {
     NSString *processName;
 
@@ -122,13 +122,13 @@ static void getMIDINotification(const MIDINotification *message, void *refCon)
 #endif
 
     if (message->messageID == kMIDIMsgSetupChanged) {
-        [(SMClient *)refCon _midiSetupChanged];    
+        [(SMClient *)refCon midiSetupChanged];    
     } else {
-        [(SMClient *)refCon _broadcastUnknownMIDINotification:message];
+        [(SMClient *)refCon broadcastUnknownMIDINotification:message];
     }
 }
 
-- (void)_midiSetupChanged;
+- (void)midiSetupChanged;
 {
     // Unfortunately, CoreMIDI is really messed up, and can send us a notification while we are still processing one!
     // So this method needs to be reentrant. If someone calls us while we are processing, just remember that fact,
@@ -157,7 +157,7 @@ static void getMIDINotification(const MIDINotification *message, void *refCon)
     } while (retryAfterDone);
 }
 
-- (void)_broadcastUnknownMIDINotification:(const MIDINotification *)message;
+- (void)broadcastUnknownMIDINotification:(const MIDINotification *)message;
 {
     unsigned int dataSize;
     NSData *data;

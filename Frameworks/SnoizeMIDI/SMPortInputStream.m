@@ -15,8 +15,8 @@
 
 @interface SMPortInputStream (Private)
 
-- (void)_endpointDisappeared:(NSNotification *)notification;
-- (void)_endpointWasReplaced:(NSNotification *)notification;
+- (void)endpointDisappeared:(NSNotification *)notification;
+- (void)endpointWasReplaced:(NSNotification *)notification;
 
 @end
 
@@ -86,8 +86,8 @@
     NSMapInsert(parsersForEndpoints, endpoint, parser);
 
     center = [NSNotificationCenter defaultCenter];
-    [center addObserver:self selector:@selector(_endpointDisappeared:) name:SMEndpointDisappearedNotification object:endpoint];
-    [center addObserver:self selector:@selector(_endpointWasReplaced:) name:SMEndpointWasReplacedNotification object:endpoint];
+    [center addObserver:self selector:@selector(endpointDisappeared:) name:SMEndpointDisappearedNotification object:endpoint];
+    [center addObserver:self selector:@selector(endpointWasReplaced:) name:SMEndpointWasReplacedNotification object:endpoint];
 
     [endpoints addObject:endpoint];
 }
@@ -176,7 +176,7 @@
 
 @implementation SMPortInputStream (Private)
 
-- (void)_endpointDisappeared:(NSNotification *)notification;
+- (void)endpointDisappeared:(NSNotification *)notification;
 {
     SMSourceEndpoint *endpoint;
 
@@ -188,7 +188,7 @@
     [self postSelectedInputStreamSourceDisappearedNotification:endpoint];
 }
 
-- (void)_endpointWasReplaced:(NSNotification *)notification;
+- (void)endpointWasReplaced:(NSNotification *)notification;
 {
     SMSourceEndpoint *oldEndpoint, *newEndpoint;
 
