@@ -11,6 +11,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "\U0001-DDEBUG";
 			};
 			isa = PBXBuildStyle;
 			name = Development;
@@ -61,6 +62,7 @@
 			buildStyles = (
 				014CEA440018CDF011CA2923,
 				014CEA450018CDF011CA2923,
+				F5460C1202E316F801000164,
 			);
 			isa = PBXProject;
 			mainGroup = 0867D691FE84028FC02AAC07;
@@ -113,7 +115,7 @@
 				INSTALL_PATH = "$(HOME)/Library/Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-image_base 0x3B000000";
 				PRODUCT_NAME = DisclosableView;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
@@ -145,7 +147,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>0.0.1d1</string>
+	<string>1.0.0d1</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>
@@ -295,6 +297,17 @@
 //F52
 //F53
 //F54
+		F5460C1202E316F801000164 = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				SKIP_INSTALL = YES;
+			};
+			isa = PBXBuildStyle;
+			name = DeploymentInApp;
+		};
 		F54FF60702DEE82F01000164 = {
 			isa = PBXFileReference;
 			path = SNDisclosableView.h;
