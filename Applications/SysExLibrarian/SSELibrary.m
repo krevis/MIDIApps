@@ -593,7 +593,7 @@ NSString *SSESysExFileExtension = @"syx";
         NS_DURING {
             [fileManager createPathToFile:bogusFilePath attributes:nil];
         } NS_HANDLER {
-            return [localException reason];
+            return [NSString stringWithFormat:@"The folder %@ could not be created.", fileDirectoryPath];
         } NS_ENDHANDLER;
 
         // We succeeded in creating the directory, so now update the alias we have saved.
