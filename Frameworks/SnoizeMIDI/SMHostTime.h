@@ -1,3 +1,7 @@
+//
+// Copyright 2002 Kurt Revis. All rights reserved.
+//
+
 #include <CoreMIDI/CoreMIDI.h>
 
 // These are our own versions of the CoreAudio HostTime functions:

@@ -2,7 +2,6 @@
 // Copyright 2001-2002 Kurt Revis. All rights reserved.
 //
 
-#import <OmniFoundation/OFObject.h>
 #import <CoreMIDI/CoreMIDI.h>
 #import <Foundation/Foundation.h>
 
@@ -10,7 +9,7 @@
 @class SMSystemExclusiveMessage;
 
 
-@interface SMMessageParser : OFObject
+@interface SMMessageParser : NSObject
 {
     SMEndpoint *nonretainedOriginatingEndpoint;
     id nonretainedDelegate;

@@ -4,9 +4,6 @@
 
 #import "SMMessageParser.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
-
 #import "SMMessage.h"
 #import "SMVoiceMessage.h"
 #import "SMSystemCommonMessage.h"

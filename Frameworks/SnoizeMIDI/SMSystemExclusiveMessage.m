@@ -4,8 +4,8 @@
 
 #import "SMSystemExclusiveMessage.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
+#import "SMUtilities.h"
+
 
 
 @interface SMSystemExclusiveMessage (Private)
@@ -190,7 +190,7 @@ static void writeVariableLengthFieldIntoSMF(Byte **pPtr, const UInt32 value);
 
 - (NSString *)typeForDisplay;
 {
-    return NSLocalizedStringFromTableInBundle(@"SysEx", @"SnoizeMIDI", [self bundle], "displayed type of System Exclusive event");
+    return NSLocalizedStringFromTableInBundle(@"SysEx", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of System Exclusive event");
 }
 
 - (NSString *)dataForDisplay;
@@ -301,7 +301,7 @@ static void writeVariableLengthFieldIntoSMF(Byte **pPtr, const UInt32 value);
 - (NSString *)sizeForDisplay;
 {
     return [NSString stringWithFormat:
-        NSLocalizedStringFromTableInBundle(@"%@ bytes", @"SnoizeMIDI", [self bundle], "SysEx length format string"),
+        NSLocalizedStringFromTableInBundle(@"%@ bytes", @"SnoizeMIDI", SMBundleForObject(self), "SysEx length format string"),
         [SMMessage formatLength:[self receivedDataWithStartByteLength]]];
 }
 

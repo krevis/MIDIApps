@@ -4,8 +4,7 @@
 
 #import "SMSystemRealTimeMessage.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
+#import "SMUtilities.h"
 
 
 @implementation SMSystemRealTimeMessage
@@ -53,22 +52,22 @@
 {
     switch ([self type]) {
         case SMSystemRealTimeMessageTypeClock:
-            return NSLocalizedStringFromTableInBundle(@"Clock", @"SnoizeMIDI", [self bundle], "displayed type of Clock event");
+            return NSLocalizedStringFromTableInBundle(@"Clock", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of Clock event");
             
         case SMSystemRealTimeMessageTypeStart:
-            return NSLocalizedStringFromTableInBundle(@"Start", @"SnoizeMIDI", [self bundle], "displayed type of Start event");
+            return NSLocalizedStringFromTableInBundle(@"Start", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of Start event");
 
         case SMSystemRealTimeMessageTypeContinue:
-            return NSLocalizedStringFromTableInBundle(@"Continue", @"SnoizeMIDI", [self bundle], "displayed type of Continue event");
+            return NSLocalizedStringFromTableInBundle(@"Continue", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of Continue event");
             
         case SMSystemRealTimeMessageTypeStop:
-            return NSLocalizedStringFromTableInBundle(@"Stop", @"SnoizeMIDI", [self bundle], "displayed type of Stop event");
+            return NSLocalizedStringFromTableInBundle(@"Stop", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of Stop event");
 
         case SMSystemRealTimeMessageTypeActiveSense:
-            return NSLocalizedStringFromTableInBundle(@"Active Sense", @"SnoizeMIDI", [self bundle], "displayed type of Active Sense event");
+            return NSLocalizedStringFromTableInBundle(@"Active Sense", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of Active Sense event");
         
         case SMSystemRealTimeMessageTypeReset:
-            return NSLocalizedStringFromTableInBundle(@"Reset", @"SnoizeMIDI", [self bundle], "displayed type of Reset event");
+            return NSLocalizedStringFromTableInBundle(@"Reset", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of Reset event");
 
         default:
             return [super typeForDisplay];

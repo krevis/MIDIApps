@@ -4,15 +4,13 @@
 
 #import "SMPortOutputStream.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
-
 #import "SMClient.h"
 #import "SMEndpoint.h"
 #import "SMHostTime.h"
 #import "SMMessage.h"
 #import "SMSystemExclusiveMessage.h"
 #import "SMSysExSendRequest.h"
+#import "SMUtilities.h"
 
 
 @interface SMPortOutputStream (Private)
@@ -49,7 +47,7 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
 
     status = MIDIOutputPortCreate([[SMClient sharedClient] midiClient], (CFStringRef)@"Output port",  &outputPort);
     if (status != noErr) {
-        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't create a MIDI output port (error %ld)", @"SnoizeMIDI", [self bundle], "exception with OSStatus if MIDIOutputPortCreate() fails"), status];
+        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't create a MIDI output port (error %ld)", @"SnoizeMIDI", SMBundleForObject(self), "exception with OSStatus if MIDIOutputPortCreate() fails"), status];
     }
 
     return self;
@@ -186,7 +184,7 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
     SMDestinationEndpoint *endpoint = [notification object];
     NSMutableSet *newEndpoints;
 
-    OBASSERT([endpoints containsObject:endpoint]);
+    SMAssert([endpoints containsObject:endpoint]);
 
     newEndpoints = [NSMutableSet setWithSet:endpoints];
     [newEndpoints removeObject:endpoint];
@@ -201,7 +199,7 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
     SMDestinationEndpoint *newEndpoint;
     NSMutableSet *newEndpoints;
 
-    OBASSERT([endpoints containsObject:endpoint]);
+    SMAssert([endpoints containsObject:endpoint]);
 
     newEndpoint = [[notification userInfo] objectForKey:SMMIDIObjectReplacement];
 
@@ -274,7 +272,7 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
     SMSysExSendRequest *sendRequest;
 
     sendRequest = [notification object];
-    OBASSERT([sysExSendRequests containsObject:sendRequest]);
+    SMAssert([sysExSendRequests containsObject:sendRequest]);
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:sendRequest];
     [sendRequest retain];

@@ -4,9 +4,6 @@
 
 #import "SMVirtualOutputStream.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
-
 #import "SMClient.h"
 #import "SMEndpoint.h"
 

@@ -1,11 +1,11 @@
 #import "SMMIDIObject.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
+#import <objc/objc-runtime.h>
 
 #import "SMClient.h"
 #import "SMEndpoint.h"
 #import "SMMIDIObject-Private.h"
+#import "SMUtilities.h"
 
 
 @interface SMMIDIObject (Private)
@@ -14,7 +14,7 @@ static int midiObjectOrdinalComparator(id object1, id object2, void *context);
 
 // Methods to be used on SMMIDIObject itself, not subclasses
 
-+ (void)privateDidLoad;
++ (void)privateInitialize;
 + (void)midiClientCreated:(NSNotification *)notification;
 + (NSSet *)leafSubclasses;
 + (Class)subclassForObjectType:(MIDIObjectType)objectType;
@@ -56,11 +56,11 @@ NSString *SMMIDIObjectReplacement = @"SMMIDIObjectReplacement";
 NSString *SMMIDIObjectListChangedNotification = @"SMMIDIObjectListChangedNotification";
 
 
-// This really belongs in the Private category, but +didLoad won't get called if it's in a category. Strange but true.
-// NOTE That was fixed in OmniBase recently, but the fixed version seems to rely on private API, so I didn't make the change in my copy of OmniBase.
-+ (void)didLoad
++ (void)initialize
 {
-    [self privateDidLoad];
+    SMInitialize;
+    
+    [self privateInitialize];
 }
 
 //
@@ -69,19 +69,19 @@ NSString *SMMIDIObjectListChangedNotification = @"SMMIDIObjectListChangedNotific
 
 + (MIDIObjectType)midiObjectType;
 {
-    OBRequestConcreteImplementation(self, _cmd);
+    SMRequestConcreteImplementation(self, _cmd);
     return kMIDIObjectType_Other;
 }
 
 + (ItemCount)midiObjectCount;
 {
-    OBRequestConcreteImplementation(self, _cmd);
+    SMRequestConcreteImplementation(self, _cmd);
     return 0;
 }
 
 + (MIDIObjectRef)midiObjectAtIndex:(ItemCount)index;
 {
-    OBRequestConcreteImplementation(self, _cmd);
+    SMRequestConcreteImplementation(self, _cmd);
     return NULL;        
 }
 
@@ -94,7 +94,7 @@ NSString *SMMIDIObjectListChangedNotification = @"SMMIDIObjectListChangedNotific
     NSMapTable *mapTable;
 
     mapTable = [self midiObjectMapTable];
-    OBASSERT(mapTable);
+    SMAssert(mapTable);
 
     if (mapTable)
         return NSAllMapTableValues(mapTable);
@@ -156,7 +156,7 @@ NSString *SMMIDIObjectListChangedNotification = @"SMMIDIObjectListChangedNotific
         return nil;
     
     mapTable = [self midiObjectMapTable];
-    OBASSERT(mapTable);
+    SMAssert(mapTable);
 
     if (mapTable)
         return NSMapGet(mapTable, anObjectRef);
@@ -197,7 +197,7 @@ NSString *SMMIDIObjectListChangedNotification = @"SMMIDIObjectListChangedNotific
     if (!(self = [super init]))
         return nil;
 
-    OBPRECONDITION(anObjectRef != NULL);
+    SMAssert(anObjectRef != NULL);
     objectRef = anObjectRef;
     ordinal = anOrdinal;
 
@@ -313,7 +313,7 @@ NSString *SMMIDIObjectListChangedNotification = @"SMMIDIObjectListChangedNotific
 
     status = MIDIObjectSetStringProperty(objectRef, property, (CFStringRef)value);
     if (status) {
-        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't set object's property '%@' to '%@' (error %ld)", @"SnoizeMIDI", [self bundle], "exception with property, value string, and OSStatus if setting object's property fails"), property, value, status];
+        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't set object's property '%@' to '%@' (error %ld)", @"SnoizeMIDI", SMBundleForObject(self), "exception with property, value string, and OSStatus if setting object's property fails"), property, value, status];
     }
 }
 
@@ -324,7 +324,7 @@ NSString *SMMIDIObjectListChangedNotification = @"SMMIDIObjectListChangedNotific
 
     status = MIDIObjectGetIntegerProperty(objectRef, property, &value);
     if (status) {
-        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't get object's property '%@' (error %ld)", @"SnoizeMIDI", [self bundle], "exception with property and OSStatus if getting object's property fails"), property, status];
+        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't get object's property '%@' (error %ld)", @"SnoizeMIDI", SMBundleForObject(self), "exception with property and OSStatus if getting object's property fails"), property, status];
     }
 
     return value;
@@ -338,7 +338,7 @@ NSString *SMMIDIObjectListChangedNotification = @"SMMIDIObjectListChangedNotific
 
     status = MIDIObjectSetIntegerProperty(objectRef, property, value);
     if (status) {
-        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't set object's property '%@' to %ld (error %ld)", @"SnoizeMIDI", [self bundle], "exception with property, SInt32, and OSStatus if setting object's property fails"), property, status];
+        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't set object's property '%@' to %ld (error %ld)", @"SnoizeMIDI", SMBundleForObject(self), "exception with property, SInt32, and OSStatus if setting object's property fails"), property, status];
     }
 }
 
@@ -391,9 +391,9 @@ static NSMapTable *classToObjectsMapTable = NULL;
 // Keys are leaf subclasses of SMMIDIObject.
 // Objects are pointers to the subclass's NSMapTable from MIDIObjectRef to (SMMIDIObject *).
 
-+ (void)privateDidLoad;
++ (void)privateInitialize;
 {
-    OBASSERT(self == [SMMIDIObject class]);
+    SMAssert(self == [SMMIDIObject class]);
 
     classToObjectsMapTable = NSCreateMapTable(NSNonOwnedPointerMapKeyCallBacks, NSNonOwnedPointerMapValueCallBacks, 0);
 
@@ -408,7 +408,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
     NSNotificationCenter *center;
     SMClient *client;
 
-    OBASSERT(self == [SMMIDIObject class]);
+    SMAssert(self == [SMMIDIObject class]);
 
     // Send +initialMIDISetup to each leaf subclass of this class.    
     leafSubclasses = [self leafSubclasses];
@@ -455,7 +455,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
         NSEnumerator *enumerator;
         NSValue *aClassValue;
     
-        OBASSERT(self == [SMMIDIObject class]);
+        SMAssert(self == [SMMIDIObject class]);
 
         // Get the whole list of classes
         numClasses = 0;
@@ -473,7 +473,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
         for (classIndex = 0; classIndex < numClasses; classIndex++) {
             Class aClass = classes[classIndex];
     
-            if (aClass != self && OBClassIsSubclassOfClass(aClass, self))
+            if (aClass != self && SMClassIsSubclassOfClass(aClass, self))
                 [knownSubclasses addObject:[NSValue valueWithPointer:aClass]];
         }
     
@@ -508,7 +508,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
     NSEnumerator *enumerator;
     NSValue *subclassValue;
 
-    OBASSERT(self == [SMMIDIObject class]);
+    SMAssert(self == [SMMIDIObject class]);
 
     leafSubclasses = [self leafSubclasses];
     enumerator = [leafSubclasses objectEnumerator];
@@ -553,7 +553,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
     Class subclass;
     SMMIDIObject *object;
         
-    OBASSERT(self == [SMMIDIObject class]);
+    SMAssert(self == [SMMIDIObject class]);
 
     ref = [[[notification userInfo] objectForKey:SMClientObjectPropertyChangedObject] pointerValue];
     objectType = [[[notification userInfo] objectForKey:SMClientObjectPropertyChangedType] intValue];
@@ -570,10 +570,10 @@ static NSMapTable *classToObjectsMapTable = NULL;
     MIDIObjectType objectType;
     Class subclass;
 
-    OBASSERT(self == [SMMIDIObject class]);
+    SMAssert(self == [SMMIDIObject class]);
 
     ref = [[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChild] pointerValue];
-    OBASSERT(ref != NULL);
+    SMAssert(ref != NULL);
     objectType = [[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChildType] intValue];
 
     subclass = [self subclassForObjectType:objectType];
@@ -591,10 +591,10 @@ static NSMapTable *classToObjectsMapTable = NULL;
     Class subclass;
     SMMIDIObject *object;
 
-    OBASSERT(self == [SMMIDIObject class]);
+    SMAssert(self == [SMMIDIObject class]);
 
     ref = [[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChild] pointerValue];
-    OBASSERT(ref != NULL);
+    SMAssert(ref != NULL);
     objectType = [[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChildType] intValue];
 
     subclass = [self subclassForObjectType:objectType];
@@ -608,7 +608,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
 
 + (NSMapTable *)midiObjectMapTable;
 {
-    OBASSERT(self != [SMMIDIObject class]);
+    SMAssert(self != [SMMIDIObject class]);
 
     return NSMapGet(classToObjectsMapTable, self);
 }
@@ -617,13 +617,13 @@ static NSMapTable *classToObjectsMapTable = NULL;
 {
     SMMIDIObject *object;
 
-    OBASSERT(self != [SMMIDIObject class]);
-    OBASSERT(anObjectRef != NULL);
+    SMAssert(self != [SMMIDIObject class]);
+    SMAssert(anObjectRef != NULL);
 
     object = [[self alloc] initWithObjectRef:anObjectRef ordinal:anOrdinal];
     if (object) {
         NSMapTable *mapTable = [self midiObjectMapTable];
-        OBASSERT(mapTable != NULL);
+        SMAssert(mapTable != NULL);
 
         NSMapInsertKnownAbsent(mapTable, anObjectRef, object);
         [object release];
@@ -636,8 +636,8 @@ static NSMapTable *classToObjectsMapTable = NULL;
 {
     NSMapTable *mapTable = [self midiObjectMapTable];
 
-    OBASSERT(self != [SMMIDIObject class]);
-    OBASSERT(mapTable != NULL);
+    SMAssert(self != [SMMIDIObject class]);
+    SMAssert(mapTable != NULL);
 
     NSMapRemove(mapTable, anObjectRef);
 }
@@ -646,7 +646,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
 {
     ItemCount index, count;
 
-    OBASSERT(self != [SMMIDIObject class]);
+    SMAssert(self != [SMMIDIObject class]);
 
     count = [self midiObjectCount];
     for (index = 0; index < count; index++) {
@@ -657,14 +657,14 @@ static NSMapTable *classToObjectsMapTable = NULL;
 
 + (void)midiSetupChanged:(NSNotification *)notification;
 {
-    OBASSERT(self != [SMMIDIObject class]);
+    SMAssert(self != [SMMIDIObject class]);
 
     [self refreshAllObjects];
 }
 
 + (void)postObjectListChangedNotification;
 {
-    OBASSERT(self != [SMMIDIObject class]);
+    SMAssert(self != [SMMIDIObject class]);
 
     [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectListChangedNotification object:self];
 }
@@ -684,7 +684,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
 {
     NSDictionary *userInfo;
 
-    OBASSERT(replacement != NULL);
+    SMAssert(replacement != NULL);
     userInfo = [NSDictionary dictionaryWithObject:replacement forKey:SMMIDIObjectReplacement];
     [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectWasReplacedNotification object:self userInfo:userInfo];
 }
@@ -704,7 +704,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
     ItemCount objectIndex, objectCount;
     NSMapTable *newMapTable;
 
-    OBASSERT(self != [SMMIDIObject class]);
+    SMAssert(self != [SMMIDIObject class]);
 
     objectCount = [self midiObjectCount];
 
@@ -752,7 +752,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
     ItemCount objectIndex, objectCount;
     NSMutableArray *removedObjects, *replacedObjects, *replacementObjects, *addedObjects;
 
-    OBASSERT(self != [SMMIDIObject class]);
+    SMAssert(self != [SMMIDIObject class]);
 
     objectCount = [self midiObjectCount];
 

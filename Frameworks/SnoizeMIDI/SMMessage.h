@@ -2,7 +2,6 @@
 // Copyright 2001-2002 Kurt Revis. All rights reserved.
 //
 
-#import <OmniFoundation/OFObject.h>
 #import <Foundation/Foundation.h>
 #import <CoreMIDI/CoreMIDI.h>
 
@@ -82,7 +81,7 @@ extern NSString *SMDataFormatPreferenceKey;
 extern NSString *SMTimeFormatPreferenceKey;
 
 
-@interface SMMessage : OFObject <NSCopying>
+@interface SMMessage : NSObject <NSCopying>
 {
     MIDITimeStamp timeStamp;
     Byte statusByte;

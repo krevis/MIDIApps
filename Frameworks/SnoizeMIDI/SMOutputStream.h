@@ -2,13 +2,12 @@
 // Copyright 2001-2002 Kurt Revis. All rights reserved.
 //
 
-#import <OmniFoundation/OFObject.h>
 #import <CoreMIDI/CoreMIDI.h>
 #import <Foundation/Foundation.h>
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 
 
-@interface SMOutputStream : OFObject <SMMessageDestination>
+@interface SMOutputStream : NSObject <SMMessageDestination>
 {
     struct {
         unsigned int ignoresTimeStamps:1;

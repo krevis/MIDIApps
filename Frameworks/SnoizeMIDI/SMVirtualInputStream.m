@@ -4,13 +4,11 @@
 
 #import "SMVirtualInputStream.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
-
 #import "SMClient.h"
 #import "SMEndpoint.h"
 #import "SMInputStreamSource.h"
 #import "SMMessageParser.h"
+#import "SMUtilities.h"
 
 
 @interface SMVirtualInputStream (Private)
@@ -181,13 +179,13 @@
         // We requested a specific uniqueID earlier, but we might not have gotten it.
         // We have to update our idea of what it is, regardless.
         uniqueID = [endpoint uniqueID];
-        OBASSERT(uniqueID != 0);
+        SMAssert(uniqueID != 0);
     }
 }
 
 - (void)disposeEndpoint;
 {
-    OBASSERT(endpoint != nil);
+    SMAssert(endpoint != nil);
 
     [endpoint remove];
     [endpoint release];

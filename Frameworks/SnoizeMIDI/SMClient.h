@@ -2,13 +2,12 @@
 // Copyright 2001-2002 Kurt Revis. All rights reserved.
 //
 
-#import <OmniFoundation/OFObject.h>
 #import <CoreFoundation/CoreFoundation.h>
 #import <Foundation/Foundation.h>
 #import <CoreMIDI/CoreMIDI.h>
 
 
-@interface SMClient : OFObject
+@interface SMClient : NSObject
 {
     MIDIClientRef midiClient;
     NSString *name;

@@ -2,7 +2,6 @@
 // Copyright 2002 Kurt Revis. All rights reserved.
 //
 
-#import <OmniFoundation/OFObject.h>
 #import <Foundation/Foundation.h>
 #import <CoreMIDI/CoreMIDI.h>
 #import <SnoizeMIDI/SMMIDIObject.h>

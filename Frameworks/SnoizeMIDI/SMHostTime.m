@@ -1,5 +1,11 @@
+//
+// Copyright 2002 Kurt Revis. All rights reserved.
+//
+
 #import "SMHostTime.h"
+
 #include <mach/mach_time.h>
+
 
 static int isInited = 0;
 static Float64 nanoRatio;

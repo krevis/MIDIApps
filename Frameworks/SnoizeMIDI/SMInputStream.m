@@ -4,14 +4,12 @@
 
 #import "SMInputStream.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
-
 #import "SMClient.h"
 #import "SMEndpoint.h"
 #import "SMMessage.h"
 #import "SMMessageParser.h"
 #import "SMSystemExclusiveMessage.h"
+#import "SMUtilities.h"
 #import "MessageQueue.h"
 
 
@@ -34,9 +32,11 @@ NSString *SMInputStreamSelectedInputSourceDisappearedNotification = @"SMInputStr
 NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceListChangedNotification";
 
 
-+ (void)didLoad
++ (void)initialize
 {
-    [NSThread detachNewThreadSelector:@selector(runSecondaryMIDIThread:) toTarget:self withObject:nil];    
+    SMInitialize;
+
+    [NSThread detachNewThreadSelector:@selector(runSecondaryMIDIThread:) toTarget:self withObject:nil];
 }
 
 - (id)init;
@@ -145,7 +145,7 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
             [newInputSources addObject:source];
         } else {
             if (!name)
-                name = NSLocalizedStringFromTableInBundle(@"Unknown", @"SnoizeMIDI", [self bundle], "name of missing endpoint if not specified in document");
+                name = NSLocalizedStringFromTableInBundle(@"Unknown", @"SnoizeMIDI", SMBundleForObject(self), "name of missing endpoint if not specified in document");
             if (!missingNames)
                 missingNames = [NSMutableArray array];
             [missingNames addObject:name];
@@ -194,37 +194,37 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
 
 - (NSArray *)parsers;
 {
-    OBRequestConcreteImplementation(self, _cmd);
+    SMRequestConcreteImplementation(self, _cmd);
     return nil;
 }
 
 - (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;
 {
-    OBRequestConcreteImplementation(self, _cmd);
+    SMRequestConcreteImplementation(self, _cmd);
     return nil;
 }
 
 - (id<SMInputStreamSource>)streamSourceForParser:(SMMessageParser *)parser;
 {
-    OBRequestConcreteImplementation(self, _cmd);
+    SMRequestConcreteImplementation(self, _cmd);
     return nil;
 }
 
 - (NSArray *)inputSources;
 {
-    OBRequestConcreteImplementation(self, _cmd);
+    SMRequestConcreteImplementation(self, _cmd);
     return nil;
 }
 
 - (NSSet *)selectedInputSources;
 {
-    OBRequestConcreteImplementation(self, _cmd);
+    SMRequestConcreteImplementation(self, _cmd);
     return nil;
 }
 
 - (void)setSelectedInputSources:(NSSet *)sources;
 {
-    OBRequestConcreteImplementation(self, _cmd);
+    SMRequestConcreteImplementation(self, _cmd);
     return;
 }
 

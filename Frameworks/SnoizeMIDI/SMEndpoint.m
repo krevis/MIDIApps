@@ -5,14 +5,15 @@
 #import "SMEndpoint.h"
 
 #import <CoreFoundation/CoreFoundation.h>
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
 #include <AvailabilityMacros.h>
+#include <unistd.h>
 
 #import "SMClient.h"
 #import "SMDevice.h"
 #import "SMExternalDevice.h"
 #import "SMMIDIObject-Private.h"
+#import "SMUtilities.h"
+#import "NSArray-SMExtensions.h"
 
 
 @interface SMEndpoint (Private)
@@ -50,13 +51,13 @@ static BOOL sRefreshAllObjectsDisabled = NO;
 
 + (ItemCount)endpointCountForEntity:(MIDIEntityRef)entity;
 {
-    OBRequestConcreteImplementation(self, _cmd);
+    SMRequestConcreteImplementation(self, _cmd);
     return 0;
 }
 
 + (MIDIEndpointRef)endpointRefAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
 {
-    OBRequestConcreteImplementation(self, _cmd);
+    SMRequestConcreteImplementation(self, _cmd);
     return NULL;
 }
 
@@ -96,7 +97,7 @@ static BOOL sRefreshAllObjectsDisabled = NO;
 - (void)checkIfPropertySetIsAllowed;
 {
     if (![self isOwnedByThisProcess]) {
-        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Can't set a property on an endpoint we don't own", @"SnoizeMIDI", [self bundle], "exception if someone tries to set a property on an endpoint we don't own")];
+        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Can't set a property on an endpoint we don't own", @"SnoizeMIDI", SMBundleForObject(self), "exception if someone tries to set a property on an endpoint we don't own")];
     }
 }
 
@@ -150,7 +151,7 @@ static BOOL sRefreshAllObjectsDisabled = NO;
     // So we'll say that this method should be called first, before any other setters are called.
     
     if (![self isVirtual]) {
-        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Endpoint is not virtual, so it can't be owned by this process", @"SnoizeMIDI", [self bundle], "exception if someone calls -setIsOwnedByThisProcess on a non-virtual endpoint")];
+        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Endpoint is not virtual, so it can't be owned by this process", @"SnoizeMIDI", SMBundleForObject(self), "exception if someone calls -setIsOwnedByThisProcess on a non-virtual endpoint")];
     }
     
     [self setOwnerPID:getpid()];
@@ -395,16 +396,11 @@ static BOOL sRefreshAllObjectsDisabled = NO;
 
 - (NSArray *)inputStreamSourceExternalDeviceNames;
 {
-    return [[self connectedExternalDevices] arrayByPerformingSelector:@selector(name)];
+    return [[self connectedExternalDevices] SnoizeMIDI_arrayByMakingObjectsPerformSelector:@selector(name)];
 }
 
-@end
-
-
-@implementation SMEndpoint (Private)
-
 //
-// Overrides of SMMIDIObject methods
+// Overrides of SMMIDIObject private methods
 //
 
 + (void)initialMIDISetup
@@ -433,13 +429,18 @@ static BOOL sRefreshAllObjectsDisabled = NO;
     return object;
 }
 
+@end
+
+
+@implementation SMEndpoint (Private)
+
 //
 // Methods to be implemented in subclasses
 //
 
 + (EndpointUniqueNamesFlags *)endpointUniqueNamesFlagsPtr;
 {
-    OBRequestConcreteImplementation(self, _cmd);
+    SMRequestConcreteImplementation(self, _cmd);
     return NULL;
 }
 
@@ -465,7 +466,7 @@ static BOOL sRefreshAllObjectsDisabled = NO;
     struct EndpointUniqueNamesFlags *flagsPtr;
 
     endpoints = [self allObjects];
-    nameArray = [endpoints arrayByPerformingSelector:@selector(name)];
+    nameArray = [endpoints SnoizeMIDI_arrayByMakingObjectsPerformSelector:@selector(name)];
     nameSet = [NSSet setWithArray:nameArray];
 
     areNamesUnique = ([nameArray count] == [nameSet count]);
@@ -555,7 +556,7 @@ static BOOL sRefreshAllObjectsDisabled = NO;
     
     status = MIDIObjectSetIntegerProperty(objectRef, (CFStringRef)SMEndpointPropertyOwnerPID, value);
     if (status) {
-        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't set owner PID on endpoint: error %ld", @"SnoizeMIDI", [self bundle], "exception with OSStatus if setting endpoint's owner PID fails"), status];
+        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't set owner PID on endpoint: error %ld", @"SnoizeMIDI", SMBundleForObject(self), "exception with OSStatus if setting endpoint's owner PID fails"), status];
     }
 }
 

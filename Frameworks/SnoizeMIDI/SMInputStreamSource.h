@@ -2,7 +2,6 @@
 // Copyright 2002 Kurt Revis. All rights reserved.
 //
 
-#import <OmniFoundation/OFObject.h>
 #import <Foundation/Foundation.h>
 
 
@@ -15,7 +14,7 @@
 @end
 
 
-@interface SMSimpleInputStreamSource : OFObject <SMInputStreamSource>
+@interface SMSimpleInputStreamSource : NSObject <SMInputStreamSource>
 {
     NSString *name;
 }

@@ -4,13 +4,11 @@
 
 #import "SMPortInputStream.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
-
 #import "SMClient.h"
 #import "SMInputStreamSource.h"
 #import "SMEndpoint.h"
 #import "SMMessageParser.h"
+#import "SMUtilities.h"
 
 
 @interface SMPortInputStream (Private)
@@ -33,7 +31,7 @@
 
     status = MIDIInputPortCreate([[SMClient sharedClient] midiClient], (CFStringRef)@"Input port", [self midiReadProc], self, &inputPort);
     if (status != noErr)
-        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't create a MIDI input port (error %ld)", @"SnoizeMIDI", [self bundle], "exception with OSStatus if MIDIInputPortCreate() fails"), status];
+        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't create a MIDI input port (error %ld)", @"SnoizeMIDI", SMBundleForObject(self), "exception with OSStatus if MIDIInputPortCreate() fails"), status];
 
     endpoints = [[NSMutableSet alloc] init];
 
@@ -194,7 +192,7 @@
     SMSourceEndpoint *endpoint;
 
     endpoint = [[[notification object] retain] autorelease];
-    OBASSERT([endpoints containsObject:endpoint]);
+    SMAssert([endpoints containsObject:endpoint]);
 
     [self removeEndpoint:endpoint];
 
@@ -206,7 +204,7 @@
     SMSourceEndpoint *oldEndpoint, *newEndpoint;
 
     oldEndpoint = [notification object];
-    OBASSERT([endpoints containsObject:oldEndpoint]);
+    SMAssert([endpoints containsObject:oldEndpoint]);
 
     newEndpoint = [[notification userInfo] objectForKey:SMMIDIObjectReplacement];
 

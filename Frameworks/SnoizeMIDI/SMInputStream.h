@@ -2,7 +2,6 @@
 // Copyright 2001-2002 Kurt Revis. All rights reserved.
 //
 
-#import <OmniFoundation/OFObject.h>
 #import <CoreMIDI/CoreMIDI.h>
 #import <Foundation/Foundation.h>
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
@@ -12,7 +11,7 @@
 @class SMMessageParser;
 
 
-@interface SMInputStream : OFObject
+@interface SMInputStream : NSObject
 {
     id<SMMessageDestination> nonretainedMessageDestination;
     NSTimeInterval sysExTimeOut;

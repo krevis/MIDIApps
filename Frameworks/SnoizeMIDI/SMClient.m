@@ -4,9 +4,6 @@
 
 #import "SMClient.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
-
 
 @interface SMClient (Private)
 

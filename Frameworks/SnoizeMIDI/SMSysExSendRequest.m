@@ -4,10 +4,9 @@
 
 #import "SMSysExSendRequest.h"
 
-#import <OmniBase/OmniBase.h>
-
 #import "SMEndpoint.h"
 #import "SMSystemExclusiveMessage.h"
+#import "SMUtilities.h"
 #import "SMWorkaroundSysExSendRequest.h"
 
 
@@ -40,7 +39,7 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
     if (![super init])
         return nil;
 
-    OBASSERT(aMessage != nil);
+    SMAssert(aMessage != nil);
     
     message = [aMessage retain];
     fullMessageData = [[message fullMessageData] retain];
@@ -57,7 +56,7 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
 
 - (id)init;
 {
-    OBRejectUnusedImplementation(self, _cmd);
+    SMRejectUnusedImplementation(self, _cmd);
     return nil;
 }
 
@@ -116,7 +115,7 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
 
     totalBytes = [self totalBytes];
     bytesRemaining = [self bytesRemaining];
-    OBASSERT(totalBytes >= bytesRemaining);
+    SMAssert(totalBytes >= bytesRemaining);
 
     return totalBytes - bytesRemaining;
 }

@@ -4,8 +4,7 @@
 
 #import "SMSystemCommonMessage.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
+#import "SMUtilities.h"
 
 
 @implementation SMSystemCommonMessage
@@ -16,7 +15,7 @@
     
     message = [[[SMSystemCommonMessage alloc] initWithTimeStamp:aTimeStamp statusByte:aType] autorelease];
 
-    OBASSERT(aLength <= 2);
+    SMAssert(aLength <= 2);
     if (aLength >= 1)
         message->dataBytes[0] = aData[0];
     if (aLength == 2)
@@ -88,16 +87,16 @@
 {
     switch ([self type]) {
         case SMSystemCommonMessageTypeTimeCodeQuarterFrame:
-            return NSLocalizedStringFromTableInBundle(@"MTC Quarter Frame", @"SnoizeMIDI", [self bundle], "displayed type of MTC Quarter Frame event");
+            return NSLocalizedStringFromTableInBundle(@"MTC Quarter Frame", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of MTC Quarter Frame event");
             
         case SMSystemCommonMessageTypeSongPositionPointer:
-            return NSLocalizedStringFromTableInBundle(@"Song Position Pointer", @"SnoizeMIDI", [self bundle], "displayed type of Song Position Pointer event");
+            return NSLocalizedStringFromTableInBundle(@"Song Position Pointer", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of Song Position Pointer event");
             
         case SMSystemCommonMessageTypeSongSelect:
-            return NSLocalizedStringFromTableInBundle(@"Song Select", @"SnoizeMIDI", [self bundle], "displayed type of Song Select event");
+            return NSLocalizedStringFromTableInBundle(@"Song Select", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of Song Select event");
             
         case SMSystemCommonMessageTypeTuneRequest:
-            return NSLocalizedStringFromTableInBundle(@"Tune Request", @"SnoizeMIDI", [self bundle], "displayed type of Tune Request event");
+            return NSLocalizedStringFromTableInBundle(@"Tune Request", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of Tune Request event");
 
         default:
             return [super typeForDisplay];
@@ -126,7 +125,7 @@
 
 - (void)setDataByte1:(Byte)newValue;
 {
-    OBASSERT([self otherDataLength] >= 1);
+    SMAssert([self otherDataLength] >= 1);
     dataBytes[0] = newValue;
 }
 
@@ -137,7 +136,7 @@
 
 - (void)setDataByte2:(Byte)newValue;
 {
-    OBASSERT([self otherDataLength] >= 2);
+    SMAssert([self otherDataLength] >= 2);
     dataBytes[1] = newValue;
 }
 

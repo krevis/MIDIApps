@@ -4,8 +4,7 @@
 
 #import "SMVoiceMessage.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
+#import "SMUtilities.h"
 
 
 @implementation SMVoiceMessage : SMMessage
@@ -16,7 +15,7 @@
     
     message = [[[SMVoiceMessage alloc] initWithTimeStamp:aTimeStamp statusByte:aStatusByte] autorelease];
 
-    OBASSERT(aLength >= 1 && aLength <= 2);
+    SMAssert(aLength >= 1 && aLength <= 2);
     if (aLength >= 1)
         message->dataBytes[0] = *aData;
     if (aLength == 2)
@@ -101,26 +100,26 @@
     switch ([self status]) {
         case SMVoiceMessageStatusNoteOn:
             if (dataBytes[1] != 0)
-                return NSLocalizedStringFromTableInBundle(@"Note On", @"SnoizeMIDI", [self bundle], "displayed type of Note On event");
+                return NSLocalizedStringFromTableInBundle(@"Note On", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of Note On event");
             // else fall through to Note Off
 
         case SMVoiceMessageStatusNoteOff:
-            return NSLocalizedStringFromTableInBundle(@"Note Off", @"SnoizeMIDI", [self bundle], "displayed type of Note Off event");
+            return NSLocalizedStringFromTableInBundle(@"Note Off", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of Note Off event");
             
         case SMVoiceMessageStatusAftertouch:
-            return NSLocalizedStringFromTableInBundle(@"Aftertouch", @"SnoizeMIDI", [self bundle], "displayed type of Aftertouch (poly pressure) event");
+            return NSLocalizedStringFromTableInBundle(@"Aftertouch", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of Aftertouch (poly pressure) event");
             
         case SMVoiceMessageStatusControl:
-            return NSLocalizedStringFromTableInBundle(@"Control", @"SnoizeMIDI", [self bundle], "displayed type of Control event");
+            return NSLocalizedStringFromTableInBundle(@"Control", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of Control event");
             
         case SMVoiceMessageStatusProgram:
-            return NSLocalizedStringFromTableInBundle(@"Program", @"SnoizeMIDI", [self bundle], "displayed type of Program event");
+            return NSLocalizedStringFromTableInBundle(@"Program", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of Program event");
             
         case SMVoiceMessageStatusChannelPressure:
-            return NSLocalizedStringFromTableInBundle(@"Channel Pressure", @"SnoizeMIDI", [self bundle], "displayed type of Channel Pressure (aftertouch) event");
+            return NSLocalizedStringFromTableInBundle(@"Channel Pressure", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of Channel Pressure (aftertouch) event");
             
         case SMVoiceMessageStatusPitchWheel:
-            return NSLocalizedStringFromTableInBundle(@"Pitch Wheel", @"SnoizeMIDI", [self bundle], "displayed type of Pitch Wheel event");
+            return NSLocalizedStringFromTableInBundle(@"Pitch Wheel", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of Pitch Wheel event");
 
         default:
             return [super typeForDisplay];
@@ -204,7 +203,7 @@
 
 - (void)setDataByte1:(Byte)newValue;
 {
-    OBASSERT([self otherDataLength] >= 1);
+    SMAssert([self otherDataLength] >= 1);
     dataBytes[0] = newValue;
 }
 
@@ -215,7 +214,7 @@
 
 - (void)setDataByte2:(Byte)newValue;
 {
-    OBASSERT([self otherDataLength] >= 2);
+    SMAssert([self otherDataLength] >= 2);
     dataBytes[1] = newValue;
 }
 

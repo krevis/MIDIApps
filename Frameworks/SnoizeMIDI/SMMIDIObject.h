@@ -1,9 +1,8 @@
-#import <OmniFoundation/OFObject.h>
 #import <Foundation/Foundation.h>
 #import <CoreMIDI/CoreMIDI.h>
 
 
-@interface SMMIDIObject : OFObject
+@interface SMMIDIObject : NSObject
 {
     MIDIObjectRef objectRef;
     MIDIUniqueID uniqueID;

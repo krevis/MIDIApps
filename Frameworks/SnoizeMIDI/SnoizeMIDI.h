@@ -23,6 +23,7 @@
 #import <SnoizeMIDI/SMSystemCommonMessage.h>
 #import <SnoizeMIDI/SMSystemRealTimeMessage.h>
 #import <SnoizeMIDI/SMSystemExclusiveMessage.h>
+#import <SnoizeMIDI/SMUtilities.h>
 #import <SnoizeMIDI/SMVirtualInputStream.h>
 #import <SnoizeMIDI/SMVirtualOutputStream.h>
 #import <SnoizeMIDI/SMVoiceMessage.h>

@@ -4,11 +4,10 @@
 
 #import "SMMessage.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
-
 #import "SMEndpoint.h"
 #import "SMHostTime.h"
+#import "SMUtilities.h"
+#import "NSData-SMExtensions.h"
 
 
 @interface SMMessage (Private)
@@ -30,8 +29,10 @@ static NSTimeInterval startTimeInterval;
 static NSDateFormatter *timeStampDateFormatter;
 
 
-+ (void)didLoad
++ (void)initialize
 {
+    SMInitialize;
+
     // Establish a base of what host time corresponds to what clock time.
     // TODO We should do this a few times and average the results, and also try to be careful not to get
     // scheduled out during this process. We may need to switch ourself to be a time-constraint thread temporarily
@@ -44,7 +45,7 @@ static NSDateFormatter *timeStampDateFormatter;
 
 + (NSString *)formatNoteNumber:(Byte)noteNumber;
 {
-    return [self formatNoteNumber:noteNumber usingOption:[[OFPreference preferenceForKey:SMNoteFormatPreferenceKey] integerValue]];
+    return [self formatNoteNumber:noteNumber usingOption:[[NSUserDefaults standardUserDefaults] integerForKey:SMNoteFormatPreferenceKey]];
 }
 
 + (NSString *)formatNoteNumber:(Byte)noteNumber usingOption:(SMNoteFormattingOption)option;
@@ -69,7 +70,7 @@ static NSDateFormatter *timeStampDateFormatter;
 
 + (NSString *)formatControllerNumber:(Byte)controllerNumber;
 {
-    return [self formatControllerNumber:controllerNumber usingOption:[[OFPreference preferenceForKey:SMControllerFormatPreferenceKey] integerValue]];
+    return [self formatControllerNumber:controllerNumber usingOption:[[NSUserDefaults standardUserDefaults] integerForKey:SMControllerFormatPreferenceKey]];
 }
 
 + (NSString *)formatControllerNumber:(Byte)controllerNumber usingOption:(SMControllerFormattingOption)option;
@@ -91,7 +92,7 @@ static NSDateFormatter *timeStampDateFormatter;
 {
     static NSMutableArray *controllerNames = nil;
 
-    OBPRECONDITION(controllerNumber <= 127);
+    SMAssert(controllerNumber <= 127);
     
     if (!controllerNames) {
         NSString *path;
@@ -99,7 +100,7 @@ static NSDateFormatter *timeStampDateFormatter;
         NSString *unknownName;
         unsigned int controllerIndex;
         
-        path = [[self bundle] pathForResource:@"ControllerNames" ofType:@"plist"];
+        path = [SMBundleForObject(self) pathForResource:@"ControllerNames" ofType:@"plist"];
         if (path) {        
             controllerNameDict = [NSDictionary dictionaryWithContentsOfFile:path];
             if (!controllerNameDict)
@@ -112,7 +113,7 @@ static NSDateFormatter *timeStampDateFormatter;
         // We could create a new string for the controllerNumber and look that up in the dictionary, but that gets expensive to do all the time.
         // Instead, we just scan through the dictionary once, and build an NSArray which is quicker to index into.
 
-        unknownName = NSLocalizedStringFromTableInBundle(@"Controller %u", @"SnoizeMIDI", [self bundle], "format of unknown controller");
+        unknownName = NSLocalizedStringFromTableInBundle(@"Controller %u", @"SnoizeMIDI", SMBundleForObject(self), "format of unknown controller");
 
         controllerNames = [[NSMutableArray alloc] initWithCapacity:128];
         for (controllerIndex = 0; controllerIndex <= 127; controllerIndex++) {
@@ -139,8 +140,8 @@ static NSDateFormatter *timeStampDateFormatter;
     SMDataFormattingOption option;
     NSMutableString *string;
     unsigned int pos;
-    
-    option = [[OFPreference preferenceForKey:SMDataFormatPreferenceKey] integerValue];    
+
+    option = [[NSUserDefaults standardUserDefaults] integerForKey:SMDataFormatPreferenceKey];
     string = [NSMutableString string];
     for (pos = 0; pos < length; pos++) {
         [string appendString:[self formatDataByte:*(bytes + pos) usingOption:option]];
@@ -153,7 +154,7 @@ static NSDateFormatter *timeStampDateFormatter;
 
 + (NSString *)formatDataByte:(Byte)dataByte;
 {
-    return [self formatDataByte:dataByte usingOption:[[OFPreference preferenceForKey:SMDataFormatPreferenceKey] integerValue]];
+    return [self formatDataByte:dataByte usingOption:[[NSUserDefaults standardUserDefaults] integerForKey:SMDataFormatPreferenceKey]];
 }
 
 + (NSString *)formatDataByte:(Byte)dataByte usingOption:(SMDataFormattingOption)option;
@@ -170,7 +171,7 @@ static NSDateFormatter *timeStampDateFormatter;
 
 + (NSString *)formatSignedDataByte1:(Byte)dataByte1 byte2:(Byte)dataByte2;
 {
-    return [self formatSignedDataByte1:dataByte1 byte2:dataByte2 usingOption:[[OFPreference preferenceForKey:SMDataFormatPreferenceKey] integerValue]];
+    return [self formatSignedDataByte1:dataByte1 byte2:dataByte2 usingOption:[[NSUserDefaults standardUserDefaults] integerForKey:SMDataFormatPreferenceKey]];
 }
 
 + (NSString *)formatSignedDataByte1:(Byte)dataByte1 byte2:(Byte)dataByte2 usingOption:(SMDataFormattingOption)option;
@@ -192,7 +193,7 @@ static NSDateFormatter *timeStampDateFormatter;
 
 + (NSString *)formatLength:(unsigned int)length;
 {
-    return [self formatLength:length usingOption:[[OFPreference preferenceForKey:SMDataFormatPreferenceKey] integerValue]];
+    return [self formatLength:length usingOption:[[NSUserDefaults standardUserDefaults] integerForKey:SMDataFormatPreferenceKey]];
 }
 
 + (NSString *)formatLength:(unsigned int)length usingOption:(SMDataFormattingOption)option;
@@ -212,14 +213,14 @@ static NSDateFormatter *timeStampDateFormatter;
     static NSDictionary *manufacturerNames = nil;
     NSString *identifierString, *name;
 
-    OBPRECONDITION(manufacturerIdentifierData != nil);
-    OBPRECONDITION([manufacturerIdentifierData length] >= 1);
-    OBPRECONDITION([manufacturerIdentifierData length] <= 3);
+    SMAssert(manufacturerIdentifierData != nil);
+    SMAssert([manufacturerIdentifierData length] >= 1);
+    SMAssert([manufacturerIdentifierData length] <= 3);
     
     if (!manufacturerNames) {
         NSString *path;
         
-        path = [[self bundle] pathForResource:@"ManufacturerNames" ofType:@"plist"];
+        path = [SMBundleForObject(self) pathForResource:@"ManufacturerNames" ofType:@"plist"];
         if (path) {        
             manufacturerNames = [NSDictionary dictionaryWithContentsOfFile:path];
             if (!manufacturerNames)
@@ -233,16 +234,16 @@ static NSDateFormatter *timeStampDateFormatter;
         [manufacturerNames retain];
     }
 
-    identifierString = [manufacturerIdentifierData unadornedLowercaseHexString];
+    identifierString = [manufacturerIdentifierData SnoizeMIDI_lowercaseHexString];
     if ((name = [manufacturerNames objectForKey:identifierString]))
         return name;
     else
-        return NSLocalizedStringFromTableInBundle(@"Unknown Manufacturer", @"SnoizeMIDI", [self bundle], "unknown manufacturer name");
+        return NSLocalizedStringFromTableInBundle(@"Unknown Manufacturer", @"SnoizeMIDI", SMBundleForObject(self), "unknown manufacturer name");
 }
 
 + (NSString *)formatTimeStamp:(MIDITimeStamp)aTimeStamp;
 {
-    return [self formatTimeStamp:aTimeStamp usingOption:[[OFPreference preferenceForKey:SMTimeFormatPreferenceKey] integerValue]];
+    return [self formatTimeStamp:aTimeStamp usingOption:[[NSUserDefaults standardUserDefaults] integerForKey:SMTimeFormatPreferenceKey]];
 }
 
 + (NSString *)formatTimeStamp:(MIDITimeStamp)aTimeStamp usingOption:(SMTimeFormattingOption)option;
@@ -281,7 +282,7 @@ static NSDateFormatter *timeStampDateFormatter;
         default:
         {
             if (aTimeStamp == 0) {
-                return NSLocalizedStringFromTableInBundle(@"*** ZERO ***", @"SnoizeMIDI", [self bundle], "zero timestamp formatted as clock time");
+                return NSLocalizedStringFromTableInBundle(@"*** ZERO ***", @"SnoizeMIDI", SMBundleForObject(self), "zero timestamp formatted as clock time");
             } else {
                 NSTimeInterval timeStampInterval;
                 NSDate *date;
@@ -310,7 +311,7 @@ static NSDateFormatter *timeStampDateFormatter;
 - (id)init
 {
     // Use the designated initializer instead
-    OBRejectUnusedImplementation(self, _cmd);
+    SMRejectUnusedImplementation(self, _cmd);
     return nil;
 }
 
@@ -352,7 +353,7 @@ static NSDateFormatter *timeStampDateFormatter;
 - (SMMessageType)messageType;
 {
     // Must be implemented by subclasses
-    OBRejectUnusedImplementation(self, _cmd);
+    SMRejectUnusedImplementation(self, _cmd);
     return SMMessageTypeUnknown;
 }
 
@@ -407,7 +408,7 @@ static NSDateFormatter *timeStampDateFormatter;
 
 - (NSString *)typeForDisplay;
 {
-    return [NSString stringWithFormat:@"%@ ($%02X)", NSLocalizedStringFromTableInBundle(@"Unknown", @"SnoizeMIDI", [self bundle], "displayed type of unknown MIDI status byte"), [self statusByte]];
+    return [NSString stringWithFormat:@"%@ ($%02X)", NSLocalizedStringFromTableInBundle(@"Unknown", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of unknown MIDI status byte"), [self statusByte]];
 }
 
 - (NSString *)channelForDisplay;
