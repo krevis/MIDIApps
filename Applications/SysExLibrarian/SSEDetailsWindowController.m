@@ -101,6 +101,16 @@ static NSMutableArray *controllers = nil;
     return entry;
 }
 
+//
+// Actions
+//
+
+- (IBAction)selectAll:(id)sender;
+{
+    // Forward to the text view, even if it isn't the first responder
+    [textView selectAll:sender];
+}
+
 @end
 
 

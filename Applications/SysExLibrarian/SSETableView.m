@@ -165,6 +165,17 @@
     [self _deleteSelectedRows];
 }
 
+- (BOOL)respondsToSelector:(SEL)aSelector;
+{
+    // If we can't do anything useful in response to a selectAll:, then pretend that we don't even respond to it.
+    
+    if (aSelector == @selector(selectAll:))
+        return [self allowsMultipleSelection];
+    else
+        return [super respondsToSelector:aSelector];
+}
+
+
 //
 // Dragging
 //
