@@ -17,6 +17,7 @@
 - (void)_synchronizePopUpButton:(NSPopUpButton *)popUpButton withDescriptions:(NSArray *)descriptions currentDescription:(NSDictionary *)currentDescription;
 
 - (void)_libraryDidChange:(NSNotification *)notification;
+- (void)_sortLibraryEntries;
 
 - (void)_selectAndScrollToEntries:(NSArray *)entries;
 
@@ -259,34 +260,10 @@ static SSEMainWindowController *controller;
     [libraryTableView setHighlightedTableColumn:column];
 }
 
-static int libraryEntryComparator(id object1, id object2, void *context)
-{
-    NSString *key = (NSString *)context;
-    id value1, value2;
-
-    value1 = [object1 valueForKey:key];
-    value2 = [object2 valueForKey:key];
-
-    if (value1 && value2)
-//        return [value1 compare:value2];
-        return (NSComparisonResult)objc_msgSend(value1, @selector(compare:), value2);
-    else if (value1) {
-        return NSOrderedDescending;
-    } else {
-        // both are nil
-        return NSOrderedSame;
-    }
-}
-
 - (void)synchronizeLibrary;
 {
     // TODO this results in too many sorts, I think... can we do this less often?
-
-    [sortedLibraryEntries release];
-    sortedLibraryEntries = [[library entries] sortedArrayUsingFunction:libraryEntryComparator context:sortColumnIdentifier];    
-    if (!isSortAscending)
-        sortedLibraryEntries = [sortedLibraryEntries reversedArray];
-    [sortedLibraryEntries retain];
+    [self _sortLibraryEntries];
 
     // TODO may need code to keep selection
     [libraryTableView reloadData];
@@ -564,6 +541,37 @@ static int libraryEntryComparator(id object1, id object2, void *context)
 - (void)_libraryDidChange:(NSNotification *)notification;
 {
     [self synchronizeLibrary];
+}
+
+static int libraryEntryComparator(id object1, id object2, void *context)
+{
+    NSString *key = (NSString *)context;
+    id value1, value2;
+
+    value1 = [object1 valueForKey:key];
+    value2 = [object2 valueForKey:key];
+
+    if (value1 && value2)
+        // NOTE: We would say:
+        // return [value1 compare:value2];
+        // but that gives us a warning because there are multiple declarations of compare: (for NSString, NSDate, etc.).
+        // So let's just avoid that whole problem.
+        return (NSComparisonResult)objc_msgSend(value1, @selector(compare:), value2);
+    else if (value1) {
+        return NSOrderedDescending;
+    } else {
+        // both are nil
+        return NSOrderedSame;
+    }
+}
+
+- (void)_sortLibraryEntries;
+{
+    [sortedLibraryEntries release];
+    sortedLibraryEntries = [[library entries] sortedArrayUsingFunction:libraryEntryComparator context:sortColumnIdentifier];
+    if (!isSortAscending)
+        sortedLibraryEntries = [sortedLibraryEntries reversedArray];
+    [sortedLibraryEntries retain];
 }
 
 - (void)_selectAndScrollToEntries:(NSArray *)entries;
