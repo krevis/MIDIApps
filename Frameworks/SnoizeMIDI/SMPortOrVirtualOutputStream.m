@@ -17,6 +17,7 @@
         return nil;
 
     flags.ignoresTimeStamps = NO;
+    flags.sendsSysExAsynchronously = NO;
 
     return self;
 }
@@ -31,6 +32,19 @@
     flags.ignoresTimeStamps = value;
     [[self stream] setIgnoresTimeStamps:value];
 }
+
+- (BOOL)sendsSysExAsynchronously;
+{
+    return flags.sendsSysExAsynchronously;
+}
+
+- (void)setSendsSysExAsynchronously:(BOOL)value;
+{
+    flags.sendsSysExAsynchronously = value;
+    if ([[self stream] respondsToSelector:@selector(setSendsSysExAsynchronously:)])
+        [[self stream] setSendsSysExAsynchronously:value];    
+}
+
 
 //
 // SMPortOrVirtualStream subclass methods
@@ -52,6 +66,7 @@
 
     stream = [[SMPortOutputStream alloc] init];
     [stream setIgnoresTimeStamps:flags.ignoresTimeStamps];
+    [stream setSendsSysExAsynchronously:flags.sendsSysExAsynchronously];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(portStreamEndpointWasRemoved:) name:SMPortOutputStreamEndpointWasRemoved object:stream];
 
     return [stream autorelease];

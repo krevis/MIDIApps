@@ -60,14 +60,9 @@
     [super dealloc];
 }
 
-- (SMEndpoint *)endpoint;
+- (SMSourceEndpoint *)endpoint;
 {
     return endpoint;
-}
-
-- (MIDITimeStamp)sendImmediatelyTimeStamp;
-{
-    return AudioGetCurrentHostTime();
 }
 
 - (void)sendMIDIPacketList:(MIDIPacketList *)packetList;

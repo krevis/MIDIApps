@@ -3,12 +3,13 @@
 #import <OmniBase/OmniBase.h>
 #import <OmniFoundation/OmniFoundation.h>
 
+#import "SMEndpoint.h"
 #import "SMSystemExclusiveMessage.h"
 
 
 @interface SMSysExSendRequest (Private)
 
-void sysexCompletionProc(MIDISysexSendRequest *request);
+static void completionProc(MIDISysexSendRequest *request);
 - (void)_completionProc;
 
 @end
@@ -18,13 +19,12 @@ void sysexCompletionProc(MIDISysexSendRequest *request);
 
 DEFINE_NSSTRING(SMSysExSendRequestFinishedNotification);
 
-
-+ (SMSysExSendRequest *)sysExSendRequestWithMessage:(SMSystemExclusiveMessage *)aMessage endpoint:(MIDIEndpointRef)endpointRef;
++ (SMSysExSendRequest *)sysExSendRequestWithMessage:(SMSystemExclusiveMessage *)aMessage endpoint:(SMDestinationEndpoint *)endpoint;
 {
-    return [[[self alloc] initWithMessage:aMessage endpoint:endpointRef] autorelease];
+    return [[[self alloc] initWithMessage:aMessage endpoint:endpoint] autorelease];
 }
 
-- (id)initWithMessage:(SMSystemExclusiveMessage *)aMessage endpoint:(MIDIEndpointRef)endpointRef;
+- (id)initWithMessage:(SMSystemExclusiveMessage *)aMessage endpoint:(SMDestinationEndpoint *)endpoint;
 {
     if (![super init])
         return nil;
@@ -34,11 +34,11 @@ DEFINE_NSSTRING(SMSysExSendRequestFinishedNotification);
     message = [aMessage retain];
     fullMessageData = [[message fullMessageData] retain];
 
-    request.destination = endpointRef;
+    request.destination = [endpoint endpointRef];
     request.data = (Byte *)[fullMessageData bytes];
     request.bytesToSend = [fullMessageData length];
     request.complete = FALSE;
-    request.completionProc = sysexCompletionProc;
+    request.completionProc = completionProc;
     request.completionRefCon = self;
 
     return self;
@@ -120,7 +120,7 @@ DEFINE_NSSTRING(SMSysExSendRequestFinishedNotification);
 
 @implementation SMSysExSendRequest (Private)
 
-void sysexCompletionProc(MIDISysexSendRequest *request)
+static void completionProc(MIDISysexSendRequest *request)
 {
     NSAutoreleasePool *pool;
 

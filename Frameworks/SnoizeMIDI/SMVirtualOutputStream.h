@@ -12,4 +12,6 @@
 
 - (id)initWithName:(NSString *)name uniqueID:(SInt32)uniqueID;
 
+- (SMSourceEndpoint *)endpoint;
+
 @end

@@ -2,7 +2,8 @@
 #import <Foundation/Foundation.h>
 #import <CoreMIDI/CoreMIDI.h>
 
-@class SMSystemExclusiveMessage;
+@class SMDestinationEndpoint, SMSystemExclusiveMessage;
+
 
 @interface SMSysExSendRequest : OFObject
 {
@@ -11,9 +12,9 @@
     SMSystemExclusiveMessage *message;
 }
 
-+ (SMSysExSendRequest *)sysExSendRequestWithMessage:(SMSystemExclusiveMessage *)aMessage endpoint:(MIDIEndpointRef)endpointRef;
++ (SMSysExSendRequest *)sysExSendRequestWithMessage:(SMSystemExclusiveMessage *)aMessage endpoint:(SMDestinationEndpoint *)endpoint;
 
-- (id)initWithMessage:(SMSystemExclusiveMessage *)aMessage endpoint:(MIDIEndpointRef)endpointRef;
+- (id)initWithMessage:(SMSystemExclusiveMessage *)aMessage endpoint:(SMDestinationEndpoint *)endpoint;
 
 - (SMSystemExclusiveMessage *)message;
 
