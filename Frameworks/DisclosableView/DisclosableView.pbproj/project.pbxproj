@@ -3,24 +3,27 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 34;
+	objectVersion = 39;
 	objects = {
 		014CEA440018CDF011CA2923 = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "\U0001-DDEBUG";
+				ZERO_LINK = YES;
 			};
 			isa = PBXBuildStyle;
 			name = Development;
 		};
 		014CEA450018CDF011CA2923 = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ZERO_LINK = NO;
 			};
 			isa = PBXBuildStyle;
 			name = Deployment;
@@ -42,11 +45,14 @@
 			isa = PBXGroup;
 			name = Products;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		034768E0FF38A50411DB9C8B = {
-			isa = PBXFrameworkReference;
+			explicitFileType = wrapper.framework;
+			isa = PBXFileReference;
 			path = DisclosableView.framework;
 			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 //030
 //031
@@ -59,11 +65,14 @@
 //083
 //084
 		0867D690FE84028FC02AAC07 = {
+			buildSettings = {
+			};
 			buildStyles = (
 				014CEA440018CDF011CA2923,
 				014CEA450018CDF011CA2923,
 				F5460C1202E316F801000164,
 			);
+			hasScannedForEncodings = 0;
 			isa = PBXProject;
 			mainGroup = 0867D691FE84028FC02AAC07;
 			productRefGroup = 034768DFFF38A50411DB9C8B;
@@ -82,6 +91,7 @@
 			isa = PBXGroup;
 			name = DisclosableView;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		0867D69AFE84028FC02AAC07 = {
 			children = (
@@ -91,12 +101,15 @@
 			isa = PBXGroup;
 			name = "External Frameworks and Libraries";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		0867D69BFE84028FC02AAC07 = {
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
 			name = Foundation.framework;
 			path = /System/Library/Frameworks/Foundation.framework;
 			refType = 0;
+			sourceTree = "<absolute>";
 		};
 		0867D69CFE84028FC02AAC07 = {
 			buildPhases = (
@@ -129,8 +142,8 @@
 			productName = DisclosableView;
 			productReference = 034768E0FF38A50411DB9C8B;
 			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<!DOCTYPE plist SYSTEM \"file://localhost/System/Library/DTDs/PropertyList.dtd\">
-<plist version=\"0.9\">
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
@@ -159,7 +172,6 @@
 </dict>
 </plist>
 ";
-			shouldUseHeadermap = 1;
 		};
 		0867D69DFE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
@@ -169,7 +181,7 @@
 				F5D80D8B02E2FEBB01000164,
 			);
 			isa = PBXHeadersBuildPhase;
-			name = Headers;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0867D69EFE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
@@ -179,7 +191,7 @@
 				F54FF60E02DEE85401000164,
 			);
 			isa = PBXResourcesBuildPhase;
-			name = "Bundle Resources";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0867D69FFE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
@@ -188,7 +200,7 @@
 				F5D80D8C02E2FEBB01000164,
 			);
 			isa = PBXSourcesBuildPhase;
-			name = Sources;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0867D6A0FE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
@@ -196,20 +208,22 @@
 				1058C7B3FEA5585E11CA2CBB,
 			);
 			isa = PBXFrameworksBuildPhase;
-			name = "Frameworks & Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0867D6A2FE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
 			files = (
 			);
 			isa = PBXRezBuildPhase;
-			name = "ResourceManager Resources";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0867D6A5FE840307C02AAC07 = {
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
 			name = AppKit.framework;
 			path = /System/Library/Frameworks/AppKit.framework;
 			refType = 0;
+			sourceTree = "<absolute>";
 		};
 		089C1665FE841158C02AAC07 = {
 			children = (
@@ -220,6 +234,7 @@
 			isa = PBXGroup;
 			name = Resources;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		089C1666FE841158C02AAC07 = {
 			children = (
@@ -228,13 +243,16 @@
 			isa = PBXVariantGroup;
 			name = InfoPlist.strings;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		089C1667FE841158C02AAC07 = {
 			fileEncoding = 10;
 			isa = PBXFileReference;
+			lastKnownFileType = text.plist.strings;
 			name = English;
 			path = English.lproj/InfoPlist.strings;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		089C1668FE841158C02AAC07 = {
 			fileRef = 089C1666FE841158C02AAC07;
@@ -253,6 +271,7 @@
 			isa = PBXGroup;
 			name = Classes;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 //080
 //081
@@ -271,12 +290,15 @@
 			isa = PBXGroup;
 			name = "Linked Frameworks";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		1058C7B1FEA5585E11CA2CBB = {
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
 			name = Cocoa.framework;
 			path = /System/Library/Frameworks/Cocoa.framework;
 			refType = 0;
+			sourceTree = "<absolute>";
 		};
 		1058C7B2FEA5585E11CA2CBB = {
 			children = (
@@ -286,6 +308,7 @@
 			isa = PBXGroup;
 			name = "Other Frameworks";
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		1058C7B3FEA5585E11CA2CBB = {
 			fileRef = 1058C7B1FEA5585E11CA2CBB;
@@ -304,8 +327,6 @@
 //F53
 //F54
 		F5460C1202E316F801000164 = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				INSTALL_PATH = "@executable_path/../Frameworks";
@@ -316,13 +337,17 @@
 		};
 		F54FF60702DEE82F01000164 = {
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = SNDisclosableView.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F54FF60802DEE82F01000164 = {
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
 			path = SNDisclosableView.m;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F54FF60902DEE82F01000164 = {
 			fileRef = F54FF60702DEE82F01000164;
@@ -341,13 +366,17 @@
 		};
 		F54FF60B02DEE85401000164 = {
 			isa = PBXFileReference;
+			lastKnownFileType = image.tiff;
 			path = SNDisclosureArrowDown.tiff;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F54FF60C02DEE85401000164 = {
 			isa = PBXFileReference;
+			lastKnownFileType = image.tiff;
 			path = SNDisclosureArrowRight.tiff;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F54FF60D02DEE85401000164 = {
 			fileRef = F54FF60B02DEE85401000164;
@@ -363,13 +392,17 @@
 		};
 		F5D80D8702E2F49D01000164 = {
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = SNDisclosureButton.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F5D80D8802E2F49D01000164 = {
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
 			path = SNDisclosureButton.m;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F5D80D8B02E2FEBB01000164 = {
 			fileRef = F5D80D8702E2F49D01000164;
@@ -388,8 +421,10 @@
 		};
 		F5D80D8D02E3081C01000164 = {
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = DisclosableView.h;
 			refType = 4;
+			sourceTree = "<group>";
 		};
 		F5D80D8E02E3081C01000164 = {
 			fileRef = F5D80D8D02E3081C01000164;
