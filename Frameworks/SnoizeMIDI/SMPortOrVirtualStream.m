@@ -183,7 +183,7 @@ DEFINE_NSSTRING(SMPortOrVirtualStreamEndpointDisappearedNotification);
                 else
                     return endpointName;
             } else {
-                return NSLocalizedStringFromTableInBundle(@"Unknown", @"MIDIMonitor", [self bundle], "name of missing endpoint if not specified in document");
+                return NSLocalizedStringFromTableInBundle(@"Unknown", @"SnoizeMIDI", [self bundle], "name of missing endpoint if not specified in document");
             }
         }
     } else if ((number = [settings objectForKey:@"virtualEndpointUniqueID"])) {
