@@ -1,11 +1,6 @@
 #include "MIDISpyDriverInstallation.h"
 
-#include <Carbon/Carbon.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include "MoreFilesXSubset.h"
-
+#include "FSCopyObject.h"
 
 //
 // Constant string declarations and definitions
@@ -13,12 +8,14 @@
 
 static CFStringRef kSpyingMIDIDriverPlugInName = NULL;
 static CFStringRef kSpyingMIDIDriverPlugInIdentifier = NULL;
+static CFStringRef kSpyingMIDIDriverFrameworkIdentifier = NULL;
 
 static void InitializeConstantStrings(void)  __attribute__ ((constructor));
 void InitializeConstantStrings(void)
 {
     kSpyingMIDIDriverPlugInName = CFSTR("MIDI Monitor.plugin");
     kSpyingMIDIDriverPlugInIdentifier = CFSTR("com.snoize.MIDIMonitorDriver");
+    kSpyingMIDIDriverFrameworkIdentifier = CFSTR("com.snoize.MIDISpyFramework");
 }
 
 
@@ -31,10 +28,6 @@ static Boolean FindInstalledDriver(CFURLRef *urlPtr, UInt32 *versionPtr);
 static void CreateBundlesForDriversInDomain(short findFolderDomain, CFMutableArrayRef createdBundles);
 static Boolean RemoveInstalledDriver(CFURLRef driverURL);
 static Boolean InstallDriver(CFURLRef ourDriverURL);
-static Boolean CopyDirectory(CFURLRef sourceDirectoryURL, CFURLRef targetDirectoryURL);
-
-static Boolean ForkAndExec(char * const argv[]);
-
 
 
 //
@@ -97,7 +90,7 @@ static Boolean FindDriverInFramework(CFURLRef *urlPtr, UInt32 *versionPtr)
     Boolean success = FALSE;
 
     // Find this framework's bundle
-    frameworkBundle = CFBundleGetBundleWithIdentifier(CFSTR("com.snoize.MIDISpyFramework"));
+    frameworkBundle = CFBundleGetBundleWithIdentifier(kSpyingMIDIDriverFrameworkIdentifier);
     if (!frameworkBundle) {
         debug_string("MIDISpyClient: Couldn't find our own framework's bundle!");
     } else {
@@ -191,33 +184,11 @@ static void CreateBundlesForDriversInDomain(short findFolderDomain, CFMutableArr
 static Boolean RemoveInstalledDriver(CFURLRef driverURL)
 {
     FSRef driverFSRef;
-    OSErr result;
-    FSCatalogInfo catalogInfo;
 
     if (!CFURLGetFSRef(driverURL, &driverFSRef))
         return FALSE;
-
-    // If this is a directory, delete the contents first
-    result = FSGetCatalogInfo(&driverFSRef, kFSCatInfoNodeFlags, &catalogInfo, NULL, NULL, NULL);
-    require_noerr(result, FSGetCatalogInfo);
-    if (catalogInfo.nodeFlags & kFSNodeIsDirectoryMask) {
-        result = FSDeleteContainerContents(&driverFSRef);
-        require_noerr(result, FSDeleteContainerContents);
-    }
-
-    // Is the top object (directory or file) locked?
-    if (catalogInfo.nodeFlags & kFSNodeLockedMask) {
-        // Then attempt to unlock it (ignore the result since FSDeleteObject will set it correctly)
-        catalogInfo.nodeFlags &= ~kFSNodeLockedMask;
-        FSSetCatalogInfo(&driverFSRef, kFSCatInfoNodeFlags, &catalogInfo);
-    }
-
-    // Delete the directory or file
-    result = FSDeleteObject(&driverFSRef);
-
-FSGetCatalogInfo:
-FSDeleteContainerContents:
-    return (result == noErr);
+    else
+        return (noErr == FSDeleteObjects(&driverFSRef));
 }
 
 
@@ -232,71 +203,13 @@ static Boolean InstallDriver(CFURLRef ourDriverURL)
     if (error != noErr) {
         debug_string("MIDISpy: FSFindFolder(kUserDomain, kMIDIDriversFolderType, kCreateFolder) returned error");
     } else {
-        CFURLRef folderURL;
+        FSRef driverFSRef;
 
-        // And copy the driver there.
-        folderURL = CFURLCreateFromFSRef(kCFAllocatorDefault, &folderFSRef);
-        success = CopyDirectory(ourDriverURL, folderURL);
-
-        CFRelease(folderURL);
+        if (CFURLGetFSRef(ourDriverURL, &driverFSRef)) {
+            error = FSCopyObject(&driverFSRef, &folderFSRef, 0, kFSCatInfoNone, false, false, NULL, NULL, NULL);
+            success = (error == noErr);
+        }
     }
  
     return success;
-}
-
-
-static Boolean CopyDirectory(CFURLRef sourceDirectoryURL, CFURLRef targetDirectoryURL)
-{
-    // Copy (recursively) from the source into the target.
-    // I know the driver doesn't contain any files with resource forks or interesting finder info, so we are safe using UNIX commands for this.
-    // TODO This is sort of lame, though... but less error-prone than writing it myself, I bet.
-    // TODO There is now sample code for this at Apple:
-    // http://developer.apple.com/samplecode/Sample_Code/Files/FSCopyObject.htm
-    // Look into using it.  (It also has a routine to delete a full directory, so we should be able to replace the MoreFiles stuff with that.)
-    
-    char sourcePath[PATH_MAX];
-    char targetPath[PATH_MAX];
-    char *argv[] = { "/bin/cp", "-Rf", sourcePath, targetPath, NULL };
-
-    if (!CFURLGetFileSystemRepresentation(sourceDirectoryURL, FALSE, (UInt8 *)sourcePath, PATH_MAX)) {
-        debug_string("MIDISpy: CFURLGetFileSystemRepresentation(sourceDirectoryURL) failed");
-        return FALSE;
-    }
-
-    if (!CFURLGetFileSystemRepresentation(targetDirectoryURL, FALSE, (UInt8 *)targetPath, PATH_MAX)) {
-        debug_string("MIDISpy: CFURLGetFileSystemRepresentation(targetDirectoryURL) failed");
-        return FALSE;
-    }
-
-    return ForkAndExec(argv);
-}
-
-
-static Boolean ForkAndExec(char * const argv[])
-{
-    const char *path;
-    pid_t pid;
-    int status;
-
-    path = argv[0];
-    if (path == NULL)
-        return FALSE;
-
-    if ((pid = fork()) < 0) {
-        status = -1;
-    } else if (pid == 0) {
-        // child
-        execv(path, argv);
-        _exit(127);
-    } else {
-        // parent
-        while (waitpid(pid, &status, 0) < 0) {
-            if (errno != EINTR) {
-                status = -1;
-                break;
-            }
-        }
-    }
-
-    return (status == 0);
 }

@@ -147,7 +147,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.1.3</string>
+	<string>1.1.4</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>
@@ -162,7 +162,7 @@
 				F5BCCEC4023F486D01000164,
 				F5B4DD97025DA07801000164,
 				F53956F00256D06A01000164,
-				F54802A10264BEBC01000164,
+				F551C2DE032756AF01000164,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -180,7 +180,7 @@
 			files = (
 				08FB77B5FE84181DC02AAC07,
 				F5B4DD95025DA04101000164,
-				F54802A20264BEBC01000164,
+				F551C2DD032756AF01000164,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -239,10 +239,8 @@
 				08FB77B4FE84181DC02AAC07,
 				F5B4DD96025DA07801000164,
 				F5B4DD94025DA04101000164,
-				F5B4DD9A025DB5CA01000164,
-				F5B4DD9B025DB5CA01000164,
-				F548029F0264BEBC01000164,
-				F54802A00264BEBC01000164,
+				F551C2DC032756AF01000164,
+				F551C2DB032756AF01000164,
 			);
 			isa = PBXGroup;
 			name = Source;
@@ -377,7 +375,7 @@
 	<key>CFBundleExecutable</key>
 	<string>MIDI Monitor</string>
 	<key>CFBundleGetInfoString</key>
-	<string>MIDI Monitor driver version 1.1.3, Copyright 2002, Kurt Revis</string>
+	<string>MIDI Monitor driver version 1.1.4, Copyright 2002, Kurt Revis</string>
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
@@ -393,7 +391,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.1.3</string>
+	<string>1.1.4</string>
 	<key>CFPlugInFactories</key>
 	<dict>
 		<key>4FA13C6B-2D94-11D6-8C2F-000A27B4965C</key>
@@ -618,25 +616,24 @@
 			settings = {
 			};
 		};
-		F548029F0264BEBC01000164 = {
+		F551C2DB032756AF01000164 = {
 			isa = PBXFileReference;
-			lineEnding = 0;
-			path = MoreFilesXSubset.h;
+			path = FSCopyObject.c;
 			refType = 4;
 		};
-		F54802A00264BEBC01000164 = {
+		F551C2DC032756AF01000164 = {
 			isa = PBXFileReference;
-			path = MoreFilesXSubset.c;
+			path = FSCopyObject.h;
 			refType = 4;
 		};
-		F54802A10264BEBC01000164 = {
-			fileRef = F548029F0264BEBC01000164;
+		F551C2DD032756AF01000164 = {
+			fileRef = F551C2DB032756AF01000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
 		};
-		F54802A20264BEBC01000164 = {
-			fileRef = F54802A00264BEBC01000164;
+		F551C2DE032756AF01000164 = {
+			fileRef = F551C2DC032756AF01000164;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -718,16 +715,6 @@
 					Public,
 				);
 			};
-		};
-		F5B4DD9A025DB5CA01000164 = {
-			isa = PBXFileReference;
-			path = MoreFilesX.h;
-			refType = 4;
-		};
-		F5B4DD9B025DB5CA01000164 = {
-			isa = PBXFileReference;
-			path = MoreFilesX.c;
-			refType = 4;
 		};
 		F5BCCEC1023F47DC01000164 = {
 			isa = PBXFrameworkReference;
