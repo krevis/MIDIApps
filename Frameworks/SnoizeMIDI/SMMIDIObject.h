@@ -100,3 +100,7 @@ extern NSString *SMMIDIObjectWasReplacedNotification;
 // object is the object that was replaced
 // userInfo contains new object under key SMMIDIObjectReplacement
 extern NSString *SMMIDIObjectReplacement;
+
+
+// TODO We should add a notification for "this class's list of objects changed somehow". This is the most appropriate for use
+// by applications to refresh their UI. As it is now, an app would have to listen to disappeared and replaced notifications for each individual object, which is too much work.
