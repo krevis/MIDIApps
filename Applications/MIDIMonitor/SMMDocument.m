@@ -6,6 +6,7 @@
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 #import "SMMMonitorWindowController.h"
+#import "SMMSpyingInputStream.h"
 
 
 @interface SMMDocument (Private)
@@ -57,8 +58,14 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     [stream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"MIDIMonitor", [self bundle], "title of popup menu item for virtual destination")];
     [self _updateVirtualEndpointName];
 
+    spyingInputStream = [[SMMSpyingInputStream alloc] init];
+    [center addObserver:self selector:@selector(_readingSysEx:) name:SMInputStreamReadingSysExNotification object:spyingInputStream];
+    [center addObserver:self selector:@selector(_doneReadingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:spyingInputStream];
+    
     messageFilter = [[SMMessageFilter alloc] init];
-    [stream setMessageDestination:messageFilter];
+    // TODO temporarily removing the old stream and putting in the spying stream
+//    [stream setMessageDestination:messageFilter];
+    [spyingInputStream setMessageDestination:messageFilter];
     [messageFilter setFilterMask:SMMessageTypeAllMask];
     [messageFilter setChannelMask:SMChannelMaskAll];
 
@@ -96,6 +103,8 @@ NSString *SMMAutoSelectFirstSourceIfSourceDisappearsPreferenceKey = @"SMMAutoSel
     missingSourceName = nil;
     [history release];
     history = nil;
+    [spyingInputStream release];
+    spyingInputStream = nil;
 
     [super dealloc];
 }

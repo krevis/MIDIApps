@@ -1,6 +1,7 @@
 #import <Cocoa/Cocoa.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
+@class SMMSpyingInputStream;
 
 @interface SMMDocument : NSDocument
 {
@@ -17,6 +18,9 @@
     BOOL listenToMIDISetupChanges;
     NSString *missingSourceName;
     unsigned int sysExBytesRead;
+
+    // TODO temp
+    SMMSpyingInputStream *spyingInputStream;
 }
 
 - (NSArray *)sourceDescriptions;
