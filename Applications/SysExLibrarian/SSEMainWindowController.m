@@ -25,6 +25,8 @@
 - (void)_sortLibraryEntries;
 
 - (NSArray *)_selectedEntries;
+- (void)_selectEntries:(NSArray *)entries;
+- (void)_scrollToEntries:(NSArray *)entries;
 - (void)_selectAndScrollToEntries:(NSArray *)entries;
 
 - (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
@@ -391,11 +393,11 @@ static SSEMainWindowController *controller;
     [self _sortLibraryEntries];
 
     // NOTE Some entries in selectedEntries may no longer be present in sortedLibraryEntries.
-    // We don't need to manually take them out of selectedEntries because _selectAndScrollToEntries can deal with
+    // We don't need to manually take them out of selectedEntries because _selectEntries can deal with
     // entries that are missing.
     
     [libraryTableView reloadData];
-    [self _selectAndScrollToEntries:selectedEntries];
+    [self _selectEntries:selectedEntries];
 
     // Sometimes, apparently, reloading the table view will not mark the window as needing update. Weird.
     [NSApp setWindowsNeedUpdate:YES];
@@ -643,6 +645,7 @@ static SSEMainWindowController *controller;
 
     [self synchronizeLibrarySortIndicator];
     [self synchronizeLibrary];
+    [self _scrollToEntries:[self _selectedEntries]];
 }
 
 - (BOOL)tableView:(NSTableView *)tableView shouldEditTableColumn:(NSTableColumn *)tableColumn row:(int)row;
@@ -815,13 +818,30 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     return selectedEntries;
 }
 
-- (void)_selectAndScrollToEntries:(NSArray *)entries;
+- (void)_selectEntries:(NSArray *)entries;
+{
+    unsigned int entryCount, entryIndex;
+
+    [libraryTableView deselectAll:nil];
+
+    entryCount = [entries count];
+    if (entryCount == 0)
+        return;
+
+    for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+        unsigned int row;
+
+        row = [sortedLibraryEntries indexOfObjectIdenticalTo:[entries objectAtIndex:entryIndex]];
+        if (row != NSNotFound)
+            [libraryTableView selectRow:row byExtendingSelection:YES];
+    }
+}
+
+- (void)_scrollToEntries:(NSArray *)entries;
 {
     unsigned int entryCount, entryIndex;
     unsigned int lowestRow = UINT_MAX;
 
-    [libraryTableView deselectAll:nil];
-    
     entryCount = [entries count];
     if (entryCount == 0)
         return;
@@ -830,13 +850,17 @@ static int libraryEntryComparator(id object1, id object2, void *context)
         unsigned int row;
 
         row = [sortedLibraryEntries indexOfObjectIdenticalTo:[entries objectAtIndex:entryIndex]];
-        if (row != NSNotFound) {
+        if (row != NSNotFound)
             lowestRow = MIN(lowestRow, row);
-            [libraryTableView selectRow:row byExtendingSelection:YES];
-        }
     }
 
     [libraryTableView scrollRowToVisible:lowestRow];
+}
+
+- (void)_selectAndScrollToEntries:(NSArray *)entries;
+{
+    [self _selectEntries:entries];
+    [self _scrollToEntries:entries];
 }
 
 - (void)_openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
