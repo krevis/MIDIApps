@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2002-2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2002-2006, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -98,41 +98,16 @@
 }
 
 - (NSString *)pathToImageFile;
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_2
 {
     return [self stringForProperty:kMIDIPropertyImage];
 }
-#else
-{
-    // NOTE CoreMIDI's symbol kMIDIPropertyImage is new to 10.2, but we can't link against it directly
-    // because that will cause us to fail to run on 10.1. So, instead, we try to look up the address of
-    // the symbol at runtime and use it if we find it.
-
-    CFStringRef propertyName;
-
-    propertyName = [[SMClient sharedClient] coreMIDIPropertyNameConstantNamed:@"kMIDIPropertyImage"];
-    if (propertyName)
-        return [self stringForProperty:propertyName];
-    else
-        return nil;
-}
-#endif
 
 - (SInt32)singleRealtimeEntityIndex;
 {
     OSStatus status;
     SInt32 value;
-    CFStringRef propertyName;
 
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_2
-    propertyName = kMIDIPropertySingleRealtimeEntity;
-#else
-    propertyName = [[SMClient sharedClient] coreMIDIPropertyNameConstantNamed:@"kMIDIPropertySingleRealtimeEntity"];
-    if (!propertyName)
-        return -1;
-#endif
-
-    status = MIDIObjectGetIntegerProperty(objectRef, propertyName, &value);
+    status = MIDIObjectGetIntegerProperty(objectRef, kMIDIPropertySingleRealtimeEntity, &value);
     if (status == noErr)
         return value;
     else

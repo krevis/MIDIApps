@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2002-2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2002-2006, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -27,21 +27,6 @@ void SMRejectUnusedImplementation(id self, SEL _cmd)
 {
     NSString *message = [NSString stringWithFormat:@"Object %@ of class %@ was sent selector %s which should be not be used", self, NSStringFromClass([self class]), NSStringFromSelector(_cmd)];
     NSAssert(NO, message);
-}
-
-BOOL SMClassIsSubclassOfClass(Class class, Class potentialSuperclass)
-{
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_2
-    return [class isSubclassOfClass:potentialSuperclass];
-#else
-    while (class) {
-        if (class == potentialSuperclass)
-            return YES;
-        class = class->super_class;
-    }
-    
-    return NO;
-#endif
 }
 
 #if DEBUG

@@ -53,12 +53,6 @@ typedef struct EndpointUniqueNamesFlags {
 
 NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 
-// Dumb hack to work around CoreMIDI run loop bugs in 10.1
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
-#define WORK_AROUND_COREMIDI_RUNLOOP_BUG 1
-static BOOL sRefreshAllObjectsDisabled = NO;
-#endif
-
 
 + (ItemCount)endpointCountForEntity:(MIDIEntityRef)entity;
 {
@@ -170,14 +164,7 @@ static BOOL sRefreshAllObjectsDisabled = NO;
 
 - (void)remove;
 {
-    if (objectRef && [self isOwnedByThisProcess]) {
-#if WORK_AROUND_COREMIDI_RUNLOOP_BUG
-        BOOL needDumbWorkaround = [[SMClient sharedClient] coreMIDIUsesWrongRunLoop];
-
-        if (needDumbWorkaround)
-            sRefreshAllObjectsDisabled = YES;
-#endif        
-        
+    if (objectRef && [self isOwnedByThisProcess]) {        
         MIDIEndpointDispose((MIDIEndpointRef)objectRef);
 
         // This object still hangs around in the endpoint lists until CoreMIDI gets around to posting a notification.
@@ -186,13 +173,6 @@ static BOOL sRefreshAllObjectsDisabled = NO;
 
         // Now we can forget the objectRef (not earlier!)
         objectRef = NULL;
-
-#if WORK_AROUND_COREMIDI_RUNLOOP_BUG
-        if (needDumbWorkaround) {
-            sRefreshAllObjectsDisabled = NO;
-            [[self class] refreshAllObjects];
-        }
-#endif
     }
 }
 
@@ -291,25 +271,9 @@ static BOOL sRefreshAllObjectsDisabled = NO;
 }
 
 - (NSString *)pathToImageFile;
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_2
 {
     return [self stringForProperty:kMIDIPropertyImage];
 }
-#else
-{
-    // NOTE CoreMIDI's symbol kMIDIPropertyImage is new to 10.2, but we can't link against it directly
-    // because that will cause us to fail to run on 10.1. So, instead, we try to look up the address of
-    // the symbol at runtime and use it if we find it.
-
-    CFStringRef propertyName;
-
-    propertyName = [[SMClient sharedClient] coreMIDIPropertyNameConstantNamed:@"kMIDIPropertyImage"];
-    if (propertyName)
-        return [self stringForProperty:(CFStringRef)propertyName];
-    else
-        return nil;
-}
-#endif
 
 - (NSArray *)uniqueIDsOfConnectedThings;
 {
@@ -409,13 +373,8 @@ static BOOL sRefreshAllObjectsDisabled = NO;
 
 + (void)refreshAllObjects
 {
-#if WORK_AROUND_COREMIDI_RUNLOOP_BUG
-    if (!sRefreshAllObjectsDisabled)
-#endif
-    {
-        [super refreshAllObjects];
-        [self checkForUniqueNames];
-    }
+    [super refreshAllObjects];
+    [self checkForUniqueNames];
 }
 
 + (SMMIDIObject *)immediatelyAddObjectWithObjectRef:(MIDIObjectRef)anObjectRef;
@@ -684,20 +643,12 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
     MIDIEndpointRef newEndpointRef;
     BOOL wasPostingExternalNotification;
     SMSourceEndpoint *endpoint;
-#if WORK_AROUND_COREMIDI_RUNLOOP_BUG
-    BOOL needDumbWorkaround = [client coreMIDIUsesWrongRunLoop];
-#endif
     
     // We are going to be making a lot of changes, so turn off external notifications
     // for a while (until we're done).  Internal notifications are still necessary and aren't very slow.
     wasPostingExternalNotification = [client postsExternalSetupChangeNotification];
     [client setPostsExternalSetupChangeNotification:NO];
 
-#if WORK_AROUND_COREMIDI_RUNLOOP_BUG
-    if (needDumbWorkaround)
-        sRefreshAllObjectsDisabled = YES;
-#endif
-    
     status = MIDISourceCreate([client midiClient], (CFStringRef)newName, &newEndpointRef);
     if (status)
         return nil;
@@ -729,11 +680,6 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
     // Do this before the last modification, so one setup change notification will still happen
     [client setPostsExternalSetupChangeNotification:wasPostingExternalNotification];
 
-#if WORK_AROUND_COREMIDI_RUNLOOP_BUG
-    if (needDumbWorkaround)
-        sRefreshAllObjectsDisabled = NO;
-#endif
-    
     [endpoint setModelName:[client name]];
 
     return endpoint;
@@ -815,20 +761,12 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
     MIDIEndpointRef newEndpointRef;
     BOOL wasPostingExternalNotification;
     SMDestinationEndpoint *endpoint;
-#if WORK_AROUND_COREMIDI_RUNLOOP_BUG
-    BOOL needDumbWorkaround = [client coreMIDIUsesWrongRunLoop];
-#endif
 
     // We are going to be making a lot of changes, so turn off external notifications
     // for a while (until we're done).  Internal notifications are still necessary and aren't very slow.
     wasPostingExternalNotification = [client postsExternalSetupChangeNotification];
     [client setPostsExternalSetupChangeNotification:NO];
 
-#if WORK_AROUND_COREMIDI_RUNLOOP_BUG
-    if (needDumbWorkaround)
-        sRefreshAllObjectsDisabled = YES;
-#endif
-    
     status = MIDIDestinationCreate([client midiClient], (CFStringRef)endpointName, readProc, readProcRefCon, &newEndpointRef);
     if (status)
         return nil;
@@ -860,11 +798,6 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
     // Do this before the last modification, so one setup change notification will still happen
     [client setPostsExternalSetupChangeNotification:wasPostingExternalNotification];
 
-#if WORK_AROUND_COREMIDI_RUNLOOP_BUG
-    if (needDumbWorkaround)
-        sRefreshAllObjectsDisabled = NO;
-#endif
-    
     [endpoint setModelName:[client name]];
 
     return endpoint;
