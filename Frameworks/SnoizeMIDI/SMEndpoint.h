@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2001-2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2001-2006, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -64,9 +64,6 @@
 - (SInt32)advanceScheduleTime;
 - (void)setAdvanceScheduleTime:(SInt32)newValue;
     // Value is in milliseconds
-
-- (BOOL)needsSysExWorkaround;
-    // Returns YES if the endpoint is provided by the broken MIDIMAN driver, which can't send more than 3 bytes of sysex at once
 
 - (NSString *)pathToImageFile;
     // Returns a POSIX path to the image for this endpoint's device, or nil if there is no image.

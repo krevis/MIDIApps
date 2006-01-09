@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2004-2006, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -17,5 +17,13 @@
 @interface NSArray (SMExtensions)
 
 - (NSArray *)SnoizeMIDI_arrayByMakingObjectsPerformSelector:(SEL)selector;
+- (NSArray *)SnoizeMIDI_reversedArray;
+
+@end
+
+
+@interface NSMutableArray (SMExtensions)
+
+- (void)SnoizeMIDI_removeObjectsIdenticalToObjectsInArray:(NSArray *)objectsToRemove;
 
 @end

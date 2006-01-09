@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2004-2006, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -31,6 +31,48 @@
     }
 
     return results;
+}
+
+- (NSArray *)SnoizeMIDI_reversedArray
+{
+    unsigned int count = [self count];
+    if (count < 2)
+        return self;
+    
+    NSMutableArray *result = [self mutableCopy];
+    CFMutableArrayRef cfResult = (CFMutableArrayRef)result;
+    CFIndex startIndex = 0;
+    CFIndex endIndex = count - 1;
+    while (startIndex < endIndex) {
+        CFArrayExchangeValuesAtIndices(cfResult, startIndex, endIndex);
+        startIndex++;
+        endIndex--;
+    }
+    
+    return [result autorelease];
+}
+
+@end
+
+
+@implementation NSMutableArray (SMExtensions)
+
+- (void)SnoizeMIDI_removeObjectsIdenticalToObjectsInArray:(NSArray *)objectsToRemove
+{
+    NSMutableSet *objectsToRemoveSet = [[NSMutableSet alloc] initWithArray:objectsToRemove];
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    NSEnumerator *oe = [self objectEnumerator];
+    id obj;
+
+    while ((obj = [oe nextObject])) {
+        if (![objectsToRemoveSet containsObject:obj]) {
+            [result addObject:obj];
+        }
+    }
+    [self setArray: result];
+    [result release];
+    
+    [objectsToRemoveSet release];
 }
 
 @end

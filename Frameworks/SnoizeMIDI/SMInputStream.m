@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2001-2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2001-2006, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -16,8 +16,8 @@
 #import "SMClient.h"
 #import "SMEndpoint.h"
 #import "SMMessage.h"
-#import "SMMessageParser.h"
 #import "SMSystemExclusiveMessage.h"
+#import "SMMessageParser.h"
 #import "SMUtilities.h"
 #import "MessageQueue.h"
 
