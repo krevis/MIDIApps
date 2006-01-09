@@ -1,0 +1,16 @@
+// Typically build against 10.4
+SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk
+MACOSX_DEPLOYMENT_TARGET = 10.4
+// ... but PPC goes back to 10.2.8, using gcc 3.3
+SDKROOT_ppc = /Developer/SDKs/MacOSX10.2.8.sdk
+MACOSX_DEPLOYMENT_TARGET_ppc = 10.2
+GCC_VERSION_ppc = 3.3
+
+// No need for prebinding generally; individual targets may turn it on themselves
+PREBINDING = NO
+
+// Nice warnings
+GCC_TREAT_WARNINGS_AS_ERRORS = YES
+GCC_WARN_ABOUT_RETURN_TYPE = YES
+GCC_WARN_UNUSED_VARIABLE = YES
+WARNING_CFLAGS = -Wmost -Wparentheses

@@ -1,0 +1,4 @@
+#import "Snoize-Project-Global.xcconfig"
+
+// Release builds all architectures
+ARCHS = ppc i386
