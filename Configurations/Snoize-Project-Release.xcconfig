@@ -1,4 +1,7 @@
-#import "Snoize-Project-Global.xcconfig"
+#include "Snoize-Project-Global.xcconfig"
 
 // Release builds all architectures
 ARCHS = ppc i386
+
+// No need for debugging symbols in release
+GCC_GENERATE_DEBUGGING_SYMBOLS = NO

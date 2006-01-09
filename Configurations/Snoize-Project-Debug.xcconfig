@@ -1,4 +1,4 @@
-#import "Snoize-Project-Global.xcconfig"
+#include "Snoize-Project-Global.xcconfig"
 
 // Debug builds with no optimization
 GCC_OPTIMIZATION_LEVEL = 0
