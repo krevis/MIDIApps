@@ -95,6 +95,9 @@
 /* Begin PBXFileReference section */
 		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		161D6C940972111A00CA5276 /* Snoize-Project-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Debug.xcconfig"; path = "../../Configurations/Snoize-Project-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
+		161D6C9C097211EC00CA5276 /* Snoize-Project-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Release.xcconfig"; path = "../../Configurations/Snoize-Project-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
+		161D6CA10972127700CA5276 /* Snoize-Project-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Global.xcconfig"; path = "../../Configurations/Snoize-Project-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
 		16B11B550971D40100DB1DB5 /* MessageQueue.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = MessageQueue.c; sourceTree = "<group>"; };
 		16B11B560971D40100DB1DB5 /* MessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MessageQueue.h; sourceTree = "<group>"; };
 		16B11B570971D40100DB1DB5 /* NSArray-SMExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSArray-SMExtensions.h"; sourceTree = "<group>"; };
@@ -161,6 +164,9 @@
 		16B11BF50971D78500DB1DB5 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SnoizeMIDI.strings; sourceTree = "<group>"; };
 		16B11DEF0971D80F00DB1DB5 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		16B11DF00971D80F00DB1DB5 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
+		16B4A55B0972151400F11AD6 /* Snoize-Framework-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Framework-Global.xcconfig"; path = "../../Configurations/Snoize-Framework-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
+		16B4A55E0972152700F11AD6 /* Snoize-Framework-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Framework-Debug.xcconfig"; path = "../../Configurations/Snoize-Framework-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
+		16B4A5610972153E00F11AD6 /* Snoize-Framework-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Framework-Release.xcconfig"; path = "../../Configurations/Snoize-Framework-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
 		32DBCF5E0370ADEE00C91783 /* SnoizeMIDI_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnoizeMIDI_Prefix.pch; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* SnoizeMIDI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SnoizeMIDI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -194,6 +200,7 @@
 				08FB77AEFE84172EC02AAC07 /* Source */,
 				089C1665FE841158C02AAC07 /* Resources */,
 				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
+				161D6C970972112200CA5276 /* Configurations */,
 				034768DFFF38A50411DB9C8B /* Products */,
 			);
 			name = SnoizeMIDI;
@@ -233,6 +240,19 @@
 				16B11BED0971D74B00DB1DB5 /* Processors */,
 			);
 			name = Source;
+			sourceTree = "<group>";
+		};
+		161D6C970972112200CA5276 /* Configurations */ = {
+			isa = PBXGroup;
+			children = (
+				161D6CA10972127700CA5276 /* Snoize-Project-Global.xcconfig */,
+				161D6C940972111A00CA5276 /* Snoize-Project-Debug.xcconfig */,
+				161D6C9C097211EC00CA5276 /* Snoize-Project-Release.xcconfig */,
+				16B4A55B0972151400F11AD6 /* Snoize-Framework-Global.xcconfig */,
+				16B4A55E0972152700F11AD6 /* Snoize-Framework-Debug.xcconfig */,
+				16B4A5610972153E00F11AD6 /* Snoize-Framework-Release.xcconfig */,
+			);
+			name = Configurations;
 			sourceTree = "<group>";
 		};
 		16B11BD10971D5C400DB1DB5 /* Global / Utilities */ = {
@@ -541,6 +561,7 @@
 /* Begin XCBuildConfiguration section */
 		1DEB91AE08733DA50010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 16B4A55E0972152700F11AD6 /* Snoize-Framework-Debug.xcconfig */;
 			buildSettings = {
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -555,63 +576,31 @@
 		};
 		1DEB91AF08733DA50010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 16B4A5610972153E00F11AD6 /* Snoize-Framework-Release.xcconfig */;
 			buildSettings = {
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SnoizeMIDI_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_LDFLAGS_ppc = "-prebind -image_base 0x38000000";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = SnoizeMIDI;
-				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Release;
 		};
 		1DEB91B208733DA50010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 161D6C940972111A00CA5276 /* Snoize-Project-Debug.xcconfig */;
 			buildSettings = {
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_VERSION_ppc = 3.3;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_ppc = 10.2;
-				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_ppc = /Developer/SDKs/MacOSX10.2.8.sdk;
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wparentheses",
-				);
 			};
 			name = Debug;
 		};
 		1DEB91B308733DA50010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 161D6C9C097211EC00CA5276 /* Snoize-Project-Release.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_VERSION_ppc = 3.3;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_ppc = 10.2;
-				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_ppc = /Developer/SDKs/MacOSX10.2.8.sdk;
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wparentheses",
-				);
 			};
 			name = Release;
 		};
