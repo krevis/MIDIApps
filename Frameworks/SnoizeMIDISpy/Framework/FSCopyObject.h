@@ -38,20 +38,71 @@
 				(INCLUDING NEGLIGENCE), STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN
 				ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-	Copyright © 2002 Apple Computer, Inc., All Rights Reserved
+	Copyright © 2002-2004 Apple Computer, Inc., All Rights Reserved
 */
 
 
 #ifndef __FSCOPYOBJECT_H__
 #define __FSCOPYOBJECT_H__
 
-#include <Carbon/Carbon.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#if TARGET_API_MAC_OSX || defined( __APPLE_CC__ )
+#include	<CoreServices/CoreServices.h>
+#endif
+
+//#define DEBUG  1	/* set to zero if you don't want debug spew */
+
+#if DEBUG
+	#include <stdio.h>
+
+	#define QuoteExceptionString(x) #x
+
+	#define dwarning(s)					do { printf s; fflush(stderr); } while( 0 )					
+
+	#define mycheck_noerr( error )												\
+		do {																	\
+			if( (OSErr) error != noErr ) {										\
+	           dwarning((QuoteExceptionString(error) " != noErr in File: %s, Function: %s, Line: %d, Error: %d\n",	\
+	           							  __FILE__, __FUNCTION__, __LINE__, (OSErr) error));		\
+	         }																	\
+		} while( false )
+
+	#define mycheck( assertion )												\
+		do {																	\
+			if( ! assertion ) {													\
+	           dwarning((QuoteExceptionString(assertion) " failed in File: %s, Function: %s, Line: %d\n",	\
+	           							  __FILE__, __FUNCTION__, __LINE__));	\
+			}																	\
+		} while( false )
+
+    #define myverify(assertion)			mycheck(assertion)
+    #define myverify_noerr(assertion)	mycheck_noerr( (assertion) )
+#else
+    #define	dwarning(s)
+    
+	#define mycheck(assertion)
+	#define mycheck_noerr(err)
+    #define myverify(assertion)			do { (void) (assertion); } while (0)
+    #define myverify_noerr(assertion) 	myverify(assertion)    
+#endif
 
 /*
-	This code is a combination of MoreFilesX (by Jim Luther) and MPFileCopy (by Quinn)
-	with some added features and bug fixes.  This code will run in OS 9.1 and up
-	and 10.1.x (Classic and Carbon)
+	This code takes some tricks/techniques from MoreFilesX (by Jim Luther) and
+	MPFileCopy (by Quinn), wraps them all up into an easy to use API, and adds a bunch of
+	features and bug fixes.  It will run on Mac OS 9.1 through 9.2.x and 10.1.x
+	and up (Classic, Carbon and Mach-O)
 */
+
+	/* Different options that FSCopyObject can take during a copy */
+typedef	UInt32				DupeAction;
+enum {
+	kDupeActionStandard,	/* will do the copy with no frills */
+	kDupeActionReplace,		/* will delete the existing object and then copy over the new one */
+	kDupeActionRename		/* will rename the new object if an object of the same name exists */
+};
 
 /*****************************************************************************/
 
@@ -64,11 +115,14 @@
 	whatever it wants.
 
 	The result of the CallCopyObjectFilterProc function indicates if
-	iteration should be stopped. To stop iteration, return true; to continue
-	iteration, return false.
+	the copy should be stopped.  To stop the copy, return an error; to continue
+	the copy, return noErr.
 
 	The yourDataPtr parameter can point to whatever data structure you might
 	want to access from within the CallCopyObjectFilterProc.
+	
+	Note: If an error had occured during the copy of the current object
+	(currentOSErr != noErr) the FSRef etc might not be valid
 
 	containerChanged	--> Set to true if the container's contents changed
 							during iteration.
@@ -88,15 +142,14 @@
 	yourDataPtr			--> An optional pointer to whatever data structure you
 							might want to access from within the
 							CallCopyObjectFilterProc.
-	result				<-- To stop iteration, return true; to continue
-							iteration, return false.
-
+	result				<-- To continue the copy, return noErr
+	
 	__________
 
 	Also see:	FSCopyObject
 */
 
-typedef CALLBACK_API( Boolean , CopyObjectFilterProcPtr ) (
+typedef CALLBACK_API( OSErr , CopyObjectFilterProcPtr ) (
 	Boolean containerChanged,
 	ItemCount currentLevel,
 	OSErr currentOSErr,
@@ -123,8 +176,7 @@ typedef CALLBACK_API( Boolean , CopyObjectFilterProcPtr ) (
 	and copies it (and its contents if it's a directory) to the new destination
 	directory.
 	
-	It will call your CopyObjectFilterProcPtr once for each file/directory
-	copied
+	It will call your CopyObjectFilterProcPtr once for each object copied
 
 	The maxLevels parameter is only used when the object is a directory,
 	ignored otherwise.
@@ -144,27 +196,40 @@ typedef CALLBACK_API( Boolean , CopyObjectFilterProcPtr ) (
 							object is a file
 	whichInfo			--> The fields of the FSCatalogInfo you wish passed
 							to you in your CopyObjectFilterProc
+	dupeAction			--> The action to take if an object of the same name exists
+							in the destination
+	newName				--> The name you want the new object to have.  If you pass
+							in NULL, the source object name will be used. 
 	wantFSSpec			--> Set to true if you want the FSSpec to each
 							object passed to your CopyObjectFilterProc.
 	wantName			--> Set to true if you want the name of each
 							object passed to your CopyObjectFilterProc.
-	iterateFilter		--> A pointer to the CopyObjectFilterProc you
+	filterProcPtr		--> A pointer to the CopyObjectFilterProc you
 							want called once for each object found
 							by FSCopyObject.
 	yourDataPtr			--> An optional pointer to whatever data structure you
 							might want to access from within the
 							CopyObjectFilterProc.
+	newObjectRef		--> An optional pointer to an FSRef that, on return,
+							references the new object.  If you don't want this
+							info returned, pass in NULL
+	newObjectSpec		--> An optional pointer to an FSSPec that, on return,
+							references the new object.  If you don't want this
+							info returned, pass in NULL
 */
 
 OSErr FSCopyObject(	const FSRef *source,
 					const FSRef *destDir,
 				 	ItemCount maxLevels,
 				 	FSCatalogInfoBitmap whichInfo,
+				 	DupeAction dupeAction,
+				 	const HFSUniStr255 *newName,			/* can be NULL */
 					Boolean wantFSSpec,
 					Boolean wantName,
-					CopyObjectFilterProcPtr filterProcPtr,	// can be NULL
-					void *yourDataPtr,						// can be NULL
-					FSRef *newObject);						// can be NULL
+					CopyObjectFilterProcPtr filterProcPtr,	/* can be NULL */
+					void *yourDataPtr,						/* can be NULL */
+					FSRef *newObjectRef,					/* can be NULL */
+					FSSpec *newObjectSpec);					/* can be NULL */
 
 /*****************************************************************************/
 
@@ -184,6 +249,10 @@ OSErr FSCopyObject(	const FSRef *source,
 	__________
 */
 
-OSErr FSDeleteObjects(	const FSRef *source );
+OSErr FSDeleteObjects( const FSRef *source );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

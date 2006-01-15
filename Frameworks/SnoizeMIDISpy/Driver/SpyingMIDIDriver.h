@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2001-2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2001-2006, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -16,7 +16,6 @@
 
 #include "MIDIDriverClass.h"
 #include "MessagePortBroadcaster.h"
-#include <AvailabilityMacros.h>
 
 
 class SpyingMIDIDriver : public MIDIDriver, public MessagePortBroadcasterDelegate {
@@ -31,19 +30,12 @@ public:
     virtual void BroadcasterListenerCountChanged(MessagePortBroadcaster *broadcaster, bool hasListeners);
     
 private:
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
-    void CheckCoreMIDIVersion();
-#endif
-
     void EnableMonitoring(Boolean enable);
 
     CFMutableDataRef PackageMonitoredDataForBroadcast(MIDIEndpointRef destination, const MIDIPacketList *packetList);
     UInt32 SizeOfPacketList(const MIDIPacketList *packetList);
 
-
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
-    bool mNeedsMonitorPointerWorkaround;
-#endif
+    
     MessagePortBroadcaster *mBroadcaster;
 };
 

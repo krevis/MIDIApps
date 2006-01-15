@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2001-2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2001-2006, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -52,9 +52,6 @@ static void messageQueueHandler(CFTypeRef objectFromQueue, void *refCon);
 SpyingMIDIDriver::SpyingMIDIDriver() :
     MIDIDriver(kFactoryUUID),
     MessagePortBroadcasterDelegate(),
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
-    mNeedsMonitorPointerWorkaround(false),
-#endif
     mBroadcaster(NULL)
 {
     #if DEBUG
@@ -65,10 +62,6 @@ SpyingMIDIDriver::SpyingMIDIDriver() :
     // NOTE This might raise an exception; we let it propagate upwards.
 
     CreateMessageQueue(messageQueueHandler, mBroadcaster);
-
-    #if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
-        CheckCoreMIDIVersion();
-    #endif
 }
 
 SpyingMIDIDriver::~SpyingMIDIDriver()
@@ -85,23 +78,6 @@ SpyingMIDIDriver::~SpyingMIDIDriver()
 OSStatus SpyingMIDIDriver::Monitor(MIDIEndpointRef destination, const MIDIPacketList *packetList)
 {
     CFMutableDataRef dataToBroadcast;
-
-    #if DEBUG && 0
-        fprintf(stderr, "SpyingMIDIDriver: Monitor(destination %p, packet list %p)\n", destination, packetList);
-        fprintf(stderr, "SpyingMIDIDriver: Monitor: mNeedsMonitorPointerWorkaround is %d\n", mNeedsMonitorPointerWorkaround);
-    #endif
-
-    #if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
-    if (mNeedsMonitorPointerWorkaround) {
-        // Under Mac OS X 10.1.3 and earlier, we are really given a pointer to a MIDIEndpointRef, not the MIDIEndpointRef itself.
-        // This is Radar #2877457. The bug was fixed in 10.2.
-        destination = *(MIDIEndpointRef *)destination;        
-    }
-    #endif
-    
-    #if DEBUG && 0
-        fprintf(stderr, "SpyingMIDIDriver: Monitor: dereferenced pointer successfully\n");
-    #endif
 
     // Since we are running in the MIDIServer's processing thread, broadcasting now could bog down MIDI processing badly.
     // (I think that CFMessagePortSendRequest() must block, or somehow take a lot of time.)
@@ -134,30 +110,6 @@ void SpyingMIDIDriver::BroadcasterListenerCountChanged(MessagePortBroadcaster *b
 //
 // Private functions
 //
-
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2
-void SpyingMIDIDriver::CheckCoreMIDIVersion()
-{
-    CFBundleRef coreMIDIServerBundle;
-
-    // Check the CoreMIDIServer's version to see if we need to work around a bug.
-    coreMIDIServerBundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.audio.midi.CoreMIDIServer"));
-    if (coreMIDIServerBundle) {
-        UInt32 version;
-
-        version =  CFBundleGetVersionNumber(coreMIDIServerBundle);
-        if (version < 0x18008000)	// 18.0 release, which is the version in which this bug should be fixed
-            mNeedsMonitorPointerWorkaround = true;
-        #if DEBUG
-            fprintf(stderr, "CoreMIDIServer version is %lx, so needs workaround = %d\n", version, mNeedsMonitorPointerWorkaround);
-        #endif
-    } else {
-        #if DEBUG
-            fprintf(stderr, "Couldn't find bundle for CoreMIDIServer (com.apple.audio.midi.CoreMIDIServer)\n");
-        #endif
-    }   
-}
-#endif
 
 void SpyingMIDIDriver::EnableMonitoring(Boolean enabled)
 {
