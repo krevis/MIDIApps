@@ -1,0 +1,4 @@
+#include "Snoize-Application-Global.xcconfig"
+
+// Prebind on PPC
+OTHER_LDFLAGS_ppc = -prebind

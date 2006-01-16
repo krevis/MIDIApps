@@ -1,7 +1,7 @@
 #include "Snoize-Framework-Global.xcconfig"
 
 // Frameworks are installed inside the app
-INSTALL_PATH = "@executable_path/../Frameworks"
+INSTALL_PATH = @executable_path/../Frameworks
 SKIP_INSTALL = YES
 
 // Prebind on PPC
