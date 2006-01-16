@@ -1,0 +1,371 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		16AF258E097B1A3400BC87DC /* DisclosableView.h in Headers */ = {isa = PBXBuildFile; fileRef = F5D80D8D02E3081C01000164 /* DisclosableView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		16AF258F097B1A3400BC87DC /* SNDisclosableView.h in Headers */ = {isa = PBXBuildFile; fileRef = F54FF60702DEE82F01000164 /* SNDisclosableView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		16AF2590097B1A3400BC87DC /* SNDisclosureButton.h in Headers */ = {isa = PBXBuildFile; fileRef = F5D80D8702E2F49D01000164 /* SNDisclosureButton.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		16AF2592097B1A3400BC87DC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
+		16AF2593097B1A3400BC87DC /* SNDisclosureArrowDown.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F54FF60B02DEE85401000164 /* SNDisclosureArrowDown.tiff */; };
+		16AF2594097B1A3400BC87DC /* SNDisclosureArrowRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F54FF60C02DEE85401000164 /* SNDisclosureArrowRight.tiff */; };
+		16AF2596097B1A3400BC87DC /* SNDisclosableView.m in Sources */ = {isa = PBXBuildFile; fileRef = F54FF60802DEE82F01000164 /* SNDisclosableView.m */; };
+		16AF2597097B1A3400BC87DC /* SNDisclosureButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F5D80D8802E2F49D01000164 /* SNDisclosureButton.m */; };
+		16AF2599097B1A3400BC87DC /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildStyle section */
+		014CEA440018CDF011CA2923 /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "\U0001-DDEBUG";
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		014CEA450018CDF011CA2923 /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		F5460C1202E316F801000164 /* DeploymentInApp */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				SKIP_INSTALL = YES;
+			};
+			name = DeploymentInApp;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXFileReference section */
+		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		0867D6A5FE840307C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		16AF25A0097B1A3400BC87DC /* Info-DisclosableView.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Info-DisclosableView.plist"; sourceTree = "<group>"; };
+		16AF25A1097B1A3400BC87DC /* DisclosableView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DisclosableView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		16AF25C1097B1C0000BC87DC /* Snoize-Framework-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Framework-Debug.xcconfig"; path = "../../Configurations/Snoize-Framework-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
+		16AF25C2097B1C0000BC87DC /* Snoize-Framework-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Framework-Global.xcconfig"; path = "../../Configurations/Snoize-Framework-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
+		16AF25C3097B1C0000BC87DC /* Snoize-Framework-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Framework-Release.xcconfig"; path = "../../Configurations/Snoize-Framework-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
+		16AF25C4097B1C0000BC87DC /* Snoize-Project-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Debug.xcconfig"; path = "../../Configurations/Snoize-Project-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
+		16AF25C5097B1C0000BC87DC /* Snoize-Project-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Global.xcconfig"; path = "../../Configurations/Snoize-Project-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
+		16AF25C6097B1C0000BC87DC /* Snoize-Project-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Release.xcconfig"; path = "../../Configurations/Snoize-Project-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
+		F54FF60702DEE82F01000164 /* SNDisclosableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SNDisclosableView.h; sourceTree = "<group>"; };
+		F54FF60802DEE82F01000164 /* SNDisclosableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SNDisclosableView.m; sourceTree = "<group>"; };
+		F54FF60B02DEE85401000164 /* SNDisclosureArrowDown.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SNDisclosureArrowDown.tiff; sourceTree = "<group>"; };
+		F54FF60C02DEE85401000164 /* SNDisclosureArrowRight.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SNDisclosureArrowRight.tiff; sourceTree = "<group>"; };
+		F5D80D8702E2F49D01000164 /* SNDisclosureButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SNDisclosureButton.h; sourceTree = "<group>"; };
+		F5D80D8802E2F49D01000164 /* SNDisclosureButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SNDisclosureButton.m; sourceTree = "<group>"; };
+		F5D80D8D02E3081C01000164 /* DisclosableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DisclosableView.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		16AF2598097B1A3400BC87DC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16AF2599097B1A3400BC87DC /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		034768DFFF38A50411DB9C8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				16AF25A1097B1A3400BC87DC /* DisclosableView.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0867D691FE84028FC02AAC07 /* DisclosableView */ = {
+			isa = PBXGroup;
+			children = (
+				08FB77AEFE84172EC02AAC07 /* Source */,
+				089C1665FE841158C02AAC07 /* Resources */,
+				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
+				16AF25C0097B1BDA00BC87DC /* Configurations */,
+				034768DFFF38A50411DB9C8B /* Products */,
+			);
+			name = DisclosableView;
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7B0FEA5585E11CA2CBB /* Linked Frameworks */,
+				1058C7B2FEA5585E11CA2CBB /* Other Frameworks */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C1665FE841158C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				16AF25A0097B1A3400BC87DC /* Info-DisclosableView.plist */,
+				089C1666FE841158C02AAC07 /* InfoPlist.strings */,
+				F54FF60B02DEE85401000164 /* SNDisclosureArrowDown.tiff */,
+				F54FF60C02DEE85401000164 /* SNDisclosureArrowRight.tiff */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77AEFE84172EC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				16AF2619097B1DB100BC87DC /* Framework Headers */,
+				F54FF60702DEE82F01000164 /* SNDisclosableView.h */,
+				F54FF60802DEE82F01000164 /* SNDisclosableView.m */,
+				F5D80D8702E2F49D01000164 /* SNDisclosureButton.h */,
+				F5D80D8802E2F49D01000164 /* SNDisclosureButton.m */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1058C7B0FEA5585E11CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7B2FEA5585E11CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0867D69BFE84028FC02AAC07 /* Foundation.framework */,
+				0867D6A5FE840307C02AAC07 /* AppKit.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		16AF25C0097B1BDA00BC87DC /* Configurations */ = {
+			isa = PBXGroup;
+			children = (
+				16AF25C5097B1C0000BC87DC /* Snoize-Project-Global.xcconfig */,
+				16AF25C4097B1C0000BC87DC /* Snoize-Project-Debug.xcconfig */,
+				16AF25C6097B1C0000BC87DC /* Snoize-Project-Release.xcconfig */,
+				16AF25C2097B1C0000BC87DC /* Snoize-Framework-Global.xcconfig */,
+				16AF25C1097B1C0000BC87DC /* Snoize-Framework-Debug.xcconfig */,
+				16AF25C3097B1C0000BC87DC /* Snoize-Framework-Release.xcconfig */,
+			);
+			name = Configurations;
+			sourceTree = "<group>";
+		};
+		16AF2619097B1DB100BC87DC /* Framework Headers */ = {
+			isa = PBXGroup;
+			children = (
+				F5D80D8D02E3081C01000164 /* DisclosableView.h */,
+			);
+			name = "Framework Headers";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		16AF258D097B1A3400BC87DC /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16AF258E097B1A3400BC87DC /* DisclosableView.h in Headers */,
+				16AF258F097B1A3400BC87DC /* SNDisclosableView.h in Headers */,
+				16AF2590097B1A3400BC87DC /* SNDisclosureButton.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		16AF258C097B1A3400BC87DC /* DisclosableView */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 16AF259B097B1A3400BC87DC /* Build configuration list for PBXNativeTarget "DisclosableView" */;
+			buildPhases = (
+				16AF258D097B1A3400BC87DC /* Headers */,
+				16AF2591097B1A3400BC87DC /* Resources */,
+				16AF2595097B1A3400BC87DC /* Sources */,
+				16AF2598097B1A3400BC87DC /* Frameworks */,
+				16AF259A097B1A3400BC87DC /* Rez */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_VERSION = A;
+				HEADER_SEARCH_PATHS = "";
+				INSTALL_PATH = /Library/Frameworks;
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-image_base",
+					0x3B000000,
+				);
+				PRODUCT_NAME = DisclosableView;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = framework;
+			};
+			dependencies = (
+			);
+			name = DisclosableView;
+			productInstallPath = /Library/Frameworks;
+			productName = DisclosableView;
+			productReference = 16AF25A1097B1A3400BC87DC /* DisclosableView.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 16AF25A3097B1A3600BC87DC /* Build configuration list for PBXProject "DisclosableView" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				014CEA440018CDF011CA2923 /* Development */,
+				014CEA450018CDF011CA2923 /* Deployment */,
+				F5460C1202E316F801000164 /* DeploymentInApp */,
+			);
+			hasScannedForEncodings = 0;
+			mainGroup = 0867D691FE84028FC02AAC07 /* DisclosableView */;
+			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
+			projectDirPath = "";
+			targets = (
+				16AF258C097B1A3400BC87DC /* DisclosableView */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		16AF2591097B1A3400BC87DC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16AF2592097B1A3400BC87DC /* InfoPlist.strings in Resources */,
+				16AF2593097B1A3400BC87DC /* SNDisclosureArrowDown.tiff in Resources */,
+				16AF2594097B1A3400BC87DC /* SNDisclosureArrowRight.tiff in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXRezBuildPhase section */
+		16AF259A097B1A3400BC87DC /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXRezBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		16AF2595097B1A3400BC87DC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16AF2596097B1A3400BC87DC /* SNDisclosableView.m in Sources */,
+				16AF2597097B1A3400BC87DC /* SNDisclosureButton.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C1666FE841158C02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C1667FE841158C02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		16AF25BA097B1BD800BC87DC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 16AF25C1097B1C0000BC87DC /* Snoize-Framework-Debug.xcconfig */;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				INFOPLIST_FILE = "Info-DisclosableView.plist";
+				PRODUCT_NAME = DisclosableView;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Debug;
+		};
+		16AF25BB097B1BD800BC87DC /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 16AF25C3097B1C0000BC87DC /* Snoize-Framework-Release.xcconfig */;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				INFOPLIST_FILE = "Info-DisclosableView.plist";
+				OTHER_LDFLAGS_ppc = "-prebind -image_base 0x3B000000";
+				PRODUCT_NAME = DisclosableView;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Release;
+		};
+		16AF25BC097B1BD800BC87DC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 16AF25C4097B1C0000BC87DC /* Snoize-Project-Debug.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		16AF25BD097B1BD800BC87DC /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 16AF25C6097B1C0000BC87DC /* Snoize-Project-Release.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		16AF259B097B1A3400BC87DC /* Build configuration list for PBXNativeTarget "DisclosableView" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				16AF25BA097B1BD800BC87DC /* Debug */,
+				16AF25BB097B1BD800BC87DC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		16AF25A3097B1A3600BC87DC /* Build configuration list for PBXProject "DisclosableView" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				16AF25BC097B1BD800BC87DC /* Debug */,
+				16AF25BD097B1BD800BC87DC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}
