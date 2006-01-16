@@ -272,6 +272,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -309,15 +311,16 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateExpansionKey</key>
 							<array>
 								<string>2A37F4AAFDCFA73011CA2CEA</string>
+								<string>169E7113097B200A001AFB58</string>
 								<string>1C37FBAC04509CD000000102</string>
-								<string>162972CF097B41F200158D7B</string>
+								<string>16F24022097B549F00E6DAEA</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>17</integer>
-									<integer>9</integer>
-									<integer>8</integer>
+									<integer>21</integer>
+									<integer>15</integer>
+									<integer>14</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
@@ -354,7 +357,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>16AF2640097B1EFA00BC87DC</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>SMMIDIObject.m</string>
+								<string>Snoize-Project-Debug.xcconfig</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -362,11 +365,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>16AF2641097B1EFB00BC87DC</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>SMMIDIObject.m</string>
+										<string>Snoize-Project-Debug.xcconfig</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>162972EA097B483400158D7B</string>
+										<string>16F24028097B54B400E6DAEA</string>
 										<key>history</key>
 										<array>
 											<string>169E7122097B20D7001AFB58</string>
@@ -398,19 +401,15 @@
 											<string>169E713C097B20D7001AFB58</string>
 											<string>169E713D097B20D7001AFB58</string>
 											<string>169E713E097B20D7001AFB58</string>
-											<string>169E713F097B20D7001AFB58</string>
 											<string>169E7140097B20D7001AFB58</string>
 											<string>169E7187097B230B001AFB58</string>
-											<string>169E7188097B230B001AFB58</string>
-											<string>169E7189097B230B001AFB58</string>
 											<string>169E718A097B230B001AFB58</string>
 											<string>169E720F097B273B001AFB58</string>
 											<string>16E8F054097B30FE00B52193</string>
-											<string>162972DD097B452400158D7B</string>
-										</array>
-										<key>nextStack</key>
-										<array>
-											<string>16E8F056097B30FE00B52193</string>
+											<string>1660108C097B50CD00E1494B</string>
+											<string>1660108D097B50CD00E1494B</string>
+											<string>166010B0097B52C500E1494B</string>
+											<string>16601092097B50CD00E1494B</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -446,7 +445,6 @@
 											<string>169E7163097B20D7001AFB58</string>
 											<string>169E7164097B20D7001AFB58</string>
 											<string>169E7165097B20D7001AFB58</string>
-											<string>169E718D097B230B001AFB58</string>
 											<string>169E718E097B230B001AFB58</string>
 											<string>169E718F097B230B001AFB58</string>
 											<string>169E7193097B230B001AFB58</string>
@@ -479,8 +477,6 @@
 							<key>Tabs</key>
 							<array>
 								<dict>
-									<key>BecomeActive</key>
-									<true/>
 									<key>ContentConfiguration</key>
 									<dict>
 										<key>PBXProjectModuleGUID</key>
@@ -552,11 +548,11 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>1629724C097B399200158D7B</string>
+				<string>16F24024097B549F00E6DAEA</string>
 				<string>1CA23ED40692098700951B8B</string>
-				<string>1629724D097B399200158D7B</string>
+				<string>16F24025097B549F00E6DAEA</string>
 				<string>16AF2640097B1EFA00BC87DC</string>
-				<string>1629724E097B399200158D7B</string>
+				<string>16F24026097B549F00E6DAEA</string>
 				<string>1CA23EDF0692099D00951B8B</string>
 				<string>1CA23EE00692099D00951B8B</string>
 				<string>1CA23EE10692099D00951B8B</string>
@@ -653,7 +649,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>16AF2640097B1EFA00BC87DC</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>SMMIDIObject.m</string>
+								<string>Snoize-Project-Debug.xcconfig</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -661,11 +657,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>16AF2641097B1EFB00BC87DC</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>SMMIDIObject.m</string>
+										<string>Snoize-Project-Debug.xcconfig</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>162972EC097B483400158D7B</string>
+										<string>16F24029097B54B400E6DAEA</string>
 										<key>history</key>
 										<array>
 											<string>169E7122097B20D7001AFB58</string>
@@ -700,16 +696,12 @@
 											<string>169E713F097B20D7001AFB58</string>
 											<string>169E7140097B20D7001AFB58</string>
 											<string>169E7187097B230B001AFB58</string>
-											<string>169E7188097B230B001AFB58</string>
 											<string>169E7189097B230B001AFB58</string>
 											<string>169E718A097B230B001AFB58</string>
 											<string>169E720A097B266D001AFB58</string>
 											<string>16E8F054097B30FE00B52193</string>
 											<string>162972D5097B426E00158D7B</string>
-										</array>
-										<key>nextStack</key>
-										<array>
-											<string>16E8F056097B30FE00B52193</string>
+											<string>16601092097B50CD00E1494B</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -745,7 +737,6 @@
 											<string>169E7163097B20D7001AFB58</string>
 											<string>169E7164097B20D7001AFB58</string>
 											<string>169E7165097B20D7001AFB58</string>
-											<string>169E718D097B230B001AFB58</string>
 											<string>169E718E097B230B001AFB58</string>
 											<string>169E718F097B230B001AFB58</string>
 											<string>169E7193097B230B001AFB58</string>
@@ -779,7 +770,7 @@
 									<key>ContentConfiguration</key>
 									<dict>
 										<key>PBXBuildLogShowsTranscriptDefaultKey</key>
-										<string>{{0, 308}, {737, 109}}</string>
+										<string>{{0, 194}, {737, 223}}</string>
 										<key>PBXProjectModuleGUID</key>
 										<string>XCMainBuildResultsModuleGUID</string>
 										<key>PBXProjectModuleLabel</key>
@@ -872,14 +863,14 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>16297250097B399200158D7B</string>
+				<string>16F23FFE097B531500E6DAEA</string>
 				<string>1CA23EE50692099D00951B8B</string>
-				<string>16297251097B399200158D7B</string>
+				<string>16F23FFF097B531500E6DAEA</string>
 				<string>16AF2640097B1EFA00BC87DC</string>
-				<string>16297252097B399200158D7B</string>
+				<string>16F24000097B531500E6DAEA</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 				<string>1CA23EE80692099D00951B8B</string>
-				<string>16297253097B399200158D7B</string>
+				<string>16F24001097B531500E6DAEA</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.buildAndRun</string>
@@ -1033,7 +1024,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>159074356.632779</real>
+	<real>159077556.54960001</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>1</integer>
 	<key>ToolbarIsVisible</key>
@@ -1048,9 +1039,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>16297260097B3A0600158D7B</string>
-		<string>16297261097B3A0600158D7B</string>
-		<string>16297259097B399200158D7B</string>
 		<string>/Users/krevis/Source/Snoize/Applications/MIDIMonitor/MIDIMonitor.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
