@@ -31,7 +31,6 @@
 		1641040209735FA6008DABCC /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F540CCC3023F42EA01000164 /* CoreFoundation.framework */; };
 		1641040309735FA6008DABCC /* CoreMIDIServer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F540CCC4023F42EA01000164 /* CoreMIDIServer.framework */; };
 		1641040E09735FA6008DABCC /* MIDI Monitor.plugin in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1641040B09735FA6008DABCC /* MIDI Monitor.plugin */; };
-		16410423097361B8008DABCC /* Info-SpyingMIDIDriver.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1641040A09735FA6008DABCC /* Info-SpyingMIDIDriver.plist */; };
 		1641050E09736949008DABCC /* GenLinkedList.c in Sources */ = {isa = PBXBuildFile; fileRef = 1641050C09736949008DABCC /* GenLinkedList.c */; };
 		1641050F09736949008DABCC /* GenLinkedList.h in Headers */ = {isa = PBXBuildFile; fileRef = 1641050D09736949008DABCC /* GenLinkedList.h */; };
 /* End PBXBuildFile section */
@@ -474,7 +473,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				16410423097361B8008DABCC /* Info-SpyingMIDIDriver.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
