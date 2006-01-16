@@ -272,6 +272,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -309,11 +311,13 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateExpansionKey</key>
 							<array>
 								<string>0867D691FE84028FC02AAC07</string>
+								<string>1C37FBAC04509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>0</integer>
+									<integer>7</integer>
+									<integer>6</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
@@ -345,14 +349,12 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>16AF25DE097B1CDF00BC87DC</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>DisclosableView.h</string>
+								<string>Snoize-Framework-Release.xcconfig</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -360,25 +362,26 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>16AF25DF097B1CDF00BC87DC</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>DisclosableView.h</string>
+										<string>Snoize-Framework-Release.xcconfig</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>16AF2621097B1DCC00BC87DC</string>
+										<string>16443D35097B509200FB075D</string>
 										<key>history</key>
 										<array>
 											<string>16AF25E1097B1CDF00BC87DC</string>
 											<string>16AF25E2097B1CDF00BC87DC</string>
 											<string>16AF25E3097B1CDF00BC87DC</string>
 											<string>16AF25E4097B1CDF00BC87DC</string>
-											<string>16AF25E5097B1CDF00BC87DC</string>
 											<string>16AF25E7097B1CDF00BC87DC</string>
 											<string>16AF25E8097B1CDF00BC87DC</string>
 											<string>16AF25E9097B1CDF00BC87DC</string>
 											<string>16AF260C097B1D6500BC87DC</string>
 											<string>16AF260D097B1D6500BC87DC</string>
 											<string>16AF261A097B1DCA00BC87DC</string>
-											<string>16AF261B097B1DCA00BC87DC</string>
+											<string>16E8F0D4097B387900B52193</string>
+											<string>16E8F0D5097B387900B52193</string>
+											<string>16E8F0D9097B387900B52193</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -393,12 +396,6 @@
 											<string>16AF25F3097B1CDF00BC87DC</string>
 											<string>16AF25F4097B1CDF00BC87DC</string>
 											<string>16AF25F5097B1CDF00BC87DC</string>
-											<string>16AF25F6097B1CDF00BC87DC</string>
-											<string>16AF25F7097B1CDF00BC87DC</string>
-											<string>16AF25F8097B1CDF00BC87DC</string>
-											<string>16AF25F9097B1CDF00BC87DC</string>
-											<string>16AF260F097B1D6500BC87DC</string>
-											<string>16AF2610097B1D6500BC87DC</string>
 											<string>16AF261C097B1DCA00BC87DC</string>
 										</array>
 									</dict>
@@ -499,11 +496,11 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>16AF25FB097B1CDF00BC87DC</string>
+				<string>16443D36097B509200FB075D</string>
 				<string>1CA23ED40692098700951B8B</string>
-				<string>16AF25FC097B1CDF00BC87DC</string>
+				<string>16443D37097B509200FB075D</string>
 				<string>16AF25DE097B1CDF00BC87DC</string>
-				<string>16AF25FD097B1CDF00BC87DC</string>
+				<string>16443D38097B509200FB075D</string>
 				<string>1CA23EDF0692099D00951B8B</string>
 				<string>1CA23EE00692099D00951B8B</string>
 				<string>1CA23EE10692099D00951B8B</string>
@@ -913,7 +910,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>159063500.04533699</real>
+	<real>159076301.65968499</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>1</integer>
 	<key>ToolbarIsVisible</key>
