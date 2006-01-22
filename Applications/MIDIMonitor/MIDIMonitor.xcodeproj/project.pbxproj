@@ -94,21 +94,21 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 8DC2EF4F0486A6940098B216 /* SnoizeMIDI */;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
 			remoteInfo = SnoizeMIDI;
 		};
 		162972C4097B41AA00158D7B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 169E71A8097B242A001AFB58 /* SnoizeMIDISpy.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 164103D709735FA5008DABCC /* SnoizeMIDISpy.framework */;
+			remoteGlobalIDString = 164103D709735FA5008DABCC;
 			remoteInfo = SnoizeMIDISpy.framework;
 		};
 		162972C6097B41AD00158D7B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 169E71B2097B2441001AFB58 /* DisclosableView.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 16AF258C097B1A3400BC87DC /* DisclosableView */;
+			remoteGlobalIDString = 16AF258C097B1A3400BC87DC;
 			remoteInfo = DisclosableView;
 		};
 		169E71A6097B2419001AFB58 /* PBXContainerItemProxy */ = {
@@ -144,7 +144,7 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		162972AD097B413E00158D7B /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
@@ -152,7 +152,7 @@
 				162972B2097B414C00158D7B /* SnoizeMIDISpy.framework in CopyFiles */,
 				162972B3097B414F00158D7B /* DisclosableView.framework in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -461,6 +461,7 @@
 				167B883806ED4D650053D305 /* Frameworks */,
 				162972AD097B413E00158D7B /* CopyFiles */,
 				162972B4097B415900158D7B /* Run Script (Remove Headers from Frameworks) */,
+				16C889BA097CCF6A0098B98C /* Run Script (Fix Prebinding) */,
 			);
 			buildRules = (
 			);
@@ -585,7 +586,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		162972B4097B415900158D7B /* Run Script (Remove Headers from Frameworks) */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			comments = "Remove Headers from Frameworks";
 			files = (
 			);
@@ -594,9 +595,23 @@
 			name = "Run Script (Remove Headers from Frameworks)";
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "find \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH\" \\( -type d -or -type l \\) -name Headers -exec rm -rf {} \\; -prune\n";
+		};
+		16C889BA097CCF6A0098B98C /* Run Script (Fix Prebinding) */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script (Fix Prebinding)";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "#\n# Update prebinding. The frameworks' timestamps have changed since they were linked against \n# (since they were copied afterwards), so their prebinding will be disabled unless we do this.\n# Use -i argument so i386 is ignored instead of causing an error.\n#\n\ncd \"${TARGET_BUILD_DIR}/${EXECUTABLE_FOLDER_PATH}\" || { echo \"Couldn't cd into installed app's Contents/MacOS!\"; exit 1; }\n\nfor f in SnoizeMIDI SnoizeMIDISpy DisclosableView ; do\n\tredo_prebinding -i -e \"$PWD\" \"../Frameworks/${f}.framework/Versions/Current/${f}\" || { echo \"redo_prebinding failed for framework ${f}!\"; exit 1; }\ndone\n\nredo_prebinding -i -e \"$PWD\" \"./${EXECUTABLE_NAME}\" || { echo \"redo_prebinding failed for application!\"; exit 1; }\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

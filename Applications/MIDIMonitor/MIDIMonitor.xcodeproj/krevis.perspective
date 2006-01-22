@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>ActivePerspectiveName</key>
-	<string>Project</string>
+	<string>Build</string>
 	<key>AllowedModules</key>
 	<array>
 		<dict>
@@ -272,8 +272,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -311,16 +309,12 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateExpansionKey</key>
 							<array>
 								<string>2A37F4AAFDCFA73011CA2CEA</string>
-								<string>169E7113097B200A001AFB58</string>
 								<string>1C37FBAC04509CD000000102</string>
-								<string>16F24022097B549F00E6DAEA</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>21</integer>
-									<integer>15</integer>
-									<integer>14</integer>
+									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
@@ -340,8 +334,6 @@
 							<string>MainColumn</string>
 							<real>227</real>
 						</array>
-						<key>RubberWindowFrame</key>
-						<string>304 132 883 686 0 0 1280 832 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -357,7 +349,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>16AF2640097B1EFA00BC87DC</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>Snoize-Project-Debug.xcconfig</string>
+								<string>Snoize-Project-Release.xcconfig</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -365,11 +357,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>16AF2641097B1EFB00BC87DC</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>Snoize-Project-Debug.xcconfig</string>
+										<string>Snoize-Project-Release.xcconfig</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>16F24028097B54B400E6DAEA</string>
+										<string>16D31625098339830007BAD8</string>
 										<key>history</key>
 										<array>
 											<string>169E7122097B20D7001AFB58</string>
@@ -403,13 +395,14 @@
 											<string>169E713E097B20D7001AFB58</string>
 											<string>169E7140097B20D7001AFB58</string>
 											<string>169E7187097B230B001AFB58</string>
-											<string>169E718A097B230B001AFB58</string>
-											<string>169E720F097B273B001AFB58</string>
 											<string>16E8F054097B30FE00B52193</string>
 											<string>1660108C097B50CD00E1494B</string>
-											<string>1660108D097B50CD00E1494B</string>
-											<string>166010B0097B52C500E1494B</string>
-											<string>16601092097B50CD00E1494B</string>
+											<string>16AAE476097CE4980065B9CE</string>
+											<string>16AAE477097CE4980065B9CE</string>
+											<string>16AAE478097CE4980065B9CE</string>
+											<string>16AAE479097CE4980065B9CE</string>
+											<string>16AAE47A097CE4980065B9CE</string>
+											<string>16AAE48A097CE4980065B9CE</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -444,11 +437,13 @@
 											<string>169E7161097B20D7001AFB58</string>
 											<string>169E7163097B20D7001AFB58</string>
 											<string>169E7164097B20D7001AFB58</string>
-											<string>169E7165097B20D7001AFB58</string>
 											<string>169E718E097B230B001AFB58</string>
 											<string>169E718F097B230B001AFB58</string>
 											<string>169E7193097B230B001AFB58</string>
 											<string>16E8F04F097B30F000B52193</string>
+											<string>16AAE47F097CE4980065B9CE</string>
+											<string>16AAE480097CE4980065B9CE</string>
+											<string>16AAE481097CE4980065B9CE</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -463,8 +458,6 @@
 							<dict>
 								<key>Frame</key>
 								<string>{{0, 0}, {634, 372}}</string>
-								<key>RubberWindowFrame</key>
-								<string>304 132 883 686 0 0 1280 832 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -488,8 +481,6 @@
 									<dict>
 										<key>Frame</key>
 										<string>{{10, 27}, {634, 241}}</string>
-										<key>RubberWindowFrame</key>
-										<string>304 132 883 686 0 0 1280 832 </string>
 									</dict>
 									<key>Module</key>
 									<string>XCDetailModule</string>
@@ -548,11 +539,11 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>16F24024097B549F00E6DAEA</string>
+				<string>16D3161B0983388F0007BAD8</string>
 				<string>1CA23ED40692098700951B8B</string>
-				<string>16F24025097B549F00E6DAEA</string>
+				<string>16D3161C0983388F0007BAD8</string>
 				<string>16AF2640097B1EFA00BC87DC</string>
-				<string>16F24026097B549F00E6DAEA</string>
+				<string>16D3161D0983388F0007BAD8</string>
 				<string>1CA23EDF0692099D00951B8B</string>
 				<string>1CA23EE00692099D00951B8B</string>
 				<string>1CA23EE10692099D00951B8B</string>
@@ -634,6 +625,8 @@
 							<string>MainColumn</string>
 							<real>124</real>
 						</array>
+						<key>RubberWindowFrame</key>
+						<string>333 101 883 686 0 0 1280 832 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -649,7 +642,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>16AF2640097B1EFA00BC87DC</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>Snoize-Project-Debug.xcconfig</string>
+								<string>Snoize-Project-Release.xcconfig</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -657,11 +650,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>16AF2641097B1EFB00BC87DC</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>Snoize-Project-Debug.xcconfig</string>
+										<string>Snoize-Project-Release.xcconfig</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>16F24029097B54B400E6DAEA</string>
+										<string>16D31626098339830007BAD8</string>
 										<key>history</key>
 										<array>
 											<string>169E7122097B20D7001AFB58</string>
@@ -693,15 +686,16 @@
 											<string>169E713C097B20D7001AFB58</string>
 											<string>169E713D097B20D7001AFB58</string>
 											<string>169E713E097B20D7001AFB58</string>
-											<string>169E713F097B20D7001AFB58</string>
 											<string>169E7140097B20D7001AFB58</string>
 											<string>169E7187097B230B001AFB58</string>
-											<string>169E7189097B230B001AFB58</string>
-											<string>169E718A097B230B001AFB58</string>
-											<string>169E720A097B266D001AFB58</string>
 											<string>16E8F054097B30FE00B52193</string>
-											<string>162972D5097B426E00158D7B</string>
-											<string>16601092097B50CD00E1494B</string>
+											<string>1660108C097B50CD00E1494B</string>
+											<string>16AAE476097CE4980065B9CE</string>
+											<string>16AAE477097CE4980065B9CE</string>
+											<string>16AAE478097CE4980065B9CE</string>
+											<string>16AAE479097CE4980065B9CE</string>
+											<string>16AAE47A097CE4980065B9CE</string>
+											<string>16D31622098339660007BAD8</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -736,11 +730,13 @@
 											<string>169E7161097B20D7001AFB58</string>
 											<string>169E7163097B20D7001AFB58</string>
 											<string>169E7164097B20D7001AFB58</string>
-											<string>169E7165097B20D7001AFB58</string>
 											<string>169E718E097B230B001AFB58</string>
 											<string>169E718F097B230B001AFB58</string>
 											<string>169E7193097B230B001AFB58</string>
 											<string>16E8F04F097B30F000B52193</string>
+											<string>16AAE47F097CE4980065B9CE</string>
+											<string>16AAE480097CE4980065B9CE</string>
+											<string>16AAE481097CE4980065B9CE</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -755,6 +751,8 @@
 							<dict>
 								<key>Frame</key>
 								<string>{{0, 0}, {737, 196}}</string>
+								<key>RubberWindowFrame</key>
+								<string>333 101 883 686 0 0 1280 832 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -770,7 +768,7 @@
 									<key>ContentConfiguration</key>
 									<dict>
 										<key>PBXBuildLogShowsTranscriptDefaultKey</key>
-										<string>{{0, 194}, {737, 223}}</string>
+										<string>{{0, 325}, {737, 92}}</string>
 										<key>PBXProjectModuleGUID</key>
 										<string>XCMainBuildResultsModuleGUID</string>
 										<key>PBXProjectModuleLabel</key>
@@ -784,6 +782,8 @@
 									<dict>
 										<key>Frame</key>
 										<string>{{10, 27}, {737, 417}}</string>
+										<key>RubberWindowFrame</key>
+										<string>333 101 883 686 0 0 1280 832 </string>
 									</dict>
 									<key>Module</key>
 									<string>PBXBuildResultsModule</string>
@@ -811,8 +811,8 @@
 												<string>yes</string>
 												<key>sizes</key>
 												<array>
-													<string>{{0, 0}, {367, 168}}</string>
-													<string>{{0, 173}, {367, 270}}</string>
+													<string>{{0, 0}, {491, 168}}</string>
+													<string>{{0, 173}, {491, 270}}</string>
 												</array>
 											</dict>
 											<key>VerticalSplitView</key>
@@ -863,14 +863,14 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>16F23FFE097B531500E6DAEA</string>
+				<string>16D3161E0983388F0007BAD8</string>
 				<string>1CA23EE50692099D00951B8B</string>
-				<string>16F23FFF097B531500E6DAEA</string>
+				<string>16D3161F0983388F0007BAD8</string>
 				<string>16AF2640097B1EFA00BC87DC</string>
-				<string>16F24000097B531500E6DAEA</string>
+				<string>16D316200983388F0007BAD8</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 				<string>1CA23EE80692099D00951B8B</string>
-				<string>16F24001097B531500E6DAEA</string>
+				<string>16D316210983388F0007BAD8</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.buildAndRun</string>
@@ -1024,7 +1024,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>159077556.54960001</real>
+	<real>159594883.29608601</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>1</integer>
 	<key>ToolbarIsVisible</key>
@@ -1042,7 +1042,7 @@
 		<string>/Users/krevis/Source/Snoize/Applications/MIDIMonitor/MIDIMonitor.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>304 132 883 686 0 0 1280 832 </string>
+	<string>333 101 883 686 0 0 1280 832 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>
