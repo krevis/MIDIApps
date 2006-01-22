@@ -40,13 +40,11 @@ for arg in $argv ; do
 done
 
 if [[ $DO_INSTALL -eq 1 ]] ; then
-	FRAMEWORK_BUILDSTYLE="DeploymentInApp"
-	APP_BUILDSTYLE="Deployment"
+	APP_CONFIGURATION="Release"
 	BUILD_ACTION=install
-	EXTRA_SETTINGS=(SYMROOT="${INSTALL_BUILD_DIRECTORY}" OBJROOT="${INSTALL_BUILD_DIRECTORY}/Builds")
+	EXTRA_SETTINGS=(SYMROOT="${INSTALL_BUILD_DIRECTORY}" OBJROOT="${INSTALL_BUILD_DIRECTORY}/Builds" SHARED_PRECOMPS_DIR="${INSTALL_BUILD_DIRECTORY}/Precomps")
 else
-	FRAMEWORK_BUILDSTYLE="Development"
-	APP_BUILDSTYLE="Development"
+	APP_CONFIGURATION ="Debug"
 	BUILD_ACTION=
 	EXTRA_SETTINGS=
 fi
@@ -56,18 +54,8 @@ fi
 #
 
 if [[ $DO_CLEAN -eq 1 ]] ; then
-
-	cd ${SnoizeFrameworkSource}/SnoizeMIDI
-	xcodebuild -buildstyle $FRAMEWORK_BUILDSTYLE clean $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
-
-	cd ${SnoizeFrameworkSource}/SnoizeMIDISpy
-	xcodebuild -buildstyle $FRAMEWORK_BUILDSTYLE clean $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
-
-	cd ${SnoizeFrameworkSource}/DisclosableView
-	xcodebuild -buildstyle $FRAMEWORK_BUILDSTYLE clean $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
-
 	cd ${SnoizeAppSource}/MIDIMonitor
-	xcodebuild -buildstyle $APP_BUILDSTYLE clean $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
+	xcodebuild -configuration $APP_CONFIGURATION clean $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
 
 fi
 
@@ -80,38 +68,8 @@ if [[ $DO_INSTALL -eq 1 ]] ; then
 	rm -rf "$INSTALL_DIRECTORY/$APP_WRAPPER_NAME" || {echo "Couldn't remove old installed app!"; exit 1}
 fi
 
-cd ${SnoizeFrameworkSource}/SnoizeMIDI
-xcodebuild -buildstyle $FRAMEWORK_BUILDSTYLE INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
-
-cd ${SnoizeFrameworkSource}/SnoizeMIDISpy
-xcodebuild -buildstyle $FRAMEWORK_BUILDSTYLE INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
-
-cd ${SnoizeFrameworkSource}/DisclosableView
-xcodebuild -buildstyle $FRAMEWORK_BUILDSTYLE INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
-
 cd ${SnoizeAppSource}/MIDIMonitor
-xcodebuild -buildstyle $APP_BUILDSTYLE $BUILD_ACTION DSTROOT=/ INSTALL_PATH=$INSTALL_DIRECTORY INSTALL_MODE_FLAG=go-w,a+rX  $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
-	# NOTE: We are relying on the app's project having an INSTALL_PATH
-	# set to a non-empty value. For some reason, if the project does not
-	# specify a value for INSTALL_PATH, setting it on the command line
-	# will not cause the install to happen.
-	#
-	# INSTALL_MODE_FLAG is normally a-w,a+rX.
-	# We change it so the files are still writeable by the owner (us)
-	# so we can modify them later.
-
-#
-# Then update prebinding. The frameworks' timestamps have changed since they were linked against (since they were copied afterwards),
-# so their prebinding will be disabled unless we do this.
-#
-
-if [[ $DO_INSTALL -eq 1 ]]; then
-	cd "$INSTALL_DIRECTORY/$APP_WRAPPER_NAME/Contents/MacOS" || {echo "Couldn't cd into installed app's Contents/MacOS!"; exit 1}
-	redo_prebinding -e "$PWD" ../Frameworks/SnoizeMIDI.framework/Versions/Current/SnoizeMIDI || exit 1
-	redo_prebinding -e "$PWD" ../Frameworks/SnoizeMIDISpy.framework/Versions/Current/SnoizeMIDISpy || exit 1
-	redo_prebinding -e "$PWD" ../Frameworks/DisclosableView.framework/Versions/Current/DisclosableView || exit 1
-	redo_prebinding -e "$PWD" "./$APP_EXECUTABLE_NAME" || exit 1
-fi
+xcodebuild -configuration $APP_CONFIGURATION $BUILD_ACTION DSTROOT=/ SNOIZE_APP_INSTALL_PATH=$INSTALL_DIRECTORY $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
 
 #
 # Then put the app into a disk image (if -image argument is specified)
