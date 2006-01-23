@@ -1,0 +1,927 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		16F033540984B76F006C8A44 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
+		16F033550984B76F006C8A44 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165FFE840EACC02AAC07 /* InfoPlist.strings */; };
+		16F033560984B76F006C8A44 /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = F559F90A01DEC5E001000164 /* Preferences.nib */; };
+		16F033570984B76F006C8A44 /* MainWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = F559F90F01DEFA9701000164 /* MainWindow.nib */; };
+		16F033580984B76F006C8A44 /* TableHeaderReverseSort.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F561AFAA0208780001000164 /* TableHeaderReverseSort.tiff */; };
+		16F033590984B76F006C8A44 /* TableHeaderSort.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F561AFAB0208780001000164 /* TableHeaderSort.tiff */; };
+		16F0335A0984B76F006C8A44 /* SysExLibrarian.icns in Resources */ = {isa = PBXBuildFile; fileRef = F57D1E5902122FA501000164 /* SysExLibrarian.icns */; };
+		16F0335B0984B76F006C8A44 /* LibraryDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = F57D1E5C02127DF401000164 /* LibraryDocument.icns */; };
+		16F0335C0984B76F006C8A44 /* MIDIDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = F57D1E5D02127DF401000164 /* MIDIDocument.icns */; };
+		16F0335D0984B76F006C8A44 /* SysExDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = F57D1E5B02127DF401000164 /* SysExDocument.icns */; };
+		16F0335E0984B76F006C8A44 /* ToolbarPlay.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F5499C4C0213555E01000164 /* ToolbarPlay.tiff */; };
+		16F0335F0984B76F006C8A44 /* MainWindow.toolbar in Resources */ = {isa = PBXBuildFile; fileRef = F587526F0214CEDD01000164 /* MainWindow.toolbar */; };
+		16F033600984B76F006C8A44 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
+		16F033610984B76F006C8A44 /* ToolbarRecordOne.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F59F89CE02154ADE01000164 /* ToolbarRecordOne.tiff */; };
+		16F033620984B76F006C8A44 /* ToolbarRecordMany.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F59F89D002154AFF01000164 /* ToolbarRecordMany.tiff */; };
+		16F033630984B76F006C8A44 /* docs.htmld in Resources */ = {isa = PBXBuildFile; fileRef = F5D90FE4021630C101000164 /* docs.htmld */; };
+		16F033640984B76F006C8A44 /* Details.nib in Resources */ = {isa = PBXBuildFile; fileRef = F5F52C15022015AC01000164 /* Details.nib */; };
+		16F033650984B76F006C8A44 /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = F5D90FD1021628DF01000164 /* Credits.html */; };
+		16F033660984B76F006C8A44 /* RecordOne.nib in Resources */ = {isa = PBXBuildFile; fileRef = F5308FE80232F9D401000164 /* RecordOne.nib */; };
+		16F033670984B76F006C8A44 /* RecordMany.nib in Resources */ = {isa = PBXBuildFile; fileRef = F5308FF10233059B01000164 /* RecordMany.nib */; };
+		16F033680984B76F006C8A44 /* Play.nib in Resources */ = {isa = PBXBuildFile; fileRef = F5308FFD023315AD01000164 /* Play.nib */; };
+		16F033690984B76F006C8A44 /* Delete.nib in Resources */ = {isa = PBXBuildFile; fileRef = F53090060233385B01000164 /* Delete.nib */; };
+		16F0336A0984B76F006C8A44 /* Import.nib in Resources */ = {isa = PBXBuildFile; fileRef = F530900E023350F901000164 /* Import.nib */; };
+		16F0336B0984B76F006C8A44 /* SysExLibrarian.strings in Resources */ = {isa = PBXBuildFile; fileRef = F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */; };
+		16F0336C0984B76F006C8A44 /* SysExSpeed.nib in Resources */ = {isa = PBXBuildFile; fileRef = 169A4DC304D376F8007059A2 /* SysExSpeed.nib */; };
+		16F0336E0984B76F006C8A44 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
+		16F0336F0984B76F006C8A44 /* SSEPreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F559F90701DEC1D801000164 /* SSEPreferencesWindowController.m */; };
+		16F033700984B76F006C8A44 /* SSEMainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F565B6E601E1419001000164 /* SSEMainWindowController.m */; };
+		16F033710984B76F006C8A44 /* SSEMIDIController.m in Sources */ = {isa = PBXBuildFile; fileRef = F565B6EA01E1498301000164 /* SSEMIDIController.m */; };
+		16F033720984B76F006C8A44 /* NSPopUpButton-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = F565B6EF01E1567501000164 /* NSPopUpButton-Extensions.m */; };
+		16F033730984B76F006C8A44 /* SSELibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = F583CEB501EE3D3801000164 /* SSELibrary.m */; };
+		16F033740984B76F006C8A44 /* SSELibraryEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = F583CEB901EE3E4401000164 /* SSELibraryEntry.m */; };
+		16F033750984B76F006C8A44 /* BDAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = F551751D01F3745B01000164 /* BDAlias.m */; };
+		16F033760984B76F006C8A44 /* SSETableView.m in Sources */ = {isa = PBXBuildFile; fileRef = F551752101F3ACED01000164 /* SSETableView.m */; };
+		16F033770984B76F006C8A44 /* NSWorkspace-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = F539E383020F19A501000164 /* NSWorkspace-Extensions.m */; };
+		16F033780984B76F006C8A44 /* SSEWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F58752680214C25201000164 /* SSEWindowController.m */; };
+		16F033790984B76F006C8A44 /* NSToolbarItem-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = F587526C0214CA4E01000164 /* NSToolbarItem-Extensions.m */; };
+		16F0337A0984B76F006C8A44 /* SSEValidatingButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F58752750214D73401000164 /* SSEValidatingButton.m */; };
+		16F0337B0984B76F006C8A44 /* SSEDetailsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5F52C1302200F6601000164 /* SSEDetailsWindowController.m */; };
+		16F0337C0984B76F006C8A44 /* SSERecordOneController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5308FE50232E1AB01000164 /* SSERecordOneController.m */; };
+		16F0337D0984B76F006C8A44 /* SSERecordManyController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5308FEE0233023701000164 /* SSERecordManyController.m */; };
+		16F0337E0984B76F006C8A44 /* SSERecordController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5308FF50233075A01000164 /* SSERecordController.m */; };
+		16F0337F0984B76F006C8A44 /* SSEPlayController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5308FFA02330F2A01000164 /* SSEPlayController.m */; };
+		16F033800984B76F006C8A44 /* SSEDeleteController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5309003023333DF01000164 /* SSEDeleteController.m */; };
+		16F033810984B76F006C8A44 /* SSEImportController.m in Sources */ = {isa = PBXBuildFile; fileRef = F530900B02333F8B01000164 /* SSEImportController.m */; };
+		16F033820984B76F006C8A44 /* SSEFindMissingController.m in Sources */ = {isa = PBXBuildFile; fileRef = F53090130233540701000164 /* SSEFindMissingController.m */; };
+		16F033830984B76F006C8A44 /* SSEExportController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5DFAC8402F7715701000164 /* SSEExportController.m */; };
+		16F033840984B76F006C8A44 /* SSEAppController.m in Sources */ = {isa = PBXBuildFile; fileRef = F559F90301DEC14A01000164 /* SSEAppController.m */; };
+		16F033850984B76F006C8A44 /* SSECombinationOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = F56B11990324C4A901000164 /* SSECombinationOutputStream.m */; };
+		16F033860984B76F006C8A44 /* SSEOutputStreamDestination.m in Sources */ = {isa = PBXBuildFile; fileRef = F56B119D0324C89D01000164 /* SSEOutputStreamDestination.m */; };
+		16F033870984B76F006C8A44 /* SMDestinationEndpoint-SSEOutputStreamDestination.m in Sources */ = {isa = PBXBuildFile; fileRef = F56B11A30324D5AA01000164 /* SMDestinationEndpoint-SSEOutputStreamDestination.m */; };
+		16F033880984B76F006C8A44 /* SSESysExSpeedWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 169A4DC004D37047007059A2 /* SSESysExSpeedWindowController.m */; };
+		16F0338A0984B76F006C8A44 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
+		16F0338B0984B76F006C8A44 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F559F8FA01DEC0C601000164 /* CoreMIDI.framework */; };
+		16F0338D0984B76F006C8A44 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F539E386020F2C2F01000164 /* Carbon.framework */; };
+		16F034250984BA49006C8A44 /* SnoizeMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16F0332F0984B74B006C8A44 /* SnoizeMIDI.framework */; };
+		16F034320984BABA006C8A44 /* SnoizeMIDI.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 16F0332F0984B74B006C8A44 /* SnoizeMIDI.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildStyle section */
+		4A9504D0FFE6A4CB11CA0CBA /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "\U0001-DDEBUG";
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		4A9504D1FFE6A4CB11CA0CBA /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXContainerItemProxy section */
+		16F0332E0984B74B006C8A44 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216 /* SnoizeMIDI.framework */;
+			remoteInfo = SnoizeMIDI;
+		};
+		16F0339C0984B7B0006C8A44 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216 /* SnoizeMIDI */;
+			remoteInfo = SnoizeMIDI;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		16F0338E0984B76F006C8A44 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				16F034320984BABA006C8A44 /* SnoizeMIDI.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		089C1660FE840EACC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		169A4DBF04D37047007059A2 /* SSESysExSpeedWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSESysExSpeedWindowController.h; sourceTree = "<group>"; };
+		169A4DC004D37047007059A2 /* SSESysExSpeedWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSESysExSpeedWindowController.m; sourceTree = "<group>"; };
+		169A4DC404D376F8007059A2 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SysExSpeed.nib; sourceTree = "<group>"; };
+		16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDI.xcodeproj; path = ../../Frameworks/SnoizeMIDI/SnoizeMIDI.xcodeproj; sourceTree = SOURCE_ROOT; };
+		16F033300984B760006C8A44 /* Snoize-Application-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Application-Debug.xcconfig"; path = "../../Configurations/Snoize-Application-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
+		16F033310984B760006C8A44 /* Snoize-Application-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Application-Global.xcconfig"; path = "../../Configurations/Snoize-Application-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
+		16F033320984B760006C8A44 /* Snoize-Application-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Application-Release.xcconfig"; path = "../../Configurations/Snoize-Application-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
+		16F033330984B760006C8A44 /* Snoize-Project-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Debug.xcconfig"; path = "../../Configurations/Snoize-Project-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
+		16F033340984B760006C8A44 /* Snoize-Project-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Global.xcconfig"; path = "../../Configurations/Snoize-Project-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
+		16F033350984B760006C8A44 /* Snoize-Project-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Release.xcconfig"; path = "../../Configurations/Snoize-Project-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
+		16F033940984B76F006C8A44 /* Info-SysExLibrarian.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Info-SysExLibrarian.plist"; sourceTree = "<group>"; };
+		16F033950984B76F006C8A44 /* SysEx Librarian.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "SysEx Librarian.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A37F4B0FDCFA73011CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		2A37F4B7FDCFA73011CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		2A37F4BAFDCFA73011CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = English; path = English.lproj/Credits.rtf; sourceTree = "<group>"; };
+		2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		F5308FE40232E1AB01000164 /* SSERecordOneController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSERecordOneController.h; sourceTree = "<group>"; };
+		F5308FE50232E1AB01000164 /* SSERecordOneController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSERecordOneController.m; sourceTree = "<group>"; };
+		F5308FE90232F9D401000164 /* RecordOne.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = RecordOne.nib; path = English.lproj/RecordOne.nib; sourceTree = "<group>"; };
+		F5308FED0233023701000164 /* SSERecordManyController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSERecordManyController.h; sourceTree = "<group>"; };
+		F5308FEE0233023701000164 /* SSERecordManyController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSERecordManyController.m; sourceTree = "<group>"; };
+		F5308FF20233059B01000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/RecordMany.nib; sourceTree = "<group>"; };
+		F5308FF40233075A01000164 /* SSERecordController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSERecordController.h; sourceTree = "<group>"; };
+		F5308FF50233075A01000164 /* SSERecordController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSERecordController.m; sourceTree = "<group>"; };
+		F5308FF902330F2A01000164 /* SSEPlayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEPlayController.h; sourceTree = "<group>"; };
+		F5308FFA02330F2A01000164 /* SSEPlayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEPlayController.m; sourceTree = "<group>"; };
+		F5308FFE023315AD01000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Play.nib; sourceTree = "<group>"; };
+		F5309002023333DF01000164 /* SSEDeleteController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEDeleteController.h; sourceTree = "<group>"; };
+		F5309003023333DF01000164 /* SSEDeleteController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEDeleteController.m; sourceTree = "<group>"; };
+		F53090070233385B01000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Delete.nib; sourceTree = "<group>"; };
+		F530900A02333F8B01000164 /* SSEImportController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEImportController.h; sourceTree = "<group>"; };
+		F530900B02333F8B01000164 /* SSEImportController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEImportController.m; sourceTree = "<group>"; };
+		F530900F023350F901000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Import.nib; sourceTree = "<group>"; };
+		F53090120233540701000164 /* SSEFindMissingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEFindMissingController.h; sourceTree = "<group>"; };
+		F53090130233540701000164 /* SSEFindMissingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEFindMissingController.m; sourceTree = "<group>"; };
+		F539E382020F19A501000164 /* NSWorkspace-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSWorkspace-Extensions.h"; sourceTree = "<group>"; };
+		F539E383020F19A501000164 /* NSWorkspace-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "NSWorkspace-Extensions.m"; sourceTree = "<group>"; };
+		F539E386020F2C2F01000164 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		F547DDDC03184C5C01000164 /* PrecompHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrecompHeader.h; sourceTree = "<group>"; };
+		F5499C4C0213555E01000164 /* ToolbarPlay.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarPlay.tiff; sourceTree = "<group>"; };
+		F551751C01F3745B01000164 /* BDAlias.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDAlias.h; sourceTree = "<group>"; };
+		F551751D01F3745B01000164 /* BDAlias.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDAlias.m; sourceTree = "<group>"; };
+		F551752001F3ACED01000164 /* SSETableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSETableView.h; sourceTree = "<group>"; };
+		F551752101F3ACED01000164 /* SSETableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSETableView.m; sourceTree = "<group>"; };
+		F559F8FA01DEC0C601000164 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
+		F559F90201DEC14A01000164 /* SSEAppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEAppController.h; sourceTree = "<group>"; };
+		F559F90301DEC14A01000164 /* SSEAppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEAppController.m; sourceTree = "<group>"; };
+		F559F90601DEC1D801000164 /* SSEPreferencesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEPreferencesWindowController.h; sourceTree = "<group>"; };
+		F559F90701DEC1D801000164 /* SSEPreferencesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEPreferencesWindowController.m; sourceTree = "<group>"; };
+		F559F90B01DEC5E001000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Preferences.nib; sourceTree = "<group>"; };
+		F559F90D01DEF5E001000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainWindow.nib; sourceTree = "<group>"; };
+		F561AFAA0208780001000164 /* TableHeaderReverseSort.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = TableHeaderReverseSort.tiff; sourceTree = "<group>"; };
+		F561AFAB0208780001000164 /* TableHeaderSort.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = TableHeaderSort.tiff; sourceTree = "<group>"; };
+		F565B6E501E1419001000164 /* SSEMainWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEMainWindowController.h; sourceTree = "<group>"; };
+		F565B6E601E1419001000164 /* SSEMainWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEMainWindowController.m; sourceTree = "<group>"; };
+		F565B6E901E1498301000164 /* SSEMIDIController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEMIDIController.h; sourceTree = "<group>"; };
+		F565B6EA01E1498301000164 /* SSEMIDIController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEMIDIController.m; sourceTree = "<group>"; };
+		F565B6EE01E1567501000164 /* NSPopUpButton-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPopUpButton-Extensions.h"; sourceTree = "<group>"; };
+		F565B6EF01E1567501000164 /* NSPopUpButton-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSPopUpButton-Extensions.m"; sourceTree = "<group>"; };
+		F56B11980324C4A901000164 /* SSECombinationOutputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSECombinationOutputStream.h; sourceTree = "<group>"; };
+		F56B11990324C4A901000164 /* SSECombinationOutputStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSECombinationOutputStream.m; sourceTree = "<group>"; };
+		F56B119C0324C89D01000164 /* SSEOutputStreamDestination.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEOutputStreamDestination.h; sourceTree = "<group>"; };
+		F56B119D0324C89D01000164 /* SSEOutputStreamDestination.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEOutputStreamDestination.m; sourceTree = "<group>"; };
+		F56B11A20324D5AA01000164 /* SMDestinationEndpoint-SSEOutputStreamDestination.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SMDestinationEndpoint-SSEOutputStreamDestination.h"; sourceTree = "<group>"; };
+		F56B11A30324D5AA01000164 /* SMDestinationEndpoint-SSEOutputStreamDestination.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SMDestinationEndpoint-SSEOutputStreamDestination.m"; sourceTree = "<group>"; };
+		F57D1E5902122FA501000164 /* SysExLibrarian.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = SysExLibrarian.icns; sourceTree = "<group>"; };
+		F57D1E5B02127DF401000164 /* SysExDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = SysExDocument.icns; sourceTree = "<group>"; };
+		F57D1E5C02127DF401000164 /* LibraryDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = LibraryDocument.icns; sourceTree = "<group>"; };
+		F57D1E5D02127DF401000164 /* MIDIDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = MIDIDocument.icns; sourceTree = "<group>"; };
+		F583CEB401EE3D3801000164 /* SSELibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSELibrary.h; sourceTree = "<group>"; };
+		F583CEB501EE3D3801000164 /* SSELibrary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSELibrary.m; sourceTree = "<group>"; };
+		F583CEB801EE3E4401000164 /* SSELibraryEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSELibraryEntry.h; sourceTree = "<group>"; };
+		F583CEB901EE3E4401000164 /* SSELibraryEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSELibraryEntry.m; sourceTree = "<group>"; };
+		F58752670214C25201000164 /* SSEWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEWindowController.h; sourceTree = "<group>"; };
+		F58752680214C25201000164 /* SSEWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEWindowController.m; sourceTree = "<group>"; };
+		F587526B0214CA4E01000164 /* NSToolbarItem-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSToolbarItem-Extensions.h"; sourceTree = "<group>"; };
+		F587526C0214CA4E01000164 /* NSToolbarItem-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSToolbarItem-Extensions.m"; sourceTree = "<group>"; };
+		F58752700214CEDD01000164 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = English; path = English.lproj/MainWindow.toolbar; sourceTree = "<group>"; };
+		F58752740214D73401000164 /* SSEValidatingButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEValidatingButton.h; sourceTree = "<group>"; };
+		F58752750214D73401000164 /* SSEValidatingButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEValidatingButton.m; sourceTree = "<group>"; };
+		F597D8FC026BC47A01000164 /* Read Me.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "Read Me.html"; sourceTree = "<group>"; };
+		F59F89CE02154ADE01000164 /* ToolbarRecordOne.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarRecordOne.tiff; sourceTree = "<group>"; };
+		F59F89D002154AFF01000164 /* ToolbarRecordMany.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarRecordMany.tiff; sourceTree = "<group>"; };
+		F5C54B9C030C6F9D01000164 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SysExLibrarian.strings; sourceTree = "<group>"; };
+		F5D90FD2021628DF01000164 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = English; path = English.lproj/Credits.html; sourceTree = "<group>"; };
+		F5D90FE5021630C101000164 /* English */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = text.html; name = English; path = English.lproj/docs.htmld; sourceTree = "<group>"; };
+		F5DFAC8302F7715701000164 /* SSEExportController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEExportController.h; sourceTree = "<group>"; };
+		F5DFAC8402F7715701000164 /* SSEExportController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEExportController.m; sourceTree = "<group>"; };
+		F5F52C1102200EBE01000164 /* SSEDetailsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEDetailsWindowController.h; sourceTree = "<group>"; };
+		F5F52C1302200F6601000164 /* SSEDetailsWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEDetailsWindowController.m; sourceTree = "<group>"; };
+		F5F52C16022015AC01000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Details.nib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		16F033890984B76F006C8A44 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16F0338A0984B76F006C8A44 /* Cocoa.framework in Frameworks */,
+				16F0338B0984B76F006C8A44 /* CoreMIDI.framework in Frameworks */,
+				16F0338D0984B76F006C8A44 /* Carbon.framework in Frameworks */,
+				16F034250984BA49006C8A44 /* SnoizeMIDI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */,
+				F539E386020F2C2F01000164 /* Carbon.framework */,
+				F559F8FA01DEC0C601000164 /* CoreMIDI.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7A8FEA54F5311CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */,
+				2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		16F032D20984B6F3006C8A44 /* Configurations */ = {
+			isa = PBXGroup;
+			children = (
+				16F033330984B760006C8A44 /* Snoize-Project-Debug.xcconfig */,
+				16F033340984B760006C8A44 /* Snoize-Project-Global.xcconfig */,
+				16F033350984B760006C8A44 /* Snoize-Project-Release.xcconfig */,
+				16F033300984B760006C8A44 /* Snoize-Application-Debug.xcconfig */,
+				16F033310984B760006C8A44 /* Snoize-Application-Global.xcconfig */,
+				16F033320984B760006C8A44 /* Snoize-Application-Release.xcconfig */,
+			);
+			name = Configurations;
+			sourceTree = "<group>";
+		};
+		16F032D50984B6FB006C8A44 /* Other Projects */ = {
+			isa = PBXGroup;
+			children = (
+				16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */,
+			);
+			name = "Other Projects";
+			sourceTree = "<group>";
+		};
+		16F0332B0984B74B006C8A44 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				16F0332F0984B74B006C8A44 /* SnoizeMIDI.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		19C28FB0FE9D524F11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				16F033950984B76F006C8A44 /* SysEx Librarian.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2A37F4AAFDCFA73011CA2CEA /* SysExLibrarian */ = {
+			isa = PBXGroup;
+			children = (
+				2A37F4ABFDCFA73011CA2CEA /* Classes */,
+				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
+				2A37F4B8FDCFA73011CA2CEA /* Resources */,
+				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
+				16F032D20984B6F3006C8A44 /* Configurations */,
+				16F032D50984B6FB006C8A44 /* Other Projects */,
+				19C28FB0FE9D524F11CA2CBB /* Products */,
+			);
+			name = SysExLibrarian;
+			sourceTree = "<group>";
+		};
+		2A37F4ABFDCFA73011CA2CEA /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				F5308FDF0232DC6B01000164 /* App Controller */,
+				F5308FE00232DC6B01000164 /* Preferences window */,
+				F5308FE10232DC6B01000164 /* Details window */,
+				F5308FE20232DC6B01000164 /* Main window */,
+				F5308FE30232DC6B01000164 /* Library */,
+				F565B6ED01E1567501000164 /* Cocoa Extensions */,
+				F56B11970324C47201000164 /* SnoizeMIDI Extensions  */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		2A37F4AFFDCFA73011CA2CEA /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				2A37F4B0FDCFA73011CA2CEA /* main.m */,
+				F547DDDC03184C5C01000164 /* PrecompHeader.h */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
+				F559F90A01DEC5E001000164 /* Preferences.nib */,
+				169A4DC304D376F8007059A2 /* SysExSpeed.nib */,
+				F5F52C15022015AC01000164 /* Details.nib */,
+				F559F90F01DEFA9701000164 /* MainWindow.nib */,
+				F5308FFD023315AD01000164 /* Play.nib */,
+				F5308FE80232F9D401000164 /* RecordOne.nib */,
+				F5308FF10233059B01000164 /* RecordMany.nib */,
+				F53090060233385B01000164 /* Delete.nib */,
+				F530900E023350F901000164 /* Import.nib */,
+				16F033940984B76F006C8A44 /* Info-SysExLibrarian.plist */,
+				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
+				F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */,
+				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
+				F5D90FD1021628DF01000164 /* Credits.html */,
+				F561AFAA0208780001000164 /* TableHeaderReverseSort.tiff */,
+				F561AFAB0208780001000164 /* TableHeaderSort.tiff */,
+				F5308FEB0233012701000164 /* Icons */,
+				F587526F0214CEDD01000164 /* MainWindow.toolbar */,
+				F5308FEC0233012701000164 /* Toolbar Images */,
+				F5D90FE4021630C101000164 /* docs.htmld */,
+				F597D8FC026BC47A01000164 /* Read Me.html */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */,
+				1058C7A8FEA54F5311CA2CBB /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F5308FDF0232DC6B01000164 /* App Controller */ = {
+			isa = PBXGroup;
+			children = (
+				F559F90201DEC14A01000164 /* SSEAppController.h */,
+				F559F90301DEC14A01000164 /* SSEAppController.m */,
+			);
+			name = "App Controller";
+			sourceTree = "<group>";
+		};
+		F5308FE00232DC6B01000164 /* Preferences window */ = {
+			isa = PBXGroup;
+			children = (
+				F559F90601DEC1D801000164 /* SSEPreferencesWindowController.h */,
+				F559F90701DEC1D801000164 /* SSEPreferencesWindowController.m */,
+				169A4DBF04D37047007059A2 /* SSESysExSpeedWindowController.h */,
+				169A4DC004D37047007059A2 /* SSESysExSpeedWindowController.m */,
+			);
+			name = "Preferences window";
+			sourceTree = "<group>";
+		};
+		F5308FE10232DC6B01000164 /* Details window */ = {
+			isa = PBXGroup;
+			children = (
+				F5F52C1102200EBE01000164 /* SSEDetailsWindowController.h */,
+				F5F52C1302200F6601000164 /* SSEDetailsWindowController.m */,
+			);
+			name = "Details window";
+			sourceTree = "<group>";
+		};
+		F5308FE20232DC6B01000164 /* Main window */ = {
+			isa = PBXGroup;
+			children = (
+				F565B6E501E1419001000164 /* SSEMainWindowController.h */,
+				F565B6E601E1419001000164 /* SSEMainWindowController.m */,
+				F565B6E901E1498301000164 /* SSEMIDIController.h */,
+				F565B6EA01E1498301000164 /* SSEMIDIController.m */,
+				F5309000023317A701000164 /* Playing */,
+				F5308FF802330EEE01000164 /* Recording */,
+				F5309001023333DF01000164 /* Deleting */,
+				F530900902333F8B01000164 /* Importing */,
+				F5DFAC8702F7715A01000164 /* Exporting */,
+				F53090110233540701000164 /* Find Missing */,
+			);
+			name = "Main window";
+			sourceTree = "<group>";
+		};
+		F5308FE30232DC6B01000164 /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				F583CEB401EE3D3801000164 /* SSELibrary.h */,
+				F583CEB501EE3D3801000164 /* SSELibrary.m */,
+				F583CEB801EE3E4401000164 /* SSELibraryEntry.h */,
+				F583CEB901EE3E4401000164 /* SSELibraryEntry.m */,
+				F551751C01F3745B01000164 /* BDAlias.h */,
+				F551751D01F3745B01000164 /* BDAlias.m */,
+			);
+			name = Library;
+			sourceTree = "<group>";
+		};
+		F5308FEB0233012701000164 /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				F57D1E5902122FA501000164 /* SysExLibrarian.icns */,
+				F57D1E5B02127DF401000164 /* SysExDocument.icns */,
+				F57D1E5C02127DF401000164 /* LibraryDocument.icns */,
+				F57D1E5D02127DF401000164 /* MIDIDocument.icns */,
+			);
+			name = Icons;
+			sourceTree = "<group>";
+		};
+		F5308FEC0233012701000164 /* Toolbar Images */ = {
+			isa = PBXGroup;
+			children = (
+				F5499C4C0213555E01000164 /* ToolbarPlay.tiff */,
+				F59F89CE02154ADE01000164 /* ToolbarRecordOne.tiff */,
+				F59F89D002154AFF01000164 /* ToolbarRecordMany.tiff */,
+			);
+			name = "Toolbar Images";
+			sourceTree = "<group>";
+		};
+		F5308FF802330EEE01000164 /* Recording */ = {
+			isa = PBXGroup;
+			children = (
+				F5308FF40233075A01000164 /* SSERecordController.h */,
+				F5308FF50233075A01000164 /* SSERecordController.m */,
+				F5308FE40232E1AB01000164 /* SSERecordOneController.h */,
+				F5308FE50232E1AB01000164 /* SSERecordOneController.m */,
+				F5308FED0233023701000164 /* SSERecordManyController.h */,
+				F5308FEE0233023701000164 /* SSERecordManyController.m */,
+			);
+			name = Recording;
+			sourceTree = "<group>";
+		};
+		F5309000023317A701000164 /* Playing */ = {
+			isa = PBXGroup;
+			children = (
+				F5308FF902330F2A01000164 /* SSEPlayController.h */,
+				F5308FFA02330F2A01000164 /* SSEPlayController.m */,
+			);
+			name = Playing;
+			sourceTree = "<group>";
+		};
+		F5309001023333DF01000164 /* Deleting */ = {
+			isa = PBXGroup;
+			children = (
+				F5309002023333DF01000164 /* SSEDeleteController.h */,
+				F5309003023333DF01000164 /* SSEDeleteController.m */,
+			);
+			name = Deleting;
+			sourceTree = "<group>";
+		};
+		F530900902333F8B01000164 /* Importing */ = {
+			isa = PBXGroup;
+			children = (
+				F530900A02333F8B01000164 /* SSEImportController.h */,
+				F530900B02333F8B01000164 /* SSEImportController.m */,
+			);
+			name = Importing;
+			sourceTree = "<group>";
+		};
+		F53090110233540701000164 /* Find Missing */ = {
+			isa = PBXGroup;
+			children = (
+				F53090120233540701000164 /* SSEFindMissingController.h */,
+				F53090130233540701000164 /* SSEFindMissingController.m */,
+			);
+			name = "Find Missing";
+			sourceTree = "<group>";
+		};
+		F565B6ED01E1567501000164 /* Cocoa Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				F565B6EE01E1567501000164 /* NSPopUpButton-Extensions.h */,
+				F565B6EF01E1567501000164 /* NSPopUpButton-Extensions.m */,
+				F587526B0214CA4E01000164 /* NSToolbarItem-Extensions.h */,
+				F587526C0214CA4E01000164 /* NSToolbarItem-Extensions.m */,
+				F539E382020F19A501000164 /* NSWorkspace-Extensions.h */,
+				F539E383020F19A501000164 /* NSWorkspace-Extensions.m */,
+				F551752001F3ACED01000164 /* SSETableView.h */,
+				F551752101F3ACED01000164 /* SSETableView.m */,
+				F58752740214D73401000164 /* SSEValidatingButton.h */,
+				F58752750214D73401000164 /* SSEValidatingButton.m */,
+				F58752670214C25201000164 /* SSEWindowController.h */,
+				F58752680214C25201000164 /* SSEWindowController.m */,
+			);
+			name = "Cocoa Extensions";
+			sourceTree = "<group>";
+		};
+		F56B11970324C47201000164 /* SnoizeMIDI Extensions  */ = {
+			isa = PBXGroup;
+			children = (
+				F56B11980324C4A901000164 /* SSECombinationOutputStream.h */,
+				F56B11990324C4A901000164 /* SSECombinationOutputStream.m */,
+				F56B119C0324C89D01000164 /* SSEOutputStreamDestination.h */,
+				F56B119D0324C89D01000164 /* SSEOutputStreamDestination.m */,
+				F56B11A20324D5AA01000164 /* SMDestinationEndpoint-SSEOutputStreamDestination.h */,
+				F56B11A30324D5AA01000164 /* SMDestinationEndpoint-SSEOutputStreamDestination.m */,
+			);
+			name = "SnoizeMIDI Extensions ";
+			sourceTree = "<group>";
+		};
+		F5DFAC8702F7715A01000164 /* Exporting */ = {
+			isa = PBXGroup;
+			children = (
+				F5DFAC8302F7715701000164 /* SSEExportController.h */,
+				F5DFAC8402F7715701000164 /* SSEExportController.m */,
+			);
+			name = Exporting;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		16F033360984B76F006C8A44 /* SysExLibrarian */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 16F033900984B76F006C8A44 /* Build configuration list for PBXNativeTarget "SysExLibrarian" */;
+			buildPhases = (
+				16F033530984B76F006C8A44 /* Resources */,
+				16F0336D0984B76F006C8A44 /* Sources */,
+				16F033890984B76F006C8A44 /* Frameworks */,
+				16F0338E0984B76F006C8A44 /* CopyFiles */,
+				16F034490984BB6C006C8A44 /* Run Script (Remove Headers from Frameworks) */,
+				16F034510984BB8C006C8A44 /* Run Script (Fix Prebinding) */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "";
+				INSTALL_PATH = /Users/Shared/krevis/InstalledProducts;
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRECOMPILE_PREFIX_HEADER = YES;
+				PREFIX_HEADER = PrecompHeader.h;
+				PRODUCT_NAME = "SysEx Librarian";
+				SECTORDER_FLAGS = "";
+				USE_GCC3_PFE_SUPPORT = YES;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+					"-Wparentheses",
+				);
+				WRAPPER_EXTENSION = app;
+			};
+			dependencies = (
+				16F0339D0984B7B0006C8A44 /* PBXTargetDependency */,
+			);
+			name = SysExLibrarian;
+			productInstallPath = /Users/Shared/krevis/InstalledProducts;
+			productName = SysExLibrarian;
+			productReference = 16F033950984B76F006C8A44 /* SysEx Librarian.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 16F032BA0984B5DD006C8A44 /* Build configuration list for PBXProject "SysExLibrarian" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				4A9504D0FFE6A4CB11CA0CBA /* Development */,
+				4A9504D1FFE6A4CB11CA0CBA /* Deployment */,
+			);
+			hasScannedForEncodings = 1;
+			mainGroup = 2A37F4AAFDCFA73011CA2CEA /* SysExLibrarian */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 16F0332B0984B74B006C8A44 /* Products */;
+					ProjectRef = 16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */;
+				},
+			);
+			targets = (
+				16F033360984B76F006C8A44 /* SysExLibrarian */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		16F0332F0984B74B006C8A44 /* SnoizeMIDI.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SnoizeMIDI.framework;
+			remoteRef = 16F0332E0984B74B006C8A44 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		16F033530984B76F006C8A44 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16F033540984B76F006C8A44 /* MainMenu.nib in Resources */,
+				16F033550984B76F006C8A44 /* InfoPlist.strings in Resources */,
+				16F033560984B76F006C8A44 /* Preferences.nib in Resources */,
+				16F033570984B76F006C8A44 /* MainWindow.nib in Resources */,
+				16F033580984B76F006C8A44 /* TableHeaderReverseSort.tiff in Resources */,
+				16F033590984B76F006C8A44 /* TableHeaderSort.tiff in Resources */,
+				16F0335A0984B76F006C8A44 /* SysExLibrarian.icns in Resources */,
+				16F0335B0984B76F006C8A44 /* LibraryDocument.icns in Resources */,
+				16F0335C0984B76F006C8A44 /* MIDIDocument.icns in Resources */,
+				16F0335D0984B76F006C8A44 /* SysExDocument.icns in Resources */,
+				16F0335E0984B76F006C8A44 /* ToolbarPlay.tiff in Resources */,
+				16F0335F0984B76F006C8A44 /* MainWindow.toolbar in Resources */,
+				16F033600984B76F006C8A44 /* Credits.rtf in Resources */,
+				16F033610984B76F006C8A44 /* ToolbarRecordOne.tiff in Resources */,
+				16F033620984B76F006C8A44 /* ToolbarRecordMany.tiff in Resources */,
+				16F033630984B76F006C8A44 /* docs.htmld in Resources */,
+				16F033640984B76F006C8A44 /* Details.nib in Resources */,
+				16F033650984B76F006C8A44 /* Credits.html in Resources */,
+				16F033660984B76F006C8A44 /* RecordOne.nib in Resources */,
+				16F033670984B76F006C8A44 /* RecordMany.nib in Resources */,
+				16F033680984B76F006C8A44 /* Play.nib in Resources */,
+				16F033690984B76F006C8A44 /* Delete.nib in Resources */,
+				16F0336A0984B76F006C8A44 /* Import.nib in Resources */,
+				16F0336B0984B76F006C8A44 /* SysExLibrarian.strings in Resources */,
+				16F0336C0984B76F006C8A44 /* SysExSpeed.nib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		16F034490984BB6C006C8A44 /* Run Script (Remove Headers from Frameworks) */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script (Remove Headers from Frameworks)";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "find \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH\" \\( -type d -or -type l \\) -name Headers -exec rm -rf {} \\; -prune\n";
+		};
+		16F034510984BB8C006C8A44 /* Run Script (Fix Prebinding) */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script (Fix Prebinding)";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "#\n# Update prebinding. The frameworks' timestamps have changed since they were linked against \n# (since they were copied afterwards), so their prebinding will be disabled unless we do this.\n# Use -i argument so i386 is ignored instead of causing an error.\n#\n\ncd \"${TARGET_BUILD_DIR}/${EXECUTABLE_FOLDER_PATH}\" || { echo \"Couldn't cd into installed app's Contents/MacOS!\"; exit 1; }\n\nfor f in SnoizeMIDI ; do\n\tredo_prebinding -i -e \"$PWD\" \"../Frameworks/${f}.framework/Versions/Current/${f}\" || { echo \"redo_prebinding failed for framework ${f}!\"; exit 1; }\ndone\n\nredo_prebinding -i -e \"$PWD\" \"./${EXECUTABLE_NAME}\" || { echo \"redo_prebinding failed for application!\"; exit 1; }\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		16F0336D0984B76F006C8A44 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16F0336E0984B76F006C8A44 /* main.m in Sources */,
+				16F0336F0984B76F006C8A44 /* SSEPreferencesWindowController.m in Sources */,
+				16F033700984B76F006C8A44 /* SSEMainWindowController.m in Sources */,
+				16F033710984B76F006C8A44 /* SSEMIDIController.m in Sources */,
+				16F033720984B76F006C8A44 /* NSPopUpButton-Extensions.m in Sources */,
+				16F033730984B76F006C8A44 /* SSELibrary.m in Sources */,
+				16F033740984B76F006C8A44 /* SSELibraryEntry.m in Sources */,
+				16F033750984B76F006C8A44 /* BDAlias.m in Sources */,
+				16F033760984B76F006C8A44 /* SSETableView.m in Sources */,
+				16F033770984B76F006C8A44 /* NSWorkspace-Extensions.m in Sources */,
+				16F033780984B76F006C8A44 /* SSEWindowController.m in Sources */,
+				16F033790984B76F006C8A44 /* NSToolbarItem-Extensions.m in Sources */,
+				16F0337A0984B76F006C8A44 /* SSEValidatingButton.m in Sources */,
+				16F0337B0984B76F006C8A44 /* SSEDetailsWindowController.m in Sources */,
+				16F0337C0984B76F006C8A44 /* SSERecordOneController.m in Sources */,
+				16F0337D0984B76F006C8A44 /* SSERecordManyController.m in Sources */,
+				16F0337E0984B76F006C8A44 /* SSERecordController.m in Sources */,
+				16F0337F0984B76F006C8A44 /* SSEPlayController.m in Sources */,
+				16F033800984B76F006C8A44 /* SSEDeleteController.m in Sources */,
+				16F033810984B76F006C8A44 /* SSEImportController.m in Sources */,
+				16F033820984B76F006C8A44 /* SSEFindMissingController.m in Sources */,
+				16F033830984B76F006C8A44 /* SSEExportController.m in Sources */,
+				16F033840984B76F006C8A44 /* SSEAppController.m in Sources */,
+				16F033850984B76F006C8A44 /* SSECombinationOutputStream.m in Sources */,
+				16F033860984B76F006C8A44 /* SSEOutputStreamDestination.m in Sources */,
+				16F033870984B76F006C8A44 /* SMDestinationEndpoint-SSEOutputStreamDestination.m in Sources */,
+				16F033880984B76F006C8A44 /* SSESysExSpeedWindowController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		16F0339D0984B7B0006C8A44 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SnoizeMIDI;
+			targetProxy = 16F0339C0984B7B0006C8A44 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		089C165FFE840EACC02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C1660FE840EACC02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		169A4DC304D376F8007059A2 /* SysExSpeed.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				169A4DC404D376F8007059A2 /* English */,
+			);
+			name = SysExSpeed.nib;
+			sourceTree = "<group>";
+		};
+		2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2A37F4B7FDCFA73011CA2CEA /* English */,
+			);
+			name = MainMenu.nib;
+			sourceTree = "<group>";
+		};
+		2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2A37F4BAFDCFA73011CA2CEA /* English */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		F5308FE80232F9D401000164 /* RecordOne.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F5308FE90232F9D401000164 /* RecordOne.nib */,
+			);
+			name = RecordOne.nib;
+			sourceTree = "<group>";
+		};
+		F5308FF10233059B01000164 /* RecordMany.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F5308FF20233059B01000164 /* English */,
+			);
+			name = RecordMany.nib;
+			sourceTree = "<group>";
+		};
+		F5308FFD023315AD01000164 /* Play.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F5308FFE023315AD01000164 /* English */,
+			);
+			name = Play.nib;
+			sourceTree = "<group>";
+		};
+		F53090060233385B01000164 /* Delete.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F53090070233385B01000164 /* English */,
+			);
+			name = Delete.nib;
+			sourceTree = "<group>";
+		};
+		F530900E023350F901000164 /* Import.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F530900F023350F901000164 /* English */,
+			);
+			name = Import.nib;
+			sourceTree = "<group>";
+		};
+		F559F90A01DEC5E001000164 /* Preferences.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F559F90B01DEC5E001000164 /* English */,
+			);
+			name = Preferences.nib;
+			sourceTree = "<group>";
+		};
+		F559F90F01DEFA9701000164 /* MainWindow.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F559F90D01DEF5E001000164 /* English */,
+			);
+			name = MainWindow.nib;
+			sourceTree = "<group>";
+		};
+		F587526F0214CEDD01000164 /* MainWindow.toolbar */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F58752700214CEDD01000164 /* English */,
+			);
+			name = MainWindow.toolbar;
+			sourceTree = "<group>";
+		};
+		F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F5C54B9C030C6F9D01000164 /* English */,
+			);
+			name = SysExLibrarian.strings;
+			sourceTree = "<group>";
+		};
+		F5D90FD1021628DF01000164 /* Credits.html */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F5D90FD2021628DF01000164 /* English */,
+			);
+			name = Credits.html;
+			sourceTree = "<group>";
+		};
+		F5D90FE4021630C101000164 /* docs.htmld */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F5D90FE5021630C101000164 /* English */,
+			);
+			name = docs.htmld;
+			sourceTree = "<group>";
+		};
+		F5F52C15022015AC01000164 /* Details.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F5F52C16022015AC01000164 /* English */,
+			);
+			name = Details.nib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		16F033A80984B822006C8A44 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 16F033300984B760006C8A44 /* Snoize-Application-Debug.xcconfig */;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = PrecompHeader.h;
+				INFOPLIST_FILE = "Info-SysExLibrarian.plist";
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				PRODUCT_NAME = "SysEx Librarian";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		16F033A90984B822006C8A44 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 16F033320984B760006C8A44 /* Snoize-Application-Release.xcconfig */;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = PrecompHeader.h;
+				INFOPLIST_FILE = "Info-SysExLibrarian.plist";
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				PRODUCT_NAME = "SysEx Librarian";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		16F033AA0984B822006C8A44 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 16F033330984B760006C8A44 /* Snoize-Project-Debug.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		16F033AB0984B822006C8A44 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 16F033350984B760006C8A44 /* Snoize-Project-Release.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		16F032BA0984B5DD006C8A44 /* Build configuration list for PBXProject "SysExLibrarian" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				16F033AA0984B822006C8A44 /* Debug */,
+				16F033AB0984B822006C8A44 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		16F033900984B76F006C8A44 /* Build configuration list for PBXNativeTarget "SysExLibrarian" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				16F033A80984B822006C8A44 /* Debug */,
+				16F033A90984B822006C8A44 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
+}
