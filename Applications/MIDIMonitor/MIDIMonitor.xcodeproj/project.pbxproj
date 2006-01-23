@@ -111,6 +111,13 @@
 			remoteGlobalIDString = 16AF258C097B1A3400BC87DC;
 			remoteInfo = DisclosableView;
 		};
+		168D1617098451BB004FB07D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 169E71B2097B2441001AFB58 /* DisclosableView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 168D158909844AF3004FB07D;
+			remoteInfo = "DisclosableView Palette";
+		};
 		169E71A6097B2419001AFB58 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */;
@@ -160,7 +167,7 @@
 		089C1660FE840EACC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		167B884206ED4D650053D305 /* Info-MIDIMonitor.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Info-MIDIMonitor.plist"; sourceTree = "<group>"; };
-		167B884306ED4D650053D305 /* MIDI Monitor.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "MIDI Monitor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		167B884306ED4D650053D305 /* MIDI Monitor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MIDI Monitor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1691E0D804CA1C1400ACFC9D /* SMMDetailsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMDetailsWindowController.h; sourceTree = "<group>"; };
 		1691E0DA04CA1C1E00ACFC9D /* SMMDetailsWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMDetailsWindowController.m; sourceTree = "<group>"; };
 		1691E0DD04CA26F300ACFC9D /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Details.nib; sourceTree = "<group>"; };
@@ -300,6 +307,7 @@
 			isa = PBXGroup;
 			children = (
 				169E71B8097B2441001AFB58 /* DisclosableView.framework */,
+				168D1618098451BB004FB07D /* DisclosableView.palette */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -530,6 +538,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		168D1618098451BB004FB07D /* DisclosableView.palette */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = DisclosableView.palette;
+			remoteRef = 168D1617098451BB004FB07D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
