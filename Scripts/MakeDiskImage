@@ -79,13 +79,14 @@ if [[ $DO_APPLESCRIPT -eq 1 ]] ; then
 		set theReadMe to file "${READ_ME_FILE_PATH:t}" of theDisk
 	
 		-- Set the window to icon view, with big icons
+		open theWindow
 		set current view of theWindow to icon view
-		set theOptions to the icon view options of theWindow
-		set icon size of theOptions to 128
-		set arrangement of theOptions to not arranged
+		set toolbar visible of theWindow to false
+		set statusbar visible of theWindow to false
+		set properties of the icon view options of theWindow to { arrangement:not arranged, icon size:128 }
 
 		-- Set the window size/position and the icon position
-		set bounds of theWindow to {100, 100, 422, 290}
+		set bounds of theWindow to {100, 100, 430, 290}
 		set position of theApp to {80, 71}
 		set position of theReadMe to {240, 71}
 	end tell

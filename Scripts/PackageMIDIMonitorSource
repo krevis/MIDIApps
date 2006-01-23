@@ -22,6 +22,7 @@ SnoizeFrameworkSource=${SnoizeSource}/Frameworks
 SnoizeAppSource=${SnoizeSource}/Applications
 SnoizeScriptSource=${SnoizeSource}/Scripts
 SnoizeDocsSource=${SnoizeSource}/Documentation
+SnoizeConfigurationsSource=${SnoizeSource}/Configurations
 
 
 mkdir -p "$INSTALL_DIRECTORY" || {echo "Couldn't create install directory!"; exit 1}
@@ -44,7 +45,11 @@ cd ..
 
 mkdir Scripts; cd Scripts
 cp -R $SnoizeScriptSource/BuildMIDIMonitor .
+cp -R $SnoizeScriptSource/MakeDiskImage .
+cp -R $SnoizeScriptSource/PackageMIDIMonitorSource .
 cd ..
+
+cp -R $SnoizeConfigurationsSource .
 
 cp -R $SnoizeDocsSource/MIDIMonitor/Source/README .
 cp -R $SnoizeDocsSource/MIDIMonitor/Source/LICENSE .
@@ -56,6 +61,7 @@ cp -R $SnoizeDocsSource/MIDIMonitor/Source/LICENSE .
 find . -type d -name CVS -exec rm -rf {} \; -prune
 find . -name \*.mode1 -exec rm {} \;
 find . -name \*.pbxuser -exec rm {} \;
+find . -name \*.perspective -exec rm {} \;
 
 #
 # Archive it up
