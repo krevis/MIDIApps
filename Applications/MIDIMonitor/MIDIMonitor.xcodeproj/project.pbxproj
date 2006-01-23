@@ -10,23 +10,6 @@
 		162972B1097B414800158D7B /* SnoizeMIDI.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */; };
 		162972B2097B414C00158D7B /* SnoizeMIDISpy.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71B1097B242A001AFB58 /* SnoizeMIDISpy.framework */; };
 		162972B3097B414F00158D7B /* DisclosableView.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71B8097B2441001AFB58 /* DisclosableView.framework */; };
-		167B880706ED4D650053D305 /* SMMDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A37F4AEFDCFA73011CA2CEA /* SMMDocument.h */; };
-		167B880806ED4D650053D305 /* SMMMonitorWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = F53D4AB5015AAA2C01000164 /* SMMMonitorWindowController.h */; };
-		167B880906ED4D650053D305 /* SMMAppController.h in Headers */ = {isa = PBXBuildFile; fileRef = F53D4AB9015AAB7E01000164 /* SMMAppController.h */; };
-		167B880A06ED4D650053D305 /* SMMPreferencesWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = F53A1C06015EB24301000164 /* SMMPreferencesWindowController.h */; };
-		167B880B06ED4D650053D305 /* SMMSysExWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = F56E05CA0206BAB401000164 /* SMMSysExWindowController.h */; };
-		167B880C06ED4D650053D305 /* SMMSpyingInputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = F562148D02408B2D01000164 /* SMMSpyingInputStream.h */; };
-		167B880D06ED4D650053D305 /* SMMCombinationInputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = F55C9C140244CE3701000164 /* SMMCombinationInputStream.h */; };
-		167B880E06ED4D650053D305 /* SMMSourcesOutlineView.h in Headers */ = {isa = PBXBuildFile; fileRef = F57F628A0261C8FC01000164 /* SMMSourcesOutlineView.h */; };
-		167B880F06ED4D650053D305 /* SMMNonHighlightingCells.h in Headers */ = {isa = PBXBuildFile; fileRef = F57F628F0261D5A701000164 /* SMMNonHighlightingCells.h */; };
-		167B881006ED4D650053D305 /* SMMFastAnimatingWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = F55462270263619E01000164 /* SMMFastAnimatingWindow.h */; };
-		167B881106ED4D650053D305 /* SMMWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = F5DCBE8E02E6064E01000164 /* SMMWindowController.h */; };
-		167B881206ED4D650053D305 /* PrecompHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = F547DDD90318496E01000164 /* PrecompHeader.h */; };
-		167B881306ED4D650053D305 /* SMMDetailsWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1691E0D804CA1C1400ACFC9D /* SMMDetailsWindowController.h */; };
-		167B881406ED4D650053D305 /* NSArray-SMMExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 16F210AB06EAAF6A00D9C507 /* NSArray-SMMExtensions.h */; };
-		167B881506ED4D650053D305 /* NSString-SMMExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 16F210DC06EAB24700D9C507 /* NSString-SMMExtensions.h */; };
-		167B881606ED4D650053D305 /* NSDictionary-SMMExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 16F2112006EAB6F600D9C507 /* NSDictionary-SMMExtensions.h */; };
-		167B881706ED4D650053D305 /* NSData-SMMExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 16F2114306EAB83B00D9C507 /* NSData-SMMExtensions.h */; };
 		167B881906ED4D650053D305 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		167B881A06ED4D650053D305 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
 		167B881B06ED4D650053D305 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165FFE840EACC02AAC07 /* InfoPlist.strings */; };
@@ -167,7 +150,7 @@
 		089C1660FE840EACC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		167B884206ED4D650053D305 /* Info-MIDIMonitor.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Info-MIDIMonitor.plist"; sourceTree = "<group>"; };
-		167B884306ED4D650053D305 /* MIDI Monitor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MIDI Monitor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		167B884306ED4D650053D305 /* MIDI Monitor.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "MIDI Monitor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1691E0D804CA1C1400ACFC9D /* SMMDetailsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMDetailsWindowController.h; sourceTree = "<group>"; };
 		1691E0DA04CA1C1E00ACFC9D /* SMMDetailsWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMDetailsWindowController.m; sourceTree = "<group>"; };
 		1691E0DD04CA26F300ACFC9D /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Details.nib; sourceTree = "<group>"; };
@@ -431,39 +414,11 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXHeadersBuildPhase section */
-		167B880606ED4D650053D305 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				167B880706ED4D650053D305 /* SMMDocument.h in Headers */,
-				167B880806ED4D650053D305 /* SMMMonitorWindowController.h in Headers */,
-				167B880906ED4D650053D305 /* SMMAppController.h in Headers */,
-				167B880A06ED4D650053D305 /* SMMPreferencesWindowController.h in Headers */,
-				167B880B06ED4D650053D305 /* SMMSysExWindowController.h in Headers */,
-				167B880C06ED4D650053D305 /* SMMSpyingInputStream.h in Headers */,
-				167B880D06ED4D650053D305 /* SMMCombinationInputStream.h in Headers */,
-				167B880E06ED4D650053D305 /* SMMSourcesOutlineView.h in Headers */,
-				167B880F06ED4D650053D305 /* SMMNonHighlightingCells.h in Headers */,
-				167B881006ED4D650053D305 /* SMMFastAnimatingWindow.h in Headers */,
-				167B881106ED4D650053D305 /* SMMWindowController.h in Headers */,
-				167B881206ED4D650053D305 /* PrecompHeader.h in Headers */,
-				167B881306ED4D650053D305 /* SMMDetailsWindowController.h in Headers */,
-				167B881406ED4D650053D305 /* NSArray-SMMExtensions.h in Headers */,
-				167B881506ED4D650053D305 /* NSString-SMMExtensions.h in Headers */,
-				167B881606ED4D650053D305 /* NSDictionary-SMMExtensions.h in Headers */,
-				167B881706ED4D650053D305 /* NSData-SMMExtensions.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
-
 /* Begin PBXNativeTarget section */
 		167B880506ED4D650053D305 /* MIDIMonitor */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 16AF2646097B1EFB00BC87DC /* Build configuration list for PBXNativeTarget "MIDIMonitor" */;
 			buildPhases = (
-				167B880606ED4D650053D305 /* Headers */,
 				167B881806ED4D650053D305 /* Resources */,
 				167B882606ED4D650053D305 /* Sources */,
 				167B883806ED4D650053D305 /* Frameworks */,
@@ -763,10 +718,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 169E7171097B2203001AFB58 /* Snoize-Application-Release.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(FRAMEWORK_SEARCH_PATHS)",
-					"$(SRCROOT)/../../../../Builds/Products/Release",
-				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PrecompHeader.h;
 				INFOPLIST_FILE = "Info-MIDIMonitor.plist";
@@ -787,10 +738,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 169E716F097B2203001AFB58 /* Snoize-Application-Debug.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(FRAMEWORK_SEARCH_PATHS)",
-					"$(SRCROOT)/../../../../Builds/Products/Release",
-				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PrecompHeader.h;
 				INFOPLIST_FILE = "Info-MIDIMonitor.plist";
