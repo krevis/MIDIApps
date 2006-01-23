@@ -7,24 +7,22 @@
 	<key>CFBundleExecutable</key>
 	<string>DisclosableView</string>
 	<key>CFBundleGetInfoString</key>
-	<string>DisclosableView version 1.2, Copyright 2002-2006, Kurt Revis.</string>
+	<string>DisclosableView Palette version 1.2, Copyright 2002-2006, Kurt Revis.</string>
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
-	<string>com.snoize.DisclosableView</string>
+	<string>com.snoize.DisclosableViewPalette</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>DisclosableView</string>
+	<string>DisclosableView Palette</string>
 	<key>CFBundlePackageType</key>
-	<string>FMWK</string>
+	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>DisclosableView version 1.2</string>
+	<string>DisclosableView Palette version 1.2</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1.2</string>
-	<key>NSPrincipalClass</key>
-	<string></string>
 </dict>
 </plist>
