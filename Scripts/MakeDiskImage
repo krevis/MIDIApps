@@ -28,28 +28,15 @@ SCRATCH_IMAGE="/tmp/TempImage-$$.dmg"
 # Create the image
 echo "    Creating scratch image..."
 rm -f $SCRATCH_IMAGE
-hdiutil create $SCRATCH_IMAGE -megabytes 10 -layout NONE
 
-# Create a /dev/disk device from the image
-DRIVE=`hdid -nomount "$SCRATCH_IMAGE"`
-# chop off whitespace that hdid gives us (bah!)
-array=(${=DRIVE})
+HDIUTIL_OUT=$(hdiutil create $SCRATCH_IMAGE -megabytes 10 -fs HFS+ -volname "$VOLUME_NAME" -attach)
+# make an array out of the output, to get the drive name
+array=(${=HDIUTIL_OUT})
 DRIVE=$array[1]
 
-# Create a new filesystem on the disk device
-newfs_hfs -v "$VOLUME_NAME" /dev/r${DRIVE:t}
-
-# Remount the disk
-echo "    Image formatted, ejecting $DRIVE..."
-hdiutil eject $DRIVE
-
-echo "    Mounting $SCRATCH_IMAGE..."
-DRIVE=`hdid $SCRATCH_IMAGE`
-# now we have the deviced path and the mount point, separated by whitespace
-array=(${=DRIVE})
-DRIVE=$array[1]
-shift array
-MOUNTPOINT="$array"
+# would be nice to look this up since it might change, but it's a huge pain to do so;
+# for now just assume
+MOUNTPOINT="/Volumes/$VOLUME_NAME"
 
 # Make the volume's root directory automatically open when mounted
 if [ -x `which makeDirectoryAutoOpen` ]; then
@@ -89,9 +76,15 @@ if [[ $DO_APPLESCRIPT -eq 1 ]] ; then
 		set bounds of theWindow to {100, 100, 430, 290}
 		set position of theApp to {80, 71}
 		set position of theReadMe to {240, 71}
+
+		-- hack to get the window bounds to update
+		set toolbar visible of theWindow to true
+		set toolbar visible of theWindow to false
+
+		-- hack to make sure the Finder actually updates the volume
+		delay 5
 	end tell
 	EndOfScript
-
 else
 	echo "Set up the window's view options and icon positions."
 	echo "(Set DO_APPLESCRIPT to 1 in MakeDiskImage to do this automatically, if they ever fix the Finder bugs.)"
@@ -101,8 +94,9 @@ fi
 
 # Eject the disk
 echo "    Ejecting..."
-#osascript -e "tell application \"Finder\" to eject disk \"$VOLUME_NAME\""
-hdiutil eject $DRIVE   # This doesn't give the Finder a chance to sync... not true anymore though
+# hdiutil eject $DRIVE    # This doesn't give the Finder a chance to sync...
+osascript -e "tell application \"Finder\" to eject disk \"$VOLUME_NAME\""
+sleep 5
 
 # Convert the image to a UDIF compressed image 
 echo "    Compressing..."
