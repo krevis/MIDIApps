@@ -2,13 +2,12 @@
 // Copyright 2001-2002 Kurt Revis. All rights reserved.
 //
 
-#import <OmniFoundation/OFObject.h>
 #import <Foundation/Foundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 #import "SSEOutputStreamDestination.h"
 
 
-@interface SSECombinationOutputStream : OFObject <SMMessageDestination>
+@interface SSECombinationOutputStream : NSObject <SMMessageDestination>
 {
     SMVirtualOutputStream *virtualStream;
     SMPortOutputStream *portStream;

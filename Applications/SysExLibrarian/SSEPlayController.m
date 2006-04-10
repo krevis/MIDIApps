@@ -1,8 +1,5 @@
 #import "SSEPlayController.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
-
 #import "SSEMainWindowController.h"
 #import "SSEMIDIController.h"
 
@@ -31,8 +28,8 @@
     if (!(self = [super init]))
         return nil;
 
-    OBASSERT(mainWindowController != nil);
-    OBASSERT(midiController != nil);
+    SMAssert(mainWindowController != nil);
+    SMAssert(midiController != nil);
 
     nonretainedMainWindowController = mainWindowController;
     nonretainedMIDIController = midiController;
@@ -52,10 +49,7 @@
     // Top-level nib objects
     [sheetWindow release];
     sheetWindow = nil;
-    
-    [progressUpdateEvent release];
-    progressUpdateEvent = nil;
-    
+        
     [super dealloc];
 }
 
@@ -111,7 +105,7 @@
     [nonretainedMIDIController getMessageCount:NULL messageIndex:NULL bytesToSend:&bytesToSend bytesSent:NULL];
     [progressIndicator setMaxValue:bytesToSend];
 
-    OBASSERT(progressUpdateEvent == nil);
+    SMAssert(scheduledProgressUpdate == NO);
 
     [self updateProgressAndRepeat];
 
@@ -124,15 +118,15 @@
 
     success = [[[notification userInfo] objectForKey:@"success"] boolValue];
     
-    // If there is an update pending, try to cancel it. If that succeeds, then we know the event never happened, and we do it ourself now.
-    if (progressUpdateEvent && [[OFScheduler mainScheduler] abortEvent:progressUpdateEvent]) {
+    // If there is a delayed update pending, cancel it and do the update now.
+    if (scheduledProgressUpdate) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateProgressAndRepeat) object:nil];
+        scheduledProgressUpdate = NO;
         [self updateProgress];
-        [progressUpdateEvent release];
-        progressUpdateEvent = nil;
     }
 
     if (!success)
-        [progressMessageField setStringValue:NSLocalizedStringFromTableInBundle(@"Cancelled.", @"SysExLibrarian", [self bundle], "Cancelled.")];
+        [progressMessageField setStringValue:NSLocalizedStringFromTableInBundle(@"Cancelled.", @"SysExLibrarian", SMBundleForObject(self), "Cancelled.")];
 
     // Even if we have set the progress indicator to its maximum value, it won't get drawn on the screen that way immediately,
     // probably because it tries to smoothly animate to that state. The only way I have found to show the maximum value is to just
@@ -144,7 +138,7 @@
 
 - (void)sendFinishedImmediately:(NSNotification *)notification;
 {
-    OBASSERT(progressUpdateEvent == nil);
+    SMAssert(scheduledProgressUpdate == NO);
     
     [self stopObservingMIDIController];    
 }
@@ -153,8 +147,8 @@
 {
     [self updateProgress];
 
-    [progressUpdateEvent release];
-    progressUpdateEvent = [[[OFScheduler mainScheduler] scheduleSelector:@selector(updateProgressAndRepeat) onObject:self afterTime:[progressIndicator animationDelay]] retain];
+    [self performSelector:@selector(updateProgressAndRepeat) withObject: nil afterDelay:[progressIndicator animationDelay]];
+    scheduledProgressUpdate = YES;
 }
 
 - (void)updateProgress;
@@ -166,19 +160,19 @@
     NSString *message;
 
     if (!sendingFormatString)
-        sendingFormatString = [NSLocalizedStringFromTableInBundle(@"Sending message %u of %u...", @"SysExLibrarian", [self bundle], "format for progress message when sending multiple sysex messages") retain];
+        sendingFormatString = [NSLocalizedStringFromTableInBundle(@"Sending message %u of %u...", @"SysExLibrarian", SMBundleForObject(self), "format for progress message when sending multiple sysex messages") retain];
     if (!sendingString)
-        sendingString = [NSLocalizedStringFromTableInBundle(@"Sending message...", @"SysExLibrarian", [self bundle], "progress message when sending one sysex message") retain];
+        sendingString = [NSLocalizedStringFromTableInBundle(@"Sending message...", @"SysExLibrarian", SMBundleForObject(self), "progress message when sending one sysex message") retain];
     if (!doneString)
-        doneString = [NSLocalizedStringFromTableInBundle(@"Done.", @"SysExLibrarian", [self bundle], "Done.") retain];    
+        doneString = [NSLocalizedStringFromTableInBundle(@"Done.", @"SysExLibrarian", SMBundleForObject(self), "Done.") retain];    
     
     [nonretainedMIDIController getMessageCount:&messageCount messageIndex:&messageIndex bytesToSend:&bytesToSend bytesSent:&bytesSent];
 
-    OBASSERT(bytesSent >= [progressIndicator doubleValue]);
+    SMAssert(bytesSent >= [progressIndicator doubleValue]);
     // Make sure we don't go backwards somehow
 
     [progressIndicator setDoubleValue:bytesSent];
-    [progressBytesField setStringValue:[NSString abbreviatedStringForBytes:bytesSent]];
+    [progressBytesField setStringValue:[NSString SnoizeMIDI_abbreviatedStringForByteCount:bytesSent]];
     if (bytesSent < bytesToSend) {
         if (messageCount > 1)
             message = [NSString stringWithFormat:sendingFormatString, messageIndex+1, messageCount];

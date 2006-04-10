@@ -1,11 +1,11 @@
 #import "SSEImportController.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
+#import <SnoizeMIDI/SnoizeMIDI.h>
 
 #import "SSEMainWindowController.h"
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
+#import "SSEAppController.h"
 
 
 @interface SSEImportController (Private)
@@ -23,7 +23,7 @@
 
 - (void)workThreadImportFiles:(NSArray *)filePaths;
 - (NSArray *)workThreadExpandAndFilterFiles:(NSArray *)filePaths;
-- (void)doneImportingInWorkThreadWithNewEntries:(NSArray *)newEntries badFiles:(NSArray *)badFilePaths;
+- (void)doneImportingInWorkThreadWithNewEntriesAndBadFiles:(NSDictionary *)dict;
 
 - (NSArray *)addFilesToLibrary:(NSArray *)filePaths returningBadFiles:(NSArray **)badFilePathsPtr;
 
@@ -80,7 +80,7 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
 
 - (void)importFiles:(NSArray *)filePaths showingProgress:(BOOL)showProgress;
 {
-    OBASSERT(filePathsToImport == nil);
+    SMAssert(filePathsToImport == nil);
     filePathsToImport = [filePaths retain];
 
     if (![self areAnyFilesDirectories:filePaths])
@@ -147,7 +147,7 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
         }
     }
 
-    if (areAllFilesInLibraryDirectory || [[OFPreference preferenceForKey:SSEShowWarningOnImportPreferenceKey] boolValue] == NO) {
+    if (areAllFilesInLibraryDirectory || [[NSUserDefaults standardUserDefaults] boolForKey:SSEShowWarningOnImportPreferenceKey] == NO) {
         [self importFiles];
     } else {
         [doNotWarnOnImportAgainCheckbox setIntValue:0];
@@ -161,7 +161,7 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
 
     if (returnCode == NSOKButton) {
         if ([doNotWarnOnImportAgainCheckbox intValue] == 1)
-            [[OFPreference preferenceForKey:SSEShowWarningOnImportPreferenceKey] setBoolValue:NO];
+            [[NSUserDefaults standardUserDefaults] setBool: NO forKey: SSEShowWarningOnImportPreferenceKey];
 
         [self importFiles];
     } else {
@@ -222,9 +222,9 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
     unsigned int fileIndex, fileCount;
 
     if (!scanningString)
-        scanningString = [NSLocalizedStringFromTableInBundle(@"Scanning...", @"SysExLibrarian", [self bundle], "Scanning...") retain];
+        scanningString = [NSLocalizedStringFromTableInBundle(@"Scanning...", @"SysExLibrarian", SMBundleForObject(self), "Scanning...") retain];
     if (!xOfYFormatString)
-        xOfYFormatString = [NSLocalizedStringFromTableInBundle(@"%u of %u", @"SysExLibrarian", [self bundle], "importing sysex: x of y") retain];
+        xOfYFormatString = [NSLocalizedStringFromTableInBundle(@"%u of %u", @"SysExLibrarian", SMBundleForObject(self), "importing sysex: x of y") retain];
     
     [importStatusLock lock];
     filePath = [[importFilePath retain] autorelease];
@@ -247,6 +247,8 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
         [progressMessageField setStringValue:[[NSFileManager defaultManager] displayNameAtPath:filePath]];
         [progressIndexField setStringValue:[NSString stringWithFormat:xOfYFormatString, fileIndex + 1, fileCount]];
     }
+    
+    queuedUpdate = NO;
 }
 
 //
@@ -267,7 +269,13 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
     if ([expandedAndFilteredFilePaths count] > 0)
         newEntries = [self addFilesToLibrary:expandedAndFilteredFilePaths returningBadFiles:&badFilePaths];
 
-    [self mainThreadPerformSelector:@selector(doneImportingInWorkThreadWithNewEntries:badFiles:) withObject:newEntries withObject:badFilePaths];
+    if (!newEntries)
+        newEntries = (id)[NSNull null];
+    if (!badFilePaths)
+        badFilePaths = (id)[NSNull null];
+    [self performSelectorOnMainThread:@selector(doneImportingInWorkThreadWithNewEntriesAndBadFiles:)
+                           withObject:[NSDictionary dictionaryWithObjectsAndKeys:newEntries, @"newEntries", badFilePaths, @"badFiles", nil]
+                        waitUntilDone:NO];
 
     [pool release];
 }
@@ -329,8 +337,15 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
     return acceptableFilePaths;
 }
 
-- (void)doneImportingInWorkThreadWithNewEntries:(NSArray *)newEntries badFiles:(NSArray *)badFilePaths;
+- (void)doneImportingInWorkThreadWithNewEntriesAndBadFiles:(NSDictionary *)dict
 {
+    NSArray *newEntries = [dict objectForKey:@"newEntries"];
+    if (newEntries == (id)[NSNull null])
+        newEntries = nil;
+    NSArray *badFilePaths = [dict objectForKey:@"badFiles"];
+    if (badFilePaths == (id)[NSNull null])
+        badFilePaths = nil;
+    
     [NSApp endSheet:importSheetWindow];
 
     [self finishImportWithNewEntries:newEntries badFiles:badFilePaths];
@@ -368,7 +383,7 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
         filePath = [filePaths objectAtIndex:fileIndex];
 
         // If we're not in the main thread, update progress information and tell the main thread to update its UI.
-        if (![NSThread inMainThread]) {
+        if (![(SSEAppController*)[NSApp delegate] inMainThread]) {
             [importStatusLock lock];
             [importFilePath release];
             importFilePath = [filePath retain];
@@ -381,7 +396,10 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
                 break;
             }
 
-            [self mainThreadPerformSelectorOnce:@selector(updateImportStatusDisplay)];
+            if (!queuedUpdate) {
+                [self performSelectorOnMainThread:@selector(updateImportStatusDisplay) withObject:nil waitUntilDone:NO];
+                queuedUpdate = YES;
+            }
         }
 
         addedEntry = [nonretainedLibrary addEntryForFile:filePath];
@@ -421,22 +439,22 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
     NSString *message;
 
     badFileCount = [badFilePaths count];
-    OBASSERT(badFileCount > 0);
+    SMAssert(badFileCount > 0);
 
     if (badFileCount == 1) {
-        message = NSLocalizedStringFromTableInBundle(@"No SysEx data could be found in this file. It has not been added to the library.", @"SysExLibrarian", [self bundle], "message when no sysex data found in file");
+        message = NSLocalizedStringFromTableInBundle(@"No SysEx data could be found in this file. It has not been added to the library.", @"SysExLibrarian", SMBundleForObject(self), "message when no sysex data found in file");
     } else {
         NSString *format;
         
-        format = NSLocalizedStringFromTableInBundle(@"No SysEx data could be found in %u of the files. They have not been added to the library.", @"SysExLibrarian", [self bundle], "format of message when no sysex data found in files");
+        format = NSLocalizedStringFromTableInBundle(@"No SysEx data could be found in %u of the files. They have not been added to the library.", @"SysExLibrarian", SMBundleForObject(self), "format of message when no sysex data found in files");
         message = [NSString stringWithFormat:format, badFileCount];
     }
 
-    OBASSERT([[nonretainedMainWindowController window] attachedSheet] == nil);
+    SMAssert([[nonretainedMainWindowController window] attachedSheet] == nil);
     if ([[nonretainedMainWindowController window] attachedSheet])
         return;
 
-    title = NSLocalizedStringFromTableInBundle(@"Could not read SysEx", @"SysExLibrarian", [self bundle], "title of alert when can't read a sysex file");
+    title = NSLocalizedStringFromTableInBundle(@"Could not read SysEx", @"SysExLibrarian", SMBundleForObject(self), "title of alert when can't read a sysex file");
     NSBeginInformationalAlertSheet(title, nil, nil, nil, [nonretainedMainWindowController window], nil, NULL, NULL, NULL, @"%@", message);
 }
 

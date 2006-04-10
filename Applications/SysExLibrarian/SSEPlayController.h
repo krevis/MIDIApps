@@ -1,6 +1,5 @@
 #import <Cocoa/Cocoa.h>
 
-@class OFScheduledEvent;
 @class SSEMainWindowController;
 @class SSEMIDIController;
 
@@ -16,7 +15,7 @@
     SSEMIDIController *nonretainedMIDIController;
 
     // Transient data
-    OFScheduledEvent *progressUpdateEvent;
+    BOOL scheduledProgressUpdate;
 }
 
 - (id)initWithWindowController:(SSEMainWindowController *)mainWindowController midiController:(SSEMIDIController *)midiController;

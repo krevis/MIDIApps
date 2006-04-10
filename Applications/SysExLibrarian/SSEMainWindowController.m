@@ -1,8 +1,7 @@
 #import "SSEMainWindowController.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
-
+#import <objc/objc-runtime.h>
+#import <SnoizeMIDI/SnoizeMIDI.h>
 #import "NSPopUpButton-Extensions.h"
 #import "SSEDeleteController.h"
 #import "SSEDetailsWindowController.h"
@@ -76,14 +75,12 @@ static SSEMainWindowController *controller = nil;
     sortColumnIdentifier = @"name";
     isSortAscending = YES;
 
-    showSysExWarningWhenShowingWindow = NO;
-
     return self;
 }
 
 - (id)initWithWindowNibName:(NSString *)windowNibName;
 {
-    OBRejectUnusedImplementation(self, _cmd);
+    SMRejectUnusedImplementation(self, _cmd);
     return nil;
 }
 
@@ -145,23 +142,13 @@ static SSEMainWindowController *controller = nil;
     [toolbarItem setMinSize:NSMakeSize(150, height)];
     [toolbarItem setMaxSize:NSMakeSize(1000, height)];
 
-    menuTitle = NSLocalizedStringFromTableInBundle(@"Destination", @"SysExLibrarian", [self bundle], "title of destination toolbar item");
+    menuTitle = NSLocalizedStringFromTableInBundle(@"Destination", @"SysExLibrarian", SMBundleForObject(self), "title of destination toolbar item");
     menuItem = [[NSMenuItem alloc] initWithTitle:menuTitle action:NULL keyEquivalent:@""];
     submenu = [[NSMenu alloc] initWithTitle:@""];
     [menuItem setSubmenu:submenu];
     [submenu release];
     [toolbarItem setMenuFormRepresentation:menuItem];
     [menuItem release];
-}
-
-- (IBAction)showWindow:(id)sender;
-{
-    [super showWindow:sender];
-
-    if (showSysExWarningWhenShowingWindow) {
-        [self showSysExWorkaroundWarning];
-        showSysExWarningWhenShowingWindow = NO;
-    }
 }
 
 //
@@ -273,7 +260,7 @@ static SSEMainWindowController *controller = nil;
         // We don't care if there is an error, go on anyway
 
     selectedEntries = [self selectedEntries];
-    OBASSERT([selectedEntries count] == 1);
+    SMAssert([selectedEntries count] == 1);
 
     if ((path = [[selectedEntries objectAtIndex:0] path]))
         [[NSWorkspace sharedWorkspace] selectFile:path inFileViewerRootedAtPath:@""];
@@ -411,7 +398,7 @@ static SSEMainWindowController *controller = nil;
 
         if (!exceptionReason) {
             // NOTE I don't see how this could happen, but let's handle it...
-            exceptionReason = NSLocalizedStringFromTableInBundle(@"Unknown error", @"SysExLibrarian", [self bundle], "unknown exception when adding newly recorded messages to library");
+            exceptionReason = NSLocalizedStringFromTableInBundle(@"Unknown error", @"SysExLibrarian", SMBundleForObject(self), "unknown exception when adding newly recorded messages to library");
         }
 
         // We need to get rid of the sheet right away, instead of after the delay (see -[SSERecordOneController readFinished]).
@@ -421,35 +408,13 @@ static SSEMainWindowController *controller = nil;
         }
 
         // Now we can start another sheet.
-        OBASSERT([[self window] attachedSheet] == nil);
+        SMAssert([[self window] attachedSheet] == nil);
         
-        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", [self bundle], "title of error alert");
-        message = NSLocalizedStringFromTableInBundle(@"The file could not be created.\n%@", @"SysExLibrarian", [self bundle], "message of alert when recording to a new file fails");
+        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", SMBundleForObject(self), "title of error alert");
+        message = NSLocalizedStringFromTableInBundle(@"The file could not be created.\n%@", @"SysExLibrarian", SMBundleForObject(self), "message of alert when recording to a new file fails");
 
         NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, message, exceptionReason);
     }
-}
-
-- (void)showSysExWorkaroundWarning;
-{
-    NSString *title, *message;
-
-    if (![[self window] isVisible]) {
-        showSysExWarningWhenShowingWindow = YES;
-        return;
-    }
-    
-    OBASSERT([[self window] attachedSheet] == nil);
-    if ([[self window] attachedSheet])
-        return;
-
-    title = NSLocalizedStringFromTableInBundle(@"Warning", @"SysExLibrarian", [self bundle], "title of warning alert");
-    message = NSLocalizedStringFromTableInBundle(@"The driver for this MIDIMAN device has problems sending SysEx messages. SysEx Librarian will attempt to work around the problems, but please be warned that you may still experience unpredictable hangs or crashes, and sending large amounts of data will be slow.\n\nPlease check the manufacturer's web site to see if an updated driver is available.", @"SysExLibrarian", [self bundle], "message for buggy MIDIMAN device");
-    
-    NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"%@", message);
-
-    [[OFPreference preferenceForKey:SSEHasShownSysExWorkaroundWarningPreferenceKey] setBoolValue:YES];
-    [[NSUserDefaults standardUserDefaults] autoSynchronize];
 }
 
 @end
@@ -482,8 +447,8 @@ static SSEMainWindowController *controller = nil;
         NSNumber *entrySize;
 
         entrySize = [entry size];
-        if ([[OFPreference preferenceForKey:SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey] boolValue])
-            return [NSString abbreviatedStringForBytes:[entrySize unsignedIntValue]];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey])
+            return [NSString SnoizeMIDI_abbreviatedStringForByteCount:[entrySize unsignedIntValue]];
         else
             return [entrySize stringValue];
     } else if ([identifier isEqualToString:@"messageCount"]) {
@@ -505,8 +470,8 @@ static SSEMainWindowController *controller = nil;
     if (![entry renameFileTo:newName]) {
         NSString *title, *message;
 
-        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", [self bundle], "title of error alert");
-        message = NSLocalizedStringFromTableInBundle(@"The file for this item could not be renamed.", @"SysExLibrarian", [self bundle], "message of alert when renaming a file fails");
+        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", SMBundleForObject(self), "title of error alert");
+        message = NSLocalizedStringFromTableInBundle(@"The file for this item could not be renamed.", @"SysExLibrarian", SMBundleForObject(self), "message of alert when renaming a file fails");
         
         NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"%@", message);
     }
@@ -621,7 +586,7 @@ static SSEMainWindowController *controller = nil;
         destCount = [dests count];
 
         if (groupIndex > 0)
-            [destinationPopUpButton addSeparatorItem];
+            [destinationPopUpButton SSE_addSeparatorItem];
         
         for (destIndex = 0; destIndex < destCount; destIndex++) {
             id <SSEOutputStreamDestination> destination;
@@ -629,7 +594,7 @@ static SSEMainWindowController *controller = nil;
     
             destination = [dests objectAtIndex:destIndex];            
             title = [self titleForDestination:destination];
-            [destinationPopUpButton addItemWithTitle:title representedObject:destination];
+            [destinationPopUpButton SSE_addItemWithTitle:title representedObject:destination];
     
             if (!found && (destination == currentDestination)) {
                 [destinationPopUpButton selectItemAtIndex:[destinationPopUpButton numberOfItems] - 1];
@@ -663,9 +628,9 @@ static SSEMainWindowController *controller = nil;
 
     selectedDestinationTitle = [self titleForDestination:currentDestination];
     if (!selectedDestinationTitle)
-        selectedDestinationTitle = NSLocalizedStringFromTableInBundle(@"None", @"SysExLibrarian", [self bundle], "none");
+        selectedDestinationTitle = NSLocalizedStringFromTableInBundle(@"None", @"SysExLibrarian", SMBundleForObject(self), "none");
 
-    topTitle = [[NSLocalizedStringFromTableInBundle(@"Destination", @"SysExLibrarian", [self bundle], "title of destination toolbar item") stringByAppendingString:@": "] stringByAppendingString:selectedDestinationTitle];
+    topTitle = [[NSLocalizedStringFromTableInBundle(@"Destination", @"SysExLibrarian", SMBundleForObject(self), "title of destination toolbar item") stringByAppendingString:@": "] stringByAppendingString:selectedDestinationTitle];
     [topMenuItem setTitle:topTitle];
 
     submenu = [topMenuItem submenu];
@@ -687,7 +652,7 @@ static SSEMainWindowController *controller = nil;
         for (destIndex = 0; destIndex < destCount; destIndex++) {
             id <SSEOutputStreamDestination> destination;
             NSString *title;
-            NSMenuItem *menuItem;
+            id <NSMenuItem> menuItem;
 
             destination = [dests objectAtIndex:destIndex];
 
@@ -717,8 +682,11 @@ static SSEMainWindowController *controller = nil;
 
     title = [destination outputStreamDestinationName];
     externalDeviceNames = [destination outputStreamDestinationExternalDeviceNames];
-    if ([externalDeviceNames count] > 0)
-        title = [[title stringByAppendingString:[NSString emdashString]] stringByAppendingString:[externalDeviceNames componentsJoinedByString:@", "]];
+    if ([externalDeviceNames count] > 0) {
+        unichar emdashCharacter = 0x2014;
+        NSString *emdashString = [NSString stringWithCharacters: &emdashCharacter length: 1];
+        title = [[title stringByAppendingString:emdashString] stringByAppendingString:[externalDeviceNames componentsJoinedByString:@", "]];
+    }
 
     return title;
 }
@@ -762,7 +730,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     [sortedLibraryEntries release];
     sortedLibraryEntries = [[library entries] sortedArrayUsingFunction:libraryEntryComparator context:sortColumnIdentifier];
     if (!isSortAscending)
-        sortedLibraryEntries = [sortedLibraryEntries reversedArray];
+        sortedLibraryEntries = [sortedLibraryEntries SnoizeMIDI_reversedArray];
     [sortedLibraryEntries retain];
 }
 

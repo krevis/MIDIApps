@@ -1,7 +1,5 @@
 #import "SSEWindowController.h"
 
-@class OFPreference;
-
 
 @interface SSEPreferencesWindowController : SSEWindowController
 {
@@ -12,10 +10,6 @@
     IBOutlet NSSlider *sysExIntervalBetweenSentMessagesSlider;
     IBOutlet NSTextField *sysExIntervalBetweenSentMessagesField;
     IBOutlet NSButton *showSysExSpeedWindowButton;
-
-    OFPreference *sizeFormatPreference;
-    OFPreference *readTimeOutPreference;
-    OFPreference *intervalBetweenSentMessagesPreference;
 }
 
 + (SSEPreferencesWindowController *)preferencesWindowController;

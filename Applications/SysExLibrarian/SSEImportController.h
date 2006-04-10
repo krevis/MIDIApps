@@ -26,6 +26,7 @@
     unsigned int importFileCount;
 
     BOOL importCancelled;    
+    BOOL queuedUpdate;
 }
 
 - (id)initWithWindowController:(SSEMainWindowController *)mainWindowController library:(SSELibrary *)library;

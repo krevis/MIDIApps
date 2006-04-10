@@ -1,6 +1,5 @@
 #import "SSEWindowController.h"
 
-@class OFScheduledEvent;
 @class SSEDeleteController;
 @class SSEExportController;
 @class SSEFindMissingController;
@@ -34,7 +33,6 @@
     NSString *sortColumnIdentifier;
     BOOL isSortAscending;
     NSToolbarItem *nonretainedDestinationToolbarItem;
-    BOOL showSysExWarningWhenShowingWindow;
 }
 
 + (SSEMainWindowController *)mainWindowController;
@@ -68,8 +66,6 @@
 - (void)showNewEntries:(NSArray *)newEntries;
 
 - (void)addReadMessagesToLibrary;
-
-- (void)showSysExWorkaroundWarning;
 
 @end
 

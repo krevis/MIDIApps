@@ -47,9 +47,4 @@
     return [NSArray array];
 }
 
-- (BOOL)outputStreamDestinationNeedsSysExWorkaround;
-{
-    return NO;
-}
-
 @end

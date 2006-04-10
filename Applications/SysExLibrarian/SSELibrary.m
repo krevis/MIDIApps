@@ -1,11 +1,11 @@
 #import "SSELibrary.h"
 
 #import <Carbon/Carbon.h>
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
+#import <SnoizeMIDI/SnoizeMIDI.h>
 
 #import "SSELibraryEntry.h"
 #import "BDAlias.h"
+#import "NSFileManager-Extensions.h"
 #import "NSWorkspace-Extensions.h"
 
 
@@ -60,7 +60,7 @@ NSString *SSESysExFileExtension = @"syx";
     if (![super init])
         return nil;
 
-    documentTypes = [[[self bundle] infoDictionary] objectForKey:@"CFBundleDocumentTypes"];
+    documentTypes = [[SMBundleForObject(self) infoDictionary] objectForKey:@"CFBundleDocumentTypes"];
     if ([documentTypes count] > 0) {
         NSDictionary *documentTypeDict;
 
@@ -136,15 +136,15 @@ NSString *SSESysExFileExtension = @"syx";
     NSData *aliasData;
     NSString *path = nil;
 
-    aliasData = [[OFPreference preferenceForKey:SSELibraryFileDirectoryAliasPreferenceKey] dataValue];
+    aliasData = [[NSUserDefaults standardUserDefaults] dataForKey:SSELibraryFileDirectoryAliasPreferenceKey];
     if (aliasData) {    
         path = [[BDAlias aliasWithData:aliasData] fullPath];
         if (path) {
             // Make sure the saved path is in sync with what the alias resolved
-            [[OFPreference preferenceForKey:SSELibraryFileDirectoryPathPreferenceKey] setStringValue:path];
+            [[NSUserDefaults standardUserDefaults] setObject:path forKey:SSELibraryFileDirectoryPathPreferenceKey];
         } else {
             // Couldn't resolve the alias, so fall back to the path (which may not exist yet)
-            path = [[OFPreference preferenceForKey:SSELibraryFileDirectoryPathPreferenceKey] stringValue];
+            path = [[NSUserDefaults standardUserDefaults] stringForKey:SSELibraryFileDirectoryPathPreferenceKey];
         }
     }
 
@@ -164,10 +164,10 @@ NSString *SSESysExFileExtension = @"syx";
         newPath = [self defaultFileDirectoryPath];
     
     alias = [BDAlias aliasWithPath:newPath];
-    OBASSERT([alias fullPath] != nil);
+    SMAssert([alias fullPath] != nil);
 
-    [[OFPreference preferenceForKey:SSELibraryFileDirectoryAliasPreferenceKey] setDataValue:[alias aliasData]];
-    [[OFPreference preferenceForKey:SSELibraryFileDirectoryPathPreferenceKey] setStringValue:newPath];
+    [[NSUserDefaults standardUserDefaults] setObject: [alias aliasData] forKey: SSELibraryFileDirectoryAliasPreferenceKey];
+    [[NSUserDefaults standardUserDefaults] setObject: newPath forKey: SSELibraryFileDirectoryPathPreferenceKey];
 }
 
 - (BOOL)isPathInFileDirectory:(NSString *)path;
@@ -182,14 +182,14 @@ NSString *SSESysExFileExtension = @"syx";
     if ((errorMessage = [self preflightLibrary])) {
         NSString *format;
 
-        format = NSLocalizedStringFromTableInBundle(@"There is a problem accessing the library \"%@\".\n%@", @"SysExLibrarian", [self bundle], "error message if library file can't be read (preflight)");
+        format = NSLocalizedStringFromTableInBundle(@"There is a problem accessing the library \"%@\".\n%@", @"SysExLibrarian", SMBundleForObject(self), "error message if library file can't be read (preflight)");
         return [NSString stringWithFormat:format, [self libraryFilePathForDisplay], errorMessage];
     }
 
     if ((errorMessage = [self preflightFileDirectory])) {
         NSString *format;
 
-        format = NSLocalizedStringFromTableInBundle(@"There is a problem accessing the SysEx files folder \"%@\".\n%@", @"SysExLibrarian", [self bundle], "error message if SysEx files folder can't be accessed (preflight)");
+        format = NSLocalizedStringFromTableInBundle(@"There is a problem accessing the SysEx files folder \"%@\".\n%@", @"SysExLibrarian", SMBundleForObject(self), "error message if SysEx files folder can't be accessed (preflight)");
         return [NSString stringWithFormat:format, [self fileDirectoryPath], errorMessage];
     }
 
@@ -239,11 +239,11 @@ NSString *SSESysExFileExtension = @"syx";
 
     fileManager = [NSFileManager defaultManager];
 
-    newFileName = NSLocalizedStringFromTableInBundle(@"Untitled", @"SysExLibrarian", [self bundle], "name of new sysex file");
+    newFileName = NSLocalizedStringFromTableInBundle(@"Untitled", @"SysExLibrarian", SMBundleForObject(self), "name of new sysex file");
     newFilePath = [[[self fileDirectoryPath] stringByAppendingPathComponent:newFileName] stringByAppendingPathExtension:SSESysExFileExtension];
-    newFilePath = [fileManager uniqueFilenameFromName:newFilePath];
+    newFilePath = [fileManager SSE_uniqueFilenameFromName:newFilePath];
 
-    [fileManager createPathToFile:newFilePath attributes:nil];
+    [fileManager SSE_createPathToFile:newFilePath attributes:nil];
     // NOTE This will raise an NSGenericException if it fails
 
     newFileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -257,11 +257,11 @@ NSString *SSESysExFileExtension = @"syx";
     } else {
         NSString *format;
 
-        format = NSLocalizedStringFromTableInBundle(@"Couldn't create the file %@", @"SysExLibrarian", [self bundle], "format of exception if can't create new sysex file");
+        format = NSLocalizedStringFromTableInBundle(@"Couldn't create the file %@", @"SysExLibrarian", SMBundleForObject(self), "format of exception if can't create new sysex file");
         [NSException raise:NSGenericException format:format, newFilePath];
     }
 
-    OBASSERT(entry != nil);
+    SMAssert(entry != nil);
 
     return entry;
 }
@@ -285,10 +285,12 @@ NSString *SSESysExFileExtension = @"syx";
 
     entryIndex = [entriesToRemove count];
     while (entryIndex--) {
-        [self postEntryWillBeRemovedNotificationForEntry:[entriesToRemove objectAtIndex:entryIndex]];
+        SSELibraryEntry *entry = [entriesToRemove objectAtIndex:entryIndex];
+        [self postEntryWillBeRemovedNotificationForEntry:entry];
     }
 
-    [entries removeIdenticalObjectsFromArray:entriesToRemove];
+    [entries SnoizeMIDI_removeObjectsIdenticalToObjectsInArray:entriesToRemove];
+
     [self noteEntryChanged];
 }
 
@@ -297,26 +299,28 @@ NSString *SSESysExFileExtension = @"syx";
     flags.isDirty = YES;
     [self autosave];
     
-    [[NSNotificationQueue defaultQueue] enqueueNotificationName:SSELibraryDidChangeNotification object:self postingStyle:NSPostWhenIdle];
+    [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:SSELibraryDidChangeNotification object:self] postingStyle:NSPostWhenIdle];
 }
 
 - (void)autosave;
 {
-    [self queueSelectorOnce:@selector(save)];
+    [NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector(save) object: nil];
+    [self performSelector: @selector(save) withObject: nil afterDelay: 0.0];
 }
 
 - (void)save;
 {
+    if (!flags.isDirty)
+        return;    
+    
     NSMutableDictionary *dictionary;
     NSMutableArray *entryDicts;
     unsigned int entryCount, entryIndex;
-    NSFileManager *fileManager;
-    NSString *libraryFilePath;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *libraryFilePath = [self libraryFilePath];
     NSDictionary *fileAttributes;
     NSString *errorMessage = nil;
-
-    if (!flags.isDirty)
-        return;
+    NSData *fileData;
 
     dictionary = [NSMutableDictionary dictionary];
     entryDicts = [NSMutableArray array];
@@ -332,30 +336,32 @@ NSString *SSESysExFileExtension = @"syx";
 
     [dictionary setObject:entryDicts forKey:@"Entries"];
 
-    fileManager = [NSFileManager defaultManager];
-    libraryFilePath = [self libraryFilePath];
-    
-    NS_DURING {
-        [fileManager createPathToFile:libraryFilePath attributes:nil];
-    } NS_HANDLER {
-        errorMessage = [[[localException reason] retain] autorelease];
-    } NS_ENDHANDLER;
+    fileData = [NSPropertyListSerialization dataFromPropertyList:dictionary format:NSPropertyListXMLFormat_v1_0 errorDescription:&errorMessage];
+    if (errorMessage) {
+        [errorMessage autorelease]; // docs say we're supposed to release this string, oddly enough
+    } else {    
+        NS_DURING {
+            [fileManager SSE_createPathToFile:libraryFilePath attributes:nil];
+        } NS_HANDLER {
+            errorMessage = [[[localException reason] retain] autorelease];
+        } NS_ENDHANDLER;
+    }
 
     if (!errorMessage) {
         fileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithUnsignedLong:SSELibraryFileTypeCode], NSFileHFSTypeCode,
             [NSNumber numberWithUnsignedLong:SSEApplicationCreatorCode], NSFileHFSCreatorCode,
             [NSNumber numberWithBool:YES], NSFileExtensionHidden, nil];
-
-        if (![fileManager createFileAtPath:libraryFilePath contents:[dictionary xmlPropertyListData] attributes:fileAttributes])
-            errorMessage = NSLocalizedStringFromTableInBundle(@"The file could not be written.", @"SysExLibrarian", [self bundle], "error message if sysex file can't be written");
+        
+        if (![fileManager createFileAtPath:libraryFilePath contents:fileData attributes:fileAttributes])
+            errorMessage = NSLocalizedStringFromTableInBundle(@"The file could not be written.", @"SysExLibrarian", SMBundleForObject(self), "error message if sysex file can't be written");
     }
 
     if (errorMessage) {
         NSString *title, *messageFormat;
 
-        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", [self bundle], "title of error alert");
-        messageFormat = NSLocalizedStringFromTableInBundle(@"The library \"%@\" could not be saved.\n%@", @"SysExLibrarian", [self bundle], "format of error message if the library file can't be saved");
+        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", SMBundleForObject(self), "title of error alert");
+        messageFormat = NSLocalizedStringFromTableInBundle(@"The library \"%@\" could not be saved.\n%@", @"SysExLibrarian", SMBundleForObject(self), "format of error message if the library file can't be saved");
         
         NSRunCriticalAlertPanel(title, messageFormat, nil, nil, nil, libraryFilePath, errorMessage);
         // NOTE This is not fantastic UI, but it basically works.  This should not happen unless the user is trying to provoke us, anyway.
@@ -539,7 +545,7 @@ NSString *SSESysExFileExtension = @"syx";
     
     // Try creating the path to the file, first.
     NS_DURING {
-        [fileManager createPathToFile:libraryFilePath attributes:nil];
+        [fileManager SSE_createPathToFile:libraryFilePath attributes:nil];
     } NS_HANDLER {
         return [localException reason];
     } NS_ENDHANDLER;
@@ -547,11 +553,11 @@ NSString *SSESysExFileExtension = @"syx";
     // Then check that the file's parent directory is readable, writable, and searchable.
     parentDirectoryPath = [libraryFilePath stringByDeletingLastPathComponent];
     if (![fileManager isReadableFileAtPath:parentDirectoryPath]) {
-        errorFormat = NSLocalizedStringFromTableInBundle(@"The privileges of the folder \"%@\" do not allow reading.", @"SysExLibrarian", [self bundle], "format of error message if library file's folder can't be read");
+        errorFormat = NSLocalizedStringFromTableInBundle(@"The privileges of the folder \"%@\" do not allow reading.", @"SysExLibrarian", SMBundleForObject(self), "format of error message if library file's folder can't be read");
     } else if (![fileManager isWritableFileAtPath:parentDirectoryPath]) {
-        errorFormat = NSLocalizedStringFromTableInBundle(@"The privileges of the folder \"%@\" do not allow writing.", @"SysExLibrarian", [self bundle], "format of error message if library file's folder can't be written");
+        errorFormat = NSLocalizedStringFromTableInBundle(@"The privileges of the folder \"%@\" do not allow writing.", @"SysExLibrarian", SMBundleForObject(self), "format of error message if library file's folder can't be written");
     } else if (![fileManager isExecutableFileAtPath:parentDirectoryPath]) {
-        errorFormat = NSLocalizedStringFromTableInBundle(@"The privileges of the folder \"%@\" do not allow searching.", @"SysExLibrarian", [self bundle], "format of error message if library file's folder can't be searched");
+        errorFormat = NSLocalizedStringFromTableInBundle(@"The privileges of the folder \"%@\" do not allow searching.", @"SysExLibrarian", SMBundleForObject(self), "format of error message if library file's folder can't be searched");
     }
 
     if (errorFormat)
@@ -562,17 +568,17 @@ NSString *SSESysExFileExtension = @"syx";
         NSDictionary *libraryDictionary;
 
         if (isDirectory)
-            return NSLocalizedStringFromTableInBundle(@"There is a folder where the file should be.", @"SysExLibrarian", [self bundle], "error message if library file is really a directory");
+            return NSLocalizedStringFromTableInBundle(@"There is a folder where the file should be.", @"SysExLibrarian", SMBundleForObject(self), "error message if library file is really a directory");
 
         if (![fileManager isReadableFileAtPath:libraryFilePath])
-            return NSLocalizedStringFromTableInBundle(@"The file's privileges do not allow reading.", @"SysExLibrarian", [self bundle], "error message if library file isn't readable");
+            return NSLocalizedStringFromTableInBundle(@"The file's privileges do not allow reading.", @"SysExLibrarian", SMBundleForObject(self), "error message if library file isn't readable");
 
         if (![fileManager isWritableFileAtPath:libraryFilePath])
-            return NSLocalizedStringFromTableInBundle(@"The file's privileges do not allow writing.", @"SysExLibrarian", [self bundle], "error message if library file isn't writable");
+            return NSLocalizedStringFromTableInBundle(@"The file's privileges do not allow writing.", @"SysExLibrarian", SMBundleForObject(self), "error message if library file isn't writable");
 
         libraryDictionary = [NSDictionary dictionaryWithContentsOfFile:libraryFilePath];
         if (!libraryDictionary)
-            return NSLocalizedStringFromTableInBundle(@"The file could not be read.", @"SysExLibrarian", [self bundle], "error message if library file can't be read");
+            return NSLocalizedStringFromTableInBundle(@"The file could not be read.", @"SysExLibrarian", SMBundleForObject(self), "error message if library file can't be read");
     }
 
     // Everything is fine.
@@ -592,27 +598,27 @@ NSString *SSESysExFileExtension = @"syx";
 
     if ([fileManager fileExistsAtPath:fileDirectoryPath isDirectory:&isDirectory]) {
         if (!isDirectory)
-            return NSLocalizedStringFromTableInBundle(@"There is a file where the folder should be.", @"SysExLibrarian", [self bundle], "error message if sysex file directory is really a file");
+            return NSLocalizedStringFromTableInBundle(@"There is a file where the folder should be.", @"SysExLibrarian", SMBundleForObject(self), "error message if sysex file directory is really a file");
 
         if (![fileManager isReadableFileAtPath:fileDirectoryPath])
-            return NSLocalizedStringFromTableInBundle(@"The folder's privileges do not allow reading.", @"SysExLibrarian", [self bundle], "error message if sysex file directory isn't readable");
+            return NSLocalizedStringFromTableInBundle(@"The folder's privileges do not allow reading.", @"SysExLibrarian", SMBundleForObject(self), "error message if sysex file directory isn't readable");
 
         if (![fileManager isWritableFileAtPath:fileDirectoryPath])
-            return NSLocalizedStringFromTableInBundle(@"The folder's privileges do not allow writing.", @"SysExLibrarian", [self bundle], "error message if sysex file directory isn't writable");
+            return NSLocalizedStringFromTableInBundle(@"The folder's privileges do not allow writing.", @"SysExLibrarian", SMBundleForObject(self), "error message if sysex file directory isn't writable");
         
         if (![fileManager isExecutableFileAtPath:fileDirectoryPath])
-            return NSLocalizedStringFromTableInBundle(@"The folder's privileges do not allow searching.", @"SysExLibrarian", [self bundle], "error message if sysex file directory isn't searchable");
+            return NSLocalizedStringFromTableInBundle(@"The folder's privileges do not allow searching.", @"SysExLibrarian", SMBundleForObject(self), "error message if sysex file directory isn't searchable");
     } else {
         // The directory doesn't exist. Try to create it.        
         NSString *bogusFilePath;
 
         bogusFilePath = [fileDirectoryPath stringByAppendingPathComponent:@"bogus"];        
         NS_DURING {
-            [fileManager createPathToFile:bogusFilePath attributes:nil];
+            [fileManager SSE_createPathToFile:bogusFilePath attributes:nil];
         } NS_HANDLER {
             NSString *format;
 
-            format = NSLocalizedStringFromTableInBundle(@"The folder %@ could not be created.", @"SysExLibrarian", [self bundle], "error message if sysex file directory can't be created");            
+            format = NSLocalizedStringFromTableInBundle(@"The folder %@ could not be created.", @"SysExLibrarian", SMBundleForObject(self), "error message if sysex file directory can't be created");            
             return [NSString stringWithFormat:format, fileDirectoryPath];
         } NS_ENDHANDLER;
 
@@ -632,7 +638,7 @@ NSString *SSESysExFileExtension = @"syx";
     unsigned int entryDictIndex, entryDictCount;
 
     // We should only be called once at startup
-    OBASSERT([entries count] == 0);
+    SMAssert([entries count] == 0);
 
     // NOTE: We don't do much error checking here; that should have already been taken care of in +performPreflightChecks.
     // (Of course something could have changed since then and now, but that's pretty unlikely.)
@@ -696,7 +702,7 @@ NSString *SSESysExFileExtension = @"syx";
         entry = [entries objectAtIndex:entryIndex];
         filePath = [entry path];
         if (filePath) {
-            OBASSERT([entriesByFilePath objectForKey:filePath] == nil);
+            SMAssert([entriesByFilePath objectForKey:filePath] == nil);
             [entriesByFilePath setObject:entry forKey:filePath];
         }
     }

@@ -6,7 +6,6 @@
 //  Copyright (c) 2002 __MyCompanyName__. All rights reserved.
 //
 
-#import <OmniFoundation/OFObject.h>
 #import <Foundation/Foundation.h>
 
 
@@ -14,12 +13,11 @@
 
 - (NSString *)outputStreamDestinationName;
 - (NSArray *)outputStreamDestinationExternalDeviceNames;
-- (BOOL)outputStreamDestinationNeedsSysExWorkaround;
 
 @end
 
 
-@interface SSESimpleOutputStreamDestination : OFObject <SSEOutputStreamDestination>
+@interface SSESimpleOutputStreamDestination : NSObject <SSEOutputStreamDestination>
 {
     NSString *name;
 }
@@ -30,7 +28,5 @@
 - (NSString *)outputStreamDestinationName;
 - (NSArray *)outputStreamDestinationExternalDeviceNames;
     // returns an empty array
-- (BOOL)outputStreamDestinationNeedsSysExWorkaround;
-    // returns NO
 
 @end

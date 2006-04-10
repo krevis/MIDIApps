@@ -1,12 +1,5 @@
 #import "SSETableView.h"
 
-// These methods exist as of Mac OS X 10.1.2, and we might as well use them so we match the system look.
-// However, if these methods go away we will fall back to our own images.
-@interface NSTableView (SSEPrivateDeclarations)
-- (NSImage *)_defaultTableHeaderSortImage;
-- (NSImage *)_defaultTableHeaderReverseSortImage;
-@end
-
 
 @interface SSETableView (Private)
 
@@ -19,34 +12,14 @@
 
 @implementation SSETableView
 
-static NSImage *findTableHeaderSortImage(NSString *publicName, SEL privateSelector, NSString *ourName)
-{
-    NSImage *image = nil;
-
-    // Try the public named image first. This is present in 10.2 and later.
-    image = [NSImage imageNamed:publicName];
-    if (!image) {
-        // Now fall back to private API (works on 10.1, maybe on 10.0)
-        if ([[NSTableView class] respondsToSelector:privateSelector])
-            image = [[NSTableView class] performSelector:privateSelector];
-
-        if (!image) {
-            // Finally fall back to our own image
-            image = [NSImage imageNamed:ourName];
-        }
-    }
-
-    return image;
-}
-
 + (NSImage *)tableHeaderSortImage;
 {
-    return findTableHeaderSortImage(@"NSAscendingSortIndicator", @selector(_defaultTableHeaderSortImage), @"TableHeaderSort");    
+    return [NSImage imageNamed: @"NSAscendingSortIndicator"];
 }
 
 + (NSImage *)tableHeaderReverseSortImage;
 {
-    return findTableHeaderSortImage(@"NSDescendingSortIndicator", @selector(_defaultTableHeaderReverseSortImage), @"TableHeaderReverseSort");
+    return [NSImage imageNamed: @"NSDescendingSortIndicator"];
 }
 
 - (id)initWithFrame:(NSRect)rect;

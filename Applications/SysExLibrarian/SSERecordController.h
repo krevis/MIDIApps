@@ -16,7 +16,7 @@
     SSEMIDIController *nonretainedMIDIController;
 
     // Transient data
-    OFScheduledEvent *progressUpdateEvent;
+    BOOL scheduledProgressUpdate;
 }
 
 - (id)initWithMainWindowController:(SSEMainWindowController *)mainWindowController midiController:(SSEMIDIController *)midiController;
@@ -40,5 +40,6 @@
 // To be used by subclasses
 - (NSString *)waitingForSysexMessage;
 - (NSString *)receivingSysexMessage;
+- (void)updateIndicators;
 
 @end

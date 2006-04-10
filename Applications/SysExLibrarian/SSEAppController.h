@@ -14,4 +14,6 @@
 - (IBAction)showMainWindow:(id)sender;
 - (IBAction)showMainWindowAndAddToLibrary:(id)sender;
 
+- (BOOL)inMainThread;
+
 @end

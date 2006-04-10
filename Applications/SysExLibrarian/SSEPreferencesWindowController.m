@@ -1,8 +1,5 @@
 #import "SSEPreferencesWindowController.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
-
 #import "SSEMainWindowController.h"
 #import "SSELibrary.h"
 #import "SSEMIDIController.h"
@@ -46,25 +43,17 @@ static SSEPreferencesWindowController *controller = nil;
     if (!(self = [super initWithWindowNibName:@"Preferences"]))
         return nil;
 
-    sizeFormatPreference = [[OFPreference preferenceForKey:SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey] retain];
-    readTimeOutPreference = [[OFPreference preferenceForKey:SSESysExReadTimeOutPreferenceKey] retain];
-    intervalBetweenSentMessagesPreference = [[OFPreference preferenceForKey:SSESysExIntervalBetweenSentMessagesPreferenceKey] retain];
-
     return self;
 }
 
 - (id)initWithWindowNibName:(NSString *)windowNibName;
 {
-    OBRejectUnusedImplementation(self, _cmd);
+    SMRejectUnusedImplementation(self, _cmd);
     return nil;
 }
 
 - (void)dealloc
 {
-    [sizeFormatPreference release];
-    [readTimeOutPreference release];
-    [intervalBetweenSentMessagesPreference release];
-    
     [super dealloc];
 }
 
@@ -81,7 +70,7 @@ static SSEPreferencesWindowController *controller = nil;
 
 - (IBAction)changeSizeFormat:(id)sender;
 {
-    [sizeFormatPreference setBoolValue:[[sender selectedCell] tag]];
+    [[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey:SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey];
     [self synchronizeDefaults];
     [[NSNotificationCenter defaultCenter] postNotificationName:SSEDisplayPreferenceChangedNotification object:nil];
 }
@@ -102,18 +91,18 @@ static SSEPreferencesWindowController *controller = nil;
 
 - (IBAction)changeReadTimeOut:(id)sender;
 {
-    [readTimeOutPreference setIntegerValue:[sender intValue]];
+    [[NSUserDefaults standardUserDefaults] setInteger:[sender intValue] forKey:SSESysExReadTimeOutPreferenceKey];
     [self synchronizeReadTimeOutField];
     [self synchronizeDefaults];
-    [[NSNotificationQueue defaultQueue] enqueueNotificationName:SSESysExReceivePreferenceChangedNotification object:nil postingStyle:NSPostWhenIdle];
+    [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:SSESysExReceivePreferenceChangedNotification object: nil] postingStyle:NSPostWhenIdle];
 }
 
 - (IBAction)changeIntervalBetweenSentMessages:(id)sender;
 {
-    [intervalBetweenSentMessagesPreference setIntegerValue:[sender intValue]];
+    [[NSUserDefaults standardUserDefaults] setInteger:[sender intValue] forKey:SSESysExIntervalBetweenSentMessagesPreferenceKey];
     [self synchronizeIntervalBetweenSentMessagesField];
     [self synchronizeDefaults];
-    [[NSNotificationQueue defaultQueue] enqueueNotificationName:SSESysExSendPreferenceChangedNotification object:nil postingStyle:NSPostWhenIdle];
+    [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:SSESysExSendPreferenceChangedNotification object: nil] postingStyle:NSPostWhenIdle];
 }
 
 - (IBAction)showSysExSpeedWindow:(id)sender
@@ -128,28 +117,30 @@ static SSEPreferencesWindowController *controller = nil;
 
 - (void)synchronizeDefaults;
 {
-    [[NSUserDefaults standardUserDefaults] autoSynchronize];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)synchronizeControls;
 {
-    [sizeFormatMatrix selectCellWithTag:[sizeFormatPreference boolValue]];
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    
+    [sizeFormatMatrix selectCellWithTag:[defaults boolForKey:SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey]];
     [sysExFolderPathField setStringValue:[[SSELibrary sharedLibrary] fileDirectoryPath]];
-    [sysExReadTimeOutSlider setIntValue:[readTimeOutPreference integerValue]];
+    [sysExReadTimeOutSlider setIntValue:[defaults integerForKey:SSESysExReadTimeOutPreferenceKey]];
     [self synchronizeReadTimeOutField];
-    [sysExIntervalBetweenSentMessagesSlider setIntValue:[intervalBetweenSentMessagesPreference integerValue]];
+    [sysExIntervalBetweenSentMessagesSlider setIntValue:[defaults integerForKey: SSESysExIntervalBetweenSentMessagesPreferenceKey]];
     [self synchronizeIntervalBetweenSentMessagesField];
 //    [showSysExSpeedWindowButton setEnabled:[[SMClient sharedClient] doesSendSysExRespectExternalDeviceSpeed]];
 }
 
 - (void)synchronizeReadTimeOutField;
 {
-    [sysExReadTimeOutField setStringValue:[self formatMilliseconds:[readTimeOutPreference integerValue]]];
+    [sysExReadTimeOutField setStringValue:[self formatMilliseconds:[[NSUserDefaults standardUserDefaults] integerForKey:SSESysExReadTimeOutPreferenceKey]]];
 }
 
 - (void)synchronizeIntervalBetweenSentMessagesField;
 {
-    [sysExIntervalBetweenSentMessagesField setStringValue:[self formatMilliseconds:[intervalBetweenSentMessagesPreference integerValue]]];
+    [sysExIntervalBetweenSentMessagesField setStringValue:[self formatMilliseconds:[[NSUserDefaults standardUserDefaults] integerForKey: SSESysExIntervalBetweenSentMessagesPreferenceKey]]];
 }
 
 - (NSString *)formatMilliseconds:(int)msec;
@@ -158,9 +149,9 @@ static SSEPreferencesWindowController *controller = nil;
     static NSString *millisecondsFormat = nil;
 
     if (!oneSecond)
-        oneSecond =  [NSLocalizedStringFromTableInBundle(@"1 second", @"SysExLibrarian", [self bundle], "one second (formatting of milliseconds)") retain];
+        oneSecond =  [NSLocalizedStringFromTableInBundle(@"1 second", @"SysExLibrarian", SMBundleForObject(self), "one second (formatting of milliseconds)") retain];
     if (!millisecondsFormat)
-        millisecondsFormat = [NSLocalizedStringFromTableInBundle(@"%d milliseconds", @"SysExLibrarian", [self bundle], "format for milliseconds") retain];
+        millisecondsFormat = [NSLocalizedStringFromTableInBundle(@"%d milliseconds", @"SysExLibrarian", SMBundleForObject(self), "format for milliseconds") retain];
     
     if (msec == 1000)
         return oneSecond;

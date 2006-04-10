@@ -1,7 +1,5 @@
 #import "SSELibraryEntry.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 #import "BDAlias.h"
@@ -54,7 +52,7 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
 
 - (id)init;
 {
-    OBRejectUnusedImplementation(self, _cmd);
+    SMRejectUnusedImplementation(self, _cmd);
     return nil;
 }
 
@@ -156,7 +154,7 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
         newName = [[NSFileManager defaultManager] displayNameAtPath:path];
 
     if (!newName)
-        newName = NSLocalizedStringFromTableInBundle(@"Unknown", @"SysExLibrarian", [self bundle], "Unknown");
+        newName = NSLocalizedStringFromTableInBundle(@"Unknown", @"SysExLibrarian", SMBundleForObject(self), "Unknown");
 
     [self setName:newName];
 }
@@ -212,7 +210,7 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
         // The old file name had no extension, so just accept the new name as it is.
         modifiedNewFileName = newFileName;    
     }
-    OBASSERT((shouldShowExtension && shouldHideExtension) == NO);    // We can't do both!
+    SMAssert((shouldShowExtension && shouldHideExtension) == NO);    // We can't do both!
 
     // TODO We should do something like the code below (not sure if it's correct):
 #if 0    
@@ -232,8 +230,10 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
     // Path separator idiocy:
     // The Finder does not allow the ':' character in file names -- it beeps and changes it to '-'. So we do the same.
     // We always need to change '/' to a different character, since (as far as I know) there is no way of escaping the '/' character from NSFileManager calls. It gets changed to ":" in the Finder for all file systems, so let's just do that. (Note that the character will still display as '/'!)
-    modifiedNewFileName = [modifiedNewFileName stringByReplacingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@":"] withString:@"-"];
-    modifiedNewFileName = [modifiedNewFileName stringByReplacingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/"] withString:@":"];
+    NSMutableString* muModifiedNewFileName = [[modifiedNewFileName mutableCopy] autorelease];
+    [muModifiedNewFileName replaceOccurrencesOfString:@":" withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [muModifiedNewFileName length])];
+    [muModifiedNewFileName replaceOccurrencesOfString:@"/" withString:@":" options:NSLiteralSearch range:NSMakeRange(0, [muModifiedNewFileName length])];
+    modifiedNewFileName = muModifiedNewFileName;
 
     newPath = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:modifiedNewFileName];
 
@@ -309,7 +309,7 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
     if (!flags.hasLookedForFile)
         [self path];
 
-    OBASSERT(flags.hasLookedForFile);
+    SMAssert(flags.hasLookedForFile);
     return flags.isFilePresent;
 }
 
@@ -348,13 +348,13 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
         if (!newManufacturer) {
             newManufacturer = messageManufacturer;
         } else if (![messageManufacturer isEqualToString:newManufacturer]) {
-            newManufacturer = NSLocalizedStringFromTableInBundle(@"Various", @"SysExLibrarian", [self bundle], "Various");
+            newManufacturer = NSLocalizedStringFromTableInBundle(@"Various", @"SysExLibrarian", SMBundleForObject(self), "Various");
             break;
         }
     }
 
     if (!newManufacturer)
-        newManufacturer = NSLocalizedStringFromTableInBundle(@"Unknown", @"SysExLibrarian", [self bundle], "Unknown");
+        newManufacturer = NSLocalizedStringFromTableInBundle(@"Unknown", @"SysExLibrarian", SMBundleForObject(self), "Unknown");
 
     return newManufacturer;
 }
@@ -380,12 +380,12 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
 {
     id data, string, number;
 
-    OBASSERT(alias == nil);
+    SMAssert(alias == nil);
     data = [dict objectForKey:@"alias"];
     if (data && [data isKindOfClass:[NSData class]])
         alias = [[BDAlias alloc] initWithData:data];
 
-    OBASSERT(name == nil);
+    SMAssert(name == nil);
     string = [dict objectForKey:@"name"];
     if (string && [string isKindOfClass:[NSString class]]) {
         name = [string retain];
@@ -393,19 +393,19 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
         [self setNameFromFile];
     }
 
-    OBASSERT(manufacturer == nil);
+    SMAssert(manufacturer == nil);
     string = [dict objectForKey:@"manufacturerName"];
     if (string && [string isKindOfClass:[NSString class]]) {
         manufacturer = [string retain];
     }
 
-    OBASSERT(sizeNumber == nil);
+    SMAssert(sizeNumber == nil);
     number = [dict objectForKey:@"size"];
     if (number && [number isKindOfClass:[NSNumber class]]) {
         sizeNumber = [number retain];
     }
 
-    OBASSERT(messageCountNumber == nil);
+    SMAssert(messageCountNumber == nil);
     number = [dict objectForKey:@"messageCount"];
     if (number && [number isKindOfClass:[NSNumber class]]) {
         messageCountNumber = [number retain];

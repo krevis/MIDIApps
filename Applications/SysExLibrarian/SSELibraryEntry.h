@@ -1,11 +1,10 @@
-#import <OmniFoundation/OFObject.h>
 #import <Cocoa/Cocoa.h>
 
 @class BDAlias;
 @class SSELibrary;
 
 
-@interface SSELibraryEntry : OFObject
+@interface SSELibraryEntry : NSObject
 {
     SSELibrary *nonretainedLibrary;
 

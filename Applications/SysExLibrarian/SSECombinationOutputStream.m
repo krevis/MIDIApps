@@ -4,8 +4,6 @@
 
 #import "SSECombinationOutputStream.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
 #import "SMDestinationEndpoint-SSEOutputStreamDestination.h"
 
 
@@ -164,7 +162,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
                 else
                     return endpointName;
             } else {
-                return NSLocalizedStringFromTableInBundle(@"Unknown", @"SnoizeMIDI", [self bundle], "name of missing endpoint if not specified in document");
+                return NSLocalizedStringFromTableInBundle(@"Unknown", @"SnoizeMIDI", SMBundleForObject(self), "name of missing endpoint if not specified in document");
             }
         }
     } else if ((number = [settings objectForKey:@"virtualEndpointUniqueID"])) {
@@ -220,10 +218,15 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
 
 - (SMSysExSendRequest *)currentSysExSendRequest;
 {
-    if ([[self stream] respondsToSelector:@selector(pendingSysExSendRequests)])
-        return [[[self stream] pendingSysExSendRequests] anyObject];
-    else
-        return nil;
+    SMSysExSendRequest *currentSysExSendRequest = nil;
+    
+    if ([[self stream] respondsToSelector:@selector(pendingSysExSendRequests)]) {
+        NSArray *pending = [[self stream] pendingSysExSendRequests];
+        if (pending && [pending count] > 0)
+            currentSysExSendRequest = [pending objectAtIndex: 0];
+    }
+    
+    return currentSysExSendRequest;
 }
 
 //
@@ -260,7 +263,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
 
 - (void)createPortStream;
 {
-    OBASSERT(portStream == nil);
+    SMAssert(portStream == nil);
 
     NS_DURING {
         portStream = [[SMPortOutputStream alloc] init];
@@ -295,7 +298,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
 
 - (void)createVirtualStream;
 {
-    OBASSERT(virtualStream == nil);
+    SMAssert(virtualStream == nil);
 
     virtualStream = [[SMVirtualOutputStream alloc] initWithName:virtualEndpointName uniqueID:virtualEndpointUniqueID];
     if (virtualStream) {

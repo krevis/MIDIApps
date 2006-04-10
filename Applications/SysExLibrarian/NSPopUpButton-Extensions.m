@@ -3,7 +3,7 @@
 
 @implementation NSPopUpButton (SSEExtensions)
 
-- (void)addItemWithTitle:(NSString *)title representedObject:(id)object;
+- (void)SSE_addItemWithTitle:(NSString *)title representedObject:(id)object;
 {
     // NOTE We should just do this, but as of 10.1.3 (and before) it can fail:
     //    [self addItemWithTitle:title];
@@ -15,16 +15,9 @@
     [[self lastItem] setRepresentedObject:object];
 }
 
-- (void)addSeparatorItem;
+- (void)SSE_addSeparatorItem;
 {
     [[self menu] addItem:[NSMenuItem separatorItem]];
-}
-
-- (void)selectItemWithTag:(int)tag
-{
-    int index = [self indexOfItemWithTag:tag];
-    if (tag != -1)
-        [self selectItemAtIndex:index];
 }
 
 @end

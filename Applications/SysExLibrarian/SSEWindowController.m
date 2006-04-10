@@ -1,7 +1,5 @@
 #import "SSEWindowController.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
 #import "NSToolbarItem-Extensions.h"
 
 
@@ -194,7 +192,7 @@
     [toolbarItem setLabel:itemIdentifier];
     [toolbarItem setEnabled:YES];
     itemInfoDictionary = [toolbarItemInfo objectForKey:itemIdentifier];
-    [toolbarItem takeValuesFromDictionary:itemInfoDictionary target:self];
+    [toolbarItem SSE_takeValuesFromDictionary:itemInfoDictionary target:self];
 
     if ([itemInfoDictionary objectForKey:@"needsSpecialInitialization"])
         [self speciallyInitializeToolbarItem:toolbarItem];
@@ -223,7 +221,7 @@
     // Sometimes we get called before the window's autosave name is set (when the nib is loading), so check that.
     if ((autosaveName = [window frameAutosaveName])) {
         [window saveFrameUsingName:autosaveName];
-        [[NSUserDefaults standardUserDefaults] autoSynchronize];
+        [[NSUserDefaults standardUserDefaults] synchronize];
     }
 }
 

@@ -3,9 +3,7 @@
 
 @interface NSPopUpButton (SSEExtensions)
 
-- (void)addItemWithTitle:(NSString *)title representedObject:(id)object;
-- (void)addSeparatorItem;
-
-- (void)selectItemWithTag:(int)tag;
+- (void)SSE_addItemWithTitle:(NSString *)title representedObject:(id)object;
+- (void)SSE_addSeparatorItem;
 
 @end

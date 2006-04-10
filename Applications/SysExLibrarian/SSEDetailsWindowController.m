@@ -1,8 +1,6 @@
 #import "SSEDetailsWindowController.h"
 
 #import <Cocoa/Cocoa.h>
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 #import "SSELibrary.h"
@@ -67,7 +65,7 @@ static NSMutableArray *controllers = nil;
 
 - (id)initWithWindowNibName:(NSString *)windowNibName;
 {
-    OBRejectUnusedImplementation(self, _cmd);
+    SMRejectUnusedImplementation(self, _cmd);
     return nil;
 }
 
@@ -152,7 +150,7 @@ static NSMutableArray *controllers = nil;
     } else if ([identifier isEqualToString:@"sizeHex"]) {
         return [SMMessage formatLength:[message receivedDataWithStartByteLength] usingOption:SMDataFormatHexadecimal];
     } else if ([identifier isEqualToString:@"sizeAbbreviated"]) {
-        return [NSString abbreviatedStringForBytes:[message receivedDataWithStartByteLength]];
+        return [NSString SnoizeMIDI_abbreviatedStringForByteCount:[message receivedDataWithStartByteLength]];
     } else {
         return nil;
     }

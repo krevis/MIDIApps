@@ -1,7 +1,5 @@
 #import "SSESysExSpeedWindowController.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 
@@ -34,7 +32,8 @@ static SSESysExSpeedWindowController *controller = nil;
     if (!(self = [super initWithWindowNibName:@"SysExSpeed"]))
         return nil;
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(externalDeviceListChanged:) name:SMMIDIObjectListChangedNotification object:[SMExternalDevice class]];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(externalDeviceListChanged:) name:SMMIDIObjectListChangedNotification object:[SMExternalDevice class]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(externalDeviceListChanged:) name:SMMIDIObjectListChangedNotification object:[SMDestinationEndpoint class]];
 
     [self captureExternalDevices];
     
@@ -43,7 +42,7 @@ static SSESysExSpeedWindowController *controller = nil;
 
 - (id)initWithWindowNibName:(NSString *)windowNibName;
 {
-    OBRejectUnusedImplementation(self, _cmd);
+    SMRejectUnusedImplementation(self, _cmd);
     return nil;
 }
 
@@ -124,7 +123,8 @@ static SSESysExSpeedWindowController *controller = nil;
         [center removeObserver:self name:SMMIDIObjectPropertyChangedNotification object:device];
     }
     
-    externalDevices = [[SMExternalDevice externalDevices] retain];
+//    externalDevices = [[SMExternalDevice externalDevices] retain];
+    externalDevices = [[SMDestinationEndpoint destinationEndpoints] retain];
 
     enumerator = [externalDevices objectEnumerator];
     while ((device = [enumerator nextObject])) {
@@ -145,7 +145,8 @@ static SSESysExSpeedWindowController *controller = nil;
 - (void)externalDeviceListChanged:(NSNotification *)notification
 {
     [externalDevices release];
-    externalDevices = [[SMExternalDevice externalDevices] retain];
+//    externalDevices = [[SMExternalDevice externalDevices] retain];
+    externalDevices = [[SMDestinationEndpoint destinationEndpoints] retain];
 
     [self finishEditingInWindow];
     [tableView deselectAll:nil];

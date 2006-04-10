@@ -1,8 +1,6 @@
 #import "SSEDeleteController.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
-
+#import <SnoizeMIDI/SnoizeMIDI.h>
 #import "SSEMainWindowController.h"
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
@@ -60,10 +58,10 @@ NSString *SSEShowWarningOnDeletePreferenceKey = @"SSEShowWarningOnDelete";
     if ([entries count] == 0)
         return;
 
-    OBASSERT(entriesToDelete == nil);
+    SMAssert(entriesToDelete == nil);
     entriesToDelete = [entries retain];
 
-    if ([[OFPreference preferenceForKey:SSEShowWarningOnDeletePreferenceKey] boolValue]) {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SSEShowWarningOnDeletePreferenceKey]) {
         [doNotWarnOnDeleteAgainCheckbox setIntValue:0];
         [NSApp beginSheet:deleteWarningSheetWindow modalForWindow:[nonretainedMainWindowController window] modalDelegate:self didEndSelector:@selector(deleteWarningSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
     } else {
@@ -91,7 +89,7 @@ NSString *SSEShowWarningOnDeletePreferenceKey = @"SSEShowWarningOnDelete";
     
     if (returnCode == NSOKButton) {
         if ([doNotWarnOnDeleteAgainCheckbox intValue] == 1)
-            [[OFPreference preferenceForKey:SSEShowWarningOnDeletePreferenceKey] setBoolValue:NO];
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:SSEShowWarningOnDeletePreferenceKey];
 
         [self checkForFilesInLibraryDirectory];
     } else {

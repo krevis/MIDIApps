@@ -1,11 +1,9 @@
 #import "SSEMIDIController.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
-
 #import "SSEMainWindowController.h"
 #import "SSECombinationOutputStream.h"
 #import "SSEPreferencesWindowController.h"
+#import "SSEAppController.h"
 
 
 // Turn this on to NSLog the actual amount of time we pause between messages
@@ -32,8 +30,10 @@
 - (void)mainThreadTakeMIDIMessages:(NSArray *)messagesToTake;
 
 - (void)sendNextSysExMessage;
+- (void)sendNextSysExMessageAfterDelay;
 - (void)willStartSendingSysEx:(NSNotification *)notification;
 - (void)doneSendingSysEx:(NSNotification *)notification;
+- (void)finishedSendingMessagesWithSuccessNumber:(NSNumber *)successNumber;
 - (void)finishedSendingMessagesWithSuccess:(BOOL)success;
 
 @end
@@ -42,7 +42,6 @@
 @implementation SSEMIDIController
 
 NSString *SSESelectedDestinationPreferenceKey = @"SSESelectedDestination";
-NSString *SSEHasShownSysExWorkaroundWarningPreferenceKey = @"SSEHasShownSysExWorkaroundWarning";
 NSString *SSESysExReadTimeOutPreferenceKey = @"SSESysExReadTimeOut";
 NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey = @"SSESysExIntervalBetweenSentMessages";
 
@@ -79,7 +78,7 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
     [center addObserver:self selector:@selector(doneSendingSysEx:) name:SMPortOutputStreamFinishedSysExSendNotification object:outputStream];
     [outputStream setIgnoresTimeStamps:YES];
     [outputStream setSendsSysExAsynchronously:YES];
-    [outputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a source for other programs", @"SysExLibrarian", [self bundle], "display name of virtual source")];
+    [outputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a source for other programs", @"SysExLibrarian", SMBundleForObject(self), "display name of virtual source")];
 
     [center addObserver:self selector:@selector(sourceEndpointsAppeared:) name:SMMIDIObjectsAppearedNotification object:[SMSourceEndpoint class]];
     
@@ -99,7 +98,7 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
     [center addObserver:self selector:@selector(receivePreferenceDidChange:) name:SSESysExReceivePreferenceChangedNotification object:nil];
 
     didSetDestinationFromDefaults = NO;
-    destinationSettings = [[OFPreference preferenceForKey:SSESelectedDestinationPreferenceKey] dictionaryValue];
+    destinationSettings = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SSESelectedDestinationPreferenceKey];
     if (destinationSettings) {
         NSString *missingDestinationName;
 
@@ -126,8 +125,6 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
     messages = nil;
     [sendProgressLock release];
     sendProgressLock = nil;
-    [sendNextMessageEvent release];
-    sendNextMessageEvent = nil;
 
     [super dealloc];
 }
@@ -163,13 +160,7 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 
     [nonretainedMainWindowController synchronizeDestinations];
 
-    [[OFPreference preferenceForKey:SSESelectedDestinationPreferenceKey] setDictionaryValue:[outputStream persistentSettings]];
-
-    if ([destination outputStreamDestinationNeedsSysExWorkaround]) {
-        if ([[OFPreference preferenceForKey:SSEHasShownSysExWorkaroundWarningPreferenceKey] boolValue] == NO) {
-            [nonretainedMainWindowController showSysExWorkaroundWarning];
-        }
-    }
+    [[NSUserDefaults standardUserDefaults] setObject:[outputStream persistentSettings] forKey:SSESelectedDestinationPreferenceKey];
 }
 
 - (NSArray *)messages;
@@ -180,8 +171,8 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 - (void)setMessages:(NSArray *)value;
 {
     // Shouldn't do this while listening for messages or playing messages
-    OBASSERT(listeningToMessages == NO);
-    OBASSERT(nonretainedCurrentSendRequest == nil);
+    SMAssert(listeningToMessages == NO);
+    SMAssert(nonretainedCurrentSendRequest == nil);
     
     if (value != messages) {
         [messages release];
@@ -226,7 +217,8 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
     // There is no need to put a lock around these things, assuming that we are in the main thread.
     // messageBytesRead gets changed in a different thread, but it gets changed atomically.
     // messages and totalBytesRead are only modified in the main thread.
-    OBASSERT([NSThread inMainThread]);
+    
+    SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
 
     if (messageCountPtr)
         *messageCountPtr = [messages count];
@@ -244,7 +236,7 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 {
     unsigned int messageIndex, messageCount;
 
-    OBASSERT([NSThread inMainThread]);
+    SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
 
     if (!messages || (messageCount = [messages count]) == 0)
         return;
@@ -263,7 +255,7 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
     sendingMessageIndex = 0;
     bytesToSend = 0;
     bytesSent = 0;
-    sendCancelled = NO;
+    sendStatus = SSEMIDIControllerIdle;
 
     for (messageIndex = 0; messageIndex < messageCount; messageIndex++)
         bytesToSend += [[messages objectAtIndex:messageIndex] fullMessageDataLength];
@@ -275,20 +267,27 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 
 - (void)cancelSendingMessages;
 {
-    OBASSERT([NSThread inMainThread]);
-
-    if (sendNextMessageEvent && [[OFScheduler mainScheduler] abortEvent:sendNextMessageEvent]) {
-        [self finishedSendingMessagesWithSuccess:NO];
-    } else {
-        sendCancelled = YES;
+    SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
+    
+    if (sendStatus == SSEMIDIControllerSending) {
+        sendStatus = SSEMIDIControllerCancelled;
         [outputStream cancelPendingSysExSendRequests];
         // We will get notified when the current send request is finished
+    } else if (sendStatus == SSEMIDIControllerWillDelayBeforeNext) {
+        sendStatus = SSEMIDIControllerCancelled;
+        // -sendNextSysExMessageAfterDelay is going to happen in the main thread, but hasn't happened yet.
+        // We can't stop it from happening, so let it do the cancellation work when it happens.
+    } else if (sendStatus == SSEMIDIControllerDelayingBeforeNext) {
+        // -sendNextSysExMessageAfterDelay has scheduled the next -sendNextSysExMessage, but it hasn't happened yet.
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(sendNextSysExMessage) object:nil];
+        sendStatus = SSEMIDIControllerFinishing;
+        [self finishedSendingMessagesWithSuccess:NO];
     }
 }
 
 - (void)getMessageCount:(unsigned int *)messageCountPtr messageIndex:(unsigned int *)messageIndexPtr bytesToSend:(unsigned int *)bytesToSendPtr bytesSent:(unsigned int *)bytesSentPtr;
 {
-    OBASSERT([NSThread inMainThread]);
+    SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
 
     [sendProgressLock lock];
     
@@ -314,7 +313,7 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 
 - (void)takeMIDIMessages:(NSArray *)messagesToTake;
 {
-    [self queueSelector:@selector(mainThreadTakeMIDIMessages:) withObject:messagesToTake];
+    [self performSelectorOnMainThread:@selector(mainThreadTakeMIDIMessages:) withObject:messagesToTake waitUntilDone:NO];
 }
 
 @end
@@ -324,14 +323,14 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 
 - (void)sendPreferenceDidChange:(NSNotification *)notification;
 {
-    pauseTimeBetweenMessages = (double)[[OFPreference preferenceForKey:SSESysExIntervalBetweenSentMessagesPreferenceKey] integerValue] / 1000.0;
+    pauseTimeBetweenMessages = (double)[[NSUserDefaults standardUserDefaults] integerForKey:SSESysExIntervalBetweenSentMessagesPreferenceKey] / 1000.0;
 }
 
 - (void)receivePreferenceDidChange:(NSNotification *)notification;
 {
     double sysExReadTimeOut;
 
-    sysExReadTimeOut = (double)[[OFPreference preferenceForKey:SSESysExReadTimeOutPreferenceKey] integerValue] / 1000.0;
+    sysExReadTimeOut = (double)[[NSUserDefaults standardUserDefaults] integerForKey:SSESysExReadTimeOutPreferenceKey] / 1000.0;
     [inputStream setSysExTimeOut:sysExReadTimeOut];
 }
 
@@ -356,8 +355,11 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 
 - (void)outputStreamSelectedDestinationDisappeared:(NSNotification *)notification;
 {
-    if (nonretainedCurrentSendRequest || sendNextMessageEvent)
+    if (sendStatus == SSEMIDIControllerSending ||
+        sendStatus == SSEMIDIControllerWillDelayBeforeNext ||
+        sendStatus == SSEMIDIControllerDelayingBeforeNext) {
         [self cancelSendingMessages];
+    }
 
     [self selectFirstAvailableDestinationWhenPossible];
 }
@@ -393,7 +395,7 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 
 - (void)startListening;
 {
-    OBASSERT(listeningToMessages == NO);
+    SMAssert(listeningToMessages == NO);
     
     [inputStream cancelReceivingSysExMessage];
         // In case a sysex message is currently being received
@@ -410,13 +412,18 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
     // NOTE This is happening in the MIDI thread
 
     messageBytesRead = [[[notification userInfo] objectForKey:@"length"] unsignedIntValue];
-    [self queueSelectorOnce:@selector(updateSysExReadIndicator)];
-        // We want multiple updates to get coalesced, so only queue it once
+
+    // We want multiple updates to get coalesced, so only do this once
+    if (!scheduledUpdateSysExReadIndicator) {
+        [self performSelectorOnMainThread:@selector(updateSysExReadIndicator) withObject:nil waitUntilDone:NO];
+        scheduledUpdateSysExReadIndicator = YES;
+    }
 }
 
 - (void)updateSysExReadIndicator;
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:SSEMIDIControllerReadStatusChangedNotification object:self];
+    scheduledUpdateSysExReadIndicator = NO;
 }
 
 - (void)mainThreadTakeMIDIMessages:(NSArray *)messagesToTake;
@@ -458,6 +465,8 @@ static MIDITimeStamp pauseStartTimeStamp = 0;
 
 - (void)sendNextSysExMessage;
 {
+    SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
+
 #if LOG_PAUSE_DURATION
     if (pauseStartTimeStamp > 0) {
         UInt64 realPauseDuration;
@@ -467,15 +476,30 @@ static MIDITimeStamp pauseStartTimeStamp = 0;
     }
 #endif
     
-    [sendNextMessageEvent release];
-    sendNextMessageEvent = nil;
-
+    sendStatus = SSEMIDIControllerSending;
+    
     [outputStream takeMIDIMessages:[NSArray arrayWithObject:[messages objectAtIndex:sendingMessageIndex]]];
 }
 
+- (void)sendNextSysExMessageAfterDelay
+{
+    SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
+
+    if (sendStatus == SSEMIDIControllerWillDelayBeforeNext) {
+        // wait for pauseTimeBetweenMessages, then sendNextSysExMessage
+        sendStatus = SSEMIDIControllerDelayingBeforeNext;
+        [self performSelector:@selector(sendNextSysExMessage) withObject:nil afterDelay:pauseTimeBetweenMessages];        
+    } else if (sendStatus == SSEMIDIControllerCancelled) {
+        // The user cancelled before we got here, so finish the cancellation now
+        sendStatus = SSEMIDIControllerFinishing;
+        [self finishedSendingMessagesWithSuccess:NO];
+    }
+}
+
+
 - (void)willStartSendingSysEx:(NSNotification *)notification;
 {    
-    OBASSERT(nonretainedCurrentSendRequest == nil);
+    SMAssert(nonretainedCurrentSendRequest == nil);
     nonretainedCurrentSendRequest = [[notification userInfo] objectForKey:@"sendRequest"];
 }
 
@@ -486,7 +510,7 @@ static MIDITimeStamp pauseStartTimeStamp = 0;
     SMSysExSendRequest *sendRequest;
 
     sendRequest = [[notification userInfo] objectForKey:@"sendRequest"];
-    OBASSERT(sendRequest == nonretainedCurrentSendRequest);
+    SMAssert(sendRequest == nonretainedCurrentSendRequest);
 
     [sendProgressLock lock];
 
@@ -500,24 +524,36 @@ static MIDITimeStamp pauseStartTimeStamp = 0;
     pauseStartTimeStamp = 0;
 #endif
     
-    if (sendCancelled) {
-        [self mainThreadPerformSelector:@selector(finishedSendingMessagesWithSuccess:) withBool:NO];
+    if (sendStatus == SSEMIDIControllerCancelled) {
+        sendStatus = SSEMIDIControllerFinishing;
+        [self performSelectorOnMainThread:@selector(finishedSendingMessagesWithSuccessNumber:) withObject:[NSNumber numberWithBool:NO] waitUntilDone:NO];
     } else if (sendingMessageIndex < sendingMessageCount && [sendRequest wereAllBytesSent]) {
 #if LOG_PAUSE_DURATION
         pauseStartTimeStamp = SMGetCurrentHostTime();
 #endif
-        sendNextMessageEvent = [[[OFScheduler mainScheduler] scheduleSelector:@selector(sendNextSysExMessage) onObject:self afterTime:pauseTimeBetweenMessages] retain];
+        sendStatus = SSEMIDIControllerWillDelayBeforeNext;
+        [self performSelectorOnMainThread:@selector(sendNextSysExMessageAfterDelay) withObject:nil waitUntilDone:NO];
     } else {
-        [self mainThreadPerformSelector:@selector(finishedSendingMessagesWithSuccess:) withBool:[sendRequest wereAllBytesSent]];
+        sendStatus = SSEMIDIControllerFinishing;
+        [self performSelectorOnMainThread:@selector(finishedSendingMessagesWithSuccessNumber:) withObject:[NSNumber numberWithBool:[sendRequest wereAllBytesSent]] waitUntilDone:NO];
     }
+}
+
+- (void)finishedSendingMessagesWithSuccessNumber:(NSNumber *)successNumber
+{
+    [self finishedSendingMessagesWithSuccess:[successNumber boolValue]];
 }
 
 - (void)finishedSendingMessagesWithSuccess:(BOOL)success;
 {
+    SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
+
     [[NSNotificationCenter defaultCenter] postNotificationName:SSEMIDIControllerSendFinishedNotification object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:success] forKey:@"success"]];
 
     // Now we are done with the messages and can get rid of them
     [self setMessages:nil];
+    
+    sendStatus = SSEMIDIControllerIdle;
 }
 
 @end

@@ -18,12 +18,7 @@
 
 - (NSArray *)outputStreamDestinationExternalDeviceNames;
 {
-    return [[self connectedExternalDevices] arrayByPerformingSelector:@selector(name)];
-}
-
-- (BOOL)outputStreamDestinationNeedsSysExWorkaround;
-{
-    return [self needsSysExWorkaround];
+    return [[self connectedExternalDevices] SnoizeMIDI_arrayByMakingObjectsPerformSelector:@selector(name)];
 }
 
 @end

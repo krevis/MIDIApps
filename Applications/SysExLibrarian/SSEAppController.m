@@ -1,7 +1,5 @@
 #import "SSEAppController.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 #import "SSEMainWindowController.h"
@@ -18,6 +16,9 @@
 
 @implementation SSEAppController
 
+static NSThread *sMainThread = nil;
+
+
 - (id)init;
 {
     if (![super init])
@@ -25,6 +26,11 @@
 
     hasFinishedLaunching = NO;
 
+    if (!sMainThread) {
+        // Assume that the current thread is the main thread
+        sMainThread = [NSThread currentThread];
+    }
+    
     return self;
 }
 
@@ -33,18 +39,15 @@
 //
 
 - (void)applicationWillFinishLaunching:(NSNotification *)notification;
-{
-    // Make sure we go multithreaded, and that our scheduler starts up
-    [OFScheduler mainScheduler];
-
+{    
     // Initialize CoreMIDI while the app's icon is still bouncing, so we don't have a large pause after it stops bouncing
     // but before the app's window opens.  (CoreMIDI needs to find and possibly start its server process, which can take a while.)
     if ([SMClient sharedClient] == nil) {
         NSString *title, *message, *quit;
 
-        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", [self bundle], "title of error alert");
-        message = NSLocalizedStringFromTableInBundle(@"There was a problem initializing the MIDI system. To try to fix this, log out and log back in, or restart the computer.", @"SysExLibrarian", [self bundle], "error message if MIDI initialization fails");
-        quit = NSLocalizedStringFromTableInBundle(@"Quit", @"SysExLibrarian", [self bundle], "title of quit button");
+        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", SMBundleForObject(self), "title of error alert");
+        message = NSLocalizedStringFromTableInBundle(@"There was a problem initializing the MIDI system. To try to fix this, log out and log back in, or restart the computer.", @"SysExLibrarian", SMBundleForObject(self), "error message if MIDI initialization fails");
+        quit = NSLocalizedStringFromTableInBundle(@"Quit", @"SysExLibrarian", SMBundleForObject(self), "title of quit button");
 
         NSRunCriticalAlertPanel(title, @"%@", quit, nil, nil, message);
         [NSApp terminate:nil];
@@ -61,8 +64,8 @@
     if (preflightError) {
         NSString *title, *quit;
         
-        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", [self bundle], "title of error alert");
-        quit = NSLocalizedStringFromTableInBundle(@"Quit", @"SysExLibrarian", [self bundle], "title of quit button");
+        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", SMBundleForObject(self), "title of error alert");
+        quit = NSLocalizedStringFromTableInBundle(@"Quit", @"SysExLibrarian", SMBundleForObject(self), "title of quit button");
 
         NSRunCriticalAlertPanel(title, @"%@", quit, nil, nil, preflightError);
         [NSApp terminate:nil];
@@ -146,20 +149,20 @@
     NSString *path;
     NSString *message = nil;
 
-    path = [[self bundle] pathForResource:@"docs" ofType:@"htmld"];
+    path = [SMBundleForObject(self) pathForResource:@"docs" ofType:@"htmld"];
     if (path) {
         path = [path stringByAppendingPathComponent:@"index.html"];
         if (![[NSWorkspace sharedWorkspace] openFile:path]) {
-            message = NSLocalizedStringFromTableInBundle(@"The help file could not be opened.", @"SysExLibrarian", [self bundle], "error message if opening the help file fails");
+            message = NSLocalizedStringFromTableInBundle(@"The help file could not be opened.", @"SysExLibrarian", SMBundleForObject(self), "error message if opening the help file fails");
         }
     } else {
-        message = NSLocalizedStringFromTableInBundle(@"The help file could not be found.", @"SysExLibrarian", [self bundle], "error message if help file can't be found");
+        message = NSLocalizedStringFromTableInBundle(@"The help file could not be found.", @"SysExLibrarian", SMBundleForObject(self), "error message if help file can't be found");
     }
 
     if (message) {
         NSString *title;
 
-        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", [self bundle], "title of error alert");
+        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", SMBundleForObject(self), "title of error alert");
         NSRunAlertPanel(title, @"%@", nil, nil, nil, message);
     }
 }
@@ -172,19 +175,20 @@
     BOOL success = NO;
 
     feedbackEmailAddress = @"SysExLibrarian@snoize.com";	// Don't localize this
-    feedbackEmailSubject = NSLocalizedStringFromTableInBundle(@"SysEx Librarian Feedback", @"SysExLibrarian", [self bundle], "subject of feedback email");
-    mailToURLString = [[NSString stringWithFormat:@"mailto:%@?Subject=%@", feedbackEmailAddress, feedbackEmailSubject] fullyEncodeAsIURI];
+    feedbackEmailSubject = NSLocalizedStringFromTableInBundle(@"SysEx Librarian Feedback", @"SysExLibrarian", SMBundleForObject(self), "subject of feedback email");
+    mailToURLString = [NSString stringWithFormat:@"mailto:%@?Subject=%@", feedbackEmailAddress, feedbackEmailSubject];
+	mailToURLString = [(NSString*)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)mailToURLString, NULL, NULL, kCFStringEncodingUTF8) autorelease];
     mailToURL = [NSURL URLWithString:mailToURLString];
     if (mailToURL)
-        success = [[NSWorkspace sharedWorkspace] openURL:mailToURL];
-
+        success = [[NSWorkspace sharedWorkspace] openURL:mailToURL];    
+    
     if (!success) {
         NSString *message, *title;
 
         NSLog(@"Couldn't send feedback: url string was <%@>, url was <%@>", mailToURLString, mailToURL);
 
-        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", [self bundle], "title of error alert");
-        message = NSLocalizedStringFromTableInBundle(@"SysEx Librarian could not ask your email application to create a new message, so you will have to do it yourself. Please send your email to this address:\n%@\nThank you!", @"SysExLibrarian", [self bundle], "message of alert when can't send feedback email");
+        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", SMBundleForObject(self), "title of error alert");
+        message = NSLocalizedStringFromTableInBundle(@"SysEx Librarian could not ask your email application to create a new message, so you will have to do it yourself. Please send your email to this address:\n%@\nThank you!", @"SysExLibrarian", SMBundleForObject(self), "message of alert when can't send feedback email");
 
         NSRunAlertPanel(title, message, nil, nil, nil, feedbackEmailAddress);
     }
@@ -202,6 +206,11 @@
     controller = [SSEMainWindowController mainWindowController];
     [controller showWindow:nil];
     [controller addToLibrary:sender];
+}
+
+- (BOOL)inMainThread
+{
+    return ([NSThread currentThread] == sMainThread);
 }
 
 @end

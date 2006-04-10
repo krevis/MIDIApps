@@ -2,10 +2,18 @@
 #import <SnoizeMIDI/SnoizeMIDI.h>
 #import "SSEOutputStreamDestination.h"
 
-@class OFScheduledEvent;
 @class SSEMainWindowController;
 @class SSECombinationOutputStream;
 
+
+typedef enum {
+    SSEMIDIControllerIdle,
+    SSEMIDIControllerSending,
+    SSEMIDIControllerWillDelayBeforeNext,     
+    SSEMIDIControllerDelayingBeforeNext,
+    SSEMIDIControllerCancelled,
+    SSEMIDIControllerFinishing
+}   SSEMIDIControllerSendStatus;
 
 @interface SSEMIDIController : NSObject <SMMessageDestination>
 {
@@ -32,8 +40,8 @@
     unsigned int sendingMessageIndex;
     unsigned int bytesToSend;
     unsigned int bytesSent;
-    OFScheduledEvent *sendNextMessageEvent;
-    BOOL sendCancelled;
+    SSEMIDIControllerSendStatus sendStatus;
+    BOOL scheduledUpdateSysExReadIndicator;
 }
 
 - (id)initWithWindowController:(SSEMainWindowController *)mainWindowController;
@@ -66,7 +74,6 @@
 
 // Preferences keys
 extern NSString *SSESelectedDestinationPreferenceKey;
-extern NSString *SSEHasShownSysExWorkaroundWarningPreferenceKey;
 extern NSString *SSESysExReadTimeOutPreferenceKey;
 extern NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey;
 

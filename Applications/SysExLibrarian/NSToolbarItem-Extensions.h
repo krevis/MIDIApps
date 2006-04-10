@@ -3,6 +3,6 @@
 
 @interface NSToolbarItem (SSEExtensions)
 
-- (void)takeValuesFromDictionary:(NSDictionary *)itemInfo target:(id)target;
+- (void)SSE_takeValuesFromDictionary:(NSDictionary *)itemInfo target:(id)target;
 
 @end

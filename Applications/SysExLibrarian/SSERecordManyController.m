@@ -1,8 +1,5 @@
 #import "SSERecordManyController.h"
 
-#import <OmniBase/OmniBase.h>
-#import <OmniFoundation/OmniFoundation.h>
-
 #import "SSEMainWindowController.h"
 #import "SSEMIDIController.h"
 
@@ -31,9 +28,9 @@
     BOOL hasAtLeastOneCompleteMessage;
 
     if (!totalProgressFormatString)
-        totalProgressFormatString = [NSLocalizedStringFromTableInBundle(@"Total: %u message, %@", @"SysExLibrarian", [self bundle], "format of progress message when receiving multiple sysex messages (one message so far)") retain];
+        totalProgressFormatString = [NSLocalizedStringFromTableInBundle(@"Total: %u message, %@", @"SysExLibrarian", SMBundleForObject(self), "format of progress message when receiving multiple sysex messages (one message so far)") retain];
     if (!totalProgressPluralFormatString)
-        totalProgressPluralFormatString = [NSLocalizedStringFromTableInBundle(@"Total: %u messages, %@", @"SysExLibrarian", [self bundle], "format of progress message when receiving multiple sysex messages (more than one message so far)") retain];
+        totalProgressPluralFormatString = [NSLocalizedStringFromTableInBundle(@"Total: %u messages, %@", @"SysExLibrarian", SMBundleForObject(self), "format of progress message when receiving multiple sysex messages (more than one message so far)") retain];
 
     if (bytesRead == 0) {
         [progressMessageField setStringValue:[self waitingForSysexMessage]];
@@ -41,7 +38,7 @@
     } else {
         [progressIndicator animate:nil];
         [progressMessageField setStringValue:[self receivingSysexMessage]];
-        [progressBytesField setStringValue:[NSString abbreviatedStringForBytes:bytesRead]];
+        [progressBytesField setStringValue:[NSString SnoizeMIDI_abbreviatedStringForByteCount:bytesRead]];
     }
 
     hasAtLeastOneCompleteMessage = (messageCount > 0);
@@ -49,7 +46,7 @@
         NSString *format;
 
         format = (messageCount > 1)  ? totalProgressPluralFormatString : totalProgressFormatString;
-        totalProgress = [NSString stringWithFormat:format, messageCount, [NSString abbreviatedStringForBytes:totalBytesRead]];
+        totalProgress = [NSString stringWithFormat:format, messageCount, [NSString SnoizeMIDI_abbreviatedStringForByteCount:totalBytesRead]];
     } else {
         totalProgress = @"";
     }

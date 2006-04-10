@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>syx</string>
+				<string>SYX</string>
+				<string>Syx</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>SysExDocument.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>SysEx Librarian Document</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>sysX</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>mid</string>
+				<string>MID</string>
+				<string>midi</string>
+				<string>MIDI</string>
+				<string>Midi</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>MIDIDocument.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>MIDI file</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>Midi</string>
+				<string>.WAV</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>sXLb</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>LibraryDocument.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>SysEx Librarian Library</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>sXLb</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>XML</string>
+		</dict>
+	</array>
+	<key>CFBundleExecutable</key>
+	<string>SysEx Librarian</string>
+	<key>CFBundleGetInfoString</key>
+	<string>1.0.5, Copyright 2002-2006 Kurt Revis</string>
+	<key>CFBundleIconFile</key>
+	<string>SysExLibrarian.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.snoize.SysExLibrarian</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>SysEx Librarian</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.5</string>
+	<key>CFBundleSignature</key>
+	<string>SnSX</string>
+	<key>CFBundleVersion</key>
+	<string>1.0.5</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2002-2006 Kurt Revis</string>
+	<key>NSMainNibFile</key>
+	<string>MainMenu</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+</dict>
+</plist>
