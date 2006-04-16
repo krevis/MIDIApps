@@ -95,6 +95,31 @@
     } NS_HANDLER {
         // Ignore the exception
     } NS_ENDHANDLER;
+    
+    // Also set the speed on this device's source endpoints (which we get to via its entities).
+    // This is how MIDISendSysex() determines what speed to use, surprisingly.
+    
+    MIDIDeviceRef deviceRef = [self deviceRef];
+    ItemCount entityCount = MIDIDeviceGetNumberOfEntities(deviceRef);
+    ItemCount entityIndex;
+    for (entityIndex = 0; entityIndex < entityCount; entityIndex++)
+    {
+        MIDIEntityRef entityRef = MIDIDeviceGetEntity(deviceRef, entityIndex);
+        if (entityRef)
+        {
+            ItemCount sourceCount = MIDIEntityGetNumberOfSources(entityRef);
+            ItemCount sourceIndex;
+            for (sourceIndex = 0; sourceIndex < sourceCount; sourceIndex++)
+            {
+                MIDIEndpointRef sourceEndpoint = MIDIEntityGetSource(entityRef, sourceIndex);
+                if (sourceEndpoint)
+                {
+                    MIDIObjectSetIntegerProperty(sourceEndpoint, kMIDIPropertyMaxSysExSpeed, value);
+                    // ignore errors, nothing we can do anyway
+                }
+            }
+        }
+    }    
 }
 
 @end
