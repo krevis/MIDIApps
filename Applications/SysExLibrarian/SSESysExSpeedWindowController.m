@@ -25,6 +25,8 @@
 - (void)externalDeviceChanged:(NSNotification *)notification;
 - (void)externalDeviceListChanged:(NSNotification *)notification;
 
+- (void) forceCoreMIDIToUseNewSysExSpeed;
+
 @end
 
 
@@ -110,9 +112,15 @@ static SSESysExSpeedWindowController *controller = nil;
     NSString *identifier = [tableColumn identifier];
 
     if ([identifier isEqualToString:@"speed"]) {
+        // TODO validation!  is there a formatter on this thing?
+        
         int newValue = [object intValue];
         if (newValue != [device maxSysExSpeed])
+        {
             [device setMaxSysExSpeed:newValue];
+         
+            [self forceCoreMIDIToUseNewSysExSpeed];     // workaround for bug
+        }
     }
 }
 
@@ -136,8 +144,7 @@ static SSESysExSpeedWindowController *controller = nil;
         [center removeObserver:self name:SMMIDIObjectPropertyChangedNotification object:device];
     }
     
-//    externalDevices = [[SMExternalDevice externalDevices] retain];
-    externalDevices = [[SMDestinationEndpoint destinationEndpoints] retain];
+    externalDevices = [[SMExternalDevice externalDevices] retain];
 
     enumerator = [externalDevices objectEnumerator];
     while ((device = [enumerator nextObject])) {
@@ -151,19 +158,36 @@ static SSESysExSpeedWindowController *controller = nil;
     if ([propertyName isEqualToString:(NSString *)kMIDIPropertyName] || [propertyName isEqualToString:(NSString *)kMIDIPropertyMaxSysExSpeed]) {
         [self finishEditingInWindow];
         // TODO want to make sure editing is canceled, not possibly accepted
+        // TODO only do a setNeedsDisplay on the rect of the appropriate row, not a full reloadData
         [self synchronizeControls];
     }
 }
 
 - (void)externalDeviceListChanged:(NSNotification *)notification
 {
+    // TODO (krevis) shouldn't this redo -captureExternalDevices?
+    
     [externalDevices release];
-//    externalDevices = [[SMExternalDevice externalDevices] retain];
-    externalDevices = [[SMDestinationEndpoint destinationEndpoints] retain];
+    externalDevices = [[SMExternalDevice externalDevices] retain];
 
     [self finishEditingInWindow];
     [tableView deselectAll:nil];
     [self synchronizeControls];    
+}
+
+- (void) forceCoreMIDIToUseNewSysExSpeed
+{
+    // The CoreMIDI client caches the last device that was given to MIDISendSysex(), along with its max sysex speed.
+    // So when we change the speed, it doesn't notice and continues to use the old speed.
+    // To fix this, we send a tiny sysex message to a different device. In fact we can get away with a NULL device.
+
+    NS_DURING
+    {
+        SMSystemExclusiveMessage* message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp: 0 data: [NSData data]];
+        [[SMSysExSendRequest sysExSendRequestWithMessage: message endpoint: nil] send];
+    } NS_HANDLER {
+        // don't care
+    } NS_ENDHANDLER;
 }
 
 @end
