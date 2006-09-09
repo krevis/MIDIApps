@@ -18,14 +18,9 @@
 
 @interface  SSESysExSpeedWindowController (Private)
 
-- (void)synchronizeControls;
-
-- (void)captureExternalDevices;
-
-- (void)externalDeviceChanged:(NSNotification *)notification;
-- (void)externalDeviceListChanged:(NSNotification *)notification;
-
-- (void) forceCoreMIDIToUseNewSysExSpeed;
+- (void)captureEndpointsAndExternalDevices;
+- (void)midiSetupChanged:(NSNotification *)notification;
+- (void)midiObjectChanged:(NSNotification *)notification;
 
 @end
 
@@ -47,10 +42,9 @@ static SSESysExSpeedWindowController *controller = nil;
     if (!(self = [super initWithWindowNibName:@"SysExSpeed"]))
         return nil;
 
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(externalDeviceListChanged:) name:SMMIDIObjectListChangedNotification object:[SMExternalDevice class]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(externalDeviceListChanged:) name:SMMIDIObjectListChangedNotification object:[SMDestinationEndpoint class]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(midiSetupChanged:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
 
-    [self captureExternalDevices];
+    [self captureEndpointsAndExternalDevices];
     
     return self;
 }
@@ -64,6 +58,8 @@ static SSESysExSpeedWindowController *controller = nil;
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+
+    [endpoints release];
     [externalDevices release];
     
     [super dealloc];
@@ -72,56 +68,139 @@ static SSESysExSpeedWindowController *controller = nil;
 - (IBAction)showWindow:(id)sender;
 {
     [self window];	// Make sure the window gets loaded the first time
-    [self synchronizeControls];
+    
+    [outlineView reloadData];
+
     [super showWindow:sender];
+}
+
+- (void) awakeFromNib
+{
+    [outlineView setAutoresizesOutlineColumn: NO];
+
+    // Workaround to get continuous updates from the sliders in the table view.
+    // You can't just set it, or its cell, to be continuous -- that still doesn't
+    // give you continuous updates through the normal table view interface.
+    // What DOES work is to have the cell message us directly.
+    NSTableColumn* col = [outlineView tableColumnWithIdentifier: @"speed"];
+    [[col dataCell] setTarget: self];
+    [[col dataCell] setAction: @selector(takeSpeedFromSelectedCellInTableView:)];
 }
 
 //
 // Actions
 //
 
+- (void) takeSpeedFromSelectedCellInTableView: (id) sender
+{
+    // sender is the outline view; get the selected cell to find its new value.    
+    NSCell* cell = [outlineView selectedCell];
+    int newValue = [cell intValue];
+    
+    // Don't actually set the value while we're tracking -- no need to update CoreMIDI
+    // continuously.  Instead, remember which item is getting tracked and what its value
+    // is "supposed" to be.  When tracking finishes, the new value comes through 
+    // -outlineView:setObjectValue:..., and we'll set it for real. 
+    int row = [outlineView clickedRow];
+    id item = [outlineView itemAtRow: row];
+    trackingMIDIObject = (SMMIDIObject*)item;
+    speedOfTrackingMIDIObject = newValue;  
+    [outlineView setNeedsDisplayInRect: [outlineView rectOfRow: row]];
+}
 
 @end
 
 
 @implementation SSESysExSpeedWindowController (DelegatesNotificationsDataSources)
 
-- (int)numberOfRowsInTableView:(NSTableView *)tableView
+- (id)outlineView:(NSOutlineView *)anOutlineView child:(int)index ofItem:(id)item
 {
-    return [externalDevices count];
-}
-
-- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row
-{
-    SMExternalDevice *device = [externalDevices objectAtIndex:row];
-    NSString *identifier = [tableColumn identifier];
-    id objectValue = nil;
-
-    if ([identifier isEqualToString:@"name"]) {
-        objectValue = [device name];
-    } else if ([identifier isEqualToString:@"speed"]) {
-        objectValue = [NSNumber numberWithInt:[device maxSysExSpeed]];
-    }
-
-    return objectValue;    
-}
-
-- (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(int)row
-{
-    SMExternalDevice *device = [externalDevices objectAtIndex:row];
-    NSString *identifier = [tableColumn identifier];
-
-    if ([identifier isEqualToString:@"speed"]) {
-        // TODO validation!  is there a formatter on this thing?
-        
-        int newValue = [object intValue];
-        if (newValue != [device maxSysExSpeed])
-        {
-            [device setMaxSysExSpeed:newValue];
-         
-            [self forceCoreMIDIToUseNewSysExSpeed];     // workaround for bug
+    id child = nil;
+    
+    if (item == nil) {
+        if (index < [endpoints count]) {
+            child = [endpoints objectAtIndex: index];
+        }
+    } else {
+        SMDestinationEndpoint* endpoint = (SMDestinationEndpoint*)item;
+        NSArray* connectedExternalDevices = [endpoint connectedExternalDevices];
+        if (index < [connectedExternalDevices count]) {
+            child = [[endpoint connectedExternalDevices] objectAtIndex: index];
         }
     }
+    
+    return child;
+}
+
+- (BOOL)outlineView:(NSOutlineView *)anOutlineView isItemExpandable:(id)item
+{
+    BOOL isItemExpandable = NO;
+    
+    if (item == nil) {
+        isItemExpandable = YES;
+    } else if ([item isKindOfClass: [SMDestinationEndpoint class]]) {
+        SMDestinationEndpoint* endpoint = (SMDestinationEndpoint*)item;
+        isItemExpandable = ([[endpoint connectedExternalDevices] count] > 0);
+    }
+    
+    return isItemExpandable;    
+}
+
+- (int)outlineView:(NSOutlineView *)anOutlineView numberOfChildrenOfItem:(id)item
+{
+    int childCount = 0;
+    
+    if (item == nil) {
+        childCount = [endpoints count];
+    } else if ([item isKindOfClass: [SMDestinationEndpoint class]]) {
+        SMDestinationEndpoint* endpoint = (SMDestinationEndpoint*)item;
+        childCount = [[endpoint connectedExternalDevices] count];
+    }
+
+    return childCount;
+}
+
+- (id)outlineView:(NSOutlineView *)anOutlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+{
+    id objectValue = nil;
+    
+    if (item && tableColumn) {
+        NSString *identifier = [tableColumn identifier];
+        
+        if ([identifier isEqualToString:@"name"]) {
+            objectValue = [item name];
+        } else if ([identifier isEqualToString:@"speed"] || [identifier isEqualToString: @"bytesPerSecond"]) {
+            int speed = (item == trackingMIDIObject) ? speedOfTrackingMIDIObject : [item maxSysExSpeed];
+            objectValue = [NSNumber numberWithInt:speed];
+        } else if ([identifier isEqualToString:@"percent"]) {
+            int speed = (item == trackingMIDIObject) ? speedOfTrackingMIDIObject : [item maxSysExSpeed];
+            float percent = (speed / 3125.0) * 100.0;
+            objectValue = [NSNumber numberWithFloat:percent];
+        }
+    }
+        
+    return objectValue;
+}
+
+- (void)outlineView:(NSOutlineView *)anOutlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+{
+    if (item && tableColumn) {
+        NSString *identifier = [tableColumn identifier];
+        
+        if ([identifier isEqualToString:@"speed"]) {
+            int newValue = [object intValue];
+            SMMIDIObject* midiObject = (SMMIDIObject*)item;
+            if (newValue > 0 && newValue != [midiObject maxSysExSpeed])
+            {
+                [midiObject setMaxSysExSpeed:newValue];
+                
+                // Work around bug where CoreMIDI doesn't pay attention to the new speed
+                [[SMClient sharedClient] forceCoreMIDIToUseNewSysExSpeed];
+            }
+            
+            trackingMIDIObject = nil;
+        }
+    }    
 }
 
 @end
@@ -129,65 +208,58 @@ static SSESysExSpeedWindowController *controller = nil;
 
 @implementation SSESysExSpeedWindowController (Private)
 
-- (void)synchronizeControls;
-{
-    [tableView reloadData];
-}
-
-- (void)captureExternalDevices;
+- (void)captureEndpointsAndExternalDevices;
 {
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    NSEnumerator *enumerator = [externalDevices objectEnumerator];
-    SMExternalDevice *device;
+    NSEnumerator *enumerator;
+    id midiObject;
 
-    while ((device = [enumerator nextObject])) {
-        [center removeObserver:self name:SMMIDIObjectPropertyChangedNotification object:device];
+    enumerator = [endpoints objectEnumerator];
+    while ((midiObject = [enumerator nextObject])) {
+        [center removeObserver:self name:SMMIDIObjectPropertyChangedNotification object:midiObject];
     }
     
+    enumerator = [externalDevices objectEnumerator];
+    while ((midiObject = [enumerator nextObject])) {
+        [center removeObserver:self name:SMMIDIObjectPropertyChangedNotification object:midiObject];
+    }
+    
+    endpoints = [[SMDestinationEndpoint destinationEndpoints] retain];
     externalDevices = [[SMExternalDevice externalDevices] retain];
+
+    enumerator = [endpoints objectEnumerator];
+    while ((midiObject = [enumerator nextObject])) {
+        [center addObserver:self selector:@selector(midiObjectChanged:) name:SMMIDIObjectPropertyChangedNotification object:midiObject];
+    }
 
     enumerator = [externalDevices objectEnumerator];
-    while ((device = [enumerator nextObject])) {
-        [center addObserver:self selector:@selector(externalDeviceChanged:) name:SMMIDIObjectPropertyChangedNotification object:device];
+    while ((midiObject = [enumerator nextObject])) {
+        [center addObserver:self selector:@selector(midiObjectChanged:) name:SMMIDIObjectPropertyChangedNotification object:midiObject];
     }
 }
 
-- (void)externalDeviceChanged:(NSNotification *)notification
+- (void)midiSetupChanged:(NSNotification *)notification
+{
+    [self captureEndpointsAndExternalDevices];
+
+    if ([[self window] isVisible]) {
+        // TODO (krevis) will this matter?  will this even work after we've tossed our list of stuff?
+    //    [self finishEditingInWindow];
+
+        [outlineView reloadData];
+    }
+}
+
+- (void)midiObjectChanged:(NSNotification *)notification
 {
     NSString* propertyName = [[notification userInfo] objectForKey:SMMIDIObjectChangedPropertyName];
-    if ([propertyName isEqualToString:(NSString *)kMIDIPropertyName] || [propertyName isEqualToString:(NSString *)kMIDIPropertyMaxSysExSpeed]) {
-        [self finishEditingInWindow];
-        // TODO want to make sure editing is canceled, not possibly accepted
-        // TODO only do a setNeedsDisplay on the rect of the appropriate row, not a full reloadData
-        [self synchronizeControls];
+    if ([propertyName isEqualToString:(NSString *)kMIDIPropertyName] ||
+        [propertyName isEqualToString:(NSString *)kMIDIPropertyMaxSysExSpeed]) {
+        int row = [outlineView rowForItem: [notification object]];
+        if (row >= 0) {
+            [outlineView setNeedsDisplayInRect: [outlineView rectOfRow: row]];
+        }
     }
-}
-
-- (void)externalDeviceListChanged:(NSNotification *)notification
-{
-    // TODO (krevis) shouldn't this redo -captureExternalDevices?
-    
-    [externalDevices release];
-    externalDevices = [[SMExternalDevice externalDevices] retain];
-
-    [self finishEditingInWindow];
-    [tableView deselectAll:nil];
-    [self synchronizeControls];    
-}
-
-- (void) forceCoreMIDIToUseNewSysExSpeed
-{
-    // The CoreMIDI client caches the last device that was given to MIDISendSysex(), along with its max sysex speed.
-    // So when we change the speed, it doesn't notice and continues to use the old speed.
-    // To fix this, we send a tiny sysex message to a different device. In fact we can get away with a NULL device.
-
-    NS_DURING
-    {
-        SMSystemExclusiveMessage* message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp: 0 data: [NSData data]];
-        [[SMSysExSendRequest sysExSendRequestWithMessage: message endpoint: nil] send];
-    } NS_HANDLER {
-        // don't care
-    } NS_ENDHANDLER;
 }
 
 @end

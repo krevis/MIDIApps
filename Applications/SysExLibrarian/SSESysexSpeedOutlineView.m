@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2003-2006, Kurt Revis.  All rights reserved.
+ Copyright (c) 2006, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -10,25 +10,41 @@
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SSEWindowController.h"
+#import "SSESysexSpeedOutlineView.h"
 
-@class SMMIDIObject;
 
-@interface SSESysExSpeedWindowController : SSEWindowController
+@implementation SSESysexSpeedOutlineView
+
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3
+
+- (void)selectRowIndexes:(NSIndexSet *)indexes byExtendingSelection:(BOOL)extend
 {
-    IBOutlet NSOutlineView *outlineView;
-
-    NSArray *endpoints;
-    NSArray *externalDevices;
+    // Do nothing.  We don't want a selection.
+    // (But we do need to be able to track the slider cells in the table. That's why
+    //  we can't just use the NSOutlineView delegate methods to reject any selection --
+    //  if we do, then tracking doesn't work.)
     
-    SMMIDIObject* trackingMIDIObject;
-    int speedOfTrackingMIDIObject;
-    
-    BOOL ignoringMIDIObjectListChangedNotification;
+    // Even though we do this, cells will still highlight if you click on them.
+    // SSENonHighlightingTextFieldCell fixes that.
 }
 
-+ (SSESysExSpeedWindowController *)sysExSpeedWindowController;
+#else
 
-- (id)init;
+- (void)selectRow:(int)row byExtendingSelection:(BOOL)extend
+{
+    // Ditto, but for compatibility before 10.3.
+}
+
+#endif
+
+@end
+
+
+@implementation SSENonHighlightingTextFieldCell
+
+- (NSColor *)highlightColorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView
+{
+    return nil;
+}
 
 @end

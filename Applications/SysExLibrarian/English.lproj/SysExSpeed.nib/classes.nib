@@ -1,11 +1,22 @@
 {
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = SSENonHighlightingCell; LANGUAGE = ObjC; SUPERCLASS = NSCell; }, 
+        {
+            CLASS = SSENonHighlightingTextFieldCell; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSTextFieldCell; 
+        }, 
         {
             CLASS = SSESysExSpeedWindowController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {tableView = NSTableView; }; 
+            OUTLETS = {outlineView = NSOutlineView; }; 
             SUPERCLASS = SSEWindowController; 
+        }, 
+        {
+            CLASS = SSESysexSpeedOutlineView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSOutlineView; 
         }, 
         {
             CLASS = SSEWindowController; 

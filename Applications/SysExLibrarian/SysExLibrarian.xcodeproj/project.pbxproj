@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		163E35AA09E9EFA600138102 /* NSFileManager-Extensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 163E35A809E9EFA600138102 /* NSFileManager-Extensions.h */; };
 		163E35AB09E9EFA600138102 /* NSFileManager-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 163E35A909E9EFA600138102 /* NSFileManager-Extensions.m */; };
+		1658B8AB09F36B5F00F42BFB /* SSESysexSpeedOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1658B8A909F36B5E00F42BFB /* SSESysexSpeedOutlineView.m */; };
 		16F033540984B76F006C8A44 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
 		16F033560984B76F006C8A44 /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = F559F90A01DEC5E001000164 /* Preferences.nib */; };
 		16F033570984B76F006C8A44 /* MainWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = F559F90F01DEFA9701000164 /* MainWindow.nib */; };
@@ -119,7 +119,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				16F034320984BABA006C8A44 /* SnoizeMIDI.framework in CopyFiles */,
-				163E35AA09E9EFA600138102 /* NSFileManager-Extensions.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
@@ -129,6 +128,8 @@
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		163E35A809E9EFA600138102 /* NSFileManager-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSFileManager-Extensions.h"; sourceTree = "<group>"; };
 		163E35A909E9EFA600138102 /* NSFileManager-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager-Extensions.m"; sourceTree = "<group>"; };
+		1658B8A809F36B5E00F42BFB /* SSESysexSpeedOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSESysexSpeedOutlineView.h; sourceTree = "<group>"; };
+		1658B8A909F36B5E00F42BFB /* SSESysexSpeedOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSESysexSpeedOutlineView.m; sourceTree = "<group>"; };
 		169A4DBF04D37047007059A2 /* SSESysExSpeedWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSESysExSpeedWindowController.h; sourceTree = "<group>"; };
 		169A4DC004D37047007059A2 /* SSESysExSpeedWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSESysExSpeedWindowController.m; sourceTree = "<group>"; };
 		169A4DC404D376F8007059A2 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SysExSpeed.nib; sourceTree = "<group>"; };
@@ -386,6 +387,8 @@
 				F559F90701DEC1D801000164 /* SSEPreferencesWindowController.m */,
 				169A4DBF04D37047007059A2 /* SSESysExSpeedWindowController.h */,
 				169A4DC004D37047007059A2 /* SSESysExSpeedWindowController.m */,
+				1658B8A809F36B5E00F42BFB /* SSESysexSpeedOutlineView.h */,
+				1658B8A909F36B5E00F42BFB /* SSESysexSpeedOutlineView.m */,
 			);
 			name = "Preferences window";
 			sourceTree = "<group>";
@@ -723,6 +726,7 @@
 				16F033870984B76F006C8A44 /* SMDestinationEndpoint-SSEOutputStreamDestination.m in Sources */,
 				16F033880984B76F006C8A44 /* SSESysExSpeedWindowController.m in Sources */,
 				163E35AB09E9EFA600138102 /* NSFileManager-Extensions.m in Sources */,
+				1658B8AB09F36B5F00F42BFB /* SSESysexSpeedOutlineView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
