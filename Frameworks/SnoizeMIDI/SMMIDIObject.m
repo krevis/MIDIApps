@@ -295,6 +295,24 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
     return ![self isOffline];
 }
 
+- (int)maxSysExSpeed
+{
+    int speed = 3125;	// Default speed for standard MIDI: 3125 bytes/second
+    
+    NS_DURING {
+        speed = [self integerForProperty:kMIDIPropertyMaxSysExSpeed];
+    } NS_HANDLER {
+        // Ignore the exception, just return the default value
+    } NS_ENDHANDLER;
+    
+    return speed;
+}
+
+- (void)setMaxSysExSpeed:(int)value
+{
+    MIDIObjectSetIntegerProperty(objectRef, kMIDIPropertyMaxSysExSpeed, value);
+    // ignore errors, and don't call [self checkIfPropertySetIsAllowed]
+}
 
 //
 // General property access

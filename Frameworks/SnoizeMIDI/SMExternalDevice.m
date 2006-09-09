@@ -75,26 +75,9 @@
     return [self stringForProperty:kMIDIPropertyImage];
 }
 
-- (int)maxSysExSpeed
-{
-    int speed = 3125;	// Default speed for standard MIDI: 3125 bytes/second
-    
-    NS_DURING {
-        speed = [self integerForProperty:kMIDIPropertyMaxSysExSpeed];
-    } NS_HANDLER {
-        // Ignore the exception, just return the default value
-    } NS_ENDHANDLER;
-
-    return speed;
-}
-
 - (void)setMaxSysExSpeed:(int)value
 {
-    NS_DURING {
-        [self setInteger:value forProperty:kMIDIPropertyMaxSysExSpeed];
-    } NS_HANDLER {
-        // Ignore the exception
-    } NS_ENDHANDLER;
+    [super setMaxSysExSpeed: value];
     
     // Also set the speed on this device's source endpoints (which we get to via its entities).
     // This is how MIDISendSysex() determines what speed to use, surprisingly.

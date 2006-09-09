@@ -736,7 +736,16 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
 
 + (NSArray *)destinationEndpoints;
 {
-    return [self allObjectsInOrder];
+    NSArray* destinationEndpoints = [self allObjectsInOrder];
+    
+    SMDestinationEndpoint* workaroundEndpoint = [[SMClient sharedClient] sysExSpeedWorkaroundDestinationEndpoint];
+    if (workaroundEndpoint)
+    {
+        destinationEndpoints = [NSMutableArray arrayWithArray: destinationEndpoints];
+        [(NSMutableArray*)destinationEndpoints removeObjectIdenticalTo: workaroundEndpoint];
+    }
+
+    return destinationEndpoints;
 }
 
 + (SMDestinationEndpoint *)destinationEndpointWithUniqueID:(MIDIUniqueID)aUniqueID;

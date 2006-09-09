@@ -14,6 +14,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreMIDI/CoreMIDI.h>
 
+@class SMDestinationEndpoint;
 
 @interface SMClient : NSObject
 {
@@ -23,6 +24,7 @@
     BOOL isHandlingSetupChange;
     CFBundleRef coreMIDIFrameworkBundle;
     NSMutableDictionary *coreMIDIPropertyNameDictionary;
+    SMDestinationEndpoint* workaroundVirtualDestination;
 }
 
 + (SMClient *)sharedClient;
@@ -44,6 +46,9 @@
 - (BOOL)coreMIDICanFindObjectByUniqueID;
 - (BOOL)coreMIDICanGetDeviceFromEntity;
 - (BOOL)doesSendSysExRespectExternalDeviceSpeed;
+
+- (void)forceCoreMIDIToUseNewSysExSpeed;
+- (SMDestinationEndpoint*) sysExSpeedWorkaroundDestinationEndpoint;
 
 @end
 

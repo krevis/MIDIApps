@@ -68,6 +68,11 @@
 - (BOOL)isOffline;
 - (BOOL)isOnline;
 
+- (int)maxSysExSpeed;
+- (void)setMaxSysExSpeed:(int)value;
+    // Maximum SysEx speed in bytes/second
+
+
 // General property access
 
 - (NSDictionary *)allProperties;

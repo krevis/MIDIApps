@@ -30,8 +30,4 @@
 - (NSString *)modelName;
 - (NSString *)pathToImageFile;
 
-// Maximum SysEx speed in bytes/second
-- (int)maxSysExSpeed;
-- (void)setMaxSysExSpeed:(int)value;
-
 @end

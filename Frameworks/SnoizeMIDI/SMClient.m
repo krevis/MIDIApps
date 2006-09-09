@@ -12,7 +12,10 @@
 
 
 #import "SMClient.h"
+#import "SMEndpoint.h"
 #import "SMMIDIObject.h"
+#import "SMSystemExclusiveMessage.h"
+#import "SMSysExSendRequest.h"
 
 
 @interface SMClient (Private)
@@ -218,6 +221,54 @@ const UInt32 kCoreMIDIFrameworkVersionIn10_3 = 0x26008000;	// TODO find out what
 - (BOOL)doesSendSysExRespectExternalDeviceSpeed
 {
     return [self coreMIDIFrameworkVersion] >= kCoreMIDIFrameworkVersionIn10_3;
+}
+
+//
+// Sysex speed workaround
+//
+// The CoreMIDI client caches the last device that was given to MIDISendSysex(), along with its max sysex speed.
+// So when we change the speed, it doesn't notice and continues to use the old speed.
+// To fix this, we send a tiny sysex message to a different device.  Unfortunately we can't just use a NULL endpoint,
+// it has to be a real live endpoint.    
+//
+// TODO (krevis) I don't think this really belongs here, but where should it go?
+//
+
+static void IgnoreMIDIReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, void *srcConnRefCon)
+{
+    // Ignore the input
+}
+
+- (void)forceCoreMIDIToUseNewSysExSpeed
+{
+    if (!workaroundVirtualDestination) {
+        // We're going to make a few changes (making an endpoint, setting our workaroundVirtualDestination ivar,
+        // then making the endpoint private), so turn off external notifications until we're done.
+        BOOL wasPostingExternalNotification = [self postsExternalSetupChangeNotification];
+        [self setPostsExternalSetupChangeNotification:NO];
+        
+        workaroundVirtualDestination = [SMDestinationEndpoint createVirtualDestinationEndpointWithName: @"Workaround" 
+                                                                                              readProc: IgnoreMIDIReadProc
+                                                                                        readProcRefCon: NULL
+                                                                                              uniqueID: 0];
+        
+        // turn this back on just before the last change, so the last change causes a notification to get posted
+        [self setPostsExternalSetupChangeNotification:wasPostingExternalNotification];
+
+        [workaroundVirtualDestination setInteger:1 forProperty:kMIDIPropertyPrivate];
+    }    
+    
+    NS_DURING {
+        SMSystemExclusiveMessage* message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp: 0 data: [NSData data]];
+        [[SMSysExSendRequest sysExSendRequestWithMessage: message endpoint: workaroundVirtualDestination] send];
+    } NS_HANDLER {
+        // don't care
+    } NS_ENDHANDLER;    
+}
+
+- (SMDestinationEndpoint*) sysExSpeedWorkaroundDestinationEndpoint
+{
+    return workaroundVirtualDestination;
 }
 
 @end
