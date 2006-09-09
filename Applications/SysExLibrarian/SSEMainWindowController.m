@@ -127,6 +127,13 @@ static SSEMainWindowController *controller = nil;
     [libraryTableView registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
     [libraryTableView setTarget:self];
     [libraryTableView setDoubleAction:@selector(play:)];
+    
+    // fix cells so they don't draw their own background (overdrawing the alternating row colors)
+    NSEnumerator* oe = [[libraryTableView tableColumns] objectEnumerator];
+    NSTableColumn* column;
+    while ((column = [oe nextObject])) {
+        [[column dataCell] setDrawsBackground: NO];
+    }
 
     // The MIDI controller may cause us to do some things to the UI, so we create it now instead of earlier
     midiController = [[SSEMIDIController alloc] initWithWindowController:self];
