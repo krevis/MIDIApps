@@ -35,4 +35,12 @@
 // Should be sent only to SMMIDIObject subclasses, not to SMMIDIObject itself.
 + (void)refreshAllObjects;
 
+// Post a notification stating that the list of available objects of this kind of SMMIDIObject has changed.
+// Should be sent only to SMMIDIObject subclasses, not to SMMIDIObject itself.
++ (void)postObjectListChangedNotification;
+
+// Post a notification stating that an object of this kind of SMMIDIObject has been added.
+// Should be sent only to SMMIDIObject subclasses, not to SMMIDIObject itself.
++ (void)postObjectsAddedNotificationWithObjects:(NSArray*)objects;
+
 @end

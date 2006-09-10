@@ -24,7 +24,6 @@
     BOOL isHandlingSetupChange;
     CFBundleRef coreMIDIFrameworkBundle;
     NSMutableDictionary *coreMIDIPropertyNameDictionary;
-    SMDestinationEndpoint* workaroundVirtualDestination;
 }
 
 + (SMClient *)sharedClient;
@@ -48,7 +47,6 @@
 - (BOOL)doesSendSysExRespectExternalDeviceSpeed;
 
 - (void)forceCoreMIDIToUseNewSysExSpeed;
-- (SMDestinationEndpoint*) sysExSpeedWorkaroundDestinationEndpoint;
 
 @end
 

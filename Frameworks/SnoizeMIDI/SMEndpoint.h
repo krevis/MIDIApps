@@ -113,6 +113,8 @@
 + (void)flushOutputForAllDestinationEndpoints;
 - (void)flushOutput;
 
++ (SMDestinationEndpoint*) sysExSpeedWorkaroundDestinationEndpoint;
+
 @end
 
 

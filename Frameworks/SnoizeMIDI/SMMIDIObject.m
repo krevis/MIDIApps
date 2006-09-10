@@ -48,9 +48,6 @@ static int midiObjectOrdinalComparator(id object1, id object2, void *context);
 
 + (void)midiSetupChanged:(NSNotification *)notification;
 
-+ (void)postObjectListChangedNotification;
-+ (void)postObjectsAddedNotificationWithObjects:(NSArray*)objects;
-
 - (void)updateUniqueID;
 
 - (void)postRemovedNotification;
@@ -700,23 +697,6 @@ static NSMapTable *classToObjectsMapTable = NULL;
     [self refreshAllObjects];
 }
 
-+ (void)postObjectListChangedNotification;
-{
-    SMAssert(self != [SMMIDIObject class]);
-
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectListChangedNotification object:self];
-}
-
-+ (void)postObjectsAddedNotificationWithObjects:(NSArray*)objects
-{
-    NSDictionary *userInfo;
-    
-    SMAssert(self != [SMMIDIObject class]);
-
-    userInfo = [NSDictionary dictionaryWithObject:objects forKey:SMMIDIObjectsThatAppeared];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectsAppearedNotification object:self userInfo:userInfo];    
-}
-
 - (void)updateUniqueID;
 {
     if (noErr != MIDIObjectGetIntegerProperty(objectRef, kMIDIPropertyUniqueID, &uniqueID))
@@ -883,6 +863,23 @@ static NSMapTable *classToObjectsMapTable = NULL;
     // Then, post a general notification that the list of objects for this subclass has changed (if it has).
     if ([addedObjects count] > 0 || [removedObjects count] > 0 || [replacedObjects count] > 0)
         [self postObjectListChangedNotification];
+}
+
++ (void)postObjectListChangedNotification;
+{
+    SMAssert(self != [SMMIDIObject class]);
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectListChangedNotification object:self];
+}
+
++ (void)postObjectsAddedNotificationWithObjects:(NSArray*)objects
+{
+    NSDictionary *userInfo;
+    
+    SMAssert(self != [SMMIDIObject class]);
+    
+    userInfo = [NSDictionary dictionaryWithObject:objects forKey:SMMIDIObjectsThatAppeared];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectsAppearedNotification object:self userInfo:userInfo];    
 }
 
 @end

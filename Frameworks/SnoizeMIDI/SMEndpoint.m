@@ -691,6 +691,8 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
 @implementation SMDestinationEndpoint
 
 static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES };
+static SMDestinationEndpoint* sSysExSpeedWorkaroundWorkaroundEndpoint = nil;
+static BOOL sCreatingSysExSpeedWorkaroundEndpoint = NO;
 
 //
 // SMMIDIObject required overrides
@@ -738,11 +740,10 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
 {
     NSArray* destinationEndpoints = [self allObjectsInOrder];
     
-    SMDestinationEndpoint* workaroundEndpoint = [[SMClient sharedClient] sysExSpeedWorkaroundDestinationEndpoint];
-    if (workaroundEndpoint)
+    if (sSysExSpeedWorkaroundWorkaroundEndpoint)
     {
         destinationEndpoints = [NSMutableArray arrayWithArray: destinationEndpoints];
-        [(NSMutableArray*)destinationEndpoints removeObjectIdenticalTo: workaroundEndpoint];
+        [(NSMutableArray*)destinationEndpoints removeObjectIdenticalTo: sSysExSpeedWorkaroundWorkaroundEndpoint];
     }
 
     return destinationEndpoints;
@@ -820,6 +821,72 @@ static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES
 - (void)flushOutput;
 {
     MIDIFlushOutput((MIDIEndpointRef)objectRef);
+}
+
+//
+// Sysex speed workaround
+//
+// The CoreMIDI client caches the last device that was given to MIDISendSysex(), along with its max sysex speed.
+// So when we change the speed, it doesn't notice and continues to use the old speed.
+// To fix this, we send a tiny sysex message to a different device.  Unfortunately we can't just use a NULL endpoint,
+// it has to be a real live endpoint.    
+//
+
+static void IgnoreMIDIReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, void *srcConnRefCon)
+{
+    // Ignore the input
+}
+
++ (SMDestinationEndpoint*) sysExSpeedWorkaroundDestinationEndpoint
+{
+    if (!sSysExSpeedWorkaroundWorkaroundEndpoint) {
+        // We're going to make a few changes (making an endpoint, setting our workaroundVirtualDestination ivar,
+        // then making the endpoint private), so turn off external notifications until we're done.
+        BOOL wasPostingExternalNotification = [[SMClient sharedClient] postsExternalSetupChangeNotification];
+        [[SMClient sharedClient] setPostsExternalSetupChangeNotification:NO];
+
+        // Also set a flag so we don't post object list notifications until this object has been fully set up
+        // (and, most importantly, that we have assigned to sSysExSpeedWorkaroundWorkaroundEndpoint so 
+        // -destinationEndpoints can do the filtering properly).
+        sCreatingSysExSpeedWorkaroundEndpoint = YES;
+        
+        sSysExSpeedWorkaroundWorkaroundEndpoint = [SMDestinationEndpoint createVirtualDestinationEndpointWithName: @"Workaround" 
+                                                                                                         readProc: IgnoreMIDIReadProc
+                                                                                                   readProcRefCon: NULL
+                                                                                                         uniqueID: 0];
+        [sSysExSpeedWorkaroundWorkaroundEndpoint retain];
+        
+        [sSysExSpeedWorkaroundWorkaroundEndpoint setInteger:1 forProperty:kMIDIPropertyPrivate];
+
+        sCreatingSysExSpeedWorkaroundEndpoint = NO;
+        // post internal notifications that we squelched earlier
+        if (sSysExSpeedWorkaroundWorkaroundEndpoint) {
+            [self postObjectListChangedNotification];
+            [self postObjectsAddedNotificationWithObjects:[NSArray arrayWithObject: sSysExSpeedWorkaroundWorkaroundEndpoint]];
+        }
+                
+        [[SMClient sharedClient] setPostsExternalSetupChangeNotification:wasPostingExternalNotification];
+        if(wasPostingExternalNotification)
+        {
+            [[NSNotificationCenter defaultCenter] postNotificationName:SMClientSetupChangedNotification object:[SMClient sharedClient]];
+        }
+    }
+    
+    return sSysExSpeedWorkaroundWorkaroundEndpoint;
+}    
+
++ (void)postObjectListChangedNotification;
+{
+    if (!sCreatingSysExSpeedWorkaroundEndpoint) {
+        [super postObjectListChangedNotification];
+    }
+}
+
++ (void)postObjectsAddedNotificationWithObjects:(NSArray*)objects
+{
+    if (!sCreatingSysExSpeedWorkaroundEndpoint) {
+        [super postObjectsAddedNotificationWithObjects:objects];
+    }
 }
 
 @end
