@@ -111,7 +111,7 @@ static SSEPreferencesWindowController *controller = nil;
 {
     if ([@"speed" isEqualToString: [tabViewItem identifier]]) {
         [sysExSpeedController willShow];
-    } else {
+    } else if ([@"speed" isEqualToString: [[tabView selectedTabViewItem] identifier]]) {
         [sysExSpeedController willHide];
     }
 }
