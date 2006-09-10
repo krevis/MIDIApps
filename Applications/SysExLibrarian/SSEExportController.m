@@ -15,6 +15,19 @@
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_3
+
+@interface NSSavePanel (DeclarationFor10_2)
+
+// Declare this method so we can at least compile against 10.2 as a target
+// (we check for it at runtime anyway so we're safe)
+- (void)setAllowsOtherFileTypes:(BOOL)flag;
+
+@end
+
+#endif
+
+
 @interface SSEExportController (Private)
 
 - (void)saveSheetDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
