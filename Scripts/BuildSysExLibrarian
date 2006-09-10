@@ -2,37 +2,25 @@
 #
 # Script to build the release version of the SysEx Librarian application.
 
-# Display commands as they happen -- useful for debugging
-# setopt XTRACE
+# Display commands as they happen -- useful for debugging:
+#setopt XTRACE
 
-ThisScriptDir=`dirname ${PWD}/$0`
+# build output directory -- change this to whatever you like
+BUILD_OUTPUT_DIR=${HOME}/SysExLibrarianBuild
 
-SourceRoot=~/Source
-OmniFrameworkSource=${SourceRoot}/OmniGroup/Frameworks
-SnoizeSource=${SourceRoot}/Snoize
-SnoizeFrameworkSource=${SnoizeSource}/Frameworks
-SnoizeAppSource=${SnoizeSource}/Applications
-
-# buildDirectory=`defaults read com.apple.ProjectBuilder PBXIntermediatesDirectory`
-# if [ -z "$buildDirectory" ]; then
-#     buildDirectory=$PUBLIC/$USER/Products/Builds
-# fi
-# productDirectory=`defaults read com.apple.ProjectBuilder PBXProductDirectory`
-# if [ -z "$productDirectory" ]; then
-#     productDirectory=$PUBLIC/$USER/Products
-# fi
-#
-# TODO: Omni used to do the above, then pass the variables in to pbxbuild like
-#    SYMROOT=${productDirectory} OBJROOT=${buildDirectory}/${projectName%.pbproj}.build
-# This was something of a workaround for the fact that pbxbuild didn't use to read the
-# settings from defaults. Nowadays I think we should check for the defaults settings, and if
-# they're not there, we should just set them.  (Right? but that has side effects)
-
-PUBLIC=/Users/Shared
-INSTALL_DIRECTORY=$PUBLIC/$USER/InstalledProducts
-INSTALL_BUILD_DIRECTORY=$PUBLIC/$USER/InstallBuild
+# the built copy of the app will be put here:
+INSTALL_DIRECTORY=${BUILD_OUTPUT_DIR}/InstalledProducts
+# the build products will be put here:
+INSTALL_BUILD_DIRECTORY=${BUILD_OUTPUT_DIR}/InstallBuild
+# the name of the app
 APP_EXECUTABLE_NAME="SysEx Librarian"
 APP_WRAPPER_NAME="${APP_EXECUTABLE_NAME}.app"
+
+# find the source for the frameworks and the app itself
+ThisScriptDir=`dirname ${PWD}/$0`
+SourceRoot=${ThisScriptDir}/..
+SnoizeFrameworkSource=${SourceRoot}/Frameworks
+SnoizeAppSource=${SourceRoot}/Applications
 
 #
 # Process arguments
@@ -52,13 +40,11 @@ for arg in $argv ; do
 done
 
 if [[ $DO_INSTALL -eq 1 ]] ; then
-	FRAMEWORK_BUILDSTYLE="DeploymentInApp"
-	APP_BUILDSTYLE="Deployment"
+	APP_CONFIGURATION="Release"
 	BUILD_ACTION=install
-	EXTRA_SETTINGS=(SYMROOT="${INSTALL_BUILD_DIRECTORY}" OBJROOT="${INSTALL_BUILD_DIRECTORY}/Builds")
+	EXTRA_SETTINGS=(SYMROOT="${INSTALL_BUILD_DIRECTORY}" OBJROOT="${INSTALL_BUILD_DIRECTORY}/Builds" SHARED_PRECOMPS_DIR="${INSTALL_BUILD_DIRECTORY}/Precomps")
 else
-	FRAMEWORK_BUILDSTYLE="Development"
-	APP_BUILDSTYLE="Development"
+	APP_CONFIGURATION ="Debug"
 	BUILD_ACTION=
 	EXTRA_SETTINGS=
 fi
@@ -68,18 +54,8 @@ fi
 #
 
 if [[ $DO_CLEAN -eq 1 ]] ; then
-
-	cd ${OmniFrameworkSource}/OmniBase
-	pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE clean $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
-
-	cd ${OmniFrameworkSource}/OmniFoundation
-	pbxbuild -target "OmniFoundation (MIDIMonitor subset framework)" -buildstyle $FRAMEWORK_BUILDSTYLE clean $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
-
-	cd ${SnoizeFrameworkSource}/SnoizeMIDI
-	pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE clean $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
-
 	cd ${SnoizeAppSource}/SysExLibrarian
-	pbxbuild -buildstyle $APP_BUILDSTYLE clean $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
+	xcodebuild -configuration $APP_CONFIGURATION clean $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
 
 fi
 
@@ -88,55 +64,12 @@ fi
 #
 
 if [[ $DO_INSTALL -eq 1 ]] ; then
-	mkdir -p "$INSTALL_DIRECTORY"
-	rm -rf "$INSTALL_DIRECTORY/$APP_WRAPPER_NAME"
+	mkdir -p "$INSTALL_DIRECTORY" || {echo "Couldn't cd to install directory!"; exit 1}
+	rm -rf "$INSTALL_DIRECTORY/$APP_WRAPPER_NAME" || {echo "Couldn't remove old installed app!"; exit 1}
 fi
-
-cd ${OmniFrameworkSource}/OmniBase
-pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
-
-cd ${OmniFrameworkSource}/OmniFoundation
-pbxbuild -target "OmniFoundation (MIDIMonitor subset framework)" -buildstyle $FRAMEWORK_BUILDSTYLE INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
-
-cd ${SnoizeFrameworkSource}/SnoizeMIDI
-pbxbuild -buildstyle $FRAMEWORK_BUILDSTYLE INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
 
 cd ${SnoizeAppSource}/SysExLibrarian
-pbxbuild -buildstyle $APP_BUILDSTYLE DSTROOT=/ INSTALL_MODE_FLAG=go-w,a+rX $BUILD_ACTION $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
-	# NOTE: We are relying on the app's project having an INSTALL_PATH
-	# set to $INSTALL_DIRECTORY. For some reason, if it is set to nothing in the project,
-	# setting it here will not cause the install to happen.
-	#
-	# INSTALL_MODE_FLAG is normally a-w,a+rX.
-	# We change it so the files are still writeable by the owner (us)
-	# so we can modify them later
-
-#
-# Then remove extra junk from the app and frameworks
-#
-
-if [[ $DO_INSTALL -eq 1 ]]; then
-	cd "$INSTALL_DIRECTORY/$APP_WRAPPER_NAME" || {echo "Couldn't cd to app wrapper!"; exit 1}
-	# Nobody needs the headers
-	find . -name 'Headers' -exec rm -rf {} \; -prune
-	# We don't need non-English localizations right now
-	find . -name \*.lproj \! -name English.lproj -exec rm -rf {} \; -prune
-	# I don't trust the new keyedobjects nibs yet... IB is too flaky.
-	find . -name keyedobjects.nib -type f -exec rm -f {} \;
-fi
-
-#
-# Then update prebinding. The frameworks' timestamps have changed since they were linked against,
-# so their prebinding will be disabled unless we do this.
-#
-
-if [[ $DO_INSTALL -eq 1 ]]; then
-	cd "$INSTALL_DIRECTORY/$APP_WRAPPER_NAME/Contents/MacOS" || {echo "Couldn't cd to app's Contents/MacOS!"; exit 1}
-	redo_prebinding -e "$PWD" ../Frameworks/OmniBase.framework/Versions/Current/OmniBase || exit 1
-	redo_prebinding -e "$PWD" ../Frameworks/OmniFoundation.framework/Versions/Current/OmniFoundation || exit 1
-	redo_prebinding -e "$PWD" ../Frameworks/SnoizeMIDI.framework/Versions/Current/SnoizeMIDI || exit 1
-	redo_prebinding -e "$PWD" "./$APP_EXECUTABLE_NAME" || exit 1
-fi
+xcodebuild -configuration $APP_CONFIGURATION $BUILD_ACTION DSTROOT=/ SNOIZE_APP_INSTALL_PATH=$INSTALL_DIRECTORY $EXTRA_SETTINGS || {echo "Build failed!"; exit 1}
 
 #
 # Then put the app into a disk image (if -image argument is specified)
@@ -144,9 +77,10 @@ fi
 
 if [[ $DO_IMAGE -eq 1 ]]; then
 	if [[ -x "$ThisScriptDir/MakeDiskImage" ]] ; then
-		$ThisScriptDir/MakeDiskImage "SysEx Librarian" "SysExLibrarian" "${SnoizeAppSource}/SysExLibrarian/Read Me.html"
+		rm -f "${BUILD_OUTPUT_DIR}/SysExLibrarian.dmg"
+		$ThisScriptDir/MakeDiskImage "$INSTALL_DIRECTORY" "SysEx Librarian" "${BUILD_OUTPUT_DIR}/SysExLibrarian.dmg" "${SnoizeAppSource}/SysExLibrarian/Read Me.html"
 	else
-		echo "Error: Couldn't find the MakeDiskImage script."
+		echo "Error: Couldn't find MakeDiskImage script."
 	fi
 else
 	echo "Done!"
