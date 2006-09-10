@@ -22,6 +22,8 @@
 - (void)midiSetupChanged:(NSNotification *)notification;
 - (void)midiObjectChanged:(NSNotification *)notification;
 
+- (int)effectiveSpeedForItem:(SMMIDIObject*)item;
+
 @end
 
 
@@ -102,10 +104,28 @@ static SSESysExSpeedWindowController *controller = nil;
     // is "supposed" to be.  When tracking finishes, the new value comes through 
     // -outlineView:setObjectValue:..., and we'll set it for real. 
     int row = [outlineView clickedRow];
-    id item = [outlineView itemAtRow: row];
-    trackingMIDIObject = (SMMIDIObject*)item;
+    SMMIDIObject* item = (SMMIDIObject*)[outlineView itemAtRow: row];
+    trackingMIDIObject = item;
     speedOfTrackingMIDIObject = newValue;  
+
+    // update the slider value based on the effective speed (which may be different than the tracking value)
+    int effectiveValue = [self effectiveSpeedForItem: item];
+    if (newValue != effectiveValue)
+    {
+        [cell setIntValue: effectiveValue];
+    }    
+    
+    // update the display for this item
     [outlineView setNeedsDisplayInRect: [outlineView rectOfRow: row]];
+    // and any parents as necessary
+    int level = [outlineView levelForRow: row];
+    if (level > 0)
+    {
+        // walk up rows until we hit one at a higher level -- that will be our parent
+        while (row > 0 && [outlineView levelForRow: --row] == level)
+            ;   // nothing needs doing
+        [outlineView setNeedsDisplayInRect: [outlineView rectOfRow: row]];
+    }
 }
 
 @end
@@ -170,10 +190,10 @@ static SSESysExSpeedWindowController *controller = nil;
         if ([identifier isEqualToString:@"name"]) {
             objectValue = [item name];
         } else if ([identifier isEqualToString:@"speed"] || [identifier isEqualToString: @"bytesPerSecond"]) {
-            int speed = (item == trackingMIDIObject) ? speedOfTrackingMIDIObject : [item maxSysExSpeed];
+            int speed = [self effectiveSpeedForItem: (SMMIDIObject*)item];
             objectValue = [NSNumber numberWithInt:speed];
         } else if ([identifier isEqualToString:@"percent"]) {
-            int speed = (item == trackingMIDIObject) ? speedOfTrackingMIDIObject : [item maxSysExSpeed];
+            int speed = [self effectiveSpeedForItem: (SMMIDIObject*)item];
             float percent = (speed / 3125.0) * 100.0;
             objectValue = [NSNumber numberWithFloat:percent];
         }
@@ -260,6 +280,25 @@ static SSESysExSpeedWindowController *controller = nil;
             [outlineView setNeedsDisplayInRect: [outlineView rectOfRow: row]];
         }
     }
+}
+
+- (int)effectiveSpeedForItem:(SMMIDIObject*)item
+{
+    int effectiveSpeed = (item == trackingMIDIObject) ? speedOfTrackingMIDIObject : [item maxSysExSpeed];        
+
+    if ([item isKindOfClass: [SMDestinationEndpoint class]])
+    {
+        // Return the minimum of this endpoint's speed and all of its external devices' speeds
+        NSEnumerator* oe = [[(SMDestinationEndpoint*)item connectedExternalDevices] objectEnumerator];
+        SMMIDIObject* extDevice;
+        while ((extDevice = [oe nextObject]))
+        {
+            int extDeviceSpeed = (extDevice == trackingMIDIObject) ? speedOfTrackingMIDIObject : [extDevice maxSysExSpeed];
+            effectiveSpeed = MIN(effectiveSpeed, extDeviceSpeed);
+        }
+    }
+    
+    return effectiveSpeed;
 }
 
 @end
