@@ -1,0 +1,72 @@
+#!/bin/zsh
+#
+# Script to build the release version of the MIDI Monitor application.
+
+# Display commands as they happen -- useful for debugging
+#setopt XTRACE
+
+# build output directory -- change this to whatever you like
+BUILD_OUTPUT_DIR=${HOME}/SysExLibrarianBuild
+
+INSTALL_DIRECTORY=${BUILD_OUTPUT_DIR}/PackagedSource
+
+PACKAGED_SOURCE_NAME=SysEx\ Librarian\ Source
+PACKAGED_SOURCE_ARCHIVE_NAME=SysExLibrarianSource
+
+
+#ThisScriptDir=`dirname ${PWD}/$0`
+
+SourceRoot=~/Source
+SnoizeSource=${SourceRoot}/Snoize
+SnoizeFrameworkSource=${SnoizeSource}/Frameworks
+SnoizeAppSource=${SnoizeSource}/Applications
+SnoizeScriptSource=${SnoizeSource}/Scripts
+SnoizeDocsSource=${SnoizeSource}/Documentation
+SnoizeConfigurationsSource=${SnoizeSource}/Configurations
+
+
+mkdir -p "$INSTALL_DIRECTORY" || {echo "Couldn't create install directory!"; exit 1}
+
+rm -rf "$INSTALL_DIRECTORY/$PACKAGED_SOURCE_NAME" || {echo "Couldn't remove old packaged source!"; exit 1}
+
+mkdir -p "$INSTALL_DIRECTORY/$PACKAGED_SOURCE_NAME" || {echo "Couldn't create install directory!"; exit 1}
+
+cd $INSTALL_DIRECTORY/$PACKAGED_SOURCE_NAME
+
+mkdir Frameworks; cd Frameworks
+cp -R $SnoizeFrameworkSource/SnoizeMIDI .
+cd ..
+
+mkdir Applications; cd Applications
+cp -R $SnoizeAppSource/SysExLibrarian .
+cd ..
+
+mkdir Scripts; cd Scripts
+cp -R $SnoizeScriptSource/BuildSysExLibrarian .
+cp -R $SnoizeScriptSource/MakeDiskImage .
+cp -R $SnoizeScriptSource/PackageSysExLibrarianSource .
+cd ..
+
+cp -R $SnoizeConfigurationsSource .
+
+cp -R $SnoizeDocsSource/SysExLibrarian/Source/README .
+cp -R $SnoizeDocsSource/SysExLibrarian/Source/LICENSE .
+
+#
+# Remove extra junk from the source
+#
+
+find . -type d -name CVS -exec rm -rf {} \; -prune
+find . -name \*.mode1 -exec rm {} \;
+find . -name \*.pbxuser -exec rm {} \;
+find . -name \*.perspective -exec rm {} \;
+
+#
+# Archive it up
+#
+
+cd ..
+tar -czf ${PACKAGED_SOURCE_ARCHIVE_NAME}.tar.gz $PACKAGED_SOURCE_NAME
+
+echo -n "Done: "
+echo ${PWD}/${PACKAGED_SOURCE_ARCHIVE_NAME}.tar.gz
