@@ -75,6 +75,7 @@
 <P><i>Show file size as Abbreviated / Full:</i> Switches the file size shown in the main window between an abbreviated format (like &quot;1.2 KB&quot;) and the full number of bytes (like &quot;1234&quot;).
 <P><i>Pause between played messages:</i> The amount of time that SysEx Librarian pauses between each SysEx message that it plays. Some devices need some time to process a message before they can accept another one. The default (150 milliseconds) should be enough for most devices. Many devices don't need any delay at all; try turning the pause down to 0 to make playback as quick as possible.
 <P><i>SysEx receive timeout:</i> If a SysEx message does not end normally, SysEx Librarian will wait this amount of time before deciding that the message is finished.  The default (1 second) should be fine for just about everyone.
+<P><i>Transmit Speed:</i> Most MIDI devices can handle sysex messages sent at full speed, but a few older ones have problems keeping up.  If your device doesn't work, try turning down the transmit speed a little bit.  Note that you can change the speed on an individual device, if you've set it up in Audio MIDI Setup.  This is the recommended way to do it (instead of setting the speed on the whole output port), because SysEx Librarian will use the appropriate speed even if you change which port the device is hooked up to.
 
 <br clear="all">
 
@@ -95,8 +96,11 @@
 <P>As a result, many apparent "bugs" in SysEx Librarian really turn out to be bugs in the MIDI driver.
 
 <P><b><i>I can send SysEx to my device, but it doesn't recognize the message. Why?</i></b>
-<BR>In order to trace this problem, we need to know two things:
+<BR>In order to trace this problem, we need to know a few things:
 <ul>
+<li>Is a full-speed sysex transmission too fast for your device?
+<p>Some devices, especially older ones (1980s and early 1990s), cannot deal with sysex that is transmitted at full speed.  Unfortunately there's no real way to find out if this is the case, other than experimenting. You can use the Transmit Speed controls in the Preferences to turn down the speed.
+
 <li>Is the SysEx message correct? (not corrupted somehow -- e.g. missing bytes, containing extra bytes, etc.)
 <p>Where did your SysEx file originally come from?  If you downloaded it from the Internet, chances are that it is good (although that's not a certainty).  If you recorded it using SysEx Librarian, it may have been corrupted on the way in.  If you can, try to find a file that you know is correct.
 </li>
@@ -115,18 +119,12 @@
 <p>If the "From <i>your MIDI interface</i>" message is different from the "To <i>your MIDI interface</i>" message, then the driver either didn't send the same thing that SysEx Librarian told it to, or it couldn't receive the same message back again without corrupting it.   Either way, it's a bug in the driver.
 
 </li>
+
 </ul>
 
 <P><b><i>My MIDI interface is plugged in, and the driver is installed, but I don't see my device in the menu.</i></b>
 <br>You may be running into a problem with Classic, the Mac OS 9 compatibility layer. Classic tends to grab USB devices for its own exclusive use, and doesn't let programs on the native Mac OS X side get to them. Try shutting down Classic and starting SysEx Librarian again. (If SysEx Librarian is started first, and is running when Classic starts, you will not encounter this problem.)
 
-<P><b><i>Notes on specific interfaces:</i></b>
-<ul>
-<li>The driver for Edirol/Roland MIDI interfaces (such as the UM-1, UM-1S, UM-2, and UM-4) has had problems sending SysEx data. I have a report that the latest version of the driver fixes this problem, so please <a href="http://www.edirol.com/support/drivers.html">download the latest version</a> if necessary. (The good driver is version 1.1.0, released 6 November 2002.)
-
-<P>
-<li>MIDIMAN's drivers have had problems handling SysEx, but the latest driver (3.0b1, 16 August 2002) appears to work correctly. If you are using an older version of the driver, getting the new one is highly recommended.
-</ul>
 
 <P><b><i>Having other problems?</i></b>
 <BR>Please let me know and I'll try to help find a solution.  SysEx Librarian is a young program, and there are a lot of very weird MIDI devices out there that it hasn't yet been tested with.  I want to get it working as well as possible, but I can't do that unless you tell me about problems that you encounter.
@@ -137,13 +135,9 @@
 <br>If you find this program useful, I'd love to hear about it! And if you encounter bugs or have suggestions for improvement, please let me know.
 
 <P><BR><BR><font size="+1" face="arial, helvetica"><b>Acknowledgements</b></font>
-<P>SysExLibrarian is copyright &copy; 2002 by Kurt Revis. All rights reserved.
+<P>SysExLibrarian is copyright &copy; 2002-2006 by Kurt Revis. All rights reserved.
 
-<P>SysEx Librarian uses some publicly available code:
-<ul><li>OmniBase and OmniFoundation, from <a href="http://www.omnigroup.com/">The Omni Group</a>
-<li>BDAlias, from <a href="http://www.bdistributed.com/">bDistributed.com, Inc.</a> (<a href="BDAliasLicense.html">copyright and license</a>)
-</ul>
-Thanks to the authors for saving me a bunch of time.
+<P>SysEx Librarian uses BDAlias, from <a href="http://www.bdistributed.com/">bDistributed.com, Inc.</a> (<a href="BDAliasLicense.html">copyright and license</a>).
 <P>Also: Thanks to the folks on the <a href="http://www.lists.apple.com/coreaudio-api">CoreAudio-API mailing list</a> for all the help they have provided, and to everyone who has sent in bug reports and feature requests.
 <P>Also thanks to Steve Grace for his original <a href="http://pobox.com/~sgrace/sysex/">SysEx utility</a> for the Classic Mac OS.
 
