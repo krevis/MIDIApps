@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		163E35AB09E9EFA600138102 /* NSFileManager-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 163E35A909E9EFA600138102 /* NSFileManager-Extensions.m */; };
 		1658B8AB09F36B5F00F42BFB /* SSESysexSpeedOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1658B8A909F36B5E00F42BFB /* SSESysexSpeedOutlineView.m */; };
+		16666D850AB404250084C23B /* CocoaCryptoHashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 16666D830AB404250084C23B /* CocoaCryptoHashing.m */; };
+		16666E450AB4057D0084C23B /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 16666E440AB405740084C23B /* libcrypto.dylib */; };
 		16DC484B0AB3A359002ECBD6 /* SSESysExSpeedController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16DC48490AB3A359002ECBD6 /* SSESysExSpeedController.m */; };
 		16F033540984B76F006C8A44 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
 		16F033560984B76F006C8A44 /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = F559F90A01DEC5E001000164 /* Preferences.nib */; };
@@ -130,6 +132,9 @@
 		163E35A909E9EFA600138102 /* NSFileManager-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager-Extensions.m"; sourceTree = "<group>"; };
 		1658B8A809F36B5E00F42BFB /* SSESysexSpeedOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSESysexSpeedOutlineView.h; sourceTree = "<group>"; };
 		1658B8A909F36B5E00F42BFB /* SSESysexSpeedOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSESysexSpeedOutlineView.m; sourceTree = "<group>"; };
+		16666D820AB404250084C23B /* CocoaCryptoHashing.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CocoaCryptoHashing.h; sourceTree = "<group>"; };
+		16666D830AB404250084C23B /* CocoaCryptoHashing.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CocoaCryptoHashing.m; sourceTree = "<group>"; };
+		16666E440AB405740084C23B /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = /usr/lib/libcrypto.dylib; sourceTree = "<absolute>"; };
 		169A4DC404D376F8007059A2 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SysExSpeed.nib; sourceTree = "<group>"; };
 		16DC48480AB3A359002ECBD6 /* SSESysExSpeedController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SSESysExSpeedController.h; sourceTree = "<group>"; };
 		16DC48490AB3A359002ECBD6 /* SSESysExSpeedController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SSESysExSpeedController.m; sourceTree = "<group>"; };
@@ -234,6 +239,7 @@
 				16F0338B0984B76F006C8A44 /* CoreMIDI.framework in Frameworks */,
 				16F0338D0984B76F006C8A44 /* Carbon.framework in Frameworks */,
 				16F034250984BA49006C8A44 /* SnoizeMIDI.framework in Frameworks */,
+				16666E450AB4057D0084C23B /* libcrypto.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,6 +252,7 @@
 				1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */,
 				F539E386020F2C2F01000164 /* Carbon.framework */,
 				F559F8FA01DEC0C601000164 /* CoreMIDI.framework */,
+				16666E440AB405740084C23B /* libcrypto.dylib */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -398,6 +405,8 @@
 			children = (
 				F5F52C1102200EBE01000164 /* SSEDetailsWindowController.h */,
 				F5F52C1302200F6601000164 /* SSEDetailsWindowController.m */,
+				16666D820AB404250084C23B /* CocoaCryptoHashing.h */,
+				16666D830AB404250084C23B /* CocoaCryptoHashing.m */,
 			);
 			name = "Details window";
 			sourceTree = "<group>";
@@ -727,6 +736,7 @@
 				163E35AB09E9EFA600138102 /* NSFileManager-Extensions.m in Sources */,
 				1658B8AB09F36B5F00F42BFB /* SSESysexSpeedOutlineView.m in Sources */,
 				16DC484B0AB3A359002ECBD6 /* SSESysExSpeedController.m in Sources */,
+				16666D850AB404250084C23B /* CocoaCryptoHashing.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

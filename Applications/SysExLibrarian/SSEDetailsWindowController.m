@@ -17,6 +17,7 @@
 
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
+#import "CocoaCryptoHashing.h"
 
 
 @interface SSEDetailsWindowController (Private)
@@ -300,6 +301,9 @@ static NSMutableArray *controllers = nil;
         [lineString release];
     }
 
+    [formattedString appendFormat: @"\nMD5 checksum:   %@", [data md5HexHash]];
+    [formattedString appendFormat: @"\nSHA-1 checksum: %@", [data sha1HexHash]];        
+        
     return formattedString;
 }
 
