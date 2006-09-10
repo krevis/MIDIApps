@@ -107,17 +107,12 @@
 
 - (void)finishEditingInWindow;
 {
-    // Make sure that anything that happens because of this is in its own undo group
-    [[self undoManager] beginUndoGrouping];
-
     if ([[self window] makeFirstResponder:nil]) {
         // Validation turned out OK
     } else {
         // Validation of the field didn't work, but we need to end editing NOW regardless
         [[self window] endEditingFor:nil];
     }
-
-    [[self undoManager] endUndoGrouping];
 }
 
 //
