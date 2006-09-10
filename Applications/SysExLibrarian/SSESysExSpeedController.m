@@ -11,14 +11,15 @@
  */
 
 
-#import "SSESysExSpeedWindowController.h"
+#import "SSESysExSpeedController.h"
 
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 
-@interface  SSESysExSpeedWindowController (Private)
+@interface  SSESysExSpeedController (Private)
 
 - (void)captureEndpointsAndExternalDevices;
+- (void)releaseEndpointsAndExternalDevices;
 - (void)midiSetupChanged:(NSNotification *)notification;
 - (void)midiObjectChanged:(NSNotification *)notification;
 
@@ -29,35 +30,7 @@
 @end
 
 
-@implementation SSESysExSpeedWindowController
-
-static SSESysExSpeedWindowController *controller = nil;
-
-+ (SSESysExSpeedWindowController *)sysExSpeedWindowController;
-{
-    if (!controller)
-        controller = [[self alloc] init];
-    
-    return controller;
-}
-
-- (id)init;
-{
-    if (!(self = [super initWithWindowNibName:@"SysExSpeed"]))
-        return nil;
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(midiSetupChanged:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
-
-    [self captureEndpointsAndExternalDevices];
-    
-    return self;
-}
-
-- (id)initWithWindowNibName:(NSString *)windowNibName;
-{
-    SMRejectUnusedImplementation(self, _cmd);
-    return nil;
-}
+@implementation SSESysExSpeedController
 
 - (void)dealloc
 {
@@ -67,15 +40,6 @@ static SSESysExSpeedWindowController *controller = nil;
     [externalDevices release];
     
     [super dealloc];
-}
-
-- (IBAction)showWindow:(id)sender;
-{
-    [self window];	// Make sure the window gets loaded the first time
-    
-    [outlineView reloadData];
-
-    [super showWindow:sender];
 }
 
 - (void) awakeFromNib
@@ -90,6 +54,25 @@ static SSESysExSpeedWindowController *controller = nil;
     [[col dataCell] setTarget: self];
     [[col dataCell] setAction: @selector(takeSpeedFromSelectedCellInTableView:)];
 }
+
+- (void)willShow
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(midiSetupChanged:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
+
+    [self captureEndpointsAndExternalDevices];
+     
+    [outlineView reloadData];
+}
+
+- (void)willHide
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
+    
+    [self releaseEndpointsAndExternalDevices];
+    
+    [outlineView reloadData];
+}
+
 
 //
 // Actions
@@ -112,8 +95,7 @@ static SSESysExSpeedWindowController *controller = nil;
 
     // update the slider value based on the effective speed (which may be different than the tracking value)
     int effectiveValue = [self effectiveSpeedForItem: item];
-    if (newValue != effectiveValue)
-    {
+    if (newValue != effectiveValue) {
         [cell setIntValue: effectiveValue];
     }    
     
@@ -124,7 +106,7 @@ static SSESysExSpeedWindowController *controller = nil;
 @end
 
 
-@implementation SSESysExSpeedWindowController (DelegatesNotificationsDataSources)
+@implementation SSESysExSpeedController (DelegatesNotificationsDataSources)
 
 - (id)outlineView:(NSOutlineView *)anOutlineView child:(int)index ofItem:(id)item
 {
@@ -203,8 +185,7 @@ static SSESysExSpeedWindowController *controller = nil;
         if ([identifier isEqualToString:@"speed"]) {
             int newValue = [object intValue];
             SMMIDIObject* midiObject = (SMMIDIObject*)item;
-            if (newValue > 0 && newValue != [midiObject maxSysExSpeed])
-            {
+            if (newValue > 0 && newValue != [midiObject maxSysExSpeed]) {
                 [midiObject setMaxSysExSpeed:newValue];
                 
                 // Work around bug where CoreMIDI doesn't pay attention to the new speed
@@ -219,9 +200,9 @@ static SSESysExSpeedWindowController *controller = nil;
 @end
 
 
-@implementation SSESysExSpeedWindowController (Private)
+@implementation SSESysExSpeedController (Private)
 
-- (void)captureEndpointsAndExternalDevices;
+- (void)captureEndpointsAndExternalDevices
 {
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     NSEnumerator *enumerator;
@@ -251,11 +232,19 @@ static SSESysExSpeedWindowController *controller = nil;
     }
 }
 
+- (void)releaseEndpointsAndExternalDevices
+{
+    [endpoints release];
+    endpoints = nil;
+    [externalDevices release];
+    externalDevices = nil;
+}
+
 - (void)midiSetupChanged:(NSNotification *)notification
 {
     [self captureEndpointsAndExternalDevices];
 
-    if ([[self window] isVisible]) {
+    if ([[outlineView window] isVisible]) {
         [outlineView reloadData];
     }
 }
@@ -282,8 +271,7 @@ static SSESysExSpeedWindowController *controller = nil;
         // Return the minimum of this endpoint's speed and all of its external devices' speeds
         NSEnumerator* oe = [[(SMDestinationEndpoint*)item connectedExternalDevices] objectEnumerator];
         SMMIDIObject* extDevice;
-        while ((extDevice = [oe nextObject]))
-        {
+        while ((extDevice = [oe nextObject])) {
             int extDeviceSpeed = (extDevice == trackingMIDIObject) ? speedOfTrackingMIDIObject : [extDevice maxSysExSpeed];
             effectiveSpeed = MIN(effectiveSpeed, extDeviceSpeed);
         }

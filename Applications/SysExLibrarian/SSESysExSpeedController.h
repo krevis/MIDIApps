@@ -14,7 +14,7 @@
 
 @class SMMIDIObject;
 
-@interface SSESysExSpeedWindowController : SSEWindowController
+@interface SSESysExSpeedController : NSObject
 {
     IBOutlet NSOutlineView *outlineView;
 
@@ -23,12 +23,9 @@
     
     SMMIDIObject* trackingMIDIObject;
     int speedOfTrackingMIDIObject;
-    
-    BOOL ignoringMIDIObjectListChangedNotification;
 }
 
-+ (SSESysExSpeedWindowController *)sysExSpeedWindowController;
-
-- (id)init;
+- (void)willShow;
+- (void)willHide;
 
 @end

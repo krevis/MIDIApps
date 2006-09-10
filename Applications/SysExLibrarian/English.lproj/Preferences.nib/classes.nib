@@ -2,25 +2,41 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
+            CLASS = SSENonHighlightingTextFieldCell; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSTextFieldCell; 
+        }, 
+        {
             ACTIONS = {
                 changeIntervalBetweenSentMessages = id; 
                 changeReadTimeOut = id; 
                 changeSizeFormat = id; 
                 changeSysExFolder = id; 
-                showSysExSpeedWindow = id; 
             }; 
             CLASS = SSEPreferencesWindowController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
-                showSysExSpeedWindowButton = NSButton; 
                 sizeFormatMatrix = NSMatrix; 
                 sysExFolderPathField = NSTextField; 
                 sysExIntervalBetweenSentMessagesField = NSTextField; 
                 sysExIntervalBetweenSentMessagesSlider = NSSlider; 
                 sysExReadTimeOutField = NSTextField; 
                 sysExReadTimeOutSlider = NSSlider; 
+                sysExSpeedController = SSESysExSpeedController; 
+                tabView = NSTabView; 
             }; 
             SUPERCLASS = SSEWindowController; 
+        }, 
+        {
+            CLASS = SSESysExSpeedController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {outlineView = NSOutlineView; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            CLASS = SSESysexSpeedOutlineView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSOutlineView; 
         }, 
         {
             CLASS = SSEWindowController; 

@@ -12,6 +12,7 @@
 
 #import "SSEWindowController.h"
 
+@class SSESysExSpeedController;
 
 @interface SSEPreferencesWindowController : SSEWindowController
 {
@@ -21,7 +22,8 @@
     IBOutlet NSTextField *sysExReadTimeOutField;
     IBOutlet NSSlider *sysExIntervalBetweenSentMessagesSlider;
     IBOutlet NSTextField *sysExIntervalBetweenSentMessagesField;
-    IBOutlet NSButton *showSysExSpeedWindowButton;
+    IBOutlet NSTabView *tabView;
+    IBOutlet SSESysExSpeedController *sysExSpeedController;
 }
 
 + (SSEPreferencesWindowController *)preferencesWindowController;
@@ -32,8 +34,6 @@
 - (IBAction)changeSysExFolder:(id)sender;
 - (IBAction)changeReadTimeOut:(id)sender;
 - (IBAction)changeIntervalBetweenSentMessages:(id)sender;
-
-- (IBAction)showSysExSpeedWindow:(id)sender;
 
 @end
 

@@ -15,7 +15,7 @@
 #import "SSEMainWindowController.h"
 #import "SSELibrary.h"
 #import "SSEMIDIController.h"
-#import "SSESysExSpeedWindowController.h"
+#import "SSESysExSpeedController.h"
 
 
 @interface  SSEPreferencesWindowController (Private)
@@ -69,12 +69,60 @@ static SSEPreferencesWindowController *controller = nil;
     [super dealloc];
 }
 
+- (void)windowDidLoad;
+{
+    [super windowDidLoad];
+    
+    // Depending on the system we're running on, we want to remove one tab view item or another
+    NSString* tabViewItemIdentifierToRemove = nil;
+    if ([[SMClient sharedClient] doesSendSysExRespectExternalDeviceSpeed]) {
+        tabViewItemIdentifierToRemove = @"speed_na";
+    } else {
+        tabViewItemIdentifierToRemove = @"speed";
+    }
+
+    int index = [tabView indexOfTabViewItemWithIdentifier: tabViewItemIdentifierToRemove];
+    if (index != NSNotFound) {
+        [tabView removeTabViewItem: [tabView tabViewItemAtIndex: index]];
+    }
+    
+    // Make sure the "General" tab is showing, just in case it was changed in the nib
+    [tabView selectTabViewItemWithIdentifier: @"general"];
+}
+
 - (IBAction)showWindow:(id)sender;
 {
-    [self window];	// Make sure the window gets loaded the first time
+    [self window];	// Make sure the window gets loaded before we do anything else
+
     [self synchronizeControls];
+
+    if ([@"speed" isEqualToString: [[tabView selectedTabViewItem] identifier]]) {
+        [sysExSpeedController willShow];
+    }
+    
     [super showWindow:sender];
 }
+
+//
+// Delegate methods
+//
+
+- (void)tabView:(NSTabView *)tv willSelectTabViewItem:(NSTabViewItem *)tabViewItem
+{
+    if ([@"speed" isEqualToString: [tabViewItem identifier]]) {
+        [sysExSpeedController willShow];
+    } else {
+        [sysExSpeedController willHide];
+    }
+}
+
+- (void)windowWillClose:(NSNotification *)notification
+{
+    if ([@"speed" isEqualToString: [[tabView selectedTabViewItem] identifier]]) {
+        [sysExSpeedController willHide];
+    }    
+}
+
 
 //
 // Actions
@@ -117,11 +165,6 @@ static SSEPreferencesWindowController *controller = nil;
     [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:SSESysExSendPreferenceChangedNotification object: nil] postingStyle:NSPostWhenIdle];
 }
 
-- (IBAction)showSysExSpeedWindow:(id)sender
-{
-    [[SSESysExSpeedWindowController sysExSpeedWindowController] showWindow:nil];
-}
-
 @end
 
 
@@ -142,7 +185,6 @@ static SSEPreferencesWindowController *controller = nil;
     [self synchronizeReadTimeOutField];
     [sysExIntervalBetweenSentMessagesSlider setIntValue:[defaults integerForKey: SSESysExIntervalBetweenSentMessagesPreferenceKey]];
     [self synchronizeIntervalBetweenSentMessagesField];
-//    [showSysExSpeedWindowButton setEnabled:[[SMClient sharedClient] doesSendSysExRespectExternalDeviceSpeed]];
 }
 
 - (void)synchronizeReadTimeOutField;
