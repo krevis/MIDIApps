@@ -24,6 +24,8 @@
 
 - (int)effectiveSpeedForItem:(SMMIDIObject*)item;
 
+- (void)invalidateRowAndParent: (int)row;
+
 @end
 
 
@@ -115,17 +117,8 @@ static SSESysExSpeedWindowController *controller = nil;
         [cell setIntValue: effectiveValue];
     }    
     
-    // update the display for this item
-    [outlineView setNeedsDisplayInRect: [outlineView rectOfRow: row]];
-    // and any parents as necessary
-    int level = [outlineView levelForRow: row];
-    if (level > 0)
-    {
-        // walk up rows until we hit one at a higher level -- that will be our parent
-        while (row > 0 && [outlineView levelForRow: --row] == level)
-            ;   // nothing needs doing
-        [outlineView setNeedsDisplayInRect: [outlineView rectOfRow: row]];
-    }
+    // redisplay
+    [self invalidateRowAndParent: row];
 }
 
 @end
@@ -263,22 +256,21 @@ static SSESysExSpeedWindowController *controller = nil;
     [self captureEndpointsAndExternalDevices];
 
     if ([[self window] isVisible]) {
-        // TODO (krevis) will this matter?  will this even work after we've tossed our list of stuff?
-    //    [self finishEditingInWindow];
-
         [outlineView reloadData];
     }
 }
 
 - (void)midiObjectChanged:(NSNotification *)notification
 {
-    NSString* propertyName = [[notification userInfo] objectForKey:SMMIDIObjectChangedPropertyName];
-    if ([propertyName isEqualToString:(NSString *)kMIDIPropertyName] ||
-        [propertyName isEqualToString:(NSString *)kMIDIPropertyMaxSysExSpeed]) {
+    NSString* propertyName = [[notification userInfo] objectForKey:SMMIDIObjectChangedPropertyName];    
+    if ([propertyName isEqualToString:(NSString *)kMIDIPropertyName]) {
+        // invalidate only the row for this object
         int row = [outlineView rowForItem: [notification object]];
-        if (row >= 0) {
-            [outlineView setNeedsDisplayInRect: [outlineView rectOfRow: row]];
-        }
+        [outlineView setNeedsDisplayInRect: [outlineView rectOfRow: row]];            
+    } else if ([propertyName isEqualToString:(NSString *)kMIDIPropertyMaxSysExSpeed]) {
+        // invalidate this row and the parent (if any)
+        int row = [outlineView rowForItem: [notification object]];
+        [self invalidateRowAndParent: row];
     }
 }
 
@@ -286,8 +278,7 @@ static SSESysExSpeedWindowController *controller = nil;
 {
     int effectiveSpeed = (item == trackingMIDIObject) ? speedOfTrackingMIDIObject : [item maxSysExSpeed];        
 
-    if ([item isKindOfClass: [SMDestinationEndpoint class]])
-    {
+    if ([item isKindOfClass: [SMDestinationEndpoint class]]) {
         // Return the minimum of this endpoint's speed and all of its external devices' speeds
         NSEnumerator* oe = [[(SMDestinationEndpoint*)item connectedExternalDevices] objectEnumerator];
         SMMIDIObject* extDevice;
@@ -299,6 +290,21 @@ static SSESysExSpeedWindowController *controller = nil;
     }
     
     return effectiveSpeed;
+}
+
+- (void)invalidateRowAndParent: (int)row
+{
+    if (row >= 0) {
+        [outlineView setNeedsDisplayInRect: [outlineView rectOfRow: row]];
+
+        int level = [outlineView levelForRow: row];
+        if (level > 0) {
+            // walk up rows until we hit one at a higher level -- that will be our parent
+            while (row > 0 && [outlineView levelForRow: --row] == level)
+                ;   // nothing needs doing
+            [outlineView setNeedsDisplayInRect: [outlineView rectOfRow: row]];
+        }
+    }
 }
 
 @end
