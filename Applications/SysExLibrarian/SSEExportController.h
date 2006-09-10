@@ -18,12 +18,13 @@
 @interface SSEExportController : NSObject
 {
     SSEMainWindowController *nonretainedMainWindowController;
-
+    BOOL exportingAsSMF;
 }
 
 - (id)initWithWindowController:(SSEMainWindowController *)mainWindowController;
 
 // Main window controller sends this to export messages
-- (void)exportMessages:(NSArray *)messages;
+- (void)exportMessages:(NSArray *)messages fromFileName:(NSString*)fileName asSMF: (BOOL)asSMF;
+    // asSMF == YES for standard MIDI file, NO for sysex (.syx)
 
 @end

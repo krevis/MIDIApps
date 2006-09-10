@@ -5,6 +5,7 @@
                 addToLibrary = id; 
                 rename = id; 
                 saveAsStandardMIDI = id; 
+                saveAsSysex = id; 
                 showDetails = id; 
                 showFileInFinder = id; 
             }; 

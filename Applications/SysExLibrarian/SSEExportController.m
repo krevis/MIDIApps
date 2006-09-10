@@ -34,19 +34,30 @@
     return self;
 }
 
-- (void)exportMessages:(NSArray *)messages;
+- (void)exportMessages:(NSArray *)messages fromFileName:(NSString*)fileName asSMF: (BOOL)asSMF
 {
     NSSavePanel *savePanel;
     NSString *defaultFileName;
-    
-    // Pick a file name to export to.
+    NSString *extension;
+
     [messages retain];
+    exportingAsSMF = asSMF;
 
+    // Pick a file name to export to.
+    extension = asSMF ? @"mid" : @"syx";
     savePanel = [NSSavePanel savePanel];
-    [savePanel setRequiredFileType:@"mid"];    
+    [savePanel setRequiredFileType: extension];
+    [savePanel setCanSelectHiddenExtension: YES];
+    if ([savePanel respondsToSelector: @selector(setAllowsOtherFileTypes:)]) {  // only implemented on 10.3 and later
+        [savePanel setAllowsOtherFileTypes: YES];
+    }
 
-    defaultFileName = NSLocalizedStringFromTableInBundle(@"SysEx", @"SysExLibrarian", SMBundleForObject(self), "default file name for exported standard MIDI file (w/o extension)");
-    defaultFileName = [defaultFileName stringByAppendingPathExtension:@"mid"];
+    if (fileName) {
+        defaultFileName = [fileName stringByDeletingPathExtension];
+    } else {
+        defaultFileName = NSLocalizedStringFromTableInBundle(@"SysEx", @"SysExLibrarian", SMBundleForObject(self), "default file name for exported standard MIDI file (w/o extension)");
+    }
+    defaultFileName = [defaultFileName stringByAppendingPathExtension:extension];
     
     [savePanel beginSheetForDirectory:nil file:defaultFileName modalForWindow:[nonretainedMainWindowController window] modalDelegate:self didEndSelector:@selector(saveSheetDidEnd:returnCode:contextInfo:) contextInfo:messages];
 }
@@ -65,7 +76,12 @@
         BOOL success;
 
         path = [sheet filename];
-        success = [SMSystemExclusiveMessage writeSystemExclusiveMessages:messages toStandardMIDIFile:path];
+        
+        if (exportingAsSMF) {
+            success = [SMSystemExclusiveMessage writeSystemExclusiveMessages:messages toStandardMIDIFile:path];
+        } else {
+            success = [[SMSystemExclusiveMessage dataForSystemExclusiveMessages: messages] writeToFile:path atomically:YES];
+        }
 
         if (!success) {
             NSString *title, *message;

@@ -49,7 +49,9 @@
 
 - (void)playSelectedEntries;
 - (void)showDetailsOfSelectedEntries;
-- (void)exportSelectedEntries;
+- (void)exportSelectedEntriesAsSMF;
+- (void)exportSelectedEntriesAsSYX;
+- (void)exportSelectedEntriesAsSMFOrSYX: (BOOL) asSMF;
 
 - (void)openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
@@ -190,7 +192,8 @@ static SSEMainWindowController *controller = nil;
         return ([libraryTableView numberOfSelectedRows] == 1 && [[[self selectedEntries] objectAtIndex:0] isFilePresent]);
     else if (action == @selector(showDetails:))
         return ([libraryTableView numberOfSelectedRows] > 0);
-    else if (action == @selector(saveAsStandardMIDI:))
+    else if (action == @selector(saveAsStandardMIDI:) ||
+             action == @selector(saveAsSysex:))
         return ([libraryTableView numberOfSelectedRows] > 0);
     else
         return [super validateUserInterfaceItem:theItem];
@@ -315,7 +318,15 @@ static SSEMainWindowController *controller = nil;
     if ([self finishEditingResultsInError])
         return;
 
-    [self findMissingFilesAndPerformSelector:@selector(exportSelectedEntries)];
+    [self findMissingFilesAndPerformSelector:@selector(exportSelectedEntriesAsSMF)];
+}
+
+- (IBAction)saveAsSysex:(id)sender;
+{
+    if ([self finishEditingResultsInError])
+        return;
+    
+    [self findMissingFilesAndPerformSelector:@selector(exportSelectedEntriesAsSYX)];
 }
 
 
@@ -849,11 +860,22 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     }
 }
 
-- (void)exportSelectedEntries;
+- (void)exportSelectedEntriesAsSMF
+{
+    [self exportSelectedEntriesAsSMFOrSYX: YES];
+}
+
+- (void)exportSelectedEntriesAsSYX
+{
+    [self exportSelectedEntriesAsSMFOrSYX: NO];
+}
+
+- (void)exportSelectedEntriesAsSMFOrSYX: (BOOL) asSMF
 {
     NSArray *selectedEntries;
     NSMutableArray *messages;
     unsigned int entryCount, entryIndex;
+    NSString* fileName;
 
     selectedEntries = [self selectedEntries];
 
@@ -862,12 +884,13 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
         [messages addObjectsFromArray:[[selectedEntries objectAtIndex:entryIndex] messages]];
     }
+    fileName = [[selectedEntries objectAtIndex: 0] name];
 
     if ([messages count] > 0) {
         if (!exportController)
             exportController = [[SSEExportController alloc] initWithWindowController:self];
 
-        [exportController exportMessages:messages];
+        [exportController exportMessages:messages fromFileName:fileName asSMF: asSMF];
     }
 }
 

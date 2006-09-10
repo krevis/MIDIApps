@@ -65,6 +65,7 @@
 - (IBAction)rename:(id)sender;
 - (IBAction)showDetails:(id)sender;
 - (IBAction)saveAsStandardMIDI:(id)sender;
+- (IBAction)saveAsSysex:(id)sender;
 
 // Other API
 
