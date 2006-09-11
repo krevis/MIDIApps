@@ -49,8 +49,8 @@ cd ..
 
 cp -R $SnoizeConfigurationsSource .
 
-cp -R $SnoizeDocsSource/SysExLibrarian/Source/README .
-cp -R $SnoizeDocsSource/SysExLibrarian/Source/LICENSE .
+cp -R $SnoizeDocsSource/SysExLibrarian/Source/README.txt .
+cp -R $SnoizeDocsSource/SysExLibrarian/Source/LICENSE.txt .
 
 #
 # Remove extra junk from the source
