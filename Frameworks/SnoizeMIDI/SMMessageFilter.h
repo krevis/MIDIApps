@@ -21,7 +21,6 @@
     SMMessageType filterMask;
     SMChannelMask channelMask;
     id<SMMessageDestination> nonretainedMessageDestination;
-    NSLock *settingsLock;
 }
 
 - (id<SMMessageDestination>)messageDestination;

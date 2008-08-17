@@ -18,7 +18,6 @@
 @interface SMMessageMult : NSObject <SMMessageDestination>
 {
     NSMutableArray *destinations;
-    NSLock *destinationsLock;
 }
 
 - (NSArray *)destinations;

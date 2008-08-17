@@ -34,14 +34,10 @@
 - (void)autoselectSources;
 
 - (void)historyDidChange:(NSNotification *)notification;
-- (void)mainThreadSynchronizeMessagesWithScrollValue:(NSNumber *)shouldScrollNumber;
-- (void)mainThreadSynchronizeMessagesWithScroll:(BOOL)shouldScroll;
+- (void)synchronizeMessagesWithScroll:(BOOL)shouldScroll;
 
 - (void)readingSysEx:(NSNotification *)notification;
-- (void)mainThreadReadingSysEx;
-
 - (void)doneReadingSysEx:(NSNotification *)notification;
-- (void)mainThreadDoneReadingSysEx:(NSNumber *)bytesReadNumber;
 
 @end
 
@@ -445,7 +441,7 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
 
     // Also, it's possible that the endpoint names went from being unique to non-unique, so we need
     // to refresh the messages displayed.
-    [self mainThreadSynchronizeMessagesWithScroll:NO];
+    [self synchronizeMessagesWithScroll:NO];
 }
 
 - (void)setFilterMask:(SMMessageType)newMask;
@@ -517,22 +513,11 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
 
 - (void)historyDidChange:(NSNotification *)notification;
 {
-    // NOTE This can happen in the MIDI thread (for normal MIDI input) or in the main thread (if the "clear" button is used) or in the spy's listener thread (for spying input).
-
-	if (!isMessageUpdateQueued) {
-        NSNumber *shouldScroll = [[notification userInfo] objectForKey:SMMessageHistoryWereMessagesAdded];
-        isMessageUpdateQueued = YES;
-        [self performSelectorOnMainThread:@selector(mainThreadSynchronizeMessagesWithScrollValue:) withObject:shouldScroll waitUntilDone:NO];
-    }
+    NSNumber *shouldScroll = [[notification userInfo] objectForKey:SMMessageHistoryWereMessagesAdded];
+	[self synchronizeMessagesWithScroll: [shouldScroll boolValue]];
 }
 
-- (void)mainThreadSynchronizeMessagesWithScrollValue:(NSNumber *)shouldScrollNumber
-{
-    isMessageUpdateQueued = NO;
-	[self mainThreadSynchronizeMessagesWithScroll: [shouldScrollNumber boolValue]];
-}
-
-- (void)mainThreadSynchronizeMessagesWithScroll:(BOOL)shouldScroll
+- (void)synchronizeMessagesWithScroll:(BOOL)shouldScroll
 {
     NSArray *windowControllers;
     unsigned int windowControllerIndex;
@@ -545,8 +530,6 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
 
 - (void)readingSysEx:(NSNotification *)notification;
 {
-    // NOTE This can happen in the MIDI thread (for normal MIDI input) or in the spy's listener thread (for spying input).
-
     sysExBytesRead = [[[notification userInfo] objectForKey:@"length"] unsignedIntValue];
     
     // We want multiple updates to get coalesced, so only queue it once
@@ -564,20 +547,10 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
 
 - (void)doneReadingSysEx:(NSNotification *)notification;
 {
-    // NOTE This can happen in the MIDI thread (for normal MIDI input) or in the spy's listener thread (for spying input).
-    NSNumber *number;
-
-    number = [[notification userInfo] objectForKey:@"length"];
+    NSNumber *number = [[notification userInfo] objectForKey:@"length"];
     sysExBytesRead = [number unsignedIntValue];
     
-    [self performSelectorOnMainThread: @selector(mainThreadDoneReadingSysEx:) withObject: number waitUntilDone: NO];
-        // We DON'T want this to get coalesced, so always queue it.
-        // Pass the number of bytes read down, since sysExBytesRead may be overwritten before mainThreadDoneReadingSysEx gets called.
-}
-
-- (void)mainThreadDoneReadingSysEx:(NSNumber *)bytesReadNumber;
-{
-    [[self windowControllers] makeObjectsPerformSelector:@selector(stopSysExReadIndicatorWithBytes:) withObject:bytesReadNumber];
+    [[self windowControllers] makeObjectsPerformSelector:@selector(stopSysExReadIndicatorWithBytes:) withObject:number];
 }
 
 @end

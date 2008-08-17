@@ -46,7 +46,6 @@ typedef enum {
 
     // ... for sending sysex
     NSTimeInterval pauseTimeBetweenMessages;
-    NSLock *sendProgressLock;
     SMSysExSendRequest *nonretainedCurrentSendRequest;
     unsigned int sendingMessageCount;
     unsigned int sendingMessageIndex;

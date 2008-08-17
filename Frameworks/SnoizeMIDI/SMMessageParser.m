@@ -38,7 +38,6 @@
     if (!(self = [super init]))
         return nil;
 
-    readingSysExLock = [[NSLock alloc] init];
     sysExTimeOut = 1.0;	// seconds
     ignoreInvalidData = NO;
 
@@ -49,8 +48,7 @@
 {
     [readingSysExData release];
     readingSysExData = nil;
-    [readingSysExLock release];
-    readingSysExLock = nil;
+    [sysExTimeOutTimer invalidate];
     [sysExTimeOutTimer release];
     sysExTimeOutTimer = nil;
     
@@ -99,10 +97,6 @@
 
 - (void)takePacketList:(const MIDIPacketList *)packetList;
 {
-    // NOTE: This function is called in our MIDI processing thread.
-    // (This is NOT the MIDI receive thread which CoreMIDI creates for us.)
-    // All downstream processing will also be done in this thread, until someone jumps it into another.
-
     NSMutableArray *messages = nil;
     unsigned int packetCount;
     const MIDIPacket *packet;
@@ -146,9 +140,7 @@
             }
         } else {
             // We already have a timer, so just bump its fire date forward.
-            // Use CoreFoundation because this function is available back to 10.1 (and probably 10.0) whereas
-            // the corresponding NSTimer method only became available in 10.2.
-            CFRunLoopTimerSetNextFireDate((CFRunLoopTimerRef)sysExTimeOutTimer, CFAbsoluteTimeGetCurrent() + sysExTimeOut);
+            [sysExTimeOutTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:sysExTimeOut]];
         }
     } else {
         // Not reading sysex, so if we have a timeout pending, forget about it
@@ -164,15 +156,11 @@
 {
     BOOL cancelled = NO;
 
-    [readingSysExLock lock];
-
     if (readingSysExData) {
         [readingSysExData release];
         readingSysExData = nil;
         cancelled = YES;
     }
-
-    [readingSysExLock unlock];
 
     return cancelled;
 }
@@ -225,7 +213,6 @@
         } else {
             if (byte < 0x80) {
                 if (readingSysExData) {
-                    [readingSysExLock lock];
                     if (readingSysExData) {
                         unsigned int length;
 
@@ -236,7 +223,6 @@
                         if (length % 256 == 0)
                             [nonretainedDelegate parser:self isReadingSysExWithLength:length];
                     }
-                    [readingSysExLock unlock];
                 } else if (pendingDataIndex < pendingDataLength) {
                     pendingData[pendingDataIndex] = byte;
                     pendingDataIndex++;
@@ -356,14 +342,12 @@
     // NOTE: If we want, we could refuse sysex messages that don't end in 0xF7.
     // The MIDI spec says that messages should end with this byte, but apparently that is not always the case in practice.
 
-    [readingSysExLock lock];
     if (readingSysExData) {
         message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:startSysExTimeStamp data:readingSysExData];
         
         [readingSysExData release];
         readingSysExData = nil;
     }
-    [readingSysExLock unlock];
 
     if (message) {
         [message setOriginatingEndpoint:nonretainedOriginatingEndpoint];

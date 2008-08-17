@@ -133,10 +133,13 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
 
 static void completionProc(MIDISysexSendRequest *request)
 {
-    NSAutoreleasePool *pool;
+    // NOTE: This is called on CoreMIDI's sysex sending thread.
+    
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];    
 
-    pool = [[NSAutoreleasePool alloc] init];    
-    [(SMSysExSendRequest *)(request->completionRefCon) completionProc];
+    SMSysExSendRequest *requestObj = (SMSysExSendRequest *)(request->completionRefCon);
+    [requestObj performSelectorOnMainThread:@selector(completionProc) withObject:nil waitUntilDone:NO];
+
     [pool release];
 }
 

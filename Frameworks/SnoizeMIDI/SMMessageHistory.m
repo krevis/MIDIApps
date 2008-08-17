@@ -40,7 +40,6 @@ NSString *SMMessageHistoryWereMessagesAdded = @"SMMessageHistoryWereMessagesAdde
         return nil;
 
     savedMessages = [[NSMutableArray alloc] init];
-    savedMessagesLock = [[NSLock alloc] init];
     historySize = [[self class] defaultHistorySize];
 
     return self;
@@ -50,36 +49,21 @@ NSString *SMMessageHistoryWereMessagesAdded = @"SMMessageHistoryWereMessagesAdde
 {
     [savedMessages release];
     savedMessages = nil;
-    [savedMessagesLock release];
-    savedMessagesLock = nil;
     
     [super dealloc];
 }
 
 - (NSArray *)savedMessages;
 {
-    NSArray *messages;
-
-    [savedMessagesLock lock];
-    messages = [NSArray arrayWithArray:savedMessages];
-    [savedMessagesLock unlock];
-    
-    return messages;
+    return [NSArray arrayWithArray:savedMessages];
 }
 
 - (void)clearSavedMessages;
 {
-    BOOL wereMessages = NO;
-
-    [savedMessagesLock lock];
     if ([savedMessages count] > 0) {
-        wereMessages = YES;
         [savedMessages removeAllObjects];
-    }
-    [savedMessagesLock unlock];
-    
-    if (wereMessages)
         [self historyHasChangedWithNewMessages:NO];
+    }
 }
 
 - (unsigned int)historySize;
@@ -91,15 +75,11 @@ NSString *SMMessageHistoryWereMessagesAdded = @"SMMessageHistoryWereMessagesAdde
 {
     unsigned int oldMessageCount, newMessageCount;
 
-    [savedMessagesLock lock];
-
     historySize = newHistorySize;
     
     oldMessageCount = [savedMessages count];
     [self limitSavedMessages];
     newMessageCount = [savedMessages count];
-
-    [savedMessagesLock unlock];
 
     if (oldMessageCount != newMessageCount)
         [self historyHasChangedWithNewMessages:NO];
@@ -107,10 +87,8 @@ NSString *SMMessageHistoryWereMessagesAdded = @"SMMessageHistoryWereMessagesAdde
 
 - (void)takeMIDIMessages:(NSArray *)messages;
 {
-    [savedMessagesLock lock];
     [savedMessages addObjectsFromArray:messages];
     [self limitSavedMessages];
-    [savedMessagesLock unlock];
     
     [self historyHasChangedWithNewMessages:YES];
 }
@@ -122,7 +100,6 @@ NSString *SMMessageHistoryWereMessagesAdded = @"SMMessageHistoryWereMessagesAdde
 
 - (void)limitSavedMessages;
 {
-    // NOTE We assume that this thread has taken the savedMessagesLock
     unsigned int messageCount;
 
     messageCount = [savedMessages count];

@@ -313,36 +313,15 @@ static void getMIDINotification(const MIDINotification *message, void *refCon)
 
 - (void)midiSetupChanged;
 {
-    // Unfortunately, CoreMIDI in 10.1.x and earlier has a bug: CoreMIDI calls will run the thread's run loop
-    // in its default mode (instead of a special private mode). Since CoreMIDI also delivers notifications when
-    // this mode runs, we can get notifications inside any CoreMIDI call that we make. It may even deliver another
-    // notification while we are in the middle of reacting to the first one!
-    //
-    // So this method needs to be reentrant. If someone calls us while we are processing, just remember that fact,
-    // and call ourself again after we're done.  (If we get multiple notifications while we're processing, they
-    // will be coalesced into one update at the end.)
-    //
-    // Fortunately the bug has been fixed in 10.2. This code isn't really expensive, so it doesn't hurt to leave it in.
+    isHandlingSetupChange = YES;
 
-    static BOOL retryAfterDone = NO;
+    // Notify the objects internal to this framework about the change first, and then let
+    // other objects know about it.
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMClientSetupChangedInternalNotification object:self];
+    if (postsExternalSetupChangeNotification)
+        [[NSNotificationCenter defaultCenter] postNotificationName:SMClientSetupChangedNotification object:self];
 
-    if (isHandlingSetupChange) {
-        retryAfterDone = YES;
-        return;
-    }
-
-    do {
-        isHandlingSetupChange = YES;
-        retryAfterDone = NO;
-
-        // Notify the objects internal to this framework about the change first, and then let
-        // other objects know about it.
-        [[NSNotificationCenter defaultCenter] postNotificationName:SMClientSetupChangedInternalNotification object:self];
-        if (postsExternalSetupChangeNotification)
-            [[NSNotificationCenter defaultCenter] postNotificationName:SMClientSetupChangedNotification object:self];
-
-        isHandlingSetupChange = NO;
-    } while (retryAfterDone);
+    isHandlingSetupChange = NO;
 }
 
 - (void)midiObjectAddedOrRemoved:(const MIDIObjectAddRemoveNotification *)message;

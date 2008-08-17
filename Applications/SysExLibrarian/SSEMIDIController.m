@@ -39,13 +39,11 @@
 - (void)startListening;
 - (void)readingSysEx:(NSNotification *)notification;
 - (void)updateSysExReadIndicator;
-- (void)mainThreadTakeMIDIMessages:(NSArray *)messagesToTake;
 
 - (void)sendNextSysExMessage;
 - (void)sendNextSysExMessageAfterDelay;
 - (void)willStartSendingSysEx:(NSNotification *)notification;
 - (void)doneSendingSysEx:(NSNotification *)notification;
-- (void)finishedSendingMessagesWithSuccessNumber:(NSNumber *)successNumber;
 - (void)finishedSendingMessagesWithSuccess:(BOOL)success;
 
 @end
@@ -101,8 +99,6 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
     listeningToMessages = NO;
     listenToMultipleMessages = NO;
 
-    sendProgressLock = [[NSLock alloc] init];
-
     [self sendPreferenceDidChange:nil];
     [center addObserver:self selector:@selector(sendPreferenceDidChange:) name:SSESysExSendPreferenceChangedNotification object:nil];
 
@@ -135,8 +131,6 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
     outputStream = nil;
     [messages release];
     messages = nil;
-    [sendProgressLock release];
-    sendProgressLock = nil;
 
     [super dealloc];
 }
@@ -226,10 +220,6 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 
 - (void)getMessageCount:(unsigned int *)messageCountPtr bytesRead:(unsigned int *)bytesReadPtr totalBytesRead:(unsigned int *)totalBytesReadPtr;
 {
-    // There is no need to put a lock around these things, assuming that we are in the main thread.
-    // messageBytesRead gets changed in a different thread, but it gets changed atomically.
-    // messages and totalBytesRead are only modified in the main thread.
-    
     SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
 
     if (messageCountPtr)
@@ -301,8 +291,6 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 {
     SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
 
-    [sendProgressLock lock];
-    
     if (messageCountPtr)
         *messageCountPtr = sendingMessageCount;
     if (messageIndexPtr)
@@ -314,8 +302,6 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
         if (nonretainedCurrentSendRequest)
             *bytesSentPtr += [nonretainedCurrentSendRequest bytesSent];
     }
-
-    [sendProgressLock unlock];
 }
 
 
@@ -325,7 +311,30 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 
 - (void)takeMIDIMessages:(NSArray *)messagesToTake;
 {
-    [self performSelectorOnMainThread:@selector(mainThreadTakeMIDIMessages:) withObject:messagesToTake waitUntilDone:NO];
+    unsigned int messageCount, messageIndex;
+    
+    if (!listeningToMessages)
+        return;
+    
+    messageCount = [messagesToTake count];
+    for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {
+        SMMessage *message;
+        
+        message = [messagesToTake objectAtIndex:messageIndex];
+        if ([message isKindOfClass:[SMSystemExclusiveMessage class]]) {
+            [messages addObject:message];
+            totalBytesRead += messageBytesRead;
+            messageBytesRead = 0;
+            
+            [self updateSysExReadIndicator];
+            if (listenToMultipleMessages == NO)  {
+                listeningToMessages = NO;
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:SSEMIDIControllerReadFinishedNotification object:self];
+                break;
+            }
+        }
+    }
 }
 
 @end
@@ -421,8 +430,6 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 
 - (void)readingSysEx:(NSNotification *)notification;
 {
-    // NOTE This is happening in the MIDI thread
-
     messageBytesRead = [[[notification userInfo] objectForKey:@"length"] unsignedIntValue];
 
     // We want multiple updates to get coalesced, so only do this once
@@ -436,34 +443,6 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:SSEMIDIControllerReadStatusChangedNotification object:self];
     scheduledUpdateSysExReadIndicator = NO;
-}
-
-- (void)mainThreadTakeMIDIMessages:(NSArray *)messagesToTake;
-{
-    unsigned int messageCount, messageIndex;
-
-    if (!listeningToMessages)
-        return;
-
-    messageCount = [messagesToTake count];
-    for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {
-        SMMessage *message;
-
-        message = [messagesToTake objectAtIndex:messageIndex];
-        if ([message isKindOfClass:[SMSystemExclusiveMessage class]]) {
-            [messages addObject:message];
-            totalBytesRead += messageBytesRead;
-            messageBytesRead = 0;
-
-            [self updateSysExReadIndicator];
-            if (listenToMultipleMessages == NO)  {
-                listeningToMessages = NO;
-
-                [[NSNotificationCenter defaultCenter] postNotificationName:SSEMIDIControllerReadFinishedNotification object:self];
-                break;
-            }
-        }
-    }
 }
 
 
@@ -508,7 +487,6 @@ static MIDITimeStamp pauseStartTimeStamp = 0;
     }
 }
 
-
 - (void)willStartSendingSysEx:(NSNotification *)notification;
 {    
     SMAssert(nonretainedCurrentSendRequest == nil);
@@ -517,43 +495,36 @@ static MIDITimeStamp pauseStartTimeStamp = 0;
 
 - (void)doneSendingSysEx:(NSNotification *)notification;
 {
-    // NOTE This is happening in the MIDI thread, probably.
-    // The request may or may not have finished successfully.
+    // NOTE: The request may or may not have finished successfully.
+
+    SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
+
     SMSysExSendRequest *sendRequest;
 
     sendRequest = [[notification userInfo] objectForKey:@"sendRequest"];
     SMAssert(sendRequest == nonretainedCurrentSendRequest);
 
-    [sendProgressLock lock];
-
     bytesSent += [sendRequest bytesSent];
     sendingMessageIndex++;
     nonretainedCurrentSendRequest = nil;
     
-    [sendProgressLock unlock];
-
 #if LOG_PAUSE_DURATION
     pauseStartTimeStamp = 0;
 #endif
     
     if (sendStatus == SSEMIDIControllerCancelled) {
         sendStatus = SSEMIDIControllerFinishing;
-        [self performSelectorOnMainThread:@selector(finishedSendingMessagesWithSuccessNumber:) withObject:[NSNumber numberWithBool:NO] waitUntilDone:NO];
+        [self finishedSendingMessagesWithSuccess:NO];
     } else if (sendingMessageIndex < sendingMessageCount && [sendRequest wereAllBytesSent]) {
 #if LOG_PAUSE_DURATION
         pauseStartTimeStamp = SMGetCurrentHostTime();
 #endif
         sendStatus = SSEMIDIControllerWillDelayBeforeNext;
-        [self performSelectorOnMainThread:@selector(sendNextSysExMessageAfterDelay) withObject:nil waitUntilDone:NO];
+        [self sendNextSysExMessageAfterDelay];
     } else {
         sendStatus = SSEMIDIControllerFinishing;
-        [self performSelectorOnMainThread:@selector(finishedSendingMessagesWithSuccessNumber:) withObject:[NSNumber numberWithBool:[sendRequest wereAllBytesSent]] waitUntilDone:NO];
+        [self finishedSendingMessagesWithSuccess:[sendRequest wereAllBytesSent]];
     }
-}
-
-- (void)finishedSendingMessagesWithSuccessNumber:(NSNumber *)successNumber
-{
-    [self finishedSendingMessagesWithSuccess:[successNumber boolValue]];
 }
 
 - (void)finishedSendingMessagesWithSuccess:(BOOL)success;

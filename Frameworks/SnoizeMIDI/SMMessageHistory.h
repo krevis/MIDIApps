@@ -18,7 +18,6 @@
 @interface SMMessageHistory : NSObject <SMMessageDestination>
 {
     NSMutableArray *savedMessages;
-    NSLock *savedMessagesLock;
     unsigned int historySize;
 }
 

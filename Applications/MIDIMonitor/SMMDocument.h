@@ -31,7 +31,6 @@
     // Transient data
     NSArray *missingSourceNames;
     unsigned int sysExBytesRead;
-	BOOL isMessageUpdateQueued;
 	BOOL isSysExUpdateQueued;
 }
 

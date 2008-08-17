@@ -24,7 +24,6 @@
     id nonretainedDelegate;
 
     NSMutableData *readingSysExData;
-    NSLock *readingSysExLock;
     MIDITimeStamp startSysExTimeStamp;
     NSTimer *sysExTimeOutTimer;
     NSTimeInterval sysExTimeOut;

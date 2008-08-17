@@ -19,7 +19,6 @@
 #import "SMSystemExclusiveMessage.h"
 #import "SMMessageParser.h"
 #import "SMUtilities.h"
-#import "MessageQueue.h"
 
 
 @interface SMInputStream (Private)
@@ -298,7 +297,7 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
     pendingPacketList->srcConnRefCon = srcConnRefCon;
     memcpy(&pendingPacketList->packetList, packetList, packetListSize);
     
-    [[SMInputStream class] performSelectorOnMainThread:@selector(takePendingPacketList:) withObject:data waitUntilDone:NO];
+    [(id)[SMInputStream class] performSelectorOnMainThread:@selector(takePendingPacketList:) withObject:data waitUntilDone:NO];
     
     [data release];
 }
@@ -322,7 +321,7 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
     {
         // Ignore any exceptions raised
 #if DEBUG
-        NSLog(@"Exception raised during MIDI parsing in secondary thread: %@", localException);
+        NSLog(@"Exception raised during MIDI parsing: %@", localException);
 #endif
     }
 

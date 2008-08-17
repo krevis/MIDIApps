@@ -22,7 +22,6 @@
         return nil;
 
     destinations = [[NSMutableArray alloc] init];
-    destinationsLock = [[NSLock alloc] init];
 
     return self;
 }
@@ -31,8 +30,6 @@
 {
     [destinations release];
     destinations = nil;
-    [destinationsLock release];
-    destinationsLock = nil;
 
     [super dealloc];
 }
@@ -44,42 +41,25 @@
 
 - (void)setDestinations:(NSArray *)newDestinations;
 {
-    if ((NSArray *)destinations == newDestinations)
-        return;
-    
-    [destinationsLock lock];
-    
-    [destinations release];
-    destinations = [newDestinations retain];
-
-    [destinationsLock unlock];
+    if (destinations != newDestinations) {
+        [destinations release];
+        destinations = [newDestinations retain];
+    }
 }
 
 - (void)addDestination:(id<SMMessageDestination>)destination;
 {
-    [destinationsLock lock];
-    
     [destinations addObject:destination];
-
-    [destinationsLock unlock];
 }
 
 - (void)removeDestination:(id<SMMessageDestination>)destination;
 {
-    [destinationsLock lock];
-    
     [destinations removeObject:destination];
-
-    [destinationsLock unlock];
 }
 
 - (void)takeMIDIMessages:(NSArray *)messages;
 {
-    [destinationsLock lock];
-    
     [destinations makeObjectsPerformSelector:@selector(takeMIDIMessages:) withObject:messages];
-    
-    [destinationsLock unlock];
 }
 
 @end
