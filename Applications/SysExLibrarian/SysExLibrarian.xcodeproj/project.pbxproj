@@ -540,7 +540,6 @@
 				16F033890984B76F006C8A44 /* Frameworks */,
 				16F0338E0984B76F006C8A44 /* CopyFiles */,
 				16F034490984BB6C006C8A44 /* Run Script (Remove Headers from Frameworks) */,
-				16F034510984BB8C006C8A44 /* Run Script (Fix Prebinding) */,
 			);
 			buildRules = (
 			);
@@ -635,20 +634,6 @@
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "find \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH\" \\( -type d -or -type l \\) -name Headers -exec rm -rf {} \\; -prune\n";
-		};
-		16F034510984BB8C006C8A44 /* Run Script (Fix Prebinding) */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run Script (Fix Prebinding)";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "#\n# Update prebinding. The frameworks' timestamps have changed since they were linked against \n# (since they were copied afterwards), so their prebinding will be disabled unless we do this.\n# Use -i argument so i386 is ignored instead of causing an error.\n#\n\ncd \"${TARGET_BUILD_DIR}/${EXECUTABLE_FOLDER_PATH}\" || { echo \"Couldn't cd into installed app's Contents/MacOS!\"; exit 1; }\n\nfor f in SnoizeMIDI ; do\n\tredo_prebinding -i -e \"$PWD\" \"../Frameworks/${f}.framework/Versions/Current/${f}\" || { echo \"redo_prebinding failed for framework ${f}!\"; exit 1; }\ndone\n\nredo_prebinding -i -e \"$PWD\" \"./${EXECUTABLE_NAME}\" || { echo \"redo_prebinding failed for application!\"; exit 1; }\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
