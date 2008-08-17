@@ -35,41 +35,6 @@
 		1641050F09736949008DABCC /* GenLinkedList.h in Headers */ = {isa = PBXBuildFile; fileRef = 1641050D09736949008DABCC /* GenLinkedList.h */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXBuildStyle section */
-		014CEA440018CDF011CA2923 /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				OPTIMIZATION_CFLAGS = "-O0";
-				OTHER_CFLAGS = "\U0001-DDEBUG";
-				ZERO_LINK = YES;
-			};
-			name = Development;
-		};
-		014CEA450018CDF011CA2923 /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-		F5BCCEC7023F613D01000164 /* DeploymentInApp */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				SKIP_INSTALL = YES;
-			};
-			name = DeploymentInApp;
-		};
-/* End PBXBuildStyle section */
-
 /* Begin PBXContainerItemProxy section */
 		1641040C09735FA6008DABCC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -96,9 +61,9 @@
 /* Begin PBXFileReference section */
 		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		08FB77B4FE84181DC02AAC07 /* MIDISpyClient.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = MIDISpyClient.c; sourceTree = "<group>"; };
-		164103F209735FA6008DABCC /* Info-SnoizeMIDISpy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = "Info-SnoizeMIDISpy.plist"; path = "../Info-SnoizeMIDISpy.plist"; sourceTree = "<group>"; };
+		164103F209735FA6008DABCC /* Info-SnoizeMIDISpy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-SnoizeMIDISpy.plist"; path = "../Info-SnoizeMIDISpy.plist"; sourceTree = "<group>"; };
 		164103F309735FA6008DABCC /* SnoizeMIDISpy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SnoizeMIDISpy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1641040A09735FA6008DABCC /* Info-SpyingMIDIDriver.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = "Info-SpyingMIDIDriver.plist"; path = "../Info-SpyingMIDIDriver.plist"; sourceTree = "<group>"; };
+		1641040A09735FA6008DABCC /* Info-SpyingMIDIDriver.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-SpyingMIDIDriver.plist"; path = "../Info-SpyingMIDIDriver.plist"; sourceTree = "<group>"; };
 		1641040B09735FA6008DABCC /* MIDI Monitor.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "MIDI Monitor.plugin"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1641044809736388008DABCC /* Snoize-Framework-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Framework-Debug.xcconfig"; path = "../../Configurations/Snoize-Framework-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		1641044909736388008DABCC /* Snoize-Framework-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Framework-Global.xcconfig"; path = "../../Configurations/Snoize-Framework-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
@@ -372,27 +337,6 @@
 			);
 			buildRules = (
 			);
-			buildSettings = {
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = "";
-				FRAMEWORK_VERSION = A;
-				HEADER_SEARCH_PATHS = "";
-				INSTALL_PATH = "";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = (
-					"-image_base",
-					0x39000000,
-				);
-				PRODUCT_NAME = SnoizeMIDISpy;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = framework;
-			};
 			dependencies = (
 				1641040D09735FA6008DABCC /* PBXTargetDependency */,
 			);
@@ -414,20 +358,6 @@
 			);
 			buildRules = (
 			);
-			buildSettings = {
-				EXPORTED_SYMBOLS_FILE = Driver/SpyingMIDIDriver.exp;
-				INSTALL_PATH = "/Library/Audio/MIDI Drivers";
-				OTHER_LDFLAGS = "-lstdc++";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "MIDI Monitor";
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = plugin;
-			};
 			dependencies = (
 			);
 			name = SpyingMIDIDriver;
@@ -442,17 +372,12 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 164103D209735F77008DABCC /* Build configuration list for PBXProject "SnoizeMIDISpy" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				014CEA440018CDF011CA2923 /* Development */,
-				014CEA450018CDF011CA2923 /* Deployment */,
-				F5BCCEC7023F613D01000164 /* DeploymentInApp */,
-			);
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 0867D691FE84028FC02AAC07 /* MIDISpy */;
 			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
 			projectDirPath = "";
+			projectRoot = ../..;
 			targets = (
 				164103F409735FA6008DABCC /* SpyingMIDIDriver */,
 				164103D709735FA5008DABCC /* SnoizeMIDISpy.framework */,

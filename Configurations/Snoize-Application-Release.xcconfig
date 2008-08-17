@@ -1,8 +1,5 @@
 #include "Snoize-Application-Global.xcconfig"
 
-// Prebind on PPC
-OTHER_LDFLAGS_ppc = -prebind
-
 // we want "xcodebuild install" to, in fact, install
 SKIP_INSTALL = NO
 

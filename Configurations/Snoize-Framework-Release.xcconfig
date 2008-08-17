@@ -3,7 +3,3 @@
 // Frameworks are installed inside the app
 INSTALL_PATH = @executable_path/../Frameworks
 SKIP_INSTALL = YES
-
-// Prebind on PPC
-OTHER_LDFLAGS_ppc = -prebind
-// should also add "image_base 0x??000000", but that needs to be set per-target

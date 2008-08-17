@@ -30,41 +30,6 @@
 		16AF2599097B1A3400BC87DC /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXBuildStyle section */
-		014CEA440018CDF011CA2923 /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				OPTIMIZATION_CFLAGS = "-O0";
-				OTHER_CFLAGS = "\U0001-DDEBUG";
-				ZERO_LINK = YES;
-			};
-			name = Development;
-		};
-		014CEA450018CDF011CA2923 /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-		F5460C1202E316F801000164 /* DeploymentInApp */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				SKIP_INSTALL = YES;
-			};
-			name = DeploymentInApp;
-		};
-/* End PBXBuildStyle section */
-
 /* Begin PBXFileReference section */
 		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		0867D6A5FE840307C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -76,13 +41,13 @@
 		168D151E098448ED004FB07D /* SNDisclosableViewPalette.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SNDisclosableViewPalette.h; sourceTree = "<group>"; };
 		168D151F098448ED004FB07D /* SNDisclosableViewPalette.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SNDisclosableViewPalette.m; sourceTree = "<group>"; };
 		168D1547098449AC004FB07D /* DisclosableViewPaletteIcon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = DisclosableViewPaletteIcon.tiff; sourceTree = "<group>"; };
-		168D1548098449AC004FB07D /* Info-DisclosableViewPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Info-DisclosableViewPalette.plist"; sourceTree = "<group>"; };
+		168D1548098449AC004FB07D /* Info-DisclosableViewPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-DisclosableViewPalette.plist"; sourceTree = "<group>"; };
 		168D1549098449AC004FB07D /* palette.table */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = palette.table; sourceTree = "<group>"; };
 		168D155209844A0E004FB07D /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/DisclosableViewInspector.nib; sourceTree = "<group>"; };
 		168D155409844A0E004FB07D /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/DisclosableViewPalette.nib; sourceTree = "<group>"; };
 		168D155B09844AB9004FB07D /* InterfaceBuilder.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InterfaceBuilder.framework; path = /System/Library/Frameworks/InterfaceBuilder.framework; sourceTree = "<absolute>"; };
 		168D158909844AF3004FB07D /* DisclosableView.palette */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DisclosableView.palette; sourceTree = BUILT_PRODUCTS_DIR; };
-		16AF25A0097B1A3400BC87DC /* Info-DisclosableView.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Info-DisclosableView.plist"; sourceTree = "<group>"; };
+		16AF25A0097B1A3400BC87DC /* Info-DisclosableView.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-DisclosableView.plist"; sourceTree = "<group>"; };
 		16AF25A1097B1A3400BC87DC /* DisclosableView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DisclosableView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		16AF25C1097B1C0000BC87DC /* Snoize-Framework-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Framework-Debug.xcconfig"; path = "../../Configurations/Snoize-Framework-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		16AF25C2097B1C0000BC87DC /* Snoize-Framework-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Framework-Global.xcconfig"; path = "../../Configurations/Snoize-Framework-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
@@ -272,50 +237,11 @@
 			);
 			buildRules = (
 			);
-			buildSettings = {
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				INFOPLIST_FILE = "DisclosableView Palette-Info.plist";
-				INSTALL_PATH = "$(HOME)/Library/Bundles";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = "DisclosableView Palette";
-				WRAPPER_EXTENSION = bundle;
-				ZERO_LINK = YES;
-			};
 			dependencies = (
 			);
 			name = "DisclosableView Palette";
 			productName = "DisclosableView Palette";
 			productReference = 168D158909844AF3004FB07D /* DisclosableView.palette */;
-			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
-<plist version=\"1.0\">
-<dict>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>English</string>
-	<key>CFBundleExecutable</key>
-	<string>${EXECUTABLE_NAME}</string>
-	<key>CFBundleIdentifier</key>
-	<string>com.yourcompany.DisclosableView Palette</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundlePackageType</key>
-	<string>BNDL</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
-	<key>CFBundleVersion</key>
-	<string>1.0</string>
-</dict>
-</plist>
-";
 			productType = "com.apple.product-type.bundle";
 		};
 		16AF258C097B1A3400BC87DC /* DisclosableView */ = {
@@ -330,28 +256,6 @@
 			);
 			buildRules = (
 			);
-			buildSettings = {
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = "";
-				FRAMEWORK_VERSION = A;
-				HEADER_SEARCH_PATHS = "";
-				INSTALL_PATH = /Library/Frameworks;
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-image_base",
-					0x3B000000,
-				);
-				PRODUCT_NAME = DisclosableView;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = framework;
-			};
 			dependencies = (
 			);
 			name = DisclosableView;
@@ -366,17 +270,12 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 16AF25A3097B1A3600BC87DC /* Build configuration list for PBXProject "DisclosableView" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				014CEA440018CDF011CA2923 /* Development */,
-				014CEA450018CDF011CA2923 /* Deployment */,
-				F5460C1202E316F801000164 /* DeploymentInApp */,
-			);
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 0;
 			mainGroup = 0867D691FE84028FC02AAC07 /* DisclosableView */;
 			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
 			projectDirPath = "";
+			projectRoot = ../..;
 			targets = (
 				16AF258C097B1A3400BC87DC /* DisclosableView */,
 				168D158809844AF3004FB07D /* DisclosableView Palette */,
