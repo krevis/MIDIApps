@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		16B11B920971D40100DB1DB5 /* MessageQueue.c in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B550971D40100DB1DB5 /* MessageQueue.c */; };
-		16B11B930971D40100DB1DB5 /* MessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B560971D40100DB1DB5 /* MessageQueue.h */; settings = {ATTRIBUTES = (); }; };
 		16B11B940971D40100DB1DB5 /* NSArray-SMExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B570971D40100DB1DB5 /* NSArray-SMExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		16B11B950971D40100DB1DB5 /* NSArray-SMExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B580971D40100DB1DB5 /* NSArray-SMExtensions.m */; };
 		16B11B960971D40100DB1DB5 /* NSData-SMExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B590971D40100DB1DB5 /* NSData-SMExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -83,8 +81,6 @@
 		161D6C940972111A00CA5276 /* Snoize-Project-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Debug.xcconfig"; path = "../../Configurations/Snoize-Project-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		161D6C9C097211EC00CA5276 /* Snoize-Project-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Release.xcconfig"; path = "../../Configurations/Snoize-Project-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
 		161D6CA10972127700CA5276 /* Snoize-Project-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Global.xcconfig"; path = "../../Configurations/Snoize-Project-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
-		16B11B550971D40100DB1DB5 /* MessageQueue.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = MessageQueue.c; sourceTree = "<group>"; };
-		16B11B560971D40100DB1DB5 /* MessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MessageQueue.h; sourceTree = "<group>"; };
 		16B11B570971D40100DB1DB5 /* NSArray-SMExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSArray-SMExtensions.h"; sourceTree = "<group>"; };
 		16B11B580971D40100DB1DB5 /* NSArray-SMExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSArray-SMExtensions.m"; sourceTree = "<group>"; };
 		16B11B590971D40100DB1DB5 /* NSData-SMExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSData-SMExtensions.h"; sourceTree = "<group>"; };
@@ -325,8 +321,6 @@
 			children = (
 				16B11B670971D40100DB1DB5 /* SMInputStream.h */,
 				16B11B680971D40100DB1DB5 /* SMInputStream.m */,
-				16B11B560971D40100DB1DB5 /* MessageQueue.h */,
-				16B11B550971D40100DB1DB5 /* MessageQueue.c */,
 				16B11B690971D40100DB1DB5 /* SMInputStreamSource.h */,
 				16B11B6A0971D40100DB1DB5 /* SMInputStreamSource.m */,
 				16B11B760971D40100DB1DB5 /* SMMessageParser.h */,
@@ -374,7 +368,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				16B11B930971D40100DB1DB5 /* MessageQueue.h in Headers */,
 				16B11B940971D40100DB1DB5 /* NSArray-SMExtensions.h in Headers */,
 				16B11B960971D40100DB1DB5 /* NSData-SMExtensions.h in Headers */,
 				16B11B980971D40100DB1DB5 /* NSString-SMExtensions.h in Headers */,
@@ -468,7 +461,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				16B11B920971D40100DB1DB5 /* MessageQueue.c in Sources */,
 				16B11B950971D40100DB1DB5 /* NSArray-SMExtensions.m in Sources */,
 				16B11B970971D40100DB1DB5 /* NSData-SMExtensions.m in Sources */,
 				16B11B990971D40100DB1DB5 /* NSString-SMExtensions.m in Sources */,

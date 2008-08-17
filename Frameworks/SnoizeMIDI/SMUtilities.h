@@ -32,15 +32,6 @@ extern void SMAssertionFailed(const char *expression, const char *file, unsigned
 #define SMAssert(expression)
 #endif
 
-#define SMInitialize \
-    {\
-        static BOOL initialized = NO; \
-        [super initialize]; \
-        if (initialized) \
-            return; \
-        initialized = YES; \
-    }
-
 extern UInt32 SMPacketListSize(const MIDIPacketList *packetList);
     // size, in bytes, of the whole packet list
 

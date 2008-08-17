@@ -40,16 +40,21 @@ static NSDateFormatter *timeStampDateFormatter;
 
 + (void)initialize
 {
-    SMInitialize;
+    if (self == [SMMessage class]) {
+        static BOOL sInitialized = NO;
+        if (!sInitialized) {
+            sInitialized = YES;
+    
+            // Establish a base of what host time corresponds to what clock time.
+            // TODO We should do this a few times and average the results, and also try to be careful not to get
+            // scheduled out during this process. We may need to switch ourself to be a time-constraint thread temporarily
+            // in order to do this. See discussion in the CoreAudio-API archives.
+            startHostTime = SMGetCurrentHostTime();
+            startTimeInterval = [NSDate timeIntervalSinceReferenceDate];
 
-    // Establish a base of what host time corresponds to what clock time.
-    // TODO We should do this a few times and average the results, and also try to be careful not to get
-    // scheduled out during this process. We may need to switch ourself to be a time-constraint thread temporarily
-    // in order to do this. See discussion in the CoreAudio-API archives.
-    startHostTime = SMGetCurrentHostTime();
-    startTimeInterval = [NSDate timeIntervalSinceReferenceDate];
-
-    timeStampDateFormatter = [[NSDateFormatter alloc] initWithDateFormat:@"%H:%M:%S.%F" allowNaturalLanguage:NO];
+            timeStampDateFormatter = [[NSDateFormatter alloc] initWithDateFormat:@"%H:%M:%S.%F" allowNaturalLanguage:NO];
+        }
+    }
 }
 
 + (NSString *)formatNoteNumber:(Byte)noteNumber;

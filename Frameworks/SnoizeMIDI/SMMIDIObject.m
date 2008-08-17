@@ -70,9 +70,13 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 
 + (void)initialize
 {
-    SMInitialize;
-    
-    [self privateInitialize];
+    if (self == [SMMIDIObject class]) {
+        static BOOL sInitialized = NO;
+        if (!sInitialized) {
+            sInitialized = YES;
+            [self privateInitialize];
+        }
+    }
 }
 
 //

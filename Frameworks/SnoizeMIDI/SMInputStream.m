@@ -25,8 +25,8 @@
 @interface SMInputStream (Private)
 
 static void midiReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, void *srcConnRefCon);
-+ (void)runSecondaryMIDIThread:(id)ignoredObject;
-static void receivePendingPacketList(CFTypeRef objectFromQueue, void *refCon);
+
++ (void) takePendingPacketList:(NSData *)pendingPacketListData;
 
 - (id <SMInputStreamSource>)findInputSourceWithName:(NSString *)desiredName uniqueID:(NSNumber *)desiredUniqueID;
 
@@ -41,13 +41,6 @@ NSString *SMInputStreamSelectedInputSourceDisappearedNotification = @"SMInputStr
 NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceListChangedNotification";
 
 
-+ (void)initialize
-{
-    SMInitialize;
-
-    [NSThread detachNewThreadSelector:@selector(runSecondaryMIDIThread:) toTarget:self withObject:nil];
-}
-
 - (id)init;
 {
     if (!(self = [super init]))
@@ -56,11 +49,6 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
     sysExTimeOut = 1.0;
     
     return self;
-}
-
-- (void)dealloc;
-{
-    [super dealloc];
 }
 
 - (id<SMMessageDestination>)messageDestination;
@@ -286,14 +274,15 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
     // TODO Because we're in a time-constraint thread, we should avoid allocating memory,
     // since the allocator uses a single app-wide lock. (If another low-priority thread holds
     // that lock, we'll have to wait for that thread to release it, which is priority inversion.)
-    // We're not even attempting to do that yet; roll back to an earlier version to see some preliminary code.
+    // We're not even attempting to do that yet. Frankly, neither MIDI Monitor nor SysEx Librarian
+    // need that level of performance.
 
     UInt32 packetListSize;
     const MIDIPacket *packet;
     UInt32 i;
     NSData *data;
     PendingPacketList *pendingPacketList;
-
+    
     // Find the size of the whole packet list
     packetListSize = sizeof(UInt32);	// numPackets
     packet = &packetList->packet[0];
@@ -301,55 +290,41 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
         packetListSize += offsetof(MIDIPacket, data) + packet->length;
         packet = MIDIPacketNext(packet);
     }
-
+    
     // Copy the packet list and other arguments into a new PendingPacketList (in an NSData)
     data = [[NSMutableData alloc] initWithLength:(offsetof(PendingPacketList, packetList) + packetListSize)];
     pendingPacketList = (PendingPacketList *)[data bytes];
     pendingPacketList->readProcRefCon = readProcRefCon;
     pendingPacketList->srcConnRefCon = srcConnRefCon;
     memcpy(&pendingPacketList->packetList, packetList, packetListSize);
-
-    // Queue the data; receivePendingPacketList() will be called in the secondary MIDI thread.
-    AddToMessageQueue((CFDataRef)data);
-
+    
+    [[SMInputStream class] performSelectorOnMainThread:@selector(takePendingPacketList:) withObject:data waitUntilDone:NO];
+    
     [data release];
 }
 
-+ (void)runSecondaryMIDIThread:(id)ignoredObject;
++ (void) takePendingPacketList:(NSData *)pendingPacketListData
 {
-    NSAutoreleasePool *pool;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
-    pool = [[NSAutoreleasePool alloc] init];
+    @try
+    {
+        PendingPacketList *pendingPacketList = (PendingPacketList *)[pendingPacketListData bytes];
 
-    CreateMessageQueue(receivePendingPacketList, NULL);
-
-    [[NSRunLoop currentRunLoop] run];
-    // Runs until DestroyMessageQueue() is called
-
-    [pool release];
-}
-
-static void receivePendingPacketList(CFTypeRef objectFromQueue, void *refCon)
-{
-    // NOTE: This function is called in the secondary MIDI thread that we create
-
-    NSAutoreleasePool *pool;
-    NSData *data = (NSData *)objectFromQueue;
-    PendingPacketList *pendingPacketList;
-    SMInputStream *inputStream;
-
-    pool = [[NSAutoreleasePool alloc] init];
-
-    pendingPacketList = (PendingPacketList *)[data bytes];
-    inputStream = (SMInputStream *)pendingPacketList->readProcRefCon;
-    NS_DURING {
-        [[inputStream parserForSourceConnectionRefCon:pendingPacketList->srcConnRefCon] takePacketList:&pendingPacketList->packetList];
-    } NS_HANDLER {
+        // Starting with an input stream...
+        SMInputStream *inputStream = (SMInputStream *)pendingPacketList->readProcRefCon;
+        // find the parser that is associated with this particular connection...
+        SMMessageParser *parser = [inputStream parserForSourceConnectionRefCon:pendingPacketList->srcConnRefCon];
+        // and give it the packet list
+        [parser takePacketList:&(pendingPacketList->packetList)];
+    }
+    @catch (id localException)
+    {
         // Ignore any exceptions raised
 #if DEBUG
         NSLog(@"Exception raised during MIDI parsing in secondary thread: %@", localException);
 #endif
-    } NS_ENDHANDLER;
+    }
 
     [pool release];
 }
