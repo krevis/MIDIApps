@@ -274,7 +274,6 @@ static BOOL showSubviewsWhileResizing = NO;
 
     NSRect ourFrame;
     NSWindow *window;
-    NSView *contentView;
     NSArray *windowSubviews;
     unsigned int windowSubviewCount, windowSubviewIndex;
     NSMutableArray *windowSubviewMasks;
@@ -284,12 +283,37 @@ static BOOL showSubviewsWhileResizing = NO;
     NSRect newWindowFrame;
     NSSize newWindowMinOrMaxSize;
 
-    ourFrame = [self frame];
     window = [self window];
-    contentView = [window contentView];
 
+    // Compute the window's new frame.
+    newWindowFrame = [window frame];
+    newWindowFrame.origin.y -= amount;
+    newWindowFrame.size.height += amount;
+
+    // If we're growing a visible window, will AppKit constrain it?  It might not fit on the screen.
+    if ([window isVisible] && amount > 0) {
+        NSRect constrainedNewWindowFrame = [window constrainFrameRect:newWindowFrame toScreen:[window screen]];
+        if (constrainedNewWindowFrame.size.height < newWindowFrame.size.height) {
+            // We can't actually make the window that size. Something will have to give.
+            // Shrink to a height such that, when we grow later on, the window will fit.
+            float shrunkenHeight = constrainedNewWindowFrame.size.height - amount;
+            NSRect immediateNewFrame = [window frame];
+            immediateNewFrame.origin.y += (immediateNewFrame.size.height - shrunkenHeight);
+            immediateNewFrame.size.height = shrunkenHeight;
+            [window setFrame:immediateNewFrame display:YES animate:YES];
+
+            // Have to recompute based on the new frame...
+            newWindowFrame = [window frame];
+            newWindowFrame.origin.y -= amount;
+            newWindowFrame.size.height += amount;
+        }
+    }        
+
+    // Now that we're in a configuration where we can change the window's size how we want, start with our current frame.
+    ourFrame = [self frame];
+        
     // Adjust the autoresize masks of the window's subviews, remembering the original masks.
-    windowSubviews = [contentView subviews];
+    windowSubviews = [[window contentView] subviews];
     windowSubviewCount = [windowSubviews count];
     windowSubviewMasks = [NSMutableArray arrayWithCapacity:windowSubviewCount];
     for (windowSubviewIndex = 0; windowSubviewIndex < windowSubviewCount; windowSubviewIndex++) {
@@ -343,10 +367,7 @@ static BOOL showSubviewsWhileResizing = NO;
         [ourSubview setAutoresizingMask:mask];
     }
 
-    // Compute the window's new frame, and resize it.
-    newWindowFrame = [window frame];
-    newWindowFrame.origin.y -= amount;
-    newWindowFrame.size.height += amount;
+    // Finally we can resize the window.
     if ([window isVisible])
         [window setFrame:newWindowFrame display:YES animate:YES];
     else
