@@ -51,8 +51,8 @@ cd ..
 
 cp -R $SnoizeConfigurationsSource .
 
-cp -R $SnoizeDocsSource/MIDIMonitor/Source/README .
-cp -R $SnoizeDocsSource/MIDIMonitor/Source/LICENSE .
+cp -R $SnoizeDocsSource/MIDIMonitor/Source/README.txt .
+cp -R $SnoizeDocsSource/MIDIMonitor/Source/LICENSE.txt .
 
 #
 # Remove extra junk from the source
@@ -60,8 +60,11 @@ cp -R $SnoizeDocsSource/MIDIMonitor/Source/LICENSE .
 
 find . -type d -name CVS -exec rm -rf {} \; -prune
 find . -name \*.mode1 -exec rm {} \;
+find . -name \*.mode1v3 -exec rm {} \;
 find . -name \*.pbxuser -exec rm {} \;
 find . -name \*.perspective -exec rm {} \;
+find . -name \*.perspectivev3 -exec rm {} \;
+find . -name .DS_Store -exec rm {} \;
 
 #
 # Archive it up
