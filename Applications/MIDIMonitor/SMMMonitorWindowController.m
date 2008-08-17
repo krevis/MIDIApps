@@ -53,7 +53,7 @@
 static NSString *kFromString = nil;
 static NSString *kToString = nil;
 
-static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
+static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 
 
 - (id)init;
@@ -734,16 +734,19 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.20; // seconds
 
     [displayedMessages release];
     displayedMessages = [newMessages retain];
+
+    // Scroll to the botton, iff the table view is already scrolled to the bottom.
+    BOOL isAtBottom = (NSMaxY([messagesTableView bounds]) - NSMaxY([messagesTableView visibleRect]) < [messagesTableView rowHeight]);
     
     [messagesTableView reloadData];
 
-    if (messagesNeedScrollToBottom) {
+    if (messagesNeedScrollToBottom && isAtBottom) {
         unsigned int messageCount = [displayedMessages count];
         if (messageCount > 0)
             [messagesTableView scrollRowToVisible:messageCount - 1];
-
-        messagesNeedScrollToBottom = NO;
     }
+
+    messagesNeedScrollToBottom = NO;
 
     // Figure out when we should next be allowed to refresh.
     [nextMessagesRefreshDate release];
