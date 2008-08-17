@@ -30,4 +30,9 @@
     return [(NSTableView *)controlView backgroundColor];
 }
 
+- (int /*NSBackgroundStyle*/)interiorBackgroundStyle
+{
+    return 0;    // NSBackgroundStyleLight == the background is a light color, and content drawn over it (the text) should be dark
+}
+
 @end
