@@ -21,6 +21,7 @@ Everything you need to build SysEx Librarian is here.  You should have a source 
 SysEx Librarian Source
 	Applications
 		SysExLibrarian
+	Configurations
 	Frameworks
 		SnoizeMIDI
 	Scripts
@@ -51,6 +52,11 @@ In decreasing order of importance:
 	The code is mainly Objective-C, with one ordinary C file.
 
 
+* Configurations
+
+	Contains .xcconfig files used to coordinate build settings across all the Xcode projects.
+
+
 * Scripts
 
 	Contains a script to build the final ("install") version of SysEx Librarian.
@@ -60,13 +66,16 @@ In decreasing order of importance:
 * HOW TO BUILD
 *
 
-The projects enclosed are for XCode 2.2.1.  You may be able to use the projects in earlier versions of XCode, but no guarantees (that's up to you -- I haven't tried it myself).
+The projects enclosed are for Xcode 3.1.  You may be able to use the projects in earlier versions of XCode, but no guarantees.  (They are supposedly compatible back to Xcode 2.4.)
 
-The frameworks are reasonably generic and should work on any version of OS X (10.1 is definitely preferred, though).  The application will only run on 10.2 and later.  It builds using the 10.2.8 SDK; if you didn't install this SDK along with XCode, you will probably want to.
+Everything is set up to build Universal.  Intel uses the 10.4 SDK and gcc 4.0.  PowerPC uses the 10.3.9 SDK and gcc 3.3.  (Note that 10.3.9 support is optional in Xcode 3; make sure you install it.)
 
-You should be able to just build the SysExLibrarian.xcodeproj project; it will automatically find and build the SnoizeMIDI framework project. Note that this will only work if you set a customized location for build products in Xcode's preferences (in the Building pane).
+IMPORTANT NOTE:  You *must* set a global build location in Xcode's preferences. If you don't, the app's project will not be able to find the frameworks after they are built.
+In the Xcode preferences window, choose the "Building" section, change "Place Build Products in" to "Customized location", and pick a folder.
 
-For installation builds: There is a shell script in Scripts/BuildSysExLibrarian which builds the whole app and takes care of some miscellaneous details.  If you just run the script, you should end up with a SysExLibrarianBuild directory in your home directory, with an "InstalledProducts" directory inside containing the built application.  If you want the built results to go elsewhere, feel free to change the script.
+Once you do that, when you open the SysEx Librarian project and build it, it will automatically build everything you need.
+
+For install builds: There is a shell script in Scripts/BuildSysExLibrarian which builds the whole app and takes care of some miscellaneous details.  If you just run the script, you should end up with a SysExLibrarianBuild directory in your home directory, with an "InstalledProducts" directory inside containing the built application.  If you want the built results to go elsewhere, feel free to change the script.
 
 
 *

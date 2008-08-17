@@ -21,6 +21,7 @@ Everything you need to build MIDI Monitor is here.  You should have a source tre
 MIDI Monitor Source
 	Applications
 		MIDIMonitor
+	Configurations
 	Frameworks
 		SnoizeMIDI
 		SnoizeMIDISpy
@@ -32,7 +33,7 @@ In decreasing order of importance:
 
 * Applications/MIDIMonitor
 
-	The source to the MIDI Monitor application.  The project file is MIDIMonitor.pbxproj; open this using XCode.
+	The source to the MIDI Monitor application.  The project file is MIDIMonitor.xcodeproj; open this using XCode.
 
 	MIDI Monitor is a Cocoa application, written in Objective-C.
 
@@ -73,6 +74,11 @@ In decreasing order of importance:
 	A framework containing a Cocoa "disclosable" view -- one that can be shown and hidden by the user on demand.
 
 
+* Configurations
+
+	Contains .xcconfig files used to coordinate build settings across all the Xcode projects.
+
+
 * Scripts
 
 	Contains a script to build the final ("install") version of MIDI Monitor.
@@ -82,13 +88,16 @@ In decreasing order of importance:
 * HOW TO BUILD
 *
 
-The projects enclosed are for XCode 1.5.  You may be able to use the projects in earlier versions of XCode, but no guarantees (that's up to you -- I haven't tried it myself).
+The projects enclosed are for Xcode 3.1.  You may be able to use the projects in earlier versions of XCode, but no guarantees.  (They are supposedly compatible back to Xcode 2.4.)
 
-The frameworks are reasonably generic and should work on any version of OS X (10.1 is definitely preferred, though).  The application will only run on 10.2 and later.  It builds using the 10.2.7 SDK; if you didn't install this SDK along with XCode, you will probably want to.
+Everything is set up to build Universal.  Intel uses the 10.4 SDK and gcc 4.0.  PowerPC uses the 10.3.9 SDK and gcc 3.3.  (Note that 10.3.9 support is optional in Xcode 3; make sure you install it.)
 
-For development builds: Open each framework's project in XCode, build it, and then build the whole application.  If you are lucky, it will Just Work.  The frameworks can be built in any order, but obviously the app must be built last.
+IMPORTANT NOTE:  You *must* set a global build location in Xcode's preferences. If you don't, the app's project will not be able to find the frameworks after they are built.
+In the Xcode preferences window, choose the "Building" section, change "Place Build Products in" to "Customized location", and pick a folder.
 
-For installation builds: There is a shell script in Scripts/BuildMIDIMonitor which builds the whole app and takes care of some miscellaneous details.  If you just run the script, you should end up with a MIDIMonitorBuild directory in your home directory, with an "InstalledProducts" directory inside containing the built application.  If you want the built results to go elsewhere, feel free to change the script.
+Once you do that, when you open the MIDI Monitor project and build it, it will automatically build everything you need.
+
+For install builds: There is a shell script in Scripts/BuildMIDIMonitor which builds the whole app and takes care of some miscellaneous details.  If you just run the script, you should end up with a MIDIMonitorBuild directory in your home directory, with an "InstalledProducts" directory inside containing the built application.  If you want the built results to go elsewhere, feel free to change the script.
 
 
 *
