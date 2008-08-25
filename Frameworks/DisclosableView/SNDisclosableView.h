@@ -25,7 +25,7 @@
 }
 
 - (BOOL)isShown;
-- (void)setIsShown:(BOOL)value;
+- (void)setShown:(BOOL)value;
 
 - (float)hiddenHeight;
 - (void)setHiddenHeight:(float)value;

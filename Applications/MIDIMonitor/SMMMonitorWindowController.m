@@ -836,7 +836,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     sendWindowFrameChangesToDocument = NO;
 
     // NOTE We ought to be able to swap these to get the button to draw first. However, that just doesn't work, and I can't figure out why. Grrr!
-    [view setIsShown:isShown];
+    [view setShown:isShown];
     [button setIntValue:(isShown ? 1 : 0)];
 
     sendWindowFrameChangesToDocument = savedSendWindowFrameChangesToDocument;

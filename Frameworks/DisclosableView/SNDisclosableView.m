@@ -107,7 +107,7 @@ static BOOL showSubviewsWhileResizing = NO;
     return isShown;
 }
 
-- (void)setIsShown:(BOOL)value;
+- (void)setShown:(BOOL)value;
 {
     if (value)
         [self show:nil];
@@ -131,7 +131,7 @@ static BOOL showSubviewsWhileResizing = NO;
 
 - (IBAction)toggleDisclosure:(id)sender;
 {
-    [self setIsShown:!isShown];
+    [self setShown:!isShown];
 }
 
 - (IBAction)hide:(id)sender;
