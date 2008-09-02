@@ -14,6 +14,7 @@
 #import <CoreMIDI/CoreMIDI.h>
 
 @class SMEndpoint;
+@class SMMessageTimeBase;
 
 
 typedef enum _SMMessageType {
@@ -91,12 +92,12 @@ extern NSString *SMControllerFormatPreferenceKey;
 extern NSString *SMDataFormatPreferenceKey;
 extern NSString *SMTimeFormatPreferenceKey;
 
-
-@interface SMMessage : NSObject <NSCopying>
+@interface SMMessage : NSObject <NSCopying, NSCoding>
 {
     MIDITimeStamp timeStamp;
+    SMMessageTimeBase *timeBase;
     Byte statusByte;
-    SMEndpoint *originatingEndpoint;
+    id originatingEndpointOrName;   // either SMEndpoint or NSString
 }
 
 + (NSString *)formatNoteNumber:(Byte)noteNumber;
@@ -113,8 +114,6 @@ extern NSString *SMTimeFormatPreferenceKey;
 + (NSString *)formatLength:(unsigned int)length;
 + (NSString *)formatLength:(unsigned int)length usingOption:(SMDataFormattingOption)option;
 + (NSString *)nameForManufacturerIdentifier:(NSData *)manufacturerIdentifierData;
-+ (NSString *)formatTimeStamp:(MIDITimeStamp)timeStamp;
-+ (NSString *)formatTimeStamp:(MIDITimeStamp)timeStamp usingOption:(SMTimeFormattingOption)option;
 
 - (id)initWithTimeStamp:(MIDITimeStamp)aTimeStamp statusByte:(Byte)aStatusByte;
     // Designated initializer
@@ -146,5 +145,6 @@ extern NSString *SMTimeFormatPreferenceKey;
 - (NSString *)channelForDisplay;
 - (NSString *)typeForDisplay;
 - (NSString *)dataForDisplay;
+- (NSString *)originatingEndpointForDisplay;
 
 @end

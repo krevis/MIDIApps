@@ -25,7 +25,9 @@
 
 - (NSArray *)savedMessages;
     // Returns a snapshot of the current history.
-    
+
+- (void)setSavedMessages:(NSArray*)messages;
+
 - (void)clearSavedMessages;
 
 - (unsigned int)historySize;

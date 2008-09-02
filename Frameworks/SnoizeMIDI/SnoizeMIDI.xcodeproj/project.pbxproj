@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		164876600E6D2A22002CF387 /* SMMessageTimeBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 1648765E0E6D2A22002CF387 /* SMMessageTimeBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		164876610E6D2A22002CF387 /* SMMessageTimeBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 1648765F0E6D2A22002CF387 /* SMMessageTimeBase.m */; };
 		16B11B940971D40100DB1DB5 /* NSArray-SMExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B570971D40100DB1DB5 /* NSArray-SMExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		16B11B950971D40100DB1DB5 /* NSArray-SMExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B580971D40100DB1DB5 /* NSArray-SMExtensions.m */; };
 		16B11B960971D40100DB1DB5 /* NSData-SMExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B590971D40100DB1DB5 /* NSData-SMExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -81,6 +83,8 @@
 		161D6C940972111A00CA5276 /* Snoize-Project-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Debug.xcconfig"; path = "../../Configurations/Snoize-Project-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		161D6C9C097211EC00CA5276 /* Snoize-Project-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Release.xcconfig"; path = "../../Configurations/Snoize-Project-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
 		161D6CA10972127700CA5276 /* Snoize-Project-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Global.xcconfig"; path = "../../Configurations/Snoize-Project-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
+		1648765E0E6D2A22002CF387 /* SMMessageTimeBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMessageTimeBase.h; sourceTree = "<group>"; };
+		1648765F0E6D2A22002CF387 /* SMMessageTimeBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMessageTimeBase.m; sourceTree = "<group>"; };
 		16B11B570971D40100DB1DB5 /* NSArray-SMExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSArray-SMExtensions.h"; sourceTree = "<group>"; };
 		16B11B580971D40100DB1DB5 /* NSArray-SMExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSArray-SMExtensions.m"; sourceTree = "<group>"; };
 		16B11B590971D40100DB1DB5 /* NSData-SMExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSData-SMExtensions.h"; sourceTree = "<group>"; };
@@ -302,6 +306,8 @@
 				16B11B860971D40100DB1DB5 /* SMSystemExclusiveMessage.m */,
 				16B11B6B0971D40100DB1DB5 /* SMInvalidMessage.h */,
 				16B11B6C0971D40100DB1DB5 /* SMInvalidMessage.m */,
+				1648765E0E6D2A22002CF387 /* SMMessageTimeBase.h */,
+				1648765F0E6D2A22002CF387 /* SMMessageTimeBase.m */,
 			);
 			name = Messages;
 			sourceTree = "<group>";
@@ -399,6 +405,7 @@
 				16B11BCA0971D40100DB1DB5 /* SMVirtualOutputStream.h in Headers */,
 				16B11BCC0971D40100DB1DB5 /* SMVoiceMessage.h in Headers */,
 				16B11BCE0971D40100DB1DB5 /* SnoizeMIDI.h in Headers */,
+				164876600E6D2A22002CF387 /* SMMessageTimeBase.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -489,6 +496,7 @@
 				16B11BC90971D40100DB1DB5 /* SMVirtualInputStream.m in Sources */,
 				16B11BCB0971D40100DB1DB5 /* SMVirtualOutputStream.m in Sources */,
 				16B11BCD0971D40100DB1DB5 /* SMVoiceMessage.m in Sources */,
+				164876610E6D2A22002CF387 /* SMMessageTimeBase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -554,7 +562,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SnoizeMIDI_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
-				OTHER_LDFLAGS_ppc = "-prebind -image_base 0x38000000";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = SnoizeMIDI;
 				WRAPPER_EXTENSION = framework;

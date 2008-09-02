@@ -162,8 +162,36 @@ static void writeVariableLengthFieldIntoSMF(Byte **pPtr, const UInt32 value);
     
     newMessage = [super copyWithZone:zone];
     [newMessage setData:data];
+    [newMessage setWasReceivedWithEOX:[self wasReceivedWithEOX]];
 
     return newMessage;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [super encodeWithCoder:coder];
+    [coder encodeObject:data forKey:@"data"];
+    [coder encodeBool:[self wasReceivedWithEOX] forKey:@"wasReceivedWithEOX"];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    if ((self = [super initWithCoder:decoder])) {
+        id obj = [decoder decodeObjectForKey:@"data"];
+        if (obj && [obj isKindOfClass:[NSData class]]) {
+            data = [obj retain];
+        } else {
+            goto fail;
+        }
+        
+        [self setWasReceivedWithEOX:[decoder decodeBoolForKey:@"wasReceivedWithEOX"]];
+    }
+    
+    return self;
+    
+fail:
+    [self release];
+    return nil;
 }
 
 - (SMMessageType)messageType;

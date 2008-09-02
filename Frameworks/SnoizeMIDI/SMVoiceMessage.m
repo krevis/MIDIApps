@@ -48,6 +48,32 @@
     return newMessage;
 }
 
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [super encodeWithCoder:coder];
+    [coder encodeBytes:dataBytes length:2 forKey:@"dataBytes"];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    if ((self = [super initWithCoder:decoder])) {
+        unsigned len;
+        const uint8_t *decodedBytes = [decoder decodeBytesForKey:@"dataBytes" returnedLength:&len];
+        if (decodedBytes && len == 2) {
+            dataBytes[0] = decodedBytes[0];
+            dataBytes[1] = decodedBytes[1];
+        } else {
+            goto fail;
+        }
+    }
+    
+    return self;
+    
+fail:
+    [self release];
+    return nil;
+}
+
 - (SMMessageType)messageType;
 {
     switch ([self status]) {

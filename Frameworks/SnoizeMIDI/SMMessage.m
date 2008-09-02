@@ -13,6 +13,7 @@
 
 #import "SMMessage.h"
 
+#import "SMMessageTimeBase.h"
 #import "SMEndpoint.h"
 #import "SMHostTime.h"
 #import "SMUtilities.h"
@@ -32,30 +33,6 @@ NSString *SMNoteFormatPreferenceKey = @"SMNoteFormat";
 NSString *SMControllerFormatPreferenceKey = @"SMControllerFormat";
 NSString *SMDataFormatPreferenceKey = @"SMDataFormat";
 NSString *SMTimeFormatPreferenceKey = @"SMTimeFormat";
-
-static UInt64 startHostTime;
-static NSTimeInterval startTimeInterval;
-static NSDateFormatter *timeStampDateFormatter;
-
-
-+ (void)initialize
-{
-    if (self == [SMMessage class]) {
-        static BOOL sInitialized = NO;
-        if (!sInitialized) {
-            sInitialized = YES;
-    
-            // Establish a base of what host time corresponds to what clock time.
-            // TODO We should do this a few times and average the results, and also try to be careful not to get
-            // scheduled out during this process. We may need to switch ourself to be a time-constraint thread temporarily
-            // in order to do this. See discussion in the CoreAudio-API archives.
-            startHostTime = SMGetCurrentHostTime();
-            startTimeInterval = [NSDate timeIntervalSinceReferenceDate];
-
-            timeStampDateFormatter = [[NSDateFormatter alloc] initWithDateFormat:@"%H:%M:%S.%F" allowNaturalLanguage:NO];
-        }
-    }
-}
 
 + (NSString *)formatNoteNumber:(Byte)noteNumber;
 {
@@ -255,60 +232,6 @@ static NSDateFormatter *timeStampDateFormatter;
         return NSLocalizedStringFromTableInBundle(@"Unknown Manufacturer", @"SnoizeMIDI", SMBundleForObject(self), "unknown manufacturer name");
 }
 
-+ (NSString *)formatTimeStamp:(MIDITimeStamp)aTimeStamp;
-{
-    return [self formatTimeStamp:aTimeStamp usingOption:[[NSUserDefaults standardUserDefaults] integerForKey:SMTimeFormatPreferenceKey]];
-}
-
-+ (NSString *)formatTimeStamp:(MIDITimeStamp)aTimeStamp usingOption:(SMTimeFormattingOption)option;
-{
-    switch (option) {
-        case SMTimeFormatHostTimeInteger:
-        {
-            // We have 2^64 possible values, which comes out to 1.8e19. So we need at most 20 digits. (Add one for the trailing \0.)
-            char buf[21];
-            
-            snprintf(buf, sizeof(buf), "%llu", aTimeStamp);
-            return [NSString stringWithCString:buf];
-        }
-
-        case SMTimeFormatHostTimeHexInteger:
-        {
-            // 64 bits at 4 bits/character = 16 characters max. (Add one for the trailing \0.)
-            char buf[17];
-            
-            snprintf(buf, sizeof(buf), "%016llX", aTimeStamp);
-            return [NSString stringWithCString:buf];
-        }
-
-        case SMTimeFormatHostTimeNanoseconds:
-        {
-            char buf[21];
-            
-            snprintf(buf, 21, "%llu", SMConvertHostTimeToNanos(aTimeStamp));
-            return [NSString stringWithCString:buf];
-        }
-
-        case SMTimeFormatHostTimeSeconds:
-            return [NSString stringWithFormat:@"%.3lf", SMConvertHostTimeToNanos(aTimeStamp) / 1.0e9];
-
-        case SMTimeFormatClockTime:
-        default:
-        {
-            if (aTimeStamp == 0) {
-                return NSLocalizedStringFromTableInBundle(@"*** ZERO ***", @"SnoizeMIDI", SMBundleForObject(self), "zero timestamp formatted as clock time");
-            } else {
-                NSTimeInterval timeStampInterval;
-                NSDate *date;
-                    
-                timeStampInterval = SMConvertHostTimeToNanos(aTimeStamp - startHostTime) / 1.0e9;
-                date = [NSDate dateWithTimeIntervalSinceReferenceDate:(startTimeInterval + timeStampInterval)];
-                return [timeStampDateFormatter stringForObjectValue:date];
-            }
-        }
-    }
-}
-
 - (id)initWithTimeStamp:(MIDITimeStamp)aTimeStamp statusByte:(Byte)aStatusByte
 {
     // Designated initializer
@@ -317,6 +240,7 @@ static NSDateFormatter *timeStampDateFormatter;
         return nil;
 
     timeStamp = aTimeStamp;
+    timeBase = [[SMMessageTimeBase currentTimeBase] retain];
     statusByte = aStatusByte;
         
     return self;
@@ -329,9 +253,10 @@ static NSDateFormatter *timeStampDateFormatter;
     return nil;
 }
 
-- (void)dealloc;
+- (void)dealloc
 {
-    [originatingEndpoint release];
+    [timeBase release];
+    [originatingEndpointOrName release];
     [super dealloc];
 }
 
@@ -340,8 +265,47 @@ static NSDateFormatter *timeStampDateFormatter;
     SMMessage *newMessage;
     
     newMessage = [[[self class] allocWithZone:zone] initWithTimeStamp:timeStamp statusByte:statusByte];
-    [newMessage setOriginatingEndpoint:originatingEndpoint];
+    [newMessage->timeBase release];
+    newMessage->timeBase = [timeBase retain];
+    newMessage->originatingEndpointOrName = [originatingEndpointOrName retain];
     return newMessage;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{    
+    [coder encodeInt64:timeStamp forKey:@"timeStamp"];
+    [coder encodeObject:timeBase forKey:@"timeBase"];
+    [coder encodeInt:statusByte forKey:@"statusByte"];
+    [coder encodeObject:[self originatingEndpointForDisplay] forKey:@"originatingEndpoint"];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    if ((self = [super init])) {
+        timeStamp = [decoder decodeInt64ForKey:@"timeStamp"]; 
+
+        id maybeTimeBase = [decoder decodeObjectForKey:@"timeBase"];
+        if ([maybeTimeBase isKindOfClass:[SMMessageTimeBase class]]) {
+            timeBase = [maybeTimeBase retain];            
+        } else {
+            goto fail;
+        }
+        
+        statusByte = [decoder decodeIntForKey:@"statusByte"];
+        
+        id endpointName = [decoder decodeObjectForKey:@"originatingEndpoint"];
+        if ([endpointName isKindOfClass:[NSString class]]) {
+            originatingEndpointOrName = [endpointName copy];
+        } else {
+            goto fail;
+        }
+    }
+    
+    return self;
+    
+fail:
+    [self release];
+    return nil;
 }
 
 - (MIDITimeStamp)timeStamp
@@ -382,7 +346,7 @@ static NSDateFormatter *timeStampDateFormatter;
     return 0;
 }
 
-- (const Byte *)otherDataBuffer;
+- (const Byte *)otherDataBuffer
 {
     // Subclasses must override if they have other data
     return NULL;
@@ -398,16 +362,16 @@ static NSDateFormatter *timeStampDateFormatter;
         return nil;
 }
 
-- (SMEndpoint *)originatingEndpoint;
+- (SMEndpoint *)originatingEndpoint
 {
-    return originatingEndpoint;
+    return [originatingEndpointOrName isKindOfClass:[SMEndpoint class]] ? (SMEndpoint*)originatingEndpointOrName : nil;
 }
 
-- (void)setOriginatingEndpoint:(SMEndpoint *)value;
+- (void)setOriginatingEndpoint:(SMEndpoint *)value
 {
-    if (originatingEndpoint != value) {
-        [originatingEndpoint release];
-        originatingEndpoint = [value retain];
+    if (originatingEndpointOrName != value) {
+        [originatingEndpointOrName release];
+        originatingEndpointOrName = [value retain];
     }
 }
 
@@ -417,7 +381,55 @@ static NSDateFormatter *timeStampDateFormatter;
 
 - (NSString *)timeStampForDisplay;
 {
-    return [SMMessage formatTimeStamp:timeStamp];
+    int option = [[NSUserDefaults standardUserDefaults] integerForKey:SMTimeFormatPreferenceKey];
+    
+    switch (option) {
+        case SMTimeFormatHostTimeInteger:
+        {
+            // We have 2^64 possible values, which comes out to 1.8e19. So we need at most 20 digits. (Add one for the trailing \0.)
+            char buf[21];
+            
+            snprintf(buf, sizeof(buf), "%llu", timeStamp);
+            return [NSString stringWithCString:buf];
+        }
+            
+        case SMTimeFormatHostTimeHexInteger:
+        {
+            // 64 bits at 4 bits/character = 16 characters max. (Add one for the trailing \0.)
+            char buf[17];
+            
+            snprintf(buf, sizeof(buf), "%016llX", timeStamp);
+            return [NSString stringWithCString:buf];
+        }
+            
+        case SMTimeFormatHostTimeNanoseconds:
+        {
+            char buf[21];
+            
+            snprintf(buf, 21, "%llu", SMConvertHostTimeToNanos(timeStamp));
+            return [NSString stringWithCString:buf];
+        }
+            
+        case SMTimeFormatHostTimeSeconds:
+            return [NSString stringWithFormat:@"%.3lf", SMConvertHostTimeToNanos(timeStamp) / 1.0e9];
+            
+        case SMTimeFormatClockTime:
+        default:
+        {
+            if (timeStamp == 0) {
+                return NSLocalizedStringFromTableInBundle(@"*** ZERO ***", @"SnoizeMIDI", SMBundleForObject(self), "zero timestamp formatted as clock time");
+            } else {
+                static NSDateFormatter *timeStampDateFormatter = nil;
+                if (!timeStampDateFormatter) {
+                    timeStampDateFormatter = [[NSDateFormatter alloc] initWithDateFormat:@"%H:%M:%S.%F" allowNaturalLanguage:NO];
+                }
+                                
+                NSTimeInterval timeStampInterval = SMConvertHostTimeToNanos(timeStamp - [timeBase hostTime]) / 1.0e9;
+                NSDate* date = [NSDate dateWithTimeIntervalSinceReferenceDate:([timeBase timeInterval] + timeStampInterval)];
+                return [timeStampDateFormatter stringForObjectValue:date];
+            }
+        }
+    }
 }
 
 - (NSString *)typeForDisplay;
@@ -433,6 +445,28 @@ static NSDateFormatter *timeStampDateFormatter;
 - (NSString *)dataForDisplay;
 {
     return [SMMessage formatData:[self otherData]];
+}
+
+- (NSString *)originatingEndpointForDisplay
+{
+    SMEndpoint *endpoint;
+    
+    if ((endpoint = [self originatingEndpoint])) {
+        static NSString *kFromString = nil;
+        static NSString *kToString = nil;
+        
+        if (!kFromString)
+            kFromString = [NSLocalizedStringFromTableInBundle(@"From", @"SnoizeMIDI", SMBundleForObject(self), "Prefix for endpoint name when it's a source") retain];
+        if (!kToString)
+            kToString = [NSLocalizedStringFromTableInBundle(@"To", @"SnoizeMIDI", SMBundleForObject(self), "Prefix for endpoint name when it's a destination") retain];
+        
+        NSString* fromOrTo = ([endpoint isKindOfClass:[SMSourceEndpoint class]] ? kFromString : kToString);
+        return [[fromOrTo stringByAppendingString:@" "] stringByAppendingString:[endpoint alwaysUniqueName]];
+    } else if ([originatingEndpointOrName isKindOfClass:[NSString class]]) {
+        return (NSString*)originatingEndpointOrName;
+    } else {
+        return @"";
+    }
 }
 
 @end

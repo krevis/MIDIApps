@@ -18,8 +18,6 @@
 
 #import "SMMCombinationInputStream.h"
 #import "SMMMonitorWindowController.h"
-#import "NSData-SMMExtensions.h"
-#import "NSDictionary-SMMExtensions.h"
 
 
 @interface SMMDocument (Private)
@@ -142,7 +140,7 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
     SMChannelMask channelMask;
     unsigned int historySize;
 
-    dict = [NSMutableDictionary dictionary];
+    dict = [[NSMutableDictionary alloc] init];
     [dict setObject:[NSNumber numberWithInt:2] forKey:@"version"];
 
     streamSettings = [stream persistentSettings];
@@ -170,7 +168,17 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
     if (windowFrameDescription)
         [dict setObject:windowFrameDescription forKey:@"windowFrame"];
 
+    NSArray* savedMessages = [history savedMessages];
+    if ([savedMessages count]) {
+        NSData* messageData = [NSKeyedArchiver archivedDataWithRootObject:savedMessages];
+        if (messageData) {
+            [dict setObject:messageData forKey:@"messageData"];
+        }
+    }
+    
     NSData* data = [NSPropertyListSerialization dataFromPropertyList:dict format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
+    
+    [dict release];
     
     return data;
 }
@@ -240,6 +248,14 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
 
     if ((string = [dict objectForKey:@"windowFrame"]))
         [self setWindowFrameDescription:string];
+    
+    NSData* messageData = [dict objectForKey:@"messageData"];
+    if (messageData) {
+        id obj = [NSKeyedUnarchiver unarchiveObjectWithData:messageData];
+        if (obj && [obj isKindOfClass:[NSArray class]]) {
+            [history setSavedMessages:(NSArray*)obj];
+        }
+    }
 
     // Doing the above caused undo actions to be remembered, but we don't want the user to see them
     [self updateChangeCount:NSChangeCleared];
@@ -425,7 +441,12 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
 
 - (void)clearSavedMessages;
 {
-    [history clearSavedMessages];
+    if ([[history savedMessages] count] > 0) {
+        [history clearSavedMessages];
+        
+        // Dirty document, since the messages are saved in it
+        [self updateChangeCount:NSChangeDone];
+    }
 }
 
 - (NSArray *)savedMessages;

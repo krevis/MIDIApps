@@ -50,6 +50,30 @@
     return newMessage;
 }
 
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [super encodeWithCoder:coder];
+    [coder encodeObject:data forKey:@"data"];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    if ((self = [super initWithCoder:decoder])) {
+        id obj = [decoder decodeObjectForKey:@"data"];
+        if (obj && [obj isKindOfClass:[NSData class]]) {
+            data = [obj retain];
+        } else {
+            goto fail;
+        }
+    }
+    
+    return self;
+    
+fail:
+    [self release];
+    return nil;
+}
+
 - (SMMessageType)messageType;
 {
     return SMMessageTypeInvalid;

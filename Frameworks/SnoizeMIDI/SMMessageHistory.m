@@ -13,6 +13,8 @@
 
 #import "SMMessageHistory.h"
 
+#import "SMMessage.h"
+
 
 @interface SMMessageHistory (Private)
 
@@ -56,6 +58,22 @@ NSString *SMMessageHistoryWereMessagesAdded = @"SMMessageHistoryWereMessagesAdde
 - (NSArray *)savedMessages;
 {
     return [NSArray arrayWithArray:savedMessages];
+}
+
+- (void)setSavedMessages:(NSArray*)messages
+{
+    // ensure all objects are actually SMMessages
+    Class messageClass = [SMMessage class];
+    BOOL areAllMessages = YES;
+    NSEnumerator* oe = [messages objectEnumerator];
+    id maybeMessage;
+    while (areAllMessages && (maybeMessage = [oe nextObject])) {
+        areAllMessages = [maybeMessage isKindOfClass:messageClass];
+    }
+    
+    if (areAllMessages) {    
+        [savedMessages setArray:messages];
+    }
 }
 
 - (void)clearSavedMessages;

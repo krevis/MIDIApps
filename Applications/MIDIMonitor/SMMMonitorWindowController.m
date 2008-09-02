@@ -50,9 +50,6 @@
 
 @implementation SMMMonitorWindowController
 
-static NSString *kFromString = nil;
-static NSString *kToString = nil;
-
 static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 
 
@@ -312,6 +309,9 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 - (void)synchronizeInterface;
 {
     [self synchronizeMessagesWithScrollToBottom:NO];
+    // above does a reload which dirties the document; clear that
+    [[self document] updateChangeCount:NSChangeCleared];
+    
     [self synchronizeSources];
     [self synchronizeSourcesShown];
     [self synchronizeMaxMessageCount];
@@ -642,21 +642,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     if ([identifier isEqualToString:@"timeStamp"]) {
         return [message timeStampForDisplay];
     } else if ([identifier isEqualToString:@"source"]) {
-        SMEndpoint *endpoint;
-
-        if ((endpoint = [message originatingEndpoint])) {
-            NSString *fromOrTo;
-			
-			if (!kFromString)
-				kFromString = [NSLocalizedStringFromTableInBundle(@"From", @"MIDIMonitor", SMBundleForObject(self), "Prefix for endpoint name when it's a source") retain];
-			if (!kToString)
-				kToString = [NSLocalizedStringFromTableInBundle(@"To", @"MIDIMonitor", SMBundleForObject(self), "Prefix for endpoint name when it's a destination") retain];
-
-            fromOrTo = ([endpoint isKindOfClass:[SMSourceEndpoint class]] ? kFromString : kToString);
-            return [[fromOrTo stringByAppendingString:@" "] stringByAppendingString:[endpoint alwaysUniqueName]];
-        } else {
-            return @"";            
-        }
+        return [message originatingEndpointForDisplay];
     } else if ([identifier isEqualToString:@"type"]) {
         return [message typeForDisplay];
     } else if ([identifier isEqualToString:@"channel"]) {
@@ -740,6 +726,9 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     // Figure out when we should next be allowed to refresh.
     [nextMessagesRefreshDate release];
     nextMessagesRefreshDate = [[NSDate alloc] initWithTimeIntervalSinceNow:kMinimumMessagesRefreshDelay];
+    
+    // Dirty document, since the messages are saved in it
+    [[self document] updateChangeCount:NSChangeDone];
 }
 
 - (void)refreshMessagesTableViewFromTimer:(NSTimer *)timer
