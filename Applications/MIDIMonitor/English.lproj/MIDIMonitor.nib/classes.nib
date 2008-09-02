@@ -1,63 +1,138 @@
-{
-    IBClasses = (
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {CLASS = MySound; LANGUAGE = ObjC; SUPERCLASS = Sound; }, 
-        {
-            ACTIONS = {hide = id; show = id; toggleDisclosure = id; }; 
-            CLASS = SMMDisclosableView; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSView; 
-        }, 
-        {CLASS = SMMFastAnimatingWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
-        {
-            ACTIONS = {
-                changeFilter = id; 
-                changeFilterFromMatrix = id; 
-                clearMessages = id; 
-                copy = id; 
-                setChannel = id; 
-                setChannelRadioButton = id; 
-                setMaximumMessageCount = id; 
-                showDetailsOfSelectedMessages = id; 
-                showSelectedMessageDetails = id; 
-                toggleFilterShown = id; 
-                toggleSourcesShown = id; 
-            }; 
-            CLASS = SMMMonitorWindowController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                channelRadioButtons = NSMatrix; 
-                clearButton = NSButton; 
-                filterDisclosableView = SNDisclosableView; 
-                filterDisclosureButton = SNDisclosureButton; 
-                invalidCheckBox = NSButton; 
-                maxMessageCountField = NSTextField; 
-                messagesTableView = NSTableView; 
-                oneChannelField = NSTextField; 
-                realTimeCheckBox = NSButton; 
-                realTimeMatrix = NSMatrix; 
-                sourcesDisclosableView = SNDisclosableView; 
-                sourcesDisclosureButton = SNDisclosureButton; 
-                sourcesOutlineView = SMMSourcesOutlineView; 
-                sysExProgressBox = NSBox; 
-                sysExProgressField = NSTextField; 
-                sysExProgressIndicator = NSProgressIndicator; 
-                systemCommonCheckBox = NSButton; 
-                systemCommonMatrix = NSMatrix; 
-                systemExclusiveCheckBox = NSButton; 
-                voiceMessagesCheckBox = NSButton; 
-                voiceMessagesMatrix = NSMatrix; 
-            }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {CLASS = SMMSourcesOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
-        {
-            ACTIONS = {hide = id; show = id; toggleDisclosure = id; }; 
-            CLASS = SNDisclosableView; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSView; 
-        }, 
-        {CLASS = SNDisclosureButton; LANGUAGE = ObjC; SUPERCLASS = NSButton; }
-    ); 
-    IBVersion = 1; 
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IBClasses</key>
+	<array>
+		<dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SNDisclosureButton</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSButton</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>changeFilter</key>
+				<string>id</string>
+				<key>changeFilterFromMatrix</key>
+				<string>id</string>
+				<key>clearMessages</key>
+				<string>id</string>
+				<key>copy</key>
+				<string>id</string>
+				<key>setChannel</key>
+				<string>id</string>
+				<key>setChannelRadioButton</key>
+				<string>id</string>
+				<key>setMaximumMessageCount</key>
+				<string>id</string>
+				<key>showDetailsOfSelectedMessages</key>
+				<string>id</string>
+				<key>showSelectedMessageDetails</key>
+				<string>id</string>
+				<key>toggleFilterShown</key>
+				<string>id</string>
+				<key>toggleSourcesShown</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>SMMMonitorWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>channelRadioButtons</key>
+				<string>NSMatrix</string>
+				<key>clearButton</key>
+				<string>NSButton</string>
+				<key>filterDisclosableView</key>
+				<string>SNDisclosableView</string>
+				<key>filterDisclosureButton</key>
+				<string>SNDisclosureButton</string>
+				<key>invalidCheckBox</key>
+				<string>NSButton</string>
+				<key>maxMessageCountField</key>
+				<string>NSTextField</string>
+				<key>messagesTableView</key>
+				<string>NSTableView</string>
+				<key>oneChannelField</key>
+				<string>NSTextField</string>
+				<key>realTimeCheckBox</key>
+				<string>NSButton</string>
+				<key>realTimeMatrix</key>
+				<string>NSMatrix</string>
+				<key>sourcesDisclosableView</key>
+				<string>SNDisclosableView</string>
+				<key>sourcesDisclosureButton</key>
+				<string>SNDisclosureButton</string>
+				<key>sourcesOutlineView</key>
+				<string>SMMSourcesOutlineView</string>
+				<key>sysExProgressBox</key>
+				<string>NSBox</string>
+				<key>sysExProgressField</key>
+				<string>NSTextField</string>
+				<key>sysExProgressIndicator</key>
+				<string>NSProgressIndicator</string>
+				<key>systemCommonCheckBox</key>
+				<string>NSButton</string>
+				<key>systemCommonMatrix</key>
+				<string>NSMatrix</string>
+				<key>systemExclusiveCheckBox</key>
+				<string>NSButton</string>
+				<key>voiceMessagesCheckBox</key>
+				<string>NSButton</string>
+				<key>voiceMessagesMatrix</key>
+				<string>NSMatrix</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SMMSourcesOutlineView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSOutlineView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SMMFastAnimatingWindow</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSWindow</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>hide</key>
+				<string>id</string>
+				<key>show</key>
+				<string>id</string>
+				<key>toggleDisclosure</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>SNDisclosableView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+	</array>
+	<key>IBVersion</key>
+	<string>1</string>
+</dict>
+</plist>

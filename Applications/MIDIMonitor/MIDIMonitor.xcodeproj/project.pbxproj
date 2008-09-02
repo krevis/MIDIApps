@@ -48,6 +48,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		16230FF90E6CC30A00A700CA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 169E71B2097B2441001AFB58 /* DisclosableView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 162377A40E6CB9830040E8BB;
+			remoteInfo = "DisclosableView Plugin";
+		};
 		162972C2097B41A700158D7B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */;
@@ -62,19 +69,12 @@
 			remoteGlobalIDString = 164103D709735FA5008DABCC;
 			remoteInfo = SnoizeMIDISpy.framework;
 		};
-		162972C6097B41AD00158D7B /* PBXContainerItemProxy */ = {
+		164EA8820E6CD65200D235AB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 169E71B2097B2441001AFB58 /* DisclosableView.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 16AF258C097B1A3400BC87DC;
-			remoteInfo = DisclosableView;
-		};
-		168D1617098451BB004FB07D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 169E71B2097B2441001AFB58 /* DisclosableView.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 168D158909844AF3004FB07D;
-			remoteInfo = "DisclosableView Palette";
+			remoteGlobalIDString = 162377E60E6CBA7C0040E8BB /* All */;
+			remoteInfo = All;
 		};
 		169E71A6097B2419001AFB58 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -124,6 +124,9 @@
 /* Begin PBXFileReference section */
 		089C1660FE840EACC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		162310430E6CCC6100A700CA /* DisclosableView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DisclosableView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		162310440E6CCC6100A700CA /* SnoizeMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SnoizeMIDI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		162310450E6CCC6100A700CA /* SnoizeMIDISpy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SnoizeMIDISpy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		167B884206ED4D650053D305 /* Info-MIDIMonitor.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-MIDIMonitor.plist"; sourceTree = "<group>"; };
 		167B884306ED4D650053D305 /* MIDI Monitor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MIDI Monitor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1691E0D804CA1C1400ACFC9D /* SMMDetailsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMDetailsWindowController.h; sourceTree = "<group>"; };
@@ -208,6 +211,9 @@
 			children = (
 				1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */,
 				F5B4281801A360AD01000164 /* CoreMIDI.framework */,
+				162310430E6CCC6100A700CA /* DisclosableView.framework */,
+				162310440E6CCC6100A700CA /* SnoizeMIDI.framework */,
+				162310450E6CCC6100A700CA /* SnoizeMIDISpy.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -265,7 +271,7 @@
 			isa = PBXGroup;
 			children = (
 				169E71B8097B2441001AFB58 /* DisclosableView.framework */,
-				168D1618098451BB004FB07D /* DisclosableView.palette */,
+				16230FFA0E6CC30A00A700CA /* DisclosableView.ibplugin */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -405,7 +411,7 @@
 			dependencies = (
 				162972C3097B41A700158D7B /* PBXTargetDependency */,
 				162972C5097B41AA00158D7B /* PBXTargetDependency */,
-				162972C7097B41AD00158D7B /* PBXTargetDependency */,
+				164EA8830E6CD65200D235AB /* PBXTargetDependency */,
 			);
 			name = MIDIMonitor;
 			productInstallPath = /Users/Shared/krevis/InstalledProducts;
@@ -445,11 +451,11 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		168D1618098451BB004FB07D /* DisclosableView.palette */ = {
+		16230FFA0E6CC30A00A700CA /* DisclosableView.ibplugin */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = DisclosableView.palette;
-			remoteRef = 168D1617098451BB004FB07D /* PBXContainerItemProxy */;
+			path = DisclosableView.ibplugin;
+			remoteRef = 16230FF90E6CC30A00A700CA /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */ = {
@@ -561,10 +567,10 @@
 			name = SnoizeMIDISpy.framework;
 			targetProxy = 162972C4097B41AA00158D7B /* PBXContainerItemProxy */;
 		};
-		162972C7097B41AD00158D7B /* PBXTargetDependency */ = {
+		164EA8830E6CD65200D235AB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = DisclosableView;
-			targetProxy = 162972C6097B41AD00158D7B /* PBXContainerItemProxy */;
+			name = All;
+			targetProxy = 164EA8820E6CD65200D235AB /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
