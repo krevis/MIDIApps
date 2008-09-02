@@ -48,7 +48,6 @@
         [progressMessageField setStringValue:[self waitingForSysexMessage]];
         [progressBytesField setStringValue:@""];
     } else {
-        [progressIndicator animate:nil];
         [progressMessageField setStringValue:[self receivingSysexMessage]];
         [progressBytesField setStringValue:[NSString SnoizeMIDI_abbreviatedStringForByteCount:bytesRead]];
     }
@@ -77,6 +76,8 @@
     [nonretainedMIDIController doneWithMultipleMessageListen];
     [self stopObservingMIDIController];
 
+    [progressIndicator stopAnimation:nil];
+    
     [NSApp endSheet:sheetWindow];
 
     [nonretainedMainWindowController addReadMessagesToLibrary];

@@ -60,6 +60,8 @@
 
 - (void)beginRecording;
 {
+    [progressIndicator startAnimation:nil];
+
     [self updateIndicatorsWithMessageCount:0 bytesRead:0 totalBytesRead:0];
 
     [NSApp beginSheet:sheetWindow modalForWindow:[nonretainedMainWindowController window] modalDelegate:self didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
@@ -77,6 +79,8 @@
 {
     [nonretainedMIDIController cancelMessageListen];
     [self stopObservingMIDIController];
+
+    [progressIndicator stopAnimation:nil];
 
     [NSApp endSheet:sheetWindow];
 }

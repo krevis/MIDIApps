@@ -45,7 +45,6 @@
         [progressMessageField setStringValue:[self waitingForSysexMessage]];
         [progressBytesField setStringValue:@""];
     } else {
-        [progressIndicator animate:nil];
         [progressMessageField setStringValue:[self receivingSysexMessage]];
         [progressBytesField setStringValue:[NSString SnoizeMIDI_abbreviatedStringForByteCount:bytesRead + totalBytesRead]];
     }
@@ -78,6 +77,8 @@
         scheduledProgressUpdate = NO;
         [self updateIndicators];
     }
+
+    [progressIndicator stopAnimation:nil];
 
     // Close the sheet, after a little bit of a delay (makes it look nicer)
     [NSApp performSelector:@selector(endSheet:) withObject:sheetWindow afterDelay:0.5];
