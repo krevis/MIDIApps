@@ -50,6 +50,11 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
     flags.ignoresTimeStamps = NO;
     flags.sendsSysExAsynchronously = NO;
 
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(portStreamEndpointListChanged:) 
+                                                 name:SMMIDIObjectListChangedNotification
+                                               object:[SMDestinationEndpoint class]];
+
     return self;
 }
 
@@ -291,7 +296,6 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
         [center addObserver:self selector:@selector(portStreamEndpointDisappeared:) name:SMPortOutputStreamEndpointDisappearedNotification object:portStream];
         [center addObserver:self selector:@selector(repostNotification:) name:SMPortOutputStreamWillStartSysExSendNotification object:portStream];
         [center addObserver:self selector:@selector(repostNotification:) name:SMPortOutputStreamFinishedSysExSendNotification object:portStream];
-        [center addObserver:self selector:@selector(portStreamEndpointListChanged:) name:SMMIDIObjectListChangedNotification object:[SMDestinationEndpoint class]];
     }
 }
 
