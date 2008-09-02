@@ -486,7 +486,6 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				INFOPLIST_FILE = "Info-SnoizeMIDISpy.plist";
-				OTHER_LDFLAGS_ppc = "-prebind -image_base 0x39000000";
 				PRODUCT_NAME = SnoizeMIDISpy;
 				WRAPPER_EXTENSION = framework;
 			};
@@ -499,7 +498,6 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				INFOPLIST_FILE = "Info-SnoizeMIDISpy.plist";
-				OTHER_LDFLAGS_ppc = "-prebind -image_base 0x39000000";
 				PRODUCT_NAME = SnoizeMIDISpy;
 				WRAPPER_EXTENSION = framework;
 			};
