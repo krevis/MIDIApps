@@ -184,6 +184,16 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
         [messages release];
         messages = [value mutableCopy];
     }
+    
+    bytesToSend = 0;
+    unsigned int messageIndex, messageCount = [messages count];
+    for (messageIndex = 0; messageIndex < messageCount; messageIndex++)
+        bytesToSend += [[messages objectAtIndex:messageIndex] fullMessageDataLength];
+    
+    sendingMessageCount = messageCount;
+    
+    sendingMessageIndex = 0;
+    bytesSent = 0;
 }
 
 //
@@ -236,31 +246,26 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 
 - (void)sendMessages;
 {
-    unsigned int messageIndex, messageCount;
-
     SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
 
-    if (!messages || (messageCount = [messages count]) == 0)
+    if (!messages || [messages count] == 0)
         return;
 
     if (![outputStream canSendSysExAsynchronously]) {
         // Just dump all the messages out at once
         [outputStream takeMIDIMessages:messages];
         // And we're done
+        bytesSent = bytesToSend;
+        sendingMessageIndex = [messages count] - 1;
         [[NSNotificationCenter defaultCenter] postNotificationName:SSEMIDIControllerSendFinishedImmediatelyNotification object:self];
         [self setMessages:nil];
         return;
     }
 
     nonretainedCurrentSendRequest = nil;
-    sendingMessageCount = messageCount;
     sendingMessageIndex = 0;
-    bytesToSend = 0;
     bytesSent = 0;
     sendStatus = SSEMIDIControllerIdle;
-
-    for (messageIndex = 0; messageIndex < messageCount; messageIndex++)
-        bytesToSend += [[messages objectAtIndex:messageIndex] fullMessageDataLength];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:SSEMIDIControllerSendWillStartNotification object:self];
 

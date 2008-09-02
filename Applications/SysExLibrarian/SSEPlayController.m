@@ -76,7 +76,7 @@
     [nonretainedMIDIController setMessages:messages];
     [nonretainedMIDIController sendMessages];
     // This may send the messages immediately; if it does, it will post a notification and our -sendFinishedImmediately: will be called.
-    // Otherwise, we expect a notifications so that -sendWillStart: will be called.
+    // Otherwise, we expect a different notification so that -sendWillStart: will be called.
 }
 
 //
@@ -128,7 +128,7 @@
 {
     BOOL success;
 
-    success = [[[notification userInfo] objectForKey:@"success"] boolValue];
+    success = notification ? [[[notification userInfo] objectForKey:@"success"] boolValue] : YES;
     
     // If there is a delayed update pending, cancel it and do the update now.
     if (scheduledProgressUpdate) {
@@ -152,7 +152,9 @@
 {
     SMAssert(scheduledProgressUpdate == NO);
     
-    [self stopObservingMIDIController];    
+    // Pop up the sheet and immediately dismiss it, so the user knows that something happehed.    
+    [self sendWillStart:nil];
+    [self sendFinished:nil];
 }
 
 - (void)updateProgressAndRepeat;
