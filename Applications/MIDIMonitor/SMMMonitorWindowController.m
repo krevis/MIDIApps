@@ -96,9 +96,6 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 
     [displayedMessages release];
 
-    [nextSysExAnimateDate release];
-    nextSysExAnimateDate = nil;
-
     [nextMessagesRefreshDate release];
     nextMessagesRefreshDate = nil;
 
@@ -470,19 +467,11 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 - (void)updateSysExReadIndicatorWithBytes:(NSNumber *)bytesReadNumber;
 {
     [self showSysExProgressIndicator];
-
-    if (!nextSysExAnimateDate || [(NSDate*)[NSDate date] compare:nextSysExAnimateDate] == NSOrderedDescending) {
-        [sysExProgressIndicator animate:nil];
-        [nextSysExAnimateDate release];
-        nextSysExAnimateDate = [[NSDate alloc] initWithTimeIntervalSinceNow:[sysExProgressIndicator animationDelay]];
-    }
 }
 
 - (void)stopSysExReadIndicatorWithBytes:(NSNumber *)bytesReadNumber;
 {
     [self hideSysExProgressIndicator];
-    [nextSysExAnimateDate release];
-    nextSysExAnimateDate = nil;
 }
 
 - (void)revealInputSources:(NSSet *)inputSources;
@@ -768,12 +757,16 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
         
         [sysExProgressBox addSubview:sysExProgressField];
         [sysExProgressField release];
+        
+        [sysExProgressIndicator startAnimation:nil];
     }
 }
 
 - (void)hideSysExProgressIndicator;
 {
     if ([sysExProgressIndicator superview]) {
+        [sysExProgressIndicator stopAnimation:nil];
+
         [sysExProgressIndicator retain];
         [sysExProgressIndicator removeFromSuperview];
         

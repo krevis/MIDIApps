@@ -53,7 +53,6 @@
     NSArray *groupedInputSources;
     NSArray *displayedMessages;
     BOOL sendWindowFrameChangesToDocument;
-    NSDate *nextSysExAnimateDate;
     BOOL messagesNeedScrollToBottom;
     NSDate *nextMessagesRefreshDate;
     NSTimer *nextMessagesRefreshTimer;
