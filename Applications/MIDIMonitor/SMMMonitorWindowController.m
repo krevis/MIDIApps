@@ -835,9 +835,9 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     savedSendWindowFrameChangesToDocument = sendWindowFrameChangesToDocument;
     sendWindowFrameChangesToDocument = NO;
 
-    // NOTE We ought to be able to swap these to get the button to draw first. However, that just doesn't work, and I can't figure out why. Grrr!
-    [view setShown:isShown];
+    // Important: it's less flickery if we update the button first, then animate the disclosure view
     [button setIntValue:(isShown ? 1 : 0)];
+    [view setShown:isShown];
 
     sendWindowFrameChangesToDocument = savedSendWindowFrameChangesToDocument;
     // Now we can update the document, once instead of many times.
