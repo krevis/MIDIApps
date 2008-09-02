@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2001-2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2001-2008, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -170,7 +170,9 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
     if (windowFrameDescription)
         [dict setObject:windowFrameDescription forKey:@"windowFrame"];
 
-    return [dict SMM_xmlPropertyListData];
+    NSData* data = [NSPropertyListSerialization dataFromPropertyList:dict format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
+    
+    return data;
 }
 
 - (BOOL)loadDataRepresentation:(NSData *)data ofType:(NSString *)type;
@@ -182,7 +184,8 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
     NSString *string;
     NSDictionary *streamSettings = nil;
 
-    propertyList = [data SMM_propertyList];
+    propertyList = [NSPropertyListSerialization propertyListFromData:data mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
+    
     if (!propertyList || ![propertyList isKindOfClass:[NSDictionary class]])
         return NO;
 	else

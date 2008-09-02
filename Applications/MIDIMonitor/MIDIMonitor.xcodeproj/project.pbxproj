@@ -38,8 +38,6 @@
 		167B883306ED4D650053D305 /* SMMDetailsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1691E0DA04CA1C1E00ACFC9D /* SMMDetailsWindowController.m */; };
 		167B883406ED4D650053D305 /* NSArray-SMMExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 16F210AC06EAAF6A00D9C507 /* NSArray-SMMExtensions.m */; };
 		167B883506ED4D650053D305 /* NSString-SMMExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 16F210DD06EAB24700D9C507 /* NSString-SMMExtensions.m */; };
-		167B883606ED4D650053D305 /* NSDictionary-SMMExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 16F2112106EAB6F600D9C507 /* NSDictionary-SMMExtensions.m */; };
-		167B883706ED4D650053D305 /* NSData-SMMExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 16F2114406EAB83B00D9C507 /* NSData-SMMExtensions.m */; };
 		167B883906ED4D650053D305 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		167B883B06ED4D650053D305 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B4281801A360AD01000164 /* CoreMIDI.framework */; };
 		16E8F01A097B2E5200B52193 /* SnoizeMIDISpy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169E71B1097B242A001AFB58 /* SnoizeMIDISpy.framework */; };
@@ -73,7 +71,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 169E71B2097B2441001AFB58 /* DisclosableView.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 162377E60E6CBA7C0040E8BB /* All */;
+			remoteGlobalIDString = 162377E60E6CBA7C0040E8BB;
 			remoteInfo = All;
 		};
 		169E71A6097B2419001AFB58 /* PBXContainerItemProxy */ = {
@@ -146,10 +144,6 @@
 		16F210AC06EAAF6A00D9C507 /* NSArray-SMMExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSArray-SMMExtensions.m"; sourceTree = "<group>"; };
 		16F210DC06EAB24700D9C507 /* NSString-SMMExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSString-SMMExtensions.h"; sourceTree = "<group>"; };
 		16F210DD06EAB24700D9C507 /* NSString-SMMExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSString-SMMExtensions.m"; sourceTree = "<group>"; };
-		16F2112006EAB6F600D9C507 /* NSDictionary-SMMExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSDictionary-SMMExtensions.h"; sourceTree = "<group>"; };
-		16F2112106EAB6F600D9C507 /* NSDictionary-SMMExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary-SMMExtensions.m"; sourceTree = "<group>"; };
-		16F2114306EAB83B00D9C507 /* NSData-SMMExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSData-SMMExtensions.h"; sourceTree = "<group>"; };
-		16F2114406EAB83B00D9C507 /* NSData-SMMExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSData-SMMExtensions.m"; sourceTree = "<group>"; };
 		2A37F4ACFDCFA73011CA2CEA /* SMMDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMDocument.m; sourceTree = "<group>"; };
 		2A37F4AEFDCFA73011CA2CEA /* SMMDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMDocument.h; sourceTree = "<group>"; };
 		2A37F4B0FDCFA73011CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -364,10 +358,6 @@
 			children = (
 				16F210AB06EAAF6A00D9C507 /* NSArray-SMMExtensions.h */,
 				16F210AC06EAAF6A00D9C507 /* NSArray-SMMExtensions.m */,
-				16F2114306EAB83B00D9C507 /* NSData-SMMExtensions.h */,
-				16F2114406EAB83B00D9C507 /* NSData-SMMExtensions.m */,
-				16F2112006EAB6F600D9C507 /* NSDictionary-SMMExtensions.h */,
-				16F2112106EAB6F600D9C507 /* NSDictionary-SMMExtensions.m */,
 				16F210DC06EAB24700D9C507 /* NSString-SMMExtensions.h */,
 				16F210DD06EAB24700D9C507 /* NSString-SMMExtensions.m */,
 				F57F628A0261C8FC01000164 /* SMMSourcesOutlineView.h */,
@@ -549,8 +539,6 @@
 				167B883306ED4D650053D305 /* SMMDetailsWindowController.m in Sources */,
 				167B883406ED4D650053D305 /* NSArray-SMMExtensions.m in Sources */,
 				167B883506ED4D650053D305 /* NSString-SMMExtensions.m in Sources */,
-				167B883606ED4D650053D305 /* NSDictionary-SMMExtensions.m in Sources */,
-				167B883706ED4D650053D305 /* NSData-SMMExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
