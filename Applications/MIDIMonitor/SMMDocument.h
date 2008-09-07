@@ -27,6 +27,7 @@
     BOOL areSourcesShown;
     BOOL isFilterShown;
     NSString *windowFrameDescription;
+    NSPoint messagesScrollPoint;
 
     // Transient data
     NSArray *missingSourceNames;
@@ -62,6 +63,8 @@
 
 - (void)clearSavedMessages;
 - (NSArray *)savedMessages;
+
+- (NSPoint)messagesScrollPoint;
 
 @end
 

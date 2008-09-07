@@ -176,6 +176,13 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
         }
     }
     
+    SMMMonitorWindowController* wc = [[self windowControllers] lastObject];
+    if (wc) {
+        messagesScrollPoint = [wc messagesScrollPoint];
+        [dict setObject:[NSNumber numberWithFloat:messagesScrollPoint.x] forKey:@"messagesScrollPointX"];
+        [dict setObject:[NSNumber numberWithFloat:messagesScrollPoint.y] forKey:@"messagesScrollPointY"];
+    }
+    
     NSData* data = [NSPropertyListSerialization dataFromPropertyList:dict format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
     
     [dict release];
@@ -248,6 +255,12 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
 
     if ((string = [dict objectForKey:@"windowFrame"]))
         [self setWindowFrameDescription:string];
+
+    messagesScrollPoint = NSZeroPoint;
+    if ((number = [dict objectForKey:@"messagesScrollPointX"]))
+        messagesScrollPoint.x = [number floatValue];
+    if ((number = [dict objectForKey:@"messagesScrollPointY"]))
+        messagesScrollPoint.y = [number floatValue];
     
     NSData* messageData = [dict objectForKey:@"messageData"];
     if (messageData) {
@@ -452,6 +465,11 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
 - (NSArray *)savedMessages;
 {
     return [history savedMessages];
+}
+
+- (NSPoint)messagesScrollPoint
+{
+    return messagesScrollPoint;
 }
 
 @end

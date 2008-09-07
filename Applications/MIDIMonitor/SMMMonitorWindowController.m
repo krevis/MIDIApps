@@ -154,6 +154,8 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
         [self window];	// Make sure the window is loaded
         [self synchronizeInterface];
         [self setWindowFrameFromDocument];
+        [messagesTableView reloadData];
+        [messagesTableView scrollPoint:[(SMMDocument*)document messagesScrollPoint]];
     }
 }
 
@@ -507,6 +509,13 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
             }            
         }
     }
+}
+
+- (NSPoint)messagesScrollPoint
+{
+    NSView *clipView = [[messagesTableView enclosingScrollView] contentView];
+    NSRect clipBounds = [clipView bounds];
+    return [messagesTableView convertPoint:clipBounds.origin fromView:clipView];
 }
 
 @end

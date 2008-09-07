@@ -91,4 +91,6 @@
 
 - (void)revealInputSources:(NSSet *)inputSources;
 
+- (NSPoint)messagesScrollPoint;
+
 @end
