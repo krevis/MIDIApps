@@ -93,4 +93,6 @@
 
 - (NSPoint)messagesScrollPoint;
 
+- (void)setWindowStateFromDocument;
+
 @end

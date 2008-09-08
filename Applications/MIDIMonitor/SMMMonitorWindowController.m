@@ -30,9 +30,9 @@
 - (void)displayPreferencesDidChange:(NSNotification *)notification;
 
 - (void)setupWindowCascading;
-- (void)setWindowFrameFromDocument;
 - (void)updateDocumentWindowFrameDescription;
 
+- (void)updateDisplayedMessages;
 - (void)refreshMessagesTableView;
 - (void)refreshMessagesTableViewFromTimer:(NSTimer *)timer;
 
@@ -153,9 +153,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
         [self setupWindowCascading];
         [self window];	// Make sure the window is loaded
         [self synchronizeInterface];
-        [self setWindowFrameFromDocument];
-        [messagesTableView reloadData];
-        [messagesTableView scrollPoint:[(SMMDocument*)document messagesScrollPoint]];
+        [self setWindowStateFromDocument];
     }
 }
 
@@ -260,7 +258,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 - (IBAction)showDetailsOfSelectedMessages:(id)sender;
 {
     NSEnumerator *enumerator;
-    SMSystemExclusiveMessage *message;
+    SMMessage *message;
 
     enumerator = [[self selectedMessagesWithDetails] objectEnumerator];
     while ((message = [enumerator nextObject]))
@@ -518,6 +516,25 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     return [messagesTableView convertPoint:clipBounds.origin fromView:clipView];
 }
 
+- (void)setWindowStateFromDocument
+{
+    NSString *frameDescription;
+    
+    sendWindowFrameChangesToDocument = NO;
+    
+    frameDescription = [[self document] windowFrameDescription];
+    if (frameDescription)
+        [[self window] setFrameFromString:frameDescription];    
+    
+    // From now on, tell the document about any window frame changes
+    sendWindowFrameChangesToDocument = YES;
+    
+    // Also update scroll position in the message list
+    [self updateDisplayedMessages];
+    [messagesTableView reloadData];
+    [messagesTableView scrollPoint:[[self document] messagesScrollPoint]];
+}
+
 @end
 
 
@@ -686,20 +703,6 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     [self setShouldCascadeWindows:!documentHasFrame];
 }
 
-- (void)setWindowFrameFromDocument;
-{
-    NSString *frameDescription;
-
-    SMAssert(sendWindowFrameChangesToDocument == NO);
-    
-    frameDescription = [[self document] windowFrameDescription];
-    if (frameDescription)
-        [[self window] setFrameFromString:frameDescription];    
-
-    // From now on, tell the document about any window frame changes
-    sendWindowFrameChangesToDocument = YES;
-}
-
 - (void)updateDocumentWindowFrameDescription;
 {
     if (sendWindowFrameChangesToDocument) {
@@ -710,14 +713,17 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     }
 }
 
+- (void)updateDisplayedMessages
+{
+    NSArray *newMessages = [[self document] savedMessages];
+    
+    [displayedMessages release];
+    displayedMessages = [newMessages retain];        
+}
+
 - (void)refreshMessagesTableView
 {
-    NSArray *newMessages;
- 
-    newMessages = [[self document] savedMessages];
-
-    [displayedMessages release];
-    displayedMessages = [newMessages retain];
+    [self updateDisplayedMessages];
 
     // Scroll to the botton, iff the table view is already scrolled to the bottom.
     BOOL isAtBottom = (NSMaxY([messagesTableView bounds]) - NSMaxY([messagesTableView visibleRect]) < [messagesTableView rowHeight]);

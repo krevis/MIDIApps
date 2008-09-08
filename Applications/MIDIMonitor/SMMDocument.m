@@ -269,6 +269,8 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
             [history setSavedMessages:(NSArray*)obj];
         }
     }
+    
+    [[self windowControllers] makeObjectsPerformSelector:@selector(setWindowStateFromDocument)];
 
     // Doing the above caused undo actions to be remembered, but we don't want the user to see them
     [self updateChangeCount:NSChangeCleared];
