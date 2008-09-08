@@ -33,7 +33,7 @@ In decreasing order of importance:
 
 * Applications/MIDIMonitor
 
-	The source to the MIDI Monitor application.  The project file is MIDIMonitor.xcodeproj; open this using XCode.
+	The source to the MIDI Monitor application.  The project file is MIDIMonitor.xcodeproj; open this using Xcode.
 
 	MIDI Monitor is a Cocoa application, written in Objective-C.
 
@@ -88,7 +88,7 @@ In decreasing order of importance:
 * HOW TO BUILD
 *
 
-The projects enclosed are for Xcode 3.1.  You may be able to use the projects in earlier versions of XCode, but no guarantees.  (They are supposedly compatible back to Xcode 2.4.)
+The projects enclosed are for Xcode 3.1.  You may be able to use the projects in earlier versions of Xcode, but no guarantees.  (They are supposedly compatible back to Xcode 2.4.)
 
 Everything is set up to build Universal.  Intel uses the 10.4 SDK and gcc 4.0.  PowerPC uses the 10.3.9 SDK and gcc 3.3.  (Note that 10.3.9 support is optional in Xcode 3; make sure you install it.)
 
