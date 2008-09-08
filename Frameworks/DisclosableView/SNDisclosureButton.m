@@ -47,10 +47,17 @@
 {
     NSImage *image;
 
-    if ((image = [self imageNamed:@"SNDisclosureArrowRight"]))
+    // Work around bug on 10.3.9 when binary linked using Xcode 3 / gcc 3.3. 
+    // Something is wrong with the linker and constant NSStrings can cause a crash to happen later on.
+    char* imageName = "SNDisclosureArrowRight";
+    char* altImageName = "SNDisclosureArrowDown";
+    NSString* imageNameStr = [NSString stringWithUTF8String:imageName];
+    NSString* altImageNameStr = [NSString stringWithUTF8String:altImageName];
+
+    if ((image = [self imageNamed:imageNameStr]))
         [self setImage:image];
 
-    if ((image = [self imageNamed:@"SNDisclosureArrowDown"]))
+    if ((image = [self imageNamed:altImageNameStr]))
         [self setAlternateImage:image];
 
     [[self cell] setHighlightsBy:NSPushInCellMask];    
