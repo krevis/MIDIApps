@@ -29,7 +29,7 @@ SCRATCH_IMAGE="/tmp/TempImage-$$.dmg"
 echo "    Creating scratch image..."
 rm -f $SCRATCH_IMAGE
 
-HDIUTIL_OUT=$(hdiutil create $SCRATCH_IMAGE -megabytes 10 -fs HFS+ -volname "$VOLUME_NAME" -attach)
+HDIUTIL_OUT=$(hdiutil create $SCRATCH_IMAGE -megabytes 10 -fs HFS+  -layout SPUD -volname "$VOLUME_NAME" -attach)
 # make an array out of the output, to get the drive name
 array=(${=HDIUTIL_OUT})
 DRIVE=$array[1]
