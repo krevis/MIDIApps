@@ -411,7 +411,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "install_name_tool -change @executable_path/../Frameworks/DisclosableView.framework/Versions/A/DisclosableView @loader_path/../../../../DisclosableView ${BUILT_PRODUCTS_DIR}/DisclosableView.framework/Resources/DisclosableView.ibplugin/Contents/MacOS/DisclosableView\n";
+			shellScript = "install_name_tool -change @executable_path/../Frameworks/DisclosableView.framework/Versions/A/DisclosableView @loader_path/../../../../DisclosableView \"${BUILT_PRODUCTS_DIR}/DisclosableView.framework/Resources/DisclosableView.ibplugin/Contents/MacOS/DisclosableView\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
