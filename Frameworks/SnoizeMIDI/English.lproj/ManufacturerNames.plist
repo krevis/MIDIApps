@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
-<plist version="0.9">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
 <dict>
 	<key>01</key>
-	<string>Sequential Circuits</string>
+	<string>Sequential/DSI</string>
 	<key>02</key>
 	<string>IDP</string>
 	<key>03</key>
@@ -68,8 +68,6 @@
 	<string>Passac</string>
 	<key>21</key>
 	<string>SIEL</string>
-	<key>21</key>
-	<string></string>
 	<key>22</key>
 	<string>Synthaxe</string>
 	<key>23</key>
@@ -470,8 +468,8 @@
 	<string>BSS Audio</string>
 	<key>00201f</key>
 	<string>TC Electronic</string>
-    <key>002020</key>
-    <string>Doepfer</string>
+	<key>002020</key>
+	<string>Doepfer</string>
 	<key>00202b</key>
 	<string>Medeli Electronics Co</string>
 	<key>00202c</key>
