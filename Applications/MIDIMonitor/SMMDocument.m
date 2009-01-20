@@ -579,11 +579,11 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
     // We want multiple updates to get coalesced, so only queue it once
     if (!isSysExUpdateQueued) {
         isSysExUpdateQueued = YES;
-        [self performSelectorOnMainThread: @selector(mainThreadReadingSysEx) withObject: nil waitUntilDone: NO];
+        [self performSelector:@selector(updateSysExReadIndicators) withObject:nil afterDelay:0];
     }
 }
 
-- (void)mainThreadReadingSysEx;
+- (void)updateSysExReadIndicators
 {
     isSysExUpdateQueued = NO;
     [[self windowControllers] makeObjectsPerformSelector:@selector(updateSysExReadIndicatorWithBytes:) withObject:[NSNumber numberWithUnsignedInt:sysExBytesRead]];
@@ -593,6 +593,11 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
 {
     NSNumber *number = [[notification userInfo] objectForKey:@"length"];
     sysExBytesRead = [number unsignedIntValue];
+    
+    if (isSysExUpdateQueued) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateSysExReadIndicators) object:nil];
+        isSysExUpdateQueued = NO;
+    }
     
     [[self windowControllers] makeObjectsPerformSelector:@selector(stopSysExReadIndicatorWithBytes:) withObject:number];
 }
