@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2001-2006, Kurt Revis.  All rights reserved.
+ Copyright (c) 2001-2009, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -176,6 +176,32 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
     }
 }
 
+- (NSString *)name;
+{
+    NSString* name = [super name];
+    
+    // Some misguided driver authors don't provide names for their endpoints.
+    // (Seems especially common when the device has only one port.)
+    // If there is no name provided, try some fallbacks.
+    if (!name || [name length] == 0) {
+        name = [[self device] name];
+
+        if (!name || [name length] == 0) {
+            name = [self modelName];
+            
+            if (!name || [name length] == 0) {
+                name = [self manufacturerName];
+                
+                if (!name || [name length] == 0) {
+                    name = @"<Unnamed Port>";
+                }
+            }
+        }
+    }
+    
+    return name;
+}
+
 - (NSString *)manufacturerName;
 {
     if (!endpointFlags.hasCachedManufacturerName) {
@@ -254,7 +280,7 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
         modelOrDeviceName = [[self device] name];
     }
     
-    if (modelOrDeviceName && [modelOrDeviceName length] > 0)
+    if (modelOrDeviceName && [modelOrDeviceName length] > 0 && ![endpointName isEqualToString:modelOrDeviceName])
         return [[modelOrDeviceName stringByAppendingString:@" "] stringByAppendingString:endpointName];
     else
         return endpointName;
