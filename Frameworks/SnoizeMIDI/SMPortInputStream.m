@@ -86,20 +86,21 @@
         return;
 
     parser = [self newParserWithOriginatingEndpoint:endpoint];
-    
-    status = MIDIPortConnectSource(inputPort, [endpoint endpointRef], parser);
-    if (status != noErr) {
-        NSLog(@"Error from MIDIPortConnectSource: %d", status);
-        return;
-    }
-
     NSMapInsert(parsersForEndpoints, endpoint, parser);
 
     center = [NSNotificationCenter defaultCenter];
     [center addObserver:self selector:@selector(endpointDisappeared:) name:SMMIDIObjectDisappearedNotification object:endpoint];
     [center addObserver:self selector:@selector(endpointWasReplaced:) name:SMMIDIObjectWasReplacedNotification object:endpoint];
-
+    
     [endpoints addObject:endpoint];
+    
+    status = MIDIPortConnectSource(inputPort, [endpoint endpointRef], endpoint);
+    if (status != noErr) {
+        NSLog(@"Error from MIDIPortConnectSource: %d", status);
+    }
+    
+    // At any time after MIDIPortConnectSource(), we can expect -retainForIncomingMIDIWithSourceConnectionRefCon:
+    // and -parserForSourceConnectionRefCon: to be called.
 }
 
 - (void)removeEndpoint:(SMSourceEndpoint *)endpoint;
@@ -117,6 +118,11 @@
     if (status != noErr) {
         // An error can happen in normal circumstances (if the endpoint has disappeared), so ignore it.
     }
+
+    // At any time after MIDIPortDisconnectSource(), we can expect that
+    // -retainForIncomingMIDIWithSourceConnectionRefCon: will no longer be called.
+    // However, -parserForSourceConnectionRefCon: may still be called, on the main thread, later on;
+    // it should not crash or fail, but it may return nil.
 
     NSMapRemove(parsersForEndpoints, endpoint);
     
@@ -163,12 +169,32 @@
 
 - (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;
 {
-    return (SMMessageParser *)refCon;
+    // note: refCon is an SMSourceEndpoint*.
+    // We are allowed to return nil if we are no longer listening to this source endpoint.
+    return (SMMessageParser*)NSMapGet(parsersForEndpoints, refCon);
 }
 
 - (id<SMInputStreamSource>)streamSourceForParser:(SMMessageParser *)parser;
 {
     return [parser originatingEndpoint];
+}
+
+- (void)retainForIncomingMIDIWithSourceConnectionRefCon:(void *)refCon
+{
+    // retain self
+    [super retainForIncomingMIDIWithSourceConnectionRefCon:refCon];
+
+    // and retain the endpoint too, since we use it as a key in -parserForSourceConnectionRefCon:
+    [(SMSourceEndpoint*)refCon retain];
+}
+
+- (void)releaseForIncomingMIDIWithSourceConnectionRefCon:(void *)refCon
+{
+    // release the endpoint that we retained earlier
+    [(SMSourceEndpoint*)refCon release];
+
+    // and release self, LAST
+    [super releaseForIncomingMIDIWithSourceConnectionRefCon:refCon];    
 }
 
 - (NSArray *)inputSources;

@@ -43,6 +43,8 @@
 - (SMMessageParser *)newParserWithOriginatingEndpoint:(SMEndpoint *)originatingEndpoint;
 - (void)postSelectedInputStreamSourceDisappearedNotification:(id<SMInputStreamSource>)source;
 - (void)postSourceListChangedNotification;
+- (void)retainForIncomingMIDIWithSourceConnectionRefCon:(void *)refCon;
+- (void)releaseForIncomingMIDIWithSourceConnectionRefCon:(void *)refCon;
 
 // For subclasses to implement
 - (NSArray *)parsers;

@@ -184,6 +184,27 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
     [[NSNotificationCenter defaultCenter] postNotificationName:SMInputStreamSourceListChangedNotification object:self];
 }
 
+- (void)retainForIncomingMIDIWithSourceConnectionRefCon:(void *)refCon
+{
+    // NOTE: This is called on the CoreMIDI thread!
+    //
+    // Subclasses may override if they have other data, dependent on the given refCon,
+    // which needs to be retained until the incoming MIDI is processed on the main thread.
+    
+    [self retain];
+}
+
+- (void)releaseForIncomingMIDIWithSourceConnectionRefCon:(void *)refCon
+{
+    // Normally called on the main thread.
+    //
+    // Subclasses may override if they have other data, dependent on the given refCon,
+    // which needs to be retained until the incoming MIDI is processed on the main thread.
+    
+    [self release];
+}
+
+
 //
 // For subclasses to implement
 //
@@ -275,13 +296,20 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
     // that lock, we'll have to wait for that thread to release it, which is priority inversion.)
     // We're not even attempting to do that yet. Frankly, neither MIDI Monitor nor SysEx Librarian
     // need that level of performance.
-
+    
     UInt32 packetListSize;
     const MIDIPacket *packet;
     UInt32 i;
     NSData *data;
     PendingPacketList *pendingPacketList;
-    
+        
+    // NOTE: There is a little bit of a race condition here.
+    // By the time the -performSelectorOnMainThread: fires, the input stream may be gone or in a different state.
+    // Make sure that the input stream retains itself, and anything that depend on the srcConnRefCon, during the
+    // interval between now and the time that -takePendingPacketList: is done working.
+    SMInputStream *inputStream = (SMInputStream *)readProcRefCon;
+    [inputStream retainForIncomingMIDIWithSourceConnectionRefCon:srcConnRefCon];
+
     // Find the size of the whole packet list
     packetListSize = sizeof(UInt32);	// numPackets
     packet = &packetList->packet[0];
@@ -289,7 +317,7 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
         packetListSize += offsetof(MIDIPacket, data) + packet->length;
         packet = MIDIPacketNext(packet);
     }
-    
+        
     // Copy the packet list and other arguments into a new PendingPacketList (in an NSData)
     data = [[NSMutableData alloc] initWithLength:(offsetof(PendingPacketList, packetList) + packetListSize)];
     pendingPacketList = (PendingPacketList *)[data bytes];
@@ -314,8 +342,14 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
         SMInputStream *inputStream = (SMInputStream *)pendingPacketList->readProcRefCon;
         // find the parser that is associated with this particular connection...
         SMMessageParser *parser = [inputStream parserForSourceConnectionRefCon:pendingPacketList->srcConnRefCon];
-        // and give it the packet list
-        [parser takePacketList:&(pendingPacketList->packetList)];
+        if (parser) {   // parser may be nil if input stream was disconnected from this source
+            // and give it the packet list
+            [parser takePacketList:&(pendingPacketList->packetList)];
+        }
+        
+        // Now that we're done with the input stream and its ref con (whatever that is),
+        // release them.
+        [inputStream releaseForIncomingMIDIWithSourceConnectionRefCon:pendingPacketList->srcConnRefCon];
     }
     @catch (id localException)
     {
