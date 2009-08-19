@@ -98,8 +98,10 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
+    [stream setMessageDestination:nil];
     [stream release];
     stream = nil;
+    [messageFilter setMessageDestination:nil];
     [messageFilter release];
     messageFilter = nil;
     [windowFrameDescription release];

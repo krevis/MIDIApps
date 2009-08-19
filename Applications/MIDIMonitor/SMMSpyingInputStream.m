@@ -94,20 +94,19 @@
         return;
 
     parser = [self newParserWithOriginatingEndpoint:endpoint];
-
+    NSMapInsert(parsersForEndpoints, endpoint, parser);
+    
+    center = [NSNotificationCenter defaultCenter];
+    [center addObserver:self selector:@selector(endpointDisappeared:) name:SMMIDIObjectDisappearedNotification object:endpoint];
+    [center addObserver:self selector:@selector(endpointWasReplaced:) name:SMMIDIObjectWasReplacedNotification object:endpoint];
+    
+    [endpoints addObject:endpoint];
+    
     status = MIDISpyPortConnectDestination(spyPort, [endpoint endpointRef], parser);
     if (status != noErr) {
         NSLog(@"Error from MIDISpyPortConnectDestination: %ld", status);
         return;
     }
-
-    NSMapInsert(parsersForEndpoints, endpoint, parser);
-
-    center = [NSNotificationCenter defaultCenter];
-    [center addObserver:self selector:@selector(endpointDisappeared:) name:SMMIDIObjectDisappearedNotification object:endpoint];
-    [center addObserver:self selector:@selector(endpointWasReplaced:) name:SMMIDIObjectWasReplacedNotification object:endpoint];
-
-    [endpoints addObject:endpoint];
 }
 
 - (void)removeEndpoint:(SMDestinationEndpoint *)endpoint;
@@ -172,12 +171,32 @@
 
 - (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;
 {
-    return (SMMessageParser *)refCon;
+    // note: refCon is an SMDestinationEndpoint*.
+    // We are allowed to return nil if we are no longer listening to this source endpoint.
+    return (SMMessageParser*)NSMapGet(parsersForEndpoints, refCon);
 }
 
 - (id<SMInputStreamSource>)streamSourceForParser:(SMMessageParser *)parser;
 {
     return [parser originatingEndpoint];
+}
+
+- (void)retainForIncomingMIDIWithSourceConnectionRefCon:(void *)refCon
+{
+    // retain self
+    [super retainForIncomingMIDIWithSourceConnectionRefCon:refCon];
+    
+    // and retain the endpoint too, since we use it as a key in -parserForSourceConnectionRefCon:
+    [(SMDestinationEndpoint*)refCon retain];
+}
+
+- (void)releaseForIncomingMIDIWithSourceConnectionRefCon:(void *)refCon
+{
+    // release the endpoint that we retained earlier
+    [(SMDestinationEndpoint*)refCon release];
+    
+    // and release self, LAST
+    [super releaseForIncomingMIDIWithSourceConnectionRefCon:refCon];    
 }
 
 - (NSArray *)inputSources;

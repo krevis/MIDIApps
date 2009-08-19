@@ -125,6 +125,7 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
+    [inputStream setMessageDestination:nil];
     [inputStream release];
     inputStream = nil;
     [outputStream release];

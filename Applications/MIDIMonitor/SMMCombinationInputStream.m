@@ -76,12 +76,15 @@
     [groupedInputSources release];
     groupedInputSources = nil;
     
+    [portInputStream setMessageDestination:nil];
     [portInputStream release];
     portInputStream = nil;
 
+    [virtualInputStream setMessageDestination:nil];
     [virtualInputStream release];
     virtualInputStream = nil;
 
+    [spyingInputStream setMessageDestination:nil];
     [spyingInputStream release];
     spyingInputStream = nil;
     
