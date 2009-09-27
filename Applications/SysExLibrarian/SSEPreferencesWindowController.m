@@ -38,6 +38,7 @@
 NSString *SSEDisplayPreferenceChangedNotification = @"SSEDisplayPreferenceChangedNotification";
 NSString *SSESysExSendPreferenceChangedNotification = @"SSESysExSendPreferenceChangedNotification";
 NSString *SSESysExReceivePreferenceChangedNotification = @"SSESysExReceivePreferenceChangedNotification";
+NSString *SSEListenForProgramChangesPreferenceChangedNotification = @"SSEListenForProgramChangesPreferenceChangedNotification";
 
 
 static SSEPreferencesWindowController *controller = nil;
@@ -72,20 +73,7 @@ static SSEPreferencesWindowController *controller = nil;
 - (void)windowDidLoad;
 {
     [super windowDidLoad];
-    
-    // Depending on the system we're running on, we want to remove one tab view item or another
-    NSString* tabViewItemIdentifierToRemove = nil;
-    if ([[SMClient sharedClient] doesSendSysExRespectExternalDeviceSpeed]) {
-        tabViewItemIdentifierToRemove = @"speed_na";
-    } else {
-        tabViewItemIdentifierToRemove = @"speed";
-    }
-
-    int index = [tabView indexOfTabViewItemWithIdentifier: tabViewItemIdentifierToRemove];
-    if (index != NSNotFound) {
-        [tabView removeTabViewItem: [tabView tabViewItemAtIndex: index]];
-    }
-    
+        
     // Make sure the "General" tab is showing, just in case it was changed in the nib
     [tabView selectTabViewItemWithIdentifier: @"general"];
 }
@@ -165,6 +153,20 @@ static SSEPreferencesWindowController *controller = nil;
     [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:SSESysExSendPreferenceChangedNotification object: nil] postingStyle:NSPostWhenIdle];
 }
 
+- (IBAction)listenForProgramChanges:(id)sender
+{
+    [[NSUserDefaults standardUserDefaults] setBool:([sender intValue] ? YES : NO) forKey:SSEListenForProgramChangesPreferenceKey];
+    [self synchronizeDefaults];
+    [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:SSEListenForProgramChangesPreferenceChangedNotification object: nil] postingStyle:NSPostWhenIdle];
+}
+
+- (IBAction)interruptOnProgramChange:(id)sender
+{
+    [[NSUserDefaults standardUserDefaults] setBool:([sender intValue] ? YES : NO) forKey:SSEInterruptOnProgramChangePreferenceKey];
+    [self synchronizeDefaults];    
+    // no need for a notification to be posted; relevant code looks up this value each time
+}
+
 @end
 
 
@@ -182,6 +184,8 @@ static SSEPreferencesWindowController *controller = nil;
     [sizeFormatMatrix selectCellWithTag:[defaults boolForKey:SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey]];
     [sysExFolderPathField setStringValue:[[SSELibrary sharedLibrary] fileDirectoryPath]];
     [sysExReadTimeOutSlider setIntValue:[defaults integerForKey:SSESysExReadTimeOutPreferenceKey]];
+	[listenForProgramChangesButton setIntValue:[defaults boolForKey:SSEListenForProgramChangesPreferenceKey]];
+    [interruptOnProgramChangeButton setIntValue:[defaults boolForKey:SSEInterruptOnProgramChangePreferenceKey]];
     [self synchronizeReadTimeOutField];
     [sysExIntervalBetweenSentMessagesSlider setIntValue:[defaults integerForKey: SSESysExIntervalBetweenSentMessagesPreferenceKey]];
     [self synchronizeIntervalBetweenSentMessagesField];

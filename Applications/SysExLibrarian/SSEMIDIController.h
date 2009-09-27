@@ -33,14 +33,15 @@ typedef enum {
 
     // MIDI processing
     SMPortInputStream *inputStream;
+	SMVirtualInputStream *virtualInputStream;
     SSECombinationOutputStream *outputStream;
         
     // Transient data
     NSMutableArray *messages;
     
     // ... for listening for sysex
-    BOOL listeningToMessages;
-    BOOL listenToMultipleMessages;
+    BOOL listeningToSysexMessages;
+    BOOL listenToMultipleSysexMessages;
     unsigned int messageBytesRead;
     unsigned int totalBytesRead;
 
@@ -53,6 +54,9 @@ typedef enum {
     unsigned int bytesSent;
     SSEMIDIControllerSendStatus sendStatus;
     BOOL scheduledUpdateSysExReadIndicator;
+    
+    // ... for listening to program change messages
+    BOOL listeningToProgramChangeMessages;
 }
 
 - (id)initWithWindowController:(SSEMainWindowController *)mainWindowController;
@@ -87,6 +91,8 @@ typedef enum {
 extern NSString *SSESelectedDestinationPreferenceKey;
 extern NSString *SSESysExReadTimeOutPreferenceKey;
 extern NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey;
+extern NSString *SSEListenForProgramChangesPreferenceKey;
+extern NSString *SSEInterruptOnProgramChangePreferenceKey;
 
 // Notifications
 extern NSString *SSEMIDIControllerReadStatusChangedNotification;

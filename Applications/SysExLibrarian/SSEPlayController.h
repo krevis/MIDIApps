@@ -14,6 +14,7 @@
 
 @class SSEMainWindowController;
 @class SSEMIDIController;
+@class SSELibraryEntry;
 
 
 @interface SSEPlayController : NSObject
@@ -26,7 +27,11 @@
     SSEMainWindowController *nonretainedMainWindowController;
     SSEMIDIController *nonretainedMIDIController;
 
+	SSELibraryEntry *currentEntry;
+	SSELibraryEntry *queuedEntry;
+	
     // Transient data
+	BOOL transmitting;
     BOOL scheduledProgressUpdate;
 }
 
@@ -34,6 +39,9 @@
 
 // Main window controller sends this to begin playing
 - (void)playMessages:(NSArray *)messages;
+
+// Main window controller sends this when a program change is received
+- (void)playMessagesInEntryForProgramChange:(SSELibraryEntry *)entry;
 
 // Actions
 - (IBAction)cancelPlaying:(id)sender;

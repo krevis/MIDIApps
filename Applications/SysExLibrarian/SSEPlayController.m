@@ -14,6 +14,7 @@
 
 #import "SSEMainWindowController.h"
 #import "SSEMIDIController.h"
+#import "SSELibraryEntry.h"
 
 
 @interface SSEPlayController (Private)
@@ -29,6 +30,9 @@
 - (void)updateProgress;
 
 - (void)sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+
+- (void)setCurrentEntry:(SSELibraryEntry *)entry;
+- (void)setQueuedEntry:(SSELibraryEntry *)entry;
 
 @end
 
@@ -61,6 +65,9 @@
     // Top-level nib objects
     [sheetWindow release];
     sheetWindow = nil;
+	
+    [currentEntry release];
+    [queuedEntry release];
         
     [super dealloc];
 }
@@ -78,6 +85,29 @@
     // This may send the messages immediately; if it does, it will post a notification and our -sendFinishedImmediately: will be called.
     // Otherwise, we expect a different notification so that -sendWillStart: will be called.
 }
+
+- (void)playMessagesInEntryForProgramChange:(SSELibraryEntry *)entry
+{
+	if (!transmitting) {
+        // Normal case. Nothing is being transmitted, so just remember the current entry and play the messages in it.
+		[self setCurrentEntry:entry];
+        
+		[self playMessages:[entry messages]];
+    } else {
+        // something is being transmitted already...
+		if (currentEntry != entry) {
+            // and the program change is asking to send a different entry than the one currently sending.
+            // Queue up this entry to be sent later.
+			[self setQueuedEntry:entry];
+            
+            // and maybe cancel the current send.
+			if ([[NSUserDefaults standardUserDefaults] boolForKey:SSEInterruptOnProgramChangePreferenceKey]) {
+				[nonretainedMIDIController cancelSendingMessages];
+            }
+		}
+	}
+}
+
 
 //
 // Actions
@@ -112,6 +142,7 @@
 {
     unsigned int bytesToSend;
 
+	transmitting = YES;
     [progressIndicator setMinValue:0.0];
     [progressIndicator setDoubleValue:0.0];
     [nonretainedMIDIController getMessageCount:NULL messageIndex:NULL bytesToSend:&bytesToSend bytesSent:NULL];
@@ -121,7 +152,9 @@
 
     [self updateProgressAndRepeat];
 
-    [NSApp beginSheet:sheetWindow modalForWindow:[nonretainedMainWindowController window] modalDelegate:self didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+    if (![[nonretainedMainWindowController window] attachedSheet]) {
+        [NSApp beginSheet:sheetWindow modalForWindow:[nonretainedMainWindowController window] modalDelegate:self didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+    }
 }
 
 - (void)sendFinished:(NSNotification *)notification;
@@ -139,13 +172,29 @@
 
     if (!success)
         [progressMessageField setStringValue:NSLocalizedStringFromTableInBundle(@"Cancelled.", @"SysExLibrarian", SMBundleForObject(self), "Cancelled.")];
+	
+    [self stopObservingMIDIController];	
 
-    // Even if we have set the progress indicator to its maximum value, it won't get drawn on the screen that way immediately,
-    // probably because it tries to smoothly animate to that state. The only way I have found to show the maximum value is to just
-    // wait a little while for the animation to finish. This looks nice, too.
-    [NSApp performSelector:@selector(endSheet:) withObject:sheetWindow afterDelay:0.5];
+	transmitting = NO;
 
-    [self stopObservingMIDIController];
+    // Maybe there's a queued entry that needs sending...
+	if (queuedEntry != nil && currentEntry != queuedEntry) {
+        // yes, move the queued entry to be current
+		[self setCurrentEntry:queuedEntry];
+        [self setQueuedEntry:nil];
+
+        // then send it
+		[self performSelector:@selector(playMessages:) withObject:[currentEntry messages] afterDelay:0.0];
+
+	} else {
+		[self setCurrentEntry:nil];
+        [self setQueuedEntry:nil];
+
+		// Even if we have set the progress indicator to its maximum value, it won't get drawn on the screen that way immediately,
+		// probably because it tries to smoothly animate to that state. The only way I have found to show the maximum value is to just
+		// wait a little while for the animation to finish. This looks nice, too.
+		[NSApp performSelector:@selector(endSheet:) withObject:sheetWindow afterDelay:0.5];
+	}
 }
 
 - (void)sendFinishedImmediately:(NSNotification *)notification;
@@ -202,6 +251,26 @@
 {
     // We don't really care how this sheet ended
     [sheet orderOut:nil];
+}
+
+- (void)setCurrentEntry:(SSELibraryEntry *)entry
+{
+    if (entry != currentEntry) {
+        [currentEntry release];
+        currentEntry = [entry retain];
+        
+        if (currentEntry) {
+            [nonretainedMainWindowController selectEntries:[NSArray arrayWithObject:currentEntry]];
+        }
+    }    
+}
+
+- (void)setQueuedEntry:(SSELibraryEntry *)entry
+{
+    if (entry != queuedEntry) {
+        [queuedEntry release];
+        queuedEntry = [entry retain];
+    }
 }
 
 @end

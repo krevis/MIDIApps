@@ -27,6 +27,8 @@
     NSString *manufacturer;
     NSNumber *sizeNumber;
     NSNumber *messageCountNumber;
+	NSNumber *programNumber;
+	
     struct {
         unsigned int isFilePresent:1;
         unsigned int hasLookedForFile:1;
@@ -59,6 +61,9 @@
 - (BOOL)isFilePresentIgnoringCachedValue;
 
 - (BOOL)isFileInLibraryFileDirectory;
+
+- (void)setProgramNumber:(NSNumber *)value;
+- (NSNumber *)programNumber;
 
 @end
 

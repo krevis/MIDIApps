@@ -12,9 +12,9 @@
 
 
 #import "SSESysExSpeedController.h"
+#import "SSECombinationOutputStream.h"
 
 #import <SnoizeMIDI/SnoizeMIDI.h>
-
 
 @interface  SSESysExSpeedController (Private)
 
@@ -218,7 +218,7 @@
         [center removeObserver:self name:SMMIDIObjectPropertyChangedNotification object:midiObject];
     }
     
-    endpoints = [[SMDestinationEndpoint destinationEndpoints] retain];
+    endpoints = [[SSECombinationOutputStream destinationEndpoints] retain];
     externalDevices = [[SMExternalDevice externalDevices] retain];
 
     enumerator = [endpoints objectEnumerator];

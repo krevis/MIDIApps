@@ -40,6 +40,7 @@
 @interface SSEMainWindowController (Private)
 
 - (void)displayPreferencesDidChange:(NSNotification *)notification;
+- (void)listenForProgramChangesDidChange:(NSNotification *)notification;
 
 - (BOOL)finishEditingResultsInError;
 
@@ -50,8 +51,6 @@
 - (void)libraryDidChange:(NSNotification *)notification;
 - (void)sortLibraryEntries;
 
-- (NSArray *)selectedEntries;
-- (void)selectEntries:(NSArray *)entries;
 - (void)scrollToEntries:(NSArray *)entries;
 
 - (void)playSelectedEntries;
@@ -92,6 +91,7 @@ static SSEMainWindowController *controller = nil;
     library = [[SSELibrary sharedLibrary] retain];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(libraryDidChange:) name:SSELibraryDidChangeNotification object:library];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayPreferencesDidChange:) name:SSEDisplayPreferenceChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(listenForProgramChangesDidChange:) name:SSEListenForProgramChangesPreferenceChangedNotification object:nil];
     
     sortColumnIdentifier = @"name";
     isSortAscending = YES;
@@ -125,6 +125,8 @@ static SSEMainWindowController *controller = nil;
     sortColumnIdentifier = nil;
     [sortedLibraryEntries release];
     sortedLibraryEntries = nil;
+    [programChangeTableColumn release];
+    programChangeTableColumn = nil;
     
     [super dealloc];
 }
@@ -151,6 +153,9 @@ static SSEMainWindowController *controller = nil;
 
     // The MIDI controller may cause us to do some things to the UI, so we create it now instead of earlier
     midiController = [[SSEMIDIController alloc] initWithWindowController:self];
+	
+    [programChangeTableColumn retain];  // extra retain in case we remove it from the table view
+	[self listenForProgramChangesDidChange:nil];
 }
 
 - (void)windowDidLoad
@@ -202,6 +207,8 @@ static SSEMainWindowController *controller = nil;
         return ([libraryTableView numberOfSelectedRows] == 1 && [[[self selectedEntries] objectAtIndex:0] isFilePresent]);
     else if (action == @selector(rename:))
         return ([libraryTableView numberOfSelectedRows] == 1 && [[[self selectedEntries] objectAtIndex:0] isFilePresent]);
+    else if (action == @selector(changeProgramNumber:))
+        return ([libraryTableView numberOfSelectedRows] == 1 && [programChangeTableColumn tableView] != nil);
     else if (action == @selector(showDetails:))
         return ([libraryTableView numberOfSelectedRows] > 0);
     else if (action == @selector(saveAsStandardMIDI:) ||
@@ -304,16 +311,32 @@ static SSEMainWindowController *controller = nil;
 
 - (IBAction)rename:(id)sender;
 {
-    if ([libraryTableView editedRow] >= 0) {
-        // We are already editing the table view, so don't do anything
+    int columnIndex = [libraryTableView columnWithIdentifier:@"name"];
+
+    if ([libraryTableView editedRow] >= 0 && [libraryTableView editedColumn] == columnIndex) {
+        // We are already editing the name column of the table view, so don't do anything
     } else  {
         [self finishEditingInWindow];  // In case we are editing something else
 
         // Make sure that the file really exists right now before we try to rename it
-        if ([[[self selectedEntries] objectAtIndex:0] isFilePresentIgnoringCachedValue])
-            [libraryTableView editColumn:0 row:[libraryTableView selectedRow] withEvent:nil select:YES];
-        else
+        if ([[[self selectedEntries] objectAtIndex:0] isFilePresentIgnoringCachedValue]) {
+            [libraryTableView editColumn:columnIndex row:[libraryTableView selectedRow] withEvent:nil select:YES];
+        } else {
             NSBeep();
+        }
+    }
+}
+
+- (IBAction)changeProgramNumber:(id)sender
+{
+    int columnIndex = [libraryTableView columnWithIdentifier:@"programNumber"];
+
+    if ([libraryTableView editedRow] >= 0 && [libraryTableView editedColumn] == columnIndex) {
+        // We are already editing the program# column of the table view, so don't do anything
+    } else  {
+        [self finishEditingInWindow];  // In case we are editing something else
+		
+        [libraryTableView editColumn:columnIndex row:[libraryTableView selectedRow] withEvent:nil select:YES];
     }
 }
 
@@ -364,7 +387,7 @@ static SSEMainWindowController *controller = nil;
     groupIndex = [groupedDestinations count];
     while (groupIndex--) {
         if ([[groupedDestinations objectAtIndex:groupIndex] count] == 0)
-            [groupedDestinations removeObjectAtIndex:groupIndex];        
+            [groupedDestinations removeObjectAtIndex:groupIndex];
     }
 
     currentDestination = [midiController selectedDestination];
@@ -459,6 +482,57 @@ static SSEMainWindowController *controller = nil;
     }
 }
 
+- (void)playEntryWithProgramNumber:(Byte)desiredProgramNumber
+{
+	if (!playController)
+		playController = [[SSEPlayController alloc] initWithWindowController:self midiController:midiController];
+	
+    NSEnumerator* oe = [sortedLibraryEntries objectEnumerator];
+	SSELibraryEntry *entry;
+    while ((entry = [oe nextObject])) {
+        NSNumber* programNumber = [entry programNumber];
+        if (programNumber && [programNumber unsignedIntValue] == desiredProgramNumber) {
+			[playController playMessagesInEntryForProgramChange:entry];
+			return;
+        }
+	}
+}
+
+- (NSArray *)selectedEntries;
+{
+    NSMutableArray *selectedEntries;
+    NSEnumerator *selectedRowEnumerator;
+    NSNumber *rowNumber;
+    
+    selectedEntries = [NSMutableArray array];
+    
+    selectedRowEnumerator = [libraryTableView selectedRowEnumerator];
+    while ((rowNumber = [selectedRowEnumerator nextObject])) {
+        [selectedEntries addObject:[sortedLibraryEntries objectAtIndex:[rowNumber intValue]]];
+    }
+    
+    return selectedEntries;
+}
+
+- (void)selectEntries:(NSArray *)entries;
+{
+    unsigned int entryCount, entryIndex;
+    
+    [libraryTableView deselectAll:nil];
+    
+    entryCount = [entries count];
+    if (entryCount == 0)
+        return;
+    
+    for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+        unsigned int row;
+        
+        row = [sortedLibraryEntries indexOfObjectIdenticalTo:[entries objectAtIndex:entryIndex]];
+        if (row != NSNotFound)
+            [libraryTableView selectRow:row byExtendingSelection:YES];
+    }
+}
+
 @end
 
 
@@ -495,6 +569,8 @@ static SSEMainWindowController *controller = nil;
             return [entrySize stringValue];
     } else if ([identifier isEqualToString:@"messageCount"]) {
         return [entry messageCount];
+	} else if ([identifier isEqualToString:@"programNumber"]) {
+        return [entry programNumber];
     } else {
         return nil;
     }
@@ -502,21 +578,33 @@ static SSEMainWindowController *controller = nil;
 
 - (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(int)row;
 {
-    NSString *newName = (NSString *)object;
-    SSELibraryEntry *entry;
+    SSELibraryEntry *entry = [sortedLibraryEntries objectAtIndex:row];
 
-    if (!newName || [newName length] == 0)
-        return;
-    
-    entry = [sortedLibraryEntries objectAtIndex:row];
-    if (![entry renameFileTo:newName]) {
-        NSString *title, *message;
+    NSString *identifier = [tableColumn identifier];
+    if ([identifier isEqualToString:@"name"]) {
+        NSString *newName = (NSString *)object;
 
-        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", SMBundleForObject(self), "title of error alert");
-        message = NSLocalizedStringFromTableInBundle(@"The file for this item could not be renamed.", @"SysExLibrarian", SMBundleForObject(self), "message of alert when renaming a file fails");
+        if (!newName || [newName length] == 0)
+            return;        
         
-        NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"%@", message);
-    }
+        if (![entry renameFileTo:newName]) {
+            NSString *title, *message;
+            
+            title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", SMBundleForObject(self), "title of error alert");
+            message = NSLocalizedStringFromTableInBundle(@"The file for this item could not be renamed.", @"SysExLibrarian", SMBundleForObject(self), "message of alert when renaming a file fails");
+            
+            NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"%@", message);
+        }
+    } else if ([identifier isEqualToString:@"programNumber"]) {
+        NSNumber* newProgramNumber = nil;
+		if (object) {
+            int intValue = [object intValue];
+            if (intValue >= 0 && intValue <= 127) {
+                newProgramNumber = [NSNumber numberWithUnsignedInt:intValue];
+            }
+        }
+        [entry setProgramNumber:newProgramNumber];
+	}
     
     [self synchronizeLibrary];
 }
@@ -581,10 +669,16 @@ static SSEMainWindowController *controller = nil;
 
 - (BOOL)tableView:(NSTableView *)tableView shouldEditTableColumn:(NSTableColumn *)tableColumn row:(int)row;
 {
-    SSELibraryEntry *entry;
+    SSELibraryEntry *entry = [sortedLibraryEntries objectAtIndex:row];
+    NSString *identifier = [tableColumn identifier];
 
-    entry = [sortedLibraryEntries objectAtIndex:row];
-    return ([entry isFilePresent]);
+    if ([identifier isEqualToString:@"name"]) {
+        return [entry isFilePresent];
+    } else if ([identifier isEqualToString:@"programNumber"]) {
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 @end
@@ -595,6 +689,29 @@ static SSEMainWindowController *controller = nil;
 - (void)displayPreferencesDidChange:(NSNotification *)notification;
 {
     [libraryTableView reloadData];
+}
+
+- (void)listenForProgramChangesDidChange:(NSNotification *)notification
+{
+    [self finishEditingInWindow];
+
+    BOOL listening = [[NSUserDefaults standardUserDefaults] boolForKey:SSEListenForProgramChangesPreferenceKey];
+    
+    if (listening) {
+        if (![programChangeTableColumn tableView]) {
+            [libraryTableView addTableColumn:programChangeTableColumn];
+
+            NSTableColumn* nameCol = [libraryTableView tableColumnWithIdentifier:@"name"];
+            [nameCol setWidth:[nameCol width] - [programChangeTableColumn width] - 3];
+        }
+    } else {
+        if ([programChangeTableColumn tableView]) {
+            [libraryTableView removeTableColumn:programChangeTableColumn];
+            
+            NSTableColumn* nameCol = [libraryTableView tableColumnWithIdentifier:@"name"];
+            [nameCol setWidth:[nameCol width] + [programChangeTableColumn width] + 3];
+        }
+    }
 }
 
 - (BOOL)finishEditingResultsInError;
@@ -774,41 +891,6 @@ static int libraryEntryComparator(id object1, id object2, void *context)
     if (!isSortAscending)
         sortedLibraryEntries = [sortedLibraryEntries SnoizeMIDI_reversedArray];
     [sortedLibraryEntries retain];
-}
-
-- (NSArray *)selectedEntries;
-{
-    NSMutableArray *selectedEntries;
-    NSEnumerator *selectedRowEnumerator;
-    NSNumber *rowNumber;
-
-    selectedEntries = [NSMutableArray array];
-
-    selectedRowEnumerator = [libraryTableView selectedRowEnumerator];
-    while ((rowNumber = [selectedRowEnumerator nextObject])) {
-        [selectedEntries addObject:[sortedLibraryEntries objectAtIndex:[rowNumber intValue]]];
-    }
-
-    return selectedEntries;
-}
-
-- (void)selectEntries:(NSArray *)entries;
-{
-    unsigned int entryCount, entryIndex;
-
-    [libraryTableView deselectAll:nil];
-
-    entryCount = [entries count];
-    if (entryCount == 0)
-        return;
-
-    for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
-        unsigned int row;
-
-        row = [sortedLibraryEntries indexOfObjectIdenticalTo:[entries objectAtIndex:entryIndex]];
-        if (row != NSNotFound)
-            [libraryTableView selectRow:row byExtendingSelection:YES];
-    }
 }
 
 - (void)scrollToEntries:(NSArray *)entries;

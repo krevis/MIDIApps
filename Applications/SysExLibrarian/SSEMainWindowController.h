@@ -21,11 +21,13 @@
 @class SSEPlayController;
 @class SSERecordController;
 @class SSETableView;
+@class SSELibraryEntry;
 
 @interface SSEMainWindowController : SSEWindowController
 {
     IBOutlet NSPopUpButton *destinationPopUpButton;
     IBOutlet SSETableView *libraryTableView;
+	IBOutlet NSTableColumn *programChangeTableColumn;
 
     // Library
     SSELibrary *library;
@@ -63,6 +65,7 @@
 - (IBAction)play:(id)sender;
 - (IBAction)showFileInFinder:(id)sender;
 - (IBAction)rename:(id)sender;
+- (IBAction)changeProgramNumber:(id)sender;
 - (IBAction)showDetails:(id)sender;
 - (IBAction)saveAsStandardMIDI:(id)sender;
 - (IBAction)saveAsSysex:(id)sender;
@@ -79,6 +82,11 @@
 - (void)showNewEntries:(NSArray *)newEntries;
 
 - (void)addReadMessagesToLibrary;
+
+- (void)playEntryWithProgramNumber:(Byte)programNumber;
+
+- (NSArray *)selectedEntries;
+- (void)selectEntries:(NSArray *)entries;
 
 @end
 

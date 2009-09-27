@@ -23,6 +23,8 @@
     IBOutlet NSSlider *sysExIntervalBetweenSentMessagesSlider;
     IBOutlet NSTextField *sysExIntervalBetweenSentMessagesField;
     IBOutlet NSTabView *tabView;
+	IBOutlet NSButton *listenForProgramChangesButton;
+	IBOutlet NSButton *interruptOnProgramChangeButton;
     IBOutlet SSESysExSpeedController *sysExSpeedController;
 }
 
@@ -34,6 +36,8 @@
 - (IBAction)changeSysExFolder:(id)sender;
 - (IBAction)changeReadTimeOut:(id)sender;
 - (IBAction)changeIntervalBetweenSentMessages:(id)sender;
+- (IBAction)listenForProgramChanges:(id)sender;
+- (IBAction)interruptOnProgramChange:(id)sender;
 
 @end
 
@@ -41,3 +45,4 @@
 extern NSString *SSEDisplayPreferenceChangedNotification;
 extern NSString *SSESysExSendPreferenceChangedNotification;
 extern NSString *SSESysExReceivePreferenceChangedNotification;
+extern NSString *SSEListenForProgramChangesPreferenceChangedNotification;

@@ -83,6 +83,8 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
     sizeNumber = nil;
     [messageCountNumber release];
     messageCountNumber = nil;
+	[programNumber release];
+	programNumber = nil;
     
     [super dealloc];
 }
@@ -108,6 +110,8 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
         [dict setObject:sizeNumber forKey:@"size"];
     if (messageCountNumber)
         [dict setObject:messageCountNumber forKey:@"messageCount"];
+	if (programNumber)
+        [dict setObject:programNumber forKey:@"programNumber"];
 
     return dict;
 }
@@ -339,6 +343,20 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
     return [nonretainedLibrary isPathInFileDirectory:[self path]];
 }
 
+- (void)setProgramNumber:(NSNumber *)value;
+{
+    if (value != programNumber && ![programNumber isEqual:value]) {
+        [programNumber release];
+        programNumber = [value retain];
+        
+        [nonretainedLibrary noteEntryChanged];
+    }
+}
+- (NSNumber *)programNumber
+{
+	return programNumber;
+}
+	
 @end
 
 
@@ -411,6 +429,11 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
         manufacturer = [string retain];
     }
 
+    number = [dict objectForKey:@"programNumber"];
+    if (number && [number isKindOfClass:[NSNumber class]]) {
+        programNumber = [number retain];
+    }
+	
     SMAssert(sizeNumber == nil);
     number = [dict objectForKey:@"size"];
     if (number && [number isKindOfClass:[NSNumber class]]) {

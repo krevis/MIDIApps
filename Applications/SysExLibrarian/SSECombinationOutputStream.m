@@ -37,6 +37,19 @@
 NSString *SSECombinationOutputStreamSelectedDestinationDisappearedNotification = @"SSECombinationOutputStreamSelectedDestinationDisappearedNotification";
 NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECombinationOutputStreamDestinationListChangedNotification";
 
++ (NSArray *)destinationEndpoints
+{
+    // The regular set of destination endpoints, but don't show any of our own virtual endpoints in the list
+
+	NSMutableArray *destinations = [NSMutableArray arrayWithArray:[SMDestinationEndpoint destinationEndpoints]];
+
+    unsigned destinationsIndex = [destinations count];
+    while (destinationsIndex--) {
+        if ([[destinations objectAtIndex:destinationsIndex] isOwnedByThisProcess])
+            [destinations removeObjectAtIndex:destinationsIndex];
+    }
+	return destinations;
+}
 
 - (id)init;
 {
@@ -97,7 +110,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
 - (NSArray *)groupedDestinations;
 {
     return [NSArray arrayWithObjects:
-        [SMDestinationEndpoint destinationEndpoints],
+        [SSECombinationOutputStream destinationEndpoints],
         [NSArray arrayWithObject:virtualStreamDestination],
         nil];
 }

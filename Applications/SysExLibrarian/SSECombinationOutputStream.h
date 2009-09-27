@@ -31,6 +31,8 @@
     } flags;
 }
 
++ (NSArray *)destinationEndpoints;
+
 - (NSArray *)destinations;
 - (NSArray *)groupedDestinations;
     // Returns an array of arrays. Each of the 2nd level arrays contains destinations that are of the same kind.
