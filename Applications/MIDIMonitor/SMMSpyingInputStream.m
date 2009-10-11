@@ -102,7 +102,7 @@
     
     [endpoints addObject:endpoint];
     
-    status = MIDISpyPortConnectDestination(spyPort, [endpoint endpointRef], parser);
+    status = MIDISpyPortConnectDestination(spyPort, [endpoint endpointRef], endpoint);
     if (status != noErr) {
         NSLog(@"Error from MIDISpyPortConnectDestination: %ld", status);
         return;
