@@ -1,1 +1,3 @@
-// nothing necessary here (yet)
+// Frameworks are installed inside the app
+INSTALL_PATH = @executable_path/../Frameworks
+SKIP_INSTALL = YES

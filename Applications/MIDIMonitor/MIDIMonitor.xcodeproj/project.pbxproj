@@ -107,7 +107,7 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		162972AD097B413E00158D7B /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
@@ -115,7 +115,7 @@
 				162972B2097B414C00158D7B /* SnoizeMIDISpy.framework in CopyFiles */,
 				162972B3097B414F00158D7B /* DisclosableView.framework in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -391,9 +391,9 @@
 			buildConfigurationList = 16AF2646097B1EFB00BC87DC /* Build configuration list for PBXNativeTarget "MIDIMonitor" */;
 			buildPhases = (
 				167B881806ED4D650053D305 /* Resources */,
+				162972AD097B413E00158D7B /* CopyFiles */,
 				167B882606ED4D650053D305 /* Sources */,
 				167B883806ED4D650053D305 /* Frameworks */,
-				162972AD097B413E00158D7B /* CopyFiles */,
 				162972B4097B415900158D7B /* Run Script (Remove Headers from Frameworks) */,
 			);
 			buildRules = (

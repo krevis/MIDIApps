@@ -90,13 +90,13 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		16F0338E0984B76F006C8A44 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
 				16F034320984BABA006C8A44 /* SnoizeMIDI.framework in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -536,9 +536,9 @@
 			buildConfigurationList = 16F033900984B76F006C8A44 /* Build configuration list for PBXNativeTarget "SysExLibrarian" */;
 			buildPhases = (
 				16F033530984B76F006C8A44 /* Resources */,
+				16F0338E0984B76F006C8A44 /* CopyFiles */,
 				16F0336D0984B76F006C8A44 /* Sources */,
 				16F033890984B76F006C8A44 /* Frameworks */,
-				16F0338E0984B76F006C8A44 /* CopyFiles */,
 				16F034490984BB6C006C8A44 /* Run Script (Remove Headers from Frameworks) */,
 			);
 			buildRules = (
