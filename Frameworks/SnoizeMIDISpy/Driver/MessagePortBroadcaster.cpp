@@ -17,6 +17,12 @@
 #include <pthread.h>
 
 
+// Private function declarations
+CFDataRef LocalMessagePortCallBack(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info);
+void MessagePortWasInvalidated(CFMessagePortRef messagePort, void *info);
+void RemoveRemotePortFromChannelArray(const void *key, const void *value, void *context);
+
+
 // NOTE This static variable is a dumb workaround. See comment in MessagePortWasInvalidated().
 static MessagePortBroadcaster *sOneBroadcaster = NULL;
 
