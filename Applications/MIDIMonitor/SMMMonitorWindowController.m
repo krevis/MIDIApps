@@ -579,7 +579,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     else if ([item isKindOfClass:[NSDictionary class]])
         return [[item objectForKey:@"sources"] count];
     else
-        return nil;
+        return 0;
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item;
