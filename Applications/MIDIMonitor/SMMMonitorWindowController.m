@@ -268,25 +268,16 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 - (IBAction)copy:(id)sender;
 {
     if ([[self window] firstResponder] == messagesTableView) {
-        NSMutableString *totalString;
-        NSArray *columns;
-        NSEnumerator *rowEnumerator;
-        NSNumber *rowNumber;
-        NSPasteboard *pasteboard;
-    
-        totalString = [NSMutableString string];
-        columns = [messagesTableView tableColumns];
-        
-        rowEnumerator = [messagesTableView selectedRowEnumerator];
-        while ((rowNumber = [rowEnumerator nextObject])) {
-            unsigned int row = [rowNumber intValue];
-            NSMutableArray *columnStrings;
-            NSEnumerator *columnEnumerator;
+        NSMutableString *totalString = [NSMutableString string];
+        NSArray *columns = [messagesTableView tableColumns];
+            
+        NSIndexSet* selectedRowIndexes = [messagesTableView selectedRowIndexes];
+        NSUInteger row;
+        for (row = [selectedRowIndexes firstIndex]; row != NSNotFound; row = [selectedRowIndexes indexGreaterThanIndex:row]) {
+            NSMutableArray *columnStrings = [[NSMutableArray alloc] init];
+            NSEnumerator *columnEnumerator = [columns objectEnumerator];
             NSTableColumn *column;
 
-            columnStrings = [[NSMutableArray alloc] init];
-            
-            columnEnumerator = [columns objectEnumerator];
             while ((column = [columnEnumerator nextObject]))
                 [columnStrings addObject:[self tableView:messagesTableView objectValueForTableColumn:column row:row]];
 
@@ -296,7 +287,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
             [columnStrings release];
         }
 
-        pasteboard = [NSPasteboard generalPasteboard];
+        NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
         [pasteboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
         [pasteboard setString:totalString forType:NSStringPboardType];
     }
@@ -781,20 +772,16 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 
 - (NSArray *)selectedMessagesWithDetails;
 {
-    int selectedRowCount;
-    NSEnumerator *rowEnumerator;
-    NSNumber *rowNumber;
-    NSMutableArray *messages;
-
-    selectedRowCount = [messagesTableView numberOfSelectedRows];
+    int selectedRowCount = [messagesTableView numberOfSelectedRows];
     if (selectedRowCount == 0)
         return [NSArray array];
 
-    messages = [NSMutableArray arrayWithCapacity:selectedRowCount];
+    NSMutableArray* messages = [NSMutableArray arrayWithCapacity:selectedRowCount];
 
-    rowEnumerator = [messagesTableView selectedRowEnumerator];
-    while ((rowNumber = [rowEnumerator nextObject])) {
-        SMMessage *message = [displayedMessages objectAtIndex:[rowNumber unsignedIntValue]];
+    NSIndexSet* selectedRowIndexes = [messagesTableView selectedRowIndexes];
+    NSUInteger row;
+    for (row = [selectedRowIndexes firstIndex]; row != NSNotFound; row = [selectedRowIndexes indexGreaterThanIndex:row]) {
+        SMMessage *message = [displayedMessages objectAtIndex:row];
         if ([SMMDetailsWindowController canShowDetailsForMessage:message])
             [messages addObject:message];
     }

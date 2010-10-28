@@ -17,7 +17,7 @@
 @class SMMSourcesOutlineView;
 
 
-@interface SMMMonitorWindowController : NSWindowController
+@interface SMMMonitorWindowController : NSWindowController <NSTableViewDataSource>
 {
     // Sources controls
     IBOutlet SNDisclosureButton *sourcesDisclosureButton;
