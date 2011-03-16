@@ -1,5 +1,5 @@
 // Typically build against 10.4
-SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk
+SDKROOT = ${DEVELOPER_SDK_DIR}/MacOSX10.4u.sdk
     // meaning: maximum API usage allowed is 10.4
 MACOSX_DEPLOYMENT_TARGET = 10.4
     // meaning: minimum machine we'll attempt to run on is 10.4
