@@ -150,6 +150,7 @@ void mainThreadRunLoopSourceCallback(void *info)
 #if DEBUG
         printf("AddToMessageQueue: pthread_mutex_unlock failed (%d)\n", pthreadError);
 #endif
+        CFRelease(copiedQueueArray);
         return;
     }
     
