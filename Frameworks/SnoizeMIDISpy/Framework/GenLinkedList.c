@@ -96,7 +96,7 @@ OSErr		AddToTail( GenLinkedList *pList, void *pData )
 
 		/* create memory for new node, if this fails we _must_ bail	*/
 	err = ( ( tmpNode = (GenNode*) NewPtr( sizeof( GenNode ) ) ) != NULL ) ? noErr : MemError();
-	if( err == noErr )
+	if( tmpNode != NULL && err == noErr )
 	{
 		tmpNode->pData = pData;									/* Setup new node				*/
 		tmpNode->pNext = NULL;
