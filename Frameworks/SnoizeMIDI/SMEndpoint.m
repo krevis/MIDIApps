@@ -102,7 +102,8 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 - (void)checkIfPropertySetIsAllowed;
 {
     if (![self isOwnedByThisProcess]) {
-        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Can't set a property on an endpoint we don't own", @"SnoizeMIDI", SMBundleForObject(self), "exception if someone tries to set a property on an endpoint we don't own")];
+        NSString* reason = NSLocalizedStringFromTableInBundle(@"Can't set a property on an endpoint we don't own", @"SnoizeMIDI", SMBundleForObject(self), "exception if someone tries to set a property on an endpoint we don't own");
+        [[NSException exceptionWithName:NSGenericException reason:reason userInfo:nil] raise];
     }
 }
 
@@ -156,7 +157,8 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
     // So we'll say that this method should be called first, before any other setters are called.
     
     if (![self isVirtual]) {
-        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Endpoint is not virtual, so it can't be owned by this process", @"SnoizeMIDI", SMBundleForObject(self), "exception if someone calls -setIsOwnedByThisProcess on a non-virtual endpoint")];
+        NSString* reason = NSLocalizedStringFromTableInBundle(@"Endpoint is not virtual, so it can't be owned by this process", @"SnoizeMIDI", SMBundleForObject(self), "exception if someone calls -setIsOwnedByThisProcess on a non-virtual endpoint");
+        [[NSException exceptionWithName:NSGenericException reason:reason userInfo:nil] raise];
     }
     
     [self setOwnerPID:getpid()];
