@@ -162,16 +162,16 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
     return midiReadProc;
 }
 
-- (SMMessageParser *)newParserWithOriginatingEndpoint:(SMEndpoint *)originatingEndpoint;
+- (SMMessageParser *)createParserWithOriginatingEndpoint:(SMEndpoint *)originatingEndpoint;
 {
     SMMessageParser *parser;
 
-    parser = [[[SMMessageParser alloc] init] autorelease];
+    parser = [[SMMessageParser alloc] init];
     [parser setDelegate:self];
     [parser setSysExTimeOut:sysExTimeOut];
     [parser setOriginatingEndpoint:originatingEndpoint];
 
-    return parser;
+    return [parser autorelease];
 }
 
 - (void)postSelectedInputStreamSourceDisappearedNotification:(id<SMInputStreamSource>)source;

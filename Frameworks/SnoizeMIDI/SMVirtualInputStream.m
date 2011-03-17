@@ -43,7 +43,7 @@
 
     inputStreamSource = [[SMSimpleInputStreamSource alloc] initWithName:endpointName];
 
-    parser = [[self newParserWithOriginatingEndpoint:nil] retain];
+    parser = [[self createParserWithOriginatingEndpoint:nil] retain];
 
     return self;
 }

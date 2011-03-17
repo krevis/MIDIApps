@@ -40,7 +40,7 @@
 
 // For subclasses only
 - (MIDIReadProc)midiReadProc;
-- (SMMessageParser *)newParserWithOriginatingEndpoint:(SMEndpoint *)originatingEndpoint;
+- (SMMessageParser *)createParserWithOriginatingEndpoint:(SMEndpoint *)originatingEndpoint;
 - (void)postSelectedInputStreamSourceDisappearedNotification:(id<SMInputStreamSource>)source;
 - (void)postSourceListChangedNotification;
 - (void)retainForIncomingMIDIWithSourceConnectionRefCon:(void *)refCon;

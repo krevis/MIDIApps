@@ -85,7 +85,7 @@
     if ([endpoints containsObject:endpoint])
         return;
 
-    parser = [self newParserWithOriginatingEndpoint:endpoint];
+    parser = [self createParserWithOriginatingEndpoint:endpoint];
     NSMapInsert(parsersForEndpoints, endpoint, parser);
 
     center = [NSNotificationCenter defaultCenter];
