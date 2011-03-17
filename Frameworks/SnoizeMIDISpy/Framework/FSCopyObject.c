@@ -361,7 +361,8 @@ OSErr FSCopyObject(	const FSRef				*source,
 	FSRef			tmpObjectRef,
 					deleteMeRef;
 	Boolean			isDirectory = false,
-					isReplacing = false;
+					isReplacing = false,
+                    gotCopyParams = false;
 	OSErr			err = ( source != NULL && destDir != NULL ) ? noErr : paramErr;
 
 		/* Zero out these two FSRefs in case an error occurs before or	*/
@@ -383,8 +384,10 @@ OSErr FSCopyObject(	const FSRef				*source,
 	if( err == noErr )
 		tmpObjectName = (newObjectName != NULL) ? *newObjectName : sourceName;
 
-	if( err == noErr )		/* preflight/prep the destination and our internal variables */
+	if( err == noErr ) {		/* preflight/prep the destination and our internal variables */
 		err = FSCopyObjectPreflight( source, destDir, dupeAction, &sourceCatInfo, &copyParams, &tmpObjectName, &deleteMeRef, &isReplacing, &isDirectory );
+        gotCopyParams = err == noErr;
+    }
 		
 							/* now that we have some info, lets print it */
 	if( err == noErr )
@@ -418,7 +421,7 @@ OSErr FSCopyObject(	const FSRef				*source,
 		/* This is done mainly to cover the case of the	source being in the	*/
 		/* destination directory when kDupeActionReplace is selected		*/
 		/* (3188701)														*/
-	if( copyParams.dupeAction == kDupeActionReplace && isReplacing == true )
+	if( gotCopyParams && copyParams.dupeAction == kDupeActionReplace && isReplacing == true )
 	{
 		dwarning(("%s -- Cleaning up, this might take a moment.  err : %d\n", __FUNCTION__, err));
 	
@@ -440,7 +443,7 @@ OSErr FSCopyObject(	const FSRef				*source,
 		*newObjectRef = tmpObjectRef;
 
 		/* Clean up for space and safety...  Who me? */
-	if( copyParams.copyBuffer != NULL )
+	if( gotCopyParams && copyParams.copyBuffer != NULL )
 		DisposePtr((char*)copyParams.copyBuffer);
 		
 	mycheck_noerr( err );	
@@ -475,7 +478,8 @@ static OSErr FSCopyObjectPreflight(	const FSRef			*source,
 
 	BlockZero( copyParams, sizeof( CopyParams ) );
 
-	copyParams->dupeAction = dupeAction;
+    if( copyParams != NULL )
+        copyParams->dupeAction = dupeAction;
 
 	if( err == noErr )		/* Get the info we will need later about the source object	*/
 		err = FSGetCatalogInfo( source, kFSCatInfoSettableInfo, sourceCatInfo, NULL, NULL, NULL );		
@@ -567,7 +571,7 @@ static OSErr FSCopyFile(	const FSRef			*source,
 
 		/* Call the IterateFilterProc _after_ the new file was created even if an error occured.	*/
 		/* Note: if an error occured above, the FSRef and other info might not be valid				*/
-	if( filterParams->filterProcPtr != NULL )
+	if( filterParams != NULL && filterParams->filterProcPtr != NULL )
 	{
 			/* get the extra info the user wanted on the new file that we don't have */
 		if( err == noErr && (filterParams->whichInfo & ~kFSCatInfoSettableInfo) != kFSCatInfoNone )
@@ -842,7 +846,7 @@ static OSErr FSCopyFolder(	const FSRef			*source,
 	}
 	if( err == noErr )		/* create the memory for this folder */
 		err = ( ( tmpListData = (FolderListData*) NewPtr( sizeof( FolderListData ) ) ) != NULL ) ? noErr : MemError();
-	if( err == noErr )
+	if( tmpListData != NULL && err == noErr )
 	{		/* setup the folder info */
 		tmpListData->sourceDirRef	= *source;
 		tmpListData->destDirRef		= newDirRef;
@@ -993,7 +997,7 @@ static OSErr CopyFolder( FSCopyFolderGlobals *folderGlobals )
 						{
 							if( junkErr == noErr )		/* Create memory for folder list data	*/
 								junkErr = ( ( tmpListData = (FolderListData*) NewPtr( sizeof( FolderListData ) ) ) != NULL ) ? noErr : MemError();
-							if( junkErr == noErr )
+							if( tmpListData != NULL && junkErr == noErr )
 							{							/* Setup the folder list data			*/
 								tmpListData->sourceDirRef	= folderGlobals->srcRefList[i];
 								tmpListData->destDirRef		= newRef;
@@ -1255,7 +1259,7 @@ static OSErr OpenAllForks(	const FSRef		*dest,
 		err = FSIterateForks( dest, &iterator, &forkName, &forkSize, NULL );
 		if( err == noErr )
 			err = ( forkPtr = (ForkTrackerPtr) NewPtr( sizeof( ForkTracker ) ) ) != NULL ? noErr : MemError();
-		if( err == noErr )
+		if( forkPtr != NULL && err == noErr )
 		{
 			forkPtr->forkName		= forkName;
 			forkPtr->forkSize		= forkSize;
@@ -1697,7 +1701,8 @@ static OSErr UniStrToPStr(	const HFSUniStr255	*uniStr,
 	OSErr				err = (uniStr != NULL && pStr != NULL) ? noErr : paramErr;
 
 		/* make sure output is valid in case we get errors or there's nothing to convert */
-	pStr[0] = 0;
+    if( pStr != NULL )
+        pStr[0] = 0;
 
 	if( err == noErr )
 		unicodeByteLength = uniStr->length * sizeof(UniChar); /* length can be zero, which is fine */

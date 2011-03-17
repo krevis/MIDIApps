@@ -132,8 +132,11 @@ OSStatus MIDISpyClientCreate(MIDISpyClientRef *outClientRefPtr)
     }
 
     clientRef = (MIDISpyClientRef)calloc(1, sizeof(MIDISpyClient));
-    if (!clientRef)
+    if (!clientRef) {
+        CFMessagePortInvalidate(driverPort);
+        CFRelease(driverPort);
         return memFullErr;
+    }
     clientRef->driverPort = driverPort;
     
     // Ask for an identifier number from the driver
@@ -365,9 +368,8 @@ OSStatus MIDISpyPortDisconnectDestination(MIDISpyPortRef spyPortRef, MIDIEndpoin
 void SpawnListenerThread(MIDISpyClientRef clientRef)
 {
     pthread_t thread;
-    int result;
 
-    result = pthread_create(&thread, NULL, RunListenerThread, clientRef);
+    (void)pthread_create(&thread, NULL, RunListenerThread, clientRef);
 }
 
 void *RunListenerThread(void *refCon)
@@ -539,15 +541,20 @@ void SetClientSubscribesToDataFromEndpoint(MIDISpyClientRef clientRef, MIDIEndpo
     
     dataLength = sizeof(UInt32) + sizeof(SInt32);
     messageData = CFDataCreateMutable(kCFAllocatorDefault, dataLength);
-    CFDataSetLength(messageData, dataLength);
-    dataBuffer = CFDataGetMutableBytePtr(messageData);
-    if (!dataBuffer)
-        return;
-    *(UInt32 *)dataBuffer = clientRef->clientIdentifier;
-    *(SInt32 *)(dataBuffer + sizeof(UInt32)) = endpointUniqueID;
+    if (messageData) {
+        CFDataSetLength(messageData, dataLength);
+        dataBuffer = CFDataGetMutableBytePtr(messageData);
+        if (dataBuffer) {
+            *(UInt32 *)dataBuffer = clientRef->clientIdentifier;
+            *(SInt32 *)(dataBuffer + sizeof(UInt32)) = endpointUniqueID;
 
-    if (clientRef->driverPort)
-        CFMessagePortSendRequest(clientRef->driverPort, msgid, messageData, 300, 0, NULL, NULL);
+            if (clientRef->driverPort) {
+                CFMessagePortSendRequest(clientRef->driverPort, msgid, messageData, 300, 0, NULL, NULL);
+            }
+        }
+
+        CFRelease(messageData);
+    }
 }
 
 static CFDataRef LocalMessagePortCallback(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info)
