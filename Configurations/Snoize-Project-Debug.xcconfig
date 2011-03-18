@@ -5,3 +5,6 @@ GCC_OPTIMIZATION_LEVEL = 0
 
 // Debug builds with DEBUG set
 GCC_PREPROCESSOR_DEFINITIONS = DEBUG
+
+// Debug builds only the chosen architecture, not all, to make builds faster
+ONLY_ACTIVE_ARCH = YES

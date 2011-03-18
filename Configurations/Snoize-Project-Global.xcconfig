@@ -1,17 +1,15 @@
 // Typically build against 10.6
-SDKROOT = ${DEVELOPER_SDK_DIR}/MacOSX10.6.sdk
+SDKROOT = macosx10.6
     // meaning: maximum API usage allowed is 10.6
 MACOSX_DEPLOYMENT_TARGET = 10.5
     // meaning: minimum machine we'll attempt to run on is 10.5
 
-// ... but on PPC we'll attempt to run on 10.3.9
-//MACOSX_DEPLOYMENT_TARGET_ppc = 10.3
-
-// ... and Intel 64-bit requires 10.6
+// ... but Intel 64-bit requires 10.6
 MACOSX_DEPLOYMENT_TARGET_x86_64 = 10.6
 
-// We must use GCC 4.0 to target 10.4
-// GCC_VERSION = 4.0
+// build on all archs that we possibly can
+// (note: the Debug variant sets ONLY_ACTIVE_ARCH to further modify the behavior)
+ARCHS = ${VALID_ARCHS}
 
 // No need for prebinding generally; individual targets may turn it on themselves
 PREBINDING = NO

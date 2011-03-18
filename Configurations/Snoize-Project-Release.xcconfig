@@ -1,7 +1,4 @@
 #include "Snoize-Project-Global.xcconfig"
 
-// Release builds all architectures
-ARCHS = ${VALID_ARCHS}
-
 // No need for debugging symbols in release
 GCC_GENERATE_DEBUGGING_SYMBOLS = NO
