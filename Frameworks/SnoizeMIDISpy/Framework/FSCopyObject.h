@@ -41,6 +41,7 @@
 	Copyright © 2002-2004 Apple Computer, Inc., All Rights Reserved
 */
 
+#if ! __LP64__
 
 #ifndef __FSCOPYOBJECT_H__
 #define __FSCOPYOBJECT_H__
@@ -256,3 +257,5 @@ OSErr FSDeleteObjects( const FSRef *source );
 #endif
 
 #endif
+
+#endif  // ! __LP64__

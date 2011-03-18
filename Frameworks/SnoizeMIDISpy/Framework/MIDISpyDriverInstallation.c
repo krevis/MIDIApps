@@ -12,7 +12,11 @@
 
 #include "MIDISpyDriverInstallation.h"
 
+#if ! __LP64__
 #include "FSCopyObject.h"
+#else
+#include <Carbon/Carbon.h>
+#endif
 
 //
 // Constant string declarations and definitions
@@ -200,7 +204,11 @@ static Boolean RemoveInstalledDriver(CFURLRef driverURL)
     if (!CFURLGetFSRef(driverURL, &driverFSRef))
         return FALSE;
     else
+#if __LP64__
+        return FALSE;   // TODO some other way?
+#else
         return (noErr == FSDeleteObjects(&driverFSRef));
+#endif
 }
 
 
@@ -218,8 +226,12 @@ static Boolean InstallDriver(CFURLRef ourDriverURL)
         FSRef driverFSRef;
 
         if (CFURLGetFSRef(ourDriverURL, &driverFSRef)) {
+#if __LP64__
+            // TODO some other way?
+#else
             error = FSCopyObject(&driverFSRef, &folderFSRef, 0, kFSCatInfoNone, kDupeActionStandard, NULL, false, false, NULL, NULL, NULL, NULL);
             success = (error == noErr);
+#endif
         }
     }
  

@@ -45,6 +45,8 @@
 	Copyright © 2002-2004 Apple Computer, Inc., All Rights Reserved
 */
 
+#if ! __LP64__
+
 #include "FSCopyObject.h"
 #include "GenLinkedList.h"
 #if !TARGET_API_MAC_OSX
@@ -1989,3 +1991,5 @@ static pascal void MyCloseForkProc( void *pData )
 	
 	DisposePtr( (char*) pData );	
 }
+
+#endif

@@ -41,6 +41,8 @@
 	Copyright © 2003-2004 Apple Computer, Inc., All Rights Reserved
 */
 
+#if ! __LP64__
+
 #include "GenLinkedList.h"
 
 #pragma mark --- Data Structures ---
@@ -210,3 +212,5 @@ GenDataPtr	GetData( GenIteratorPtr pIter )
 {
 	return ( pIter != NULL ) ? ((GenNode*)pIter)->pData : NULL;
 }
+
+#endif

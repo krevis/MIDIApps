@@ -41,6 +41,7 @@
 	Copyright © 2003-2004 Apple Computer, Inc., All Rights Reserved
 */
 
+#if ! __LP64__
 
 #ifndef __GENLINKEDLIST__
 #define __GENLINKEDLIST__
@@ -88,6 +89,8 @@ GenDataPtr	GetData			( GenIteratorPtr pIter );
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif
 
 #endif
