@@ -29,19 +29,6 @@ void SMRejectUnusedImplementation(id self, SEL _cmd)
     NSAssert(NO, message);
 }
 
-BOOL SMClassIsSubclassOfClass(Class class, Class potentialSuperclass)
-{
-    // Like +[NSObject isSubclassOfClass:], but works correctly for classes which are NOT based on NSObject
-
-    while (class) {
-        if (class == potentialSuperclass)
-            return YES;
-        class = class->super_class;
-    }
-    
-    return NO;
-}
-
 #if DEBUG
 extern void SMAssertionFailed(const char *expression, const char *file, unsigned int line)
 {

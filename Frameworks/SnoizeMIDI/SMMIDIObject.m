@@ -517,7 +517,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
         for (classIndex = 0; classIndex < numClasses; classIndex++) {
             Class aClass = classes[classIndex];
     
-            if (aClass != self && SMClassIsSubclassOfClass(aClass, self))
+            if (aClass != self && [aClass isKindOfClass:self])
                 [knownSubclasses addObject:[NSValue valueWithPointer:aClass]];
         }
     
@@ -532,7 +532,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
         enumerator = [knownSubclasses objectEnumerator];
         while ((aClassValue = [enumerator nextObject])) {
             Class aClass = [aClassValue pointerValue];
-            NSValue *superclassValue = [NSValue valueWithPointer:aClass->super_class];
+            NSValue *superclassValue = [NSValue valueWithPointer:[aClass superclass]];
             if ([knownSubclasses containsObject:superclassValue])
                 [sLeafSubclasses removeObject:superclassValue];
         }
