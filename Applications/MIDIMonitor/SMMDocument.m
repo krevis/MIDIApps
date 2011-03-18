@@ -288,9 +288,9 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
         [[self undoManager] removeAllActions];
 }
 
-- (void)setFileName:(NSString *)fileName;
+- (void)setFileURL:(NSURL*)url
 {
-    [super setFileName:fileName];
+    [super setFileURL:url];
 
     [self updateVirtualEndpointName];
 }
