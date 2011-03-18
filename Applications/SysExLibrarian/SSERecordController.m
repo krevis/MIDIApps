@@ -162,7 +162,7 @@
 - (void)readStatusChanged:(NSNotification *)notification;
 {
     if (!scheduledProgressUpdate) {
-        [self performSelector:@selector(updateIndicators) withObject:self afterDelay:[progressIndicator animationDelay]];
+        [self performSelector:@selector(updateIndicators) withObject:self afterDelay:5.0/60.0];
         scheduledProgressUpdate = YES;
     }
 }

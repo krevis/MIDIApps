@@ -210,7 +210,7 @@
 {
     [self updateProgress];
 
-    [self performSelector:@selector(updateProgressAndRepeat) withObject: nil afterDelay:[progressIndicator animationDelay]];
+    [self performSelector:@selector(updateProgressAndRepeat) withObject: nil afterDelay:5.0/60.0];
     scheduledProgressUpdate = YES;
 }
 
