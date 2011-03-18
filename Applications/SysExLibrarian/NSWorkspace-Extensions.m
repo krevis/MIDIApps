@@ -42,7 +42,7 @@ BOOL moveFilesToTrashViaNSWorkspace(NSArray *filePaths, NSWorkspace *workspace)
         NSString *sourceDirectory;
         NSString *fileName;
         BOOL success;
-        int tag;
+        NSInteger tag;
 
         filePath = [filePaths objectAtIndex:filePathIndex];
         sourceDirectory = [filePath stringByDeletingLastPathComponent];

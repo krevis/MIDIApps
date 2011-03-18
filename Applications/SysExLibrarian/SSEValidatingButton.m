@@ -43,7 +43,7 @@
     return [super action];
 }
 
-- (int)tag;
+- (NSInteger)tag;
 {
     return [super tag];
 }

@@ -57,7 +57,7 @@
 - (id)initWithCoder:(NSCoder *)decoder
 {
     if ((self = [super initWithCoder:decoder])) {
-        unsigned len;
+        NSUInteger len;
         const uint8_t *decodedBytes = [decoder decodeBytesForKey:@"dataBytes" returnedLength:&len];
         if (decodedBytes && len == 2) {
             dataBytes[0] = decodedBytes[0];

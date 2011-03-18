@@ -649,12 +649,12 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 // NSTableView data source
 //
 
-- (int)numberOfRowsInTableView:(NSTableView *)tableView;
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView;
 {
     return [displayedMessages count];
 }
 
-- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row;
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row;
 {
     NSString *identifier;
     SMMessage *message = nil;

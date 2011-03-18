@@ -522,7 +522,7 @@ static SSEMainWindowController *controller = nil;
         return;
     
     for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
-        unsigned int row;
+        NSUInteger row;
         
         row = [sortedLibraryEntries indexOfObjectIdenticalTo:[entries objectAtIndex:entryIndex]];
         if (row != NSNotFound)
@@ -859,7 +859,7 @@ static SSEMainWindowController *controller = nil;
         [self synchronizeLibrary];
 }
 
-static int libraryEntryComparator(id object1, id object2, void *context)
+static NSInteger libraryEntryComparator(id object1, id object2, void *context)
 {
     NSString *key = (NSString *)context;
     id value1, value2;
@@ -900,7 +900,7 @@ static int libraryEntryComparator(id object1, id object2, void *context)
         return;
     
     for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
-        unsigned int row;
+        NSUInteger row;
 
         row = [sortedLibraryEntries indexOfObjectIdenticalTo:[entries objectAtIndex:entryIndex]];
         if (row != NSNotFound)

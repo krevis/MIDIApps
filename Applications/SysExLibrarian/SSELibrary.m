@@ -280,7 +280,7 @@ NSString *SSESysExFileExtension = @"syx";
 
 - (void)removeEntry:(SSELibraryEntry *)entry;
 {
-    unsigned int entryIndex;
+    NSUInteger entryIndex;
 
     entryIndex = [entries indexOfObjectIdenticalTo:entry];
     if (entryIndex != NSNotFound) {
