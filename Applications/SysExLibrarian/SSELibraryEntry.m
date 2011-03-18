@@ -260,13 +260,13 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
     else if ([fileManager fileExistsAtPath:newPath])
         success = NO;
     else
-        success = [fileManager movePath:path toPath:newPath handler:nil];
+        success = [fileManager moveItemAtPath:path toPath:newPath error:NULL];
 
     if (success && (shouldHideExtension || shouldShowExtension)) {
         NSDictionary *attributes;
 
         attributes = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:shouldHideExtension] forKey:NSFileExtensionHidden];
-        [fileManager changeFileAttributes:attributes atPath:newPath];
+        [fileManager setAttributes:attributes ofItemAtPath:newPath error:NULL];
         // It is no big deal if this fails
     }
 

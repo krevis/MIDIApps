@@ -12,7 +12,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface SSEWindowController : NSWindowController
+@interface SSEWindowController : NSWindowController <NSWindowDelegate, NSToolbarDelegate>
 {
     NSUndoManager *undoManager;
     NSDictionary *toolbarItemInfo;

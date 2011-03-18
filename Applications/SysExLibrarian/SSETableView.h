@@ -35,9 +35,11 @@
 @end
 
 
-@interface NSObject (SSETableViewDataSource)
+@protocol SSETableViewDataSource <NSTableViewDataSource>
 
-- (void)tableView:(SSETableView *)tableView deleteRows:(NSArray *)rows;
+@optional
+
+- (void)tableView:(SSETableView *)tableView deleteRows:(NSIndexSet *)rows;
 
 - (NSDragOperation)tableView:(SSETableView *)tableView draggingEntered:(id <NSDraggingInfo>)sender;
 - (BOOL)tableView:(SSETableView *)tableView performDragOperation:(id <NSDraggingInfo>)sender;

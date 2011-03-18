@@ -51,7 +51,7 @@
             }            
         } else {
             // directory doesn't exist; try to create
-            if (![self createDirectoryAtPath: partialPath attributes: attributes]) {
+            if (![self createDirectoryAtPath: partialPath withIntermediateDirectories:NO attributes: attributes error:NULL]) {
                 failureReason = [NSString stringWithFormat: @"Cannot create path to file '%@' because the directory '%@' could not be created.", newFilePath, partialPath];
             }
         }

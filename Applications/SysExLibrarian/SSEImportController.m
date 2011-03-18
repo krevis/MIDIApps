@@ -325,7 +325,7 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
             NSMutableArray *fullChildPaths;
             NSArray *acceptableChildren;
             
-            children = [fileManager directoryContentsAtPath:filePath];
+            children = [fileManager contentsOfDirectoryAtPath:filePath error:NULL];
             childCount = [children count];
             fullChildPaths = [NSMutableArray arrayWithCapacity:childCount];
             for (childIndex = 0; childIndex < childCount; childIndex++) {

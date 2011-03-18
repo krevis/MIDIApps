@@ -200,7 +200,7 @@
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender;
 {
     if (flags.dataSourceCanDrag)
-        draggingOperation = [[self dataSource] tableView:self draggingEntered:sender];
+        draggingOperation = [(id<SSETableViewDataSource>)[self dataSource] tableView:self draggingEntered:sender];
     else
         draggingOperation = NSDragOperationNone;
 
@@ -228,7 +228,7 @@
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender;
 {
     if (flags.dataSourceCanDrag)
-        return [[self dataSource] tableView:self performDragOperation:sender];
+        return [(id<SSETableViewDataSource>)[self dataSource] tableView:self performDragOperation:sender];
     else
         return NO;
 }
@@ -246,10 +246,7 @@
 - (void)deleteSelectedRows;
 {
     if (flags.dataSourceCanDeleteRows) {
-        NSArray *selectedRows;
-
-        selectedRows = [[self selectedRowEnumerator] allObjects];
-        [[self dataSource] tableView:self deleteRows:selectedRows];
+        [(id<SSETableViewDataSource>)[self dataSource] tableView:self deleteRows:[self selectedRowIndexes]];
     }
 }
 

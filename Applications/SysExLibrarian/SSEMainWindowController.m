@@ -500,15 +500,12 @@ static SSEMainWindowController *controller = nil;
 
 - (NSArray *)selectedEntries;
 {
-    NSMutableArray *selectedEntries;
-    NSEnumerator *selectedRowEnumerator;
-    NSNumber *rowNumber;
+    NSMutableArray *selectedEntries = [NSMutableArray array];
     
-    selectedEntries = [NSMutableArray array];
-    
-    selectedRowEnumerator = [libraryTableView selectedRowEnumerator];
-    while ((rowNumber = [selectedRowEnumerator nextObject])) {
-        [selectedEntries addObject:[sortedLibraryEntries objectAtIndex:[rowNumber intValue]]];
+    NSIndexSet* selectedRowIndexes = [libraryTableView selectedRowIndexes];
+    NSUInteger row;
+    for (row = [selectedRowIndexes firstIndex]; row != NSNotFound; row = [selectedRowIndexes indexGreaterThanIndex:row]) {
+        [selectedEntries addObject:[sortedLibraryEntries objectAtIndex:row]];
     }
     
     return selectedEntries;
@@ -529,7 +526,7 @@ static SSEMainWindowController *controller = nil;
         
         row = [sortedLibraryEntries indexOfObjectIdenticalTo:[entries objectAtIndex:entryIndex]];
         if (row != NSNotFound)
-            [libraryTableView selectRow:row byExtendingSelection:YES];
+            [libraryTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:YES];
     }
 }
 
@@ -613,7 +610,7 @@ static SSEMainWindowController *controller = nil;
 // SSETableView data source
 //
 
-- (void)tableView:(SSETableView *)tableView deleteRows:(NSArray *)rows;
+- (void)tableView:(SSETableView *)tableView deleteRows:(NSIndexSet *)rows;
 {
     [self delete:tableView];
 }
@@ -811,7 +808,7 @@ static SSEMainWindowController *controller = nil;
         for (destIndex = 0; destIndex < destCount; destIndex++) {
             id <SSEOutputStreamDestination> destination;
             NSString *title;
-            id <NSMenuItem> menuItem;
+            NSMenuItem *menuItem;
 
             destination = [dests objectAtIndex:destIndex];
 

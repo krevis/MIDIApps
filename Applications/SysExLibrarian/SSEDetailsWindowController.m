@@ -102,7 +102,7 @@ static NSMutableArray *controllers = nil;
     
     [messagesTableView reloadData];
     if ([cachedMessages count] > 0)
-        [messagesTableView selectRow:0 byExtendingSelection:NO];
+        [messagesTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO];
 
     [self synchronizeMessageDataDisplay];
 }
