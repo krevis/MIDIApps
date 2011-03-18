@@ -1,6 +1,6 @@
 // The new IB plugin framework only supports 10.5, so we must override the settings in Snoize-Project-Global.xcconfig to use the 10.5 SDK and target, for both Intel and PPC.
 
-SDKROOT = ${DEVELOPER_SDK_DIR}/MacOSX10.5.sdk
+SDKROOT = ${DEVELOPER_SDK_DIR}/MacOSX10.6.sdk
 MACOSX_DEPLOYMENT_TARGET = 10.5
 
 SDKROOT_ppc = ${DEVELOPER_SDK_DIR}/MacOSX10.5.sdk

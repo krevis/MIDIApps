@@ -1,6 +1,6 @@
-// Typically build against 10.4
-SDKROOT = ${DEVELOPER_SDK_DIR}/MacOSX10.4u.sdk
-    // meaning: maximum API usage allowed is 10.4
+// Typically build against 10.6
+SDKROOT = ${DEVELOPER_SDK_DIR}/MacOSX10.6.sdk
+    // meaning: maximum API usage allowed is 10.6
 MACOSX_DEPLOYMENT_TARGET = 10.4
     // meaning: minimum machine we'll attempt to run on is 10.4
 
@@ -8,7 +8,7 @@ MACOSX_DEPLOYMENT_TARGET = 10.4
 MACOSX_DEPLOYMENT_TARGET_ppc = 10.3
 
 // We must use GCC 4.0 to target 10.4
-GCC_VERSION = 4.0
+//GCC_VERSION = 4.0
 
 // No need for prebinding generally; individual targets may turn it on themselves
 PREBINDING = NO
