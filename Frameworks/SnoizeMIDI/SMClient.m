@@ -335,9 +335,9 @@ static void getMIDINotification(const MIDINotification *message, void *refCon)
         notificationName = SMClientObjectRemovedNotification;
 
     userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-        [NSValue valueWithPointer:message->parent], SMClientObjectAddedOrRemovedParent,
+        [NSNumber numberWithUnsignedInt:(UInt32)message->parent], SMClientObjectAddedOrRemovedParent,
         [NSNumber numberWithInt:message->parentType], SMClientObjectAddedOrRemovedParentType,
-        [NSValue valueWithPointer:message->child], SMClientObjectAddedOrRemovedChild,
+        [NSNumber numberWithUnsignedInt:(UInt32)message->child], SMClientObjectAddedOrRemovedChild,
         [NSNumber numberWithInt:message->childType], SMClientObjectAddedOrRemovedChildType,
         nil];
 
@@ -349,7 +349,7 @@ static void getMIDINotification(const MIDINotification *message, void *refCon)
     NSDictionary *userInfo;
 
     userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-        [NSValue valueWithPointer:message->object], SMClientObjectPropertyChangedObject,
+        [NSNumber numberWithUnsignedInt:(UInt32)message->object], SMClientObjectPropertyChangedObject,
         [NSNumber numberWithInt:message->objectType], SMClientObjectPropertyChangedType,
         (NSString *)message->propertyName, SMClientObjectPropertyChangedName,
         nil];

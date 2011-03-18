@@ -63,7 +63,7 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 + (MIDIEndpointRef)endpointRefAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
 {
     SMRequestConcreteImplementation(self, _cmd);
-    return NULL;
+    return (MIDIEndpointRef)0;
 }
 
 
@@ -73,7 +73,7 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
         return nil;
 
     // We start out not knowing the endpoint's device (if it has one). We'll look it up on demand.
-    deviceRef = NULL;
+    deviceRef = (MIDIDeviceRef)0;
     endpointFlags.hasLookedForDevice = NO;
 
     // Nothing has been cached yet 
@@ -141,7 +141,7 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 - (BOOL)isVirtual;
 {
     // We are virtual if we have no device
-    return ([self deviceRef] == NULL);
+    return ([self deviceRef] == (MIDIDeviceRef)0);
 }
 
 - (BOOL)isOwnedByThisProcess;
@@ -174,7 +174,7 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
         [[self class] immediatelyRemoveObject:self];
 
         // Now we can forget the objectRef (not earlier!)
-        objectRef = NULL;
+        objectRef = (MIDIObjectRef)0;
     }
 }
 
@@ -509,7 +509,7 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
     }
 
     // Nothing was found
-    return NULL;
+    return (MIDIDeviceRef)0;
 }
 
 - (MIDIDeviceRef)deviceRef;
@@ -547,7 +547,7 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 
 - (MIDIDeviceRef)getDeviceRefFromConnectedUniqueID:(MIDIUniqueID)connectedUniqueID
 {
-    MIDIDeviceRef returnDeviceRef = NULL;
+    MIDIDeviceRef returnDeviceRef = (MIDIDeviceRef)0;
 
     if ([[SMClient sharedClient] coreMIDICanFindObjectByUniqueID]) {
         // 10.2 and later
@@ -843,7 +843,7 @@ static BOOL sCreatingSysExSpeedWorkaroundEndpoint = NO;
 
 + (void)flushOutputForAllDestinationEndpoints;
 {
-    MIDIFlushOutput(NULL);
+    MIDIFlushOutput((MIDIEndpointRef)0);
 }
 
 - (void)flushOutput;

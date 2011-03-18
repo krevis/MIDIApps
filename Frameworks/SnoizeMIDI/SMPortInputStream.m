@@ -57,7 +57,7 @@
 
     if (inputPort)
         MIDIPortDispose(inputPort);
-    inputPort = NULL;
+    inputPort = (MIDIPortRef)0;
 
     [endpoints release];
     endpoints = nil;

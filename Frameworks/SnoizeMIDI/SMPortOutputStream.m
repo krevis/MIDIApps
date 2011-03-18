@@ -67,7 +67,7 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
     MIDIPortDispose(outputPort);
-    outputPort = NULL;
+    outputPort = 0;
 
     [endpoints release];
     endpoints = nil;

@@ -22,7 +22,7 @@
 
 @interface SMMIDIObject (Private)
 
-static int midiObjectOrdinalComparator(id object1, id object2, void *context);
+static NSInteger midiObjectOrdinalComparator(id object1, id object2, void *context);
 
 // Methods to be used on SMMIDIObject itself, not subclasses
 
@@ -98,7 +98,7 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 + (MIDIObjectRef)midiObjectAtIndex:(ItemCount)index;
 {
     SMRequestConcreteImplementation(self, _cmd);
-    return NULL;        
+    return (MIDIObjectRef)0;
 }
 
 //
@@ -168,14 +168,14 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 {
     NSMapTable *mapTable;
 
-    if (anObjectRef == NULL)
+    if (anObjectRef == (MIDIObjectRef)0)
         return nil;
     
     mapTable = [self midiObjectMapTable];
     SMAssert(mapTable);
 
     if (mapTable)
-        return NSMapGet(mapTable, anObjectRef);
+        return NSMapGet(mapTable, (void*)(uintptr_t)anObjectRef);
     else
         return nil;
 }
@@ -415,7 +415,7 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 
 @implementation SMMIDIObject (Private)
 
-int midiObjectOrdinalComparator(id object1, id object2, void *context)
+NSInteger midiObjectOrdinalComparator(id object1, id object2, void *context)
 {
     unsigned int ordinal1, ordinal2;
 
@@ -573,11 +573,11 @@ static NSMapTable *classToObjectsMapTable = NULL;
 + (BOOL)isUniqueIDInUse:(MIDIUniqueID)proposedUniqueID;
 {
     if ([[SMClient sharedClient] coreMIDICanFindObjectByUniqueID]) {
-        MIDIObjectRef object = NULL;
+        MIDIObjectRef object = (MIDIObjectRef)0;
         MIDIObjectType type;
 
         MIDIObjectFindByUniqueID(proposedUniqueID, &object, &type);
-        return (object != NULL);
+        return (object != (MIDIObjectRef)0);
     } else {
         // This search is not as complete as it could be, but it'll have to do.
         // We're only going to set unique IDs on virtual endpoints, anyway.
@@ -599,7 +599,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
         
     SMAssert(self == [SMMIDIObject class]);
 
-    ref = [[[notification userInfo] objectForKey:SMClientObjectPropertyChangedObject] pointerValue];
+    ref = (MIDIObjectRef)[[[notification userInfo] objectForKey:SMClientObjectPropertyChangedObject] unsignedIntValue];
     objectType = [[[notification userInfo] objectForKey:SMClientObjectPropertyChangedType] intValue];
     propertyName = [[notification userInfo] objectForKey:SMClientObjectPropertyChangedName];
 
@@ -616,7 +616,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
 
     SMAssert(self == [SMMIDIObject class]);
 
-    ref = [[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChild] pointerValue];
+    ref = (MIDIObjectRef)[[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChild] unsignedIntValue];
     SMAssert(ref != NULL);
     objectType = [[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChildType] intValue];
 
@@ -637,7 +637,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
 
     SMAssert(self == [SMMIDIObject class]);
 
-    ref = [[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChild] pointerValue];
+    ref = (MIDIObjectRef)[[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChild] unsignedIntValue];
     SMAssert(ref != NULL);
     objectType = [[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChildType] intValue];
 
@@ -669,7 +669,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
         NSMapTable *mapTable = [self midiObjectMapTable];
         SMAssert(mapTable != NULL);
 
-        NSMapInsertKnownAbsent(mapTable, anObjectRef, object);
+        NSMapInsertKnownAbsent(mapTable, (void*)(uintptr_t)anObjectRef, object);
         [object release];
     }
 
@@ -683,7 +683,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
     SMAssert(self != [SMMIDIObject class]);
     SMAssert(mapTable != NULL);
 
-    NSMapRemove(mapTable, anObjectRef);
+    NSMapRemove(mapTable, (void*)(uintptr_t)anObjectRef);
 }
 
 + (void)refreshObjectOrdinals;
@@ -753,7 +753,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
         MIDIObjectRef anObjectRef;
 
         anObjectRef = [self midiObjectAtIndex:objectIndex];
-        if (anObjectRef == NULL)
+        if (anObjectRef == (MIDIObjectRef)0)
             continue;
 
         [self addObjectWithObjectRef:anObjectRef ordinal:objectIndex];
@@ -818,7 +818,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
         SMMIDIObject *object;
 
         anObjectRef = [self midiObjectAtIndex:objectIndex];
-        if (anObjectRef == NULL)
+        if (anObjectRef == (MIDIObjectRef)0)
             continue;
 
         if ((object = [self objectWithObjectRef:anObjectRef])) {
@@ -847,7 +847,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
         }
 
         if (object)
-            NSMapInsert(newMapTable, anObjectRef, object);
+            NSMapInsert(newMapTable, (void*)(uintptr_t)anObjectRef, object);
     }
 
     // Now replace the old set of objects with the new one.
