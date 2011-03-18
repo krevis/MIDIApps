@@ -390,7 +390,7 @@ fail:
             char buf[21];
             
             snprintf(buf, sizeof(buf), "%llu", timeStamp);
-            return [NSString stringWithCString:buf];
+            return [NSString stringWithUTF8String:buf];
         }
             
         case SMTimeFormatHostTimeHexInteger:
@@ -399,7 +399,7 @@ fail:
             char buf[17];
             
             snprintf(buf, sizeof(buf), "%016llX", timeStamp);
-            return [NSString stringWithCString:buf];
+            return [NSString stringWithUTF8String:buf];
         }
             
         case SMTimeFormatHostTimeNanoseconds:
@@ -407,7 +407,7 @@ fail:
             char buf[21];
             
             snprintf(buf, 21, "%llu", SMConvertHostTimeToNanos(timeStamp));
-            return [NSString stringWithCString:buf];
+            return [NSString stringWithUTF8String:buf];
         }
             
         case SMTimeFormatHostTimeSeconds:
