@@ -93,7 +93,7 @@ static CFDataRef LocalMessagePortCallback(CFMessagePortRef local, SInt32 msgid, 
 // Static variables
 //
 
-static MIDIClientRef sMIDIClientRef = NULL;
+static MIDIClientRef sMIDIClientRef = (MIDIClientRef)0;
 static CFMutableDictionaryRef sUniqueIDToEndpointDictionary = NULL;
 
 
@@ -410,6 +410,33 @@ void ReceiveMIDINotification(const MIDINotification *message, void *refCon)
     } while (retryAfterDone);
 }
 
+static inline void* midiObjToVoidPtr(MIDIObjectRef val)
+{
+#if __LP64__
+    return (void*)(uintptr_t)val;
+#else
+    return (void*)val;
+#endif
+}
+
+static inline void* sintToVoidPtr(SInt32 val)
+{
+#if __LP64__
+    return (void*)(SInt64)val;
+#else
+    return (void*)val;
+#endif
+}
+
+static inline MIDIObjectRef midiObjFromVoidPtr(const void* val)
+{
+#if __LP64__
+    return (MIDIObjectRef)((uintptr_t)val & 0xFFFFFFFFUL);
+#else
+    return (MIDIObjectRef)val;
+#endif
+}
+
 void RebuildEndpointUniqueIDDictionary()
 {
     // Make a dictionary which maps from an endpoint's uniqueID to its MIDIEndpointRef.
@@ -429,7 +456,7 @@ void RebuildEndpointUniqueIDDictionary()
             SInt32 uniqueID;
 
             if (noErr == MIDIObjectGetIntegerProperty(endpoint, kMIDIPropertyUniqueID, &uniqueID))
-                CFDictionaryAddValue(sUniqueIDToEndpointDictionary, (void *)uniqueID, (void *)endpoint);
+                CFDictionaryAddValue(sUniqueIDToEndpointDictionary, sintToVoidPtr(uniqueID), midiObjToVoidPtr(endpoint));
         }        
     }
 }
@@ -437,9 +464,9 @@ void RebuildEndpointUniqueIDDictionary()
 MIDIEndpointRef EndpointWithUniqueID(SInt32 uniqueID)
 {
     if (sUniqueIDToEndpointDictionary)
-        return (MIDIEndpointRef)CFDictionaryGetValue(sUniqueIDToEndpointDictionary, (void *)uniqueID);
+        return midiObjFromVoidPtr(CFDictionaryGetValue(sUniqueIDToEndpointDictionary, sintToVoidPtr(uniqueID)));
     else
-        return NULL;
+        return (MIDIEndpointRef)0;
 }
 
 
@@ -486,7 +513,7 @@ void ClientAddConnection(MIDISpyClientRef clientRef, MIDISpyPortConnection *conn
     connections = GetConnectionsToEndpoint(clientRef, connection->endpoint);
     if (!connections) {
         connections = CFArrayCreateMutable(kCFAllocatorDefault, 0, NULL);
-        CFDictionarySetValue(clientRef->endpointConnections, connection->endpoint, connections);
+        CFDictionarySetValue(clientRef->endpointConnections, midiObjToVoidPtr(connection->endpoint), connections);
         CFRelease(connections);
         isFirstConnectionToEndpoint = TRUE;
     }
@@ -511,14 +538,14 @@ void ClientRemoveConnection(MIDISpyClientRef clientRef, MIDISpyPortConnection *c
     }
 
     if (connections && CFArrayGetCount(connections) == 0) {
-        CFDictionaryRemoveValue(clientRef->endpointConnections, connection->endpoint);
+        CFDictionaryRemoveValue(clientRef->endpointConnections, midiObjToVoidPtr(connection->endpoint));
         SetClientSubscribesToDataFromEndpoint(clientRef, connection->endpoint, FALSE);
     }    
 }
 
 CFMutableArrayRef GetConnectionsToEndpoint(MIDISpyClientRef clientRef, MIDIEndpointRef endpoint)
 {
-    return (CFMutableArrayRef)CFDictionaryGetValue(clientRef->endpointConnections, endpoint);
+    return (CFMutableArrayRef)CFDictionaryGetValue(clientRef->endpointConnections, midiObjToVoidPtr(endpoint));
 }
 
 

@@ -333,7 +333,12 @@ void	MessagePortBroadcaster::RemoveListenerWithRemotePort(CFMessagePortRef remot
     pthread_mutex_lock(&mListenerStructuresMutex);
 
     // Remove this listener from our dictionaries
-    identifier = (UInt32)CFDictionaryGetValue(mIdentifiersByListener, (void *)remotePort);
+    const void* ptrId = CFDictionaryGetValue(mIdentifiersByListener, (void *)remotePort);
+#if __LP64__
+    identifier = (uintptr_t)ptrId & 0xFFFFFFFFUL;
+#else
+    identifier = (UInt32)ptrId;
+#endif
     CFDictionaryRemoveValue(mListenersByIdentifier, (void *)identifier);
     CFDictionaryRemoveValue(mIdentifiersByListener, (void *)remotePort);
 
