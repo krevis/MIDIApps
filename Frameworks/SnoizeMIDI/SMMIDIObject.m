@@ -213,7 +213,7 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
     if (!(self = [super init]))
         return nil;
 
-    SMAssert(anObjectRef != NULL);
+    SMAssert(anObjectRef != (MIDIObjectRef)0);
     objectRef = anObjectRef;
     ordinal = anOrdinal;
 
@@ -617,7 +617,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
     SMAssert(self == [SMMIDIObject class]);
 
     ref = (MIDIObjectRef)[[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChild] unsignedIntValue];
-    SMAssert(ref != NULL);
+    SMAssert(ref != (MIDIObjectRef)0);
     objectType = [[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChildType] intValue];
 
     subclass = [self subclassForObjectType:objectType];
@@ -638,7 +638,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
     SMAssert(self == [SMMIDIObject class]);
 
     ref = (MIDIObjectRef)[[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChild] unsignedIntValue];
-    SMAssert(ref != NULL);
+    SMAssert(ref != (MIDIObjectRef)0);
     objectType = [[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChildType] intValue];
 
     subclass = [self subclassForObjectType:objectType];
@@ -662,7 +662,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
     SMMIDIObject *object;
 
     SMAssert(self != [SMMIDIObject class]);
-    SMAssert(anObjectRef != NULL);
+    SMAssert(anObjectRef != (MIDIObjectRef)0);
 
     object = [[self alloc] initWithObjectRef:anObjectRef ordinal:anOrdinal];
     if (object) {
