@@ -120,7 +120,7 @@ void SpyingMIDIDriver::EnableMonitoring(Boolean enabled)
         if (status == noErr)
             fprintf(stderr, "SpyingMIDIDriver: MIDIDriverEnableMonitoring(%d) succeeded!\n", enabled);
         else
-            fprintf(stderr, "SpyingMIDIDriver: MIDIDriverEnableMonitoring(%d) failed: %ld\n", enabled, status);
+            fprintf(stderr, "SpyingMIDIDriver: MIDIDriverEnableMonitoring(%d) failed: %ld\n", enabled, (long)status);
     #endif
 }
 
