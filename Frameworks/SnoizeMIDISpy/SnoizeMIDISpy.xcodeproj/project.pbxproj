@@ -10,7 +10,7 @@
 		164103DB09735FA5008DABCC /* SnoizeMIDISpy.h in Headers */ = {isa = PBXBuildFile; fileRef = F5BCCEC8023F631901000164 /* SnoizeMIDISpy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		164103DC09735FA5008DABCC /* MIDISpyClient.h in Headers */ = {isa = PBXBuildFile; fileRef = F5BCCEC3023F486D01000164 /* MIDISpyClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		164103DD09735FA5008DABCC /* MIDISpyDriverInstallation.h in Headers */ = {isa = PBXBuildFile; fileRef = F5B4DD96025DA07801000164 /* MIDISpyDriverInstallation.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		164103DE09735FA5008DABCC /* MIDISpyShared.h in Headers */ = {isa = PBXBuildFile; fileRef = F53956EE0256D06A01000164 /* MIDISpyShared.h */; };
+		164103DE09735FA5008DABCC /* MIDISpyShared.h in Headers */ = {isa = PBXBuildFile; fileRef = F53956EE0256D06A01000164 /* MIDISpyShared.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		164103DF09735FA5008DABCC /* FSCopyObject.h in Headers */ = {isa = PBXBuildFile; fileRef = F551C2DC032756AF01000164 /* FSCopyObject.h */; };
 		164103E109735FA5008DABCC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
 		164103E309735FA5008DABCC /* MIDISpyClient.c in Sources */ = {isa = PBXBuildFile; fileRef = 08FB77B4FE84181DC02AAC07 /* MIDISpyClient.c */; settings = {ATTRIBUTES = (); }; };
@@ -22,14 +22,13 @@
 		164103F609735FA6008DABCC /* MIDIDriverClass.h in Headers */ = {isa = PBXBuildFile; fileRef = F540CCAD023F41B101000164 /* MIDIDriverClass.h */; };
 		164103F709735FA6008DABCC /* SpyingMIDIDriver.h in Headers */ = {isa = PBXBuildFile; fileRef = F540CCAF023F41B101000164 /* SpyingMIDIDriver.h */; };
 		164103F809735FA6008DABCC /* MessagePortBroadcaster.h in Headers */ = {isa = PBXBuildFile; fileRef = F540CCB1023F41B101000164 /* MessagePortBroadcaster.h */; };
-		164103F909735FA6008DABCC /* MIDISpyShared.h in Headers */ = {isa = PBXBuildFile; fileRef = F53956EE0256D06A01000164 /* MIDISpyShared.h */; };
+		164103F909735FA6008DABCC /* MIDISpyShared.h in Headers */ = {isa = PBXBuildFile; fileRef = F53956EE0256D06A01000164 /* MIDISpyShared.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		164103FA09735FA6008DABCC /* MessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = F540CCB3023F41B101000164 /* MessageQueue.h */; };
 		164103FD09735FA6008DABCC /* MIDIDriver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F540CCAE023F41B101000164 /* MIDIDriver.cpp */; };
 		164103FE09735FA6008DABCC /* SpyingMIDIDriver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F540CCB0023F41B101000164 /* SpyingMIDIDriver.cpp */; };
 		164103FF09735FA6008DABCC /* MessagePortBroadcaster.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F540CCB2023F41B101000164 /* MessagePortBroadcaster.cpp */; };
 		1641040009735FA6008DABCC /* MessageQueue.c in Sources */ = {isa = PBXBuildFile; fileRef = F540CCB4023F41B101000164 /* MessageQueue.c */; };
 		1641040209735FA6008DABCC /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F540CCC3023F42EA01000164 /* CoreFoundation.framework */; };
-		1641040309735FA6008DABCC /* CoreMIDIServer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F540CCC4023F42EA01000164 /* CoreMIDIServer.framework */; };
 		1641040E09735FA6008DABCC /* MIDI Monitor.plugin in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1641040B09735FA6008DABCC /* MIDI Monitor.plugin */; };
 		1641050E09736949008DABCC /* GenLinkedList.c in Sources */ = {isa = PBXBuildFile; fileRef = 1641050C09736949008DABCC /* GenLinkedList.c */; };
 		1641050F09736949008DABCC /* GenLinkedList.h in Headers */ = {isa = PBXBuildFile; fileRef = 1641050D09736949008DABCC /* GenLinkedList.h */; };
@@ -313,10 +312,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				164103F909735FA6008DABCC /* MIDISpyShared.h in Headers */,
 				164103F609735FA6008DABCC /* MIDIDriverClass.h in Headers */,
 				164103F709735FA6008DABCC /* SpyingMIDIDriver.h in Headers */,
 				164103F809735FA6008DABCC /* MessagePortBroadcaster.h in Headers */,
-				164103F909735FA6008DABCC /* MIDISpyShared.h in Headers */,
 				164103FA09735FA6008DABCC /* MessageQueue.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
