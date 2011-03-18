@@ -517,7 +517,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
         for (classIndex = 0; classIndex < numClasses; classIndex++) {
             Class aClass = classes[classIndex];
     
-            if (aClass != self && [aClass isKindOfClass:self])
+            if (aClass != self && SMClassIsSubclassOfClass(aClass, self))
                 [knownSubclasses addObject:[NSValue valueWithPointer:aClass]];
         }
     
