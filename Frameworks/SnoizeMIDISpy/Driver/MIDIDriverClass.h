@@ -44,7 +44,7 @@
 #ifndef __MIDIDriverClass_h__
 #define __MIDIDriverClass_h__
 
-#include <CoreMIDIServer/CoreMIDIServer.h>
+#include <CoreMIDI/MIDIDriver.h>
 
 #ifndef V1_MIDI_DRIVER_SUPPORT
 	#define V1_MIDI_DRIVER_SUPPORT	0
