@@ -62,7 +62,7 @@ static Handle DataToHandle(CFDataRef inData)
     
     if ((handle != NULL) && (len > 0)) {
         HLock(handle);
-        BlockMoveData(CFDataGetBytePtr(inData), *handle, len);
+        memmove(*handle, CFDataGetBytePtr(inData), len);
         HUnlock(handle);
     }
     
