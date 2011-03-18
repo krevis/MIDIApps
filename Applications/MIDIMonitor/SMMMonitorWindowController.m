@@ -638,6 +638,12 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     [(SMMDocument *)[self document] setSelectedInputSources:newSelectedSources];
 }
 
+- (void)outlineView:(NSOutlineView *)outlineView willDisplayOutlineCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
+{
+    // cause the button cell to always use a "dark" triangle
+    [cell setBackgroundStyle:NSBackgroundStyleLight];
+}
+
 
 //
 // NSTableView data source
