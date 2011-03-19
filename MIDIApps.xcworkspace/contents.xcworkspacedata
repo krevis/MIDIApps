@@ -7,4 +7,20 @@
    <FileRef
       location = "group:Applications/SysExLibrarian/SysExLibrarian.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:README.md">
+   </FileRef>
+   <Group
+      location = "group:Scripts"
+      name = "Scripts">
+      <FileRef
+         location = "group:BuildMIDIMonitor">
+      </FileRef>
+      <FileRef
+         location = "group:BuildSysExLibrarian">
+      </FileRef>
+      <FileRef
+         location = "group:MakeDiskImage">
+      </FileRef>
+   </Group>
 </Workspace>
