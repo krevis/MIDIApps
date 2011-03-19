@@ -41,8 +41,6 @@
 	Copyright © 2002-2004 Apple Computer, Inc., All Rights Reserved
 */
 
-#if ! __LP64__
-
 #ifndef __FSCOPYOBJECT_H__
 #define __FSCOPYOBJECT_H__
 
@@ -89,6 +87,10 @@ extern "C" {
     #define myverify(assertion)			do { (void) (assertion); } while (0)
     #define myverify_noerr(assertion) 	myverify(assertion)    
 #endif
+
+
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_4
+        // On 10.4 and later, use official Carbon FSCopyObjectsSync() or similar.
 
 /*
 	This code takes some tricks/techniques from MoreFilesX (by Jim Luther) and
@@ -232,6 +234,9 @@ OSErr FSCopyObject(	const FSRef *source,
 					FSRef *newObjectRef,					/* can be NULL */
 					FSSpec *newObjectSpec);					/* can be NULL */
 
+#endif  // MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_4
+
+    
 /*****************************************************************************/
 
 #pragma mark FSDeleteObjects
@@ -252,10 +257,9 @@ OSErr FSCopyObject(	const FSRef *source,
 
 OSErr FSDeleteObjects( const FSRef *source );
 
+    
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-
-#endif  // ! __LP64__

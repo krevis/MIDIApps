@@ -12,11 +12,7 @@
 
 #include "MIDISpyDriverInstallation.h"
 
-#if ! __LP64__
 #include "FSCopyObject.h"
-#else
-#include <Carbon/Carbon.h>
-#endif
 
 //
 // Constant string declarations and definitions
@@ -204,11 +200,7 @@ static Boolean RemoveInstalledDriver(CFURLRef driverURL)
     if (!CFURLGetFSRef(driverURL, &driverFSRef))
         return FALSE;
     else
-#if __LP64__
-        return FALSE;   // TODO some other way?
-#else
         return (noErr == FSDeleteObjects(&driverFSRef));
-#endif
 }
 
 
@@ -226,12 +218,14 @@ static Boolean InstallDriver(CFURLRef ourDriverURL)
         FSRef driverFSRef;
 
         if (CFURLGetFSRef(ourDriverURL, &driverFSRef)) {
-#if __LP64__
-            // TODO some other way?
+#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_4
+            // use the new, official Carbon API
+            error = FSCopyObjectSync(&driverFSRef, &folderFSRef, NULL, NULL, kFSFileOperationDefaultOptions);
 #else
+            // use FSCopyObject from the sample code in this project
             error = FSCopyObject(&driverFSRef, &folderFSRef, 0, kFSCatInfoNone, kDupeActionStandard, NULL, false, false, NULL, NULL, NULL, NULL);
-            success = (error == noErr);
 #endif
+            success = (error == noErr);
         }
     }
  

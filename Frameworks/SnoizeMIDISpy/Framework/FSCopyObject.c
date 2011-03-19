@@ -45,8 +45,6 @@
 	Copyright © 2002-2004 Apple Computer, Inc., All Rights Reserved
 */
 
-#if ! __LP64__
-
 #include "FSCopyObject.h"
 #include "GenLinkedList.h"
 #if !TARGET_API_MAC_OSX
@@ -54,6 +52,9 @@
 #endif
 #include <stddef.h>
 #include <string.h>
+
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_4
+// On 10.4 and later, use official Carbon FSCopyObjectsSync() or similar.
 
 #pragma mark ----- Tunable Parameters -----
 
@@ -178,6 +179,8 @@ struct FSCopyFolderGlobals
 };
 typedef struct FSCopyFolderGlobals FSCopyFolderGlobals;
 
+#endif // MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_4
+
 	/* The FSDeleteObjectGlobals data structure holds information needed to */
 	/* recursively delete a directory										*/
 struct FSDeleteObjectGlobals
@@ -187,6 +190,9 @@ struct FSDeleteObjectGlobals
 	OSErr					result;				/* result						*/
 };
 typedef struct FSDeleteObjectGlobals FSDeleteObjectGlobals;
+
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_4
+// On 10.4 and later, use official Carbon FSCopyObjectsSync() or similar.
 
 #pragma mark ----- Local Prototypes -----
 
@@ -274,10 +280,14 @@ static UInt32	CalcBufferSizeForVol  (	const GetVolParmsInfoBuffer *volParms,
 
 static UInt32	BufferSizeForVolSpeed (	UInt32				volumeBytesPerSecond );
 
+#endif // MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_4
+
 static OSErr	FSDeleteFolder		  (	const FSRef			*container );
 
 static void		FSDeleteFolderLevel	  (	const FSRef			*container,
 										FSDeleteObjectGlobals *theGlobals );
+
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_4
 
 static OSErr	IsDropBox			  (	const FSRef			*source,
 										Boolean				*isDropBox );
@@ -1445,6 +1455,8 @@ static UInt32 BufferSizeForVolSpeed(UInt32 volumeBytesPerSecond)
 	return bufferSize;
 }
 
+#endif // MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_4
+
 /*****************************************************************************/
 
 #pragma mark ----- Delete Objects -----
@@ -1556,6 +1568,8 @@ static void FSDeleteFolderLevel(const FSRef				*container,
 	
 	return;
 }
+
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_4
 
 /*****************************************************************************/
 
@@ -1992,4 +2006,4 @@ static pascal void MyCloseForkProc( void *pData )
 	DisposePtr( (char*) pData );	
 }
 
-#endif
+#endif // MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_4

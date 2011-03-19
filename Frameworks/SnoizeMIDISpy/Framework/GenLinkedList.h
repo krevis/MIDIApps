@@ -41,7 +41,8 @@
 	Copyright © 2003-2004 Apple Computer, Inc., All Rights Reserved
 */
 
-#if ! __LP64__
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_4
+    // Need this for FSCopyObject().
 
 #ifndef __GENLINKEDLIST__
 #define __GENLINKEDLIST__
