@@ -11,16 +11,13 @@ The source code is Open Source under the BSD license. See LICENSE for the legal 
 
 ## How to build ##
 
-1. Install the Mac OS X 10.4 SDK, if you don't already have it in /Developer/SDKs.
-
-   The 10.4 SDK is an optional part of the Xcode install. To install it, just re-run the Xcode installer and check the box for the 10.4 SDK.
-
-2. Open Applications/MIDIMonitor/MIDIMonitor.xcodeproj or Applications/SysExLibrarian/SysExLibrarian.xcodeproj with Xcode.
+1. Open MIDIApps.xcworkspace with Xcode 4.
+2. In the "Scheme" popup menu in the toolbar, select either MIDI Monitor or SysEx Librarian.
 3. Build and run!
 
-The projects enclosed are for Xcode 3.2 and later. (You may be able to use the projects in earlier versions of Xcode, but no guarantees.)
+The projects enclosed should also work in Xcode 3.2.x. (You may be able to use the projects in earlier versions of Xcode, but no guarantees.)
 
-For final builds: The shell scripts in Scripts/BuildMIDIMonitor and Scripts/BuildSysExLibrarian build the apps and package them in disk images. If you just run the script, you should end up with a MIDIMonitorBuild or SysExLibrarianBuild directory in your home directory, with an "InstalledProducts" directory inside containing the built application.
+For final builds: The shell scripts in Scripts/BuildMIDIMonitor and Scripts/BuildSysExLibrarian build the apps and package them in disk images. If you just run the script, you should end up with a MIDIMonitorBuild or SysExLibrarianBuild directory in your home directory, with an "InstalledProducts" directory inside containing the built application. Pass the flag "-image" to the script to make it create a disk image too.
 
 
 ## What's inside ##
