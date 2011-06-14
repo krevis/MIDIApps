@@ -11,6 +11,8 @@ The source code is Open Source under the BSD license. See LICENSE for the legal 
 
 ## How to build ##
 
+### NOTE: If you're using Xcode 4, please use the [xcode4 branch](https://github.com/krevis/MIDIApps/tree/xcode4). ###
+
 1. Install the Mac OS X 10.4 SDK, if you don't already have it in /Developer/SDKs.
 
    The 10.4 SDK is an optional part of the Xcode install. To install it, just re-run the Xcode installer and check the box for the 10.4 SDK.
