@@ -329,7 +329,7 @@
 	<key>000109</key>
 	<string>Cast Lighting</string>
 	<key>00010a</key>
-	<string>Microsoft Consumer Division</string>
+	<string>Microsoft</string>
 	<key>00010b</key>
 	<string>Sonic Foundry</string>
 	<key>00010c</key>
@@ -473,8 +473,19 @@
 <key>000164</key><string>Panadigm Innovations</string>
 <key>000165</key><string>Avedis Zildjian</string>
 <key>000166</key><string>Auvital Music</string>
-    
-    
+<key>000167</key><string>Inspired Instruments Inc</string>
+<key>000168</key><string>Chris Grigg Designs</string>
+<key>000169</key><string>Slate Digital LLC</string>
+<key>000170</key><string>American Audio/DJ</string>
+<key>000171</key><string>Mega Control Systems</string>
+<key>000172</key><string>Kilpatrick Audio</string>
+<key>000173</key><string>iConnectivity</string>
+<key>000174</key><string>Fractal Audio</string>
+<key>000175</key><string>NetLogic Microsystems</string>
+<key>000176</key><string>Music Computing</string>
+<key>000177</key><string>Nektar Technology Inc</string>
+<key>000178</key><string>Zenph Sound Innovations</string>
+<key>000179</key><string>DJTechTools.com</string>
 	<key>002000</key>
 	<string>Dream</string>
 	<key>002001</key>
@@ -621,6 +632,23 @@
 <key>002070</key><string>OTO MACHINES</string>
 <key>002071</key><string>ELZAB S.A., G LAB</string>
 <key>002072</key><string>Blackstar Amplification</string>
+<key>002073</key><string>M3i Technologies GmbH</string>
+<key>002074</key><string>Xiring</string>
+<key>002075</key><string>Prostage SL</string>
+<key>002076</key><string>Teenage Engineering</string>
+<key>002077</key><string>Tobias Erichsen</string>
+<key>002078</key><string>Nixer Ltd</string>
+<key>002079</key><string>Hanpin Electron Co Ltd</string>
+<key>00207a</key><string>"MIDI-hardware" R.Sowa</string>
+<key>00207b</key><string>Beyond Music Industrial Ltd</string>
+<key>00207c</key><string>Kiss Box B.V.</string>
+<key>00207d</key><string>Misa Digital Technologies Ltd</string>
+<key>00207e</key><string>AI Musics Technology Inc</string>
+<key>00207f</key><string>Serato Inc LP</string>
+<key>002100</key><string>Limex Music Handles GmbH</string>
+<key>002101</key><string>Kyodday/Tokai</string>
+<key>002102</key><string>Mutable Instruments</string>
+<key>002103</key><string>PreSonus Software Ltd</string>
 <key>004000</key><string>Crimson Technology</string>
 <key>004001</key><string>Softbank Mobile</string>
 <key>004003</key><string>D&amp;M Holdings</string>
