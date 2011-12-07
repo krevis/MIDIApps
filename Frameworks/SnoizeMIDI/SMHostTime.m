@@ -29,7 +29,7 @@ static void InitHostTime()
     isInited = 1;
 }
 
-MIDITimeStamp SMGetCurrentHostTime()
+MIDITimeStamp SMGetCurrentHostTime(void)
 {
     return mach_absolute_time();
 }
