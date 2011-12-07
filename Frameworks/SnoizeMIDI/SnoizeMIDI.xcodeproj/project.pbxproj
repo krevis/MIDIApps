@@ -104,6 +104,38 @@
 		A53DDBF9148F43A0006D2FFD /* SMMessageFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B710971D40100DB1DB5 /* SMMessageFilter.m */; };
 		A53DDBFA148F43A3006D2FFD /* SMMessageHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B730971D40100DB1DB5 /* SMMessageHistory.m */; };
 		A53DDBFB148F43A6006D2FFD /* SMMessageMult.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B750971D40100DB1DB5 /* SMMessageMult.m */; };
+		A53DDC16148F4C5D006D2FFD /* SnoizeMIDI.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B910971D40100DB1DB5 /* SnoizeMIDI.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC19148F4C70006D2FFD /* SMClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B5D0971D40100DB1DB5 /* SMClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC1A148F4C70006D2FFD /* SMHostTime.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B650971D40100DB1DB5 /* SMHostTime.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC1B148F4C70006D2FFD /* SMUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B890971D40100DB1DB5 /* SMUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC1C148F4C79006D2FFD /* NSArray-SMExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B570971D40100DB1DB5 /* NSArray-SMExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC1D148F4C79006D2FFD /* NSData-SMExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B590971D40100DB1DB5 /* NSData-SMExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC1E148F4C79006D2FFD /* NSString-SMExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B5B0971D40100DB1DB5 /* NSString-SMExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC1F148F4C89006D2FFD /* SMMIDIObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B790971D40100DB1DB5 /* SMMIDIObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC20148F4C89006D2FFD /* SMMIDIObject-Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B780971D40100DB1DB5 /* SMMIDIObject-Private.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC21148F4C89006D2FFD /* SMDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B5F0971D40100DB1DB5 /* SMDevice.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC22148F4C89006D2FFD /* SMEndpoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B610971D40100DB1DB5 /* SMEndpoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC23148F4C89006D2FFD /* SMExternalDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B630971D40100DB1DB5 /* SMExternalDevice.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC24148F4C94006D2FFD /* SMMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B6D0971D40100DB1DB5 /* SMMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC25148F4C94006D2FFD /* SMVoiceMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B8F0971D40100DB1DB5 /* SMVoiceMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC26148F4C94006D2FFD /* SMSystemCommonMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B830971D40100DB1DB5 /* SMSystemCommonMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC27148F4C94006D2FFD /* SMSystemRealTimeMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B870971D40100DB1DB5 /* SMSystemRealTimeMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC28148F4C94006D2FFD /* SMSystemExclusiveMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B850971D40100DB1DB5 /* SMSystemExclusiveMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC29148F4C94006D2FFD /* SMInvalidMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B6B0971D40100DB1DB5 /* SMInvalidMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC2A148F4C94006D2FFD /* SMMessageTimeBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 1648765E0E6D2A22002CF387 /* SMMessageTimeBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC2B148F4CA7006D2FFD /* SMMessageDestinationProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B6F0971D40100DB1DB5 /* SMMessageDestinationProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC2C148F4CAE006D2FFD /* SMInputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B670971D40100DB1DB5 /* SMInputStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC2D148F4CAE006D2FFD /* SMInputStreamSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B690971D40100DB1DB5 /* SMInputStreamSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC2E148F4CAE006D2FFD /* SMMessageParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B760971D40100DB1DB5 /* SMMessageParser.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC2F148F4CAE006D2FFD /* SMPortInputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B7D0971D40100DB1DB5 /* SMPortInputStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC30148F4CAE006D2FFD /* SMVirtualInputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B8B0971D40100DB1DB5 /* SMVirtualInputStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC31148F4CB6006D2FFD /* SMOutputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B7B0971D40100DB1DB5 /* SMOutputStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC32148F4CB6006D2FFD /* SMPortOutputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B7F0971D40100DB1DB5 /* SMPortOutputStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC33148F4CB6006D2FFD /* SMVirtualOutputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B8D0971D40100DB1DB5 /* SMVirtualOutputStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC34148F4CB6006D2FFD /* SMSysExSendRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B810971D40100DB1DB5 /* SMSysExSendRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC35148F4CBC006D2FFD /* SMMessageFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B700971D40100DB1DB5 /* SMMessageFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC36148F4CBC006D2FFD /* SMMessageHistory.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B720971D40100DB1DB5 /* SMMessageHistory.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53DDC37148F4CBC006D2FFD /* SMMessageMult.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B740971D40100DB1DB5 /* SMMessageMult.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -461,6 +493,38 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A53DDC16148F4C5D006D2FFD /* SnoizeMIDI.h in Headers */,
+				A53DDC19148F4C70006D2FFD /* SMClient.h in Headers */,
+				A53DDC1A148F4C70006D2FFD /* SMHostTime.h in Headers */,
+				A53DDC1B148F4C70006D2FFD /* SMUtilities.h in Headers */,
+				A53DDC1C148F4C79006D2FFD /* NSArray-SMExtensions.h in Headers */,
+				A53DDC1D148F4C79006D2FFD /* NSData-SMExtensions.h in Headers */,
+				A53DDC1E148F4C79006D2FFD /* NSString-SMExtensions.h in Headers */,
+				A53DDC1F148F4C89006D2FFD /* SMMIDIObject.h in Headers */,
+				A53DDC20148F4C89006D2FFD /* SMMIDIObject-Private.h in Headers */,
+				A53DDC21148F4C89006D2FFD /* SMDevice.h in Headers */,
+				A53DDC22148F4C89006D2FFD /* SMEndpoint.h in Headers */,
+				A53DDC23148F4C89006D2FFD /* SMExternalDevice.h in Headers */,
+				A53DDC24148F4C94006D2FFD /* SMMessage.h in Headers */,
+				A53DDC25148F4C94006D2FFD /* SMVoiceMessage.h in Headers */,
+				A53DDC26148F4C94006D2FFD /* SMSystemCommonMessage.h in Headers */,
+				A53DDC27148F4C94006D2FFD /* SMSystemRealTimeMessage.h in Headers */,
+				A53DDC28148F4C94006D2FFD /* SMSystemExclusiveMessage.h in Headers */,
+				A53DDC29148F4C94006D2FFD /* SMInvalidMessage.h in Headers */,
+				A53DDC2A148F4C94006D2FFD /* SMMessageTimeBase.h in Headers */,
+				A53DDC2B148F4CA7006D2FFD /* SMMessageDestinationProtocol.h in Headers */,
+				A53DDC2C148F4CAE006D2FFD /* SMInputStream.h in Headers */,
+				A53DDC2D148F4CAE006D2FFD /* SMInputStreamSource.h in Headers */,
+				A53DDC2E148F4CAE006D2FFD /* SMMessageParser.h in Headers */,
+				A53DDC2F148F4CAE006D2FFD /* SMPortInputStream.h in Headers */,
+				A53DDC30148F4CAE006D2FFD /* SMVirtualInputStream.h in Headers */,
+				A53DDC31148F4CB6006D2FFD /* SMOutputStream.h in Headers */,
+				A53DDC32148F4CB6006D2FFD /* SMPortOutputStream.h in Headers */,
+				A53DDC33148F4CB6006D2FFD /* SMVirtualOutputStream.h in Headers */,
+				A53DDC34148F4CB6006D2FFD /* SMSysExSendRequest.h in Headers */,
+				A53DDC35148F4CBC006D2FFD /* SMMessageFilter.h in Headers */,
+				A53DDC36148F4CBC006D2FFD /* SMMessageHistory.h in Headers */,
+				A53DDC37148F4CBC006D2FFD /* SMMessageMult.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -702,8 +766,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = (
+					armv6,
+					armv7,
+				);
 				COPY_PHASE_STRIP = NO;
 				DSTROOT = /tmp/SnoizeMIDIiOS.dst;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -721,8 +787,10 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = SnoizeMIDI;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};
@@ -732,8 +800,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = (
+					armv6,
+					armv7,
+				);
 				COPY_PHASE_STRIP = YES;
 				DSTROOT = /tmp/SnoizeMIDIiOS.dst;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -746,6 +816,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = SnoizeMIDI;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				VALIDATE_PRODUCT = YES;
@@ -780,6 +851,7 @@
 				A53DDBA2148F4219006D2FFD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
