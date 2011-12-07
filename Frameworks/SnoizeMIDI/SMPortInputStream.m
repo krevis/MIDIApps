@@ -34,18 +34,18 @@
 - (id)init;
 {
     OSStatus status;
-
+    
     if (!(self = [super init]))
         return nil;
-
+    
     status = MIDIInputPortCreate([[SMClient sharedClient] midiClient], (CFStringRef)@"Input port", [self midiReadProc], self, &inputPort);
     if (status != noErr)
         [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't create a MIDI input port (error %ld)", @"SnoizeMIDI", SMBundleForObject(self), "exception with OSStatus if MIDIInputPortCreate() fails"), status];
-
+    
     endpoints = [[NSMutableSet alloc] init];
-
-    parsersForEndpoints = NSCreateMapTable(NSNonRetainedObjectMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
-
+    
+    parsersForEndpoints = CFDictionaryCreateMutable(nil, 0, nil, &kCFTypeDictionaryValueCallBacks);
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endpointListChanged:) name:SMMIDIObjectListChangedNotification object:[SMSourceEndpoint class]];
     
     return self;
@@ -54,15 +54,15 @@
 - (void)dealloc;
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-
+    
     if (inputPort)
         MIDIPortDispose(inputPort);
     inputPort = (MIDIPortRef)0;
-
+    
     [endpoints release];
     endpoints = nil;
-
-    NSFreeMapTable(parsersForEndpoints);
+    
+    CFRelease(parsersForEndpoints);
     parsersForEndpoints = NULL;
     
     [super dealloc];
@@ -78,16 +78,16 @@
     SMMessageParser *parser;
     OSStatus status;
     NSNotificationCenter *center;
-
+    
     if (!endpoint)
         return;
     
     if ([endpoints containsObject:endpoint])
         return;
-
+    
     parser = [self createParserWithOriginatingEndpoint:endpoint];
-    NSMapInsert(parsersForEndpoints, endpoint, parser);
-
+    CFDictionarySetValue(parsersForEndpoints, endpoint, parser);
+    
     center = [NSNotificationCenter defaultCenter];
     [center addObserver:self selector:@selector(endpointDisappeared:) name:SMMIDIObjectDisappearedNotification object:endpoint];
     [center addObserver:self selector:@selector(endpointWasReplaced:) name:SMMIDIObjectWasReplacedNotification object:endpoint];
@@ -96,7 +96,7 @@
     
     status = MIDIPortConnectSource(inputPort, [endpoint endpointRef], endpoint);
     if (status != noErr) {
-        NSLog(@"Error from MIDIPortConnectSource: %d", status);
+        NSLog(@"Error from MIDIPortConnectSource: %ld", (long)status);
     }
     
     // At any time after MIDIPortConnectSource(), we can expect -retainForIncomingMIDIWithSourceConnectionRefCon:
@@ -107,10 +107,10 @@
 {
     OSStatus status;
     NSNotificationCenter *center;
-
+    
     if (!endpoint)
         return;
-
+    
     if (![endpoints containsObject:endpoint])
         return;
     
@@ -118,18 +118,18 @@
     if (status != noErr) {
         // An error can happen in normal circumstances (if the endpoint has disappeared), so ignore it.
     }
-
+    
     // At any time after MIDIPortDisconnectSource(), we can expect that
     // -retainForIncomingMIDIWithSourceConnectionRefCon: will no longer be called.
     // However, -parserForSourceConnectionRefCon: may still be called, on the main thread, later on;
     // it should not crash or fail, but it may return nil.
-
-    NSMapRemove(parsersForEndpoints, endpoint);
+    
+    CFDictionaryRemoveValue(parsersForEndpoints, endpoint);
     
     center = [NSNotificationCenter defaultCenter];
     [center removeObserver:self name:SMMIDIObjectDisappearedNotification object:endpoint];
     [center removeObserver:self name:SMMIDIObjectWasReplacedNotification object:endpoint];
-
+    
     [endpoints removeObject:endpoint];
 }
 
@@ -139,19 +139,19 @@
     NSMutableSet *endpointsToAdd;
     NSEnumerator *enumerator;
     SMSourceEndpoint *endpoint;
-
+    
     // remove (endpoints - newEndpoints)
     endpointsToRemove = [NSMutableSet setWithSet:endpoints];
     [endpointsToRemove minusSet:newEndpoints];
-
+    
     // add (newEndpoints - endpoints)
     endpointsToAdd = [NSMutableSet setWithSet:newEndpoints];
     [endpointsToAdd minusSet:endpoints];
-
+    
     enumerator = [endpointsToRemove objectEnumerator];
     while ((endpoint = [enumerator nextObject]))
         [self removeEndpoint:endpoint];
-
+    
     enumerator = [endpointsToAdd objectEnumerator];
     while ((endpoint = [enumerator nextObject]))
         [self addEndpoint:endpoint];
@@ -164,14 +164,25 @@
 
 - (NSArray *)parsers;
 {
-    return NSAllMapTableValues(parsersForEndpoints);
+    CFIndex count = CFDictionaryGetCount(parsersForEndpoints);
+    const void **keys = malloc(count * sizeof(void*));
+    const void **values = malloc(count * sizeof(void*));
+    
+    CFDictionaryGetKeysAndValues(parsersForEndpoints, keys, values);
+    
+    NSArray *array = [NSArray arrayWithObjects:(id *)values count:count];
+    
+    free(keys);
+    free(values);
+    
+    return array;
 }
 
 - (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;
 {
     // note: refCon is an SMSourceEndpoint*.
     // We are allowed to return nil if we are no longer listening to this source endpoint.
-    return (SMMessageParser*)NSMapGet(parsersForEndpoints, refCon);
+    return (SMMessageParser*)CFDictionaryGetValue(parsersForEndpoints, refCon);
 }
 
 - (id<SMInputStreamSource>)streamSourceForParser:(SMMessageParser *)parser;
@@ -183,7 +194,7 @@
 {
     // retain self
     [super retainForIncomingMIDIWithSourceConnectionRefCon:refCon];
-
+    
     // and retain the endpoint too, since we use it as a key in -parserForSourceConnectionRefCon:
     [(SMSourceEndpoint*)refCon retain];
 }
@@ -192,7 +203,7 @@
 {
     // release the endpoint that we retained earlier
     [(SMSourceEndpoint*)refCon release];
-
+    
     // and release self, LAST
     [super releaseForIncomingMIDIWithSourceConnectionRefCon:refCon];    
 }
@@ -225,24 +236,24 @@
 - (void)endpointDisappeared:(NSNotification *)notification;
 {
     SMSourceEndpoint *endpoint;
-
+    
     endpoint = [[[notification object] retain] autorelease];
     SMAssert([endpoints containsObject:endpoint]);
-
+    
     [self removeEndpoint:endpoint];
-
+    
     [self postSelectedInputStreamSourceDisappearedNotification:endpoint];
 }
 
 - (void)endpointWasReplaced:(NSNotification *)notification;
 {
     SMSourceEndpoint *oldEndpoint, *newEndpoint;
-
+    
     oldEndpoint = [notification object];
     SMAssert([endpoints containsObject:oldEndpoint]);
-
+    
     newEndpoint = [[notification userInfo] objectForKey:SMMIDIObjectReplacement];
-
+    
     [self removeEndpoint:oldEndpoint];
     [self addEndpoint:newEndpoint];    
 }

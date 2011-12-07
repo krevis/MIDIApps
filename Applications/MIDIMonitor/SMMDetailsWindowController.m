@@ -225,7 +225,7 @@ static NSMapTable* messageToControllerMapTable = NULL;
         *p++ = '\n';
         *p++ = 0;
 
-        lineString = [[NSString alloc] initWithCString:lineBuffer];
+        lineString = [[NSString alloc] initWithCString:lineBuffer encoding:NSASCIIStringEncoding];
         [formattedString appendString:lineString];
         [lineString release];
     }

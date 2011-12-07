@@ -421,7 +421,8 @@ fail:
             } else {
                 static NSDateFormatter *timeStampDateFormatter = nil;
                 if (!timeStampDateFormatter) {
-                    timeStampDateFormatter = [[NSDateFormatter alloc] initWithDateFormat:@"%H:%M:%S.%F" allowNaturalLanguage:NO];
+                    timeStampDateFormatter = [[NSDateFormatter alloc] init];
+                    [timeStampDateFormatter setDateFormat:@"%H:%M:%S.%F"];
                 }
                                 
                 NSTimeInterval timeStampInterval = SMConvertHostTimeToNanos(timeStamp - [timeBase hostTime]) / 1.0e9;

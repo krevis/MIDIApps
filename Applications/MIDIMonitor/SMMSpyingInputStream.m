@@ -41,7 +41,7 @@
     status = MIDISpyPortCreate(spyClient, [self midiReadProc], self, &spyPort);
     if (status != noErr) {
 #if DEBUG
-        NSLog(@"Couldn't create a MIDI spy port: error %ld", status);
+        NSLog(@"Couldn't create a MIDI spy port: error %ld", (long)status);
 #endif
         [self release];
         return nil;
@@ -104,7 +104,7 @@
     
     status = MIDISpyPortConnectDestination(spyPort, [endpoint endpointRef], endpoint);
     if (status != noErr) {
-        NSLog(@"Error from MIDISpyPortConnectDestination: %ld", status);
+        NSLog(@"Error from MIDISpyPortConnectDestination: %ld", (long)status);
         return;
     }
 }
@@ -122,7 +122,7 @@
 
     status = MIDISpyPortDisconnectDestination(spyPort, [endpoint endpointRef]);
     if (status != noErr) {
-        NSLog(@"Error from MIDISpyPortDisconnectDestination: %ld", status);
+        NSLog(@"Error from MIDISpyPortDisconnectDestination: %ld", (long)status);
         // An error can happen in normal circumstances (if the endpoint has disappeared), so ignore it.
     }
 

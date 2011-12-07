@@ -113,7 +113,7 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
     }
                                 
     [endpoints release];
-    endpoints = [newEndpoints retain];        
+    endpoints = [newEndpoints mutableCopy];        
 }
 
 - (BOOL)sendsSysExAsynchronously;
@@ -177,7 +177,7 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
         status = MIDISend(outputPort, endpointRef, packetList);
         if (status) {
 #if DEBUG
-            NSLog(@"MIDISend(%p, %p, %p) returned error: %ld", outputPort, endpointRef, packetList, status);
+            NSLog(@"MIDISend(%u, %u, %p) returned error: %ld", (unsigned int)outputPort, (unsigned int)endpointRef, packetList, (long)status);
 #endif
         }
     }
