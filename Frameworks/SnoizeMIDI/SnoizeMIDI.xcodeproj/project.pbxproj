@@ -74,6 +74,36 @@
 		16B11DF20971D80F00DB1DB5 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B11DF00971D80F00DB1DB5 /* CoreMIDI.framework */; };
 		16B11DF30971D81400DB1DB5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D69BFE84028FC02AAC07 /* Foundation.framework */; };
 		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
+		A53DDB9A148F4219006D2FFD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A53DDB99148F4219006D2FFD /* Foundation.framework */; };
+		A53DDBDF148F4349006D2FFD /* SMClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B5E0971D40100DB1DB5 /* SMClient.m */; };
+		A53DDBE0148F434C006D2FFD /* SMHostTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B660971D40100DB1DB5 /* SMHostTime.m */; };
+		A53DDBE1148F434E006D2FFD /* SMUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B8A0971D40100DB1DB5 /* SMUtilities.m */; };
+		A53DDBE2148F4354006D2FFD /* NSArray-SMExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B580971D40100DB1DB5 /* NSArray-SMExtensions.m */; };
+		A53DDBE3148F4356006D2FFD /* NSData-SMExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B5A0971D40100DB1DB5 /* NSData-SMExtensions.m */; };
+		A53DDBE4148F4359006D2FFD /* NSString-SMExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B5C0971D40100DB1DB5 /* NSString-SMExtensions.m */; };
+		A53DDBE5148F4361006D2FFD /* SMMIDIObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B7A0971D40100DB1DB5 /* SMMIDIObject.m */; };
+		A53DDBE6148F4364006D2FFD /* SMDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B600971D40100DB1DB5 /* SMDevice.m */; };
+		A53DDBE7148F4367006D2FFD /* SMEndpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B620971D40100DB1DB5 /* SMEndpoint.m */; };
+		A53DDBE8148F436A006D2FFD /* SMExternalDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B640971D40100DB1DB5 /* SMExternalDevice.m */; };
+		A53DDBE9148F436F006D2FFD /* SMMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B6E0971D40100DB1DB5 /* SMMessage.m */; };
+		A53DDBEA148F4371006D2FFD /* SMVoiceMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B900971D40100DB1DB5 /* SMVoiceMessage.m */; };
+		A53DDBEB148F4373006D2FFD /* SMSystemCommonMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B840971D40100DB1DB5 /* SMSystemCommonMessage.m */; };
+		A53DDBEC148F4376006D2FFD /* SMSystemRealTimeMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B880971D40100DB1DB5 /* SMSystemRealTimeMessage.m */; };
+		A53DDBED148F4379006D2FFD /* SMSystemExclusiveMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B860971D40100DB1DB5 /* SMSystemExclusiveMessage.m */; };
+		A53DDBEE148F437D006D2FFD /* SMInvalidMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B6C0971D40100DB1DB5 /* SMInvalidMessage.m */; };
+		A53DDBEF148F4380006D2FFD /* SMMessageTimeBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 1648765F0E6D2A22002CF387 /* SMMessageTimeBase.m */; };
+		A53DDBF0148F4385006D2FFD /* SMInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B680971D40100DB1DB5 /* SMInputStream.m */; };
+		A53DDBF1148F4387006D2FFD /* SMInputStreamSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B6A0971D40100DB1DB5 /* SMInputStreamSource.m */; };
+		A53DDBF2148F438A006D2FFD /* SMMessageParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B770971D40100DB1DB5 /* SMMessageParser.m */; };
+		A53DDBF3148F438D006D2FFD /* SMPortInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B7E0971D40100DB1DB5 /* SMPortInputStream.m */; };
+		A53DDBF4148F4390006D2FFD /* SMVirtualInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B8C0971D40100DB1DB5 /* SMVirtualInputStream.m */; };
+		A53DDBF5148F4394006D2FFD /* SMOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B7C0971D40100DB1DB5 /* SMOutputStream.m */; };
+		A53DDBF6148F4397006D2FFD /* SMPortOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B800971D40100DB1DB5 /* SMPortOutputStream.m */; };
+		A53DDBF7148F4399006D2FFD /* SMVirtualOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B8E0971D40100DB1DB5 /* SMVirtualOutputStream.m */; };
+		A53DDBF8148F439C006D2FFD /* SMSysExSendRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B820971D40100DB1DB5 /* SMSysExSendRequest.m */; };
+		A53DDBF9148F43A0006D2FFD /* SMMessageFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B710971D40100DB1DB5 /* SMMessageFilter.m */; };
+		A53DDBFA148F43A3006D2FFD /* SMMessageHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B730971D40100DB1DB5 /* SMMessageHistory.m */; };
+		A53DDBFB148F43A6006D2FFD /* SMMessageMult.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B750971D40100DB1DB5 /* SMMessageMult.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -153,6 +183,9 @@
 		32DBCF5E0370ADEE00C91783 /* SnoizeMIDI_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnoizeMIDI_Prefix.pch; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* SnoizeMIDI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SnoizeMIDI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A53DDB97148F4219006D2FFD /* libSnoizeMIDIiOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSnoizeMIDIiOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A53DDB99148F4219006D2FFD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		A53DDB9D148F4219006D2FFD /* SnoizeMIDIiOS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SnoizeMIDIiOS-Prefix.pch"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,6 +198,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A53DDB94148F4219006D2FFD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A53DDB9A148F4219006D2FFD /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -172,6 +213,7 @@
 			isa = PBXGroup;
 			children = (
 				8DC2EF5B0486A6940098B216 /* SnoizeMIDI.framework */,
+				A53DDB97148F4219006D2FFD /* libSnoizeMIDIiOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -183,6 +225,7 @@
 				089C1665FE841158C02AAC07 /* Resources */,
 				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
 				161D6C970972112200CA5276 /* Configurations */,
+				A53DDB98148F4219006D2FFD /* Frameworks */,
 				034768DFFF38A50411DB9C8B /* Products */,
 			);
 			name = SnoizeMIDI;
@@ -254,6 +297,7 @@
 			children = (
 				16B11B910971D40100DB1DB5 /* SnoizeMIDI.h */,
 				32DBCF5E0370ADEE00C91783 /* SnoizeMIDI_Prefix.pch */,
+				A53DDB9D148F4219006D2FFD /* SnoizeMIDIiOS-Prefix.pch */,
 			);
 			name = "Framework Headers";
 			sourceTree = "<group>";
@@ -363,6 +407,14 @@
 			name = Processors;
 			sourceTree = "<group>";
 		};
+		A53DDB98148F4219006D2FFD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A53DDB99148F4219006D2FFD /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -405,6 +457,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A53DDB95148F4219006D2FFD /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -427,6 +486,23 @@
 			productReference = 8DC2EF5B0486A6940098B216 /* SnoizeMIDI.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		A53DDB96148F4219006D2FFD /* SnoizeMIDIiOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A53DDBA3148F4219006D2FFD /* Build configuration list for PBXNativeTarget "SnoizeMIDIiOS" */;
+			buildPhases = (
+				A53DDB93148F4219006D2FFD /* Sources */,
+				A53DDB94148F4219006D2FFD /* Frameworks */,
+				A53DDB95148F4219006D2FFD /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SnoizeMIDIiOS;
+			productName = SnoizeMIDIiOS;
+			productReference = A53DDB97148F4219006D2FFD /* libSnoizeMIDIiOS.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -448,6 +524,7 @@
 			projectRoot = ../..;
 			targets = (
 				8DC2EF4F0486A6940098B216 /* SnoizeMIDI */,
+				A53DDB96148F4219006D2FFD /* SnoizeMIDIiOS */,
 			);
 		};
 /* End PBXProject section */
@@ -500,6 +577,42 @@
 				16B11BCB0971D40100DB1DB5 /* SMVirtualOutputStream.m in Sources */,
 				16B11BCD0971D40100DB1DB5 /* SMVoiceMessage.m in Sources */,
 				164876610E6D2A22002CF387 /* SMMessageTimeBase.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A53DDB93148F4219006D2FFD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A53DDBDF148F4349006D2FFD /* SMClient.m in Sources */,
+				A53DDBE0148F434C006D2FFD /* SMHostTime.m in Sources */,
+				A53DDBE1148F434E006D2FFD /* SMUtilities.m in Sources */,
+				A53DDBE2148F4354006D2FFD /* NSArray-SMExtensions.m in Sources */,
+				A53DDBE3148F4356006D2FFD /* NSData-SMExtensions.m in Sources */,
+				A53DDBE4148F4359006D2FFD /* NSString-SMExtensions.m in Sources */,
+				A53DDBE5148F4361006D2FFD /* SMMIDIObject.m in Sources */,
+				A53DDBE6148F4364006D2FFD /* SMDevice.m in Sources */,
+				A53DDBE7148F4367006D2FFD /* SMEndpoint.m in Sources */,
+				A53DDBE8148F436A006D2FFD /* SMExternalDevice.m in Sources */,
+				A53DDBE9148F436F006D2FFD /* SMMessage.m in Sources */,
+				A53DDBEA148F4371006D2FFD /* SMVoiceMessage.m in Sources */,
+				A53DDBEB148F4373006D2FFD /* SMSystemCommonMessage.m in Sources */,
+				A53DDBEC148F4376006D2FFD /* SMSystemRealTimeMessage.m in Sources */,
+				A53DDBED148F4379006D2FFD /* SMSystemExclusiveMessage.m in Sources */,
+				A53DDBEE148F437D006D2FFD /* SMInvalidMessage.m in Sources */,
+				A53DDBEF148F4380006D2FFD /* SMMessageTimeBase.m in Sources */,
+				A53DDBF0148F4385006D2FFD /* SMInputStream.m in Sources */,
+				A53DDBF1148F4387006D2FFD /* SMInputStreamSource.m in Sources */,
+				A53DDBF2148F438A006D2FFD /* SMMessageParser.m in Sources */,
+				A53DDBF3148F438D006D2FFD /* SMPortInputStream.m in Sources */,
+				A53DDBF4148F4390006D2FFD /* SMVirtualInputStream.m in Sources */,
+				A53DDBF5148F4394006D2FFD /* SMOutputStream.m in Sources */,
+				A53DDBF6148F4397006D2FFD /* SMPortOutputStream.m in Sources */,
+				A53DDBF7148F4399006D2FFD /* SMVirtualOutputStream.m in Sources */,
+				A53DDBF8148F439C006D2FFD /* SMSysExSendRequest.m in Sources */,
+				A53DDBF9148F43A0006D2FFD /* SMMessageFilter.m in Sources */,
+				A53DDBFA148F43A3006D2FFD /* SMMessageHistory.m in Sources */,
+				A53DDBFB148F43A6006D2FFD /* SMMessageMult.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -585,6 +698,60 @@
 			};
 			name = Release;
 		};
+		A53DDBA1148F4219006D2FFD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/SnoizeMIDIiOS.dst;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SnoizeMIDIiOS-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		A53DDBA2148F4219006D2FFD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				COPY_PHASE_STRIP = YES;
+				DSTROOT = /tmp/SnoizeMIDIiOS.dst;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SnoizeMIDIiOS-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -605,6 +772,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		A53DDBA3148F4219006D2FFD /* Build configuration list for PBXNativeTarget "SnoizeMIDIiOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A53DDBA1148F4219006D2FFD /* Debug */,
+				A53DDBA2148F4219006D2FFD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

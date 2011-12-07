@@ -20,6 +20,6 @@
 //
 // We use these instead of CoreAudio's versions so we don't have to link against CoreAudio.
 
-MIDITimeStamp SMGetCurrentHostTime();
+MIDITimeStamp SMGetCurrentHostTime(void);
 UInt64 SMConvertHostTimeToNanos(MIDITimeStamp hostTime);
 MIDITimeStamp SMConvertNanosToHostTime(UInt64 nanos);
