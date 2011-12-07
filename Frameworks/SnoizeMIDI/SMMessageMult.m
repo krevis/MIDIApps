@@ -43,7 +43,7 @@
 {
     if (destinations != newDestinations) {
         [destinations release];
-        destinations = [newDestinations retain];
+        destinations = [newDestinations mutableCopy];
     }
 }
 

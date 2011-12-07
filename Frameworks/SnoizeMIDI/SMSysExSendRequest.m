@@ -86,7 +86,7 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
     
     status = MIDISendSysex(&request);
     if (status) {
-        NSLog(@"MIDISendSysex() returned error: %ld", status);
+        NSLog(@"MIDISendSysex() returned error: %ld", (long)status);
         [self release];
     }
 }

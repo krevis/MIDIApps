@@ -13,7 +13,7 @@
 
 #import "SMUtilities.h"
 #import <AvailabilityMacros.h>
-#import <objc/objc-class.h>
+#import <objc/runtime.h>
 #import <CoreMIDI/CoreMIDI.h>
 
 

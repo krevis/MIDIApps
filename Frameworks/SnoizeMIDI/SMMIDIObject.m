@@ -12,7 +12,7 @@
 
 #import "SMMIDIObject.h"
 
-#import <objc/objc-runtime.h>
+#import <objc/runtime.h>
 
 #import "SMClient.h"
 #import "SMEndpoint.h"
@@ -39,7 +39,7 @@ static NSInteger midiObjectOrdinalComparator(id object1, id object2, void *conte
 
 // Methods to be used on subclasses of SMMIDIObject, not SMMIDIObject itself
 
-+ (NSMapTable *)midiObjectMapTable;
++ (CFMutableDictionaryRef)midiObjectMapTable;
 
 + (SMMIDIObject *)addObjectWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(unsigned int)anOrdinal;
 + (void)removeObjectWithObjectRef:(MIDIObjectRef)anObjectRef;
@@ -107,13 +107,25 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 
 + (NSArray *)allObjects;
 {
-    NSMapTable *mapTable;
+    CFMutableDictionaryRef mapTable;
 
     mapTable = [self midiObjectMapTable];
     SMAssert(mapTable);
 
     if (mapTable)
-        return NSAllMapTableValues(mapTable);
+    {
+        CFIndex count = CFDictionaryGetCount(mapTable);
+        const void **keys = malloc(count * sizeof(id));
+        const void **values = malloc(count * sizeof(id));
+        
+        CFDictionaryGetKeysAndValues(mapTable, keys, values);
+        NSArray *array = [NSArray arrayWithObjects:(id *)values count:count];
+        
+        free(keys);
+        free(values);
+        
+        return array;
+    }
     else
         return nil;
 }
@@ -166,7 +178,7 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 
 + (SMMIDIObject *)objectWithObjectRef:(MIDIObjectRef)anObjectRef;
 {
-    NSMapTable *mapTable;
+    CFMutableDictionaryRef mapTable;
 
     if (anObjectRef == (MIDIObjectRef)0)
         return nil;
@@ -175,7 +187,7 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
     SMAssert(mapTable);
 
     if (mapTable)
-        return NSMapGet(mapTable, (void*)(uintptr_t)anObjectRef);
+        return (SMMIDIObject *)CFDictionaryGetValue(mapTable, (void*)(uintptr_t)anObjectRef);
     else
         return nil;
 }
@@ -430,7 +442,7 @@ NSInteger midiObjectOrdinalComparator(id object1, id object2, void *context)
         return NSOrderedAscending;
 }
 
-static NSMapTable *classToObjectsMapTable = NULL;
+static CFMutableDictionaryRef classToObjectsMapTable = NULL;
 // A map table from (Class) to (NSMapTable *).
 // Keys are leaf subclasses of SMMIDIObject.
 // Objects are pointers to the subclass's NSMapTable from MIDIObjectRef to (SMMIDIObject *).
@@ -439,7 +451,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
 {
     SMAssert(self == [SMMIDIObject class]);
 
-    classToObjectsMapTable = NSCreateMapTable(NSNonOwnedPointerMapKeyCallBacks, NSNonOwnedPointerMapValueCallBacks, 0);
+    classToObjectsMapTable = CFDictionaryCreateMutable(nil, 0, NULL, NULL);
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(midiClientCreated:) name:SMClientCreatedInternalNotification object:nil];
 }
@@ -650,11 +662,11 @@ static NSMapTable *classToObjectsMapTable = NULL;
 // Methods to be used on subclasses of SMMIDIObject, not SMMIDIObject itself
 //
 
-+ (NSMapTable *)midiObjectMapTable;
++ (CFMutableDictionaryRef)midiObjectMapTable;
 {
     SMAssert(self != [SMMIDIObject class]);
 
-    return NSMapGet(classToObjectsMapTable, self);
+    return (CFMutableDictionaryRef)CFDictionaryGetValue(classToObjectsMapTable, self);
 }
 
 + (SMMIDIObject *)addObjectWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(unsigned int)anOrdinal;
@@ -666,10 +678,10 @@ static NSMapTable *classToObjectsMapTable = NULL;
 
     object = [[self alloc] initWithObjectRef:anObjectRef ordinal:anOrdinal];
     if (object) {
-        NSMapTable *mapTable = [self midiObjectMapTable];
+        CFMutableDictionaryRef mapTable = [self midiObjectMapTable];
         SMAssert(mapTable != NULL);
 
-        NSMapInsertKnownAbsent(mapTable, (void*)(uintptr_t)anObjectRef, object);
+        CFDictionaryAddValue(mapTable, (void*)(uintptr_t)anObjectRef, object);
         [object release];
     }
 
@@ -678,12 +690,12 @@ static NSMapTable *classToObjectsMapTable = NULL;
 
 + (void)removeObjectWithObjectRef:(MIDIObjectRef)anObjectRef;
 {
-    NSMapTable *mapTable = [self midiObjectMapTable];
+    CFMutableDictionaryRef mapTable = [self midiObjectMapTable];
 
     SMAssert(self != [SMMIDIObject class]);
     SMAssert(mapTable != NULL);
 
-    NSMapRemove(mapTable, (void*)(uintptr_t)anObjectRef);
+    CFDictionaryRemoveValue(mapTable, (void*)(uintptr_t)anObjectRef);
 }
 
 + (void)refreshObjectOrdinals;
@@ -739,14 +751,14 @@ static NSMapTable *classToObjectsMapTable = NULL;
 + (void)initialMIDISetup;
 {
     ItemCount objectIndex, objectCount;
-    NSMapTable *newMapTable;
+    CFMutableDictionaryRef newMapTable;
 
     SMAssert(self != [SMMIDIObject class]);
 
     objectCount = [self midiObjectCount];
 
-    newMapTable = NSCreateMapTable(NSNonOwnedPointerMapKeyCallBacks, NSObjectMapValueCallBacks, objectCount);
-    NSMapInsertKnownAbsent(classToObjectsMapTable, self, newMapTable);
+    newMapTable = CFDictionaryCreateMutable(nil, objectCount, nil, &kCFTypeDictionaryValueCallBacks);
+    CFDictionaryAddValue(classToObjectsMapTable, self, newMapTable);
 
     // Iterate through the new MIDIObjectRefs and add a wrapper object for each
     for (objectIndex = 0; objectIndex < objectCount; objectIndex++) {
@@ -793,7 +805,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
 
 + (void)refreshAllObjects;
 {
-    NSMapTable *oldMapTable, *newMapTable;
+    CFMutableDictionaryRef oldMapTable, newMapTable;
     ItemCount objectIndex, objectCount;
     NSMutableArray *removedObjects, *replacedObjects, *replacementObjects, *addedObjects;
 
@@ -802,7 +814,7 @@ static NSMapTable *classToObjectsMapTable = NULL;
     objectCount = [self midiObjectCount];
 
     oldMapTable = [self midiObjectMapTable];
-    newMapTable = NSCreateMapTable(NSNonOwnedPointerMapKeyCallBacks, NSObjectMapValueCallBacks, objectCount);
+    newMapTable = CFDictionaryCreateMutable(nil, objectCount, nil, &kCFTypeDictionaryValueCallBacks);
 
     // We start out assuming all objects have been removed, none have been replaced.
     // As we find out otherwise, we remove some endpoints from removedObjects,
@@ -847,13 +859,14 @@ static NSMapTable *classToObjectsMapTable = NULL;
         }
 
         if (object)
-            NSMapInsert(newMapTable, (void*)(uintptr_t)anObjectRef, object);
+            CFDictionarySetValue(newMapTable, (void*)(uintptr_t)anObjectRef, object);
     }
 
     // Now replace the old set of objects with the new one.
     if (oldMapTable)
-        NSFreeMapTable(oldMapTable);
-    NSMapInsert(classToObjectsMapTable, self, newMapTable);
+        CFRelease(oldMapTable);
+    
+    CFDictionarySetValue(classToObjectsMapTable, self, newMapTable);
 
     // Make the new group of objects invalidate their cached properties (names and such).
     [[self allObjects] makeObjectsPerformSelector:@selector(invalidateCachedProperties)];
