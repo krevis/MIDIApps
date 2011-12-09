@@ -413,7 +413,7 @@ fail:
                     p += (runningStatusEventSize - 1);
                 } else {
                     // Malformed file -- this shouldn't happen.
-                    NSLog(@"Bad data in standard MIDI file: at offset 0x%08x, got byte 0x%02x when we expected >= 0x80", p - 1 - (const Byte*)[smfData bytes], eventType);
+                    NSLog(@"Bad data in standard MIDI file: at offset 0x%08ld, got byte 0x%02x when we expected >= 0x80", (long)(p - 1 - (const Byte*)[smfData bytes]), eventType);
                     goto done;
                 }
 

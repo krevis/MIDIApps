@@ -94,7 +94,7 @@ static SMClient *sharedClient = nil;
     
     status = MIDIClientCreate((CFStringRef)name, getMIDINotification, self, &midiClient);
     if (status != noErr) {
-        NSLog(@"Couldn't create a MIDI client (error %ld)", status);
+        NSLog(@"Couldn't create a MIDI client (error %ld)", (long)status);
         [self release];
         return nil;
     }
@@ -304,7 +304,7 @@ static void getMIDINotification(const MIDINotification *message, void *refCon)
             
         default:
 #if DEBUG
-            NSLog(@"unknown notification: %d", message->messageID);
+            NSLog(@"unknown notification: %ld", (long)message->messageID);
 #endif
             [client broadcastUnknownMIDINotification:message];
             break;

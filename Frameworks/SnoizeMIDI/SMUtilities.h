@@ -22,7 +22,7 @@ static __inline__ NSBundle *SMBundleForObject(id object) {
 extern void SMRequestConcreteImplementation(id self, SEL _cmd);
 extern void SMRejectUnusedImplementation(id self, SEL _cmd);
 
-extern BOOL SMClassIsSubclassOfClass(Class class, Class potentialSuperclass);
+extern BOOL SMClassIsSubclassOfClass(Class aClass, Class potentialSuperclass);
     // Like +[NSObject isSubclassOfClass:], but works correctly for classes which are NOT based on NSObject
 
 #if DEBUG

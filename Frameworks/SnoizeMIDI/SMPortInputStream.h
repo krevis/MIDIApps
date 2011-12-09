@@ -22,7 +22,7 @@
 {
     MIDIPortRef inputPort;
     NSMutableSet *endpoints;
-    NSMapTable *parsersForEndpoints;
+    CFMutableDictionaryRef parsersForEndpoints;
 }
 
 - (NSSet *)endpoints;
