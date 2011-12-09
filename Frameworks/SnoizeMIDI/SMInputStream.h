@@ -24,7 +24,10 @@
 {
     id<SMMessageDestination> nonretainedMessageDestination;
     NSTimeInterval sysExTimeOut;
+	dispatch_queue_t readQueue;
 }
+
+@property dispatch_queue_t readQueue;
 
 - (id<SMMessageDestination>)messageDestination;
 - (void)setMessageDestination:(id<SMMessageDestination>)messageDestination;
