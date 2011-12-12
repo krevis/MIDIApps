@@ -443,15 +443,15 @@ NSInteger midiObjectOrdinalComparator(id object1, id object2, void *context)
 }
 
 static CFMutableDictionaryRef classToObjectsMapTable = NULL;
-// A map table from (Class) to (NSMapTable *).
+// A map table (dictionary) from (Class) to (CFMutableDictionaryRef *).
 // Keys are leaf subclasses of SMMIDIObject.
-// Objects are pointers to the subclass's NSMapTable from MIDIObjectRef to (SMMIDIObject *).
+// Objects are pointers to the subclass's CFMutableDictionaryRef from MIDIObjectRef to (SMMIDIObject *).
 
 + (void)privateInitialize;
 {
     SMAssert(self == [SMMIDIObject class]);
 
-    classToObjectsMapTable = CFDictionaryCreateMutable(nil, 0, NULL, NULL);
+    classToObjectsMapTable = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, NULL);
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(midiClientCreated:) name:SMClientCreatedInternalNotification object:nil];
 }
@@ -757,7 +757,7 @@ static CFMutableDictionaryRef classToObjectsMapTable = NULL;
 
     objectCount = [self midiObjectCount];
 
-    newMapTable = CFDictionaryCreateMutable(nil, objectCount, nil, &kCFTypeDictionaryValueCallBacks);
+    newMapTable = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
     CFDictionaryAddValue(classToObjectsMapTable, self, newMapTable);
 
     // Iterate through the new MIDIObjectRefs and add a wrapper object for each
@@ -814,7 +814,7 @@ static CFMutableDictionaryRef classToObjectsMapTable = NULL;
     objectCount = [self midiObjectCount];
 
     oldMapTable = [self midiObjectMapTable];
-    newMapTable = CFDictionaryCreateMutable(nil, objectCount, nil, &kCFTypeDictionaryValueCallBacks);
+    newMapTable = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
 
     // We start out assuming all objects have been removed, none have been replaced.
     // As we find out otherwise, we remove some endpoints from removedObjects,

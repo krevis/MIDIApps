@@ -44,7 +44,7 @@
     
     endpoints = [[NSMutableSet alloc] init];
     
-    parsersForEndpoints = CFDictionaryCreateMutable(nil, 0, nil, &kCFTypeDictionaryValueCallBacks);
+    parsersForEndpoints = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endpointListChanged:) name:SMMIDIObjectListChangedNotification object:[SMSourceEndpoint class]];
     
