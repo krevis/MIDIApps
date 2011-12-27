@@ -41,7 +41,7 @@
 
 
 static Handle DataToHandle(CFDataRef inData);
-static CFDataRef HandleToData(Handle inHandle);
+static CFDataRef HandleToData(Handle inHandle) CF_RETURNS_RETAINED;
 
 static OSStatus PathToFSRef(CFStringRef inPath, FSRef *outRef);
 static CFStringRef FSRefToPathCopy(const FSRef *inRef);
