@@ -458,7 +458,7 @@ static CFMutableDictionaryRef classToObjectsMapTable = NULL;
 {
     SMAssert(self == [SMMIDIObject class]);
 
-    classToObjectsMapTable = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, NULL);
+    classToObjectsMapTable = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(midiClientCreated:) name:SMClientCreatedInternalNotification object:nil];
 }
@@ -765,7 +765,10 @@ static CFMutableDictionaryRef classToObjectsMapTable = NULL;
     objectCount = [self midiObjectCount];
 
     newMapTable = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
-    CFDictionaryAddValue(classToObjectsMapTable, self, newMapTable);
+    if (newMapTable) {
+        CFDictionaryAddValue(classToObjectsMapTable, self, newMapTable);
+        CFRelease(newMapTable);
+    }
 
     // Iterate through the new MIDIObjectRefs and add a wrapper object for each
     for (objectIndex = 0; objectIndex < objectCount; objectIndex++) {
@@ -812,7 +815,7 @@ static CFMutableDictionaryRef classToObjectsMapTable = NULL;
 
 + (void)refreshAllObjects;
 {
-    CFMutableDictionaryRef oldMapTable, newMapTable;
+    CFMutableDictionaryRef newMapTable;
     ItemCount objectIndex, objectCount;
     NSMutableArray *removedObjects, *replacedObjects, *replacementObjects, *addedObjects;
 
@@ -820,7 +823,6 @@ static CFMutableDictionaryRef classToObjectsMapTable = NULL;
 
     objectCount = [self midiObjectCount];
 
-    oldMapTable = [self midiObjectMapTable];
     newMapTable = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
 
     // We start out assuming all objects have been removed, none have been replaced.
@@ -870,10 +872,10 @@ static CFMutableDictionaryRef classToObjectsMapTable = NULL;
     }
 
     // Now replace the old set of objects with the new one.
-    if (oldMapTable)
-        CFRelease(oldMapTable);
-    
-    CFDictionarySetValue(classToObjectsMapTable, self, newMapTable);
+    if (newMapTable) {
+        CFDictionarySetValue(classToObjectsMapTable, self, newMapTable);
+        CFRelease(newMapTable);
+    }
 
     // Make the new group of objects invalidate their cached properties (names and such).
     [[self allObjects] makeObjectsPerformSelector:@selector(invalidateCachedProperties)];
