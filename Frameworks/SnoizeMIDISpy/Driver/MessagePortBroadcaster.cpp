@@ -296,7 +296,10 @@ void	MessagePortBroadcaster::ChangeListenerChannelStatus(CFDataRef messageData, 
     channelListeners = (CFMutableArrayRef)CFDictionaryGetValue(mListenerArraysByChannel, (void *)channel);
     if (!channelListeners && shouldAdd) {
         channelListeners = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
-        CFDictionarySetValue(mListenerArraysByChannel, (void *)channel, channelListeners);
+        if (channelListeners) {
+            CFDictionarySetValue(mListenerArraysByChannel, (void *)channel, channelListeners);
+            CFRelease(channelListeners);
+        }
     }
 
     if (shouldAdd) {
