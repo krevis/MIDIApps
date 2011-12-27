@@ -74,6 +74,13 @@
 			remoteGlobalIDString = 162377E60E6CBA7C0040E8BB;
 			remoteInfo = All;
 		};
+		1651E77A14A971C800EF79CD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A53DDB97148F4219006D2FFD;
+			remoteInfo = SnoizeMIDIiOS;
+		};
 		169E71A6097B2419001AFB58 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */;
@@ -248,6 +255,7 @@
 			isa = PBXGroup;
 			children = (
 				169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */,
+				1651E77B14A971C800EF79CD /* libSnoizeMIDIiOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -453,6 +461,13 @@
 			fileType = wrapper.cfbundle;
 			path = DisclosableView.ibplugin;
 			remoteRef = 16230FF90E6CC30A00A700CA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1651E77B14A971C800EF79CD /* libSnoizeMIDIiOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSnoizeMIDIiOS.a;
+			remoteRef = 1651E77A14A971C800EF79CD /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */ = {
