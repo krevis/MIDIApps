@@ -69,7 +69,7 @@ NSString *SSESysExFileExtension = @"syx";
 {
     NSArray *documentTypes;
 
-    if (![super init])
+    if (!(self = [super init]))
         return nil;
 
     documentTypes = [[SMBundleForObject(self) infoDictionary] objectForKey:@"CFBundleDocumentTypes"];

@@ -42,7 +42,7 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
 
 - (id)initWithLibrary:(SSELibrary *)library;
 {
-    if (![super init])
+    if (!(self = [super init]))
         return nil;
 
     nonretainedLibrary = library;
@@ -54,7 +54,7 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
 
 - (id)initWithLibrary:(SSELibrary *)library dictionary:(NSDictionary *)dict;
 {
-    if (![self initWithLibrary:library])
+    if (!(self = [self initWithLibrary:library]))
         return nil;
 
     [self takeValuesFromDictionary:dict];

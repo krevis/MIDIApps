@@ -33,7 +33,7 @@ static NSThread *sMainThread = nil;
 
 - (id)init;
 {
-    if (![super init])
+    if (!(self = [super init]))
         return nil;
 
     hasFinishedLaunching = NO;
