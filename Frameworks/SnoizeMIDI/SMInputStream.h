@@ -16,6 +16,16 @@
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 #import <SnoizeMIDI/SMInputStreamSource.h>
 
+// Use blocks only if they'll work with our minimum required OS version.
+// In theory, the symbols that blocks use should be weak-linked, and
+// we should be able to do a check for their existence at runtime.
+// In practice, that's not the case. Search for "__NSConcreteStackBlock 10.5".
+#define USE_BLOCKS \
+    NS_BLOCKS_AVAILABLE && \
+    ((defined(MAC_OS_X_VERSION_MIN_REQUIRED) && (MAC_OS_X_VERSION_MIN_REQUIRED >= 1060)) || \
+     (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && (__IPHONE_OS_VERSION_MIN_REQUIRED >= 40000)))
+
+
 @class SMEndpoint;
 @class SMMessageParser;
 
@@ -24,10 +34,14 @@
 {
     id<SMMessageDestination> nonretainedMessageDestination;
     NSTimeInterval sysExTimeOut;
+#if USE_BLOCKS
 	dispatch_queue_t readQueue;
+#endif
 }
 
+#if USE_BLOCKS
 @property (nonatomic, /*retain*/) dispatch_queue_t readQueue;
+#endif
 
 - (id<SMMessageDestination>)messageDestination;
 - (void)setMessageDestination:(id<SMMessageDestination>)messageDestination;
