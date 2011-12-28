@@ -44,7 +44,7 @@
     
     endpoints = [[NSMutableSet alloc] init];
     
-    parsersForEndpoints = CFDictionaryCreateMutable(nil, 0, nil, &kCFTypeDictionaryValueCallBacks);
+    parsersForEndpoints = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endpointListChanged:) name:SMMIDIObjectListChangedNotification object:[SMSourceEndpoint class]];
     
@@ -165,17 +165,22 @@
 - (NSArray *)parsers;
 {
     CFIndex count = CFDictionaryGetCount(parsersForEndpoints);
-    const void **keys = malloc(count * sizeof(void*));
-    const void **values = malloc(count * sizeof(void*));
-    
-    CFDictionaryGetKeysAndValues(parsersForEndpoints, keys, values);
-    
-    NSArray *array = [NSArray arrayWithObjects:(id *)values count:count];
-    
-    free(keys);
-    free(values);
-    
-    return array;
+    if (count > 0)
+    {
+        const void **keys = malloc(count * sizeof(void*));
+        const void **values = malloc(count * sizeof(void*));
+        
+        CFDictionaryGetKeysAndValues(parsersForEndpoints, keys, values);
+        
+        NSArray *array = [NSArray arrayWithObjects:(id *)values count:count];
+        
+        free(keys);
+        free(values);
+        
+        return array;
+    }
+    else
+        return [NSArray array];
 }
 
 - (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;

@@ -25,6 +25,8 @@
 
 static void midiReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, void *srcConnRefCon);
 
++ (void)takePendingPacketList:(NSData *)pendingPacketListData;
+
 - (id <SMInputStreamSource>)findInputSourceWithName:(NSString *)desiredName uniqueID:(NSNumber *)desiredUniqueID;
 
 @end
@@ -32,7 +34,9 @@ static void midiReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, vo
 
 @implementation SMInputStream
 
+#if USE_BLOCKS
 @synthesize readQueue;
+#endif
 
 NSString *SMInputStreamReadingSysExNotification = @"SMInputStreamReadingSysExNotification";
 NSString *SMInputStreamDoneReadingSysExNotification = @"SMInputStreamDoneReadingSysExNotification";
@@ -40,18 +44,41 @@ NSString *SMInputStreamSelectedInputSourceDisappearedNotification = @"SMInputStr
 NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceListChangedNotification";
 
 
-- (id)init;
+- (id)init
 {
     if (!(self = [super init]))
         return nil;
 
     sysExTimeOut = 1.0;
+<<<<<<< HEAD
 	
 	// Default to main queue for taking pending read packets
     self.readQueue = dispatch_get_main_queue();
 	
+=======
+
+#if USE_BLOCKS
+    // Default to main queue for taking pending read packets
+    self.readQueue = dispatch_get_main_queue();
+#endif
+
+>>>>>>> 5f2fb8c5f1ce5fe1f3ce67a175c14533c7e2dd26
     return self;
 }
+
+#if USE_BLOCKS
+- (void)setReadQueue:(dispatch_queue_t)newReadQueue
+{
+    if (newReadQueue != readQueue)
+    {
+        if (readQueue)
+            dispatch_release(readQueue);
+        if (newReadQueue)
+            dispatch_retain(newReadQueue);
+        readQueue = newReadQueue;
+    }
+}
+#endif
 
 - (id<SMMessageDestination>)messageDestination;
 {
@@ -307,7 +334,7 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
     PendingPacketList *pendingPacketList;
         
     // NOTE: There is a little bit of a race condition here.
-    // By the time the -performSelectorOnMainThread: fires, the input stream may be gone or in a different state.
+    // By the time the async block runs, the input stream may be gone or in a different state.
     // Make sure that the input stream retains itself, and anything that depend on the srcConnRefCon, during the
     // interval between now and the time that -takePendingPacketList: is done working.
     SMInputStream *inputStream = (SMInputStream *)readProcRefCon;
@@ -328,6 +355,7 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
     pendingPacketList->srcConnRefCon = srcConnRefCon;
     memcpy(&pendingPacketList->packetList, packetList, packetListSize);
     
+<<<<<<< HEAD
 	// Get off the CoreMIDI time-contrained thread
 	// Default to main queue, but may be set to other queues in some cases
 	dispatch_async([inputStream readQueue], ^{
@@ -353,14 +381,62 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
 			@catch (id localException)
 			{
 				// Ignore any exceptions raised
+=======
+    // Get off the CoreMIDI time-contrained thread.
+    // If we can require OS X 10.6 and later, or iOS 4 and later, use GCD
+    // (so a different queue can be used if necessary);
+    // otherwise just use -performSelectorOnMainThread.
+
+#if USE_BLOCKS
+    dispatch_async([inputStream readQueue], ^{
+        @autoreleasepool
+        {
+            [SMInputStream takePendingPacketList:data];
+        }
+    });
+#else
+    // GCD is not available
+    [(id)[SMInputStream class] performSelectorOnMainThread:@selector(takePendingPacketList:) withObject:data waitUntilDone:NO];
+#endif
+
+    [data release];
+}
+
++ (void)takePendingPacketList:(NSData *)pendingPacketListData
+{
+    @try
+    {
+        PendingPacketList *pendingPacketList = (PendingPacketList *)[pendingPacketListData bytes];
+
+        // Starting with an input stream...
+        SMInputStream *inputStream = (SMInputStream *)pendingPacketList->readProcRefCon;
+        // find the parser that is associated with this particular connection...
+        SMMessageParser *parser = [inputStream parserForSourceConnectionRefCon:pendingPacketList->srcConnRefCon];
+        if (parser) {   // parser may be nil if input stream was disconnected from this source
+            // and give it the packet list
+            [parser takePacketList:&(pendingPacketList->packetList)];
+        }
+
+        // Now that we're done with the input stream and its ref con (whatever that is),
+        // release them.
+        [inputStream releaseForIncomingMIDIWithSourceConnectionRefCon:pendingPacketList->srcConnRefCon];
+    }
+    @catch (id localException)
+    {
+        // Ignore any exceptions raised
+>>>>>>> 5f2fb8c5f1ce5fe1f3ce67a175c14533c7e2dd26
 #if DEBUG
 				NSLog(@"Exception raised during MIDI parsing: %@", localException);
 #endif
+<<<<<<< HEAD
 			}
 		}
 	});
     
     [data release];
+=======
+    }
+>>>>>>> 5f2fb8c5f1ce5fe1f3ce67a175c14533c7e2dd26
 }
 
 - (id <SMInputStreamSource>)findInputSourceWithName:(NSString *)desiredName uniqueID:(NSNumber *)desiredUniqueID;

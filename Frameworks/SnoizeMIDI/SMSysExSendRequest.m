@@ -37,7 +37,7 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
 
 - (id)initWithMessage:(SMSystemExclusiveMessage *)aMessage endpoint:(SMDestinationEndpoint *)endpoint;
 {
-    if (![super init])
+    if (!(self = [super init]))
         return nil;
 
     SMAssert(aMessage != nil);

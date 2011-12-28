@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -71,6 +71,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1651E78414A9724300EF79CD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A53DDB97148F4219006D2FFD;
+			remoteInfo = SnoizeMIDIiOS;
+		};
 		16F0332E0984B74B006C8A44 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */;
@@ -265,6 +272,7 @@
 			isa = PBXGroup;
 			children = (
 				16F0332F0984B74B006C8A44 /* SnoizeMIDI.framework */,
+				1651E78514A9724300EF79CD /* libSnoizeMIDIiOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -557,8 +565,11 @@
 /* Begin PBXProject section */
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = 16F032BA0984B5DD006C8A44 /* Build configuration list for PBXProject "SysExLibrarian" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -583,6 +594,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		1651E78514A9724300EF79CD /* libSnoizeMIDIiOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSnoizeMIDIiOS.a;
+			remoteRef = 1651E78414A9724300EF79CD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		16F0332F0984B74B006C8A44 /* SnoizeMIDI.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;

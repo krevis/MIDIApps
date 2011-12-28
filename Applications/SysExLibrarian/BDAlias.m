@@ -41,7 +41,7 @@
 
 
 static Handle DataToHandle(CFDataRef inData);
-static CFDataRef HandleToData(Handle inHandle);
+static CFDataRef HandleToData(Handle inHandle) CF_RETURNS_RETAINED;
 
 static OSStatus PathToFSRef(CFStringRef inPath, FSRef *outRef);
 static CFStringRef FSRefToPathCopy(const FSRef *inRef);
@@ -140,13 +140,11 @@ static CFStringRef FSRefToPathCopy(const FSRef *inRef)
 
 - (id)initWithAliasHandle:(AliasHandle)alias
 {
-    id ret = [super init];
-    
-    if (ret != nil) {
+    if ((self = [super init])) {
         _alias = alias;
     }
     
-    return ret;
+    return self;
 }
 
 - (id)initWithData:(NSData *)data

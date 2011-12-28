@@ -34,7 +34,7 @@
 
 - (id)initWithWindowNibName:(NSString *)nibName;
 {    
-    if ([super initWithWindowNibName:nibName] == nil)
+    if (!(self = [super initWithWindowNibName:nibName]))
         return nil;
 
     [self setWindowFrameAutosaveName:nibName];

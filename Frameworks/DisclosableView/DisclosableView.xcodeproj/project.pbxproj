@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -95,7 +95,7 @@
 		162376F20E6CAE640040E8BB /* SNDisclosableView-Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SNDisclosableView-Additions.m"; sourceTree = "<group>"; };
 		1623770B0E6CB27C0040E8BB /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/SNDisclosableViewInspector.xib; sourceTree = "<group>"; };
 		1623770D0E6CB27C0040E8BB /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SNDisclosableViewLibrary.nib; sourceTree = "<group>"; };
-		1623774F0E6CB5560040E8BB /* InterfaceBuilderKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InterfaceBuilderKit.framework; path = Library/Frameworks/InterfaceBuilderKit.framework; sourceTree = SYSTEM_DEVELOPER_DIR; };
+		1623774F0E6CB5560040E8BB /* InterfaceBuilderKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InterfaceBuilderKit.framework; path = Library/Frameworks/InterfaceBuilderKit.framework; sourceTree = DEVELOPER_DIR; };
 		162377A40E6CB9830040E8BB /* DisclosableView.ibplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DisclosableView.ibplugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		1623782A0E6CBF200040E8BB /* Snoize-IBPlugin-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-IBPlugin-Debug.xcconfig"; path = "../../Configurations/Snoize-IBPlugin-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		1623782B0E6CBF200040E8BB /* Snoize-IBPlugin-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-IBPlugin-Global.xcconfig"; path = "../../Configurations/Snoize-IBPlugin-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
@@ -350,8 +350,11 @@
 /* Begin PBXProject section */
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = 16AF25A3097B1A3600BC87DC /* Build configuration list for PBXProject "DisclosableView" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -497,7 +500,6 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				PRODUCT_NAME = All;
 				ZERO_LINK = NO;
 			};
