@@ -422,10 +422,13 @@ fail:
                 static NSDateFormatter *timeStampDateFormatter = nil;
                 if (!timeStampDateFormatter) {
                     timeStampDateFormatter = [[NSDateFormatter alloc] init];
-                    [timeStampDateFormatter setDateFormat:@"%H:%M:%S.%F"];
+                    [timeStampDateFormatter setDateFormat:@"HH:mm:ss.SSS"];
                 }
-                                
-                NSTimeInterval timeStampInterval = SMConvertHostTimeToNanos(timeStamp - [timeBase hostTime]) / 1.0e9;
+
+                UInt64 timeStampInNanos = SMConvertHostTimeToNanos(timeStamp);
+                UInt64 hostTimeBaseInNanos = SMConvertHostTimeToNanos([timeBase hostTime]);
+                SInt64 timeDelta = timeStampInNanos - hostTimeBaseInNanos;  // may be negative!
+                NSTimeInterval timeStampInterval = timeDelta / 1.0e9;
                 NSDate* date = [NSDate dateWithTimeIntervalSinceReferenceDate:([timeBase timeInterval] + timeStampInterval)];
                 return [timeStampDateFormatter stringForObjectValue:date];
             }
