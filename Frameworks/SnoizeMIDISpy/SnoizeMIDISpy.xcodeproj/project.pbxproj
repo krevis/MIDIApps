@@ -521,6 +521,8 @@
 				OTHER_LDFLAGS_ppc = "-framework CoreMIDIServer";
 				OTHER_LDFLAGS_x86_64 = "-framework CoreMIDI";
 				PRODUCT_NAME = "MIDI Monitor";
+				SDKROOT = macosx10.5;
+				SDKROOT_x86_64 = macosx10.6;
 				WRAPPER_EXTENSION = plugin;
 			};
 			name = Debug;
@@ -535,6 +537,8 @@
 				OTHER_LDFLAGS_ppc = "-framework CoreMIDIServer";
 				OTHER_LDFLAGS_x86_64 = "-framework CoreMIDI";
 				PRODUCT_NAME = "MIDI Monitor";
+				SDKROOT = macosx10.5;
+				SDKROOT_x86_64 = macosx10.6;
 				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = plugin;
 			};
