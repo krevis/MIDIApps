@@ -109,13 +109,6 @@
 			remoteGlobalIDString = 16AF25A1097B1A3400BC87DC;
 			remoteInfo = DisclosableView;
 		};
-		A55B0DA214A49D5C00A8A367 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = A53DDB97148F4219006D2FFD;
-			remoteInfo = SnoizeMIDIiOS;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -506,13 +499,6 @@
 			fileType = wrapper.framework;
 			path = DisclosableView.framework;
 			remoteRef = 169E71B7097B2441001AFB58 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		A55B0DA314A49D5C00A8A367 /* libSnoizeMIDIiOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libSnoizeMIDIiOS.a;
-			remoteRef = A55B0DA214A49D5C00A8A367 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
