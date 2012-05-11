@@ -73,6 +73,14 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
 }
 #endif
 
+- (void)dealloc
+{
+#if USE_BLOCKS
+	dispatch_release(readQueue);
+#endif
+	[super dealloc];
+}
+
 - (id<SMMessageDestination>)messageDestination;
 {
     return nonretainedMessageDestination;
@@ -355,12 +363,16 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
     // otherwise just use -performSelectorOnMainThread.
 
 #if USE_BLOCKS
-    dispatch_async([inputStream readQueue], ^{
-        @autoreleasepool
-        {
-            [SMInputStream takePendingPacketList:data];
-        }
-    });
+	dispatch_queue_t queue = inputStream.readQueue;
+	if(queue)
+	{
+		dispatch_async(queue, ^{
+			@autoreleasepool
+			{
+				[SMInputStream takePendingPacketList:data];
+			}
+		});
+	}
 #else
     // GCD is not available
     [(id)[SMInputStream class] performSelectorOnMainThread:@selector(takePendingPacketList:) withObject:data waitUntilDone:NO];
