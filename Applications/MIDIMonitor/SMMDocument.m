@@ -540,17 +540,20 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
     sourcesSet = [NSMutableSet set];
     
     if ([defaults boolForKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey]) {
-        if ((sourcesArray = [[groupedInputSources objectAtIndex:0] objectForKey:@"sources"]))
+        if (groupedInputSources.count > 0 && 
+            (sourcesArray = [[groupedInputSources objectAtIndex:0] objectForKey:@"sources"]))
             [sourcesSet addObjectsFromArray:sourcesArray];
     }
 
     if ([defaults boolForKey:SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey]) {
-        if ((sourcesArray = [[groupedInputSources objectAtIndex:1] objectForKey:@"sources"]))
+        if (groupedInputSources.count > 1 && 
+            (sourcesArray = [[groupedInputSources objectAtIndex:1] objectForKey:@"sources"]))
             [sourcesSet addObjectsFromArray:sourcesArray];
     }
 
 	if ([defaults boolForKey:SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey]) {
-        if ((sourcesArray = [[groupedInputSources objectAtIndex:2] objectForKey:@"sources"]))
+        if (groupedInputSources.count > 2 && 
+            (sourcesArray = [[groupedInputSources objectAtIndex:2] objectForKey:@"sources"]))
             [sourcesSet addObjectsFromArray:sourcesArray];
     }
     
