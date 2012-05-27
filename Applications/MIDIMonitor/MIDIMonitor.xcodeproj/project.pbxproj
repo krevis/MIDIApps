@@ -423,7 +423,7 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 			};
 			buildConfigurationList = 16AF264E097B1EFB00BC87DC /* Build configuration list for PBXProject "MIDIMonitor" */;
 			compatibilityVersion = "Xcode 3.2";

@@ -351,7 +351,7 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 			};
 			buildConfigurationList = 16AF25A3097B1A3600BC87DC /* Build configuration list for PBXProject "DisclosableView" */;
 			compatibilityVersion = "Xcode 3.2";
