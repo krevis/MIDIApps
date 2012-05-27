@@ -254,9 +254,9 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 
 - (void) openWindowForNewSources
 {
-    SMMDocument *document;
-
-    document = [[NSDocumentController sharedDocumentController] openUntitledDocumentOfType:@"MIDI Monitor Document" display:NO];
+    NSDocumentController *dc = [NSDocumentController sharedDocumentController];
+    SMMDocument *document = [dc openUntitledDocumentAndDisplay:NO error:NULL];
+    [document makeWindowControllers];
     [document setSelectedInputSources:newSources];
     [document showWindows];
     [document setAreSourcesShown:YES];
