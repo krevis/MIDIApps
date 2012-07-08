@@ -51,5 +51,12 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>LSMinimumSystemVersionByArchitecture</key>
+	<dict>
+		<key>i386</key>
+		<string>10.5.0</string>
+		<key>x86_64</key>
+		<string>10.6.0</string>
+	</dict>
 </dict>
 </plist>
