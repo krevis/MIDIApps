@@ -518,7 +518,6 @@
 				INFOPLIST_FILE = "Info-SpyingMIDIDriver.plist";
 				INSTALL_PATH = "/Library/Audio/MIDI Drivers";
 				OTHER_LDFLAGS_i386 = "-framework CoreMIDIServer";
-				OTHER_LDFLAGS_ppc = "-framework CoreMIDIServer";
 				OTHER_LDFLAGS_x86_64 = "-framework CoreMIDI";
 				PRODUCT_NAME = "MIDI Monitor";
 				SDKROOT = macosx10.5;
@@ -534,7 +533,6 @@
 				INFOPLIST_FILE = "Info-SpyingMIDIDriver.plist";
 				INSTALL_PATH = "/Library/Audio/MIDI Drivers";
 				OTHER_LDFLAGS_i386 = "-framework CoreMIDIServer";
-				OTHER_LDFLAGS_ppc = "-framework CoreMIDIServer";
 				OTHER_LDFLAGS_x86_64 = "-framework CoreMIDI";
 				PRODUCT_NAME = "MIDI Monitor";
 				SDKROOT = macosx10.5;
