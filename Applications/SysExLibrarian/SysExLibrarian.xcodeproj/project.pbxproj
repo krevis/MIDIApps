@@ -10,7 +10,6 @@
 		163E35AB09E9EFA600138102 /* NSFileManager-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 163E35A909E9EFA600138102 /* NSFileManager-Extensions.m */; };
 		1658B8AB09F36B5F00F42BFB /* SSESysexSpeedOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1658B8A909F36B5E00F42BFB /* SSESysexSpeedOutlineView.m */; };
 		16666D850AB404250084C23B /* CocoaCryptoHashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 16666D830AB404250084C23B /* CocoaCryptoHashing.m */; };
-		16666E450AB4057D0084C23B /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 16666E440AB405740084C23B /* libcrypto.dylib */; };
 		16DC484B0AB3A359002ECBD6 /* SSESysExSpeedController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16DC48490AB3A359002ECBD6 /* SSESysExSpeedController.m */; };
 		16F033540984B76F006C8A44 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
 		16F033560984B76F006C8A44 /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = F559F90A01DEC5E001000164 /* Preferences.nib */; };
@@ -220,7 +219,6 @@
 				16F0338B0984B76F006C8A44 /* CoreMIDI.framework in Frameworks */,
 				16F0338D0984B76F006C8A44 /* Carbon.framework in Frameworks */,
 				16F034250984BA49006C8A44 /* SnoizeMIDI.framework in Frameworks */,
-				16666E450AB4057D0084C23B /* libcrypto.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
