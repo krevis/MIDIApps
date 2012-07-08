@@ -16,3 +16,8 @@ GCC_TREAT_WARNINGS_AS_ERRORS = YES
 GCC_WARN_ABOUT_RETURN_TYPE = YES
 GCC_WARN_UNUSED_VARIABLE = YES
 WARNING_CFLAGS = -Wmost -Wparentheses
+
+// Without this fix, using blocks will cause the app to fail to load
+// (in dyld) on OS X 10.5 and maybe iOS 3.  With this fix, we can at least
+// check if GCD is enabled at runtime (see CHECK_FOR_GCD in the code).
+OTHER_LDFLAGS = -weak-lSystem
