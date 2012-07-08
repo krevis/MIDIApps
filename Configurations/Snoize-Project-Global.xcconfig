@@ -11,9 +11,6 @@ MACOSX_DEPLOYMENT_TARGET_x86_64 = 10.6
 // (note: the Debug variant sets ONLY_ACTIVE_ARCH to further modify the behavior)
 ARCHS = ${VALID_ARCHS}
 
-// No need for prebinding generally; individual targets may turn it on themselves
-PREBINDING = NO
-
 // Nice warnings
 GCC_TREAT_WARNINGS_AS_ERRORS = YES
 GCC_WARN_ABOUT_RETURN_TYPE = YES
