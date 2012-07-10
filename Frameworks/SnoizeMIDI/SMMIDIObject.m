@@ -117,8 +117,8 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
         CFIndex count = CFDictionaryGetCount(mapTable);
         if (count > 0)
         {
-            const void **keys = malloc(count * sizeof(id));
-            const void **values = malloc(count * sizeof(id));
+            const void **keys = malloc(count * sizeof(void *));
+            const void **values = malloc(count * sizeof(void *));
             
             CFDictionaryGetKeysAndValues(mapTable, keys, values);
             NSArray *array = [NSArray arrayWithObjects:(id *)values count:count];
