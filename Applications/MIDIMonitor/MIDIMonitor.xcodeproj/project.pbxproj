@@ -11,7 +11,6 @@
 		162972B2097B414C00158D7B /* SnoizeMIDISpy.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71B1097B242A001AFB58 /* SnoizeMIDISpy.framework */; };
 		167B881906ED4D650053D305 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		167B881A06ED4D650053D305 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
-		167B881B06ED4D650053D305 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165FFE840EACC02AAC07 /* InfoPlist.strings */; };
 		167B881C06ED4D650053D305 /* MIDIMonitor.strings in Resources */ = {isa = PBXBuildFile; fileRef = F53BB4AE015D96A501000164 /* MIDIMonitor.strings */; };
 		167B881D06ED4D650053D305 /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = F53A1C0A015EC0FB01000164 /* Preferences.nib */; };
 		167B881E06ED4D650053D305 /* MIDIMonitor.icns in Resources */ = {isa = PBXBuildFile; fileRef = F579B5E9018D0F0D01000164 /* MIDIMonitor.icns */; };
@@ -107,7 +106,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		089C1660FE840EACC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		162310430E6CCC6100A700CA /* DisclosableView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DisclosableView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		162310440E6CCC6100A700CA /* SnoizeMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SnoizeMIDI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -320,7 +318,6 @@
 				1691E0DC04CA26F300ACFC9D /* Details.nib */,
 				F56E05CE0206BF0C01000164 /* SysEx.nib */,
 				167B884206ED4D650053D305 /* Info-MIDIMonitor.plist */,
-				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
 				F53BB4AE015D96A501000164 /* MIDIMonitor.strings */,
 				F579B5E9018D0F0D01000164 /* MIDIMonitor.icns */,
 				F57053DA018D364A01000164 /* Document.icns */,
@@ -471,7 +468,6 @@
 			files = (
 				167B881906ED4D650053D305 /* Credits.rtf in Resources */,
 				167B881A06ED4D650053D305 /* MainMenu.nib in Resources */,
-				167B881B06ED4D650053D305 /* InfoPlist.strings in Resources */,
 				167B881C06ED4D650053D305 /* MIDIMonitor.strings in Resources */,
 				167B881D06ED4D650053D305 /* Preferences.nib in Resources */,
 				167B881E06ED4D650053D305 /* MIDIMonitor.icns in Resources */,
@@ -548,14 +544,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		089C165FFE840EACC02AAC07 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				089C1660FE840EACC02AAC07 /* English */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
 		1691E0DC04CA26F300ACFC9D /* Details.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
