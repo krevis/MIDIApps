@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		162972B1097B414800158D7B /* SnoizeMIDI.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */; };
 		162972B2097B414C00158D7B /* SnoizeMIDISpy.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71B1097B242A001AFB58 /* SnoizeMIDISpy.framework */; };
-		162972B3097B414F00158D7B /* DisclosableView.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71B8097B2441001AFB58 /* DisclosableView.framework */; };
 		167B881906ED4D650053D305 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		167B881A06ED4D650053D305 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
 		167B881B06ED4D650053D305 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165FFE840EACC02AAC07 /* InfoPlist.strings */; };
@@ -40,19 +39,15 @@
 		167B883506ED4D650053D305 /* NSString-SMMExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 16F210DD06EAB24700D9C507 /* NSString-SMMExtensions.m */; };
 		167B883906ED4D650053D305 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		167B883B06ED4D650053D305 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B4281801A360AD01000164 /* CoreMIDI.framework */; };
+		16C267D215D836B2009F4BE4 /* SNDisclosureArrowDown.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 16C267D015D836B2009F4BE4 /* SNDisclosureArrowDown.tiff */; };
+		16C267D315D836B2009F4BE4 /* SNDisclosureArrowRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 16C267D115D836B2009F4BE4 /* SNDisclosureArrowRight.tiff */; };
+		16C267D815D836C6009F4BE4 /* SNDisclosableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 16C267D515D836C6009F4BE4 /* SNDisclosableView.m */; };
+		16C267D915D836C6009F4BE4 /* SNDisclosureButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 16C267D715D836C6009F4BE4 /* SNDisclosureButton.m */; };
 		16E8F01A097B2E5200B52193 /* SnoizeMIDISpy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169E71B1097B242A001AFB58 /* SnoizeMIDISpy.framework */; };
 		16E8F01D097B2E8B00B52193 /* SnoizeMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */; };
-		16E8F01E097B2E9400B52193 /* DisclosableView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169E71B8097B2441001AFB58 /* DisclosableView.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		16230FF90E6CC30A00A700CA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 169E71B2097B2441001AFB58 /* DisclosableView.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 162377A40E6CB9830040E8BB;
-			remoteInfo = "DisclosableView Plugin";
-		};
 		162972C2097B41A700158D7B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */;
@@ -66,13 +61,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 164103D709735FA5008DABCC;
 			remoteInfo = SnoizeMIDISpy.framework;
-		};
-		164EA8820E6CD65200D235AB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 169E71B2097B2441001AFB58 /* DisclosableView.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 162377E60E6CBA7C0040E8BB;
-			remoteInfo = All;
 		};
 		1651E77A14A971C800EF79CD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -102,13 +90,6 @@
 			remoteGlobalIDString = 164103F309735FA6008DABCC;
 			remoteInfo = SnoizeMIDISpy.framework;
 		};
-		169E71B7097B2441001AFB58 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 169E71B2097B2441001AFB58 /* DisclosableView.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 16AF25A1097B1A3400BC87DC;
-			remoteInfo = DisclosableView;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -120,7 +101,6 @@
 			files = (
 				162972B1097B414800158D7B /* SnoizeMIDI.framework in CopyFiles */,
 				162972B2097B414C00158D7B /* SnoizeMIDISpy.framework in CopyFiles */,
-				162972B3097B414F00158D7B /* DisclosableView.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,7 +125,12 @@
 		169E7171097B2203001AFB58 /* Snoize-Application-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Application-Release.xcconfig"; path = "../../Configurations/Snoize-Application-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
 		169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDI.xcodeproj; path = ../../Frameworks/SnoizeMIDI/SnoizeMIDI.xcodeproj; sourceTree = SOURCE_ROOT; };
 		169E71A8097B242A001AFB58 /* SnoizeMIDISpy.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDISpy.xcodeproj; path = ../../Frameworks/SnoizeMIDISpy/SnoizeMIDISpy.xcodeproj; sourceTree = SOURCE_ROOT; };
-		169E71B2097B2441001AFB58 /* DisclosableView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DisclosableView.xcodeproj; path = ../../Frameworks/DisclosableView/DisclosableView.xcodeproj; sourceTree = SOURCE_ROOT; };
+		16C267D015D836B2009F4BE4 /* SNDisclosureArrowDown.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SNDisclosureArrowDown.tiff; sourceTree = "<group>"; };
+		16C267D115D836B2009F4BE4 /* SNDisclosureArrowRight.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SNDisclosureArrowRight.tiff; sourceTree = "<group>"; };
+		16C267D415D836C6009F4BE4 /* SNDisclosableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SNDisclosableView.h; sourceTree = "<group>"; };
+		16C267D515D836C6009F4BE4 /* SNDisclosableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SNDisclosableView.m; sourceTree = "<group>"; };
+		16C267D615D836C6009F4BE4 /* SNDisclosureButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SNDisclosureButton.h; sourceTree = "<group>"; };
+		16C267D715D836C6009F4BE4 /* SNDisclosureButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SNDisclosureButton.m; sourceTree = "<group>"; };
 		16F20F4906EAA14A00D9C507 /* Defaults.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = Defaults.plist; sourceTree = "<group>"; };
 		16F210AB06EAAF6A00D9C507 /* NSArray-SMMExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSArray-SMMExtensions.h"; sourceTree = "<group>"; };
 		16F210AC06EAAF6A00D9C507 /* NSArray-SMMExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSArray-SMMExtensions.m"; sourceTree = "<group>"; };
@@ -200,7 +185,6 @@
 				167B883B06ED4D650053D305 /* CoreMIDI.framework in Frameworks */,
 				16E8F01D097B2E8B00B52193 /* SnoizeMIDI.framework in Frameworks */,
 				16E8F01A097B2E5200B52193 /* SnoizeMIDISpy.framework in Frameworks */,
-				16E8F01E097B2E9400B52193 /* DisclosableView.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,7 +230,6 @@
 			children = (
 				169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */,
 				169E71A8097B242A001AFB58 /* SnoizeMIDISpy.xcodeproj */,
-				169E71B2097B2441001AFB58 /* DisclosableView.xcodeproj */,
 			);
 			name = "Other Projects";
 			sourceTree = "<group>";
@@ -265,15 +248,6 @@
 			children = (
 				169E71AF097B242A001AFB58 /* MIDI Monitor.plugin */,
 				169E71B1097B242A001AFB58 /* SnoizeMIDISpy.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		169E71B3097B2441001AFB58 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				169E71B8097B2441001AFB58 /* DisclosableView.framework */,
-				16230FFA0E6CC30A00A700CA /* DisclosableView.ibplugin */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -315,6 +289,10 @@
 				1691E0DA04CA1C1E00ACFC9D /* SMMDetailsWindowController.m */,
 				F56E05CA0206BAB401000164 /* SMMSysExWindowController.h */,
 				F56E05CB0206BAB401000164 /* SMMSysExWindowController.m */,
+				16C267D415D836C6009F4BE4 /* SNDisclosableView.h */,
+				16C267D515D836C6009F4BE4 /* SNDisclosableView.m */,
+				16C267D615D836C6009F4BE4 /* SNDisclosureButton.h */,
+				16C267D715D836C6009F4BE4 /* SNDisclosureButton.m */,
 				F571C56C01903F3301000164 /* Cocoa Extensions */,
 				F57F62950261E14501000164 /* SnoizeMIDI Extensions */,
 			);
@@ -348,6 +326,8 @@
 				F57053DA018D364A01000164 /* Document.icns */,
 				F56D31A30195A90E01000164 /* docs.htmld */,
 				F57B0567026BB81F01000164 /* Read Me.html */,
+				16C267D015D836B2009F4BE4 /* SNDisclosureArrowDown.tiff */,
+				16C267D115D836B2009F4BE4 /* SNDisclosureArrowRight.tiff */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -409,7 +389,6 @@
 			dependencies = (
 				162972C3097B41A700158D7B /* PBXTargetDependency */,
 				162972C5097B41AA00158D7B /* PBXTargetDependency */,
-				164EA8830E6CD65200D235AB /* PBXTargetDependency */,
 			);
 			name = MIDIMonitor;
 			productInstallPath = /Users/Shared/krevis/InstalledProducts;
@@ -439,10 +418,6 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 169E71B3097B2441001AFB58 /* Products */;
-					ProjectRef = 169E71B2097B2441001AFB58 /* DisclosableView.xcodeproj */;
-				},
-				{
 					ProductGroup = 169E71A2097B2419001AFB58 /* Products */;
 					ProjectRef = 169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */;
 				},
@@ -459,13 +434,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		16230FFA0E6CC30A00A700CA /* DisclosableView.ibplugin */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = DisclosableView.ibplugin;
-			remoteRef = 16230FF90E6CC30A00A700CA /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		1651E77B14A971C800EF79CD /* libSnoizeMIDIiOS.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -494,13 +462,6 @@
 			remoteRef = 169E71B0097B242A001AFB58 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		169E71B8097B2441001AFB58 /* DisclosableView.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = DisclosableView.framework;
-			remoteRef = 169E71B7097B2441001AFB58 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -521,6 +482,8 @@
 				167B882306ED4D650053D305 /* MIDIMonitor.nib in Resources */,
 				167B882406ED4D650053D305 /* Details.nib in Resources */,
 				167B882506ED4D650053D305 /* Defaults.plist in Resources */,
+				16C267D215D836B2009F4BE4 /* SNDisclosureArrowDown.tiff in Resources */,
+				16C267D315D836B2009F4BE4 /* SNDisclosureArrowRight.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -564,6 +527,8 @@
 				167B883306ED4D650053D305 /* SMMDetailsWindowController.m in Sources */,
 				167B883406ED4D650053D305 /* NSArray-SMMExtensions.m in Sources */,
 				167B883506ED4D650053D305 /* NSString-SMMExtensions.m in Sources */,
+				16C267D815D836C6009F4BE4 /* SNDisclosableView.m in Sources */,
+				16C267D915D836C6009F4BE4 /* SNDisclosureButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -579,11 +544,6 @@
 			isa = PBXTargetDependency;
 			name = SnoizeMIDISpy.framework;
 			targetProxy = 162972C4097B41AA00158D7B /* PBXContainerItemProxy */;
-		};
-		164EA8830E6CD65200D235AB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = All;
-			targetProxy = 164EA8820E6CD65200D235AB /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
