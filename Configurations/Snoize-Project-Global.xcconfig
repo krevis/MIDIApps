@@ -1,15 +1,20 @@
-// Typically build against 10.6
-SDKROOT = macosx10.6
-    // meaning: maximum API usage allowed is 10.6
+// Don't set SDKROOT.
+// We used to set it in order to establish the maximum API we could use,
+// which was typically at least one or two versions behind the latest SDK.
+// Unfortunately, since Apple has been removing "old" SDKs very aggressively,
+// over time, that causes more problems than it solves.
+
+// Minimum machine we'll attempt to run on is 10.5
 MACOSX_DEPLOYMENT_TARGET = 10.5
-    // meaning: minimum machine we'll attempt to run on is 10.5
 
 // ... but Intel 64-bit requires 10.6
-MACOSX_DEPLOYMENT_TARGET_x86_64 = 10.6
+MACOSX_DEPLOYMENT_TARGET[arch=x86_64] = 10.6
 
-// build on all archs that we possibly can
-// (note: the Debug variant sets ONLY_ACTIVE_ARCH to further modify the behavior)
-ARCHS = ${VALID_ARCHS}
+// Build on all archs that we possibly can, not just the native arch.
+// (Note: the Debug variant sets ONLY_ACTIVE_ARCH to further modify the behavior.)
+ARCHS = $(ARCHS_STANDARD_32_64_BIT)
+    // This used to be $(VALID_ARCHS) but for some reason Xcode isn't expanding
+    // that value anymore. Why? Who knows.
 
 // Nice warnings
 GCC_TREAT_WARNINGS_AS_ERRORS = YES
