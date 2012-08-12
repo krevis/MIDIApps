@@ -19,13 +19,13 @@
 
 void SMRequestConcreteImplementation(id self, SEL _cmd)
 {
-    NSString *message = [NSString stringWithFormat:@"Object %@ of class %@ has no concrete implementation of selector %s", self, NSStringFromClass([self class]), NSStringFromSelector(_cmd)];
+    NSString *message = [NSString stringWithFormat:@"Object %@ of class %@ has no concrete implementation of selector %@", self, NSStringFromClass([self class]), NSStringFromSelector(_cmd)];
     NSAssert(NO, message);
 }
 
 void SMRejectUnusedImplementation(id self, SEL _cmd)
 {
-    NSString *message = [NSString stringWithFormat:@"Object %@ of class %@ was sent selector %s which should be not be used", self, NSStringFromClass([self class]), NSStringFromSelector(_cmd)];
+    NSString *message = [NSString stringWithFormat:@"Object %@ of class %@ was sent selector %@ which should be not be used", self, NSStringFromClass([self class]), NSStringFromSelector(_cmd)];
     NSAssert(NO, message);
 }
 
