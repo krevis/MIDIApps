@@ -564,7 +564,7 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0440;
 			};
 			buildConfigurationList = 16F032BA0984B5DD006C8A44 /* Build configuration list for PBXProject "SysExLibrarian" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -836,6 +836,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 16F033300984B760006C8A44 /* Snoize-Application-Debug.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PrecompHeader.h;
 				INFOPLIST_FILE = "Info-SysExLibrarian.plist";
@@ -849,6 +850,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 16F033320984B760006C8A44 /* Snoize-Application-Release.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PrecompHeader.h;
 				INFOPLIST_FILE = "Info-SysExLibrarian.plist";

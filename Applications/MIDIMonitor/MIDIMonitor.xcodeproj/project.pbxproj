@@ -399,7 +399,7 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0440;
 			};
 			buildConfigurationList = 16AF264E097B1EFB00BC87DC /* Build configuration list for PBXProject "MIDIMonitor" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -623,6 +623,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 169E7171097B2203001AFB58 /* Snoize-Application-Release.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PrecompHeader.h;
 				INFOPLIST_FILE = "Info-MIDIMonitor.plist";
@@ -643,6 +644,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 169E716F097B2203001AFB58 /* Snoize-Application-Debug.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PrecompHeader.h;
 				INFOPLIST_FILE = "Info-MIDIMonitor.plist";

@@ -370,7 +370,7 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0440;
 			};
 			buildConfigurationList = 164103D209735F77008DABCC /* Build configuration list for PBXProject "SnoizeMIDISpy" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -491,6 +491,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1641044809736388008DABCC /* Snoize-Framework-Debug.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				INFOPLIST_FILE = "Info-SnoizeMIDISpy.plist";
@@ -503,6 +504,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1641044A09736388008DABCC /* Snoize-Framework-Release.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				INFOPLIST_FILE = "Info-SnoizeMIDISpy.plist";
@@ -514,6 +516,7 @@
 		1641040609735FA6008DABCC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				EXPORTED_SYMBOLS_FILE = Driver/SpyingMIDIDriver.exp;
 				INFOPLIST_FILE = "Info-SpyingMIDIDriver.plist";
 				INSTALL_PATH = "/Library/Audio/MIDI Drivers";
@@ -536,6 +539,7 @@
 		1641040709735FA6008DABCC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				EXPORTED_SYMBOLS_FILE = Driver/SpyingMIDIDriver.exp;
 				INFOPLIST_FILE = "Info-SpyingMIDIDriver.plist";
 				INSTALL_PATH = "/Library/Audio/MIDI Drivers";
