@@ -517,11 +517,18 @@
 				EXPORTED_SYMBOLS_FILE = Driver/SpyingMIDIDriver.exp;
 				INFOPLIST_FILE = "Info-SpyingMIDIDriver.plist";
 				INSTALL_PATH = "/Library/Audio/MIDI Drivers";
-				OTHER_LDFLAGS_i386 = "-framework CoreMIDIServer";
-				OTHER_LDFLAGS_x86_64 = "-framework CoreMIDI";
+				"OTHER_LDFLAGS[arch=i386]" = (
+					"$(inherited)",
+					"-framework",
+					CoreMIDIServer,
+				);
+				"OTHER_LDFLAGS[arch=x86_64]" = (
+					"$(inherited)",
+					"-framework",
+					CoreMIDI,
+				);
 				PRODUCT_NAME = "MIDI Monitor";
-				SDKROOT = macosx10.5;
-				SDKROOT_x86_64 = macosx10.6;
+				"SDKROOT[arch=i386]" = macosx10.5;
 				WRAPPER_EXTENSION = plugin;
 			};
 			name = Debug;
@@ -532,11 +539,18 @@
 				EXPORTED_SYMBOLS_FILE = Driver/SpyingMIDIDriver.exp;
 				INFOPLIST_FILE = "Info-SpyingMIDIDriver.plist";
 				INSTALL_PATH = "/Library/Audio/MIDI Drivers";
-				OTHER_LDFLAGS_i386 = "-framework CoreMIDIServer";
-				OTHER_LDFLAGS_x86_64 = "-framework CoreMIDI";
+				"OTHER_LDFLAGS[arch=i386]" = (
+					"$(inherited)",
+					"-framework",
+					CoreMIDIServer,
+				);
+				"OTHER_LDFLAGS[arch=x86_64]" = (
+					"$(inherited)",
+					"-framework",
+					CoreMIDI,
+				);
 				PRODUCT_NAME = "MIDI Monitor";
-				SDKROOT = macosx10.5;
-				SDKROOT_x86_64 = macosx10.6;
+				"SDKROOT[arch=i386]" = macosx10.5;
 				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = plugin;
 			};
