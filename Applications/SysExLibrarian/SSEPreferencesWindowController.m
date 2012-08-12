@@ -131,10 +131,24 @@ static SSEPreferencesWindowController *controller = nil;
     openPanel = [NSOpenPanel openPanel];
     [openPanel setCanChooseDirectories:YES];
     [openPanel setCanChooseFiles:NO];
+    [openPanel setAllowsMultipleSelection:NO];
 
     oldPath = [[SSELibrary sharedLibrary] fileDirectoryPath];
+    
+    if ([openPanel respondsToSelector:@selector(beginSheetModalForWindow:completionHandler:)]) {
+        [openPanel setDirectoryURL:[NSURL fileURLWithPath:oldPath isDirectory:YES]];
+        [openPanel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
+            [self openPanelDidEnd:openPanel returnCode:result contextInfo:NULL];
+        }];
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        
+        [openPanel beginSheetForDirectory:oldPath file:nil types:nil modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+        
+#pragma clang diagnostic pop
+    }
 
-    [openPanel beginSheetForDirectory:oldPath file:nil types:nil modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
 - (IBAction)changeReadTimeOut:(id)sender;
@@ -220,9 +234,12 @@ static SSEPreferencesWindowController *controller = nil;
 - (void)openPanelDidEnd:(NSOpenPanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 {
     if (returnCode == NSOKButton) {
-        [[SSELibrary sharedLibrary] setFileDirectoryPath:[[sheet filenames] objectAtIndex:0]];
-        [self synchronizeDefaults];
-        [self synchronizeControls];
+        if ([[sheet URLs] count] == 1) {
+            NSURL* url = [[sheet URLs] objectAtIndex:0];
+            [[SSELibrary sharedLibrary] setFileDirectoryPath:[url path]];
+            [self synchronizeDefaults];
+            [self synchronizeControls];
+        }
     }
 }
 
