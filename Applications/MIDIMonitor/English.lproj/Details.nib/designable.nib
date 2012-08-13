@@ -40,7 +40,7 @@
 			<object class="NSWindowTemplate" id="438195812">
 				<int key="NSWindowStyleMask">15</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{110, 714}, {494, 380}}</string>
+				<string key="NSWindowRect">{{89, 431}, {494, 380}}</string>
 				<int key="NSWTFlags">1886912512</int>
 				<string key="NSWindowTitle">Invalid Message</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -63,7 +63,7 @@
 									<array class="NSMutableArray" key="NSSubviews">
 										<object class="NSTextView" id="179304967">
 											<reference key="NSNextResponder" ref="1027255765"/>
-											<int key="NSvFlags">274</int>
+											<int key="NSvFlags">2322</int>
 											<set class="NSMutableSet" key="NSDragTypes">
 												<string>Apple HTML pasteboard type</string>
 												<string>Apple PDF pasteboard type</string>
