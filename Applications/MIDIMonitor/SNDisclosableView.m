@@ -325,10 +325,16 @@ const float kDefaultHiddenHeight = 0.0;
     }
 
     // Finally we can resize the window.
-    if ([window isVisible])
+    if ([window isVisible]) {
+        BOOL didPreserve = [window preservesContentDuringLiveResize];
+        [window setPreservesContentDuringLiveResize:NO];
+
         [window setFrame:newWindowFrame display:YES animate:YES];
-    else
+        
+        [window setPreservesContentDuringLiveResize:didPreserve];
+    } else {
         [window setFrame:newWindowFrame display:NO];
+    }
 
     // Adjust the window's min and max sizes to make sense.
     newWindowMinOrMaxSize = [window minSize];
