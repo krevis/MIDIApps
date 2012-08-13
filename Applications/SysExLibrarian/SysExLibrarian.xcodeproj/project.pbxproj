@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		161B721115D8E9BC006E21D4 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 161B720815D8E97D006E21D4 /* Sparkle.framework */; };
+		161B721315D8EA13006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B721215D8EA13006E21D4 /* dsa_pub.pem */; };
+		161B721615D8EA7F006E21D4 /* SysExLibrarian.xml in Resources */ = {isa = PBXBuildFile; fileRef = 161B721515D8EA7F006E21D4 /* SysExLibrarian.xml */; };
 		163E35AB09E9EFA600138102 /* NSFileManager-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 163E35A909E9EFA600138102 /* NSFileManager-Extensions.m */; };
 		1658B8AB09F36B5F00F42BFB /* SSESysexSpeedOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1658B8A909F36B5E00F42BFB /* SSESysexSpeedOutlineView.m */; };
 		16666D850AB404250084C23B /* CocoaCryptoHashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 16666D830AB404250084C23B /* CocoaCryptoHashing.m */; };
@@ -70,6 +73,41 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		161B720715D8E97D006E21D4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 161B71FF15D8E97C006E21D4 /* Sparkle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
+			remoteInfo = Sparkle;
+		};
+		161B720915D8E97D006E21D4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 161B71FF15D8E97C006E21D4 /* Sparkle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 61B5F90209C4CEE200B25A18;
+			remoteInfo = "Sparkle Test App";
+		};
+		161B720B15D8E97D006E21D4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 161B71FF15D8E97C006E21D4 /* Sparkle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 612279D90DB5470200AB99EA;
+			remoteInfo = "Sparkle Unit Tests";
+		};
+		161B720D15D8E97D006E21D4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 161B71FF15D8E97C006E21D4 /* Sparkle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5D06E8D00FD68C7C005AE3F6;
+			remoteInfo = BinaryDelta;
+		};
+		161B720F15D8E97D006E21D4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 161B71FF15D8E97C006E21D4 /* Sparkle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 55C14BB7136EEF1500649790;
+			remoteInfo = finish_installation;
+		};
 		1651E78414A9724300EF79CD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */;
@@ -108,13 +146,15 @@
 
 /* Begin PBXFileReference section */
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		161B71FF15D8E97C006E21D4 /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = ../../ThirdParty/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
+		161B721215D8EA13006E21D4 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dsa_pub.pem; path = ../../Updates/dsa_pub.pem; sourceTree = "<group>"; };
+		161B721515D8EA7F006E21D4 /* SysExLibrarian.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = SysExLibrarian.xml; path = ../../Updates/SysExLibrarian.xml; sourceTree = "<group>"; };
 		163E35A809E9EFA600138102 /* NSFileManager-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSFileManager-Extensions.h"; sourceTree = "<group>"; };
 		163E35A909E9EFA600138102 /* NSFileManager-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager-Extensions.m"; sourceTree = "<group>"; };
 		1658B8A809F36B5E00F42BFB /* SSESysexSpeedOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSESysexSpeedOutlineView.h; sourceTree = "<group>"; };
 		1658B8A909F36B5E00F42BFB /* SSESysexSpeedOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSESysexSpeedOutlineView.m; sourceTree = "<group>"; };
 		16666D820AB404250084C23B /* CocoaCryptoHashing.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CocoaCryptoHashing.h; sourceTree = "<group>"; };
 		16666D830AB404250084C23B /* CocoaCryptoHashing.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CocoaCryptoHashing.m; sourceTree = "<group>"; };
-		16666E440AB405740084C23B /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = /usr/lib/libcrypto.dylib; sourceTree = "<absolute>"; };
 		169A4DC404D376F8007059A2 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SysExSpeed.nib; sourceTree = "<group>"; };
 		16DC48480AB3A359002ECBD6 /* SSESysExSpeedController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SSESysExSpeedController.h; sourceTree = "<group>"; };
 		16DC48490AB3A359002ECBD6 /* SSESysExSpeedController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SSESysExSpeedController.m; sourceTree = "<group>"; };
@@ -219,6 +259,7 @@
 				16F0338B0984B76F006C8A44 /* CoreMIDI.framework in Frameworks */,
 				16F0338D0984B76F006C8A44 /* Carbon.framework in Frameworks */,
 				16F034250984BA49006C8A44 /* SnoizeMIDI.framework in Frameworks */,
+				161B721115D8E9BC006E21D4 /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -231,7 +272,6 @@
 				1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */,
 				F539E386020F2C2F01000164 /* Carbon.framework */,
 				F559F8FA01DEC0C601000164 /* CoreMIDI.framework */,
-				16666E440AB405740084C23B /* libcrypto.dylib */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -243,6 +283,26 @@
 				2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */,
 			);
 			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		161B720015D8E97C006E21D4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				161B720815D8E97D006E21D4 /* Sparkle.framework */,
+				161B720A15D8E97D006E21D4 /* Sparkle Test App.app */,
+				161B720C15D8E97D006E21D4 /* Sparkle Unit Tests.octest */,
+				161B720E15D8E97D006E21D4 /* BinaryDelta */,
+				161B721015D8E97D006E21D4 /* finish_installation.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		161B721415D8EA71006E21D4 /* Updates */ = {
+			isa = PBXGroup;
+			children = (
+				161B721515D8EA7F006E21D4 /* SysExLibrarian.xml */,
+			);
+			name = Updates;
 			sourceTree = "<group>";
 		};
 		16F032D20984B6F3006C8A44 /* Configurations */ = {
@@ -262,6 +322,7 @@
 			isa = PBXGroup;
 			children = (
 				16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */,
+				161B71FF15D8E97C006E21D4 /* Sparkle.xcodeproj */,
 			);
 			name = "Other Projects";
 			sourceTree = "<group>";
@@ -293,6 +354,7 @@
 				16F032D20984B6F3006C8A44 /* Configurations */,
 				16F032D50984B6FB006C8A44 /* Other Projects */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
+				161B721415D8EA71006E21D4 /* Updates */,
 			);
 			name = SysExLibrarian;
 			sourceTree = "<group>";
@@ -345,6 +407,7 @@
 				F5308FEC0233012701000164 /* Toolbar Images */,
 				F5D90FE4021630C101000164 /* docs.htmld */,
 				F597D8FC026BC47A01000164 /* Read Me.html */,
+				161B721215D8EA13006E21D4 /* dsa_pub.pem */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -583,6 +646,10 @@
 					ProductGroup = 16F0332B0984B74B006C8A44 /* Products */;
 					ProjectRef = 16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */;
 				},
+				{
+					ProductGroup = 161B720015D8E97C006E21D4 /* Products */;
+					ProjectRef = 161B71FF15D8E97C006E21D4 /* Sparkle.xcodeproj */;
+				},
 			);
 			projectRoot = ../..;
 			targets = (
@@ -592,6 +659,41 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		161B720815D8E97D006E21D4 /* Sparkle.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Sparkle.framework;
+			remoteRef = 161B720715D8E97D006E21D4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		161B720A15D8E97D006E21D4 /* Sparkle Test App.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "Sparkle Test App.app";
+			remoteRef = 161B720915D8E97D006E21D4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		161B720C15D8E97D006E21D4 /* Sparkle Unit Tests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Sparkle Unit Tests.octest";
+			remoteRef = 161B720B15D8E97D006E21D4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		161B720E15D8E97D006E21D4 /* BinaryDelta */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = BinaryDelta;
+			remoteRef = 161B720D15D8E97D006E21D4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		161B721015D8E97D006E21D4 /* finish_installation.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = finish_installation.app;
+			remoteRef = 161B720F15D8E97D006E21D4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		1651E78514A9724300EF79CD /* libSnoizeMIDIiOS.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -638,6 +740,8 @@
 				16F0336B0984B76F006C8A44 /* SysExLibrarian.strings in Resources */,
 				16F0336C0984B76F006C8A44 /* SysExSpeed.nib in Resources */,
 				16F0384C0984C9D7006C8A44 /* Defaults.plist in Resources */,
+				161B721315D8EA13006E21D4 /* dsa_pub.pem in Resources */,
+				161B721615D8EA7F006E21D4 /* SysExLibrarian.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -837,6 +941,10 @@
 			baseConfigurationReference = 16F033300984B760006C8A44 /* Snoize-Application-Debug.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../../Library/Developer/Xcode/DerivedData/MIDIApps-ebblttgvuqergyalshlldsfqjcnw/Build/Products/Debug\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PrecompHeader.h;
 				INFOPLIST_FILE = "Info-SysExLibrarian.plist";
@@ -851,6 +959,10 @@
 			baseConfigurationReference = 16F033320984B760006C8A44 /* Snoize-Application-Release.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../../Library/Developer/Xcode/DerivedData/MIDIApps-ebblttgvuqergyalshlldsfqjcnw/Build/Products/Debug\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PrecompHeader.h;
 				INFOPLIST_FILE = "Info-SysExLibrarian.plist";
