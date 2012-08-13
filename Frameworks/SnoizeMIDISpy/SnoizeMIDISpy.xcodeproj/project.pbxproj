@@ -28,8 +28,6 @@
 		1641040009735FA6008DABCC /* MessageQueue.c in Sources */ = {isa = PBXBuildFile; fileRef = F540CCB4023F41B101000164 /* MessageQueue.c */; };
 		1641040209735FA6008DABCC /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F540CCC3023F42EA01000164 /* CoreFoundation.framework */; };
 		1641040E09735FA6008DABCC /* MIDI Monitor.plugin in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1641040B09735FA6008DABCC /* MIDI Monitor.plugin */; };
-		1641050E09736949008DABCC /* GenLinkedList.c in Sources */ = {isa = PBXBuildFile; fileRef = 1641050C09736949008DABCC /* GenLinkedList.c */; };
-		1641050F09736949008DABCC /* GenLinkedList.h in Headers */ = {isa = PBXBuildFile; fileRef = 1641050D09736949008DABCC /* GenLinkedList.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,8 +66,6 @@
 		1641044B09736388008DABCC /* Snoize-Project-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Debug.xcconfig"; path = "../../Configurations/Snoize-Project-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		1641044C09736388008DABCC /* Snoize-Project-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Global.xcconfig"; path = "../../Configurations/Snoize-Project-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
 		1641044D09736388008DABCC /* Snoize-Project-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Release.xcconfig"; path = "../../Configurations/Snoize-Project-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
-		1641050C09736949008DABCC /* GenLinkedList.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; lineEnding = 0; path = GenLinkedList.c; sourceTree = "<group>"; };
-		1641050D09736949008DABCC /* GenLinkedList.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = GenLinkedList.h; sourceTree = "<group>"; };
 		F53956EE0256D06A01000164 /* MIDISpyShared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIDISpyShared.h; sourceTree = SOURCE_ROOT; };
 		F540CCAD023F41B101000164 /* MIDIDriverClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIDIDriverClass.h; sourceTree = "<group>"; };
 		F540CCAE023F41B101000164 /* MIDIDriver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MIDIDriver.cpp; sourceTree = "<group>"; };
@@ -166,8 +162,6 @@
 				F5B4DD94025DA04101000164 /* MIDISpyDriverInstallation.c */,
 				F551C2DC032756AF01000164 /* FSCopyObject.h */,
 				F551C2DB032756AF01000164 /* FSCopyObject.c */,
-				1641050D09736949008DABCC /* GenLinkedList.h */,
-				1641050C09736949008DABCC /* GenLinkedList.c */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -300,7 +294,6 @@
 				164103DC09735FA5008DABCC /* MIDISpyClient.h in Headers */,
 				164103DD09735FA5008DABCC /* MIDISpyDriverInstallation.h in Headers */,
 				164103DF09735FA5008DABCC /* FSCopyObject.h in Headers */,
-				1641050F09736949008DABCC /* GenLinkedList.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -432,7 +425,6 @@
 				164103E309735FA5008DABCC /* MIDISpyClient.c in Sources */,
 				164103E409735FA5008DABCC /* MIDISpyDriverInstallation.c in Sources */,
 				164103E509735FA5008DABCC /* FSCopyObject.c in Sources */,
-				1641050E09736949008DABCC /* GenLinkedList.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
