@@ -90,7 +90,7 @@ NSString *SMMSaveSysExWithEOXAlwaysPreferenceKey = @"SMMSaveSysExWithEOXAlways";
             title = NSLocalizedStringFromTableInBundle(@"Error", @"MIDIMonitor", SMBundleForObject(self), "title of error alert sheet");
             text = NSLocalizedStringFromTableInBundle(@"The file could not be saved.", @"MIDIMonitor", SMBundleForObject(self), "message when writing sysex data to a file fails");
 
-            NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, text);
+            NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"%@", text);
         }
     }
 }
