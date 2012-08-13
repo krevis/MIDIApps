@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"  xmlns:dc="http://purl.org/dc/elements/1.1/">
+   <channel>
+      <title>MIDI Monitor's Changelog</title>
+      <link>http://www.snoize.com/MIDIMonitor/MIDIMonitor.xml</link>
+      <description>Most recent changes with links to updates.</description>
+      <language>en</language>
+         <item>
+            <title>Version 1.3.1 (2 bugs fixed; 3 new features)</title>
+            <description><![CDATA[
+                 <h2>New Features</h2>
+                 <p>Blah blah blah</p>
+            ]]>
+            </description>
+            <pubDate>Mon, 13 Aug 2012 00:26:10 -0700</pubDate>
+            <enclosure url="http://www.snoize.com/MIDIMonitor/MIDIMonitor_1_3_1.zip" sparkle:version="1.3.1" length="1623481" type="application/octet-stream" sparkle:dsaSignature="BAFJW4B6B1K1JyW30nbkBwainOzrN6EQuAh" />
+         </item>
+   </channel>
+</rss>
