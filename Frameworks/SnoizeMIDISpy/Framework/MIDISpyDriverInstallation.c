@@ -53,7 +53,12 @@ SInt32 MIDISpyInstallDriverIfNecessary()
     UInt32 ourDriverVersion;
     CFURLRef installedDriverURL = NULL;
     UInt32 installedDriverVersion;
+    Boolean foundInstalledDriver;
 
+    // Look for the installed driver first, before we make a bundle for the driver in our framework.
+    foundInstalledDriver = FindInstalledDriver(&installedDriverURL, &installedDriverVersion);
+
+    // Then search for the copy of the driver in our framework.
     if (!FindDriverInFramework(&ourDriverURL, &ourDriverVersion)) {
         returnStatus =  kMIDISpyDriverInstallationFailed;
         goto done;
@@ -61,7 +66,7 @@ SInt32 MIDISpyInstallDriverIfNecessary()
 
     // TODO There might be more than one "installed" driver. (What does CFPlugIn do in that case?)
     // TODO Or someone might have left a directory with our plugin name in the way, but w/o proper plugin files in it. Who knows.
-    if (FindInstalledDriver(&installedDriverURL, &installedDriverVersion)) {
+    if (foundInstalledDriver) {
         if (installedDriverVersion == ourDriverVersion) {
             returnStatus = kMIDISpyDriverAlreadyInstalled;
             goto done;
@@ -153,6 +158,9 @@ static Boolean FindInstalledDriver(CFURLRef *urlPtr, UInt32 *versionPtr)
     driverBundle = CFBundleGetBundleWithIdentifier(kSpyingMIDIDriverPlugInIdentifier);
     if (!driverBundle) {
         debug_string("MIDISpyClient: Couldn't find an installed driver");
+    } else if (!CFArrayContainsValue(createdBundles, CFRangeMake(0, CFArrayGetCount(createdBundles)), driverBundle)) {
+        // The driver we found is not in one of the standard locations. Ignore it.
+        debug_string("MIDISpyClient: Found driver bundle in a non-standard location, ignoring");
     } else {
         // Remember the URL and version of the bundle.
         driverURL = CFBundleCopyBundleURL(driverBundle);
