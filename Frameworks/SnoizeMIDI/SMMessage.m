@@ -24,6 +24,8 @@
 
 static NSString *formatNoteNumberWithBaseOctave(Byte noteNumber, int octave);
 
+- (void)_setTimeStamp:(MIDITimeStamp)aTimeStamp;
+
 @end
 
 
@@ -240,7 +242,7 @@ NSString *SMExpertModePreferenceKey = @"SMExpertMode";
     if (!(self = [super init]))
         return nil;
 
-    timeStamp = aTimeStamp;
+    [self _setTimeStamp:aTimeStamp];
     timeBase = [[SMMessageTimeBase currentTimeBase] retain];
     statusByte = aStatusByte;
         
@@ -273,8 +275,13 @@ NSString *SMExpertModePreferenceKey = @"SMExpertMode";
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder
-{    
-    [coder encodeInt64:timeStamp forKey:@"timeStamp"];
+{
+    UInt64 nanos = SMConvertHostTimeToNanos(timeStamp);
+    [coder encodeInt64:nanos forKey:@"timeStampInNanos"];
+    
+    [coder encodeInt64:(timeStampWasZeroWhenReceived ? 0 : timeStamp) forKey:@"timeStamp"];
+        // for backwards compatibility
+
     [coder encodeObject:timeBase forKey:@"timeBase"];
     [coder encodeInt:statusByte forKey:@"statusByte"];
     [coder encodeObject:[self originatingEndpointForDisplay] forKey:@"originatingEndpoint"];
@@ -283,7 +290,15 @@ NSString *SMExpertModePreferenceKey = @"SMExpertMode";
 - (id)initWithCoder:(NSCoder *)decoder
 {
     if ((self = [super init])) {
-        timeStamp = [decoder decodeInt64ForKey:@"timeStamp"]; 
+        MIDITimeStamp aTimeStamp;
+        if ([decoder containsValueForKey:@"timeStampInNanos"]) {
+            UInt64 nanos = [decoder decodeInt64ForKey:@"timeStampInNanos"];
+            aTimeStamp = SMConvertNanosToHostTime(nanos);
+        } else {
+            // fall back to old, inaccurate method
+            aTimeStamp = [decoder decodeInt64ForKey:@"timeStamp"];
+        }
+        [self _setTimeStamp:aTimeStamp];
 
         id maybeTimeBase = [decoder decodeObjectForKey:@"timeBase"];
         if ([maybeTimeBase isKindOfClass:[SMMessageTimeBase class]]) {
@@ -316,12 +331,7 @@ fail:
 
 - (void)setTimeStamp:(MIDITimeStamp)newTimeStamp
 {
-    timeStamp = newTimeStamp;
-}
-
-- (void)setTimeStampToNow;
-{
-    [self setTimeStamp:SMGetCurrentHostTime()];
+    [self _setTimeStamp:newTimeStamp];
 }
 
 - (Byte)statusByte
@@ -384,13 +394,16 @@ fail:
 {
     int option = [[NSUserDefaults standardUserDefaults] integerForKey:SMTimeFormatPreferenceKey];
     
+    BOOL displayZero = timeStampWasZeroWhenReceived && [[NSUserDefaults standardUserDefaults] boolForKey:SMExpertModePreferenceKey];
+    MIDITimeStamp displayTimeStamp = displayZero ? 0 : timeStamp;
+    
     switch (option) {
         case SMTimeFormatHostTimeInteger:
         {
             // We have 2^64 possible values, which comes out to 1.8e19. So we need at most 20 digits. (Add one for the trailing \0.)
             char buf[21];
             
-            snprintf(buf, sizeof(buf), "%llu", timeStamp);
+            snprintf(buf, sizeof(buf), "%llu", displayTimeStamp);
             return [NSString stringWithUTF8String:buf];
         }
             
@@ -399,7 +412,7 @@ fail:
             // 64 bits at 4 bits/character = 16 characters max. (Add one for the trailing \0.)
             char buf[17];
             
-            snprintf(buf, sizeof(buf), "%016llX", timeStamp);
+            snprintf(buf, sizeof(buf), "%016llX", displayTimeStamp);
             return [NSString stringWithUTF8String:buf];
         }
             
@@ -407,18 +420,18 @@ fail:
         {
             char buf[21];
             
-            snprintf(buf, 21, "%llu", SMConvertHostTimeToNanos(timeStamp));
+            snprintf(buf, 21, "%llu", SMConvertHostTimeToNanos(displayTimeStamp));
             return [NSString stringWithUTF8String:buf];
         }
             
         case SMTimeFormatHostTimeSeconds:
-            return [NSString stringWithFormat:@"%.3lf", SMConvertHostTimeToNanos(timeStamp) / 1.0e9];
+            return [NSString stringWithFormat:@"%.3lf", SMConvertHostTimeToNanos(displayTimeStamp) / 1.0e9];
             
         case SMTimeFormatClockTime:
         default:
         {
-            if (timeStamp == 0) {
-                return NSLocalizedStringFromTableInBundle(@"*** ZERO ***", @"SnoizeMIDI", SMBundleForObject(self), "zero timestamp formatted as clock time");
+            if (displayZero) {
+                return NSLocalizedStringFromTableInBundle(@"NOW", @"SnoizeMIDI", SMBundleForObject(self), "zero timestamp formatted as clock time in expert mode");
             } else {
                 static NSDateFormatter *timeStampDateFormatter = nil;
                 if (!timeStampDateFormatter) {
@@ -426,7 +439,7 @@ fail:
                     [timeStampDateFormatter setDateFormat:@"HH:mm:ss.SSS"];
                 }
 
-                UInt64 timeStampInNanos = SMConvertHostTimeToNanos(timeStamp);
+                UInt64 timeStampInNanos = SMConvertHostTimeToNanos(displayTimeStamp);
                 UInt64 hostTimeBaseInNanos = SMConvertHostTimeToNanos([timeBase hostTime]);
                 SInt64 timeDelta = timeStampInNanos - hostTimeBaseInNanos;  // may be negative!
                 NSTimeInterval timeStampInterval = timeDelta / 1.0e9;
@@ -486,6 +499,12 @@ static NSString *formatNoteNumberWithBaseOctave(Byte noteNumber, int octave)
     static char *noteNames[] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
     return [NSString stringWithFormat:@"%s%d", noteNames[noteNumber % 12], octave + noteNumber / 12];
+}
+
+- (void)_setTimeStamp:(MIDITimeStamp)newTimeStamp
+{
+    timeStampWasZeroWhenReceived = (newTimeStamp == 0);
+    timeStamp = timeStampWasZeroWhenReceived ? SMGetCurrentHostTime() : newTimeStamp;
 }
 
 @end

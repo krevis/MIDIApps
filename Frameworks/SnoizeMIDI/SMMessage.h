@@ -99,6 +99,7 @@ extern NSString *SMExpertModePreferenceKey;
     SMMessageTimeBase *timeBase;
     Byte statusByte;
     id originatingEndpointOrName;   // either SMEndpoint or NSString
+    BOOL timeStampWasZeroWhenReceived;
 }
 
 + (NSString *)formatNoteNumber:(Byte)noteNumber;
@@ -121,7 +122,6 @@ extern NSString *SMExpertModePreferenceKey;
 
 - (MIDITimeStamp)timeStamp;
 - (void)setTimeStamp:(MIDITimeStamp)value;
-- (void)setTimeStampToNow;
 
 - (Byte)statusByte;
     // First MIDI byte
