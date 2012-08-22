@@ -278,6 +278,7 @@ NSString *SMExpertModePreferenceKey = @"SMExpertMode";
 {
     UInt64 nanos = SMConvertHostTimeToNanos(timeStamp);
     [coder encodeInt64:nanos forKey:@"timeStampInNanos"];
+    [coder encodeBool:timeStampWasZeroWhenReceived forKey:@"timeStampWasZeroWhenReceived"];
     
     [coder encodeInt64:(timeStampWasZeroWhenReceived ? 0 : timeStamp) forKey:@"timeStamp"];
         // for backwards compatibility
@@ -290,15 +291,16 @@ NSString *SMExpertModePreferenceKey = @"SMExpertMode";
 - (id)initWithCoder:(NSCoder *)decoder
 {
     if ((self = [super init])) {
-        MIDITimeStamp aTimeStamp;
         if ([decoder containsValueForKey:@"timeStampInNanos"]) {
             UInt64 nanos = [decoder decodeInt64ForKey:@"timeStampInNanos"];
-            aTimeStamp = SMConvertNanosToHostTime(nanos);
+            timeStamp = SMConvertNanosToHostTime(nanos);
+            timeStampWasZeroWhenReceived = [decoder decodeBoolForKey:@"timeStampWasZeroWhenReceived"];
         } else {
             // fall back to old, inaccurate method
-            aTimeStamp = [decoder decodeInt64ForKey:@"timeStamp"];
+            // (we stored HostTime but not the ratio to convert it to nanoseconds)
+            timeStamp = [decoder decodeInt64ForKey:@"timeStamp"];
+            timeStampWasZeroWhenReceived = (timeStamp == 0);
         }
-        [self _setTimeStamp:aTimeStamp];
 
         id maybeTimeBase = [decoder decodeObjectForKey:@"timeBase"];
         if ([maybeTimeBase isKindOfClass:[SMMessageTimeBase class]]) {
@@ -431,7 +433,7 @@ fail:
         default:
         {
             if (displayZero) {
-                return NSLocalizedStringFromTableInBundle(@"NOW", @"SnoizeMIDI", SMBundleForObject(self), "zero timestamp formatted as clock time in expert mode");
+                return @"0";
             } else {
                 static NSDateFormatter *timeStampDateFormatter = nil;
                 if (!timeStampDateFormatter) {

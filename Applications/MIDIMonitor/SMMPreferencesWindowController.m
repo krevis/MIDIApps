@@ -188,9 +188,9 @@ static SMMPreferencesWindowController *controller;
     NSString* text;
 
     if (expertMode)
-        text = NSLocalizedStringWithDefaultValue(@"EXPERT_ON", @"MIDIMonitor", SMBundleForObject(self), @"• Note On with velocity 0 shows as Note On\n• Zero timestamp (meaning \"send now\") shows NOW", "Explanation when expert mode is on");
+        text = NSLocalizedStringWithDefaultValue(@"EXPERT_ON", @"MIDIMonitor", SMBundleForObject(self), @"• Note On with velocity 0 shows as Note On\n• Zero timestamp shows 0", "Explanation when expert mode is on");
     else
-        text = NSLocalizedStringWithDefaultValue(@"EXPERT_OFF", @"MIDIMonitor", SMBundleForObject(self), @"• Note On with velocity 0 shows as Note Off\n• Zero timestamp (meaning \"send now\") shows time received", "Explanation when expert mode is on");
+        text = NSLocalizedStringWithDefaultValue(@"EXPERT_OFF", @"MIDIMonitor", SMBundleForObject(self), @"• Note On with velocity 0 shows as Note Off\n• Zero timestamp shows time received", "Explanation when expert mode is off");
     
     [expertModeTextField setStringValue:text];
 }
