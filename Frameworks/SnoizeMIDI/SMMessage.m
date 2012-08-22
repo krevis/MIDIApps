@@ -442,7 +442,7 @@ fail:
                 }
 
                 UInt64 timeStampInNanos = SMConvertHostTimeToNanos(displayTimeStamp);
-                UInt64 hostTimeBaseInNanos = SMConvertHostTimeToNanos([timeBase hostTime]);
+                UInt64 hostTimeBaseInNanos = [timeBase hostTimeInNanos];
                 SInt64 timeDelta = timeStampInNanos - hostTimeBaseInNanos;  // may be negative!
                 NSTimeInterval timeStampInterval = timeDelta / 1.0e9;
                 NSDate* date = [NSDate dateWithTimeIntervalSinceReferenceDate:([timeBase timeInterval] + timeStampInterval)];
