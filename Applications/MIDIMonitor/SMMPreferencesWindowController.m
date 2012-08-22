@@ -25,6 +25,7 @@
 
 - (void)synchronizeDefaults;
 - (void)sendDisplayPreferenceChangedNotification;
+- (void)updateExpertModeTextField;
 
 @end
 
@@ -77,6 +78,9 @@ static SMMPreferencesWindowController *controller;
     [controllerFormatMatrix selectCellWithTag:[defaults integerForKey: SMControllerFormatPreferenceKey]];
 	[dataFormatMatrix selectCellWithTag:[defaults integerForKey: SMDataFormatPreferenceKey]];
 
+    [expertModeCheckbox setIntValue:[defaults boolForKey:SMExpertModePreferenceKey]];
+    [self updateExpertModeTextField];
+    
     [autoSelectOrdinarySourcesCheckbox setIntValue:[defaults boolForKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey]];
     [autoSelectVirtualDestinationCheckbox setIntValue:[defaults boolForKey:SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey]];
     [autoSelectSpyingDestinationsCheckbox setIntValue:[defaults boolForKey:SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey]];
@@ -155,6 +159,14 @@ static SMMPreferencesWindowController *controller;
     [self synchronizeDefaults];
 }
 
+- (IBAction)changeExpertMode:(id)sender
+{
+	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMExpertModePreferenceKey];
+    [self synchronizeDefaults];
+    [self updateExpertModeTextField];
+    [self sendDisplayPreferenceChangedNotification];
+}
+
 @end
 
 
@@ -168,6 +180,19 @@ static SMMPreferencesWindowController *controller;
 - (void)sendDisplayPreferenceChangedNotification;
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:SMMDisplayPreferenceChangedNotification object:nil];
+}
+
+- (void)updateExpertModeTextField
+{
+    BOOL expertMode = [[NSUserDefaults standardUserDefaults] boolForKey:SMExpertModePreferenceKey];
+    NSString* text;
+
+    if (expertMode)
+        text = NSLocalizedStringWithDefaultValue(@"EXPERT_ON", @"MIDIMonitor", SMBundleForObject(self), @"• Note On with velocity 0 shows as Note On\n• Zero timestamp (meaning \"send now\") shows NOW", "Explanation when expert mode is on");
+    else
+        text = NSLocalizedStringWithDefaultValue(@"EXPERT_OFF", @"MIDIMonitor", SMBundleForObject(self), @"• Note On with velocity 0 shows as Note Off\n• Zero timestamp (meaning \"send now\") shows time received", "Explanation when expert mode is on");
+    
+    [expertModeTextField setStringValue:text];
 }
 
 @end

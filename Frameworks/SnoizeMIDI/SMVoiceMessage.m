@@ -134,7 +134,11 @@ fail:
 {
     switch ([self status]) {
         case SMVoiceMessageStatusNoteOn:
-            if (dataBytes[1] != 0)
+            // In the MIDI specification, Note On with 0 velocity is defined to have
+            // the exact same meaning as Note Off (with 0 velocity).
+            // In non-expert mode, show these events as Note Offs.
+            // In expert mode, show them as Note Ons.
+            if (dataBytes[1] != 0 || [[NSUserDefaults standardUserDefaults] boolForKey:SMExpertModePreferenceKey])
                 return NSLocalizedStringFromTableInBundle(@"Note On", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of Note On event");
             // else fall through to Note Off
 

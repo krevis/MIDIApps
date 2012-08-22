@@ -27,6 +27,8 @@
     IBOutlet NSButton *openWindowsForNewSourcesCheckbox;
     IBOutlet NSButton *askBeforeClosingModifiedWindowCheckbox;
     IBOutlet NSMatrix *alwaysSaveSysExWithEOXMatrix;
+    IBOutlet NSButton *expertModeCheckbox;
+    IBOutlet NSTextField *expertModeTextField;
 }
 
 + (SMMPreferencesWindowController *)preferencesWindowController;
@@ -43,6 +45,7 @@
 - (IBAction)changeOpenWindowsForNewSources:(id)sender;
 - (IBAction)changeAskBeforeClosingModifiedWindow:(id)sender;
 - (IBAction)changeAlwaysSaveSysExWithEOX:(id)sender;
+- (IBAction)changeExpertMode:(id)sender;
 
 @end
 

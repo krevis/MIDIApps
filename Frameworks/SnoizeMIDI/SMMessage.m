@@ -33,6 +33,7 @@ NSString *SMNoteFormatPreferenceKey = @"SMNoteFormat";
 NSString *SMControllerFormatPreferenceKey = @"SMControllerFormat";
 NSString *SMDataFormatPreferenceKey = @"SMDataFormat";
 NSString *SMTimeFormatPreferenceKey = @"SMTimeFormat";
+NSString *SMExpertModePreferenceKey = @"SMExpertMode";
 
 + (NSString *)formatNoteNumber:(Byte)noteNumber;
 {

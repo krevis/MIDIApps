@@ -91,6 +91,7 @@ extern NSString *SMNoteFormatPreferenceKey;
 extern NSString *SMControllerFormatPreferenceKey;
 extern NSString *SMDataFormatPreferenceKey;
 extern NSString *SMTimeFormatPreferenceKey;
+extern NSString *SMExpertModePreferenceKey;
 
 @interface SMMessage : NSObject <NSCopying, NSCoding>
 {
