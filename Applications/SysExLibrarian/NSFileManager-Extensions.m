@@ -22,17 +22,18 @@
     }
     
     // Standardize the path and follow symlinks, so we won't hit any symlinks later on
+    NSString* originalFilePath = newFilePath;
     newFilePath = [[newFilePath stringByStandardizingPath] stringByResolvingSymlinksInPath];
 
     if (!newFilePath || [newFilePath length] == 0 || ![newFilePath isAbsolutePath]) {
-        [NSException raise: NSGenericException format: @"Cannot create path to invalid file: '%@'.", newFilePath]; 
+        [NSException raise: NSGenericException format: @"After standardizing '%@', cannot create path to invalid file: '%@'.", originalFilePath, newFilePath];
     }
     
     NSArray* components = [newFilePath pathComponents];
     unsigned int componentCount = [components count];
     
     if (componentCount <= 1) {
-        [NSException raise: NSGenericException format: @"Cannot create path to invalid file: '%@'", newFilePath]; 
+        [NSException raise: NSGenericException format: @"After standardizing '%@', cannot create path to invalid file with no components: '%@'.", originalFilePath, newFilePath];
     }
 
     unsigned int componentIndex;

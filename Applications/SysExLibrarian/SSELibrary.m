@@ -624,14 +624,14 @@ NSString *SSESysExFileExtension = @"syx";
         // The directory doesn't exist. Try to create it.        
         NSString *bogusFilePath;
 
-        bogusFilePath = [fileDirectoryPath stringByAppendingPathComponent:@"bogus"];        
+        bogusFilePath = [fileDirectoryPath stringByAppendingPathComponent:@"file"];
         NS_DURING {
             [fileManager SSE_createPathToFile:bogusFilePath attributes:nil];
         } NS_HANDLER {
             NSString *format;
 
-            format = NSLocalizedStringFromTableInBundle(@"The folder %@ could not be created.", @"SysExLibrarian", SMBundleForObject(self), "error message if sysex file directory can't be created");            
-            return [NSString stringWithFormat:format, fileDirectoryPath];
+            format = NSLocalizedStringFromTableInBundle(@"The folder %@ could not be created.\n%@", @"SysExLibrarian", SMBundleForObject(self), "error message if sysex file directory can't be created");            
+            return [NSString stringWithFormat:format, fileDirectoryPath, [localException reason]];
         } NS_ENDHANDLER;
 
         // We succeeded in creating the directory, so now update the alias we have saved.
