@@ -24,7 +24,7 @@
 <P>
 Musicians will find it handy for tracking down confusing MIDI problems, and programmers can use it to test MIDI drivers and applications.
 <P>MIDI Monitor is FREE to download and use. The source code is available as Open Source (under the BSD license).
-<P>Please note that MIDI Monitor requires Mac OS X 10.3.9 or later.
+<P>Please note that MIDI Monitor requires an Intel Mac with OS X 10.5 or later.
 <P>The MIDI Monitor web page can be found at this URL:
 <BR><a href="http://www.snoize.com/MIDIMonitor/">http://www.snoize.com/MIDIMonitor/</A>
 <BR>Please check there for news and updates.
@@ -85,7 +85,7 @@ Musicians will find it handy for tracking down confusing MIDI problems, and prog
 <P>The preferences window lets you change the way that MIDI Monitor displays values, as well as some other behavior. Changes in this window take effect immediately, and are automatically saved.
 
 <P><BR><B>Display Preferences</B>
-<BR><img src="preferencesWindow1.gif" align="right">
+<BR><img src="prefs1.png" align="right">
 
 <P><i>Time format:</i> The method of displaying the timestamps of events.
 <ul>
@@ -126,8 +126,16 @@ Musicians will find it handy for tracking down confusing MIDI problems, and prog
 <li><i>Hexadecimal number:</I> The value in base 16. One byte values range from $00 to $7F; two byte values range from $0000 to $3FFF, with $2000 as the &quot;center&quot; value.
 </ul>
 
+<P><i>Expert Mode:</I> Changes the display slightly. Intended for experts only.
+<ul>
+<li><i>Note off events:</I> According to the MIDI specification, a Note On event with velocity 0 is to be interpreted as the same as a Note Off event. Normally, MIDI Monitor shows &quot;Note Off&quot;, to avoid confusion. (&quot;Why does my keyboard send two note on events when I only pressed one key?&quot;) In expert mode, it will show &quot;Note On&quot;.
+<P>
+<li><i>Zero timestamp:</I> When a program sends MIDI, it can provide a timestamp to schedule when the MIDI data should be sent, or zero which means &quot;send it immediately&quot;. Normally, when MIDI Monitor sees a zero timestamp, it will substitute a timestamp of when it received the data, to avoid confusion. (&quot;Why do the timestamps say 0? Is something broken?&quot;)  In expert mode, it will show &quot;0&quot;.
+</ul>
+
+
 <P><BR><B>Sources Preferences</B>
-<BR><img src="preferencesWindow2.gif" align="right">
+<BR><img src="prefs2.png" align="right">
 
 <P><i>New windows will use these sources:</i> When new windows are created, all of the sources in each of the checked categories will be selected.
 
@@ -136,7 +144,7 @@ Musicians will find it handy for tracking down confusing MIDI problems, and prog
 <BR clear="all">
 
 <P><BR><B>Other Preferences</B>
-<BR><img src="preferencesWindow3.gif" align="right">
+<BR><img src="prefs3.png" align="right">
 
 <P><i>Save SysEx:</i> This option lets you control how SysEx messages are saved to files. SysEx messages should always end with an EOX byte (hexadecimal F7). However, some devices do not follow this rule. 
 <ul>
@@ -146,6 +154,8 @@ Musicians will find it handy for tracking down confusing MIDI problems, and prog
 </ul>
 
 <P><i>Ask to save when a changed window is closed:</i> When checked, MIDI Monitor will ask you to save a modified window when you close it, which is the standard Mac behavior. If you don't tend to save MIDI Monitor documents, this can get annoying, so uncheck this preference to turn off the warning.
+
+<P><i>Automatically check for updates:</i> When checked, MIDI Monitor will periodically check if a newer version is available.
 
 <BR clear="all">
 
@@ -173,16 +183,13 @@ Musicians will find it handy for tracking down confusing MIDI problems, and prog
 
 <P>If nothing is listed under <i>MIDI Sources</i> in the Sources section, then there are no MIDI devices available. You must have Mac OS X drivers for your devices; Mac OS 9 drivers will <i>not</i> work. Please check with the manufacturer of your device for drivers.
 
-<P>If you don't see your device in the list of sources, even though it is plugged in and the proper driver is installed, you may be running into a problem with the Classic environment. Classic tends to grab USB devices for its own exclusive use, and doesn't let programs on the native Mac OS X side get to them. Try shutting down Classic and starting MIDI Monitor again. (If MIDI Monitor is started first, and is running when Classic starts, you will not encounter this problem.)
-
-<P>Note: Old versions of the MOTU driver provide a source named "All Ports" for some devices. It has been reported that this source doesn't work--the interface's lights blink, but nothing is shown in MIDI Monitor. This is most likely a bug in the driver, and not MIDI Monitor's fault. Newer versions of the driver may fix this problem.
 
 <P><BR><BR><font size="+1" face="arial, helvetica"><b>Contact</b></font>
 <P>Please send questions or comments to: <a href="mailto:MIDIMonitor@snoize.com">MIDIMonitor@snoize.com</a>
 <br>If you find this program useful, I'd love to hear about it! And if you encounter bugs or have suggestions for improvement, please let me know.
 
 <P><BR><BR><font size="+1" face="arial, helvetica"><b>Acknowledgements</b></font>
-<P>MIDI Monitor is copyright &copy; 2001-2008 by Kurt Revis. All rights reserved.
+<P>MIDI Monitor is copyright &copy; 2001-2012 by Kurt Revis. All rights reserved.
 
 <P>Thanks to the folks on the <a href="http://www.lists.apple.com/coreaudio-api">CoreAudio-API mailing list</a> for all the help they have provided, and to everyone who has sent in bug reports and feature requests.
 
