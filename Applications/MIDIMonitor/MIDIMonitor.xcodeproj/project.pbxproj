@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		16133B7415F5C75C00533536 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 161B71EF15D8D76B006E21D4 /* Sparkle.framework */; };
 		161B71F815D8D79E006E21D4 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 161B71EF15D8D76B006E21D4 /* Sparkle.framework */; };
 		161B71FA15D8DD83006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B71F915D8DD83006E21D4 /* dsa_pub.pem */; };
 		162972B1097B414800158D7B /* SnoizeMIDI.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */; };
@@ -135,6 +136,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				16133B7415F5C75C00533536 /* Sparkle.framework in CopyFiles */,
 				162972B1097B414800158D7B /* SnoizeMIDI.framework in CopyFiles */,
 				162972B2097B414C00158D7B /* SnoizeMIDISpy.framework in CopyFiles */,
 			);

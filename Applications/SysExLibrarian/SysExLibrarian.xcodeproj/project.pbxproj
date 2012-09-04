@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		16133B7515F5C78100533536 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 161B720815D8E97D006E21D4 /* Sparkle.framework */; };
 		161B721115D8E9BC006E21D4 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 161B720815D8E97D006E21D4 /* Sparkle.framework */; };
 		161B721315D8EA13006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B721215D8EA13006E21D4 /* dsa_pub.pem */; };
 		161B721615D8EA7F006E21D4 /* SysExLibrarian.xml in Resources */ = {isa = PBXBuildFile; fileRef = 161B721515D8EA7F006E21D4 /* SysExLibrarian.xml */; };
@@ -138,6 +139,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				16133B7515F5C78100533536 /* Sparkle.framework in CopyFiles */,
 				16F034320984BABA006C8A44 /* SnoizeMIDI.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
