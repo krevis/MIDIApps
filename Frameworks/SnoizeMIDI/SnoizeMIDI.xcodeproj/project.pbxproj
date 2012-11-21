@@ -573,7 +573,7 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0460;
 			};
 			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "SnoizeMIDI" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -755,7 +755,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 161D6C940972111A00CA5276 /* Snoize-Project-Debug.xcconfig */;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -764,7 +763,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 161D6C9C097211EC00CA5276 /* Snoize-Project-Release.xcconfig */;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
 				SDKROOT = macosx;
 			};
 			name = Release;
