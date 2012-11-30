@@ -52,8 +52,9 @@
             }            
         } else {
             // directory doesn't exist; try to create
-            if (![self createDirectoryAtPath: partialPath withIntermediateDirectories:NO attributes: attributes error:NULL]) {
-                failureReason = [NSString stringWithFormat: @"Cannot create path to file '%@' because the directory '%@' could not be created.", newFilePath, partialPath];
+            NSError* error = nil;
+            if (![self createDirectoryAtPath: partialPath withIntermediateDirectories:NO attributes: attributes error:&error]) {
+                failureReason = [NSString stringWithFormat: @"The directory '%@' could not be created. Error: (%@ %ld) %@", partialPath, error.domain, (long)error.code, error.localizedDescription];
             }
         }
     }
