@@ -879,13 +879,9 @@ static NSInteger libraryEntryComparator(id object1, id object2, void *context)
     value1 = [object1 valueForKey:key];
     value2 = [object2 valueForKey:key];
 
-    if (value1 && value2)
-        // NOTE: We would say:
-        // return [value1 compare:value2];
-        // but that gives us a warning because there are multiple declarations of compare: (for NSString, NSDate, etc.).
-        // So let's just avoid that whole problem.
-        return (NSComparisonResult)objc_msgSend(value1, @selector(compare:), value2);
-    else if (value1) {
+    if (value1 && value2) {
+        return [value1 compare:value2];
+    } else if (value1) {
         return NSOrderedDescending;
     } else {
         // both are nil

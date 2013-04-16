@@ -300,8 +300,10 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SMMAskBeforeClosingModifiedWindowPreferenceKey]) {
         [super canCloseDocumentWithDelegate:delegate shouldCloseSelector:shouldCloseSelector contextInfo:contextInfo];
     } else {
-        // Tell the delgate to close now, regardless of what the document's dirty flag may be
-        objc_msgSend(delegate, shouldCloseSelector, self, YES /*yes, close now*/, contextInfo);        
+        // Tell the delegate to close now, regardless of what the document's dirty flag may be.
+        // Unfortunately this is not easy in Objective-C...
+        void (*objc_msgSendTyped)(id self, SEL _cmd, NSDocument *document, BOOL shouldClose, void *contextInfo) = (void*)objc_msgSend;
+        objc_msgSendTyped(delegate, shouldCloseSelector, self, YES /* close now */, contextInfo);
     }
 }
 
