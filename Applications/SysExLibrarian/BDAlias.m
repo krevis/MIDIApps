@@ -160,6 +160,7 @@ static CFStringRef FSRefToPathCopy(const FSRef *inRef)
     anErr = PathToFSRef((CFStringRef) fullPath, &ref);
     
     if (anErr != noErr) {
+        [self release];
         return nil;
     }
     
@@ -175,12 +176,14 @@ static CFStringRef FSRefToPathCopy(const FSRef *inRef)
                         &ref);
     
     if (anErr != noErr) {
+        [self release];
         return nil;
     }
     
     anErr = PathToFSRef((CFStringRef) relPath, &relRef);
     
     if (anErr != noErr) {
+        [self release];
         return nil;
     }
     
@@ -200,6 +203,7 @@ static CFStringRef FSRefToPathCopy(const FSRef *inRef)
     anErr = FSNewAlias(relRef, ref, &alias);
     
     if (anErr != noErr) {
+        [self release];
         return nil;
     }
     
