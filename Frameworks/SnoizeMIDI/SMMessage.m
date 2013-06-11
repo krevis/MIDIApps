@@ -498,9 +498,12 @@ static NSString *formatNoteNumberWithBaseOctave(Byte noteNumber, int octave)
 {
     // noteNumber 0 is note C in octave provided (should be -2 or -1)
 
-    static char *noteNames[] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+	static NSArray *noteNames = nil;
+	
+	if(!noteNames)
+		noteNames = [[NSArray alloc] initWithObjects:@"C", @"C♯", @"D", @"D♯", @"E", @"F", @"F♯", @"G", @"G♯", @"A", @"A♯", @"B", nil];
 
-    return [NSString stringWithFormat:@"%s%d", noteNames[noteNumber % 12], octave + noteNumber / 12];
+    return [NSString stringWithFormat:@"%@%d", [noteNames objectAtIndex:(noteNumber % 12)], octave + noteNumber / 12];
 }
 
 - (void)_setTimeStamp:(MIDITimeStamp)newTimeStamp

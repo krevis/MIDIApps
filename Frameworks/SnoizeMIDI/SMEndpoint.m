@@ -446,7 +446,8 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 + (void)checkForUniqueNames;
 {
     NSArray *endpoints;
-    NSArray *nameArray, *nameSet;
+    NSArray *nameArray;
+    NSSet *nameSet;
     BOOL areNamesUnique;
     struct EndpointUniqueNamesFlags *flagsPtr;
 
