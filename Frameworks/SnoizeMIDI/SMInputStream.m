@@ -87,9 +87,12 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
 
 - (void)dealloc
 {
-#if USE_BLOCKS
-	dispatch_release(readQueue);
+#if CHECK_FOR_GCD
+    if (dispatch_release != NULL)
 #endif
+	{
+		dispatch_release(readQueue);
+	}
 	[super dealloc];
 }
 
