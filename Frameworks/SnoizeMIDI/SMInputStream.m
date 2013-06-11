@@ -21,6 +21,12 @@
 #import "SMUtilities.h"
 
 
+#define CHECK_FOR_GCD \
+    (defined(MAC_OS_X_VERSION_MIN_REQUIRED) && (MAC_OS_X_VERSION_MIN_REQUIRED < 1060)) || \
+    (defined(IPHONE_OS_VERSION_MIN_REQUIRED) && (IPHONE_OS_VERSION_MIN_REQUIRED < 40000))
+// if true, we should check if GCD is available at runtime;
+// if false, we should use GCD without checking
+
 @interface SMInputStream (Private)
 
 static void midiReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, void *srcConnRefCon);
@@ -34,9 +40,7 @@ static void midiReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, vo
 
 @implementation SMInputStream
 
-#if USE_BLOCKS
 @synthesize readQueue;
-#endif
 
 NSString *SMInputStreamReadingSysExNotification = @"SMInputStreamReadingSysExNotification";
 NSString *SMInputStreamDoneReadingSysExNotification = @"SMInputStreamDoneReadingSysExNotification";
@@ -51,17 +55,26 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
 
     sysExTimeOut = 1.0;
 
-#if USE_BLOCKS
-    // Default to main queue for taking pending read packets
-    self.readQueue = dispatch_get_main_queue();
+#if CHECK_FOR_GCD
+    // NOTE: Can't check if dispatch_get_main_queue is NULL, since it's a macro not a function
+    if (dispatch_async != NULL)
 #endif
+    {
+        // Default to main queue for taking pending read packets
+        self.readQueue = dispatch_get_main_queue();
+    }
 
     return self;
 }
 
-#if USE_BLOCKS
 - (void)setReadQueue:(dispatch_queue_t)newReadQueue
 {
+#if CHECK_FOR_GCD
+    // nobody ought to call this method if GCD isn't available, but better safe than sorry
+    if (dispatch_release == NULL)
+        return;
+#endif
+
     if (newReadQueue != readQueue)
     {
         if (readQueue)
@@ -71,7 +84,6 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
         readQueue = newReadQueue;
     }
 }
-#endif
 
 - (void)dealloc
 {
@@ -356,27 +368,25 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
     pendingPacketList->srcConnRefCon = srcConnRefCon;
     memcpy(&pendingPacketList->packetList, packetList, packetListSize);
     
-
     // Get off the CoreMIDI time-contrained thread.
-    // If we can require OS X 10.6 and later, or iOS 4 and later, use GCD
+    // On OS X 10.6 and later, and iOS 4 and later, use GCD
     // (so a different queue can be used if necessary);
     // otherwise just use -performSelectorOnMainThread.
 
-#if USE_BLOCKS
-	dispatch_queue_t queue = inputStream.readQueue;
-	if(queue)
-	{
-		dispatch_async(queue, ^{
-			@autoreleasepool
-			{
-				[SMInputStream takePendingPacketList:data];
-			}
-		});
-	}
-#else
-    // GCD is not available
-    [(id)[SMInputStream class] performSelectorOnMainThread:@selector(takePendingPacketList:) withObject:data waitUntilDone:NO];
+#if CHECK_FOR_GCD
+    if (dispatch_async == NULL) {
+        // GCD is not available
+        [(id)[SMInputStream class] performSelectorOnMainThread:@selector(takePendingPacketList:) withObject:data waitUntilDone:NO];
+    } else
 #endif
+    {
+        dispatch_async([inputStream readQueue], ^{
+            @autoreleasepool
+            {
+                [SMInputStream takePendingPacketList:data];
+            }
+        });
+    }
 
     [data release];
 }
@@ -404,7 +414,7 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
     {
         // Ignore any exceptions raised
 #if DEBUG
-				NSLog(@"Exception raised during MIDI parsing: %@", localException);
+        NSLog(@"Exception raised during MIDI parsing: %@", localException);
 #endif
     }
 }

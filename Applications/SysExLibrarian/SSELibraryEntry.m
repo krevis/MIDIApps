@@ -24,7 +24,7 @@
 + (NSNumber *)sizeFromMessages:(NSArray *)messages;
 + (NSNumber *)messageCountFromMessages:(NSArray *)messages;
 
-- (void)takeValuesFromDictionary:(NSDictionary *)dict;
+- (void)setValuesFromDictionary:(NSDictionary *)dict;
 
 - (void)updateDerivedInformationFromMessages:(NSArray *)messages;
 
@@ -57,7 +57,7 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
     if (!(self = [self initWithLibrary:library]))
         return nil;
 
-    [self takeValuesFromDictionary:dict];
+    [self setValuesFromDictionary:dict];
     
     return self;
 }
@@ -406,7 +406,7 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
     return [NSNumber numberWithUnsignedInt:[messages count]];
 }
 
-- (void)takeValuesFromDictionary:(NSDictionary *)dict;
+- (void)setValuesFromDictionary:(NSDictionary *)dict;
 {
     id data, string, number;
 

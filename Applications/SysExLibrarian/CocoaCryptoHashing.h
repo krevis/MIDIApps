@@ -32,9 +32,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <openssl/md5.h>
-#import <openssl/sha.h>
-
 #import <Foundation/Foundation.h>
 
 @interface NSString (CocoaCryptoHashing)

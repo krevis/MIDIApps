@@ -27,27 +27,27 @@
         // TODO We should do this a few times and average the results, and also try to be careful not to get
         // scheduled out during this process. We may need to switch ourself to be a time-constraint thread temporarily
         // in order to do this. See discussion in the CoreAudio-API archives.
-        UInt64 hostTime = SMGetCurrentHostTime();
+        UInt64 hostTimeInNanos = SMConvertHostTimeToNanos(SMGetCurrentHostTime());
         NSTimeInterval timeInterval = [NSDate timeIntervalSinceReferenceDate];
-        currentTimeBase = [[SMMessageTimeBase alloc] initWithHostTime:hostTime forTimeInterval:timeInterval];
+        currentTimeBase = [[SMMessageTimeBase alloc] initWithHostTimeInNanos:hostTimeInNanos forTimeInterval:timeInterval];
     }
     
     return currentTimeBase;
 }
 
-- (id)initWithHostTime:(UInt64)hostTime forTimeInterval:(NSTimeInterval)timeInterval
+- (id)initWithHostTimeInNanos:(UInt64)hostTimeInNanos forTimeInterval:(NSTimeInterval)timeInterval
 {
     if ((self = [super init])) {
-        baseHostTime = hostTime;
+        baseHostTimeInNanos = hostTimeInNanos;
         baseTimeInterval = timeInterval;        
     }
     
     return self;
 }
 
-- (UInt64)hostTime
+- (UInt64)hostTimeInNanos
 {
-    return baseHostTime;
+    return baseHostTimeInNanos;
 }
 
 - (NSTimeInterval)timeInterval
@@ -56,15 +56,26 @@
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder
-{    
-    [coder encodeInt64:baseHostTime forKey:@"hostTime"];
+{
+    [coder encodeInt64:baseHostTimeInNanos forKey:@"hostTimeInNanos"];
+
+    [coder encodeInt64:SMConvertNanosToHostTime(baseHostTimeInNanos) forKey:@"hostTime"];
+        // backwards compatibility
+
     [coder encodeDouble:baseTimeInterval forKey:@"timeInterval"];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder
 {
     if ((self = [super init])) {
-        baseHostTime = [decoder decodeInt64ForKey:@"hostTime"]; 
+        if ([decoder containsValueForKey:@"hostTimeInNanos"]) {
+            baseHostTimeInNanos = [decoder decodeInt64ForKey:@"hostTimeInNanos"];
+        } else {
+            // fallback: inaccurate because the HostTime to nanos
+            // ratio may have changed from when this was archived
+            baseHostTimeInNanos = SMConvertHostTimeToNanos([decoder decodeInt64ForKey:@"hostTime"]);
+        }
+
         baseTimeInterval = [decoder decodeDoubleForKey:@"timeInterval"];
     }
     

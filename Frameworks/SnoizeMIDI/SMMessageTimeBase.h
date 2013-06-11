@@ -16,15 +16,15 @@
 
 @interface SMMessageTimeBase : NSObject <NSCoding>
 {
-    UInt64 baseHostTime;
+    UInt64 baseHostTimeInNanos;
     NSTimeInterval baseTimeInterval;    
 }
 
 + (SMMessageTimeBase*)currentTimeBase;
 
-- (id)initWithHostTime:(UInt64)hostTime forTimeInterval:(NSTimeInterval)timeInterval;
+- (id)initWithHostTimeInNanos:(UInt64)hostTimeInNanos forTimeInterval:(NSTimeInterval)timeInterval;
 
-- (UInt64)hostTime;
+- (UInt64)hostTimeInNanos;
 - (NSTimeInterval)timeInterval;
 
 @end

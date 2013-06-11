@@ -117,11 +117,11 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
         CFIndex count = CFDictionaryGetCount(mapTable);
         if (count > 0)
         {
-            const void **keys = malloc(count * sizeof(void *));
-            const void **values = malloc(count * sizeof(void *));
+            id* keys = malloc(count * sizeof(id));
+            id* values = malloc(count * sizeof(id));
             
-            CFDictionaryGetKeysAndValues(mapTable, keys, values);
-            NSArray *array = [NSArray arrayWithObjects:(id *)values count:count];
+            CFDictionaryGetKeysAndValues(mapTable, (const void**)keys, (const void**)values);
+            NSArray *array = [NSArray arrayWithObjects:values count:count];
             
             free(keys);
             free(values);
@@ -266,7 +266,7 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 
 - (NSString*)description
 {
-    return [NSString stringWithFormat:@"<%@ %p objectRef=%u uniqueID=%ld name=\"%@\">", NSStringFromClass([self class]), self, (unsigned int)objectRef, (long)uniqueID, [self name]];
+    return [NSString stringWithFormat:@"<%@ %p objectRef=%lu uniqueID=%ld name=\"%@\">", NSStringFromClass([self class]), self, (unsigned long)objectRef, (long)uniqueID, [self name]];
 }
 
 - (MIDIUniqueID)uniqueID;

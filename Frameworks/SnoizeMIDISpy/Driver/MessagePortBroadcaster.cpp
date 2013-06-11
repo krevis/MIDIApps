@@ -18,7 +18,7 @@
 
 
 // Private function declarations
-CFDataRef LocalMessagePortCallBack(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info);
+CFDataRef LocalMessagePortCallBack(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info) __attribute__((cf_returns_retained));
 void MessagePortWasInvalidated(CFMessagePortRef messagePort, void *info);
 void RemoveRemotePortFromChannelArray(const void *key, const void *value, void *context);
 
@@ -245,7 +245,7 @@ void	MessagePortBroadcaster::AddListener(CFDataRef listenerIdentifierData)
         return;
 
     listenerIdentifier = *(const UInt32 *)dataBytes;
-    listenerPortName = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%@-%lu"), mBroadcasterName, listenerIdentifier);
+    listenerPortName = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%@-%u"), mBroadcasterName, (unsigned int)listenerIdentifier);
 
     remotePort = CFMessagePortCreateRemote(kCFAllocatorDefault, listenerPortName);
     if (remotePort) {

@@ -28,7 +28,31 @@
 <BR><a href="http://www.snoize.com/SysExLibrarian/">http://www.snoize.com/SysExLibrarian/</A>
 <BR>Please check there for news and updates.
 
-<P><BR><BR><font size="+1" face="arial, helvetica"><b>How to use it</b></font>
+
+<P><BR><BR><font size="+1" face="arial, helvetica"><b>Quick Start</b></font>
+
+<p>To save data from your MIDI device:
+<ol>
+	<li>Run SysEx Librarian
+	<li>Press the &quot;Record Many...&quot; button
+	<li>Tell your device to send sysex, by pressing buttons on it. (Every MIDI device is different; check the manual!)
+	<li>When the transmission is done, press the &quot;Done&quot; button in SysEx Librarian.
+</ol>
+
+<p>To send data to your MIDI device:
+<ol>
+	<li>Press the &quot;Add...&quot; button in the lower-left corner of the window, and choose the .syx file you want to transfer.
+		<br>This will add it to the list of files that SysEx Librarian knows about.
+		<br>You can also drag the file directly into the list from the Finder.
+	<li>In SysEx Librarian's toolbar, there's a pop-up menu named &quot;Destination&quot;. 
+		<br>Click it and choose the MIDI port that you want to send to.
+		<br>(It's probably named something like &quot;Port 1&quot; or &quot;Port A&quot;&mdash;it depends on your MIDI interface. &quot;Act as a source for other programs&quot; is NOT what you want.)
+	<li>Click the file in the list to select it
+	<li>Press the "Play" button
+</ol>
+
+
+<P><BR><BR><font size="+1" face="arial, helvetica"><b>In More Detail</b></font>
 
 <P>SysEx Librarian is based around the idea of a library of files. Each file contains one or more SysEx messages.  If you are familiar with iTunes, you will find that SysEx Librarian works much the same way.
 
@@ -122,12 +146,8 @@
 
 </ul>
 
-<P><b><i>My MIDI interface is plugged in, and the driver is installed, but I don't see my device in the menu.</i></b>
-<br>You may be running into a problem with Classic, the Mac OS 9 compatibility layer. Classic tends to grab USB devices for its own exclusive use, and doesn't let programs on the native Mac OS X side get to them. Try shutting down Classic and starting SysEx Librarian again. (If SysEx Librarian is started first, and is running when Classic starts, you will not encounter this problem.)
-
-
 <P><b><i>Having other problems?</i></b>
-<BR>Please let me know and I'll try to help find a solution.  SysEx Librarian is a young program, and there are a lot of very weird MIDI devices out there that it hasn't yet been tested with.  I want to get it working as well as possible, but I can't do that unless you tell me about problems that you encounter.
+<BR>Please let me know and I'll try to help find a solution.
 
 
 <P><BR><BR><font size="+1" face="arial, helvetica"><b>Contact</b></font>
@@ -135,7 +155,7 @@
 <br>If you find this program useful, I'd love to hear about it! And if you encounter bugs or have suggestions for improvement, please let me know.
 
 <P><BR><BR><font size="+1" face="arial, helvetica"><b>Acknowledgements</b></font>
-<P>SysExLibrarian is copyright &copy; 2002-2008 by Kurt Revis. All rights reserved.
+<P>SysExLibrarian is copyright &copy; 2002-2012 by Kurt Revis. All rights reserved.
 <P>It is released under the BSD license (<a href="SELLicense.html">details</a>).  The source code is available at <a href="https://github.com/krevis/MIDIApps">https://github.com/krevis/MIDIApps</a>.
 
 <P>SysEx Librarian uses:

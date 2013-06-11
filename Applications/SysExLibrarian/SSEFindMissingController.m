@@ -112,14 +112,27 @@
     NSOpenPanel *openPanel;
 
     openPanel = [NSOpenPanel openPanel];
-    [openPanel beginSheetForDirectory:nil file:nil types:[nonretainedLibrary allowedFileTypes] modalForWindow:[nonretainedMainWindowController window] modalDelegate:self didEndSelector:@selector(findMissingFileOpenPanelDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+    
+    if ([openPanel respondsToSelector:@selector(beginSheetModalForWindow:completionHandler:)]) {
+        [openPanel setAllowedFileTypes:[nonretainedLibrary allowedFileTypes]];
+        [openPanel beginSheetModalForWindow:[nonretainedMainWindowController window] completionHandler:^(NSInteger result) {
+            [self findMissingFileOpenPanelDidEnd:openPanel returnCode:result contextInfo:NULL];
+        }];
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    
+        [openPanel beginSheetForDirectory:nil file:nil types:[nonretainedLibrary allowedFileTypes] modalForWindow:[nonretainedMainWindowController window] modalDelegate:self didEndSelector:@selector(findMissingFileOpenPanelDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+        
+#pragma clang diagnostic pop
+    }
 }
 
 - (void)findMissingFileOpenPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 {
     BOOL cancelled = NO;
 
-    if (returnCode != NSOKButton) {
+    if (returnCode != NSOKButton || [[openPanel URLs] count] == 0) {
         cancelled = YES;
     } else {
         SSELibraryEntry *entry;
@@ -129,7 +142,7 @@
         SMAssert([entriesWithMissingFiles count] > 0);
         entry = [entriesWithMissingFiles objectAtIndex:0];
 
-        filePath = [[openPanel filenames] objectAtIndex:0];
+        filePath = [[[openPanel URLs] objectAtIndex:0] path];
 
         // Is this file in use by any entries?  (It might be in use by *this* entry if the file has gotten put in place again!)
         matchingEntries = [nonretainedLibrary findEntriesForFiles:[NSArray arrayWithObject:filePath] returningNonMatchingFiles:NULL];

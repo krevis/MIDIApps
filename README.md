@@ -15,9 +15,7 @@ The source code is Open Source under the BSD license. See LICENSE for the legal 
 2. In the "Scheme" popup menu in the toolbar, select either MIDI Monitor or SysEx Librarian.
 3. Build and run!
 
-The projects enclosed should also work in Xcode 3.2.x. (You may be able to use the projects in earlier versions of Xcode, but no guarantees.)
-
-For final builds: The shell scripts in Scripts/BuildMIDIMonitor and Scripts/BuildSysExLibrarian build the apps and package them in disk images. If you just run the script, you should end up with a MIDIMonitorBuild or SysExLibrarianBuild directory in your home directory, with an "InstalledProducts" directory inside containing the built application. Pass the flag "-image" to the script to make it create a disk image too.
+(You may be able to use the projects in earlier versions of Xcode, but no guarantees.)
 
 
 ## What's inside ##
@@ -31,8 +29,8 @@ Your source tree should look like this:
 * Frameworks
 	* SnoizeMIDI
 	* SnoizeMIDISpy
-	* DisclosableView
-* Scripts
+* Third Party
+* Updates
 
 ### Applications/MIDIMonitor Applications/SysExLibrarian ###
 
@@ -56,7 +54,6 @@ This framework is used by both apps. You can use it in your own apps as well.
 
 The code is mainly Objective-C, with one ordinary C file.
 
-
 ### Frameworks/SnoizeMIDISpy ###
 
 This project builds two things: A CoreMIDI driver, and a framework.
@@ -69,20 +66,15 @@ This code is currently only used by MIDI Monitor, but it could be useful in othe
 
 The driver is written in C++, and the framework is plain C code.  You should be able to easily use the code from a Cocoa or Carbon application
 
-
-### Frameworks/DisclosableView ###
-	
-A framework containing a Cocoa "disclosable" view -- one that can be shown and hidden by the user on demand.
-
-
 ### Configurations ###
 
 Contains .xcconfig files used to coordinate build settings across all the Xcode projects.
 
+### Third Party, Updates ###
 
-### Scripts ###
+Contains the git submodule for Sparkle (the ubiquitous app-auto-update framework) and the server-side files to make it work.
 
-Contains scripts to build the final ("install") version of the apps.
+If you don't see the Sparkle submodule, do a `git submodule update --init --recursive`.
 
 
 ## Questions? ##

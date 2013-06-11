@@ -14,13 +14,14 @@
 
 #import <Cocoa/Cocoa.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
-#import <DisclosableView/DisclosableView.h>
 
 #import "SMMDocument.h"
 #import "SMMNonHighlightingCells.h"
 #import "SMMPreferencesWindowController.h"
 #import "SMMSourcesOutlineView.h"
 #import "SMMDetailsWindowController.h"
+#import "SNDisclosableView.h"
+#import "SNDisclosureButton.h"
 #import "NSArray-SMMExtensions.h"
 #import "NSString-SMMExtensions.h"
 

@@ -1,15 +1,3 @@
 #include "Snoize-Application-Global.xcconfig"
 
-// we want "xcodebuild install" to, in fact, install
-SKIP_INSTALL = NO
-
-// on install builds, we'll pass in the argument SNOIZE_APP_INSTALL_PATH = where we want
-// the installed copy of the app to be put
-// (we don't just set INSTALL_PATH on the command line, because that leaks over into the
-// frameworks builds, and it's essential that their INSTALL_PATHS be set to @executable_path/../etc.)
-INSTALL_PATH = ${SNOIZE_APP_INSTALL_PATH}
-
-// INSTALL_MODE_FLAG is normally a-w,a+rX.
-// We change it so the files are still writeable by the owner (us)
-// so we can modify them later.
-INSTALL_MODE_FLAG = go-w,a+rX
+// nothing necessary here (yet)

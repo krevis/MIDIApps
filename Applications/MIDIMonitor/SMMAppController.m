@@ -39,6 +39,11 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
     SInt32 spyStatus;
     NSString *midiSpyErrorMessage = nil;
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didFinishRestoringWindows:)
+                                                 name:@"NSApplicationDidFinishRestoringWindowsNotification" 
+                                               object:NSApp];
+    
     // Make sure we go multithreaded
 	if (![NSThread isMultiThreaded]) {
 		[NSThread detachNewThreadSelector: @selector(doNothing:) toTarget: self withObject: nil];
@@ -104,6 +109,18 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender;
 {
     return shouldOpenUntitledDocument;
+}
+
+- (void)didFinishRestoringWindows:(NSNotification*)notification
+{
+    // We receive this notification on Lion (10.7) and later.
+    // If AppKit has decided, for its own unknowable reasons, to not open an untitled document,
+    // and it's appropriate to do so, do it ourself now.
+    if ([self applicationShouldOpenUntitledFile:NSApp]) {
+        NSDocumentController *dc = [NSDocumentController sharedDocumentController];
+        if (dc.documents.count == 0)
+            [dc openUntitledDocumentAndDisplay:YES error:NULL];
+    }
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification;
@@ -237,9 +254,9 @@ NSString *SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSourc
 
 - (void) openWindowForNewSources
 {
-    SMMDocument *document;
-
-    document = [[NSDocumentController sharedDocumentController] openUntitledDocumentOfType:@"MIDI Monitor Document" display:NO];
+    NSDocumentController *dc = [NSDocumentController sharedDocumentController];
+    SMMDocument *document = [dc openUntitledDocumentAndDisplay:NO error:NULL];
+    [document makeWindowControllers];
     [document setSelectedInputSources:newSources];
     [document showWindows];
     [document setAreSourcesShown:YES];

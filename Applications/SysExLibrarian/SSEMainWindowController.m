@@ -248,7 +248,19 @@ static SSEMainWindowController *controller = nil;
     openPanel = [NSOpenPanel openPanel];
     [openPanel setAllowsMultipleSelection:YES];
 
-    [openPanel beginSheetForDirectory:nil file:nil types:[library allowedFileTypes] modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:) contextInfo:nil];
+    if ([openPanel respondsToSelector:@selector(beginSheetModalForWindow:completionHandler:)]) {
+        [openPanel setAllowedFileTypes:[library allowedFileTypes]];
+        [openPanel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
+            [self openPanelDidEnd:openPanel returnCode:result contextInfo:NULL];
+        }];
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+        [openPanel beginSheetForDirectory:nil file:nil types:[library allowedFileTypes] modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:) contextInfo:nil];
+
+#pragma clang diagnostic pop
+    }
 }
 
 - (IBAction)delete:(id)sender;
@@ -993,7 +1005,17 @@ static NSInteger libraryEntryComparator(id object1, id object2, void *context)
 {
     if (returnCode == NSOKButton) {
         [openPanel orderOut:nil];
-        [self importFiles:[openPanel filenames] showingProgress:NO];
+        
+        NSArray* urls = [openPanel URLs];
+        NSMutableArray* filenames = [NSMutableArray arrayWithCapacity:[urls count]];
+        
+        for (NSURL* url in urls) {
+            NSString* path = [url path];
+            if (path)
+                [filenames addObject:path];
+        }
+        
+        [self importFiles:filenames showingProgress:NO];
     }
 }
 

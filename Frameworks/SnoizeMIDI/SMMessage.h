@@ -91,6 +91,7 @@ extern NSString *SMNoteFormatPreferenceKey;
 extern NSString *SMControllerFormatPreferenceKey;
 extern NSString *SMDataFormatPreferenceKey;
 extern NSString *SMTimeFormatPreferenceKey;
+extern NSString *SMExpertModePreferenceKey;
 
 @interface SMMessage : NSObject <NSCopying, NSCoding>
 {
@@ -98,6 +99,7 @@ extern NSString *SMTimeFormatPreferenceKey;
     SMMessageTimeBase *timeBase;
     Byte statusByte;
     id originatingEndpointOrName;   // either SMEndpoint or NSString
+    BOOL timeStampWasZeroWhenReceived;
 }
 
 + (NSString *)formatNoteNumber:(Byte)noteNumber;
@@ -120,7 +122,6 @@ extern NSString *SMTimeFormatPreferenceKey;
 
 - (MIDITimeStamp)timeStamp;
 - (void)setTimeStamp:(MIDITimeStamp)value;
-- (void)setTimeStampToNow;
 
 - (Byte)statusByte;
     // First MIDI byte

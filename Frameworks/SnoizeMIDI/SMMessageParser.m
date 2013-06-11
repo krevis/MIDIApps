@@ -213,16 +213,14 @@
         } else {
             if (byte < 0x80) {
                 if (readingSysExData) {
-                    if (readingSysExData) {
-                        unsigned int length;
+                    unsigned int length;
 
-                        [readingSysExData appendBytes:&byte length:1];
+                    [readingSysExData appendBytes:&byte length:1];
 
-                        length = 1 + [readingSysExData length];
-                        // Tell the delegate we're still reading, every 256 bytes
-                        if (length % 256 == 0)
-                            [nonretainedDelegate parser:self isReadingSysExWithLength:length];
-                    }
+                    length = 1 + [readingSysExData length];
+                    // Tell the delegate we're still reading, every 256 bytes
+                    if (length % 256 == 0)
+                        [nonretainedDelegate parser:self isReadingSysExWithLength:length];
                 } else if (pendingDataIndex < pendingDataLength) {
                     pendingData[pendingDataIndex] = byte;
                     pendingDataIndex++;

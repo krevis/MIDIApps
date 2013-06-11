@@ -50,7 +50,20 @@ NSString *SMMSaveSysExWithEOXAlwaysPreferenceKey = @"SMMSaveSysExWithEOXAlways";
 
 - (IBAction)save:(id)sender;
 {
-    [[NSSavePanel savePanel] beginSheetForDirectory:nil file:nil modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(savePanelDidEnd:returnCode:contextInfo:) contextInfo:nil];
+    NSSavePanel* savePanel = [NSSavePanel savePanel];
+
+    if ([savePanel respondsToSelector:@selector(beginSheetModalForWindow:completionHandler:)]) {
+        [savePanel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
+            [self savePanelDidEnd:savePanel returnCode:result contextInfo:NULL];
+        }];
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+        [savePanel beginSheetForDirectory:nil file:nil modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(savePanelDidEnd:returnCode:contextInfo:) contextInfo:nil];
+    
+#pragma clang diagnostic pop
+    }
 }
 
 @end
@@ -71,13 +84,13 @@ NSString *SMMSaveSysExWithEOXAlwaysPreferenceKey = @"SMMSaveSysExWithEOXAlways";
         else
             dataToWrite = [sysExMessage receivedDataWithStartByte];
 
-        if (![dataToWrite writeToFile:[sheet filename] atomically:YES]) {
+        if (![dataToWrite writeToFile:[[sheet URL] path] atomically:YES]) {
             NSString *title, *text;
 
             title = NSLocalizedStringFromTableInBundle(@"Error", @"MIDIMonitor", SMBundleForObject(self), "title of error alert sheet");
             text = NSLocalizedStringFromTableInBundle(@"The file could not be saved.", @"MIDIMonitor", SMBundleForObject(self), "message when writing sysex data to a file fails");
 
-            NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, text);
+            NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"%@", text);
         }
     }
 }

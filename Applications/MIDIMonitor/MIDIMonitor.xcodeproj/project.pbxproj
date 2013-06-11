@@ -7,12 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		16133B7415F5C75C00533536 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 161B71EF15D8D76B006E21D4 /* Sparkle.framework */; };
+		161B71F815D8D79E006E21D4 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 161B71EF15D8D76B006E21D4 /* Sparkle.framework */; };
+		161B71FA15D8DD83006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B71F915D8DD83006E21D4 /* dsa_pub.pem */; };
 		162972B1097B414800158D7B /* SnoizeMIDI.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */; };
 		162972B2097B414C00158D7B /* SnoizeMIDISpy.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71B1097B242A001AFB58 /* SnoizeMIDISpy.framework */; };
-		162972B3097B414F00158D7B /* DisclosableView.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71B8097B2441001AFB58 /* DisclosableView.framework */; };
 		167B881906ED4D650053D305 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		167B881A06ED4D650053D305 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
-		167B881B06ED4D650053D305 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165FFE840EACC02AAC07 /* InfoPlist.strings */; };
 		167B881C06ED4D650053D305 /* MIDIMonitor.strings in Resources */ = {isa = PBXBuildFile; fileRef = F53BB4AE015D96A501000164 /* MIDIMonitor.strings */; };
 		167B881D06ED4D650053D305 /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = F53A1C0A015EC0FB01000164 /* Preferences.nib */; };
 		167B881E06ED4D650053D305 /* MIDIMonitor.icns in Resources */ = {isa = PBXBuildFile; fileRef = F579B5E9018D0F0D01000164 /* MIDIMonitor.icns */; };
@@ -40,18 +41,49 @@
 		167B883506ED4D650053D305 /* NSString-SMMExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 16F210DD06EAB24700D9C507 /* NSString-SMMExtensions.m */; };
 		167B883906ED4D650053D305 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		167B883B06ED4D650053D305 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B4281801A360AD01000164 /* CoreMIDI.framework */; };
+		16C267D215D836B2009F4BE4 /* SNDisclosureArrowDown.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 16C267D015D836B2009F4BE4 /* SNDisclosureArrowDown.tiff */; };
+		16C267D315D836B2009F4BE4 /* SNDisclosureArrowRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 16C267D115D836B2009F4BE4 /* SNDisclosureArrowRight.tiff */; };
+		16C267D815D836C6009F4BE4 /* SNDisclosableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 16C267D515D836C6009F4BE4 /* SNDisclosableView.m */; };
+		16C267D915D836C6009F4BE4 /* SNDisclosureButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 16C267D715D836C6009F4BE4 /* SNDisclosureButton.m */; };
 		16E8F01A097B2E5200B52193 /* SnoizeMIDISpy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169E71B1097B242A001AFB58 /* SnoizeMIDISpy.framework */; };
 		16E8F01D097B2E8B00B52193 /* SnoizeMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */; };
-		16E8F01E097B2E9400B52193 /* DisclosableView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169E71B8097B2441001AFB58 /* DisclosableView.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		16230FF90E6CC30A00A700CA /* PBXContainerItemProxy */ = {
+		161B71EE15D8D76B006E21D4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 169E71B2097B2441001AFB58 /* DisclosableView.xcodeproj */;
+			containerPortal = 161B71E015D8D76A006E21D4 /* Sparkle.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 162377A40E6CB9830040E8BB;
-			remoteInfo = "DisclosableView Plugin";
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
+			remoteInfo = Sparkle;
+		};
+		161B71F015D8D76B006E21D4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 161B71E015D8D76A006E21D4 /* Sparkle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 61B5F90209C4CEE200B25A18;
+			remoteInfo = "Sparkle Test App";
+		};
+		161B71F215D8D76B006E21D4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 161B71E015D8D76A006E21D4 /* Sparkle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 612279D90DB5470200AB99EA;
+			remoteInfo = "Sparkle Unit Tests";
+		};
+		161B71F415D8D76B006E21D4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 161B71E015D8D76A006E21D4 /* Sparkle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5D06E8D00FD68C7C005AE3F6;
+			remoteInfo = BinaryDelta;
+		};
+		161B71F615D8D76B006E21D4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 161B71E015D8D76A006E21D4 /* Sparkle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 55C14BB7136EEF1500649790;
+			remoteInfo = finish_installation;
 		};
 		162972C2097B41A700158D7B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -66,13 +98,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 164103D709735FA5008DABCC;
 			remoteInfo = SnoizeMIDISpy.framework;
-		};
-		164EA8820E6CD65200D235AB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 169E71B2097B2441001AFB58 /* DisclosableView.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 162377E60E6CBA7C0040E8BB;
-			remoteInfo = All;
 		};
 		1651E77A14A971C800EF79CD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -102,13 +127,6 @@
 			remoteGlobalIDString = 164103F309735FA6008DABCC;
 			remoteInfo = SnoizeMIDISpy.framework;
 		};
-		169E71B7097B2441001AFB58 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 169E71B2097B2441001AFB58 /* DisclosableView.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 16AF25A1097B1A3400BC87DC;
-			remoteInfo = DisclosableView;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -118,18 +136,19 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				16133B7415F5C75C00533536 /* Sparkle.framework in CopyFiles */,
 				162972B1097B414800158D7B /* SnoizeMIDI.framework in CopyFiles */,
 				162972B2097B414C00158D7B /* SnoizeMIDISpy.framework in CopyFiles */,
-				162972B3097B414F00158D7B /* DisclosableView.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		089C1660FE840EACC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
-		162310430E6CCC6100A700CA /* DisclosableView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DisclosableView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		161B71E015D8D76A006E21D4 /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = ../../ThirdParty/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
+		161B71F915D8DD83006E21D4 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dsa_pub.pem; path = ../../Updates/dsa_pub.pem; sourceTree = "<group>"; };
+		161B71FC15D8DFA5006E21D4 /* MIDIMonitor.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = MIDIMonitor.xml; path = ../../Updates/MIDIMonitor.xml; sourceTree = "<group>"; };
 		162310440E6CCC6100A700CA /* SnoizeMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SnoizeMIDI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		162310450E6CCC6100A700CA /* SnoizeMIDISpy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SnoizeMIDISpy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		167B884206ED4D650053D305 /* Info-MIDIMonitor.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-MIDIMonitor.plist"; sourceTree = "<group>"; };
@@ -145,7 +164,12 @@
 		169E7171097B2203001AFB58 /* Snoize-Application-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Application-Release.xcconfig"; path = "../../Configurations/Snoize-Application-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
 		169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDI.xcodeproj; path = ../../Frameworks/SnoizeMIDI/SnoizeMIDI.xcodeproj; sourceTree = SOURCE_ROOT; };
 		169E71A8097B242A001AFB58 /* SnoizeMIDISpy.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDISpy.xcodeproj; path = ../../Frameworks/SnoizeMIDISpy/SnoizeMIDISpy.xcodeproj; sourceTree = SOURCE_ROOT; };
-		169E71B2097B2441001AFB58 /* DisclosableView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DisclosableView.xcodeproj; path = ../../Frameworks/DisclosableView/DisclosableView.xcodeproj; sourceTree = SOURCE_ROOT; };
+		16C267D015D836B2009F4BE4 /* SNDisclosureArrowDown.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SNDisclosureArrowDown.tiff; sourceTree = "<group>"; };
+		16C267D115D836B2009F4BE4 /* SNDisclosureArrowRight.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SNDisclosureArrowRight.tiff; sourceTree = "<group>"; };
+		16C267D415D836C6009F4BE4 /* SNDisclosableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SNDisclosableView.h; sourceTree = "<group>"; };
+		16C267D515D836C6009F4BE4 /* SNDisclosableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SNDisclosableView.m; sourceTree = "<group>"; };
+		16C267D615D836C6009F4BE4 /* SNDisclosureButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SNDisclosureButton.h; sourceTree = "<group>"; };
+		16C267D715D836C6009F4BE4 /* SNDisclosureButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SNDisclosureButton.m; sourceTree = "<group>"; };
 		16F20F4906EAA14A00D9C507 /* Defaults.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = Defaults.plist; sourceTree = "<group>"; };
 		16F210AB06EAAF6A00D9C507 /* NSArray-SMMExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSArray-SMMExtensions.h"; sourceTree = "<group>"; };
 		16F210AC06EAAF6A00D9C507 /* NSArray-SMMExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSArray-SMMExtensions.m"; sourceTree = "<group>"; };
@@ -200,7 +224,7 @@
 				167B883B06ED4D650053D305 /* CoreMIDI.framework in Frameworks */,
 				16E8F01D097B2E8B00B52193 /* SnoizeMIDI.framework in Frameworks */,
 				16E8F01A097B2E5200B52193 /* SnoizeMIDISpy.framework in Frameworks */,
-				16E8F01E097B2E9400B52193 /* DisclosableView.framework in Frameworks */,
+				161B71F815D8D79E006E21D4 /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -212,7 +236,6 @@
 			children = (
 				1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */,
 				F5B4281801A360AD01000164 /* CoreMIDI.framework */,
-				162310430E6CCC6100A700CA /* DisclosableView.framework */,
 				162310440E6CCC6100A700CA /* SnoizeMIDI.framework */,
 				162310450E6CCC6100A700CA /* SnoizeMIDISpy.framework */,
 			);
@@ -226,6 +249,26 @@
 				2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */,
 			);
 			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		161B71E115D8D76A006E21D4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				161B71EF15D8D76B006E21D4 /* Sparkle.framework */,
+				161B71F115D8D76B006E21D4 /* Sparkle Test App.app */,
+				161B71F315D8D76B006E21D4 /* Sparkle Unit Tests.octest */,
+				161B71F515D8D76B006E21D4 /* BinaryDelta */,
+				161B71F715D8D76B006E21D4 /* finish_installation.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		161B71FB15D8DF8E006E21D4 /* Updates */ = {
+			isa = PBXGroup;
+			children = (
+				161B71FC15D8DFA5006E21D4 /* MIDIMonitor.xml */,
+			);
+			name = Updates;
 			sourceTree = "<group>";
 		};
 		169E7113097B200A001AFB58 /* Configurations */ = {
@@ -246,7 +289,7 @@
 			children = (
 				169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */,
 				169E71A8097B242A001AFB58 /* SnoizeMIDISpy.xcodeproj */,
-				169E71B2097B2441001AFB58 /* DisclosableView.xcodeproj */,
+				161B71E015D8D76A006E21D4 /* Sparkle.xcodeproj */,
 			);
 			name = "Other Projects";
 			sourceTree = "<group>";
@@ -269,15 +312,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		169E71B3097B2441001AFB58 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				169E71B8097B2441001AFB58 /* DisclosableView.framework */,
-				16230FFA0E6CC30A00A700CA /* DisclosableView.ibplugin */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		19C28FB0FE9D524F11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -296,6 +330,7 @@
 				169E7113097B200A001AFB58 /* Configurations */,
 				169E71A0097B23FF001AFB58 /* Other Projects */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
+				161B71FB15D8DF8E006E21D4 /* Updates */,
 			);
 			name = MIDIMonitor;
 			sourceTree = "<group>";
@@ -315,6 +350,10 @@
 				1691E0DA04CA1C1E00ACFC9D /* SMMDetailsWindowController.m */,
 				F56E05CA0206BAB401000164 /* SMMSysExWindowController.h */,
 				F56E05CB0206BAB401000164 /* SMMSysExWindowController.m */,
+				16C267D415D836C6009F4BE4 /* SNDisclosableView.h */,
+				16C267D515D836C6009F4BE4 /* SNDisclosableView.m */,
+				16C267D615D836C6009F4BE4 /* SNDisclosureButton.h */,
+				16C267D715D836C6009F4BE4 /* SNDisclosureButton.m */,
 				F571C56C01903F3301000164 /* Cocoa Extensions */,
 				F57F62950261E14501000164 /* SnoizeMIDI Extensions */,
 			);
@@ -342,12 +381,14 @@
 				1691E0DC04CA26F300ACFC9D /* Details.nib */,
 				F56E05CE0206BF0C01000164 /* SysEx.nib */,
 				167B884206ED4D650053D305 /* Info-MIDIMonitor.plist */,
-				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
 				F53BB4AE015D96A501000164 /* MIDIMonitor.strings */,
 				F579B5E9018D0F0D01000164 /* MIDIMonitor.icns */,
 				F57053DA018D364A01000164 /* Document.icns */,
 				F56D31A30195A90E01000164 /* docs.htmld */,
 				F57B0567026BB81F01000164 /* Read Me.html */,
+				16C267D015D836B2009F4BE4 /* SNDisclosureArrowDown.tiff */,
+				16C267D115D836B2009F4BE4 /* SNDisclosureArrowRight.tiff */,
+				161B71F915D8DD83006E21D4 /* dsa_pub.pem */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -409,7 +450,6 @@
 			dependencies = (
 				162972C3097B41A700158D7B /* PBXTargetDependency */,
 				162972C5097B41AA00158D7B /* PBXTargetDependency */,
-				164EA8830E6CD65200D235AB /* PBXTargetDependency */,
 			);
 			name = MIDIMonitor;
 			productInstallPath = /Users/Shared/krevis/InstalledProducts;
@@ -423,7 +463,7 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0440;
 			};
 			buildConfigurationList = 16AF264E097B1EFB00BC87DC /* Build configuration list for PBXProject "MIDIMonitor" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -439,16 +479,16 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 169E71B3097B2441001AFB58 /* Products */;
-					ProjectRef = 169E71B2097B2441001AFB58 /* DisclosableView.xcodeproj */;
-				},
-				{
 					ProductGroup = 169E71A2097B2419001AFB58 /* Products */;
 					ProjectRef = 169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */;
 				},
 				{
 					ProductGroup = 169E71A9097B242A001AFB58 /* Products */;
 					ProjectRef = 169E71A8097B242A001AFB58 /* SnoizeMIDISpy.xcodeproj */;
+				},
+				{
+					ProductGroup = 161B71E115D8D76A006E21D4 /* Products */;
+					ProjectRef = 161B71E015D8D76A006E21D4 /* Sparkle.xcodeproj */;
 				},
 			);
 			projectRoot = ../..;
@@ -459,11 +499,39 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		16230FFA0E6CC30A00A700CA /* DisclosableView.ibplugin */ = {
+		161B71EF15D8D76B006E21D4 /* Sparkle.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Sparkle.framework;
+			remoteRef = 161B71EE15D8D76B006E21D4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		161B71F115D8D76B006E21D4 /* Sparkle Test App.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "Sparkle Test App.app";
+			remoteRef = 161B71F015D8D76B006E21D4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		161B71F315D8D76B006E21D4 /* Sparkle Unit Tests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = DisclosableView.ibplugin;
-			remoteRef = 16230FF90E6CC30A00A700CA /* PBXContainerItemProxy */;
+			path = "Sparkle Unit Tests.octest";
+			remoteRef = 161B71F215D8D76B006E21D4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		161B71F515D8D76B006E21D4 /* BinaryDelta */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = BinaryDelta;
+			remoteRef = 161B71F415D8D76B006E21D4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		161B71F715D8D76B006E21D4 /* finish_installation.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = finish_installation.app;
+			remoteRef = 161B71F615D8D76B006E21D4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		1651E77B14A971C800EF79CD /* libSnoizeMIDIiOS.a */ = {
@@ -494,13 +562,6 @@
 			remoteRef = 169E71B0097B242A001AFB58 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		169E71B8097B2441001AFB58 /* DisclosableView.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = DisclosableView.framework;
-			remoteRef = 169E71B7097B2441001AFB58 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -510,7 +571,6 @@
 			files = (
 				167B881906ED4D650053D305 /* Credits.rtf in Resources */,
 				167B881A06ED4D650053D305 /* MainMenu.nib in Resources */,
-				167B881B06ED4D650053D305 /* InfoPlist.strings in Resources */,
 				167B881C06ED4D650053D305 /* MIDIMonitor.strings in Resources */,
 				167B881D06ED4D650053D305 /* Preferences.nib in Resources */,
 				167B881E06ED4D650053D305 /* MIDIMonitor.icns in Resources */,
@@ -521,6 +581,9 @@
 				167B882306ED4D650053D305 /* MIDIMonitor.nib in Resources */,
 				167B882406ED4D650053D305 /* Details.nib in Resources */,
 				167B882506ED4D650053D305 /* Defaults.plist in Resources */,
+				16C267D215D836B2009F4BE4 /* SNDisclosureArrowDown.tiff in Resources */,
+				16C267D315D836B2009F4BE4 /* SNDisclosureArrowRight.tiff in Resources */,
+				161B71FA15D8DD83006E21D4 /* dsa_pub.pem in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -564,6 +627,8 @@
 				167B883306ED4D650053D305 /* SMMDetailsWindowController.m in Sources */,
 				167B883406ED4D650053D305 /* NSArray-SMMExtensions.m in Sources */,
 				167B883506ED4D650053D305 /* NSString-SMMExtensions.m in Sources */,
+				16C267D815D836C6009F4BE4 /* SNDisclosableView.m in Sources */,
+				16C267D915D836C6009F4BE4 /* SNDisclosureButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -580,22 +645,9 @@
 			name = SnoizeMIDISpy.framework;
 			targetProxy = 162972C4097B41AA00158D7B /* PBXContainerItemProxy */;
 		};
-		164EA8830E6CD65200D235AB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = All;
-			targetProxy = 164EA8820E6CD65200D235AB /* PBXContainerItemProxy */;
-		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		089C165FFE840EACC02AAC07 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				089C1660FE840EACC02AAC07 /* English */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
 		1691E0DC04CA26F300ACFC9D /* Details.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -675,6 +727,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 169E7171097B2203001AFB58 /* Snoize-Application-Release.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PrecompHeader.h;
 				INFOPLIST_FILE = "Info-MIDIMonitor.plist";
@@ -695,6 +748,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 169E716F097B2203001AFB58 /* Snoize-Application-Debug.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PrecompHeader.h;
 				INFOPLIST_FILE = "Info-MIDIMonitor.plist";

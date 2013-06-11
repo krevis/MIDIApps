@@ -22,17 +22,18 @@
     }
     
     // Standardize the path and follow symlinks, so we won't hit any symlinks later on
+    NSString* originalFilePath = newFilePath;
     newFilePath = [[newFilePath stringByStandardizingPath] stringByResolvingSymlinksInPath];
 
     if (!newFilePath || [newFilePath length] == 0 || ![newFilePath isAbsolutePath]) {
-        [NSException raise: NSGenericException format: @"Cannot create path to invalid file: '%@'.", newFilePath]; 
+        [NSException raise: NSGenericException format: @"After standardizing '%@', cannot create path to invalid file: '%@'.", originalFilePath, newFilePath];
     }
     
     NSArray* components = [newFilePath pathComponents];
     unsigned int componentCount = [components count];
     
     if (componentCount <= 1) {
-        [NSException raise: NSGenericException format: @"Cannot create path to invalid file: '%@'", newFilePath]; 
+        [NSException raise: NSGenericException format: @"After standardizing '%@', cannot create path to invalid file with no components: '%@'.", originalFilePath, newFilePath];
     }
 
     unsigned int componentIndex;
@@ -51,8 +52,9 @@
             }            
         } else {
             // directory doesn't exist; try to create
-            if (![self createDirectoryAtPath: partialPath withIntermediateDirectories:NO attributes: attributes error:NULL]) {
-                failureReason = [NSString stringWithFormat: @"Cannot create path to file '%@' because the directory '%@' could not be created.", newFilePath, partialPath];
+            NSError* error = nil;
+            if (![self createDirectoryAtPath: partialPath withIntermediateDirectories:NO attributes: attributes error:&error]) {
+                failureReason = [NSString stringWithFormat: @"The directory '%@' could not be created. Error: (%@ %ld) %@", partialPath, error.domain, (long)error.code, error.localizedDescription];
             }
         }
     }

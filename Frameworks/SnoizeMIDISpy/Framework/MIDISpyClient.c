@@ -154,7 +154,7 @@ OSStatus MIDISpyClientCreate(MIDISpyClientRef *outClientRefPtr)
 
         // Now get the identifier and use it to name a newly created local port
         clientRef->clientIdentifier = *(UInt32 *)CFDataGetBytePtr(identifierData);
-        localPortName = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%@-%lu"), kSpyingMIDIDriverPortName, clientRef->clientIdentifier);
+        localPortName = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%@-%u"), kSpyingMIDIDriverPortName, (unsigned int)clientRef->clientIdentifier);
 
         context.info = clientRef;
         clientRef->localPort = CFMessagePortCreateLocal(kCFAllocatorDefault, localPortName, LocalMessagePortCallback, &context, FALSE);

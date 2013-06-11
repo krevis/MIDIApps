@@ -1,2 +1,1 @@
-// necessary for Xcode to find the headers in the embedded frameworks in the app
-FRAMEWORK_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)"
+// nothing necessary here (yet)
