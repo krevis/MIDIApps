@@ -266,7 +266,7 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 
 - (NSString*)description
 {
-    return [NSString stringWithFormat:@"<%@ %p objectRef=%p uniqueID=%ld name=\"%@\">", NSStringFromClass([self class]), self, (void *)objectRef, (long)uniqueID, [self name]];
+    return [NSString stringWithFormat:@"<%@ %p objectRef=%u uniqueID=%ld name=\"%@\">", NSStringFromClass([self class]), self, (unsigned int)objectRef, (long)uniqueID, [self name]];
 }
 
 - (MIDIUniqueID)uniqueID;
