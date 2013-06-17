@@ -44,15 +44,8 @@
 #ifndef __MIDIDriverClass_h__
 #define __MIDIDriverClass_h__
 
-#include <AvailabilityMacros.h>
-
-#if MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_5
-// Use old header when building on the 10.5 SDK
-#include <CoreMIDIServer/MIDIDriver.h>
-#else
-// Use new header otherwise
+// Use new header; this requires 10.6 SDK and runtime
 #include <CoreMIDI/MIDIDriver.h>
-#endif
 
 #ifndef V1_MIDI_DRIVER_SUPPORT
 	#define V1_MIDI_DRIVER_SUPPORT	0

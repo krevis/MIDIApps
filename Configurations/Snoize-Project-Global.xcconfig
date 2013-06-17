@@ -5,11 +5,8 @@
 // over time, that causes more problems than it solves.
 SDKROOT = macosx
 
-// Minimum machine we'll attempt to run on is 10.5
-MACOSX_DEPLOYMENT_TARGET = 10.5
-
-// ... but Intel 64-bit requires 10.6
-MACOSX_DEPLOYMENT_TARGET[arch=x86_64] = 10.6
+// Minimum OS we'll attempt to run on is 10.6
+MACOSX_DEPLOYMENT_TARGET = 10.6
 
 // Build on all archs that we possibly can, not just the native arch.
 // (Note: the Debug variant sets ONLY_ACTIVE_ARCH to further modify the behavior.)
@@ -22,8 +19,3 @@ GCC_TREAT_WARNINGS_AS_ERRORS = YES
 GCC_WARN_ABOUT_RETURN_TYPE = YES
 GCC_WARN_UNUSED_VARIABLE = YES
 WARNING_CFLAGS = -Wmost -Wparentheses
-
-// Without this fix, using blocks will cause the app to fail to load
-// (in dyld) on OS X 10.5 and maybe iOS 3.  With this fix, we can at least
-// check if GCD is enabled at runtime (see CHECK_FOR_GCD in the code).
-OTHER_LDFLAGS = -weak-lSystem

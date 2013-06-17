@@ -28,6 +28,7 @@
 		1641040009735FA6008DABCC /* MessageQueue.c in Sources */ = {isa = PBXBuildFile; fileRef = F540CCB4023F41B101000164 /* MessageQueue.c */; };
 		1641040209735FA6008DABCC /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F540CCC3023F42EA01000164 /* CoreFoundation.framework */; };
 		1641040E09735FA6008DABCC /* MIDI Monitor.plugin in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1641040B09735FA6008DABCC /* MIDI Monitor.plugin */; };
+		16E651A1176EDB370005B53C /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16E651A0176EDB370005B53C /* CoreMIDI.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +67,7 @@
 		1641044B09736388008DABCC /* Snoize-Project-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Debug.xcconfig"; path = "../../Configurations/Snoize-Project-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		1641044C09736388008DABCC /* Snoize-Project-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Global.xcconfig"; path = "../../Configurations/Snoize-Project-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
 		1641044D09736388008DABCC /* Snoize-Project-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Release.xcconfig"; path = "../../Configurations/Snoize-Project-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
+		16E651A0176EDB370005B53C /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
 		F53956EE0256D06A01000164 /* MIDISpyShared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIDISpyShared.h; sourceTree = SOURCE_ROOT; };
 		F540CCAD023F41B101000164 /* MIDIDriverClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIDIDriverClass.h; sourceTree = "<group>"; };
 		F540CCAE023F41B101000164 /* MIDIDriver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MIDIDriver.cpp; sourceTree = "<group>"; };
@@ -77,8 +79,6 @@
 		F540CCB4023F41B101000164 /* MessageQueue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = MessageQueue.c; sourceTree = "<group>"; };
 		F540CCB5023F41B101000164 /* SpyingMIDIDriver.exp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.exports; path = SpyingMIDIDriver.exp; sourceTree = "<group>"; };
 		F540CCC3023F42EA01000164 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
-		F540CCC4023F42EA01000164 /* CoreMIDIServer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDIServer.framework; path = /System/Library/Frameworks/CoreMIDIServer.framework; sourceTree = "<absolute>"; };
-		F540CCC6023F42EA01000164 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
 		F551C2DB032756AF01000164 /* FSCopyObject.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FSCopyObject.c; sourceTree = "<group>"; };
 		F551C2DC032756AF01000164 /* FSCopyObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSCopyObject.h; sourceTree = "<group>"; };
 		F56214910240BADA01000164 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -105,6 +105,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16E651A1176EDB370005B53C /* CoreMIDI.framework in Frameworks */,
 				1641040209735FA6008DABCC /* CoreFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -261,7 +262,7 @@
 			isa = PBXGroup;
 			children = (
 				F540CCC3023F42EA01000164 /* CoreFoundation.framework */,
-				F540CCC4023F42EA01000164 /* CoreMIDIServer.framework */,
+				16E651A0176EDB370005B53C /* CoreMIDI.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -269,7 +270,6 @@
 		F540CCC5023F42EA01000164 /* Other Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F540CCC6023F42EA01000164 /* CoreMIDI.framework */,
 			);
 			name = "Other Frameworks";
 			sourceTree = "<group>";
@@ -508,18 +508,7 @@
 				EXPORTED_SYMBOLS_FILE = Driver/SpyingMIDIDriver.exp;
 				INFOPLIST_FILE = "Info-SpyingMIDIDriver.plist";
 				INSTALL_PATH = "/Library/Audio/MIDI Drivers";
-				"OTHER_LDFLAGS[arch=i386]" = (
-					"$(inherited)",
-					"-framework",
-					CoreMIDIServer,
-				);
-				"OTHER_LDFLAGS[arch=x86_64]" = (
-					"$(inherited)",
-					"-framework",
-					CoreMIDI,
-				);
 				PRODUCT_NAME = "MIDI Monitor";
-				"SDKROOT[arch=i386]" = macosx10.5;
 				WRAPPER_EXTENSION = plugin;
 			};
 			name = Debug;
@@ -531,18 +520,7 @@
 				EXPORTED_SYMBOLS_FILE = Driver/SpyingMIDIDriver.exp;
 				INFOPLIST_FILE = "Info-SpyingMIDIDriver.plist";
 				INSTALL_PATH = "/Library/Audio/MIDI Drivers";
-				"OTHER_LDFLAGS[arch=i386]" = (
-					"$(inherited)",
-					"-framework",
-					CoreMIDIServer,
-				);
-				"OTHER_LDFLAGS[arch=x86_64]" = (
-					"$(inherited)",
-					"-framework",
-					CoreMIDI,
-				);
 				PRODUCT_NAME = "MIDI Monitor";
-				"SDKROOT[arch=i386]" = macosx10.5;
 				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = plugin;
 			};
