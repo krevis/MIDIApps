@@ -499,10 +499,11 @@ static NSString *formatNoteNumberWithBaseOctave(Byte noteNumber, int octave)
     // noteNumber 0 is note C in octave provided (should be -2 or -1)
 
 	static NSArray *noteNames = nil;
-	
-	if(!noteNames)
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
 		noteNames = [[NSArray alloc] initWithObjects:@"C", @"C♯", @"D", @"D♯", @"E", @"F", @"F♯", @"G", @"G♯", @"A", @"A♯", @"B", nil];
-
+    });
+	
     return [NSString stringWithFormat:@"%@%d", [noteNames objectAtIndex:(noteNumber % 12)], octave + noteNumber / 12];
 }
 
