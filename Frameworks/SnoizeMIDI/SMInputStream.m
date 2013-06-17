@@ -67,6 +67,17 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
     }
 }
 
+- (void)dealloc
+{
+#if CHECK_FOR_GCD
+    if (dispatch_release != NULL)
+#endif
+	{
+		dispatch_release(readQueue);
+	}
+	[super dealloc];
+}
+
 - (id<SMMessageDestination>)messageDestination;
 {
     return nonretainedMessageDestination;
