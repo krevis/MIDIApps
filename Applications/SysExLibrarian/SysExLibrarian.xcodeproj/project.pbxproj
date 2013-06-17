@@ -116,6 +116,13 @@
 			remoteGlobalIDString = A53DDB97148F4219006D2FFD;
 			remoteInfo = SnoizeMIDIiOS;
 		};
+		1682E81A176EE3C400089623 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A581997216AF687400325CF3;
+			remoteInfo = SnoizeMIDIOSX;
+		};
 		16F0332E0984B74B006C8A44 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */;
@@ -334,6 +341,7 @@
 			children = (
 				16F0332F0984B74B006C8A44 /* SnoizeMIDI.framework */,
 				1651E78514A9724300EF79CD /* libSnoizeMIDIiOS.a */,
+				1682E81B176EE3C400089623 /* libSnoizeMIDI.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -629,7 +637,7 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0440;
+				LastUpgradeCheck = 0500;
 			};
 			buildConfigurationList = 16F032BA0984B5DD006C8A44 /* Build configuration list for PBXProject "SysExLibrarian" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -701,6 +709,13 @@
 			fileType = archive.ar;
 			path = libSnoizeMIDIiOS.a;
 			remoteRef = 1651E78414A9724300EF79CD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1682E81B176EE3C400089623 /* libSnoizeMIDI.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSnoizeMIDI.a;
+			remoteRef = 1682E81A176EE3C400089623 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		16F0332F0984B74B006C8A44 /* SnoizeMIDI.framework */ = {
@@ -978,6 +993,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 16F033330984B760006C8A44 /* Snoize-Project-Debug.xcconfig */;
 			buildSettings = {
+				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
 		};
