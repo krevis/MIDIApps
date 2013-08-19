@@ -14,12 +14,15 @@
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 @class SMMCombinationInputStream;
+@class SMMDetector;
 
 
 @interface SMMDocument : NSDocument
 {
     // MIDI processing
     SMMCombinationInputStream *stream;
+    SMMessageMult *mult;
+    SMMDetector *detector;
     SMMessageFilter *messageFilter;
     SMMessageHistory *history;
 

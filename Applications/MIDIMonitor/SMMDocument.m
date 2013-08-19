@@ -18,6 +18,7 @@
 
 #import "SMMCombinationInputStream.h"
 #import "SMMMonitorWindowController.h"
+#import "SMMDetector.h"
 
 
 @interface SMMDocument (Private)
@@ -64,15 +65,26 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
     [center addObserver:self selector:@selector(doneReadingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:stream];
     [center addObserver:self selector:@selector(sourceListDidChange:) name:SMInputStreamSourceListChangedNotification object:stream];
     [self updateVirtualEndpointName];
+    
+    mult = [[SMMessageMult alloc] init];
 
     messageFilter = [[SMMessageFilter alloc] init];
-    [stream setMessageDestination:messageFilter];
     [messageFilter setFilterMask:SMMessageTypeAllMask];
     [messageFilter setChannelMask:SMChannelMaskAll];
+    
+    detector = [[SMMDetector alloc] init];
 
     history = [[SMMessageHistory alloc] init];
-    [messageFilter setMessageDestination:history];
     [center addObserver:self selector:@selector(historyDidChange:) name:SMMessageHistoryChangedNotification object:history];
+    
+    // Hook up all the processors.
+    // The input stream sends messages to the mult:
+    [stream setMessageDestination:mult];
+    // Which sends messages to the detector and the filter:
+    [mult addDestination:detector];
+    [mult addDestination:messageFilter];
+    // and the filter sends messages to the history
+    [messageFilter setMessageDestination:history];
 
     areSourcesShown = NO;
     isFilterShown = NO;

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		16133B7415F5C75C00533536 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 161B71EF15D8D76B006E21D4 /* Sparkle.framework */; };
+		1617F1D317C1B0B5009AA3E2 /* SMMDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 1617F1D217C1B0B5009AA3E2 /* SMMDetector.m */; };
 		161B71F815D8D79E006E21D4 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 161B71EF15D8D76B006E21D4 /* Sparkle.framework */; };
 		161B71FA15D8DD83006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B71F915D8DD83006E21D4 /* dsa_pub.pem */; };
 		162972B1097B414800158D7B /* SnoizeMIDI.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */; };
@@ -153,6 +154,8 @@
 
 /* Begin PBXFileReference section */
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		1617F1D117C1B0B5009AA3E2 /* SMMDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMDetector.h; sourceTree = "<group>"; };
+		1617F1D217C1B0B5009AA3E2 /* SMMDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMDetector.m; sourceTree = "<group>"; };
 		161B71E015D8D76A006E21D4 /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = ../../ThirdParty/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		161B71F915D8DD83006E21D4 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dsa_pub.pem; path = ../../Updates/dsa_pub.pem; sourceTree = "<group>"; };
 		161B71FC15D8DFA5006E21D4 /* MIDIMonitor.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = MIDIMonitor.xml; path = ../../Updates/MIDIMonitor.xml; sourceTree = "<group>"; };
@@ -350,6 +353,8 @@
 				F53D4ABA015AAB7E01000164 /* SMMAppController.m */,
 				2A37F4AEFDCFA73011CA2CEA /* SMMDocument.h */,
 				2A37F4ACFDCFA73011CA2CEA /* SMMDocument.m */,
+				1617F1D117C1B0B5009AA3E2 /* SMMDetector.h */,
+				1617F1D217C1B0B5009AA3E2 /* SMMDetector.m */,
 				F53D4AB5015AAA2C01000164 /* SMMMonitorWindowController.h */,
 				F53D4AB6015AAA2C01000164 /* SMMMonitorWindowController.m */,
 				F53A1C06015EB24301000164 /* SMMPreferencesWindowController.h */,
@@ -644,6 +649,7 @@
 				167B883506ED4D650053D305 /* NSString-SMMExtensions.m in Sources */,
 				16C267D815D836C6009F4BE4 /* SNDisclosableView.m in Sources */,
 				16C267D915D836C6009F4BE4 /* SNDisclosureButton.m in Sources */,
+				1617F1D317C1B0B5009AA3E2 /* SMMDetector.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
