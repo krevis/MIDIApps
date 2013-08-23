@@ -328,7 +328,6 @@
 		0867D691FE84028FC02AAC07 /* SnoizeMIDI */ = {
 			isa = PBXGroup;
 			children = (
-				A581999716AF699100325CF3 /* CoreMIDI.framework */,
 				08FB77AEFE84172EC02AAC07 /* Source */,
 				089C1665FE841158C02AAC07 /* Resources */,
 				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
@@ -518,6 +517,7 @@
 		A53DDB98148F4219006D2FFD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A581999716AF699100325CF3 /* CoreMIDI.framework */,
 				A53DDB99148F4219006D2FFD /* Foundation.framework */,
 			);
 			name = Frameworks;
@@ -900,7 +900,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SnoizeMIDI_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "@rpath";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = SnoizeMIDI;
 				WRAPPER_EXTENSION = framework;
@@ -917,7 +916,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SnoizeMIDI_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "@rpath";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = SnoizeMIDI;
 				WRAPPER_EXTENSION = framework;

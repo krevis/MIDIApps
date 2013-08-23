@@ -1,1 +1,3 @@
-// nothing necessary here (yet)
+// Set value of @rpath in the binary, so internal frameworks can use it
+
+LD_RUNPATH_SEARCH_PATHS = @executable_path/../Frameworks
