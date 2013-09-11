@@ -738,11 +738,10 @@ static CFMutableDictionaryRef classToObjectsMapTable = NULL;
 
 - (void)postReplacedNotificationWithReplacement:(SMMIDIObject *)replacement;
 {
-    NSDictionary *userInfo;
-
     SMAssert(replacement != NULL);
-    userInfo = [NSDictionary dictionaryWithObject:replacement forKey:SMMIDIObjectReplacement];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectWasReplacedNotification object:self userInfo:userInfo];
+    if (replacement) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:SMMIDIObjectWasReplacedNotification object:self userInfo:@{ SMMIDIObjectReplacement : replacement }];
+    }
 }
 
 @end
