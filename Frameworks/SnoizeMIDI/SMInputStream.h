@@ -27,7 +27,8 @@
 	dispatch_queue_t readQueue;
 }
 
-@property (nonatomic, /*retain*/) dispatch_queue_t readQueue;
+- (dispatch_queue_t)readQueue;
+- (void)setReadQueue:(dispatch_queue_t)queue;
 
 - (id<SMMessageDestination>)messageDestination;
 - (void)setMessageDestination:(id<SMMessageDestination>)messageDestination;

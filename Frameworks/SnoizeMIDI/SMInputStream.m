@@ -34,8 +34,6 @@ static void midiReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, vo
 
 @implementation SMInputStream
 
-@synthesize readQueue;
-
 NSString *SMInputStreamReadingSysExNotification = @"SMInputStreamReadingSysExNotification";
 NSString *SMInputStreamDoneReadingSysExNotification = @"SMInputStreamDoneReadingSysExNotification";
 NSString *SMInputStreamSelectedInputSourceDisappearedNotification = @"SMInputStreamSelectedInputSourceDisappearedNotification";
@@ -53,6 +51,11 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
     self.readQueue = dispatch_get_main_queue();
 
     return self;
+}
+
+- (dispatch_queue_t)readQueue
+{
+    return readQueue;
 }
 
 - (void)setReadQueue:(dispatch_queue_t)newReadQueue
