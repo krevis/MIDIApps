@@ -371,7 +371,7 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 
     status = MIDIObjectSetStringProperty(objectRef, property, (CFStringRef)value);
     if (status) {
-        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't set object's property '%@' to '%@' (error %ld)", @"SnoizeMIDI", SMBundleForObject(self), "exception with property, value string, and OSStatus if setting object's property fails"), property, value, status];
+        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't set object's property '%@' to '%@' (error %d)", @"SnoizeMIDI", SMBundleForObject(self), "exception with property, value string, and OSStatus if setting object's property fails"), property, value, (int)status];
     }
 }
 
@@ -382,7 +382,7 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 
     status = MIDIObjectGetIntegerProperty(objectRef, property, &value);
     if (status) {
-        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't get object's property '%@' (error %ld)", @"SnoizeMIDI", SMBundleForObject(self), "exception with property and OSStatus if getting object's property fails"), property, status];
+        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't get object's property '%@' (error %d)", @"SnoizeMIDI", SMBundleForObject(self), "exception with property and OSStatus if getting object's property fails"), property, (int)status];
     }
 
     return value;
@@ -396,7 +396,7 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 
     status = MIDIObjectSetIntegerProperty(objectRef, property, value);
     if (status) {
-        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't set object's property '%@' to %ld (error %ld)", @"SnoizeMIDI", SMBundleForObject(self), "exception with property, SInt32, and OSStatus if setting object's property fails"), property, status];
+        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't set object's property '%@' to %d (error %d)", @"SnoizeMIDI", SMBundleForObject(self), "exception with property, SInt32, and OSStatus if setting object's property fails"), property, (int)value, (int)status];
     }
 }
 

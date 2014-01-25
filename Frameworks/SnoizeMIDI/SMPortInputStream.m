@@ -40,7 +40,7 @@
     
     status = MIDIInputPortCreate([[SMClient sharedClient] midiClient], (CFStringRef)@"Input port", [self midiReadProc], self, &inputPort);
     if (status != noErr)
-        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't create a MIDI input port (error %ld)", @"SnoizeMIDI", SMBundleForObject(self), "exception with OSStatus if MIDIInputPortCreate() fails"), status];
+        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't create a MIDI input port (error %d)", @"SnoizeMIDI", SMBundleForObject(self), "exception with OSStatus if MIDIInputPortCreate() fails"), (int)status];
     
     endpoints = [[NSMutableSet alloc] init];
     

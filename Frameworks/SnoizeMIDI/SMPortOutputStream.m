@@ -56,7 +56,7 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
 
     status = MIDIOutputPortCreate([[SMClient sharedClient] midiClient], (CFStringRef)@"Output port",  &outputPort);
     if (status != noErr) {
-        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't create a MIDI output port (error %ld)", @"SnoizeMIDI", SMBundleForObject(self), "exception with OSStatus if MIDIOutputPortCreate() fails"), status];
+        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't create a MIDI output port (error %d)", @"SnoizeMIDI", SMBundleForObject(self), "exception with OSStatus if MIDIOutputPortCreate() fails"), (int)status];
     }
 
     return self;
