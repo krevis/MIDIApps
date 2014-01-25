@@ -542,7 +542,7 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
     
     status = MIDIObjectSetIntegerProperty(objectRef, (CFStringRef)SMEndpointPropertyOwnerPID, value);
     if (status) {
-        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't set owner PID on endpoint: error %ld", @"SnoizeMIDI", SMBundleForObject(self), "exception with OSStatus if setting endpoint's owner PID fails"), status];
+        [NSException raise:NSGenericException format:NSLocalizedStringFromTableInBundle(@"Couldn't set owner PID on endpoint: error %d", @"SnoizeMIDI", SMBundleForObject(self), "exception with OSStatus if setting endpoint's owner PID fails"), (int)status];
     }
 }
 
