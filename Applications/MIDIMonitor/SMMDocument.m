@@ -140,7 +140,7 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
     NSDictionary *streamSettings;
     SMMessageType filterMask;
     SMChannelMask channelMask;
-    unsigned int historySize;
+    NSUInteger historySize;
 
     dict = [[NSMutableDictionary alloc] init];
     [dict setObject:[NSNumber numberWithInt:2] forKey:@"version"];
@@ -343,12 +343,12 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
     [[self windowControllers] makeObjectsPerformSelector:@selector(revealInputSources:) withObject:inputSources];
 }
 
-- (unsigned int)maxMessageCount;
+- (NSUInteger)maxMessageCount;
 {
     return [history historySize];
 }
 
-- (void)setMaxMessageCount:(unsigned int)newValue;
+- (void)setMaxMessageCount:(NSUInteger)newValue;
 {
     if (newValue == [history historySize])
         return;
@@ -384,12 +384,12 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
     return ([messageFilter channelMask] == SMChannelMaskAll);
 }
 
-- (unsigned int)oneChannelToShow;
+- (NSUInteger)oneChannelToShow;
 {
     // It is possible that something else could have set the mask to show more than one, or zero, channels.
     // We'll just return the lowest enabled channel (1-16), or 0 if no channel is enabled.
 
-    unsigned int channel;
+    NSUInteger channel;
     SMChannelMask mask;
 
     SMAssert(![self isShowingAllChannels]);
@@ -411,7 +411,7 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
     [self setChannelMask:SMChannelMaskAll];
 }
 
-- (void)showOnlyOneChannel:(unsigned int)channel;
+- (void)showOnlyOneChannel:(NSUInteger)channel;
 {
     [self setChannelMask:(1 << (channel - 1))];
 }
@@ -571,7 +571,7 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
 - (void)synchronizeMessagesWithScroll:(BOOL)shouldScroll
 {
     NSArray *windowControllers;
-    unsigned int windowControllerIndex;
+    NSUInteger windowControllerIndex;
 
     windowControllers = [self windowControllers];
     windowControllerIndex = [windowControllers count];

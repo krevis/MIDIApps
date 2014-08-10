@@ -54,7 +54,7 @@
 @interface NSObject (SMMessageParserDelegate)
 
 - (void)parser:(SMMessageParser *)parser didReadMessages:(NSArray *)messages;
-- (void)parser:(SMMessageParser *)parser isReadingSysExWithLength:(unsigned int)length;
+- (void)parser:(SMMessageParser *)parser isReadingSysExWithLength:(NSUInteger)length;
 - (void)parser:(SMMessageParser *)parser finishedReadingSysExMessage:(SMSystemExclusiveMessage *)message;
 
 @end

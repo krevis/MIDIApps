@@ -184,7 +184,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 - (IBAction)setMaximumMessageCount:(id)sender;
 {
     NSNumber *number;
-    unsigned int maxMessageCount;
+    NSUInteger maxMessageCount;
     
     if ((number = [(NSControl*)sender objectValue])) {
         maxMessageCount = [number unsignedIntValue];
@@ -198,7 +198,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 {
     BOOL turnBitsOn;
 
-    switch ([sender state]) {
+    switch ([(NSButton *)sender state]) {
         case NSOnState:
         case NSMixedState:	// Changing from off to mixed state should be the same as changing to all-on
             turnBitsOn = YES;
@@ -355,7 +355,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 
 - (void)synchronizeMaxMessageCount;
 {
-    unsigned int maxMessageCount;
+    NSUInteger maxMessageCount;
     
     maxMessageCount = [[self document] maxMessageCount];    
     [maxMessageCountField setObjectValue:[NSNumber numberWithUnsignedInt:maxMessageCount]];
@@ -364,7 +364,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 - (void)synchronizeFilterControls;
 {
     SMMessageType currentMask;
-    unsigned int buttonIndex;
+    NSUInteger buttonIndex;
 
     currentMask = [[self document] filterMask];
         
@@ -422,7 +422,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 - (void)couldNotFindSourcesNamed:(NSArray *)sourceNames;
 {
     NSString *title, *message;
-    unsigned int sourceNamesCount;
+    NSUInteger sourceNamesCount;
 
     sourceNamesCount = [sourceNames count];
 
@@ -436,7 +436,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
         message = [NSString stringWithFormat:messageFormat, [sourceNames objectAtIndex:0]];
     } else {
         NSMutableArray *sourceNamesInQuotes;
-        unsigned int sourceNamesIndex;
+        NSUInteger sourceNamesIndex;
         NSString *concatenatedSourceNames;
         NSString *messageFormat;
         
@@ -471,7 +471,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     // Of all of the input sources, find the first one which is in the given set.
     // Then expand the outline view to show this source, and scroll it to be visible.
 
-    unsigned int groupCount, groupIndex;
+    NSUInteger groupCount, groupIndex;
 
     groupCount = [groupedInputSources count];
     for (groupIndex = 0; groupIndex < groupCount; groupIndex++) {
@@ -480,7 +480,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
         group = [groupedInputSources objectAtIndex:groupIndex];
         if (![[group objectForKey:@"isNotExpandable"] boolValue]) {
             NSArray *groupSources;
-            unsigned int groupSourceCount, groupSourceIndex;
+            NSUInteger groupSourceCount, groupSourceIndex;
 
             groupSources = [group objectForKey:@"sources"];
             groupSourceCount = [groupSources count];
@@ -729,7 +729,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     [messagesTableView reloadData];
 
     if (messagesNeedScrollToBottom && isAtBottom) {
-        unsigned int messageCount = [displayedMessages count];
+        NSUInteger messageCount = [displayedMessages count];
         if (messageCount > 0)
             [messagesTableView scrollRowToVisible:messageCount - 1];
     }
@@ -799,7 +799,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 - (NSCellStateValue)buttonStateForInputSources:(NSArray *)sources;
 {
     NSSet *selectedSources;
-    unsigned int sourceIndex;
+    NSUInteger sourceIndex;
     BOOL areAnySelected = NO, areAnyNotSelected = NO;
     
     selectedSources = [(SMMDocument *)[self document] selectedInputSources];

@@ -89,7 +89,7 @@
 
 - (NSArray *)filterMessages:(NSArray *)messages;
 {
-    unsigned int messageIndex, messageCount;
+    NSUInteger messageIndex, messageCount;
     NSMutableArray *filteredMessages;
 
     messageCount = [messages count];

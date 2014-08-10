@@ -41,7 +41,7 @@ static NSInteger midiObjectOrdinalComparator(id object1, id object2, void *conte
 
 + (CFMutableDictionaryRef)midiObjectMapTable;
 
-+ (SMMIDIObject *)addObjectWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(unsigned int)anOrdinal;
++ (SMMIDIObject *)addObjectWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(NSUInteger)anOrdinal;
 + (void)removeObjectWithObjectRef:(MIDIObjectRef)anObjectRef;
 
 + (void)refreshObjectOrdinals;
@@ -147,7 +147,7 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
     // TODO We may want to change this to use MIDIObjectFindByUniqueID() where it is available (10.2 and greater).
     // However, I bet it's cheaper to look at the local list of unique IDs instead of making a roundtrip to the MIDIServer.
     NSArray *allObjects;
-    unsigned int index;
+    NSUInteger index;
 
     allObjects = [self allObjects];
     index = [allObjects count];
@@ -165,7 +165,7 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 + (SMMIDIObject *)objectWithName:(NSString *)aName;
 {
     NSArray *allObjects;
-    unsigned int index;
+    NSUInteger index;
 
     if (!aName)
         return nil;
@@ -212,7 +212,7 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
     while (!foundUnique) {
         // We could get fancy, but just using the current time is likely to work just fine.
         // Add a sequence number in case this method is called more than once within a second.
-        proposed = time(NULL);
+        proposed = (MIDIUniqueID)time(NULL);
         proposed += sequence;
         sequence++;
 
@@ -227,7 +227,7 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 // Single object creation and accessors
 //
 
-- (id)initWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(unsigned int)anOrdinal;
+- (id)initWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(NSUInteger)anOrdinal;
 {
     if (!(self = [super init]))
         return nil;
@@ -250,12 +250,12 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
     return objectRef;
 }
 
-- (unsigned int)ordinal;
+- (NSUInteger)ordinal;
 {
     return ordinal;
 }
 
-- (void)setOrdinal:(unsigned int)value;
+- (void)setOrdinal:(NSUInteger)value;
 {
     ordinal = value;
 }
@@ -436,7 +436,7 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 
 NSInteger midiObjectOrdinalComparator(id object1, id object2, void *context)
 {
-    unsigned int ordinal1, ordinal2;
+    NSUInteger ordinal1, ordinal2;
 
     ordinal1 = [object1 ordinal];
     ordinal2 = [object2 ordinal];
@@ -676,7 +676,7 @@ static CFMutableDictionaryRef classToObjectsMapTable = NULL;
     return (CFMutableDictionaryRef)CFDictionaryGetValue(classToObjectsMapTable, self);
 }
 
-+ (SMMIDIObject *)addObjectWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(unsigned int)anOrdinal;
++ (SMMIDIObject *)addObjectWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(NSUInteger)anOrdinal;
 {
     SMMIDIObject *object;
 

@@ -201,7 +201,7 @@ const float kDefaultHiddenHeight = 0.0;
 
 - (void)removeSubviews;
 {
-    unsigned int subviewIndex;
+    NSUInteger subviewIndex;
 
     NSAssert(hiddenSubviews == nil, @"-[SNDisclosableView removeSubviews]: should have no hidden subviews yet");
 
@@ -213,7 +213,7 @@ const float kDefaultHiddenHeight = 0.0;
 
 - (void)restoreSubviews;
 {
-    unsigned int subviewIndex;
+    NSUInteger subviewIndex;
 
     NSAssert(hiddenSubviews != nil, @"-[SNDisclosableView restoreSubviews]: hiddenSubviews array is nil");
 
@@ -355,7 +355,7 @@ const float kDefaultHiddenHeight = 0.0;
 
 - (void)restoreAutoresizeMasks:(NSArray *)masks toViews:(NSArray *)views;
 {
-    unsigned int count, index;
+    NSUInteger count, index;
 
     count = [masks count];
     for (index = 0; index < count; index++)

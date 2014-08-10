@@ -67,7 +67,7 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 }
 
 
-- (id)initWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(unsigned int)anOrdinal
+- (id)initWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(NSUInteger)anOrdinal
 {
     if (!(self = [super initWithObjectRef:anObjectRef ordinal:anOrdinal]))
         return nil;
@@ -311,8 +311,8 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
     // The property for kMIDIPropertyConnectionUniqueID may be an integer or a data object.
     // Try getting it as data first.  (The data is an array of big-endian MIDIUniqueIDs, aka SInt32s.)
     if (noErr == MIDIObjectGetDataProperty(objectRef, kMIDIPropertyConnectionUniqueID, (CFDataRef *)&data)) {
-        unsigned int dataLength = [data length];
-        unsigned int count;
+        NSUInteger dataLength = [data length];
+        NSUInteger count;
         const MIDIUniqueID *p, *end;
         NSMutableArray *array;
         
@@ -345,7 +345,7 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 - (NSArray *)connectedExternalDevices;
 {
     NSArray *uniqueIDs;
-    unsigned int uniqueIDIndex, uniqueIDCount;
+    NSUInteger uniqueIDIndex, uniqueIDCount;
     NSMutableArray *externalDevices;
 
     uniqueIDs = [self uniqueIDsOfConnectedThings];

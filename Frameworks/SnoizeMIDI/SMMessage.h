@@ -108,13 +108,13 @@ extern NSString *SMExpertModePreferenceKey;
 + (NSString *)formatControllerNumber:(Byte)controllerNumber usingOption:(SMControllerFormattingOption)option;
 + (NSString *)nameForControllerNumber:(Byte)controllerNumber;
 + (NSString *)formatData:(NSData *)data;
-+ (NSString *)formatDataBytes:(const Byte *)bytes length:(unsigned int)length;
++ (NSString *)formatDataBytes:(const Byte *)bytes length:(NSUInteger)length;
 + (NSString *)formatDataByte:(Byte)dataByte;
 + (NSString *)formatDataByte:(Byte)dataByte usingOption:(SMDataFormattingOption)option;
 + (NSString *)formatSignedDataByte1:(Byte)dataByte1 byte2:(Byte)dataByte2;
 + (NSString *)formatSignedDataByte1:(Byte)dataByte1 byte2:(Byte)dataByte2 usingOption:(SMDataFormattingOption)option;
-+ (NSString *)formatLength:(unsigned int)length;
-+ (NSString *)formatLength:(unsigned int)length usingOption:(SMDataFormattingOption)option;
++ (NSString *)formatLength:(NSUInteger)length;
++ (NSString *)formatLength:(NSUInteger)length usingOption:(SMDataFormattingOption)option;
 + (NSString *)nameForManufacturerIdentifier:(NSData *)manufacturerIdentifierData;
 
 - (id)initWithTimeStamp:(MIDITimeStamp)aTimeStamp statusByte:(Byte)aStatusByte;
@@ -130,7 +130,7 @@ extern NSString *SMExpertModePreferenceKey;
     // Enumerated message type, which doesn't correspond to MIDI value
 - (BOOL)matchesMessageTypeMask:(SMMessageType)mask;
 
-- (unsigned int)otherDataLength;
+- (NSUInteger)otherDataLength;
     // Length of data after the status byte
 - (const Byte *)otherDataBuffer;
     // May return NULL, indicating no additional data

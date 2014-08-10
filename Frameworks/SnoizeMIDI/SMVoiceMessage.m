@@ -103,7 +103,7 @@ fail:
     }
 }
 
-- (unsigned int)otherDataLength;
+- (NSUInteger)otherDataLength;
 {
     switch ([self status]) {
         case SMVoiceMessageStatusProgram:

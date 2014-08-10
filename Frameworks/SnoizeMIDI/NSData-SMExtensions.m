@@ -18,7 +18,7 @@
 
 - (NSString *)SnoizeMIDI_lowercaseHexString
 {
-    unsigned int dataLength;
+    NSUInteger dataLength;
     const unsigned char *p;
     const unsigned char *end;
     char *resultBuffer;

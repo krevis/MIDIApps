@@ -79,7 +79,7 @@ fail:
     return SMMessageTypeInvalid;
 }
 
-- (unsigned int)otherDataLength
+- (NSUInteger)otherDataLength
 {
     return [data length];
 }

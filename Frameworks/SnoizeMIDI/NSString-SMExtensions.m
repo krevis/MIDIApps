@@ -18,7 +18,7 @@
 
 @implementation NSString (SMExtensions)
 
-+ (NSString *)SnoizeMIDI_abbreviatedStringForByteCount:(unsigned int)byteCount
++ (NSString *)SnoizeMIDI_abbreviatedStringForByteCount:(NSUInteger)byteCount
 {
     NSBundle *bundle = [NSBundle bundleForClass: [SMClient class]];
     NSString *abbreviatedString = nil;

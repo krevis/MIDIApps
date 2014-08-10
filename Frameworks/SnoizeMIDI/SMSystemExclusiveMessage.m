@@ -26,7 +26,7 @@ static UInt32 readVariableLengthFieldFromSMF(const Byte **pPtr, const Byte *end)
 static Byte lengthOfVariableLengthFieldForValue(UInt32 value);
 static void writeVariableLengthFieldIntoSMF(Byte **pPtr, const UInt32 value);
 
-+ (NSArray *)systemExclusiveMessagesInDataBuffer:(const Byte *)buffer withLength:(unsigned int)byteCount;
++ (NSArray *)systemExclusiveMessagesInDataBuffer:(const Byte *)buffer withLength:(NSUInteger)byteCount;
 
 - (NSData *)dataByAddingStartByte:(NSData *)someData;
 
@@ -53,7 +53,7 @@ static void writeVariableLengthFieldIntoSMF(Byte **pPtr, const UInt32 value);
 + (NSData *)dataForSystemExclusiveMessages:(NSArray *)messages;
 #if SLOW_WAY
 {
-    unsigned int messageCount, messageIndex;
+    NSUInteger messageCount, messageIndex;
     NSData *allData = nil;
 
     messageCount = [messages count];
@@ -73,8 +73,8 @@ static void writeVariableLengthFieldIntoSMF(Byte **pPtr, const UInt32 value);
 {
     // This is much faster than the naive implementation above, which can take *minutes* for about 4500 60-byte messages.
     // Calculate the size of the total data buffer first and only do one malloc, instead of continually appending data (which causes lots of mallocs).
-    unsigned int messageCount, messageIndex;
-    unsigned int totalDataLength;
+    NSUInteger messageCount, messageIndex;
+    NSUInteger totalDataLength;
     NSMutableData *totalData;
     Byte *totalBytes, *p;
 
@@ -95,7 +95,7 @@ static void writeVariableLengthFieldIntoSMF(Byte **pPtr, const UInt32 value);
     for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {
         SMSystemExclusiveMessage *message;
         NSData *messageData;
-        unsigned int messageDataLength;
+        NSUInteger messageDataLength;
 
         message = [messages objectAtIndex:messageIndex];
         messageData = [message data];
@@ -199,7 +199,7 @@ fail:
     return SMMessageTypeSystemExclusive;
 }
 
-- (unsigned int)otherDataLength
+- (NSUInteger)otherDataLength
 {
     return [data length] + 1;  // Add a byte for the EOX at the end
 }
@@ -212,7 +212,7 @@ fail:
 - (NSData *)otherData
 {
     if (!cachedDataWithEOX) {
-        unsigned int length;
+        NSUInteger length;
         Byte *bytes;
     
         length = [data length];
@@ -281,7 +281,7 @@ fail:
         return [self data];		// Without EOX
 }
 
-- (unsigned int)receivedDataLength;
+- (NSUInteger)receivedDataLength;
 {
     return [[self receivedData] length];
 }
@@ -291,7 +291,7 @@ fail:
     return [self dataByAddingStartByte:[self receivedData]];
 }
 
-- (unsigned int)receivedDataWithStartByteLength;
+- (NSUInteger)receivedDataWithStartByteLength;
 {
     return [self receivedDataLength] + 1;
 }
@@ -301,14 +301,14 @@ fail:
     return [self dataByAddingStartByte:[self otherData]];
 }
 
-- (unsigned int)fullMessageDataLength;
+- (NSUInteger)fullMessageDataLength;
 {
     return [self otherDataLength] + 1;
 }
 
 - (NSData *)manufacturerIdentifier;
 {
-    unsigned int length;
+    NSUInteger length;
     Byte *buffer;
 
     // If we have no data, we can't figure out a manufacturer ID.
@@ -349,7 +349,7 @@ fail:
 
 + (NSArray *)systemExclusiveMessagesInSMFData:(NSData *)smfData;
 {
-    unsigned int smfDataLength;
+    NSUInteger smfDataLength;
     const Byte *p, *end;
     UInt32 chunkSize;
     NSMutableArray *messages;
@@ -542,7 +542,7 @@ UInt32 readVariableLengthFieldFromSMF(const Byte **pPtr, const Byte *end)
     NSMutableData *smfData;
     UInt32 smfDataLength;
     UInt32 trackLength;
-    unsigned int messageIndex, messageCount;
+    NSUInteger messageIndex, messageCount;
     Byte *p;
 
     messageCount = [messages count];
@@ -557,7 +557,7 @@ UInt32 readVariableLengthFieldFromSMF(const Byte **pPtr, const Byte *end)
         UInt32 messageLength;
 
         message = [messages objectAtIndex:messageIndex];
-        messageLength = [message otherDataLength];	// without 0xF0, with 0xF7
+        messageLength = (UInt32)[message otherDataLength];	// without 0xF0, with 0xF7
 
         if (messageIndex == 0)
             tickOffset = 0;
@@ -590,7 +590,7 @@ UInt32 readVariableLengthFieldFromSMF(const Byte **pPtr, const Byte *end)
         UInt32 messageLength;
 
         message = [messages objectAtIndex:messageIndex];
-        messageLength = [message otherDataLength];	// without 0xF0, with 0xF7
+        messageLength = (UInt32)[message otherDataLength];	// without 0xF0, with 0xF7
 
         // write out varlength offset (0 for 1st msg, 500 for laster messages)
         if (messageIndex == 0)
@@ -649,13 +649,13 @@ void writeVariableLengthFieldIntoSMF(Byte **pPtr, const UInt32 value)
 }
 
 
-+ (NSArray *)systemExclusiveMessagesInDataBuffer:(const Byte *)buffer withLength:(unsigned int)byteCount;
++ (NSArray *)systemExclusiveMessagesInDataBuffer:(const Byte *)buffer withLength:(NSUInteger)byteCount;
 {
     // Scan through someData and make messages out of it.
     // Messages must start with 0xF0.  Messages may end in any byte > 0x7F.
 
     NSMutableArray *messages;
-    unsigned int byteIndex;
+    NSUInteger byteIndex;
     const Byte *p;
     NSRange range = { 0, 0 };
     BOOL inMessage;
@@ -695,7 +695,7 @@ void writeVariableLengthFieldIntoSMF(Byte **pPtr, const UInt32 value)
 
 - (NSData *)dataByAddingStartByte:(NSData *)someData;
 {
-    unsigned int length;
+    NSUInteger length;
     NSMutableData *dataWithStartByte;
     Byte *bytes;
 

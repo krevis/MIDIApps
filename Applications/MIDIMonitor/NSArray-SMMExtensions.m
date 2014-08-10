@@ -18,7 +18,7 @@
 
 - (NSString *)SMM_componentsJoinedByCommaAndAnd;
 {
-	unsigned int count = [self count];
+	NSUInteger count = [self count];
 	
 	if (count == 0)
 		return @"";
@@ -28,7 +28,7 @@
 		return [self componentsJoinedByString: @" and "];
 	else {						// "a, b, and c"
 		NSMutableString *result = [NSMutableString string];
-		unsigned int index;
+		NSUInteger index;
 
 		for (index = 0; index < count; index++)
 		{

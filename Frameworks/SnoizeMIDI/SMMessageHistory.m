@@ -30,7 +30,7 @@ NSString *SMMessageHistoryChangedNotification = @"SMMessageHistoryChangedNotific
 NSString *SMMessageHistoryWereMessagesAdded = @"SMMessageHistoryWereMessagesAdded";
 
 
-+ (unsigned int)defaultHistorySize;
++ (NSUInteger)defaultHistorySize;
 {
     return 1000;
 }
@@ -84,14 +84,14 @@ NSString *SMMessageHistoryWereMessagesAdded = @"SMMessageHistoryWereMessagesAdde
     }
 }
 
-- (unsigned int)historySize;
+- (NSUInteger)historySize;
 {
     return historySize;
 }
 
-- (void)setHistorySize:(unsigned int)newHistorySize;
+- (void)setHistorySize:(NSUInteger)newHistorySize;
 {
-    unsigned int oldMessageCount, newMessageCount;
+    NSUInteger oldMessageCount, newMessageCount;
 
     historySize = newHistorySize;
     
@@ -118,7 +118,7 @@ NSString *SMMessageHistoryWereMessagesAdded = @"SMMessageHistoryWereMessagesAdde
 
 - (void)limitSavedMessages;
 {
-    unsigned int messageCount;
+    NSUInteger messageCount;
 
     messageCount = [savedMessages count];
     if (messageCount > historySize) {

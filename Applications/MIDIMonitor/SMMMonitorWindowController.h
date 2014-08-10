@@ -49,7 +49,7 @@
     IBOutlet NSBox *sysExProgressBox;
 
     // Transient data
-    unsigned int oneChannel;
+    NSUInteger oneChannel;
     NSArray *groupedInputSources;
     NSArray *displayedMessages;
     BOOL sendWindowFrameChangesToDocument;

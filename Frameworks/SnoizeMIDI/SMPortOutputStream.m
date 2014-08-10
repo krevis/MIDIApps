@@ -220,7 +220,7 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
 
 - (void)splitMessages:(NSArray *)messages intoCurrentSysex:(NSArray **)sysExMessagesPtr andNormal:(NSArray **)normalMessagesPtr;
 {
-    unsigned int messageIndex, messageCount;
+    NSUInteger messageIndex, messageCount;
     NSMutableArray *sysExMessages = nil;
     NSMutableArray *normalMessages = nil;
     MIDITimeStamp now;
@@ -251,7 +251,7 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
 
 - (void)sendSysExMessagesAsynchronously:(NSArray *)messages;
 {
-    unsigned int messageCount, messageIndex;
+    NSUInteger messageCount, messageIndex;
 
     messageCount = [messages count];
     for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {

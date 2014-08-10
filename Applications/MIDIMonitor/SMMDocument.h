@@ -31,7 +31,7 @@
 
     // Transient data
     NSArray *missingSourceNames;
-    unsigned int sysExBytesRead;
+    NSUInteger sysExBytesRead;
 	BOOL isSysExUpdateQueued;
 }
 
@@ -41,16 +41,16 @@
 - (void)setSelectedInputSources:(NSSet *)inputSources;
 - (void)revealInputSources:(NSSet *)inputSources;
 
-- (unsigned int)maxMessageCount;
-- (void)setMaxMessageCount:(unsigned int)newValue;
+- (NSUInteger)maxMessageCount;
+- (void)setMaxMessageCount:(NSUInteger)newValue;
 
 - (SMMessageType)filterMask;
 - (void)changeFilterMask:(SMMessageType)maskToChange turnBitsOn:(BOOL)turnBitsOn;
 
 - (BOOL)isShowingAllChannels;
-- (unsigned int)oneChannelToShow;
+- (NSUInteger)oneChannelToShow;
 - (void)showAllChannels;
-- (void)showOnlyOneChannel:(unsigned int)channel;
+- (void)showOnlyOneChannel:(NSUInteger)channel;
 
 - (BOOL)areSourcesShown;
 - (void)setAreSourcesShown:(BOOL)newValue;

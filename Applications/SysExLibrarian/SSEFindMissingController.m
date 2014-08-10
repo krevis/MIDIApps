@@ -147,17 +147,15 @@
         // Is this file in use by any entries?  (It might be in use by *this* entry if the file has gotten put in place again!)
         matchingEntries = [nonretainedLibrary findEntriesForFiles:[NSArray arrayWithObject:filePath] returningNonMatchingFiles:NULL];
         if ([matchingEntries count] > 0 && [matchingEntries indexOfObject:entry] == NSNotFound) {
-            NSString *title, *message, *ok, *cancel;
-            int returnCode2;
+            NSAlert* alert = [[NSAlert alloc] init];
+            alert.messageText = NSLocalizedStringFromTableInBundle(@"In Use", @"SysExLibrarian", SMBundleForObject(self), "title of alert for file already in library");
+            alert.informativeText = NSLocalizedStringFromTableInBundle(@"That file is already in the library. Please choose another one.", @"SysExLibrarian", SMBundleForObject(self), "message for file already in library");
+            [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Cancel", @"SysExLibrarian", SMBundleForObject(self), "Cancel")];
 
-            title = NSLocalizedStringFromTableInBundle(@"In Use", @"SysExLibrarian", SMBundleForObject(self), "title of alert for file already in library");
-            message = NSLocalizedStringFromTableInBundle(@"That file is already in the library. Please choose another one.", @"SysExLibrarian", SMBundleForObject(self), "message for file already in library");
-            ok = NSLocalizedStringFromTableInBundle(@"OK", @"SysExLibrarian", SMBundleForObject(self), "OK");
-            cancel = NSLocalizedStringFromTableInBundle(@"Cancel", @"SysExLibrarian", SMBundleForObject(self), "Cancel");
-            
-            returnCode2 = NSRunAlertPanel(title, message, ok, cancel, nil);
+            NSModalResponse response = [alert runModal];
+            [alert release];
             [openPanel orderOut:nil];
-            if (returnCode2 == NSAlertDefaultReturn) {
+            if (response == NSAlertFirstButtonReturn) {
                 // Run the open sheet again
                 [self runOpenSheetForMissingFile];
             } else {

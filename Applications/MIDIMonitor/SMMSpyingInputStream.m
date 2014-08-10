@@ -202,7 +202,7 @@
 - (NSArray *)inputSources;
 {
     NSMutableArray *inputSources;
-    unsigned int inputSourceIndex;
+    NSUInteger inputSourceIndex;
 
     inputSources = [NSMutableArray arrayWithArray:[SMDestinationEndpoint destinationEndpoints]];
     inputSourceIndex = [inputSources count];

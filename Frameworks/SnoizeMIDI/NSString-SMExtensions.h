@@ -16,6 +16,6 @@
 
 @interface NSString (SMExtensions)
 
-+ (NSString *)SnoizeMIDI_abbreviatedStringForByteCount:(unsigned int)byteCount;
++ (NSString *)SnoizeMIDI_abbreviatedStringForByteCount:(NSUInteger)byteCount;
 
 @end

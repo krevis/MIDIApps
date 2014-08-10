@@ -41,13 +41,19 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
         return nil;
 
     SMAssert(aMessage != nil);
-    
+
     message = [aMessage retain];
     fullMessageData = [[message fullMessageData] retain];
 
+    // MIDISysexSendRequest length is "only" a UInt32
+    if ([fullMessageData length] > UINT32_MAX) {
+        [self release];
+        return nil;
+    }
+
     request.destination = [endpoint endpointRef];
     request.data = (Byte *)[fullMessageData bytes];
-    request.bytesToSend = [fullMessageData length];
+    request.bytesToSend = (UInt32)[fullMessageData length];
     request.complete = FALSE;
     request.completionProc = completionProc;
     request.completionRefCon = self;
@@ -100,19 +106,19 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
     return YES;
 }
 
-- (unsigned int)bytesRemaining;
+- (UInt32)bytesRemaining;
 {
     return request.bytesToSend;
 }
 
-- (unsigned int)totalBytes;
+- (UInt32)totalBytes;
 {
-    return [fullMessageData length];
+    return (UInt32)[fullMessageData length];
 }
 
-- (unsigned int)bytesSent;
+- (UInt32)bytesSent;
 {
-    unsigned int totalBytes, bytesRemaining;
+    UInt32 totalBytes, bytesRemaining;
 
     totalBytes = [self totalBytes];
     bytesRemaining = [self bytesRemaining];

@@ -165,12 +165,12 @@ static NSMapTable* messageToControllerMapTable = NULL;
 
 - (NSString *)formatData:(NSData *)data;
 {
-    unsigned int dataLength;
+    NSUInteger dataLength;
     const unsigned char *bytes;
     NSMutableString *formattedString;
-    unsigned int dataIndex;
+    NSUInteger dataIndex;
     int lengthDigitCount;
-    unsigned int scratchLength;
+    NSUInteger scratchLength;
 
     dataLength = [data length];
     if (dataLength == 0)
@@ -197,7 +197,7 @@ static NSMapTable* messageToControllerMapTable = NULL;
         // This C stuff may be a little ugly but it is a hell of a lot faster than doing it with NSStrings...
 
         p = lineBuffer;
-        p += sprintf(p, "%.*X", lengthDigitCount, dataIndex);
+        p += sprintf(p, "%.*lX", lengthDigitCount, (unsigned long)dataIndex);
         
         for (index = dataIndex; index < dataIndex+16; index++) {
             *p++ = ' ';

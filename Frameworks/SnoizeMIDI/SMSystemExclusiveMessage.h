@@ -48,19 +48,19 @@
 
     // Data without the starting 0xF0, always with ending 0xF7
 - (NSData *)otherData;
-- (unsigned int)otherDataLength;
+- (NSUInteger)otherDataLength;
 
     // Data as received, without starting 0xF0 -- may or may not include 0xF7
 - (NSData *)receivedData;
-- (unsigned int)receivedDataLength;
+- (NSUInteger)receivedDataLength;
 
     // Data as received, with 0xF0 at start -- may or may not include 0xF7
 - (NSData *)receivedDataWithStartByte;
-- (unsigned int)receivedDataWithStartByteLength;
+- (NSUInteger)receivedDataWithStartByteLength;
 
     // Data with leading 0xF0 and ending 0xF7
 - (NSData *)fullMessageData;
-- (unsigned int)fullMessageDataLength;
+- (NSUInteger)fullMessageDataLength;
 
 - (NSData *)manufacturerIdentifier;
     // May be 1 to 3 bytes in length, or nil if a value can't be determined

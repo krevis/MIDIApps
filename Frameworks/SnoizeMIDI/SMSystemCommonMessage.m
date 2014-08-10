@@ -94,7 +94,7 @@ fail:
     }
 }
 
-- (unsigned int)otherDataLength;
+- (NSUInteger)otherDataLength;
 {
     switch ([self type]) {
         case SMSystemCommonMessageTypeTuneRequest:

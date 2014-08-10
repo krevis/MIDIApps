@@ -18,7 +18,7 @@
 {
     MIDIObjectRef objectRef;
     MIDIUniqueID uniqueID;
-    unsigned int ordinal;
+    NSUInteger ordinal;
 
     struct {
         unsigned int hasCachedName:1;
@@ -49,11 +49,11 @@
 
 // Single object creation and accessors
 
-- (id)initWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(unsigned int)anOrdinal;
+- (id)initWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(NSUInteger)anOrdinal;
 - (MIDIObjectRef)objectRef;
 
-- (unsigned int)ordinal;
-- (void)setOrdinal:(unsigned int)value;
+- (NSUInteger)ordinal;
+- (void)setOrdinal:(NSUInteger)value;
 
 // Specific property access
 

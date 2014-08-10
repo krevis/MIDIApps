@@ -98,7 +98,7 @@
 - (void)takePacketList:(const MIDIPacketList *)packetList;
 {
     NSMutableArray *messages = nil;
-    unsigned int packetCount;
+    UInt32 packetCount;
     const MIDIPacket *packet;
     
     packetCount = packetList->numPackets;
@@ -213,7 +213,7 @@
         } else {
             if (byte < 0x80) {
                 if (readingSysExData) {
-                    unsigned int length;
+                    NSUInteger length;
 
                     [readingSysExData appendBytes:&byte length:1];
 

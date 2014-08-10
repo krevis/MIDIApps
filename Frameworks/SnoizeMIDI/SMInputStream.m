@@ -96,7 +96,7 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
 - (void)setSysExTimeOut:(NSTimeInterval)value;
 {
     NSArray *parsers;
-    unsigned int parserIndex;
+    NSUInteger parserIndex;
 
     if (sysExTimeOut == value)
         return;
@@ -117,7 +117,7 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
 - (id)persistentSettings;
 {
     NSSet *selectedInputSources;
-    unsigned int sourcesCount;
+    NSUInteger sourcesCount;
     NSEnumerator *sourceEnumerator;
     id <SMInputStreamSource> source;
     NSMutableArray *persistentSettings;
@@ -150,7 +150,7 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
 {
     // If any endpoints couldn't be found, their names are returned
     NSArray *settingsArray = (NSArray *)settings;
-    unsigned int settingsCount, settingsIndex;
+    NSUInteger settingsCount, settingsIndex;
     NSMutableSet *newInputSources;
     NSMutableArray *missingNames = nil;
 
@@ -282,12 +282,12 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
     [nonretainedMessageDestination takeMIDIMessages:messages];
 }
 
-- (void)parser:(SMMessageParser *)parser isReadingSysExWithLength:(unsigned int)length;
+- (void)parser:(SMMessageParser *)parser isReadingSysExWithLength:(NSUInteger)length;
 {
     NSDictionary *userInfo;
 
     userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-        [NSNumber numberWithUnsignedInt:length], @"length",
+        [NSNumber numberWithUnsignedInteger:length], @"length",
         [self streamSourceForParser:parser], @"source", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:SMInputStreamReadingSysExNotification object:self userInfo:userInfo];
 }
@@ -297,7 +297,7 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
     NSDictionary *userInfo;
     
     userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-        [NSNumber numberWithUnsignedInt:1 + [[message receivedData] length]], @"length",
+        [NSNumber numberWithUnsignedInteger:1 + [[message receivedData] length]], @"length",
         [NSNumber numberWithBool:[message wasReceivedWithEOX]], @"valid",
         [self streamSourceForParser:parser], @"source", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:SMInputStreamDoneReadingSysExNotification object:self userInfo:userInfo];
@@ -398,7 +398,7 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
     // Otherwise, return nil.
 
     NSArray *inputSources;
-    unsigned int inputSourceCount, inputSourceIndex;
+    NSUInteger inputSourceCount, inputSourceIndex;
     id <SMInputStreamSource> sourceWithMatchingName = nil;
 
     inputSources = [self inputSources];

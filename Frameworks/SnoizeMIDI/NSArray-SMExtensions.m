@@ -35,7 +35,7 @@
 
 - (NSArray *)SnoizeMIDI_reversedArray
 {
-    unsigned int count = [self count];
+    NSUInteger count = [self count];
     if (count < 2)
         return self;
     

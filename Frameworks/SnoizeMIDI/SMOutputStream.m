@@ -30,7 +30,7 @@
 
 #if LIMITED_PACKET_LIST_SIZE
 - (void)sendMessagesWithLimitedPacketListSize:(NSArray *)messages;
-- (void)addMessage:(SMMessage *)message withDataSize:(unsigned int)dataSize toPacketList:(MIDIPacketList *)packetList packet:(MIDIPacket *)packet;
+- (void)addMessage:(SMMessage *)message withDataSize:(NSUInteger)dataSize toPacketList:(MIDIPacketList *)packetList packet:(MIDIPacket *)packet;
 #else
 - (MIDIPacketList *)packetListForMessages:(NSArray *)messages;
 #endif
@@ -109,10 +109,10 @@ static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
 
 - (void)sendMessagesWithLimitedPacketListSize:(NSArray *)messages;
 {
-    unsigned int messageIndex, messageCount;
+    NSUInteger messageIndex, messageCount;
     MIDIPacketList *packetList;
     MIDIPacket *packet;
-    unsigned int packetListSize;
+    NSUInteger packetListSize;
 
     messageCount = [messages count];
     if (messageCount == 0)
@@ -125,7 +125,7 @@ static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
 
     for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {
         SMMessage *message;
-        unsigned int dataSize, packetSize;
+        NSUInteger dataSize, packetSize;
 
         message = [messages objectAtIndex:messageIndex];
         dataSize = 1 + [message otherDataLength];
@@ -167,14 +167,14 @@ static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
                 // Repeat until we've done all the data in the message.
 
                 const Byte *messageData;
-                unsigned int dataRemaining;
+                NSUInteger dataRemaining;
                 BOOL isFirstPacket = YES;
 
                 messageData = [message otherDataBuffer];
                 dataRemaining = dataSize;
                 
                 while (dataRemaining > 0) {
-                    unsigned int partialSize;
+                    NSUInteger partialSize;
 
                     SMAssert((int)MAX_PACKET_LIST_SIZE - packetListSize - offsetof(MIDIPacket, data) > 0);
                     partialSize = MIN(MAX_PACKET_LIST_SIZE - packetListSize - offsetof(MIDIPacket, data), dataRemaining);
@@ -222,7 +222,7 @@ static const unsigned int MAX_PACKET_LIST_SIZE = 1024;
     free(packetList);
 }
 
-- (void)addMessage:(SMMessage *)message withDataSize:(unsigned int)dataSize toPacketList:(MIDIPacketList *)packetList packet:(MIDIPacket *)packet;
+- (void)addMessage:(SMMessage *)message withDataSize:(NSUInteger)dataSize toPacketList:(MIDIPacketList *)packetList packet:(MIDIPacket *)packet;
 {
     packet->timeStamp = (flags.ignoresTimeStamps ? SMGetCurrentHostTime() : [message timeStamp]);
     packet->length = dataSize;

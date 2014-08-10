@@ -18,10 +18,10 @@
 @interface SMMessageHistory : NSObject <SMMessageDestination>
 {
     NSMutableArray *savedMessages;
-    unsigned int historySize;
+    NSUInteger historySize;
 }
 
-+ (unsigned int)defaultHistorySize;
++ (NSUInteger)defaultHistorySize;
 
 - (NSArray *)savedMessages;
     // Returns a snapshot of the current history.
@@ -30,8 +30,8 @@
 
 - (void)clearSavedMessages;
 
-- (unsigned int)historySize;
-- (void)setHistorySize:(unsigned int)newHistorySize;
+- (NSUInteger)historySize;
+- (void)setHistorySize:(NSUInteger)newHistorySize;
 
 @end
 

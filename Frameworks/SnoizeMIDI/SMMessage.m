@@ -39,7 +39,7 @@ NSString *SMExpertModePreferenceKey = @"SMExpertMode";
 
 + (NSString *)formatNoteNumber:(Byte)noteNumber;
 {
-    return [self formatNoteNumber:noteNumber usingOption:[[NSUserDefaults standardUserDefaults] integerForKey:SMNoteFormatPreferenceKey]];
+    return [self formatNoteNumber:noteNumber usingOption:(SMNoteFormattingOption)[[NSUserDefaults standardUserDefaults] integerForKey:SMNoteFormatPreferenceKey]];
 }
 
 + (NSString *)formatNoteNumber:(Byte)noteNumber usingOption:(SMNoteFormattingOption)option;
@@ -64,7 +64,7 @@ NSString *SMExpertModePreferenceKey = @"SMExpertMode";
 
 + (NSString *)formatControllerNumber:(Byte)controllerNumber;
 {
-    return [self formatControllerNumber:controllerNumber usingOption:[[NSUserDefaults standardUserDefaults] integerForKey:SMControllerFormatPreferenceKey]];
+    return [self formatControllerNumber:controllerNumber usingOption:(SMControllerFormattingOption)[[NSUserDefaults standardUserDefaults] integerForKey:SMControllerFormatPreferenceKey]];
 }
 
 + (NSString *)formatControllerNumber:(Byte)controllerNumber usingOption:(SMControllerFormattingOption)option;
@@ -129,13 +129,13 @@ NSString *SMExpertModePreferenceKey = @"SMExpertMode";
     return [self formatDataBytes:[data bytes] length:[data length]];
 }
 
-+ (NSString *)formatDataBytes:(const Byte *)bytes length:(unsigned int)length;
++ (NSString *)formatDataBytes:(const Byte *)bytes length:(NSUInteger)length;
 {
     SMDataFormattingOption option;
     NSMutableString *string;
-    unsigned int pos;
+    NSUInteger pos;
 
-    option = [[NSUserDefaults standardUserDefaults] integerForKey:SMDataFormatPreferenceKey];
+    option = (SMDataFormattingOption)[[NSUserDefaults standardUserDefaults] integerForKey:SMDataFormatPreferenceKey];
     string = [NSMutableString string];
     for (pos = 0; pos < length; pos++) {
         [string appendString:[self formatDataByte:*(bytes + pos) usingOption:option]];
@@ -148,7 +148,7 @@ NSString *SMExpertModePreferenceKey = @"SMExpertMode";
 
 + (NSString *)formatDataByte:(Byte)dataByte;
 {
-    return [self formatDataByte:dataByte usingOption:[[NSUserDefaults standardUserDefaults] integerForKey:SMDataFormatPreferenceKey]];
+    return [self formatDataByte:dataByte usingOption:(SMDataFormattingOption)[[NSUserDefaults standardUserDefaults] integerForKey:SMDataFormatPreferenceKey]];
 }
 
 + (NSString *)formatDataByte:(Byte)dataByte usingOption:(SMDataFormattingOption)option;
@@ -165,7 +165,7 @@ NSString *SMExpertModePreferenceKey = @"SMExpertMode";
 
 + (NSString *)formatSignedDataByte1:(Byte)dataByte1 byte2:(Byte)dataByte2;
 {
-    return [self formatSignedDataByte1:dataByte1 byte2:dataByte2 usingOption:[[NSUserDefaults standardUserDefaults] integerForKey:SMDataFormatPreferenceKey]];
+    return [self formatSignedDataByte1:dataByte1 byte2:dataByte2 usingOption:(SMDataFormattingOption)[[NSUserDefaults standardUserDefaults] integerForKey:SMDataFormatPreferenceKey]];
 }
 
 + (NSString *)formatSignedDataByte1:(Byte)dataByte1 byte2:(Byte)dataByte2 usingOption:(SMDataFormattingOption)option;
@@ -185,20 +185,20 @@ NSString *SMExpertModePreferenceKey = @"SMExpertMode";
     }
 }
 
-+ (NSString *)formatLength:(unsigned int)length;
++ (NSString *)formatLength:(NSUInteger)length;
 {
-    return [self formatLength:length usingOption:[[NSUserDefaults standardUserDefaults] integerForKey:SMDataFormatPreferenceKey]];
+    return [self formatLength:length usingOption:(SMDataFormattingOption)[[NSUserDefaults standardUserDefaults] integerForKey:SMDataFormatPreferenceKey]];
 }
 
-+ (NSString *)formatLength:(unsigned int)length usingOption:(SMDataFormattingOption)option;
++ (NSString *)formatLength:(NSUInteger)length usingOption:(SMDataFormattingOption)option;
 {
     switch (option) {
         case SMDataFormatDecimal:
         default:
-            return [NSString stringWithFormat:@"%u", length];
+            return [NSString stringWithFormat:@"%lu", (unsigned long)length];
 
         case SMDataFormatHexadecimal:
-            return [NSString stringWithFormat:@"$%X", length];
+            return [NSString stringWithFormat:@"$%lX", (unsigned long)length];
     }
 }
 
@@ -353,7 +353,7 @@ fail:
     return ([self messageType] & mask) ? YES : NO;
 }
 
-- (unsigned int)otherDataLength;
+- (NSUInteger)otherDataLength;
 {
     // Subclasses must override if they have other data
     return 0;
@@ -367,7 +367,7 @@ fail:
 
 - (NSData *)otherData
 {
-    unsigned int length;
+    NSUInteger length;
 
     if ((length = [self otherDataLength]))
         return [NSData dataWithBytes:[self otherDataBuffer] length:length];
@@ -394,7 +394,7 @@ fail:
 
 - (NSString *)timeStampForDisplay;
 {
-    int option = [[NSUserDefaults standardUserDefaults] integerForKey:SMTimeFormatPreferenceKey];
+    SMTimeFormattingOption option = (SMTimeFormattingOption)[[NSUserDefaults standardUserDefaults] integerForKey:SMTimeFormatPreferenceKey];
     
     BOOL displayZero = timeStampWasZeroWhenReceived && [[NSUserDefaults standardUserDefaults] boolForKey:SMExpertModePreferenceKey];
     MIDITimeStamp displayTimeStamp = displayZero ? 0 : timeStamp;
