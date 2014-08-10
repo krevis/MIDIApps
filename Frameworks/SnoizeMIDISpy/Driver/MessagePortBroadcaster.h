@@ -52,7 +52,7 @@ private:
     CFStringRef mBroadcasterName;
     CFMessagePortRef mLocalPort;
     CFRunLoopSourceRef mRunLoopSource;
-    UInt32 mNextListenerIdentifier;
+    SInt32 mNextListenerIdentifier;
 
     CFMutableDictionaryRef mListenersByIdentifier;
     CFMutableDictionaryRef mIdentifiersByListener;

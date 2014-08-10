@@ -28,7 +28,7 @@ typedef struct __MIDISpyClient
     CFMessagePortRef localPort;
     CFRunLoopSourceRef runLoopSource;
     CFRunLoopRef listenerThreadRunLoop;
-    UInt32 clientIdentifier;
+    SInt32 clientIdentifier;
     CFMutableArrayRef ports;
     CFMutableDictionaryRef endpointConnections;
 } MIDISpyClient;
@@ -146,15 +146,15 @@ OSStatus MIDISpyClientCreate(MIDISpyClientRef *outClientRefPtr)
         debug_string("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverGetNextListenerIdentifierMessageID) returned error");
     } else if (!identifierData) {
         debug_string("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverGetNextListenerIdentifierMessageID) returned no data!");
-    } else if (CFDataGetLength(identifierData) != sizeof(UInt32)) {
+    } else if (CFDataGetLength(identifierData) != sizeof(SInt32)) {
         debug_string("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverGetNextListenerIdentifierMessageID) returned wrong number of bytes");
     } else {
         CFStringRef localPortName;
         CFMessagePortContext context = { 0, NULL, NULL, NULL, NULL };
 
         // Now get the identifier and use it to name a newly created local port
-        clientRef->clientIdentifier = *(UInt32 *)CFDataGetBytePtr(identifierData);
-        localPortName = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%@-%u"), kSpyingMIDIDriverPortName, (unsigned int)clientRef->clientIdentifier);
+        clientRef->clientIdentifier = *(SInt32 *)CFDataGetBytePtr(identifierData);
+        localPortName = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%@-%d"), kSpyingMIDIDriverPortName, clientRef->clientIdentifier);
 
         context.info = clientRef;
         clientRef->localPort = CFMessagePortCreateLocal(kCFAllocatorDefault, localPortName, LocalMessagePortCallback, &context, FALSE);
@@ -566,14 +566,14 @@ void SetClientSubscribesToDataFromEndpoint(MIDISpyClientRef clientRef, MIDIEndpo
     if (noErr != MIDIObjectGetIntegerProperty(endpoint, kMIDIPropertyUniqueID, &endpointUniqueID))
         return;
     
-    dataLength = sizeof(UInt32) + sizeof(SInt32);
+    dataLength = sizeof(SInt32) + sizeof(SInt32);
     messageData = CFDataCreateMutable(kCFAllocatorDefault, dataLength);
     if (messageData) {
         CFDataSetLength(messageData, dataLength);
         dataBuffer = CFDataGetMutableBytePtr(messageData);
         if (dataBuffer) {
-            *(UInt32 *)dataBuffer = clientRef->clientIdentifier;
-            *(SInt32 *)(dataBuffer + sizeof(UInt32)) = endpointUniqueID;
+            *(SInt32 *)dataBuffer = clientRef->clientIdentifier;
+            *(SInt32 *)(dataBuffer + sizeof(SInt32)) = endpointUniqueID;
 
             if (clientRef->driverPort) {
                 CFMessagePortSendRequest(clientRef->driverPort, msgid, messageData, 300, 0, NULL, NULL);
@@ -595,7 +595,7 @@ static CFDataRef LocalMessagePortCallback(CFMessagePortRef local, SInt32 msgid, 
     if (!data) {
         debug_string("MIDISpyClient: Got empty data from driver!");
         return NULL;
-    } else if (CFDataGetLength(data) < (sizeof(SInt32) + sizeof(UInt32))) {
+    } else if (CFDataGetLength(data) < (sizeof(SInt32) + sizeof(SInt32))) {
         debug_string("MIDISpyClient: Got too-small data from driver!");
         return NULL;
     }
