@@ -926,8 +926,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 161D6C940972111A00CA5276 /* Snoize-Project-Debug.xcconfig */;
 			buildSettings = {
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -935,7 +933,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 161D6C9C097211EC00CA5276 /* Snoize-Project-Release.xcconfig */;
 			buildSettings = {
-				SDKROOT = macosx;
 			};
 			name = Release;
 		};
