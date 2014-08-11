@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2002-2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2002-2014, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -17,19 +17,20 @@
 #import "SMMSpyingInputStream.h"
 
 
-@interface SMMCombinationInputStream (Private)
+@interface SMMCombinationInputStream ()
+{
+    id<SMMessageDestination> nonretainedMessageDestination;
 
-- (void)observeNotificationsWithCenter:(NSNotificationCenter *)center object:(id)object;
+    SMPortInputStream *portInputStream;
+    SMVirtualInputStream *virtualInputStream;
+    SMMSpyingInputStream *spyingInputStream;
 
-- (void)repostNotification:(NSNotification *)notification;
-- (void)inputSourceListChanged:(NSNotification *)notification;
+    NSArray *groupedInputSources;
 
-- (NSSet *)intersectionOfSet:(NSSet *)set1 andArray:(NSArray *)array2;
-
-- (void)makeInputStream:(SMInputStream *)stream takePersistentSettings:(id)settings addingMissingNamesToArray:(NSMutableArray *)missingNames;
+    BOOL willPostSourceListChangedNotification;
+}
 
 @end
-
 
 
 @implementation SMMCombinationInputStream
@@ -248,10 +249,8 @@
     [virtualInputStream setVirtualEndpointName:value];
 }
 
-@end
 
-
-@implementation SMMCombinationInputStream (Private)
+#pragma mark Private
 
 - (void)observeNotificationsWithCenter:(NSNotificationCenter *)center object:(id)object;
 {
@@ -268,13 +267,18 @@
 
 - (void)inputSourceListChanged:(NSNotification *)notification;
 {
-    // We may get this notification from more than one of our streams, so create our own notification and queue it with coalescing.
-    // This way we coalesce all the notifications from all of the streams into one notification from us.
-    NSNotification *newNotification;
+    // We may get this notification from more than one of our streams, so coalesce all the notifications from all of the streams into one notification from us.
 
-    newNotification = [NSNotification notificationWithName:SMInputStreamSourceListChangedNotification object:self];
+    if (!willPostSourceListChangedNotification) {
+        willPostSourceListChangedNotification = YES;
+        [self retain];
 
-    [[NSNotificationQueue defaultQueue] enqueueNotification:newNotification postingStyle:NSPostWhenIdle coalesceMask:(NSNotificationCoalescingOnName | NSNotificationCoalescingOnSender) forModes:[NSArray arrayWithObject:NSDefaultRunLoopMode]];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            willPostSourceListChangedNotification = NO;
+            [[NSNotificationCenter defaultCenter] postNotificationName:notification.name object:self];
+            [self autorelease];
+        });
+    }
 }
 
 - (NSSet *)intersectionOfSet:(NSSet *)set1 andArray:(NSArray *)array2;

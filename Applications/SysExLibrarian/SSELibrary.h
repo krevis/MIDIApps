@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2002-2006, Kurt Revis.  All rights reserved.
+ Copyright (c) 2002-2014, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -15,24 +15,14 @@
 @class SSELibraryEntry;
 
 
-typedef enum _SSELibraryFileType {
+typedef NS_ENUM(NSInteger, SSELibraryFileType) {
     SSELibraryFileTypeRaw = 0,
     SSELibraryFileTypeStandardMIDI = 1,
     SSELibraryFileTypeUnknown = 2
-} SSELibraryFileType;
+};
 
 
 @interface SSELibrary : NSObject
-{
-    NSMutableArray *entries;
-    struct {
-        unsigned int isDirty:1;
-    } flags;
-
-    NSArray *rawSysExFileTypes;
-    NSArray *standardMIDIFileTypes;
-    NSArray *allowedFileTypes;
-}
 
 + (SSELibrary *)sharedLibrary;
 

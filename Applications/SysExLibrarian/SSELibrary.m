@@ -21,22 +21,18 @@
 #import "NSWorkspace-Extensions.h"
 
 
-@interface SSELibrary (Private)
+@interface SSELibrary ()
+{
+    NSMutableArray *entries;
+    struct {
+        unsigned int isDirty:1;
+        unsigned int willPostLibraryDidChangeNotification:1;
+    } flags;
 
-- (NSString *)findFolder:(OSType)folderType;
-- (NSString *)resolveAliasesInPath:(NSString *)path;
-
-- (NSString *)defaultFileDirectoryPath;
-
-- (NSString *)preflightLibrary;
-- (NSString *)preflightFileDirectory;
-- (void)loadEntries;
-
-- (NSArray *)fileTypesFromDocumentTypeDictionary:(NSDictionary *)documentTypeDict;
-
-- (NSDictionary *)entriesByFilePath;
-
-- (void)postEntryWillBeRemovedNotificationForEntry:(SSELibraryEntry *)entry;
+    NSArray *rawSysExFileTypes;
+    NSArray *standardMIDIFileTypes;
+    NSArray *allowedFileTypes;
+}
 
 @end
 
@@ -54,25 +50,23 @@ const FourCharCode SSELibraryFileTypeCode = 'sXLb';
 const FourCharCode SSESysExFileTypeCode = 'sysX';
 NSString *SSESysExFileExtension = @"syx";
 
-+ (SSELibrary *)sharedLibrary;
++ (SSELibrary *)sharedLibrary
 {
-    static SSELibrary *sharedLibrary = nil;
+    static SSELibrary *sSharedLibrary = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sSharedLibrary = [[self alloc] init];
+    });
 
-    if (!sharedLibrary) {
-        sharedLibrary = [[self alloc] init];
-    }
-
-    return sharedLibrary;
+    return sSharedLibrary;
 }
 
-- (id)init;
+- (id)init
 {
-    NSArray *documentTypes;
-
     if (!(self = [super init]))
         return nil;
 
-    documentTypes = [[SMBundleForObject(self) infoDictionary] objectForKey:@"CFBundleDocumentTypes"];
+    NSArray *documentTypes = [[SMBundleForObject(self) infoDictionary] objectForKey:@"CFBundleDocumentTypes"];
     if ([documentTypes count] > 0) {
         NSDictionary *documentTypeDict;
 
@@ -92,7 +86,7 @@ NSString *SSESysExFileExtension = @"syx";
     return self;
 }
 
-- (void)dealloc;
+- (void)dealloc
 {
     [entries release];
     entries = nil;
@@ -106,7 +100,7 @@ NSString *SSESysExFileExtension = @"syx";
     [super dealloc];
 }
 
-- (NSString *)libraryFilePath;
+- (NSString *)libraryFilePath
 {
     static NSString *libraryFilePath = nil;
 
@@ -138,12 +132,12 @@ NSString *SSESysExFileExtension = @"syx";
     return libraryFilePath;
 }
 
-- (NSString *)libraryFilePathForDisplay;
+- (NSString *)libraryFilePathForDisplay
 {
     return [[self libraryFilePath] stringByDeletingPathExtension];
 }
 
-- (NSString *)fileDirectoryPath;
+- (NSString *)fileDirectoryPath
 {
     NSData *aliasData;
     NSString *path = nil;
@@ -168,7 +162,7 @@ NSString *SSESysExFileExtension = @"syx";
     return path;
 }
 
-- (void)setFileDirectoryPath:(NSString *)newPath;
+- (void)setFileDirectoryPath:(NSString *)newPath
 {
     BDAlias *alias;
 
@@ -182,12 +176,12 @@ NSString *SSESysExFileExtension = @"syx";
     [[NSUserDefaults standardUserDefaults] setObject: newPath forKey: SSELibraryFileDirectoryPathPreferenceKey];
 }
 
-- (BOOL)isPathInFileDirectory:(NSString *)path;
+- (BOOL)isPathInFileDirectory:(NSString *)path
 {
     return [path hasPrefix:[[self fileDirectoryPath] stringByAppendingString:@"/"]];
 }
 
-- (NSString *)preflightAndLoadEntries;
+- (NSString *)preflightAndLoadEntries
 {
     NSString *errorMessage;
 
@@ -209,12 +203,12 @@ NSString *SSESysExFileExtension = @"syx";
     return nil;
 }
 
-- (NSArray *)entries;
+- (NSArray *)entries
 {
     return entries;
 }
 
-- (SSELibraryEntry *)addEntryForFile:(NSString *)filePath;
+- (SSELibraryEntry *)addEntryForFile:(NSString *)filePath
 {
     SSELibraryEntry *entry;
     BOOL wasDirty;
@@ -241,7 +235,7 @@ NSString *SSESysExFileExtension = @"syx";
     return entry;
 }
 
-- (SSELibraryEntry *)addNewEntryWithData:(NSData *)sysexData;
+- (SSELibraryEntry *)addNewEntryWithData:(NSData *)sysexData
 {
     NSFileManager *fileManager;
     NSString *newFileName;
@@ -278,7 +272,7 @@ NSString *SSESysExFileExtension = @"syx";
     return entry;
 }
 
-- (void)removeEntry:(SSELibraryEntry *)entry;
+- (void)removeEntry:(SSELibraryEntry *)entry
 {
     NSUInteger entryIndex;
 
@@ -291,7 +285,7 @@ NSString *SSESysExFileExtension = @"syx";
     }
 }
 
-- (void)removeEntries:(NSArray *)entriesToRemove;
+- (void)removeEntries:(NSArray *)entriesToRemove
 {
     unsigned int entryIndex;
 
@@ -306,21 +300,29 @@ NSString *SSESysExFileExtension = @"syx";
     [self noteEntryChanged];
 }
 
-- (void)noteEntryChanged;
+- (void)noteEntryChanged
 {
     flags.isDirty = YES;
     [self autosave];
-    
-    [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:SSELibraryDidChangeNotification object:self] postingStyle:NSPostWhenIdle];
+
+    if (!flags.willPostLibraryDidChangeNotification) {
+        flags.willPostLibraryDidChangeNotification = YES;
+        [self retain];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            flags.willPostLibraryDidChangeNotification = NO;
+            [[NSNotificationCenter defaultCenter] postNotificationName:SSELibraryDidChangeNotification object:self];
+            [self autorelease];
+        });
+    }
 }
 
-- (void)autosave;
+- (void)autosave
 {
-    [NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector(save) object: nil];
-    [self performSelector: @selector(save) withObject: nil afterDelay: 0.0];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(save) object:nil];
+    [self performSelector:@selector(save) withObject:nil afterDelay:0.0];
 }
 
-- (void)save;
+- (void)save
 {
     if (!flags.isDirty)
         return;    
@@ -382,12 +384,12 @@ NSString *SSESysExFileExtension = @"syx";
     }
 }
 
-- (NSArray *)allowedFileTypes;
+- (NSArray *)allowedFileTypes
 {
     return allowedFileTypes;
 }
 
-- (SSELibraryFileType)typeOfFileAtPath:(NSString *)filePath;
+- (SSELibraryFileType)typeOfFileAtPath:(NSString *)filePath
 {
     NSString *fileType;
 
@@ -409,7 +411,7 @@ NSString *SSESysExFileExtension = @"syx";
     }
 }
 
-- (NSArray *)findEntriesForFiles:(NSArray *)filePaths returningNonMatchingFiles:(NSArray **)nonMatchingFilePathsPtr;
+- (NSArray *)findEntriesForFiles:(NSArray *)filePaths returningNonMatchingFiles:(NSArray **)nonMatchingFilePathsPtr
 {
     NSDictionary *entriesByFilePath;
     NSMutableArray *nonMatchingFilePaths;
@@ -444,7 +446,7 @@ NSString *SSESysExFileExtension = @"syx";
     return matchingEntries;
 }
 
-- (BOOL)moveFilesInLibraryDirectoryToTrashForEntries:(NSArray *)entriesToTrash;
+- (BOOL)moveFilesInLibraryDirectoryToTrashForEntries:(NSArray *)entriesToTrash
 {
     unsigned int entryCount, entryIndex;
     NSMutableArray *filesToTrash;
@@ -465,12 +467,10 @@ NSString *SSESysExFileExtension = @"syx";
         return YES;
 }
 
-@end
 
+#pragma mark Private
 
-@implementation SSELibrary (Private)
-
-- (NSString *)findFolder:(OSType)folderType;
+- (NSString *)findFolder:(OSType)folderType
 {
     OSErr error;
     FSRef folderFSRef;
@@ -526,7 +526,7 @@ NSString *SSESysExFileExtension = @"syx";
     return [resolvedPath autorelease];
 }
 
-- (NSString *)defaultFileDirectoryPath;
+- (NSString *)defaultFileDirectoryPath
 {
     NSString *documentsFolderPath;
 
@@ -542,7 +542,7 @@ NSString *SSESysExFileExtension = @"syx";
     return documentsFolderPath;
 }
 
-- (NSString *)preflightLibrary;
+- (NSString *)preflightLibrary
 {
     // Check that the library file can be read and written.
 
@@ -597,7 +597,7 @@ NSString *SSESysExFileExtension = @"syx";
     return nil;
 }
 
-- (NSString *)preflightFileDirectory;
+- (NSString *)preflightFileDirectory
 {
     // Make sure the file directory exists.  If it isn't there, try to create it.
 
@@ -642,7 +642,7 @@ NSString *SSESysExFileExtension = @"syx";
     return nil;
 }
 
-- (void)loadEntries;
+- (void)loadEntries
 {
     NSString *libraryFilePath;
     NSDictionary *libraryDictionary = nil;
@@ -674,7 +674,7 @@ NSString *SSESysExFileExtension = @"syx";
     flags.isDirty = NO;
 }
 
-- (NSArray *)fileTypesFromDocumentTypeDictionary:(NSDictionary *)documentTypeDict;
+- (NSArray *)fileTypesFromDocumentTypeDictionary:(NSDictionary *)documentTypeDict
 {
     NSMutableArray *fileTypes;
     NSArray *extensions;
@@ -700,7 +700,7 @@ NSString *SSESysExFileExtension = @"syx";
     return fileTypes;
 }
 
-- (NSDictionary *)entriesByFilePath;
+- (NSDictionary *)entriesByFilePath
 {
     unsigned int entryIndex, entryCount;
     NSMutableDictionary *entriesByFilePath;
@@ -722,7 +722,7 @@ NSString *SSESysExFileExtension = @"syx";
     return entriesByFilePath;
 }
 
-- (void)postEntryWillBeRemovedNotificationForEntry:(SSELibraryEntry *)entry;
+- (void)postEntryWillBeRemovedNotificationForEntry:(SSELibraryEntry *)entry
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:SSELibraryEntryWillBeRemovedNotification object:entry];
 }

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2002-2006, Kurt Revis.  All rights reserved.
+ Copyright (c) 2002-2014, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -18,17 +18,25 @@
 #import "SSESysExSpeedController.h"
 
 
-@interface  SSEPreferencesWindowController (Private)
+@interface  SSEPreferencesWindowController ()
+{
+    IBOutlet NSMatrix *sizeFormatMatrix;
+    IBOutlet NSTextField *sysExFolderPathField;
+    IBOutlet NSSlider *sysExReadTimeOutSlider;
+    IBOutlet NSTextField *sysExReadTimeOutField;
+    IBOutlet NSSlider *sysExIntervalBetweenSentMessagesSlider;
+    IBOutlet NSTextField *sysExIntervalBetweenSentMessagesField;
+    IBOutlet NSTabView *tabView;
+	IBOutlet NSButton *listenForProgramChangesButton;
+	IBOutlet NSButton *interruptOnProgramChangeButton;
+    IBOutlet SSESysExSpeedController *sysExSpeedController;
 
-- (void)synchronizeDefaults;
-
-- (void)synchronizeControls;
-- (void)synchronizeReadTimeOutField;
-- (void)synchronizeIntervalBetweenSentMessagesField;
-
-- (NSString *)formatMilliseconds:(int)msec;
-
-- (void)openPanelDidEnd:(NSOpenPanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+    struct {
+        unsigned int willPostReceivePreferenceChangedNotification:1;
+        unsigned int willPostSendPreferenceChangedNotification:1;
+        unsigned int willPostListenForProgramChangesPreferenceChangedNotification:1;
+    } flags;
+}
 
 @end
 
@@ -41,17 +49,19 @@ NSString *SSESysExReceivePreferenceChangedNotification = @"SSESysExReceivePrefer
 NSString *SSEListenForProgramChangesPreferenceChangedNotification = @"SSEListenForProgramChangesPreferenceChangedNotification";
 
 
-static SSEPreferencesWindowController *controller = nil;
-
-+ (SSEPreferencesWindowController *)preferencesWindowController;
++ (SSEPreferencesWindowController *)preferencesWindowController
 {
-    if (!controller)
-        controller = [[self alloc] init];
+    static SSEPreferencesWindowController *sController = nil;
     
-    return controller;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sController = [[self alloc] init];
+    });
+
+    return sController;
 }
 
-- (id)init;
+- (id)init
 {
     if (!(self = [super initWithWindowNibName:@"Preferences"]))
         return nil;
@@ -59,7 +69,7 @@ static SSEPreferencesWindowController *controller = nil;
     return self;
 }
 
-- (id)initWithWindowNibName:(NSString *)windowNibName;
+- (id)initWithWindowNibName:(NSString *)windowNibName
 {
     SMRejectUnusedImplementation(self, _cmd);
     return nil;
@@ -70,7 +80,7 @@ static SSEPreferencesWindowController *controller = nil;
     [super dealloc];
 }
 
-- (void)windowDidLoad;
+- (void)windowDidLoad
 {
     [super windowDidLoad];
         
@@ -78,7 +88,7 @@ static SSEPreferencesWindowController *controller = nil;
     [tabView selectTabViewItemWithIdentifier: @"general"];
 }
 
-- (IBAction)showWindow:(id)sender;
+- (IBAction)showWindow:(id)sender
 {
     [self window];	// Make sure the window gets loaded before we do anything else
 
@@ -116,14 +126,14 @@ static SSEPreferencesWindowController *controller = nil;
 // Actions
 //
 
-- (IBAction)changeSizeFormat:(id)sender;
+- (IBAction)changeSizeFormat:(id)sender
 {
     [[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey:SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey];
     [self synchronizeDefaults];
     [[NSNotificationCenter defaultCenter] postNotificationName:SSEDisplayPreferenceChangedNotification object:nil];
 }
 
-- (IBAction)changeSysExFolder:(id)sender;
+- (IBAction)changeSysExFolder:(id)sender
 {
     NSOpenPanel *openPanel;
     NSString *oldPath;
@@ -151,27 +161,30 @@ static SSEPreferencesWindowController *controller = nil;
 
 }
 
-- (IBAction)changeReadTimeOut:(id)sender;
+- (IBAction)changeReadTimeOut:(id)sender
 {
     [[NSUserDefaults standardUserDefaults] setInteger:[sender intValue] forKey:SSESysExReadTimeOutPreferenceKey];
     [self synchronizeReadTimeOutField];
     [self synchronizeDefaults];
-    [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:SSESysExReceivePreferenceChangedNotification object: nil] postingStyle:NSPostWhenIdle];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:SSESysExReceivePreferenceChangedNotification object:nil];
 }
 
-- (IBAction)changeIntervalBetweenSentMessages:(id)sender;
+- (IBAction)changeIntervalBetweenSentMessages:(id)sender
 {
     [[NSUserDefaults standardUserDefaults] setInteger:[sender intValue] forKey:SSESysExIntervalBetweenSentMessagesPreferenceKey];
     [self synchronizeIntervalBetweenSentMessagesField];
     [self synchronizeDefaults];
-    [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:SSESysExSendPreferenceChangedNotification object: nil] postingStyle:NSPostWhenIdle];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:SSESysExSendPreferenceChangedNotification object:nil];
 }
 
 - (IBAction)listenForProgramChanges:(id)sender
 {
     [[NSUserDefaults standardUserDefaults] setBool:([sender intValue] ? YES : NO) forKey:SSEListenForProgramChangesPreferenceKey];
     [self synchronizeDefaults];
-    [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:SSEListenForProgramChangesPreferenceChangedNotification object: nil] postingStyle:NSPostWhenIdle];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:SSEListenForProgramChangesPreferenceChangedNotification object:nil];
 }
 
 - (IBAction)interruptOnProgramChange:(id)sender
@@ -181,17 +194,15 @@ static SSEPreferencesWindowController *controller = nil;
     // no need for a notification to be posted; relevant code looks up this value each time
 }
 
-@end
 
+#pragma mark Private
 
-@implementation SSEPreferencesWindowController (Private)
-
-- (void)synchronizeDefaults;
+- (void)synchronizeDefaults
 {
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (void)synchronizeControls;
+- (void)synchronizeControls
 {
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     
@@ -205,17 +216,17 @@ static SSEPreferencesWindowController *controller = nil;
     [self synchronizeIntervalBetweenSentMessagesField];
 }
 
-- (void)synchronizeReadTimeOutField;
+- (void)synchronizeReadTimeOutField
 {
     [sysExReadTimeOutField setStringValue:[self formatMilliseconds:[[NSUserDefaults standardUserDefaults] integerForKey:SSESysExReadTimeOutPreferenceKey]]];
 }
 
-- (void)synchronizeIntervalBetweenSentMessagesField;
+- (void)synchronizeIntervalBetweenSentMessagesField
 {
     [sysExIntervalBetweenSentMessagesField setStringValue:[self formatMilliseconds:[[NSUserDefaults standardUserDefaults] integerForKey: SSESysExIntervalBetweenSentMessagesPreferenceKey]]];
 }
 
-- (NSString *)formatMilliseconds:(int)msec;
+- (NSString *)formatMilliseconds:(int)msec
 {
     static NSString *oneSecond = nil;
     static NSString *millisecondsFormat = nil;
@@ -231,7 +242,7 @@ static SSEPreferencesWindowController *controller = nil;
         return [NSString stringWithFormat:millisecondsFormat, msec];
 }
 
-- (void)openPanelDidEnd:(NSOpenPanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)openPanelDidEnd:(NSOpenPanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
 {
     if (returnCode == NSOKButton) {
         if ([[sheet URLs] count] == 1) {

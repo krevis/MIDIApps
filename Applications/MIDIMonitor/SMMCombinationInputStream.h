@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2002-2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2002-2014, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -18,15 +18,6 @@
 
 
 @interface SMMCombinationInputStream : NSObject <SMMessageDestination>
-{
-    id<SMMessageDestination> nonretainedMessageDestination;
-
-    SMPortInputStream *portInputStream;
-    SMVirtualInputStream *virtualInputStream;
-    SMMSpyingInputStream *spyingInputStream;
-
-    NSArray *groupedInputSources;
-}
 
 - (id<SMMessageDestination>)messageDestination;
 - (void)setMessageDestination:(id<SMMessageDestination>)messageDestination;

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2002-2006, Kurt Revis.  All rights reserved.
+ Copyright (c) 2002-2014, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -15,18 +15,6 @@
 @class SSESysExSpeedController;
 
 @interface SSEPreferencesWindowController : SSEWindowController
-{
-    IBOutlet NSMatrix *sizeFormatMatrix;
-    IBOutlet NSTextField *sysExFolderPathField;
-    IBOutlet NSSlider *sysExReadTimeOutSlider;
-    IBOutlet NSTextField *sysExReadTimeOutField;
-    IBOutlet NSSlider *sysExIntervalBetweenSentMessagesSlider;
-    IBOutlet NSTextField *sysExIntervalBetweenSentMessagesField;
-    IBOutlet NSTabView *tabView;
-	IBOutlet NSButton *listenForProgramChangesButton;
-	IBOutlet NSButton *interruptOnProgramChangeButton;
-    IBOutlet SSESysExSpeedController *sysExSpeedController;
-}
 
 + (SSEPreferencesWindowController *)preferencesWindowController;
 
