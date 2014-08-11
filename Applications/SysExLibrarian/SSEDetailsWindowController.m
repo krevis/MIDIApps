@@ -188,14 +188,49 @@ static NSMutableArray *controllers = nil;
 // NSSplitView delegate
 //
 
-- (float)splitView:(NSSplitView *)sender constrainMaxCoordinate:(float)proposedMax ofSubviewAt:(int)offset;
+const CGFloat kMinMessagesViewHeight = 32.f;
+const CGFloat kMinTextViewHeight = 32.f;
+
+- (CGFloat)splitView:(NSSplitView *)splitView constrainMinCoordinate:(CGFloat)proposedMinimumPosition ofSubviewAt:(NSInteger)dividerIndex
 {
-    return MIN(proposedMax, NSHeight([sender frame]) - 32);    
+    return proposedMinimumPosition + kMinMessagesViewHeight;
 }
 
-- (float)splitView:(NSSplitView *)sender constrainMinCoordinate:(float)proposedMin ofSubviewAt:(int)offset;
+- (CGFloat)splitView:(NSSplitView *)splitView constrainMaxCoordinate:(CGFloat)proposedMaximumPosition ofSubviewAt:(NSInteger)dividerIndex
 {
-    return MAX(proposedMin, 32);
+    return proposedMaximumPosition - kMinTextViewHeight;
+}
+
+-(void)splitView:(NSSplitView *)splitView resizeSubviewsWithOldSize:(NSSize)oldSize
+{
+    [splitView adjustSubviews];
+
+    NSView* v1 = splitView.subviews[0];
+    NSView* v2 = splitView.subviews[1];
+    CGRect v1Frame = v1.frame;
+    CGRect v2Frame = v2.frame;
+    CGFloat dividerThickness = splitView.dividerThickness;
+    CGFloat boundsHeight = splitView.bounds.size.height;
+
+    if (v1Frame.size.height < kMinMessagesViewHeight) {
+        v1.frame = (CGRect) {
+            { v1Frame.origin.x, 0.f },
+            { v1Frame.size.width, kMinMessagesViewHeight }
+        };
+        v2.frame = (CGRect) {
+            { v2Frame.origin.x, kMinMessagesViewHeight + dividerThickness },
+            { v2Frame.size.width, boundsHeight - (dividerThickness + kMinMessagesViewHeight) }
+        };
+    } else if (v2Frame.size.height < kMinTextViewHeight) {
+        v1.frame = (CGRect) {
+            { v1Frame.origin.x, 0.f },
+            { v1Frame.size.width, boundsHeight - (dividerThickness + kMinTextViewHeight) }
+        };
+        v2.frame = (CGRect) {
+            { v2Frame.origin.x, boundsHeight - kMinTextViewHeight },
+            { v2Frame.size.width, kMinTextViewHeight }
+        };
+    }
 }
 
 @end
