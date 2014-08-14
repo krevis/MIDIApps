@@ -293,8 +293,6 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 - (void)synchronizeInterface
 {
     [self synchronizeMessagesWithScrollToBottom:NO];
-    // above does a reload which dirties the document; clear that
-    [self.midiDocument updateChangeCount:NSChangeCleared];
     
     [self synchronizeSources];
     [self synchronizeSourcesShown];
@@ -669,9 +667,6 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 
     // Figure out when we should next be allowed to refresh.
     self.nextMessagesRefreshDate = [NSDate dateWithTimeIntervalSinceNow:kMinimumMessagesRefreshDelay];
-    
-    // Dirty document, since the messages are saved in it
-    [self.midiDocument updateChangeCount:NSChangeDone];
 }
 
 - (void)refreshMessagesTableViewFromTimer:(NSTimer *)timer

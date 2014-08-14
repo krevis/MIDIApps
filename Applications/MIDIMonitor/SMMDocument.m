@@ -412,9 +412,6 @@ NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeC
 {
     if (self.history.savedMessages.count > 0) {
         [self.history clearSavedMessages];
-        
-        // Dirty document, since the messages are saved in it
-        [self updateChangeCount:NSChangeDone];
     }
 }
 
@@ -498,6 +495,8 @@ NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeC
 
 - (void)historyDidChange:(NSNotification *)notification
 {
+    [self updateChangeCount:NSChangeDone];
+
     NSNumber *shouldScroll = notification.userInfo[SMMessageHistoryWereMessagesAdded];
 	[self synchronizeMessagesWithScroll:[shouldScroll boolValue]];
 }
