@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2001-2008, Kurt Revis.  All rights reserved.
+ Copyright (c) 2001-2014, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -12,7 +12,6 @@
 
 #import "SMMMonitorWindowController.h"
 
-#import <Cocoa/Cocoa.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 #import "SMMDocument.h"
@@ -26,53 +25,67 @@
 #import "NSString-SMMExtensions.h"
 
 
-@interface SMMMonitorWindowController (Private)
+@interface SMMMonitorWindowController ()
 
-- (void)displayPreferencesDidChange:(NSNotification *)notification;
+// Sources controls
+@property (nonatomic, assign) IBOutlet SNDisclosureButton *sourcesDisclosureButton;
+@property (nonatomic, assign) IBOutlet SNDisclosableView *sourcesDisclosableView;
+@property (nonatomic, assign) IBOutlet SMMSourcesOutlineView *sourcesOutlineView;
 
-- (void)setupWindowCascading;
-- (void)updateDocumentWindowFrameDescription;
+// Filter controls
+@property (nonatomic, assign) IBOutlet SNDisclosureButton *filterDisclosureButton;
+@property (nonatomic, assign) IBOutlet SNDisclosableView *filterDisclosableView;
+@property (nonatomic, assign) IBOutlet NSButton *voiceMessagesCheckBox;
+@property (nonatomic, assign) IBOutlet NSMatrix *voiceMessagesMatrix;
+@property (nonatomic, assign) IBOutlet NSButton *systemCommonCheckBox;
+@property (nonatomic, assign) IBOutlet NSMatrix *systemCommonMatrix;
+@property (nonatomic, assign) IBOutlet NSButton *realTimeCheckBox;
+@property (nonatomic, assign) IBOutlet NSMatrix *realTimeMatrix;
+@property (nonatomic, assign) IBOutlet NSButton *systemExclusiveCheckBox;
+@property (nonatomic, assign) IBOutlet NSButton *invalidCheckBox;
+@property (nonatomic, assign) IBOutlet NSMatrix *channelRadioButtons;
+@property (nonatomic, assign) IBOutlet NSTextField *oneChannelField;
+@property (nonatomic, retain) NSArray *filterCheckboxes;
+@property (nonatomic, retain) NSArray *filterMatrixCells;
 
-- (void)updateDisplayedMessages;
-- (void)refreshMessagesTableView;
-- (void)refreshMessagesTableViewFromTimer:(NSTimer *)timer;
+// Event controls
+@property (nonatomic, assign) IBOutlet NSTableView *messagesTableView;
+@property (nonatomic, assign) IBOutlet NSButton *clearButton;
+@property (nonatomic, assign) IBOutlet NSTextField *maxMessageCountField;
+@property (nonatomic, assign) IBOutlet NSProgressIndicator *sysExProgressIndicator;
+@property (nonatomic, assign) IBOutlet NSTextField *sysExProgressField;
 
-- (void)showSysExProgressIndicator;
-- (void)hideSysExProgressIndicator;
-
-- (NSArray *)selectedMessagesWithDetails;
-
-- (NSCellStateValue)buttonStateForInputSources:(NSArray *)sources;
-
-- (void)synchronizeDisclosableView:(SNDisclosableView *)view button:(NSButton *)button withIsShown:(BOOL)isShown;
+// Transient data
+@property (nonatomic, assign) NSUInteger oneChannel;
+@property (nonatomic, retain) NSArray *groupedInputSources;
+@property (nonatomic, retain) NSArray *displayedMessages;
+@property (nonatomic, assign) BOOL sendWindowFrameChangesToDocument;
+@property (nonatomic, assign) BOOL messagesNeedScrollToBottom;
+@property (nonatomic, retain) NSDate *nextMessagesRefreshDate;
+@property (nonatomic, assign) NSTimer *nextMessagesRefreshTimer;
 
 @end
-
 
 @implementation SMMMonitorWindowController
 
 static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 
-
-- (id)init;
+- (instancetype)init
 {
-    if (!(self = [super initWithWindowNibName:@"MIDIMonitor"]))
-        return nil;
+    if ((self = [super initWithWindowNibName:@"MIDIMonitor"])) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayPreferencesDidChange:) name:SMMDisplayPreferenceChangedNotification object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayPreferencesDidChange:) name:SMMDisplayPreferenceChangedNotification object:nil];
+        _oneChannel = 1;
 
-    oneChannel = 1;
-
-    displayedMessages = nil;
-
-    // We don't want to tell our document about window frame changes while we are still in the middle
-    // of loading it, because we may do some resizing.
-    sendWindowFrameChangesToDocument = NO;
+        // We don't want to tell our document about window frame changes while we are still in the middle
+        // of loading it, because we may do some resizing.
+        _sendWindowFrameChangesToDocument = NO;
+    }
 
     return self;
 }
 
-- (id)initWithWindowNibName:(NSString *)windowNibName;
+- (id)initWithWindowNibName:(NSString *)windowNibName
 {
     SMRejectUnusedImplementation(self, _cmd);
     return nil;
@@ -82,24 +95,18 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
-    if (![sysExProgressIndicator superview]) {
-        [sysExProgressIndicator release];
-        [sysExProgressField release];
-    }
+    [_filterCheckboxes release];
+    [_filterMatrixCells release];
 
-    [filterCheckboxes release];
-    [filterMatrixCells release];
+    [_groupedInputSources release];
 
-    [groupedInputSources release];
+    [_displayedMessages release];
 
-    [displayedMessages release];
+    [_nextMessagesRefreshDate release];
 
-    [nextMessagesRefreshDate release];
-    nextMessagesRefreshDate = nil;
-
-    if (nextMessagesRefreshTimer) {
-		[nextMessagesRefreshTimer invalidate];
-        nextMessagesRefreshTimer = nil;
+    if (self.nextMessagesRefreshTimer) {
+		[self.nextMessagesRefreshTimer invalidate];
+        self.nextMessagesRefreshTimer = nil;
     }
 
     [super dealloc];
@@ -107,41 +114,38 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 
 - (void)windowDidLoad
 {
-    SMMNonHighlightingButtonCell *checkboxCell;
-    SMMNonHighlightingTextFieldCell *textFieldCell;
-    
     [super windowDidLoad];
-    
-    [sourcesOutlineView setOutlineTableColumn:[sourcesOutlineView tableColumnWithIdentifier:@"name"]];
-    [sourcesOutlineView setAutoresizesOutlineColumn:NO];
 
-    checkboxCell = [[SMMNonHighlightingButtonCell alloc] initTextCell:@""];
-    [checkboxCell setButtonType:NSSwitchButton];
-    [checkboxCell setControlSize:NSSmallControlSize];
-    [checkboxCell setFont:[NSFont systemFontOfSize:[NSFont smallSystemFontSize]]];
-    [checkboxCell setAllowsMixedState:YES];
-    [[sourcesOutlineView tableColumnWithIdentifier:@"enabled"] setDataCell:checkboxCell];
+    self.sourcesOutlineView.outlineTableColumn = [self.sourcesOutlineView tableColumnWithIdentifier:@"name"];
+    self.sourcesOutlineView.autoresizesOutlineColumn = NO;
+
+    SMMNonHighlightingButtonCell *checkboxCell = [[SMMNonHighlightingButtonCell alloc] initTextCell:@""];
+    checkboxCell.buttonType = NSSwitchButton;
+    checkboxCell.controlSize = NSSmallControlSize;
+    checkboxCell.font = [NSFont systemFontOfSize:[NSFont smallSystemFontSize]];
+    checkboxCell.allowsMixedState = YES;
+    [self.sourcesOutlineView tableColumnWithIdentifier:@"enabled"].dataCell = checkboxCell;
     [checkboxCell release];
 
-    textFieldCell = [[SMMNonHighlightingTextFieldCell alloc] initTextCell:@""];
-    [textFieldCell setFont:[NSFont systemFontOfSize:[NSFont smallSystemFontSize]]];
-    [[sourcesOutlineView tableColumnWithIdentifier:@"name"] setDataCell:textFieldCell];
+    SMMNonHighlightingTextFieldCell *textFieldCell = [[SMMNonHighlightingTextFieldCell alloc] initTextCell:@""];
+    textFieldCell.font = [NSFont systemFontOfSize:[NSFont smallSystemFontSize]];
+    [self.sourcesOutlineView tableColumnWithIdentifier:@"name"].dataCell = textFieldCell;
     [textFieldCell release];
     
-    filterCheckboxes = [[NSArray alloc] initWithObjects:voiceMessagesCheckBox, systemCommonCheckBox, realTimeCheckBox, systemExclusiveCheckBox, invalidCheckBox, nil];
-    filterMatrixCells = [[[[voiceMessagesMatrix cells] arrayByAddingObjectsFromArray:[systemCommonMatrix cells]] arrayByAddingObjectsFromArray:[realTimeMatrix cells]] retain];
+    self.filterCheckboxes = [NSArray arrayWithObjects:self.voiceMessagesCheckBox, self.systemCommonCheckBox, self.realTimeCheckBox, self.systemExclusiveCheckBox, self.invalidCheckBox, nil];
+    self.filterMatrixCells = [[self.voiceMessagesMatrix.cells arrayByAddingObjectsFromArray:self.systemCommonMatrix.cells] arrayByAddingObjectsFromArray:self.realTimeMatrix.cells];
 
-    [voiceMessagesCheckBox setAllowsMixedState:YES];
-    [systemCommonCheckBox setAllowsMixedState:YES];
-    [realTimeCheckBox setAllowsMixedState:YES];
+    self.voiceMessagesCheckBox.allowsMixedState = YES;
+    self.systemCommonCheckBox.allowsMixedState = YES;
+    self.realTimeCheckBox.allowsMixedState = YES;
     
-    [[maxMessageCountField formatter] setAllowsFloats:NO];
-    [[oneChannelField formatter] setAllowsFloats:NO];
+    ((NSNumberFormatter *)self.maxMessageCountField.formatter).allowsFloats = NO;
+    ((NSNumberFormatter *)self.oneChannelField.formatter).allowsFloats = NO;
     
-    [messagesTableView setAutosaveName:@"MessagesTableView2"];
-    [messagesTableView setAutosaveTableColumns:YES];
-    [messagesTableView setTarget:self];
-    [messagesTableView setDoubleAction:@selector(showDetailsOfSelectedMessages:)];
+    self.messagesTableView.autosaveName = @"MessagesTableView2";
+    self.messagesTableView.autosaveTableColumns = YES;
+    self.messagesTableView.target = self;
+    self.messagesTableView.doubleAction = @selector(showDetailsOfSelectedMessages:);
 
     [self hideSysExProgressIndicator];
 }
@@ -160,13 +164,14 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem;
 {
-    if ([anItem action] == @selector(copy:)) {
-        if ([[self window] firstResponder] == messagesTableView)
-            return ([messagesTableView numberOfSelectedRows] > 0);
-        else
+    if (anItem.action == @selector(copy:)) {
+        if (self.window.firstResponder == self.messagesTableView) {
+            return self.messagesTableView.numberOfSelectedRows > 0;
+        } else {
             return NO;
-    } else if ([anItem action] == @selector(showDetailsOfSelectedMessages:)) {
-        return ([[self selectedMessagesWithDetails] count] > 0);
+        }
+    } else if (anItem.action == @selector(showDetailsOfSelectedMessages:)) {
+        return self.selectedMessagesWithDetails.count > 0;
     } else {
         return YES;
     }
@@ -176,25 +181,23 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 // Actions
 //
 
-- (IBAction)clearMessages:(id)sender;
+- (IBAction)clearMessages:(id)sender
 {
-    [[self document] clearSavedMessages];
+    [self.midiDocument clearSavedMessages];
 }
 
-- (IBAction)setMaximumMessageCount:(id)sender;
+- (IBAction)setMaximumMessageCount:(id)sender
 {
     NSNumber *number;
-    NSUInteger maxMessageCount;
-    
+
     if ((number = [(NSControl*)sender objectValue])) {
-        maxMessageCount = [number unsignedIntValue];
-        [[self document] setMaxMessageCount:maxMessageCount];
+        self.midiDocument.maxMessageCount = [number unsignedIntValue];
     } else {
         [self synchronizeMaxMessageCount];
     }
 }
 
-- (IBAction)changeFilter:(id)sender;
+- (IBAction)changeFilter:(id)sender
 {
     BOOL turnBitsOn;
 
@@ -210,10 +213,10 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
             break;
     }
     
-    [[self document] changeFilterMask:[sender tag] turnBitsOn:turnBitsOn];
+    [self.midiDocument changeFilterMask:[sender tag] turnBitsOn:turnBitsOn];
 }
 
-- (IBAction)changeFilterFromMatrix:(id)sender;
+- (IBAction)changeFilterFromMatrix:(id)sender
 {
     [self changeFilter:[sender selectedCell]];
 }
@@ -221,66 +224,55 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 - (IBAction)setChannelRadioButton:(id)sender;
 {
     if ([[sender selectedCell] tag] == 0) {
-        [[self document] showAllChannels];
+        [self.midiDocument showAllChannels];
     } else {
-        [[self document] showOnlyOneChannel:oneChannel];
+        [self.midiDocument showOnlyOneChannel:self.oneChannel];
     }
 }
 
-- (IBAction)setChannel:(id)sender;
+- (IBAction)setChannel:(id)sender
 {
-    [[self document] showOnlyOneChannel:[(NSNumber *)[sender objectValue] unsignedIntValue]];
+    [self.midiDocument showOnlyOneChannel:[(NSNumber *)[sender objectValue] unsignedIntValue]];
 }
 
-- (IBAction)toggleFilterShown:(id)sender;
+- (IBAction)toggleFilterShown:(id)sender
 {
-    BOOL isShown;
-
     // Toggle the button immediately, which looks better.
     // NOTE This is absolutely a dumb place to do it, but I CANNOT get it to work any other way. See comment in -synchronizeDisclosableView:button:withIsShown:.
     [sender setIntValue:![sender intValue]];
 
-    isShown = [[self document] isFilterShown];
-    [[self document] setIsFilterShown:!isShown];    
+    self.midiDocument.isFilterShown = !self.midiDocument.isFilterShown;
 }
 
-- (IBAction)toggleSourcesShown:(id)sender;
+- (IBAction)toggleSourcesShown:(id)sender
 {
-    BOOL isShown;
-
     // Toggle the button immediately, which looks better.
     // NOTE This is absolutely a dumb place to do it, but I CANNOT get it to work any other way. See comment in -synchronizeDisclosableView:button:withIsShown:.
     [sender setIntValue:![sender intValue]];
 
-    isShown = [[self document] areSourcesShown];
-    [[self document] setAreSourcesShown:!isShown];
+    self.midiDocument.areSourcesShown = !self.midiDocument.areSourcesShown;
 }
 
-- (IBAction)showDetailsOfSelectedMessages:(id)sender;
+- (IBAction)showDetailsOfSelectedMessages:(id)sender
 {
-    NSEnumerator *enumerator;
-    SMMessage *message;
-
-    enumerator = [[self selectedMessagesWithDetails] objectEnumerator];
-    while ((message = [enumerator nextObject]))
+    for (SMMessage *message in self.selectedMessagesWithDetails) {
         [[SMMDetailsWindowController detailsWindowControllerWithMessage:message] showWindow:nil];
+    }
 }
 
-- (IBAction)copy:(id)sender;
+- (IBAction)copy:(id)sender
 {
-    if ([[self window] firstResponder] == messagesTableView) {
+    if (self.window.firstResponder == self.messagesTableView) {
         NSMutableString *totalString = [NSMutableString string];
-        NSArray *columns = [messagesTableView tableColumns];
+        NSArray *columns = self.messagesTableView.tableColumns;
             
-        NSIndexSet* selectedRowIndexes = [messagesTableView selectedRowIndexes];
+        NSIndexSet *selectedRowIndexes = self.messagesTableView.selectedRowIndexes;
         NSUInteger row;
         for (row = [selectedRowIndexes firstIndex]; row != NSNotFound; row = [selectedRowIndexes indexGreaterThanIndex:row]) {
             NSMutableArray *columnStrings = [[NSMutableArray alloc] init];
-            NSEnumerator *columnEnumerator = [columns objectEnumerator];
-            NSTableColumn *column;
-
-            while ((column = [columnEnumerator nextObject]))
-                [columnStrings addObject:[self tableView:messagesTableView objectValueForTableColumn:column row:row]];
+            for (NSTableColumn *column in columns) {
+                [columnStrings addObject:[self tableView:self.messagesTableView objectValueForTableColumn:column row:row]];
+            }
 
             [totalString appendString:[columnStrings componentsJoinedByString:@"\t"]];
             [totalString appendString:@"\n"];
@@ -289,7 +281,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
         }
 
         NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-        [pasteboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
+        [pasteboard declareTypes:@[NSStringPboardType] owner:nil];
         [pasteboard setString:totalString forType:NSStringPboardType];
     }
 }
@@ -298,11 +290,11 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 // Other API
 //
 
-- (void)synchronizeInterface;
+- (void)synchronizeInterface
 {
     [self synchronizeMessagesWithScrollToBottom:NO];
     // above does a reload which dirties the document; clear that
-    [[self document] updateChangeCount:NSChangeCleared];
+    [self.midiDocument updateChangeCount:NSChangeCleared];
     
     [self synchronizeSources];
     [self synchronizeSourcesShown];
@@ -316,168 +308,136 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     // Reloading the NSTableView can be excruciatingly slow, and if messages are coming in quickly,
     // we will hog a lot of CPU. So we make sure that we don't do it too often.
 
-    if (shouldScrollToBottom)
-        messagesNeedScrollToBottom = YES;
+    if (shouldScrollToBottom) {
+        self.messagesNeedScrollToBottom = YES;
+    }
 
-    if (nextMessagesRefreshTimer) {
+    if (self.nextMessagesRefreshTimer) {
         // We're going to refresh soon, so don't do anything now.
         return;
     }
-    
-    if (!nextMessagesRefreshDate || [(NSDate*)[NSDate date] compare: nextMessagesRefreshDate] == NSOrderedDescending) {
+
+    NSTimeInterval ti = self.nextMessagesRefreshDate.timeIntervalSinceNow;
+    if (ti <= 0.0) {
         // Refresh right away, since we haven't recently.
         [self refreshMessagesTableView];
     } else {
         // We have refreshed recently.
         // Schedule an event to make us refresh when we are next allowed to do so.
-		NSTimeInterval ti = [nextMessagesRefreshDate timeIntervalSinceReferenceDate] - [NSDate timeIntervalSinceReferenceDate];
-		nextMessagesRefreshTimer = [NSTimer scheduledTimerWithTimeInterval:ti target:self selector:@selector(refreshMessagesTableViewFromTimer:) userInfo:nil repeats:NO];
+		self.nextMessagesRefreshTimer = [NSTimer scheduledTimerWithTimeInterval:ti target:self selector:@selector(refreshMessagesTableViewFromTimer:) userInfo:nil repeats:NO];
     }
 }
 
-- (void)synchronizeSources;
+- (void)synchronizeSources
 {
-    NSArray *newGroupedInputSources;
+    self.groupedInputSources = self.midiDocument.groupedInputSources;
 
-    newGroupedInputSources = [[self document] groupedInputSources];
-    if (newGroupedInputSources != groupedInputSources) {
-        [groupedInputSources release];
-        groupedInputSources = [newGroupedInputSources retain];
-    }
-
-    [sourcesOutlineView reloadData];
+    [self.sourcesOutlineView reloadData];
 }
 
-- (void)synchronizeSourcesShown;
+- (void)synchronizeSourcesShown
 {
-    [self synchronizeDisclosableView:sourcesDisclosableView button:sourcesDisclosureButton withIsShown:[[self document] areSourcesShown]];
+    [self synchronizeDisclosableView:self.sourcesDisclosableView button:self.sourcesDisclosureButton withIsShown:self.midiDocument.areSourcesShown];
 }
 
-- (void)synchronizeMaxMessageCount;
+- (void)synchronizeMaxMessageCount
 {
-    NSUInteger maxMessageCount;
-    
-    maxMessageCount = [[self document] maxMessageCount];    
-    [maxMessageCountField setObjectValue:[NSNumber numberWithUnsignedInt:maxMessageCount]];
+    self.maxMessageCountField.objectValue = @(self.midiDocument.maxMessageCount);
 }
 
-- (void)synchronizeFilterControls;
+- (void)synchronizeFilterControls
 {
-    SMMessageType currentMask;
-    NSUInteger buttonIndex;
+    SMMessageType currentMask = self.midiDocument.filterMask;
 
-    currentMask = [[self document] filterMask];
-        
-    buttonIndex = [filterCheckboxes count];
-    while (buttonIndex--) {
-        NSButton *checkbox;
-        SMMessageType buttonMask;
+    for (NSButton *checkbox in self.filterCheckboxes) {
+        SMMessageType buttonMask = checkbox.tag;
+
         int newState;
-        
-        checkbox = [filterCheckboxes objectAtIndex:buttonIndex];
-        buttonMask = [checkbox tag];
-
-        if ((currentMask & buttonMask) == buttonMask)
+        if ((currentMask & buttonMask) == buttonMask) {
             newState = NSOnState;
-        else if ((currentMask & buttonMask) == 0)
+        } else if ((currentMask & buttonMask) == 0) {
             newState = NSOffState;
-        else
+        } else {
             newState = NSMixedState;
+        }
 
-        [checkbox setState:newState];
+        checkbox.state = newState;
     }
 
-    buttonIndex = [filterMatrixCells count];
-    while (buttonIndex--) {
-        NSButtonCell *checkbox;
-        SMMessageType buttonMask;
+    for (NSButtonCell *checkbox in self.filterMatrixCells) {
+        SMMessageType buttonMask = checkbox.tag;
+
         int newState;
-        
-        checkbox = [filterMatrixCells objectAtIndex:buttonIndex];
-        buttonMask = [checkbox tag];
-        if ((currentMask & buttonMask) == buttonMask)
+        if ((currentMask & buttonMask) == buttonMask) {
             newState = NSOnState;
-        else
+        } else {
             newState = NSOffState;
+        }
 
-        [checkbox setState:newState];
+        checkbox.state = newState;
     }
 
-    if ([[self document] isShowingAllChannels]) {
-        [channelRadioButtons selectCellWithTag:0];
-        [oneChannelField setEnabled:NO];
+    if (self.midiDocument.isShowingAllChannels) {
+        [self.channelRadioButtons selectCellWithTag:0];
+        self.oneChannelField.enabled = NO;
     } else {
-        [channelRadioButtons selectCellWithTag:1];
-        [oneChannelField setEnabled:YES];
-        oneChannel = [[self document] oneChannelToShow];
+        [self.channelRadioButtons selectCellWithTag:1];
+        self.oneChannelField.enabled = YES;
+        self.oneChannel = self.midiDocument.oneChannelToShow;
     }
-    [oneChannelField setObjectValue:[NSNumber numberWithUnsignedInt:oneChannel]];
+    self.oneChannelField.objectValue = [NSNumber numberWithUnsignedInt:self.oneChannel];
 }
 
-- (void)synchronizeFilterShown;
+- (void)synchronizeFilterShown
 {
-    [self synchronizeDisclosableView:filterDisclosableView button:filterDisclosureButton withIsShown:[[self document] isFilterShown]];
+    [self synchronizeDisclosableView:self.filterDisclosableView button:self.filterDisclosureButton withIsShown:self.midiDocument.isFilterShown];
 }
 
-- (void)couldNotFindSourcesNamed:(NSArray *)sourceNames;
+- (void)couldNotFindSourcesNamed:(NSArray *)sourceNames
 {
-    NSString *title, *message;
-    NSUInteger sourceNamesCount;
+    NSUInteger sourceNamesCount = sourceNames.count;
+    if (sourceNamesCount != 0) {
+        NSString *title, *message;
 
-    sourceNamesCount = [sourceNames count];
+        if (sourceNamesCount == 1) {
+            title = NSLocalizedStringFromTableInBundle(@"Missing Source", @"MIDIMonitor", SMBundleForObject(self), "if document's source is missing, title of sheet");
+            NSString *messageFormat = NSLocalizedStringFromTableInBundle(@"The source named \"%@\" could not be found.", @"MIDIMonitor", SMBundleForObject(self), "if document's source is missing, message in sheet (with source name)");
+            message = [NSString stringWithFormat:messageFormat, [sourceNames objectAtIndex:0]];
+        } else {
+            title = NSLocalizedStringFromTableInBundle(@"Missing Sources", @"MIDIMonitor", SMBundleForObject(self), "if more than one of document's sources are missing, title of sheet");
 
-    if (sourceNamesCount == 0) {
-        return;
-    } else if (sourceNamesCount == 1) {
-        NSString *messageFormat;
-        
-        title = NSLocalizedStringFromTableInBundle(@"Missing Source", @"MIDIMonitor", SMBundleForObject(self), "if document's source is missing, title of sheet");    
-        messageFormat = NSLocalizedStringFromTableInBundle(@"The source named \"%@\" could not be found.", @"MIDIMonitor", SMBundleForObject(self), "if document's source is missing, message in sheet (with source name)");
-        message = [NSString stringWithFormat:messageFormat, [sourceNames objectAtIndex:0]];
-    } else {
-        NSMutableArray *sourceNamesInQuotes;
-        NSUInteger sourceNamesIndex;
-        NSString *concatenatedSourceNames;
-        NSString *messageFormat;
-        
-        title = NSLocalizedStringFromTableInBundle(@"Missing Sources", @"MIDIMonitor", SMBundleForObject(self), "if more than one of document's sources are missing, title of sheet");
+            NSMutableArray *sourceNamesInQuotes = [NSMutableArray arrayWithCapacity:sourceNamesCount];
+            for (NSString *sourceName in sourceNames) {
+                [sourceNamesInQuotes addObject:[NSString stringWithFormat:@"\"%@\"", sourceName]];
+            }
 
-        sourceNamesInQuotes = [NSMutableArray arrayWithCapacity:sourceNamesCount];
-        for (sourceNamesIndex = 0; sourceNamesIndex < sourceNamesCount; sourceNamesIndex++)
-            [sourceNamesInQuotes addObject:[NSString stringWithFormat:@"\"%@\"", [sourceNames objectAtIndex:sourceNamesIndex]]];
+            NSString *concatenatedSourceNames = [sourceNamesInQuotes SMM_componentsJoinedByCommaAndAnd];
+            
+            NSString *messageFormat = NSLocalizedStringFromTableInBundle(@"The sources named %@ could not be found.", @"MIDIMonitor", SMBundleForObject(self), "if more than one of document's sources are missing, message in sheet (with source names)");
 
-        concatenatedSourceNames = [sourceNamesInQuotes SMM_componentsJoinedByCommaAndAnd];
-        
-        messageFormat = NSLocalizedStringFromTableInBundle(@"The sources named %@ could not be found.", @"MIDIMonitor", SMBundleForObject(self), "if more than one of document's sources are missing, message in sheet (with source names)");
+            message = [NSString stringWithFormat:messageFormat, concatenatedSourceNames];        
+        }
 
-        message = [NSString stringWithFormat:messageFormat, concatenatedSourceNames];        
+        NSBeginAlertSheet(title, nil, nil, nil, self.window, nil, NULL, NULL, NULL, @"%@", message);
     }
-
-    NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"%@", message);
 }
 
-- (void)updateSysExReadIndicatorWithBytes:(NSNumber *)bytesReadNumber;
+- (void)updateSysExReadIndicatorWithBytes:(NSNumber *)bytesReadNumber
 {
     [self showSysExProgressIndicator];
 }
 
-- (void)stopSysExReadIndicatorWithBytes:(NSNumber *)bytesReadNumber;
+- (void)stopSysExReadIndicatorWithBytes:(NSNumber *)bytesReadNumber
 {
     [self hideSysExProgressIndicator];
 }
 
-- (void)revealInputSources:(NSSet *)inputSources;
+- (void)revealInputSources:(NSSet *)inputSources
 {
     // Of all of the input sources, find the first one which is in the given set.
     // Then expand the outline view to show this source, and scroll it to be visible.
 
-    NSUInteger groupCount, groupIndex;
-
-    groupCount = [groupedInputSources count];
-    for (groupIndex = 0; groupIndex < groupCount; groupIndex++) {
-        NSDictionary *group;
-        
-        group = [groupedInputSources objectAtIndex:groupIndex];
+    for (NSDictionary *group in self.groupedInputSources) {
         if (![[group objectForKey:@"isNotExpandable"] boolValue]) {
             NSArray *groupSources;
             NSUInteger groupSourceCount, groupSourceIndex;
@@ -490,11 +450,11 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
                 source = [groupSources objectAtIndex:groupSourceIndex];
                 if ([inputSources containsObject:source]) {
                     // Found one!
-                    [sourcesOutlineView expandItem:group];
-                    [sourcesOutlineView scrollRowToVisible:[sourcesOutlineView rowForItem:source]];
+                    [self.sourcesOutlineView expandItem:group];
+                    [self.sourcesOutlineView scrollRowToVisible:[self.sourcesOutlineView rowForItem:source]];
 
                     // And now we're done
-                    return;
+                    break;
                 }
             }            
         }
@@ -503,45 +463,41 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 
 - (NSPoint)messagesScrollPoint
 {
-    NSView *clipView = [[messagesTableView enclosingScrollView] contentView];
-    NSRect clipBounds = [clipView bounds];
-    return [messagesTableView convertPoint:clipBounds.origin fromView:clipView];
+    NSView *clipView = self.messagesTableView.enclosingScrollView.contentView;
+    NSRect clipBounds = clipView.bounds;
+    return [self.messagesTableView convertPoint:clipBounds.origin fromView:clipView];
 }
 
 - (void)setWindowStateFromDocument
 {
-    NSString *frameDescription;
+    self.sendWindowFrameChangesToDocument = NO;
     
-    sendWindowFrameChangesToDocument = NO;
-    
-    frameDescription = [[self document] windowFrameDescription];
-    if (frameDescription)
-        [[self window] setFrameFromString:frameDescription];    
+    NSString *frameDescription = self.midiDocument.windowFrameDescription;
+    if (frameDescription) {
+        [self.window setFrameFromString:frameDescription];
+    }
     
     // From now on, tell the document about any window frame changes
-    sendWindowFrameChangesToDocument = YES;
+    self.sendWindowFrameChangesToDocument = YES;
     
     // Also update scroll position in the message list
     [self updateDisplayedMessages];
-    [messagesTableView reloadData];
-    [messagesTableView scrollPoint:[[self document] messagesScrollPoint]];
+    [self.messagesTableView reloadData];
+    [self.messagesTableView scrollPoint:self.midiDocument.messagesScrollPoint];
 }
 
-@end
-
-
-@implementation SMMMonitorWindowController (NotificationsDelegatesDataSources)
+#pragma mark Delegates & Data Sources
 
 //
 // NSWindow delegate
 //
 
-- (void)windowDidResize:(NSNotification *)notification;
+- (void)windowDidResize:(NSNotification *)notification
 {
     [self updateDocumentWindowFrameDescription];
 }
 
-- (void)windowDidMove:(NSNotification *)notification;
+- (void)windowDidMove:(NSNotification *)notification
 {
     [self updateDocumentWindowFrameDescription];
 }
@@ -551,46 +507,42 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 // NSOutlineView data source
 //
 
-- (id)outlineView:(NSOutlineView *)outlineView child:(int)index ofItem:(id)item;
+- (id)outlineView:(NSOutlineView *)outlineView child:(int)index ofItem:(id)item
 {
-    if (item == nil)
-        return [groupedInputSources objectAtIndex:index];
-    else
-        return [[item objectForKey:@"sources"] objectAtIndex:index];
+    if (item == nil) {
+        return self.groupedInputSources[index];
+    } else {
+        return item[@"sources"][index];
+    }
 }
 
-- (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item;
+- (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
 {
-    return ([item isKindOfClass:[NSDictionary class]] && ![[item objectForKey:@"isNotExpandable"] boolValue]);
+    return [item isKindOfClass:[NSDictionary class]] && ![item[@"isNotExpandable"] boolValue];
 }
 
-- (int)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item;
+- (int)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
 {
-    if (item == nil)
-        return [groupedInputSources count];
-    else if ([item isKindOfClass:[NSDictionary class]])
-        return [[item objectForKey:@"sources"] count];
-    else
+    if (item == nil) {
+        return self.groupedInputSources.count;
+    } else if ([item isKindOfClass:[NSDictionary class]]) {
+        return ((NSArray *)item[@"sources"]).count;
+    } else {
         return 0;
+    }
 }
 
-- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item;
+- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-    NSString *identifier;
-    BOOL isCategory;
-
-    identifier = [tableColumn identifier];
-    isCategory = [item isKindOfClass:[NSDictionary class]];
+    NSString *identifier = tableColumn.identifier;
+    BOOL isCategory = [item isKindOfClass:[NSDictionary class]];
     
     if ([identifier isEqualToString:@"name"]) {
-        if (isCategory)
-            return [item objectForKey:@"name"];
-        else {
-            NSString *name;
-            NSArray *externalDeviceNames;
-
-            name = [(id<SMInputStreamSource>)item inputStreamSourceName];
-            externalDeviceNames = [(id<SMInputStreamSource>)item inputStreamSourceExternalDeviceNames];
+        if (isCategory) {
+            return item[@"name"];
+        } else {
+            NSString *name = ((id<SMInputStreamSource>)item).inputStreamSourceName;
+            NSArray *externalDeviceNames = ((id<SMInputStreamSource>)item).inputStreamSourceExternalDeviceNames;
 
             if ([externalDeviceNames count] > 0) {
                 return [[name stringByAppendingString:[NSString SMM_emdashString]] stringByAppendingString:[externalDeviceNames componentsJoinedByString:@", "]];
@@ -598,51 +550,39 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
                 return name;
             }
         }
-        
     } else if ([identifier isEqualToString:@"enabled"]) {
-        NSArray *sources;
-        
-        if (isCategory)
-            sources = [item objectForKey:@"sources"];
-        else
-            sources = [NSArray arrayWithObject:item];
-        
-        return [NSNumber numberWithInt:[self buttonStateForInputSources:sources]];
-        
+        NSArray *sources = isCategory ? item[@"sources"] : @[item];
+        return @([self buttonStateForInputSources:sources]);
     } else {
         return nil;
     }
 }
 
-- (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item;
+- (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-    int newState;
-    NSArray *sources;
-    NSMutableSet *newSelectedSources;
-
-    newState = [object intValue];
+    int newState = [object intValue];
     // It doesn't make sense to switch from off to mixed, so go directly to on
-    if (newState == NSMixedState)
+    if (newState == NSMixedState) {
         newState = NSOnState;
+    }
 
-    if ([item isKindOfClass:[NSDictionary class]])
-        sources = [item objectForKey:@"sources"];
-    else
-        sources = [NSArray arrayWithObject:item];
+    BOOL isCategory = [item isKindOfClass:[NSDictionary class]];
+    NSArray *sources = isCategory ? item[@"sources"] : @[item];
 
-    newSelectedSources = [NSMutableSet setWithSet:[(SMMDocument *)[self document] selectedInputSources]];
-    if (newState == NSOnState)
+    NSMutableSet *newSelectedSources = [NSMutableSet setWithSet:self.midiDocument.selectedInputSources];
+    if (newState == NSOnState) {
         [newSelectedSources addObjectsFromArray:sources];
-    else
+    } else {
         [newSelectedSources minusSet:[NSSet setWithArray:sources]];
+    }
 
-    [(SMMDocument *)[self document] setSelectedInputSources:newSelectedSources];
+    self.midiDocument.selectedInputSources = newSelectedSources;
 }
 
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayOutlineCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
     // cause the button cell to always use a "dark" triangle
-    [cell setBackgroundStyle:NSBackgroundStyleLight];
+    ((NSCell *)cell).backgroundStyle = NSBackgroundStyleLight;
 }
 
 
@@ -650,73 +590,63 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 // NSTableView data source
 //
 
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView;
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
 {
-    return [displayedMessages count];
+    return self.displayedMessages.count;
 }
 
-- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row;
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
-    NSString *identifier;
-    SMMessage *message = nil;
+    SMMessage *message = self.displayedMessages[row];
 
-    message = [displayedMessages objectAtIndex:row];
-
-    identifier = [tableColumn identifier];
+    NSString *identifier = tableColumn.identifier;
     if ([identifier isEqualToString:@"timeStamp"]) {
-        return [message timeStampForDisplay];
+        return message.timeStampForDisplay;
     } else if ([identifier isEqualToString:@"source"]) {
-        return [message originatingEndpointForDisplay];
+        return message.originatingEndpointForDisplay;
     } else if ([identifier isEqualToString:@"type"]) {
-        return [message typeForDisplay];
+        return message.typeForDisplay;
     } else if ([identifier isEqualToString:@"channel"]) {
-        return [message channelForDisplay];
+        return message.channelForDisplay;
     } else if ([identifier isEqualToString:@"data"]) {
-        return [message dataForDisplay];
+        return message.dataForDisplay;
     } else {
         return nil;
     }
 }
 
-@end
+#pragma mark Private
 
-
-@implementation SMMMonitorWindowController (Private)
-
-- (void)displayPreferencesDidChange:(NSNotification *)notification;
+- (SMMDocument *)midiDocument
 {
-    [messagesTableView reloadData];
+    return (SMMDocument *)self.document;
 }
 
-- (void)setupWindowCascading;
+- (void)displayPreferencesDidChange:(NSNotification *)notification
+{
+    [self.messagesTableView reloadData];
+}
+
+- (void)setupWindowCascading
 {
     // If the document specifies a window frame, we don't want to cascade.
     // Otherwise, this is a new document, and we do.
     // This must happen before the window is loaded (before we ever call [self window])
     // or it won't take effect.
 
-    BOOL documentHasFrame;
-    
-    documentHasFrame = ([[self document] windowFrameDescription] != nil);
-    [self setShouldCascadeWindows:!documentHasFrame];
+    self.shouldCascadeWindows = self.midiDocument.windowFrameDescription == nil;
 }
 
-- (void)updateDocumentWindowFrameDescription;
+- (void)updateDocumentWindowFrameDescription
 {
-    if (sendWindowFrameChangesToDocument) {
-        NSString *frameDescription;
-        
-        frameDescription = [[self window] stringWithSavedFrame];
-        [[self document] setWindowFrameDescription:frameDescription];
+    if (self.sendWindowFrameChangesToDocument) {
+        self.midiDocument.windowFrameDescription = [self.window stringWithSavedFrame];
     }
 }
 
 - (void)updateDisplayedMessages
 {
-    NSArray *newMessages = [[self document] savedMessages];
-    
-    [displayedMessages release];
-    displayedMessages = [newMessages retain];        
+    self.displayedMessages = self.midiDocument.savedMessages;
 }
 
 - (void)refreshMessagesTableView
@@ -724,113 +654,98 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     [self updateDisplayedMessages];
 
     // Scroll to the botton, iff the table view is already scrolled to the bottom.
-    BOOL isAtBottom = (NSMaxY([messagesTableView bounds]) - NSMaxY([messagesTableView visibleRect]) < [messagesTableView rowHeight]);
+    BOOL isAtBottom = NSMaxY(self.messagesTableView.bounds) - NSMaxY(self.messagesTableView.visibleRect) < self.messagesTableView.rowHeight;
     
-    [messagesTableView reloadData];
+    [self.messagesTableView reloadData];
 
-    if (messagesNeedScrollToBottom && isAtBottom) {
-        NSUInteger messageCount = [displayedMessages count];
-        if (messageCount > 0)
-            [messagesTableView scrollRowToVisible:messageCount - 1];
+    if (self.messagesNeedScrollToBottom && isAtBottom) {
+        NSUInteger messageCount = self.displayedMessages.count;
+        if (messageCount > 0) {
+            [self.messagesTableView scrollRowToVisible:messageCount - 1];
+        }
     }
 
-    messagesNeedScrollToBottom = NO;
+    self.messagesNeedScrollToBottom = NO;
 
     // Figure out when we should next be allowed to refresh.
-    [nextMessagesRefreshDate release];
-    nextMessagesRefreshDate = [[NSDate alloc] initWithTimeIntervalSinceNow:kMinimumMessagesRefreshDelay];
+    self.nextMessagesRefreshDate = [NSDate dateWithTimeIntervalSinceNow:kMinimumMessagesRefreshDelay];
     
     // Dirty document, since the messages are saved in it
-    [[self document] updateChangeCount:NSChangeDone];
+    [self.midiDocument updateChangeCount:NSChangeDone];
 }
 
 - (void)refreshMessagesTableViewFromTimer:(NSTimer *)timer
 {
-    nextMessagesRefreshTimer = nil;
+    self.nextMessagesRefreshTimer = nil;
 
     [self refreshMessagesTableView];
 }
 
-- (void)showSysExProgressIndicator;
+- (void)showSysExProgressIndicator
 {
-    if (![sysExProgressIndicator superview]) {
-        [sysExProgressBox addSubview:sysExProgressIndicator];
-        [sysExProgressIndicator release];
-        
-        [sysExProgressBox addSubview:sysExProgressField];
-        [sysExProgressField release];
-        
-        [sysExProgressIndicator startAnimation:nil];
-    }
+    self.sysExProgressField.hidden = NO;
+    [self.sysExProgressIndicator startAnimation:nil];
 }
 
-- (void)hideSysExProgressIndicator;
+- (void)hideSysExProgressIndicator
 {
-    if ([sysExProgressIndicator superview]) {
-        [sysExProgressIndicator stopAnimation:nil];
-
-        [sysExProgressIndicator retain];
-        [sysExProgressIndicator removeFromSuperview];
-        
-        [sysExProgressField retain];
-        [sysExProgressField removeFromSuperview];
-    }
+    self.sysExProgressField.hidden = YES;
+    [self.sysExProgressIndicator stopAnimation:nil];
 }
 
-- (NSArray *)selectedMessagesWithDetails;
+- (NSArray *)selectedMessagesWithDetails
 {
-    int selectedRowCount = [messagesTableView numberOfSelectedRows];
-    if (selectedRowCount == 0)
+    int selectedRowCount = [self.messagesTableView numberOfSelectedRows];
+    if (selectedRowCount == 0) {
         return [NSArray array];
+    }
 
     NSMutableArray* messages = [NSMutableArray arrayWithCapacity:selectedRowCount];
 
-    NSIndexSet* selectedRowIndexes = [messagesTableView selectedRowIndexes];
+    NSIndexSet* selectedRowIndexes = [self.messagesTableView selectedRowIndexes];
     NSUInteger row;
-    for (row = [selectedRowIndexes firstIndex]; row != NSNotFound; row = [selectedRowIndexes indexGreaterThanIndex:row]) {
-        SMMessage *message = [displayedMessages objectAtIndex:row];
-        if ([SMMDetailsWindowController canShowDetailsForMessage:message])
+    for (row = selectedRowIndexes.firstIndex; row != NSNotFound; row = [selectedRowIndexes indexGreaterThanIndex:row]) {
+        SMMessage *message = self.displayedMessages[row];
+        if ([SMMDetailsWindowController canShowDetailsForMessage:message]) {
             [messages addObject:message];
+        }
     }
 
     return messages;
 }
 
-- (NSCellStateValue)buttonStateForInputSources:(NSArray *)sources;
+- (NSCellStateValue)buttonStateForInputSources:(NSArray *)sources
 {
-    NSSet *selectedSources;
-    NSUInteger sourceIndex;
     BOOL areAnySelected = NO, areAnyNotSelected = NO;
     
-    selectedSources = [(SMMDocument *)[self document] selectedInputSources];
-    sourceIndex = [sources count];
-    while (sourceIndex--) {
-        if ([selectedSources containsObject:[sources objectAtIndex:sourceIndex]])
+    NSSet *selectedSources = self.midiDocument.selectedInputSources;
+    for (id source in sources) {
+        if ([selectedSources containsObject:source]) {
             areAnySelected = YES;
-        else
+        } else {
             areAnyNotSelected = YES;
+        }
 
-        if (areAnySelected && areAnyNotSelected)
+        if (areAnySelected && areAnyNotSelected) {
             return NSMixedState;
+        }
     }
 
     return areAnySelected ? NSOnState : NSOffState;
 }
 
-- (void)synchronizeDisclosableView:(SNDisclosableView *)view button:(NSButton *)button withIsShown:(BOOL)isShown;
+- (void)synchronizeDisclosableView:(SNDisclosableView *)view button:(NSButton *)button withIsShown:(BOOL)isShown
 {
-    BOOL savedSendWindowFrameChangesToDocument;
-
     // Temporarily stop sending window frame changes to the document,
     // while we're doing the animated resize.
-    savedSendWindowFrameChangesToDocument = sendWindowFrameChangesToDocument;
-    sendWindowFrameChangesToDocument = NO;
+    BOOL savedSendWindowFrameChangesToDocument = self.sendWindowFrameChangesToDocument;
+    self.sendWindowFrameChangesToDocument = NO;
 
     // Important: it's less flickery if we update the button first, then animate the disclosure view
     [button setIntValue:(isShown ? 1 : 0)];
-    [view setShown:isShown];
+    view.shown = isShown;
 
-    sendWindowFrameChangesToDocument = savedSendWindowFrameChangesToDocument;
+    self.sendWindowFrameChangesToDocument = savedSendWindowFrameChangesToDocument;
     // Now we can update the document, once instead of many times.
     [self updateDocumentWindowFrameDescription];
 }

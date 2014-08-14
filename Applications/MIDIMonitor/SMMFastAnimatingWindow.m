@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2001-2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2001-2014, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -12,30 +12,20 @@
 
 #import "SMMFastAnimatingWindow.h"
 
-
 @implementation SMMFastAnimatingWindow
 
-- (void)awakeFromNib;
+- (void)awakeFromNib
 {
-    if ([[self superclass] instancesRespondToSelector:@selector(awakeFromNib)])
+    if ([[self superclass] instancesRespondToSelector:@selector(awakeFromNib)]) {
         [super awakeFromNib];
+    }
 
-    animationResizeTimeScaleFactor = 0.75;
+    self.animationResizeTimeScaleFactor = 0.75;
 }
 
-- (NSTimeInterval)animationResizeTime:(NSRect)newFrame;
+- (NSTimeInterval)animationResizeTime:(NSRect)newFrame
 {
-    return [super animationResizeTime:newFrame] * animationResizeTimeScaleFactor;
-}
-
-- (double)animationResizeTimeScaleFactor;
-{
-    return animationResizeTimeScaleFactor;
-}
-
-- (void)setAnimationResizeTimeScaleFactor:(double)value;
-{
-    animationResizeTimeScaleFactor = value;
+    return [super animationResizeTime:newFrame] * self.animationResizeTimeScaleFactor;
 }
 
 @end

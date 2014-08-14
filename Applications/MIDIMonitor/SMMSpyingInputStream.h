@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2001-2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2001-2014, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -15,18 +15,11 @@
 
 
 @interface SMMSpyingInputStream : SMInputStream
-{
-    MIDISpyClientRef spyClient;
-    MIDISpyPortRef spyPort;
-    NSMutableSet *endpoints;
-    NSMapTable *parsersForEndpoints;
-}
 
-- (id)initWithMIDISpyClient:(MIDISpyClientRef)midiSpyClient;
+- (instancetype)initWithMIDISpyClient:(MIDISpyClientRef)midiSpyClient;
 
-- (NSSet *)endpoints;
+@property (nonatomic, copy) NSSet *endpoints;
 - (void)addEndpoint:(SMDestinationEndpoint *)endpoint;
 - (void)removeEndpoint:(SMDestinationEndpoint *)endpoint;
-- (void)setEndpoints:(NSSet *)newEndpoints;
 
 @end

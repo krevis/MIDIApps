@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2001-2008, Kurt Revis.  All rights reserved.
+ Copyright (c) 2001-2014, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -12,20 +12,18 @@
 
 #import "SMMNonHighlightingCells.h"
 
-
 @implementation SMMNonHighlightingButtonCell
 
-- (NSColor *)highlightColorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView;
+- (NSColor *)highlightColorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView
 {
     return [(NSTableView *)controlView backgroundColor];
 }
 
 @end
 
-
 @implementation SMMNonHighlightingTextFieldCell
 
-- (NSColor *)highlightColorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView;
+- (NSColor *)highlightColorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView
 {
     return [(NSTableView *)controlView backgroundColor];
 }

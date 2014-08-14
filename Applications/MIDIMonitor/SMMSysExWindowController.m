@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2001-2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2001-2014, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -14,18 +14,15 @@
 
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
+NSString* const SMMSaveSysExWithEOXAlwaysPreferenceKey = @"SMMSaveSysExWithEOXAlways";
 
-@interface SMMSysExWindowController (Private)
+@interface SMMSysExWindowController ()
 
-- (void)savePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+@property (nonatomic, assign) IBOutlet NSTextField *manufacturerNameField;
 
 @end
 
-
 @implementation SMMSysExWindowController
-
-NSString *SMMSaveSysExWithEOXAlwaysPreferenceKey = @"SMMSaveSysExWithEOXAlways";
-
 
 + (NSString*)windowNibName
 {
@@ -36,19 +33,19 @@ NSString *SMMSaveSysExWithEOXAlwaysPreferenceKey = @"SMMSaveSysExWithEOXAlways";
 {
     [super windowDidLoad];
 
-    [manufacturerNameField setStringValue:[(SMSystemExclusiveMessage *)message manufacturerName]];
+    self.manufacturerNameField.stringValue = ((SMSystemExclusiveMessage *)self.message).manufacturerName;
 }
 
 - (NSData *)dataForDisplay
 {
-    return [(SMSystemExclusiveMessage *)message receivedDataWithStartByte];
+    return ((SMSystemExclusiveMessage *)self.message).receivedDataWithStartByte;
 }
 
 //
 // Actions
 //
 
-- (IBAction)save:(id)sender;
+- (IBAction)save:(id)sender
 {
     NSSavePanel* savePanel = [NSSavePanel savePanel];
 
@@ -66,29 +63,19 @@ NSString *SMMSaveSysExWithEOXAlwaysPreferenceKey = @"SMMSaveSysExWithEOXAlways";
     }
 }
 
-@end
-
-
-@implementation SMMSysExWindowController (Private)
+#pragma mark Private
 
 - (void)savePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 {
     [sheet orderOut:nil];
 
     if (returnCode == NSOKButton) {
-        SMSystemExclusiveMessage *sysExMessage = (SMSystemExclusiveMessage *)message;
-        NSData *dataToWrite;
-        
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SMMSaveSysExWithEOXAlwaysPreferenceKey])
-            dataToWrite = [sysExMessage fullMessageData];
-        else
-            dataToWrite = [sysExMessage receivedDataWithStartByte];
+        SMSystemExclusiveMessage *sysExMessage = (SMSystemExclusiveMessage *)self.message;
+        NSData *dataToWrite = [[NSUserDefaults standardUserDefaults] boolForKey:SMMSaveSysExWithEOXAlwaysPreferenceKey] ? sysExMessage.fullMessageData : sysExMessage.receivedDataWithStartByte;
 
-        if (![dataToWrite writeToFile:[[sheet URL] path] atomically:YES]) {
-            NSString *title, *text;
-
-            title = NSLocalizedStringFromTableInBundle(@"Error", @"MIDIMonitor", SMBundleForObject(self), "title of error alert sheet");
-            text = NSLocalizedStringFromTableInBundle(@"The file could not be saved.", @"MIDIMonitor", SMBundleForObject(self), "message when writing sysex data to a file fails");
+        if (![dataToWrite writeToFile:sheet.URL.path atomically:YES]) {
+            NSString *title = NSLocalizedStringFromTableInBundle(@"Error", @"MIDIMonitor", SMBundleForObject(self), "title of error alert sheet");
+            NSString *text = NSLocalizedStringFromTableInBundle(@"The file could not be saved.", @"MIDIMonitor", SMBundleForObject(self), "message when writing sysex data to a file fails");
 
             NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"%@", text);
         }

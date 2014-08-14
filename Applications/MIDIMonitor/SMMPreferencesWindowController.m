@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2001-2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2001-2014, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -12,7 +12,6 @@
 
 #import "SMMPreferencesWindowController.h"
 
-#import <Cocoa/Cocoa.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 #import "SMMAppController.h"
@@ -21,47 +20,48 @@
 #import "SMMSysExWindowController.h"
 
 
-@interface  SMMPreferencesWindowController (Private)
+NSString* const SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreferenceChangedNotification";
 
-- (void)synchronizeDefaults;
-- (void)sendDisplayPreferenceChangedNotification;
-- (void)updateExpertModeTextField;
+@interface SMMPreferencesWindowController ()
+
+@property (nonatomic, assign) IBOutlet NSTabView *tabView;
+@property (nonatomic, assign) IBOutlet NSMatrix *timeFormatMatrix;
+@property (nonatomic, assign) IBOutlet NSMatrix *noteFormatMatrix;
+@property (nonatomic, assign) IBOutlet NSMatrix *controllerFormatMatrix;
+@property (nonatomic, assign) IBOutlet NSMatrix *dataFormatMatrix;
+@property (nonatomic, assign) IBOutlet NSButton *autoSelectOrdinarySourcesCheckbox;
+@property (nonatomic, assign) IBOutlet NSButton *autoSelectVirtualDestinationCheckbox;
+@property (nonatomic, assign) IBOutlet NSButton *autoSelectSpyingDestinationsCheckbox;
+@property (nonatomic, assign) IBOutlet NSButton *openWindowsForNewSourcesCheckbox;
+@property (nonatomic, assign) IBOutlet NSButton *askBeforeClosingModifiedWindowCheckbox;
+@property (nonatomic, assign) IBOutlet NSMatrix *alwaysSaveSysExWithEOXMatrix;
+@property (nonatomic, assign) IBOutlet NSButton *expertModeCheckbox;
+@property (nonatomic, assign) IBOutlet NSTextField *expertModeTextField;
 
 @end
 
-
 @implementation SMMPreferencesWindowController
 
-NSString *SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreferenceChangedNotification";
-
-
-static SMMPreferencesWindowController *controller;
-
-+ (SMMPreferencesWindowController *)preferencesWindowController;
++ (SMMPreferencesWindowController *)preferencesWindowController
 {
-    if (!controller)
+    static SMMPreferencesWindowController *controller;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         controller = [[SMMPreferencesWindowController alloc] init];
-    
+    });
+
     return controller;
 }
 
-- (id)init;
+- (id)init
 {
-    if (!(self = [super initWithWindowNibName:@"Preferences"]))
-        return nil;
-
-    return self;
+    return [super initWithWindowNibName:@"Preferences"];
 }
 
-- (id)initWithWindowNibName:(NSString *)windowNibName;
+- (id)initWithWindowNibName:(NSString *)windowNibName
 {
     SMRejectUnusedImplementation(self, _cmd);
     return nil;
-}
-
-- (void)dealloc
-{
-    [super dealloc];
 }
 
 - (void)windowDidLoad
@@ -71,23 +71,23 @@ static SMMPreferencesWindowController *controller;
     [super windowDidLoad];
 
     // Make sure the first tab is selected (just in case someone changed it while editing the nib)
-    [tabView selectFirstTabViewItem:nil];
+    [self.tabView selectFirstTabViewItem:nil];
     
-    [timeFormatMatrix selectCellWithTag:[defaults integerForKey: SMTimeFormatPreferenceKey]];
-    [noteFormatMatrix selectCellWithTag:[defaults integerForKey: SMNoteFormatPreferenceKey]];
-    [controllerFormatMatrix selectCellWithTag:[defaults integerForKey: SMControllerFormatPreferenceKey]];
-	[dataFormatMatrix selectCellWithTag:[defaults integerForKey: SMDataFormatPreferenceKey]];
+    [self.timeFormatMatrix selectCellWithTag:[defaults integerForKey: SMTimeFormatPreferenceKey]];
+    [self.noteFormatMatrix selectCellWithTag:[defaults integerForKey: SMNoteFormatPreferenceKey]];
+    [self.controllerFormatMatrix selectCellWithTag:[defaults integerForKey: SMControllerFormatPreferenceKey]];
+	[self.dataFormatMatrix selectCellWithTag:[defaults integerForKey: SMDataFormatPreferenceKey]];
 
-    [expertModeCheckbox setIntValue:[defaults boolForKey:SMExpertModePreferenceKey]];
+    [self.expertModeCheckbox setIntValue:[defaults boolForKey:SMExpertModePreferenceKey]];
     [self updateExpertModeTextField];
     
-    [autoSelectOrdinarySourcesCheckbox setIntValue:[defaults boolForKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey]];
-    [autoSelectVirtualDestinationCheckbox setIntValue:[defaults boolForKey:SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey]];
-    [autoSelectSpyingDestinationsCheckbox setIntValue:[defaults boolForKey:SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey]];
-    [openWindowsForNewSourcesCheckbox setIntValue:[defaults boolForKey:SMMOpenWindowsForNewSourcesPreferenceKey]];
+    [self.autoSelectOrdinarySourcesCheckbox setIntValue:[defaults boolForKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey]];
+    [self.autoSelectVirtualDestinationCheckbox setIntValue:[defaults boolForKey:SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey]];
+    [self.autoSelectSpyingDestinationsCheckbox setIntValue:[defaults boolForKey:SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey]];
+    [self.openWindowsForNewSourcesCheckbox setIntValue:[defaults boolForKey:SMMOpenWindowsForNewSourcesPreferenceKey]];
 
-    [askBeforeClosingModifiedWindowCheckbox setIntValue:[defaults boolForKey:SMMAskBeforeClosingModifiedWindowPreferenceKey]];
-    [alwaysSaveSysExWithEOXMatrix selectCellWithTag:[defaults boolForKey:SMMSaveSysExWithEOXAlwaysPreferenceKey]];
+    [self.askBeforeClosingModifiedWindowCheckbox setIntValue:[defaults boolForKey:SMMAskBeforeClosingModifiedWindowPreferenceKey]];
+    [self.alwaysSaveSysExWithEOXMatrix selectCellWithTag:[defaults boolForKey:SMMSaveSysExWithEOXAlwaysPreferenceKey]];
 }
 
 
@@ -95,65 +95,65 @@ static SMMPreferencesWindowController *controller;
 // Actions
 //
 
-- (IBAction)changeTimeFormat:(id)sender;
+- (IBAction)changeTimeFormat:(id)sender
 {
-	[[NSUserDefaults standardUserDefaults] setInteger: [[sender selectedCell] tag] forKey: SMTimeFormatPreferenceKey];
+	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey:SMTimeFormatPreferenceKey];
     [self synchronizeDefaults];
     [self sendDisplayPreferenceChangedNotification];
 }
 
-- (IBAction)changeNoteFormat:(id)sender;
+- (IBAction)changeNoteFormat:(id)sender
 {
-	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey: SMNoteFormatPreferenceKey];
+	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey:SMNoteFormatPreferenceKey];
     [self synchronizeDefaults];
     [self sendDisplayPreferenceChangedNotification];
 }
  
-- (IBAction)changeControllerFormat:(id)sender;
+- (IBAction)changeControllerFormat:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey: SMControllerFormatPreferenceKey];
     [self synchronizeDefaults];
     [self sendDisplayPreferenceChangedNotification];
 }
 
-- (IBAction)changeDataFormat:(id)sender;
+- (IBAction)changeDataFormat:(id)sender
 {
-	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey: SMDataFormatPreferenceKey];
+	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey:SMDataFormatPreferenceKey];
     [self synchronizeDefaults];
     [self sendDisplayPreferenceChangedNotification];
 }
 
-- (IBAction)changeAutoSelectOrdinarySources:(id)sender;
+- (IBAction)changeAutoSelectOrdinarySources:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey];
     [self synchronizeDefaults];
 }
 
-- (IBAction)changeAutoSelectVirtualDestination:(id)sender;
+- (IBAction)changeAutoSelectVirtualDestination:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey];
     [self synchronizeDefaults];
 }
 
-- (IBAction)changeAutoSelectSpyingDestinations:(id)sender;
+- (IBAction)changeAutoSelectSpyingDestinations:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey];
     [self synchronizeDefaults];
 }
 
-- (IBAction)changeOpenWindowsForNewSources:(id)sender;
+- (IBAction)changeOpenWindowsForNewSources:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMMOpenWindowsForNewSourcesPreferenceKey];
     [self synchronizeDefaults];
 }
 
-- (IBAction)changeAskBeforeClosingModifiedWindow:(id)sender;
+- (IBAction)changeAskBeforeClosingModifiedWindow:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMMAskBeforeClosingModifiedWindowPreferenceKey];
     [self synchronizeDefaults];
 }
 
-- (IBAction)changeAlwaysSaveSysExWithEOX:(id)sender;
+- (IBAction)changeAlwaysSaveSysExWithEOX:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey: SMMSaveSysExWithEOXAlwaysPreferenceKey];
     [self synchronizeDefaults];
@@ -161,23 +161,20 @@ static SMMPreferencesWindowController *controller;
 
 - (IBAction)changeExpertMode:(id)sender
 {
-	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMExpertModePreferenceKey];
+	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey:SMExpertModePreferenceKey];
     [self synchronizeDefaults];
     [self updateExpertModeTextField];
     [self sendDisplayPreferenceChangedNotification];
 }
 
-@end
+#pragma mark Private
 
-
-@implementation SMMPreferencesWindowController (Private)
-
-- (void)synchronizeDefaults;
+- (void)synchronizeDefaults
 {
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (void)sendDisplayPreferenceChangedNotification;
+- (void)sendDisplayPreferenceChangedNotification
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:SMMDisplayPreferenceChangedNotification object:nil];
 }
@@ -192,7 +189,7 @@ static SMMPreferencesWindowController *controller;
     else
         text = NSLocalizedStringWithDefaultValue(@"EXPERT_OFF", @"MIDIMonitor", SMBundleForObject(self), @"• Note On with velocity 0 shows as Note Off\n• Zero timestamp shows time received", "Explanation when expert mode is off");
     
-    [expertModeTextField setStringValue:text];
+    self.expertModeTextField.stringValue = text;
 }
 
 @end

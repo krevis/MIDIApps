@@ -22,7 +22,7 @@
                 <outlet property="sourcesOutlineView" destination="375" id="380"/>
                 <outlet property="sysExProgressBox" destination="232" id="234"/>
                 <outlet property="sysExProgressField" destination="229" id="231"/>
-                <outlet property="sysExProgressIndicator" destination="227" id="230"/>
+                <outlet property="sysExProgressIndicator" destination="227" id="O8H-Rh-23b"/>
                 <outlet property="systemCommonCheckBox" destination="396" id="437"/>
                 <outlet property="systemCommonMatrix" destination="398" id="435"/>
                 <outlet property="systemExclusiveCheckBox" destination="443" id="445"/>
@@ -504,7 +504,7 @@
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" id="227">
-                                                <rect key="frame" x="0.0" y="2" width="16" height="16"/>
+                                                <rect key="frame" x="0.0" y="1" width="16" height="16"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </progressIndicator>
                                             <textField verticalHuggingPriority="750" id="229">
@@ -531,7 +531,7 @@
                     <button id="384" customClass="SNDisclosureButton">
                         <rect key="frame" x="20" y="407" width="80" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="square" title="Filter" bezelStyle="shadowlessSquare" image="11364C80-64CB-47B0-BDE7-2DB0E0E5F9BB" imagePosition="left" alignment="left" alternateImage="32E170F8-BDF0-4554-83AF-ACAF3A67AECA" state="on" inset="2" id="504">
+                        <buttonCell key="cell" type="square" title="Filter" bezelStyle="shadowlessSquare" image="5E6BA6E0-E762-4D45-A9E0-11316578E5EB" imagePosition="left" alignment="left" alternateImage="4B97F26C-40E6-4ABF-9D58-6061EBDF9A4B" state="on" inset="2" id="504">
                             <behavior key="behavior" pushIn="YES" changeContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -543,7 +543,7 @@
                     <button id="447" customClass="SNDisclosureButton">
                         <rect key="frame" x="20" y="537" width="80" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="square" title="Sources" bezelStyle="shadowlessSquare" image="E8AFA46D-53DF-4CD6-8656-7DFEFC67209E" imagePosition="left" alignment="left" alternateImage="B890DDC6-2702-4CE6-ACFF-FA0FBEFD2847" state="on" inset="2" id="505">
+                        <buttonCell key="cell" type="square" title="Sources" bezelStyle="shadowlessSquare" image="20FD5EDC-37CE-4C8A-B25C-E6286CEF7BEB" imagePosition="left" alignment="left" alternateImage="8C09EE6D-1890-44F0-9E8F-C7B3E1922422" state="on" inset="2" id="505">
                             <behavior key="behavior" pushIn="YES" changeContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -561,7 +561,7 @@
         </window>
     </objects>
     <resources>
-        <image name="11364C80-64CB-47B0-BDE7-2DB0E0E5F9BB" width="0.0" height="0.0">
+        <image name="20FD5EDC-37CE-4C8A-B25C-E6286CEF7BEB" width="0.0" height="0.0">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGOTpYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoKwHCBEW
 GxwiIyotMzZVJG51bGzUCQoLDA0ODxBWJGNsYXNzXE5TSW1hZ2VGbGFnc1ZOU1JlcHNXTlNDb2xvcoAL
@@ -576,7 +576,7 @@ AMYAyAE4AT0BSAFRAVcBWgFgAWkBbgF2AXkBgAGIAZUBmgGcAZ4BowGrAa4BswG7Ab4B0AHTAdgAAAAA
 AAACAQAAAAAAAAA9AAAAAAAAAAAAAAAAAAAB2g
 </mutableData>
         </image>
-        <image name="32E170F8-BDF0-4554-83AF-ACAF3A67AECA" width="0.0" height="0.0">
+        <image name="4B97F26C-40E6-4ABF-9D58-6061EBDF9A4B" width="0.0" height="0.0">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGOTpYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoKwHCBEW
 GxwiIyotMzZVJG51bGzUCQoLDA0ODxBWJGNsYXNzXE5TSW1hZ2VGbGFnc1ZOU1JlcHNXTlNDb2xvcoAL
@@ -591,22 +591,7 @@ xgDIATcBPAFHAVABVgFZAV8BaAFtAXUBeAF/AYcBlAGZAZsBnQGiAaoBrQGyAboBvQHPAdIB1wAAAAAA
 AAIBAAAAAAAAAD0AAAAAAAAAAAAAAAAAAAHZA
 </mutableData>
         </image>
-        <image name="B890DDC6-2702-4CE6-ACFF-FA0FBEFD2847" width="0.0" height="0.0">
-            <mutableData key="keyedArchiveRepresentation">
-YnBsaXN0MDDUAQIDBAUGOTpYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoKwHCBEW
-GxwiIyotMzZVJG51bGzUCQoLDA0ODxBWJGNsYXNzXE5TSW1hZ2VGbGFnc1ZOU1JlcHNXTlNDb2xvcoAL
-EgTQAACAAoAJ0hIJExVaTlMub2JqZWN0c6EUgAOACNISCRcVohgZgASABYAIEAXTHQkeHyAhV05TLmJh
-c2VbTlMucmVsYXRpdmWAAIAHgAZfEGxmaWxlOi8vbG9jYWxob3N0L1VzZXJzL1NoYXJlZC9rcmV2aXMv
-UHJvZHVjdHMvRGlzY2xvc2FibGVWaWV3LmZyYW1ld29yay9SZXNvdXJjZXMvU05EaXNjbG9zdXJlQXJy
-b3dEb3duLnRpZmbSJCUmJ1okY2xhc3NuYW1lWCRjbGFzc2VzVU5TVVJMoigpVU5TVVJMWE5TT2JqZWN0
-0iQlKyxXTlNBcnJheaIrKdMuLwkwMTJXTlNXaGl0ZVxOU0NvbG9yU3BhY2VEMCAwABADgArSJCU0NVdO
-U0NvbG9yojQp0iQlNzhXTlNJbWFnZaI3KV8QD05TS2V5ZWRBcmNoaXZlctE7PFRyb290gAEACAARABoA
-IwAtADIANwBEAEoAUwBaAGcAbgB2AHgAfQB/AIEAhgCRAJMAlQCXAJwAnwChAKMApQCnAK4AtgDCAMQA
-xgDIATcBPAFHAVABVgFZAV8BaAFtAXUBeAF/AYcBlAGZAZsBnQGiAaoBrQGyAboBvQHPAdIB1wAAAAAA
-AAIBAAAAAAAAAD0AAAAAAAAAAAAAAAAAAAHZA
-</mutableData>
-        </image>
-        <image name="E8AFA46D-53DF-4CD6-8656-7DFEFC67209E" width="0.0" height="0.0">
+        <image name="5E6BA6E0-E762-4D45-A9E0-11316578E5EB" width="0.0" height="0.0">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGOTpYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoKwHCBEW
 GxwiIyotMzZVJG51bGzUCQoLDA0ODxBWJGNsYXNzXE5TSW1hZ2VGbGFnc1ZOU1JlcHNXTlNDb2xvcoAL
@@ -619,6 +604,21 @@ TlNDb2xvcqI0KdIkJTc4V05TSW1hZ2WiNylfEA9OU0tleWVkQXJjaGl2ZXLROzxUcm9vdIABAAgAEQAa
 ACMALQAyADcARABKAFMAWgBnAG4AdgB4AH0AfwCBAIYAkQCTAJUAlwCcAJ8AoQCjAKUApwCuALYAwgDE
 AMYAyAE4AT0BSAFRAVcBWgFgAWkBbgF2AXkBgAGIAZUBmgGcAZ4BowGrAa4BswG7Ab4B0AHTAdgAAAAA
 AAACAQAAAAAAAAA9AAAAAAAAAAAAAAAAAAAB2g
+</mutableData>
+        </image>
+        <image name="8C09EE6D-1890-44F0-9E8F-C7B3E1922422" width="0.0" height="0.0">
+            <mutableData key="keyedArchiveRepresentation">
+YnBsaXN0MDDUAQIDBAUGOTpYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoKwHCBEW
+GxwiIyotMzZVJG51bGzUCQoLDA0ODxBWJGNsYXNzXE5TSW1hZ2VGbGFnc1ZOU1JlcHNXTlNDb2xvcoAL
+EgTQAACAAoAJ0hIJExVaTlMub2JqZWN0c6EUgAOACNISCRcVohgZgASABYAIEAXTHQkeHyAhV05TLmJh
+c2VbTlMucmVsYXRpdmWAAIAHgAZfEGxmaWxlOi8vbG9jYWxob3N0L1VzZXJzL1NoYXJlZC9rcmV2aXMv
+UHJvZHVjdHMvRGlzY2xvc2FibGVWaWV3LmZyYW1ld29yay9SZXNvdXJjZXMvU05EaXNjbG9zdXJlQXJy
+b3dEb3duLnRpZmbSJCUmJ1okY2xhc3NuYW1lWCRjbGFzc2VzVU5TVVJMoigpVU5TVVJMWE5TT2JqZWN0
+0iQlKyxXTlNBcnJheaIrKdMuLwkwMTJXTlNXaGl0ZVxOU0NvbG9yU3BhY2VEMCAwABADgArSJCU0NVdO
+U0NvbG9yojQp0iQlNzhXTlNJbWFnZaI3KV8QD05TS2V5ZWRBcmNoaXZlctE7PFRyb290gAEACAARABoA
+IwAtADIANwBEAEoAUwBaAGcAbgB2AHgAfQB/AIEAhgCRAJMAlQCXAJwAnwChAKMApQCnAK4AtgDCAMQA
+xgDIATcBPAFHAVABVgFZAV8BaAFtAXUBeAF/AYcBlAGZAZsBnQGiAaoBrQGyAboBvQHPAdIB1wAAAAAA
+AAIBAAAAAAAAAD0AAAAAAAAAAAAAAAAAAAHZA
 </mutableData>
         </image>
     </resources>

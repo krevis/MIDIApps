@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2001-2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2001-2014, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -11,5 +11,3 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <Carbon/Carbon.h>
-#import <CoreMIDI/CoreMIDI.h>

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2001-2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2001-2014, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -12,64 +12,45 @@
 
 #import "SMMWindowController.h"
 
-
-
-@interface SMMWindowController (Private)
-
-- (void)autosaveWindowFrame;
-
-@end
-
-
 @implementation SMMWindowController
 
-- (id)initWithWindowNibName:(NSString *)windowNibName;
+- (instancetype)initWithWindowNibName:(NSString *)windowNibName
 {
-    if (!(self = [super initWithWindowNibName:windowNibName]))
-        return nil;
+    if ((self = [super initWithWindowNibName:windowNibName])) {
+        self.shouldCascadeWindows = NO;
+    }
 
-    [self setShouldCascadeWindows:NO];
-    
     return self;
 }
 
 - (void)awakeFromNib
 {
-    [[self window] setFrameAutosaveName:[self windowNibName]];
+    self.window.frameAutosaveName = self.windowNibName;
 }
 
-@end
+#pragma mark Notifications, delegates, data sources
 
-
-@implementation SMMWindowController (NotificationsDelegatesDataSources)
-
-- (void)windowDidResize:(NSNotification *)notification;
+- (void)windowDidResize:(NSNotification *)notification
 {
     [self autosaveWindowFrame];
 }
 
-- (void)windowDidMove:(NSNotification *)notification;
+- (void)windowDidMove:(NSNotification *)notification
 {
     [self autosaveWindowFrame];
 }
 
-@end
+#pragma mark Private
 
-
-@implementation SMMWindowController (Private)
-
-- (void)autosaveWindowFrame;
+- (void)autosaveWindowFrame
 {
     // Work around an AppKit bug: the frame that gets saved in NSUserDefaults is the window's old position, not the new one.
     // We get notified after the window has been moved/resized and the defaults changed.
 
-    NSWindow *window;
-    NSString *autosaveName;
-    
-    window = [self window];
+    NSWindow *window = self.window;
     // Sometimes we get called before the window's autosave name is set (when the nib is loading), so check that.
-    if ((autosaveName = [window frameAutosaveName])) {
-        [window saveFrameUsingName:autosaveName];
+    if (window.frameAutosaveName) {
+        [window saveFrameUsingName:window.frameAutosaveName];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
 }

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2001-2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2001-2014, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -12,21 +12,18 @@
 
 #import "SMMSourcesOutlineView.h"
 
-
 @implementation SMMSourcesOutlineView
 
-// NSOutlineView overrides
-
-- (void)highlightSelectionInClipRect:(NSRect)rect;
+- (void)highlightSelectionInClipRect:(NSRect)rect
 {
     // Do nothing
 }
 
-- (void)mouseDown:(NSEvent *)event;
+- (void)mouseDown:(NSEvent *)event
 {
     // Ignore all double-clicks (and triple-clicks and so on) by pretending they are single-clicks.
     if ([event clickCount] > 1) {
-        event = [NSEvent mouseEventWithType:[event type] location:[event locationInWindow] modifierFlags:[event modifierFlags] timestamp:[event timestamp] windowNumber:[event windowNumber] context:[event context] eventNumber:[event eventNumber] clickCount:1 pressure:[event pressure]];
+        event = [NSEvent mouseEventWithType:event.type location:event.locationInWindow modifierFlags:event.modifierFlags timestamp:event.timestamp windowNumber:event.windowNumber context:event.context eventNumber:event.eventNumber clickCount:1 pressure:event.pressure];
     }
 
     [super mouseDown:event];

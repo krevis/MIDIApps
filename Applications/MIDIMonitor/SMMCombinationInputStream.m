@@ -16,290 +16,265 @@
 #import "SMMAppController.h"
 #import "SMMSpyingInputStream.h"
 
-
 @interface SMMCombinationInputStream ()
 {
-    id<SMMessageDestination> nonretainedMessageDestination;
-
-    SMPortInputStream *portInputStream;
-    SMVirtualInputStream *virtualInputStream;
-    SMMSpyingInputStream *spyingInputStream;
-
-    NSArray *groupedInputSources;
-
-    BOOL willPostSourceListChangedNotification;
+    NSArray *_groupedInputSources;
 }
+
+@property (nonatomic, retain) SMPortInputStream *portInputStream;
+@property (nonatomic, retain) SMVirtualInputStream *virtualInputStream;
+@property (nonatomic, retain) SMMSpyingInputStream *spyingInputStream;
+
+@property (nonatomic, assign) BOOL willPostSourceListChangedNotification;
 
 @end
 
-
 @implementation SMMCombinationInputStream
 
-- (id)init;
+- (instancetype)init
 {
-    NSNotificationCenter *center;
-    MIDISpyClientRef spyClient; 
-    
     if (!(self = [super init]))
         return nil;
 
-    center = [NSNotificationCenter defaultCenter];
-
     NS_DURING {
-        portInputStream = [[SMPortInputStream alloc] init];
+        _portInputStream = [[SMPortInputStream alloc] init];
     } NS_HANDLER {
-        portInputStream = nil;
+        _portInputStream = nil;
     } NS_ENDHANDLER;
-    if (portInputStream) {
-        [portInputStream setMessageDestination:self];
-        [self observeNotificationsWithCenter:center object:portInputStream];
+    if (_portInputStream) {
+        _portInputStream.messageDestination = self;
+        [self observeNotificationsFromObject:_portInputStream];
     }
 
-    virtualInputStream = [[SMVirtualInputStream alloc] init];
-    [virtualInputStream setMessageDestination:self];
-    [self observeNotificationsWithCenter:center object:virtualInputStream];
+    _virtualInputStream = [[SMVirtualInputStream alloc] init];
+    if (_virtualInputStream) {
+        _virtualInputStream.messageDestination = self;
+        [self observeNotificationsFromObject:_virtualInputStream];
+    }
 
-    if ((spyClient = [[NSApp delegate] midiSpyClient])) {
-        spyingInputStream = [[SMMSpyingInputStream alloc] initWithMIDISpyClient:spyClient];
-        if (spyingInputStream) {
-            [spyingInputStream setMessageDestination:self];
-            [self observeNotificationsWithCenter:center object:spyingInputStream];        
+    MIDISpyClientRef spyClient = [[NSApp delegate] midiSpyClient];
+    if (spyClient) {
+        _spyingInputStream = [[SMMSpyingInputStream alloc] initWithMIDISpyClient:spyClient];
+        if (_spyingInputStream) {
+            _spyingInputStream.messageDestination = self;
+            [self observeNotificationsFromObject:_spyingInputStream];
         }
     }
 
     return self;
 }
 
-- (void)dealloc;
+- (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
-    [groupedInputSources release];
-    groupedInputSources = nil;
+    [_groupedInputSources release];
+    _groupedInputSources = nil;
     
-    [portInputStream setMessageDestination:nil];
-    [portInputStream release];
-    portInputStream = nil;
+    _portInputStream.messageDestination = nil;
+    [_portInputStream release];
+    _portInputStream = nil;
 
-    [virtualInputStream setMessageDestination:nil];
-    [virtualInputStream release];
-    virtualInputStream = nil;
+    _virtualInputStream.messageDestination = nil;
+    [_virtualInputStream release];
+    _virtualInputStream = nil;
 
-    [spyingInputStream setMessageDestination:nil];
-    [spyingInputStream release];
-    spyingInputStream = nil;
+    _spyingInputStream.messageDestination = nil;
+    [_spyingInputStream release];
+    _spyingInputStream = nil;
     
     [super dealloc];
 }
 
 // SMMessageDestination protocol implementation
 
-- (void)takeMIDIMessages:(NSArray *)messages;
+- (void)takeMIDIMessages:(NSArray *)messages
 {
-    [nonretainedMessageDestination takeMIDIMessages:messages];
+    [self.messageDestination takeMIDIMessages:messages];
 }
 
 // Other methods
 
-- (id<SMMessageDestination>)messageDestination;
+- (NSArray *)groupedInputSources
 {
-    return nonretainedMessageDestination;
-}
-
-- (void)setMessageDestination:(id<SMMessageDestination>)messageDestination;
-{
-    nonretainedMessageDestination = messageDestination;
-}
-
-- (NSArray *)groupedInputSources;
-{
-    if (!groupedInputSources) {
-        NSDictionary *portGroup, *virtualGroup, *spyingGroup;
-        NSString *groupName;
-
-        groupName = NSLocalizedStringFromTableInBundle(@"MIDI sources", @"MIDIMonitor", SMBundleForObject(self), "name of group for ordinary sources");
-        portGroup = [NSMutableDictionary dictionaryWithObjectsAndKeys:groupName, @"name", nil];
+    if (!_groupedInputSources) {
+        NSString *groupName = NSLocalizedStringFromTableInBundle(@"MIDI sources", @"MIDIMonitor", SMBundleForObject(self), "name of group for ordinary sources");
+        NSDictionary *portGroup = [NSMutableDictionary dictionaryWithObjectsAndKeys:groupName, @"name", nil];
 
         groupName = NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"MIDIMonitor", SMBundleForObject(self), "name of source item for virtual destination");
-        virtualGroup = [NSMutableDictionary dictionaryWithObjectsAndKeys:groupName, @"name", [NSNumber numberWithBool:YES], @"isNotExpandable", nil];
+        NSDictionary *virtualGroup = [NSMutableDictionary dictionaryWithObjectsAndKeys:groupName, @"name", @(YES), @"isNotExpandable", nil];
 
-        if (spyingInputStream) {
+        NSDictionary *spyingGroup = nil;
+        if (self.spyingInputStream) {
             groupName = NSLocalizedStringFromTableInBundle(@"Spy on output to destinations", @"MIDIMonitor", SMBundleForObject(self), "name of group for spying on destinations");
             spyingGroup = [NSMutableDictionary dictionaryWithObjectsAndKeys:groupName, @"name", nil];
-        } else {
-            spyingGroup = nil;
         }
 
-        groupedInputSources = [[NSArray alloc] initWithObjects:portGroup, virtualGroup, spyingGroup, nil];
+        _groupedInputSources = [[NSArray alloc] initWithObjects:portGroup, virtualGroup, spyingGroup, nil];
     }
 
-    if (portInputStream)
-        [[groupedInputSources objectAtIndex:0] setObject:[portInputStream inputSources] forKey:@"sources"];
-    [[groupedInputSources objectAtIndex:1] setObject:[virtualInputStream inputSources] forKey:@"sources"];
-    if (spyingInputStream)
-        [[groupedInputSources objectAtIndex:2] setObject:[spyingInputStream inputSources] forKey:@"sources"];
+    if (self.portInputStream) {
+        _groupedInputSources[0][@"sources"] = self.portInputStream.inputSources;
+    }
+    _groupedInputSources[1][@"sources"] = self.virtualInputStream.inputSources;
+    if (self.spyingInputStream) {
+        _groupedInputSources[2][@"sources"] = self.spyingInputStream.inputSources;
+    }
 
-    return groupedInputSources;
+    return _groupedInputSources;
 }
 
-- (NSSet *)selectedInputSources;
+- (NSSet *)selectedInputSources
 {
-    NSMutableSet *inputSources;
+    NSMutableSet *inputSources = [NSMutableSet set];
 
-    inputSources = [NSMutableSet set];
-
-    if (portInputStream)
-        [inputSources unionSet:[portInputStream selectedInputSources]];
-    [inputSources unionSet:[virtualInputStream selectedInputSources]];
-    if (spyingInputStream)
-        [inputSources unionSet:[spyingInputStream selectedInputSources]];
+    if (self.portInputStream) {
+        [inputSources unionSet:self.portInputStream.selectedInputSources];
+    }
+    [inputSources unionSet:self.virtualInputStream.selectedInputSources];
+    if (self.spyingInputStream) {
+        [inputSources unionSet:self.spyingInputStream.selectedInputSources];
+    }
 
     return inputSources;
 }
 
-- (void)setSelectedInputSources:(NSSet *)inputSources;
+- (void)setSelectedInputSources:(NSSet *)inputSources
 {
-    if (!inputSources)
+    if (!inputSources) {
         inputSources = [NSSet set];
+    }
 
-    if (portInputStream)
-        [portInputStream setSelectedInputSources:[self intersectionOfSet:inputSources andArray:[portInputStream inputSources]]];
-    [virtualInputStream setSelectedInputSources:[self intersectionOfSet:inputSources andArray:[virtualInputStream inputSources]]];
-    if (spyingInputStream)
-        [spyingInputStream setSelectedInputSources:[self intersectionOfSet:inputSources andArray:[spyingInputStream inputSources]]];
+    if (self.portInputStream) {
+        self.portInputStream.selectedInputSources = [self intersectionOfSet:inputSources andArray:self.portInputStream.inputSources];
+    }
+    self.virtualInputStream.selectedInputSources = [self intersectionOfSet:inputSources andArray:self.virtualInputStream.inputSources];
+    if (self.spyingInputStream) {
+        self.spyingInputStream.selectedInputSources = [self intersectionOfSet:inputSources andArray:self.spyingInputStream.inputSources];
+    }
 }
 
-- (NSDictionary *)persistentSettings;
+- (NSDictionary *)persistentSettings
 {
-    NSMutableDictionary *persistentSettings;
+    NSMutableDictionary* persistentSettings = [NSMutableDictionary dictionary];
     id streamSettings;
 
-    persistentSettings = [NSMutableDictionary dictionary];
+    if ((streamSettings = self.portInputStream.persistentSettings)) {
+        persistentSettings[@"portInputStream"] = streamSettings;
+    }
+    if ((streamSettings = self.virtualInputStream.persistentSettings)) {
+        persistentSettings[@"virtualInputStream"] = streamSettings;
+    }
+    if ((streamSettings = self.spyingInputStream.persistentSettings)) {
+        persistentSettings[@"spyingInputStream"] = streamSettings;
+    }
 
-    if ((streamSettings = [portInputStream persistentSettings]))
-        [persistentSettings setObject:streamSettings forKey:@"portInputStream"];
-    if ((streamSettings = [virtualInputStream persistentSettings]))
-        [persistentSettings setObject:streamSettings forKey:@"virtualInputStream"];
-    if ((streamSettings = [spyingInputStream persistentSettings]))
-        [persistentSettings setObject:streamSettings forKey:@"spyingInputStream"];
-
-    if ([persistentSettings count] > 0)
-        return persistentSettings;
-    else
-        return nil;
+    return (persistentSettings.count > 0) ? persistentSettings : nil;
 }
 
-- (NSArray *)takePersistentSettings:(NSDictionary *)settings;
+- (NSArray *)takePersistentSettings:(NSDictionary *)settings
 {
     // If any endpoints couldn't be found, their names are returned
-    NSMutableArray *missingNames;
+    NSMutableArray *missingNames = [NSMutableArray array];
     NSNumber *oldStyleUniqueID;
 
-    missingNames = [NSMutableArray array];
-
     // Clear out the current input sources
-    [self setSelectedInputSources:[NSSet set]];
+    self.selectedInputSources = [NSSet set];
 
-    if ((oldStyleUniqueID = [settings objectForKey:@"portEndpointUniqueID"])) {
+    if ((oldStyleUniqueID = settings[@"portEndpointUniqueID"])) {
         // This is an old-style document, specifiying an endpoint for the port input stream.
         // We may have an endpoint name under key @"portEndpointName"
-        NSString *sourceEndpointName;
-        SMSourceEndpoint *sourceEndpoint;
 
-        sourceEndpointName = [settings objectForKey:@"portEndpointName"];
+        NSString *sourceEndpointName = settings[@"portEndpointName"];
         
-        sourceEndpoint = [SMSourceEndpoint sourceEndpointWithUniqueID:[oldStyleUniqueID intValue]];
-        if (!sourceEndpoint && sourceEndpointName)
+        SMSourceEndpoint *sourceEndpoint = [SMSourceEndpoint sourceEndpointWithUniqueID:[oldStyleUniqueID intValue]];
+        if (!sourceEndpoint && sourceEndpointName) {
             sourceEndpoint = [SMSourceEndpoint sourceEndpointWithName:sourceEndpointName];
+        }
 
         if (sourceEndpoint) {
-            [portInputStream addEndpoint:sourceEndpoint];
+            [self.portInputStream addEndpoint:sourceEndpoint];
         } else {
-            if (!sourceEndpointName)
+            if (!sourceEndpointName) {
                 sourceEndpointName = NSLocalizedStringFromTableInBundle(@"Unknown", @"MIDIMonitor", SMBundleForObject(self), "name of missing endpoint if not specified in document");
+            }
             [missingNames addObject:sourceEndpointName];
         }
         
-    } else if ((oldStyleUniqueID = [settings objectForKey:@"virtualEndpointUniqueID"])) {
+    } else if ((oldStyleUniqueID = settings[@"virtualEndpointUniqueID"])) {
         // This is an old-style document, specifiying to use a virtual input stream.
-        [virtualInputStream setUniqueID:[oldStyleUniqueID intValue]];
-        [virtualInputStream setSelectedInputSources:[NSSet setWithArray:[virtualInputStream inputSources]]];
-
+        self.virtualInputStream.uniqueID = [oldStyleUniqueID intValue];
+        self.virtualInputStream.selectedInputSources = [NSSet setWithArray:self.virtualInputStream.inputSources];
     } else {
         // This is a current-style document        
-        [self makeInputStream:portInputStream takePersistentSettings:[settings objectForKey:@"portInputStream"] addingMissingNamesToArray:missingNames];
-        [self makeInputStream:virtualInputStream takePersistentSettings:[settings objectForKey:@"virtualInputStream"] addingMissingNamesToArray:missingNames];
-        if (spyingInputStream)
-            [self makeInputStream:spyingInputStream takePersistentSettings:[settings objectForKey:@"spyingInputStream"] addingMissingNamesToArray:missingNames];
+        [self makeInputStream:self.portInputStream takePersistentSettings:settings[@"portInputStream"] addingMissingNamesToArray:missingNames];
+        [self makeInputStream:self.virtualInputStream takePersistentSettings:settings[@"virtualInputStream"] addingMissingNamesToArray:missingNames];
+        if (self.spyingInputStream) {
+            [self makeInputStream:self.spyingInputStream takePersistentSettings:settings[@"spyingInputStream"] addingMissingNamesToArray:missingNames];
+        }
     }
     
-    if ([missingNames count] > 0)
-        return missingNames;
-    else
-        return nil;
+    return (missingNames.count > 0) ? missingNames : nil;
 }
 
-- (NSString *)virtualEndpointName;
+- (NSString *)virtualEndpointName
 {
-    return [virtualInputStream virtualEndpointName];
+    return self.virtualInputStream.virtualEndpointName;
 }
 
-- (void)setVirtualEndpointName:(NSString *)value;
+- (void)setVirtualEndpointName:(NSString *)value
 {
-    [virtualInputStream setVirtualEndpointName:value];
+    self.virtualInputStream.virtualEndpointName = value;
 }
 
 
 #pragma mark Private
 
-- (void)observeNotificationsWithCenter:(NSNotificationCenter *)center object:(id)object;
+- (void)observeNotificationsFromObject:(id)object
 {
+    NSNotificationCenter* center = [NSNotificationCenter defaultCenter];
     [center addObserver:self selector:@selector(repostNotification:) name:SMInputStreamReadingSysExNotification object:object];
     [center addObserver:self selector:@selector(repostNotification:) name:SMInputStreamDoneReadingSysExNotification object:object];
     [center addObserver:self selector:@selector(repostNotification:) name:SMInputStreamSelectedInputSourceDisappearedNotification object:object];
     [center addObserver:self selector:@selector(inputSourceListChanged:) name:SMInputStreamSourceListChangedNotification object:object];
 }
 
-- (void)repostNotification:(NSNotification *)notification;
+- (void)repostNotification:(NSNotification *)notification
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:[notification name] object:self userInfo:[notification userInfo]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:notification.name object:self userInfo:notification.userInfo];
 }
 
-- (void)inputSourceListChanged:(NSNotification *)notification;
+- (void)inputSourceListChanged:(NSNotification *)notification
 {
     // We may get this notification from more than one of our streams, so coalesce all the notifications from all of the streams into one notification from us.
 
-    if (!willPostSourceListChangedNotification) {
-        willPostSourceListChangedNotification = YES;
+    if (!self.willPostSourceListChangedNotification) {
+        self.willPostSourceListChangedNotification = YES;
         [self retain];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            willPostSourceListChangedNotification = NO;
+            self.willPostSourceListChangedNotification = NO;
             [[NSNotificationCenter defaultCenter] postNotificationName:notification.name object:self];
             [self autorelease];
         });
     }
 }
 
-- (NSSet *)intersectionOfSet:(NSSet *)set1 andArray:(NSArray *)array2;
+- (NSSet *)intersectionOfSet:(NSSet *)set1 andArray:(NSArray *)array2
 {
-    NSMutableSet *set2;
-
-    set2 = [NSMutableSet setWithArray:array2];
+    NSMutableSet *set2 = [NSMutableSet setWithArray:array2];
     [set2 intersectSet:set1];
     return set2;
 }
 
-- (void)makeInputStream:(SMInputStream *)stream takePersistentSettings:(id)settings addingMissingNamesToArray:(NSMutableArray *)missingNames;
+- (void)makeInputStream:(SMInputStream *)stream takePersistentSettings:(id)settings addingMissingNamesToArray:(NSMutableArray *)missingNames
 {
-    NSArray *streamMissingNames;
-
-    if (!settings)
-        return;
-
-    streamMissingNames = [stream takePersistentSettings:settings];
-    if (streamMissingNames)
-        [missingNames addObjectsFromArray:streamMissingNames];
+    if (settings) {
+        NSArray *streamMissingNames = [stream takePersistentSettings:settings];
+        if (streamMissingNames) {
+            [missingNames addObjectsFromArray:streamMissingNames];
+        }
+    }
 }
 
 @end

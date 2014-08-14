@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2001-2009, Kurt Revis.  All rights reserved.
+ Copyright (c) 2001-2014, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -12,84 +12,72 @@
 
 #import "SMMDocument.h"
 
-#import <Cocoa/Cocoa.h>
-#import <SnoizeMIDI/SnoizeMIDI.h>
 #import <objc/objc-runtime.h>
 
 #import "SMMCombinationInputStream.h"
 #import "SMMMonitorWindowController.h"
 
 
-@interface SMMDocument (Private)
+NSString* const SMMAutoSelectFirstSourceInNewDocumentPreferenceKey = @"SMMAutoSelectFirstSource";
+    // NOTE: The above is obsolete; it's included only for compatibility
+NSString* const SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey = @"SMMAutoSelectOrdinarySources";
+NSString* const SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey = @"SMMAutoSelectVirtualDestination";
+NSString* const SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoSelectSpyingDestinations";
+NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosingModifiedWindow";
 
-- (void)sourceListDidChange:(NSNotification *)notification;
+@interface SMMDocument ()
 
-- (void)setFilterMask:(SMMessageType)newMask;
-- (void)setChannelMask:(SMChannelMask)newMask;
+// MIDI processing
+@property (nonatomic, retain) SMMCombinationInputStream *stream;
+@property (nonatomic, retain) SMMessageFilter *messageFilter;
+@property (nonatomic, retain) SMMessageHistory *history;
 
-- (void)updateVirtualEndpointName;
+// Other settings
+@property (nonatomic, assign) NSPoint messagesScrollPoint;
 
-- (void)autoselectSources;
-
-- (void)historyDidChange:(NSNotification *)notification;
-- (void)synchronizeMessagesWithScroll:(BOOL)shouldScroll;
-
-- (void)readingSysEx:(NSNotification *)notification;
-- (void)doneReadingSysEx:(NSNotification *)notification;
+// Transient data
+@property (nonatomic, retain) NSArray *missingSourceNames;
+@property (nonatomic, assign) NSUInteger sysExBytesRead;
+@property (nonatomic, assign) BOOL isSysExUpdateQueued;
 
 @end
 
 
 @implementation SMMDocument
 
-NSString *SMMAutoSelectFirstSourceInNewDocumentPreferenceKey = @"SMMAutoSelectFirstSource";
-    // NOTE: The above is obsolete; it's included only for compatibility
-NSString *SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey = @"SMMAutoSelectOrdinarySources";
-NSString *SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey = @"SMMAutoSelectVirtualDestination";
-NSString *SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoSelectSpyingDestinations";
-NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosingModifiedWindow";
-
-
 - (id)init
 {
-    NSNotificationCenter *center;
+    if ((self = [super init])) {
+        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 
-    if (!(self = [super init]))
-        return nil;
+        _stream = [[SMMCombinationInputStream alloc] init];
+        [center addObserver:self selector:@selector(readingSysEx:) name:SMInputStreamReadingSysExNotification object:_stream];
+        [center addObserver:self selector:@selector(doneReadingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:_stream];
+        [center addObserver:self selector:@selector(sourceListDidChange:) name:SMInputStreamSourceListChangedNotification object:_stream];
+        [self updateVirtualEndpointName];
 
-    center = [NSNotificationCenter defaultCenter];
+        _messageFilter = [[SMMessageFilter alloc] init];
+        _stream.messageDestination = _messageFilter;
+        _messageFilter.filterMask = SMMessageTypeAllMask;
+        _messageFilter.channelMask = SMChannelMaskAll;
 
-    stream = [[SMMCombinationInputStream alloc] init];
-    [center addObserver:self selector:@selector(readingSysEx:) name:SMInputStreamReadingSysExNotification object:stream];
-    [center addObserver:self selector:@selector(doneReadingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:stream];
-    [center addObserver:self selector:@selector(sourceListDidChange:) name:SMInputStreamSourceListChangedNotification object:stream];
-    [self updateVirtualEndpointName];
+        _history = [[SMMessageHistory alloc] init];
+        _messageFilter.messageDestination = _history;
+        [center addObserver:self selector:@selector(historyDidChange:) name:SMMessageHistoryChangedNotification object:_history];
 
-    messageFilter = [[SMMessageFilter alloc] init];
-    [stream setMessageDestination:messageFilter];
-    [messageFilter setFilterMask:SMMessageTypeAllMask];
-    [messageFilter setChannelMask:SMChannelMaskAll];
+        // If the user changed the value of this old obsolete preference, bring its value forward to our new preference
+        // (the default value was YES)
+        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+        if (![ud boolForKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey]) {
+            [ud setBool:NO forKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey];
+            [ud setBool:YES forKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey];
+            [ud synchronize];
+        }
 
-    history = [[SMMessageHistory alloc] init];
-    [messageFilter setMessageDestination:history];
-    [center addObserver:self selector:@selector(historyDidChange:) name:SMMessageHistoryChangedNotification object:history];
+        [self autoselectSources];
 
-    areSourcesShown = NO;
-    isFilterShown = NO;
-    missingSourceNames = nil;
-    sysExBytesRead = 0;
-
-    // If the user changed the value of this old obsolete preference, bring its value forward to our new preference
-	// (the default value was YES)
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey]) {
-		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey];
-		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey];
-		[[NSUserDefaults standardUserDefaults] synchronize];
-	}
-
-    [self autoselectSources];
-
-    [self updateChangeCount:NSChangeCleared];
+        [self updateChangeCount:NSChangeCleared];
+    }
 
     return self;
 }
@@ -98,91 +86,89 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
-    [stream setMessageDestination:nil];
-    [stream release];
-    stream = nil;
-    [messageFilter setMessageDestination:nil];
-    [messageFilter release];
-    messageFilter = nil;
-    [windowFrameDescription release];
-    windowFrameDescription = nil;
-    [missingSourceNames release];
-    missingSourceNames = nil;
-    [history release];
-    history = nil;
+    _stream.messageDestination = nil;
+    [_stream release];
+    _stream = nil;
+    _messageFilter.messageDestination = nil;
+    [_messageFilter release];
+    _messageFilter = nil;
+    [_windowFrameDescription release];
+    _windowFrameDescription = nil;
+    [_missingSourceNames release];
+    _missingSourceNames = nil;
+    [_history release];
+    _history = nil;
 
     [super dealloc];
 }
 
-- (void)makeWindowControllers;
+- (void)makeWindowControllers
 {
-    NSWindowController *controller;
-    
-    controller = [[SMMMonitorWindowController alloc] init];
+    NSWindowController *controller = [[SMMMonitorWindowController alloc] init];
     [self addWindowController:controller];
     [controller release];
 }
 
-- (void)showWindows;
+- (void)showWindows
 {
     [super showWindows];
 
-    if (missingSourceNames) {
-        [[self windowControllers] makeObjectsPerformSelector:@selector(couldNotFindSourcesNamed:) withObject:missingSourceNames];
-        [missingSourceNames release];
-        missingSourceNames = nil;
+    if (self.missingSourceNames) {
+        [self.windowControllers makeObjectsPerformSelector:@selector(couldNotFindSourcesNamed:) withObject:self.missingSourceNames];
+        self.missingSourceNames = nil;
     }
 }
 
-- (NSData *)dataRepresentationOfType:(NSString *)type;
+- (NSData *)dataRepresentationOfType:(NSString *)type
 {
-    NSMutableDictionary *dict;
-    NSDictionary *streamSettings;
-    SMMessageType filterMask;
-    SMChannelMask channelMask;
-    NSUInteger historySize;
+    NSMutableDictionary* dict = [[NSMutableDictionary alloc] init];
+    dict[@"version"] = @2;
 
-    dict = [[NSMutableDictionary alloc] init];
-    [dict setObject:[NSNumber numberWithInt:2] forKey:@"version"];
+    NSDictionary* streamSettings = self.stream.persistentSettings;
+    if (streamSettings) {
+        dict[@"streamSettings"] = streamSettings;
+    }
 
-    streamSettings = [stream persistentSettings];
-    if (streamSettings)
-        [dict setObject:streamSettings forKey:@"streamSettings"];
+    NSUInteger historySize = self.history.historySize;
+    if (historySize != [SMMessageHistory defaultHistorySize]) {
+        dict[@"maxMessageCount"] = @(historySize);
+    }
 
-    historySize = [history historySize];
-    if (historySize != [SMMessageHistory defaultHistorySize])
-        [dict setObject:[NSNumber numberWithUnsignedInt:historySize] forKey:@"maxMessageCount"];
-        
-    filterMask = [messageFilter filterMask];
-    if (filterMask != SMMessageTypeAllMask)
-        [dict setObject:[NSNumber numberWithUnsignedInt:filterMask] forKey:@"filterMask"];
+    SMMessageType filterMask = self.messageFilter.filterMask;
+    if (filterMask != SMMessageTypeAllMask) {
+        dict[@"filterMask"] = @(filterMask);
+    }
 
-    channelMask = [messageFilter channelMask];
-    if (channelMask != SMChannelMaskAll)
-        [dict setObject:[NSNumber numberWithUnsignedInt:channelMask] forKey:@"channelMask"];
+    SMChannelMask channelMask = self.messageFilter.channelMask;
+    if (channelMask != SMChannelMaskAll) {
+        dict[@"channelMask"] = @(channelMask);
+    }
 
-    if (areSourcesShown)
-        [dict setObject:[NSNumber numberWithBool:areSourcesShown] forKey:@"areSourcesShown"];
+    if (self.areSourcesShown) {
+        dict[@"areSourcesShown"] = @YES;
+    }
 
-    if (isFilterShown)
-        [dict setObject:[NSNumber numberWithBool:isFilterShown] forKey:@"isFilterShown"];
+    if (self.isFilterShown) {
+        dict[@"isFilterShown"] = @YES;
+    }
 
-    if (windowFrameDescription)
-        [dict setObject:windowFrameDescription forKey:@"windowFrame"];
+    if (self.windowFrameDescription) {
+        dict[@"windowFrame"] = self.windowFrameDescription;
+    }
 
-    NSArray* savedMessages = [history savedMessages];
-    if ([savedMessages count]) {
+    NSArray* savedMessages = self.history.savedMessages;
+    if (savedMessages.count) {
         NSData* messageData = [NSKeyedArchiver archivedDataWithRootObject:savedMessages];
         if (messageData) {
-            [dict setObject:messageData forKey:@"messageData"];
+            dict[@"messageData"] = messageData;
         }
     }
     
-    SMMMonitorWindowController* wc = [[self windowControllers] lastObject];
+    SMMMonitorWindowController* wc = self.windowControllers.lastObject;
     if (wc) {
-        messagesScrollPoint = [wc messagesScrollPoint];
-        [dict setObject:[NSNumber numberWithFloat:messagesScrollPoint.x] forKey:@"messagesScrollPointX"];
-        [dict setObject:[NSNumber numberWithFloat:messagesScrollPoint.y] forKey:@"messagesScrollPointY"];
+        self.messagesScrollPoint = wc.messagesScrollPoint;
+        dict[@"messagesScrollPointX"] = @(self.messagesScrollPoint.x);
+        dict[@"messagesScrollPointY"] = @(self.messagesScrollPoint.y);
     }
     
     NSData* data = [NSPropertyListSerialization dataFromPropertyList:dict format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
@@ -192,87 +178,81 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
     return data;
 }
 
-- (BOOL)loadDataRepresentation:(NSData *)data ofType:(NSString *)type;
+- (BOOL)loadDataRepresentation:(NSData *)data ofType:(NSString *)type
 {
-	id propertyList;
-    NSDictionary *dict;
-    int version;
+    id propertyList = [NSPropertyListSerialization propertyListFromData:data mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
+    if (!propertyList || ![propertyList isKindOfClass:[NSDictionary class]]) {
+        return NO;
+	}
+
+    NSDictionary *dict = propertyList;
     NSNumber *number;
     NSString *string;
     NSDictionary *streamSettings = nil;
 
-    propertyList = [NSPropertyListSerialization propertyListFromData:data mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
-    
-    if (!propertyList || ![propertyList isKindOfClass:[NSDictionary class]])
-        return NO;
-	else
-		dict = propertyList;
+    int version = [dict[@"version"] intValue];
+    switch (version) {
+        case 1:
+            if ((number = dict[@"sourceEndpointUniqueID"])) {
+                streamSettings = [NSDictionary dictionaryWithObjectsAndKeys:number, @"portEndpointUniqueID", [dict objectForKey:@"sourceEndpointName"], @"portEndpointName", nil];
+                // NOTE: [dict objectForKey:@"sourceEndpointName"] may be nil--that's acceptable
+            } else if ((number = dict[@"virtualDestinationEndpointUniqueID"])) {
+                streamSettings = @{@"virtualEndpointUniqueID": number};
+            }
+            break;
 
-    version = [[dict objectForKey:@"version"] intValue];    
-    if (version == 2) {
-        streamSettings = [dict objectForKey:@"streamSettings"];
-    } else if (version == 1) {
-        if ((number = [dict objectForKey:@"sourceEndpointUniqueID"])) {
-            streamSettings = [NSDictionary dictionaryWithObjectsAndKeys:number, @"portEndpointUniqueID", [dict objectForKey:@"sourceEndpointName"], @"portEndpointName", nil];
-            // NOTE: [dict objectForKey:@"sourceEndpointName"] may be nil--that's acceptable
-        } else if ((number = [dict objectForKey:@"virtualDestinationEndpointUniqueID"])) {
-            streamSettings = [NSDictionary dictionaryWithObject:number forKey:@"virtualEndpointUniqueID"];
-        }
-    } else {
-        return NO;
+        case 2:
+            streamSettings = dict[@"streamSettings"];
+            break;
+
+        default:
+            return NO;
     }
 
     if (streamSettings) {
-        [missingSourceNames release];
-        missingSourceNames = [[stream takePersistentSettings:streamSettings] retain];
-        [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeSources)];
+        self.missingSourceNames = [self.stream takePersistentSettings:streamSettings];
+        [self.windowControllers makeObjectsPerformSelector:@selector(synchronizeSources)];
     } else {
-        [self setSelectedInputSources:[NSSet set]];
+        self.selectedInputSources = [NSSet set];
     }
     
-    if ((number = [dict objectForKey:@"maxMessageCount"]))
-        [self setMaxMessageCount:[number unsignedIntValue]];
-    else
-        [self setMaxMessageCount:[SMMessageHistory defaultHistorySize]];
-        
-    if ((number = [dict objectForKey:@"filterMask"]))
-        [self setFilterMask:[number unsignedIntValue]];
-    else
-        [self setFilterMask:SMMessageTypeAllMask];
+    number = dict[@"maxMessageCount"];
+    self.maxMessageCount = number ? [number unsignedIntValue] : [SMMessageHistory defaultHistorySize];
 
-    if ((number = [dict objectForKey:@"channelMask"]))
-        [self setChannelMask:[number unsignedIntValue]];
-    else
-        [self setChannelMask:SMChannelMaskAll];
+    number = dict[@"filterMask"];
+    self.filterMask = number ? [number unsignedIntValue] : SMMessageTypeAllMask;
 
-    if ((number = [dict objectForKey:@"areSourcesShown"]))
-        [self setAreSourcesShown:[number boolValue]];
-    else
-        [self setAreSourcesShown:NO];
-    
-    if ((number = [dict objectForKey:@"isFilterShown"]))
-        [self setIsFilterShown:[number boolValue]];
-    else
-        [self setIsFilterShown:NO];
+    number = dict[@"channelMask"];
+    self.channelMask = number ? [number unsignedIntValue] : SMChannelMaskAll;
 
-    if ((string = [dict objectForKey:@"windowFrame"]))
-        [self setWindowFrameDescription:string];
+    number = dict[@"areSourcesShown"];
+    self.areSourcesShown = number ? [number boolValue] : NO;
 
-    messagesScrollPoint = NSZeroPoint;
-    if ((number = [dict objectForKey:@"messagesScrollPointX"]))
+    number = dict[@"isFilterShown"];
+    self.isFilterShown = number ? [number boolValue] : NO;
+
+    if ((string = dict[@"windowFrame"])) {
+        self.windowFrameDescription = string;
+    }
+
+    NSPoint messagesScrollPoint = NSZeroPoint;
+    if ((number = [dict objectForKey:@"messagesScrollPointX"])) {
         messagesScrollPoint.x = [number floatValue];
-    if ((number = [dict objectForKey:@"messagesScrollPointY"]))
+    }
+    if ((number = [dict objectForKey:@"messagesScrollPointY"])) {
         messagesScrollPoint.y = [number floatValue];
+    }
+    self.messagesScrollPoint = messagesScrollPoint;
     
     NSData* messageData = [dict objectForKey:@"messageData"];
     if (messageData) {
         id obj = [NSKeyedUnarchiver unarchiveObjectWithData:messageData];
         if (obj && [obj isKindOfClass:[NSArray class]]) {
-            [history setSavedMessages:(NSArray*)obj];
+            self.history.savedMessages = (NSArray*)obj;
         }
     }
     
-    [[self windowControllers] makeObjectsPerformSelector:@selector(setWindowStateFromDocument)];
+    [self.windowControllers makeObjectsPerformSelector:@selector(setWindowStateFromDocument)];
 
     // Doing the above caused undo actions to be remembered, but we don't want the user to see them
     [self updateChangeCount:NSChangeCleared];
@@ -284,8 +264,9 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
 {
     // This clears the undo stack whenever we load or save.
     [super updateChangeCount:change];
-    if (change == NSChangeCleared)
-        [[self undoManager] removeAllActions];
+    if (change == NSChangeCleared) {
+        [self.undoManager removeAllActions];
+    }
 }
 
 - (void)setFileURL:(NSURL*)url
@@ -314,299 +295,248 @@ NSString *SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosing
 
 - (NSArray *)groupedInputSources
 {
-    return [stream groupedInputSources];
+    return self.stream.groupedInputSources;
 }
 
-- (NSSet *)selectedInputSources;
+- (NSSet *)selectedInputSources
 {
-    return [stream selectedInputSources];
+    return self.stream.selectedInputSources;
 }
 
-- (void)setSelectedInputSources:(NSSet *)inputSources;
+- (void)setSelectedInputSources:(NSSet *)inputSources
 {
-    NSSet *oldInputSources;
-
-    oldInputSources = [self selectedInputSources];
-    if (oldInputSources == inputSources || [oldInputSources isEqual:inputSources])
+    NSSet *oldInputSources = self.selectedInputSources;
+    if (oldInputSources == inputSources || [oldInputSources isEqual:inputSources]) {
         return;
+    }
 
-    [stream setSelectedInputSources:inputSources];
+    self.stream.selectedInputSources = inputSources;
 
-    [(SMMDocument *)[[self undoManager] prepareWithInvocationTarget:self] setSelectedInputSources:oldInputSources];
-    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Selected Sources", @"MIDIMonitor", SMBundleForObject(self), "change source undo action")];
+    [(SMMDocument *)[self.undoManager prepareWithInvocationTarget:self] setSelectedInputSources:oldInputSources];
+    [self.undoManager setActionName:NSLocalizedStringFromTableInBundle(@"Change Selected Sources", @"MIDIMonitor", SMBundleForObject(self), "change source undo action")];
 
-    [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeSources)];
+    [self.windowControllers makeObjectsPerformSelector:@selector(synchronizeSources)];
 }
 
-- (void)revealInputSources:(NSSet *)inputSources;
+- (void)revealInputSources:(NSSet *)inputSources
 {
-    [[self windowControllers] makeObjectsPerformSelector:@selector(revealInputSources:) withObject:inputSources];
+    [self.windowControllers makeObjectsPerformSelector:@selector(revealInputSources:) withObject:inputSources];
 }
 
-- (NSUInteger)maxMessageCount;
+- (NSUInteger)maxMessageCount
 {
-    return [history historySize];
+    return self.history.historySize;
 }
 
-- (void)setMaxMessageCount:(NSUInteger)newValue;
+- (void)setMaxMessageCount:(NSUInteger)newValue
 {
-    if (newValue == [history historySize])
-        return;
+    if (newValue != self.maxMessageCount) {
+        [[self.undoManager prepareWithInvocationTarget:self] setMaxMessageCount:self.maxMessageCount];
+        [self.undoManager setActionName:NSLocalizedStringFromTableInBundle(@"Change Remembered Events", @"MIDIMonitor", SMBundleForObject(self), "change history limit undo action")];
 
-    [[[self undoManager] prepareWithInvocationTarget:self] setMaxMessageCount:[history historySize]];
-    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Remembered Events", @"MIDIMonitor", SMBundleForObject(self), "change history limit undo action")];
+        self.history.historySize = newValue;
 
-    [history setHistorySize:newValue];
-
-    [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeMaxMessageCount)];
+        [self.windowControllers makeObjectsPerformSelector:@selector(synchronizeMaxMessageCount)];
+    }
 }
 
-- (SMMessageType)filterMask;
+- (SMMessageType)filterMask
 {
-    return  [messageFilter filterMask];
+    return self.messageFilter.filterMask;
 }
 
-- (void)changeFilterMask:(SMMessageType)maskToChange turnBitsOn:(BOOL)turnBitsOn;
+- (void)changeFilterMask:(SMMessageType)maskToChange turnBitsOn:(BOOL)turnBitsOn
 {
-    SMMessageType newMask;
-
-    newMask = [messageFilter filterMask];
-    if (turnBitsOn)
+    SMMessageType newMask = self.messageFilter.filterMask;
+    if (turnBitsOn) {
         newMask |= maskToChange;
-    else
+    } else {
         newMask &= ~maskToChange;
+    }
 
-    [self setFilterMask:newMask];
+    self.filterMask = newMask;
 }
 
-- (BOOL)isShowingAllChannels;
+- (BOOL)isShowingAllChannels
 {
-    return ([messageFilter channelMask] == SMChannelMaskAll);
+    return self.messageFilter.channelMask == SMChannelMaskAll;
 }
 
-- (NSUInteger)oneChannelToShow;
+- (NSUInteger)oneChannelToShow
 {
     // It is possible that something else could have set the mask to show more than one, or zero, channels.
     // We'll just return the lowest enabled channel (1-16), or 0 if no channel is enabled.
 
-    NSUInteger channel;
-    SMChannelMask mask;
-
     SMAssert(![self isShowingAllChannels]);
     
-    mask = [messageFilter channelMask];
+    SMChannelMask mask = self.messageFilter.channelMask;
 
-    for (channel = 0; channel < 16; channel++) {
-        if (mask & 1)
-            return (channel + 1);
-        else
+    for (NSUInteger channel = 0; channel < 16; channel++) {
+        if (mask & 1) {
+            return channel + 1;
+        } else {
             mask >>= 1;
+        }
     }
     
     return 0;    
 }
 
-- (void)showAllChannels;
+- (void)showAllChannels
 {
-    [self setChannelMask:SMChannelMaskAll];
+    self.channelMask = SMChannelMaskAll;
 }
 
-- (void)showOnlyOneChannel:(NSUInteger)channel;
+- (void)showOnlyOneChannel:(NSUInteger)channel
 {
-    [self setChannelMask:(1 << (channel - 1))];
+    self.channelMask = 1 << (channel - 1);
 }
 
-- (BOOL)areSourcesShown;
+- (void)setAreSourcesShown:(BOOL)newValue
 {
-    return areSourcesShown;
+    if (newValue != _areSourcesShown) {
+        _areSourcesShown = newValue;
+        [self.windowControllers makeObjectsPerformSelector:@selector(synchronizeSourcesShown)];
+    }
 }
 
-- (void)setAreSourcesShown:(BOOL)newValue;
+- (void)setIsFilterShown:(BOOL)newValue
 {
-    if (newValue == areSourcesShown)
-        return;
-
-    areSourcesShown = newValue;
-    [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeSourcesShown)];    
+    if (newValue != _isFilterShown) {
+        _isFilterShown = newValue;
+        [self.windowControllers makeObjectsPerformSelector:@selector(synchronizeFilterShown)];
+    }
 }
 
-- (BOOL)isFilterShown;
+- (void)clearSavedMessages
 {
-    return isFilterShown;
-}
-
-- (void)setIsFilterShown:(BOOL)newValue;
-{
-    if (newValue == isFilterShown)
-        return;
-
-    isFilterShown = newValue;
-    [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeFilterShown)];
-}
-
-- (NSString *)windowFrameDescription;
-{
-    return windowFrameDescription;
-}
-
-- (void)setWindowFrameDescription:(NSString *)value;
-{
-    if (value == windowFrameDescription || [value isEqualToString:windowFrameDescription])
-        return;
-
-    [windowFrameDescription release];
-    windowFrameDescription = [value retain];
-}
-
-- (void)clearSavedMessages;
-{
-    if ([[history savedMessages] count] > 0) {
-        [history clearSavedMessages];
+    if (self.history.savedMessages.count > 0) {
+        [self.history clearSavedMessages];
         
         // Dirty document, since the messages are saved in it
         [self updateChangeCount:NSChangeDone];
     }
 }
 
-- (NSArray *)savedMessages;
+- (NSArray *)savedMessages
 {
-    return [history savedMessages];
+    return self.history.savedMessages;
 }
 
-- (NSPoint)messagesScrollPoint
+#pragma mark Private
+
+- (void)sourceListDidChange:(NSNotification *)notification
 {
-    return messagesScrollPoint;
-}
-
-@end
-
-
-@implementation SMMDocument (Private)
-
-- (void)sourceListDidChange:(NSNotification *)notification;
-{
-    [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeSources)];
+    [self.windowControllers makeObjectsPerformSelector:@selector(synchronizeSources)];
 
     // Also, it's possible that the endpoint names went from being unique to non-unique, so we need
     // to refresh the messages displayed.
     [self synchronizeMessagesWithScroll:NO];
 }
 
-- (void)setFilterMask:(SMMessageType)newMask;
+- (void)setFilterMask:(SMMessageType)newMask
 {
-    SMMessageType oldMask;
-    
-    oldMask = [messageFilter filterMask];
-    if (newMask == oldMask)
-        return;
+    SMMessageType oldMask = self.messageFilter.filterMask;
+    if (newMask != oldMask) {
+        [[self.undoManager prepareWithInvocationTarget:self] setFilterMask:oldMask];
+        [self.undoManager setActionName:NSLocalizedStringFromTableInBundle(@"Change Filter", @"MIDIMonitor", SMBundleForObject(self), change filter undo action)];
 
-    [[[self undoManager] prepareWithInvocationTarget:self] setFilterMask:oldMask];
-    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Filter", @"MIDIMonitor", SMBundleForObject(self), change filter undo action)];
-
-    [messageFilter setFilterMask:newMask];    
-    [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeFilterControls)];
+        self.messageFilter.filterMask = newMask;
+        [self.windowControllers makeObjectsPerformSelector:@selector(synchronizeFilterControls)];
+    }
 }
 
-- (void)setChannelMask:(SMChannelMask)newMask;
+- (void)setChannelMask:(SMChannelMask)newMask
 {
-    SMChannelMask oldMask;
+    SMChannelMask oldMask = self.messageFilter.channelMask;
+    if (newMask != oldMask) {
+        [[self.undoManager prepareWithInvocationTarget:self] setChannelMask:oldMask];
+        [self.undoManager setActionName:NSLocalizedStringFromTableInBundle(@"Change Channel", @"MIDIMonitor", SMBundleForObject(self), change filter channel undo action)];
 
-    oldMask = [messageFilter channelMask];
-    if (newMask == oldMask)
-        return;
-
-    [[[self undoManager] prepareWithInvocationTarget:self] setChannelMask:oldMask];
-    [[self undoManager] setActionName:NSLocalizedStringFromTableInBundle(@"Change Channel", @"MIDIMonitor", SMBundleForObject(self), change filter channel undo action)];
-
-    [messageFilter setChannelMask:newMask];    
-    [[self windowControllers] makeObjectsPerformSelector:@selector(synchronizeFilterControls)];
+        self.messageFilter.channelMask = newMask;
+        [self.windowControllers makeObjectsPerformSelector:@selector(synchronizeFilterControls)];
+    }
 }
 
-- (void)updateVirtualEndpointName;
+- (void)updateVirtualEndpointName
 {
-    NSString *applicationName, *endpointName;
-
-    applicationName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleNameKey];
-    endpointName = [NSString stringWithFormat:@"%@ (%@)", applicationName, [self displayName]];
-    [stream setVirtualEndpointName:endpointName];
+    NSString *applicationName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleNameKey];
+    self.stream.virtualEndpointName = [NSString stringWithFormat:@"%@ (%@)", applicationName, self.displayName];
 }
 
-- (void)autoselectSources;
+- (void)autoselectSources
 {
 	NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-    NSArray *groupedInputSources;
-    NSMutableSet *sourcesSet;
+
+    NSArray *groupedInputSources = [self groupedInputSources];
+    NSMutableSet *sourcesSet = [NSMutableSet set];
     NSArray *sourcesArray;
 
-    groupedInputSources = [self groupedInputSources];
-    sourcesSet = [NSMutableSet set];
-    
     if ([defaults boolForKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey]) {
         if (groupedInputSources.count > 0 && 
-            (sourcesArray = [[groupedInputSources objectAtIndex:0] objectForKey:@"sources"]))
+            (sourcesArray = groupedInputSources[0][@"sources"])) {
             [sourcesSet addObjectsFromArray:sourcesArray];
+        }
     }
 
     if ([defaults boolForKey:SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey]) {
         if (groupedInputSources.count > 1 && 
-            (sourcesArray = [[groupedInputSources objectAtIndex:1] objectForKey:@"sources"]))
+            (sourcesArray = groupedInputSources[1][@"sources"])) {
             [sourcesSet addObjectsFromArray:sourcesArray];
+        }
     }
 
 	if ([defaults boolForKey:SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey]) {
         if (groupedInputSources.count > 2 && 
-            (sourcesArray = [[groupedInputSources objectAtIndex:2] objectForKey:@"sources"]))
+            (sourcesArray = groupedInputSources[2][@"sources"])) {
             [sourcesSet addObjectsFromArray:sourcesArray];
+        }
     }
     
-    [self setSelectedInputSources:sourcesSet];
+    self.selectedInputSources = sourcesSet;
 }
 
-- (void)historyDidChange:(NSNotification *)notification;
+- (void)historyDidChange:(NSNotification *)notification
 {
-    NSNumber *shouldScroll = [[notification userInfo] objectForKey:SMMessageHistoryWereMessagesAdded];
-	[self synchronizeMessagesWithScroll: [shouldScroll boolValue]];
+    NSNumber *shouldScroll = notification.userInfo[SMMessageHistoryWereMessagesAdded];
+	[self synchronizeMessagesWithScroll:[shouldScroll boolValue]];
 }
 
 - (void)synchronizeMessagesWithScroll:(BOOL)shouldScroll
 {
-    NSArray *windowControllers;
-    NSUInteger windowControllerIndex;
-
-    windowControllers = [self windowControllers];
-    windowControllerIndex = [windowControllers count];
-    while (windowControllerIndex--)
-        [[windowControllers objectAtIndex:windowControllerIndex] synchronizeMessagesWithScrollToBottom:shouldScroll];
+    for (SMMMonitorWindowController *wc in self.windowControllers) {
+        [wc synchronizeMessagesWithScrollToBottom:shouldScroll];
+    }
 }
 
-- (void)readingSysEx:(NSNotification *)notification;
+- (void)readingSysEx:(NSNotification *)notification
 {
-    sysExBytesRead = [[[notification userInfo] objectForKey:@"length"] unsignedIntValue];
+    self.sysExBytesRead = [notification.userInfo[@"length"] unsignedIntegerValue];
     
     // We want multiple updates to get coalesced, so only queue it once
-    if (!isSysExUpdateQueued) {
-        isSysExUpdateQueued = YES;
+    if (!self.isSysExUpdateQueued) {
+        self.isSysExUpdateQueued = YES;
         [self performSelector:@selector(updateSysExReadIndicators) withObject:nil afterDelay:0];
     }
 }
 
 - (void)updateSysExReadIndicators
 {
-    isSysExUpdateQueued = NO;
-    [[self windowControllers] makeObjectsPerformSelector:@selector(updateSysExReadIndicatorWithBytes:) withObject:[NSNumber numberWithUnsignedInt:sysExBytesRead]];
+    self.isSysExUpdateQueued = NO;
+    [self.windowControllers makeObjectsPerformSelector:@selector(updateSysExReadIndicatorWithBytes:) withObject:[NSNumber numberWithUnsignedInteger:self.sysExBytesRead]];
 }
 
-- (void)doneReadingSysEx:(NSNotification *)notification;
+- (void)doneReadingSysEx:(NSNotification *)notification
 {
-    NSNumber *number = [[notification userInfo] objectForKey:@"length"];
-    sysExBytesRead = [number unsignedIntValue];
+    NSNumber *number = notification.userInfo[@"length"];
+    self.sysExBytesRead = [number unsignedIntegerValue];
     
-    if (isSysExUpdateQueued) {
+    if (self.isSysExUpdateQueued) {
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateSysExReadIndicators) object:nil];
-        isSysExUpdateQueued = NO;
+        self.isSysExUpdateQueued = NO;
     }
     
-    [[self windowControllers] makeObjectsPerformSelector:@selector(stopSysExReadIndicatorWithBytes:) withObject:number];
+    [self.windowControllers makeObjectsPerformSelector:@selector(stopSysExReadIndicatorWithBytes:) withObject:number];
 }
 
 @end

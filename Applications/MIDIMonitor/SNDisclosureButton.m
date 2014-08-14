@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2002, Kurt Revis.  All rights reserved.
+ Copyright (c) 2002-2014, Kurt Revis.  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
@@ -12,23 +12,13 @@
 
 #import "SNDisclosureButton.h"
 
-
-@interface SNDisclosureButton (Private)
-
-- (void)configureDisclosureButton;
-- (NSImage *)imageNamed:(NSString *)imageName;
-
-@end
-
-
 @implementation SNDisclosureButton
 
-- (id)initWithFrame:(NSRect)frame
+- (instancetype)initWithFrame:(NSRect)frame
 {
-    if (!(self = [super initWithFrame:frame]))
-        return nil;
-
-    [self configureDisclosureButton];
+    if ((self = [super initWithFrame:frame])) {
+        [self configureDisclosureButton];
+    }
     
     return self;
 }
@@ -38,48 +28,14 @@
     [self configureDisclosureButton];
 }
 
-@end
-
-
-@implementation SNDisclosureButton (Private)
+#pragma mark Private
 
 - (void)configureDisclosureButton
 {
-    NSImage *image;
-
-    // Work around bug on 10.3.9 when binary linked using Xcode 3 / gcc 3.3. 
-    // Something is wrong with the linker and constant NSStrings can cause a crash to happen later on.
-    char* imageName = "SNDisclosureArrowRight";
-    char* altImageName = "SNDisclosureArrowDown";
-    NSString* imageNameStr = [NSString stringWithUTF8String:imageName];
-    NSString* altImageNameStr = [NSString stringWithUTF8String:altImageName];
-
-    if ((image = [self imageNamed:imageNameStr]))
-        [self setImage:image];
-
-    if ((image = [self imageNamed:altImageNameStr]))
-        [self setAlternateImage:image];
+    [self setImage:[NSImage imageNamed:@"SNDisclosureArrowRight"]];
+    [self setAlternateImage:[NSImage imageNamed:@"SNDisclosureArrowDown"]];
 
     [[self cell] setHighlightsBy:NSPushInCellMask];    
-}
-
-- (NSImage *)imageNamed:(NSString *)imageName
-{
-    NSBundle *bundle;
-    NSString *imagePath;
-    NSImage *image = nil;
-
-    bundle = [NSBundle bundleForClass:[self class]];
-    imagePath = [bundle pathForImageResource:imageName];
-    if (imagePath) {        
-        image = [[[NSImage alloc] initByReferencingFile:imagePath] autorelease];
-        if (!image)
-            NSLog(@"SNDisclosureButton: couldn't read image: %@", imagePath);
-    } else {
-        NSLog(@"SNDisclosureButton: couldn't find image: %@", imageName);
-    }
-
-    return image;
 }
 
 @end

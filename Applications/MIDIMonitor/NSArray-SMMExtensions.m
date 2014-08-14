@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2004-2014, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -13,31 +13,29 @@
 
 #import "NSArray-SMMExtensions.h"
 
-
 @implementation NSArray (SMMExtensions)
 
-- (NSString *)SMM_componentsJoinedByCommaAndAnd;
+- (NSString *)SMM_componentsJoinedByCommaAndAnd
 {
-	NSUInteger count = [self count];
+	NSUInteger count = self.count;
 	
-	if (count == 0)
+	if (count == 0) {
 		return @"";
-	else if (count == 1)		// "a"
+	} else if (count == 1) {		// "a"
 		return [self objectAtIndex: 0];
-	else if (count == 2)		// "a and b"
+	} else if (count == 2) {		// "a and b"
 		return [self componentsJoinedByString: @" and "];
-	else {						// "a, b, and c"
+	} else {						// "a, b, and c"
 		NSMutableString *result = [NSMutableString string];
-		NSUInteger index;
 
-		for (index = 0; index < count; index++)
-		{
-			NSString* obj = [self objectAtIndex:index];
+		for (NSUInteger index = 0; index < count; index++) {
+			NSString* obj = self[index];
 			[result appendString:obj];
 			if (index <= count - 2) {
 				[result appendString:@", "];
-				if (index == count - 2)
-					[result appendString:@" and "]; 
+				if (index == count - 2) {
+					[result appendString:@" and "];
+                }
 			}
 		}
 		

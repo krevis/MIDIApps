@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2001-2004, Kurt Revis.  All rights reserved.
+ Copyright (c) 2001-2014, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -17,24 +17,17 @@
 #import "SMMPreferencesWindowController.h"
 #import "SMMSysExWindowController.h"
 
+@interface SMMDetailsWindowController ()
 
-@interface SMMDetailsWindowController (Private)
-
-+ (Class)subclassForMessage:(SMMessage *)inMessage;
-
-- (void)displayPreferencesDidChange:(NSNotification *)notification;
-
-- (void)synchronizeDescriptionFields;
-
-- (NSString *)formatData:(NSData *)data;
+@property (nonatomic, assign) IBOutlet NSTextField *timeField;
+@property (nonatomic, assign) IBOutlet NSTextField *sizeField;
+@property (nonatomic, assign) IBOutlet NSTextView *textView;
 
 @end
-
 
 @implementation SMMDetailsWindowController
 
 static NSMapTable* messageToControllerMapTable = NULL;
-
 
 + (BOOL)canShowDetailsForMessage:(SMMessage *)inMessage
 {
@@ -45,9 +38,10 @@ static NSMapTable* messageToControllerMapTable = NULL;
 {
     SMMDetailsWindowController *controller;
 
-    if (!messageToControllerMapTable) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         messageToControllerMapTable = NSCreateMapTable(NSNonRetainedObjectMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
-    }
+    });
 
     controller = NSMapGet(messageToControllerMapTable, inMessage);
     if (!controller) {
@@ -61,19 +55,18 @@ static NSMapTable* messageToControllerMapTable = NULL;
     return controller;
 }
 
-- (id)initWithMessage:(SMMessage *)inMessage;
+- (id)initWithMessage:(SMMessage *)inMessage
 {
-    if (!(self = [super initWithWindowNibName:[[self class] windowNibName]]))
-        return nil;
+    if ((self = [super initWithWindowNibName:[[self class] windowNibName]])) {
+        _message = [inMessage retain];
 
-    message = [inMessage retain];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayPreferencesDidChange:) name:SMMDisplayPreferenceChangedNotification object:nil];
+    }
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayPreferencesDidChange:) name:SMMDisplayPreferenceChangedNotification object:nil];
-    
     return self;
 }
 
-- (id)initWithWindowNibName:(NSString *)windowNibName;
+- (id)initWithWindowNibName:(NSString *)windowNibName
 {
     SMRejectUnusedImplementation(self, _cmd);
     return nil;
@@ -81,8 +74,10 @@ static NSMapTable* messageToControllerMapTable = NULL;
 
 - (void)dealloc
 {
-    [message release];
-    message = nil;
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:SMMDisplayPreferenceChangedNotification object:nil];
+
+    [_message release];
+    _message = nil;
     
     [super dealloc];
 }
@@ -94,17 +89,13 @@ static NSMapTable* messageToControllerMapTable = NULL;
     // Try to change the main text's font from Monaco 10 to Menlo 10,
     // which looks a lot better, but is only available on 10.6 and later.
     NSFont* menloFont = [NSFont fontWithName:@"Menlo-Regular" size:10.];
-    if (menloFont)
-        [textView setFont:menloFont];
+    if (menloFont) {
+        [self.textView setFont:menloFont];
+    }
 
     [self synchronizeDescriptionFields];
 
-    [textView setString:[self formatData:[self dataForDisplay]]];
-}
-
-- (SMMessage *)message;
-{
-    return message;
+    [self.textView setString:[self formatData:[self dataForDisplay]]];
 }
 
 //
@@ -116,98 +107,83 @@ static NSMapTable* messageToControllerMapTable = NULL;
     return @"Details";
 }
 
-- (NSData *)dataForDisplay;
+- (NSData *)dataForDisplay
 {
-    return [message otherData];
+    return self.message.otherData;
 }
 
-@end
 
+#pragma mark Delegates
 
-@implementation SMMDetailsWindowController (NotificationsDelegatesDataSources)
-
-- (void)windowWillClose:(NSNotification *)notification;
+- (void)windowWillClose:(NSNotification *)notification
 {
     [[self retain] autorelease];
     NSMapRemove(messageToControllerMapTable, self);
 }
 
-@end
-
-
-@implementation SMMDetailsWindowController (Private)
+#pragma mark Private
 
 + (Class)subclassForMessage:(SMMessage *)inMessage
 {
-    if ([inMessage isKindOfClass:[SMInvalidMessage class]])
+    if ([inMessage isKindOfClass:[SMInvalidMessage class]]) {
         return [SMMDetailsWindowController class];
-    else if ([inMessage isKindOfClass:[SMSystemExclusiveMessage class]])
+    } else if ([inMessage isKindOfClass:[SMSystemExclusiveMessage class]]) {
         return [SMMSysExWindowController class];
-    else
+    } else {
         return Nil;
+    }
 }
 
-- (void)displayPreferencesDidChange:(NSNotification *)notification;
+- (void)displayPreferencesDidChange:(NSNotification *)notification
 {
     [self synchronizeDescriptionFields];
 }
 
-- (void)synchronizeDescriptionFields;
+- (void)synchronizeDescriptionFields
 {
     NSString *sizeString = [NSString stringWithFormat:
         NSLocalizedStringFromTableInBundle(@"%@ bytes", @"MIDIMonitor", SMBundleForObject(self), "Details size format string"),
-        [SMMessage formatLength:[[self dataForDisplay] length]]];
+        [SMMessage formatLength:self.dataForDisplay.length]];
 
-    [sizeField setStringValue:sizeString];
-
-    [timeField setStringValue:[message timeStampForDisplay]];
+    self.sizeField.stringValue = sizeString;
+    self.timeField.stringValue = self.message.timeStampForDisplay;
 }
 
-- (NSString *)formatData:(NSData *)data;
+- (NSString *)formatData:(NSData *)data
 {
-    NSUInteger dataLength;
-    const unsigned char *bytes;
-    NSMutableString *formattedString;
-    NSUInteger dataIndex;
-    int lengthDigitCount;
-    NSUInteger scratchLength;
-
-    dataLength = [data length];
-    if (dataLength == 0)
+    NSUInteger dataLength = data.length;
+    if (dataLength == 0) {
         return @"";
+    }
 
-    bytes = [data bytes];
+    const unsigned char *bytes = data.bytes;
 
     // Figure out how many bytes dataLength takes to represent
-    lengthDigitCount = 0;
-    scratchLength = dataLength;
+    int lengthDigitCount = 0;
+    NSUInteger scratchLength = dataLength;
     while (scratchLength > 0) {
         lengthDigitCount += 2;
         scratchLength >>= 8;
     }
 
-    formattedString = [NSMutableString string];
-    for (dataIndex = 0; dataIndex < dataLength; dataIndex += 16) {
-        static const char hexchars[] = "0123456789ABCDEF";
-        char lineBuffer[100];
-        char *p;
-        unsigned int index;
-        NSString *lineString;
-
+    NSMutableString *formattedString = [NSMutableString string];
+    for (NSUInteger dataIndex = 0; dataIndex < dataLength; dataIndex += 16) {
         // This C stuff may be a little ugly but it is a hell of a lot faster than doing it with NSStrings...
 
-        p = lineBuffer;
+        static const char hexchars[] = "0123456789ABCDEF";
+        char lineBuffer[100];
+        char *p = lineBuffer;
+
         p += sprintf(p, "%.*lX", lengthDigitCount, (unsigned long)dataIndex);
         
-        for (index = dataIndex; index < dataIndex+16; index++) {
+        for (unsigned int index = dataIndex; index < dataIndex+16; index++) {
             *p++ = ' ';
-            if (index % 8 == 0)
+            if (index % 8 == 0) {
                 *p++ = ' ';
+            }
 
             if (index < dataLength) {
-                unsigned char byte;
-
-                byte = bytes[index];
+                unsigned char byte = bytes[index];
                 *p++ = hexchars[(byte & 0xF0) >> 4];
                 *p++ = hexchars[byte & 0x0F];
             } else {
@@ -220,10 +196,8 @@ static NSMapTable* messageToControllerMapTable = NULL;
         *p++ = ' ';
         *p++ = '|';
 
-        for (index = dataIndex; index < dataIndex+16 && index < dataLength; index++) {
-            unsigned char byte;
-
-            byte = bytes[index];
+        for (unsigned int index = dataIndex; index < dataIndex+16 && index < dataLength; index++) {
+            unsigned char byte = bytes[index];
             *p++ = (isprint(byte) ? byte : ' ');
         }
         
@@ -231,7 +205,7 @@ static NSMapTable* messageToControllerMapTable = NULL;
         *p++ = '\n';
         *p++ = 0;
 
-        lineString = [[NSString alloc] initWithCString:lineBuffer encoding:NSASCIIStringEncoding];
+        NSString *lineString = [[NSString alloc] initWithCString:lineBuffer encoding:NSASCIIStringEncoding];
         [formattedString appendString:lineString];
         [lineString release];
     }
