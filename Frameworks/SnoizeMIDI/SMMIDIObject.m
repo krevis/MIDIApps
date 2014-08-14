@@ -245,6 +245,14 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
     return self;
 }
 
+- (void)dealloc
+{
+    [cachedName release];
+    cachedName = nil;
+
+    [super dealloc];
+}
+
 - (MIDIObjectRef)objectRef;
 {
     return objectRef;
