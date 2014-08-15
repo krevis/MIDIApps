@@ -45,6 +45,11 @@ NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeC
 
 @implementation SMMDocument
 
++ (BOOL)autosavesInPlace
+{
+    return YES;
+}
+
 - (id)init
 {
     if ((self = [super init])) {
