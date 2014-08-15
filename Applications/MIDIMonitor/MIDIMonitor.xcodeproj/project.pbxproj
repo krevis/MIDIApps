@@ -12,6 +12,8 @@
 		161B71FA15D8DD83006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B71F915D8DD83006E21D4 /* dsa_pub.pem */; };
 		162972B1097B414800158D7B /* SnoizeMIDI.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */; };
 		162972B2097B414C00158D7B /* SnoizeMIDISpy.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71B1097B242A001AFB58 /* SnoizeMIDISpy.framework */; };
+		163FB5EA199ED5810017B664 /* SNDisclosureArrowDown@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB5E8199ED5810017B664 /* SNDisclosureArrowDown@2x.tiff */; };
+		163FB5EB199ED5810017B664 /* SNDisclosureArrowRight@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB5E9199ED5810017B664 /* SNDisclosureArrowRight@2x.tiff */; };
 		167B881906ED4D650053D305 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		167B881A06ED4D650053D305 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
 		167B881C06ED4D650053D305 /* MIDIMonitor.strings in Resources */ = {isa = PBXBuildFile; fileRef = F53BB4AE015D96A501000164 /* MIDIMonitor.strings */; };
@@ -158,6 +160,8 @@
 		161B71FC15D8DFA5006E21D4 /* MIDIMonitor.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = MIDIMonitor.xml; path = ../../Updates/MIDIMonitor.xml; sourceTree = "<group>"; };
 		162310440E6CCC6100A700CA /* SnoizeMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SnoizeMIDI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		162310450E6CCC6100A700CA /* SnoizeMIDISpy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SnoizeMIDISpy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		163FB5E8199ED5810017B664 /* SNDisclosureArrowDown@2x.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "SNDisclosureArrowDown@2x.tiff"; sourceTree = "<group>"; };
+		163FB5E9199ED5810017B664 /* SNDisclosureArrowRight@2x.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "SNDisclosureArrowRight@2x.tiff"; sourceTree = "<group>"; };
 		167B884206ED4D650053D305 /* Info-MIDIMonitor.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-MIDIMonitor.plist"; sourceTree = "<group>"; };
 		167B884306ED4D650053D305 /* MIDI Monitor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MIDI Monitor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1691E0D804CA1C1400ACFC9D /* SMMDetailsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMDetailsWindowController.h; sourceTree = "<group>"; };
@@ -395,7 +399,9 @@
 				F56D31A30195A90E01000164 /* docs.htmld */,
 				F57B0567026BB81F01000164 /* Read Me.html */,
 				16C267D015D836B2009F4BE4 /* SNDisclosureArrowDown.tiff */,
+				163FB5E8199ED5810017B664 /* SNDisclosureArrowDown@2x.tiff */,
 				16C267D115D836B2009F4BE4 /* SNDisclosureArrowRight.tiff */,
+				163FB5E9199ED5810017B664 /* SNDisclosureArrowRight@2x.tiff */,
 				161B71F915D8DD83006E21D4 /* dsa_pub.pem */,
 			);
 			name = Resources;
@@ -589,6 +595,7 @@
 				167B881C06ED4D650053D305 /* MIDIMonitor.strings in Resources */,
 				167B881D06ED4D650053D305 /* Preferences.nib in Resources */,
 				167B881E06ED4D650053D305 /* MIDIMonitor.icns in Resources */,
+				163FB5EB199ED5810017B664 /* SNDisclosureArrowRight@2x.tiff in Resources */,
 				167B881F06ED4D650053D305 /* Document.icns in Resources */,
 				167B882006ED4D650053D305 /* Credits.html in Resources */,
 				167B882106ED4D650053D305 /* docs.htmld in Resources */,
@@ -599,6 +606,7 @@
 				16C267D215D836B2009F4BE4 /* SNDisclosureArrowDown.tiff in Resources */,
 				16C267D315D836B2009F4BE4 /* SNDisclosureArrowRight.tiff in Resources */,
 				161B71FA15D8DD83006E21D4 /* dsa_pub.pem in Resources */,
+				163FB5EA199ED5810017B664 /* SNDisclosureArrowDown@2x.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
