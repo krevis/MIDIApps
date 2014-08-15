@@ -32,11 +32,6 @@ NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNe
 
 - (void)applicationWillFinishLaunching:(NSNotification *)notification
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didFinishRestoringWindows:)
-                                                 name:@"NSApplicationDidFinishRestoringWindowsNotification" 
-                                               object:NSApp];
-
     // Before CoreMIDI is initialized, make sure the spying driver is installed
     NSString *midiSpyErrorMessage = nil;
     BOOL shouldUseMIDISpy = NO;
@@ -60,8 +55,6 @@ NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNe
     // but before the app's window opens.  (CoreMIDI needs to find and possibly start its server process, which can take a while.)
     if ([SMClient sharedClient] == nil) {
         NSString *title, *message, *quit;
-        
-        self.shouldOpenUntitledDocument = NO;
 
         title = NSLocalizedStringFromTableInBundle(@"Error", @"MIDIMonitor", SMBundleForObject(self), "title of error alert");
         message = NSLocalizedStringFromTableInBundle(@"There was a problem initializing the MIDI system. To try to fix this, log out and log back in, or restart the computer.", @"MIDIMonitor", SMBundleForObject(self), "error message if MIDI initialization fails");
@@ -70,6 +63,7 @@ NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNe
         NSRunCriticalAlertPanel(title, @"%@", quit, nil, nil, message);
         [NSApp terminate:nil];
     } else {
+        // After this point, we are OK to open documents (untitled or otherwise)
         self.shouldOpenUntitledDocument = YES;
     }
 
@@ -97,18 +91,6 @@ NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNe
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender
 {
     return self.shouldOpenUntitledDocument;
-}
-
-- (void)didFinishRestoringWindows:(NSNotification*)notification
-{
-    // We receive this notification on Lion (10.7) and later.
-    // If AppKit has decided, for its own unknowable reasons, to not open an untitled document,
-    // and it's appropriate to do so, do it ourself now.
-    if ([self applicationShouldOpenUntitledFile:NSApp]) {
-        NSDocumentController *dc = [NSDocumentController sharedDocumentController];
-        if (dc.documents.count == 0)
-            [dc openUntitledDocumentAndDisplay:YES error:NULL];
-    }
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
