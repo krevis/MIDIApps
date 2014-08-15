@@ -23,36 +23,4 @@
     return self;
 }
 
-- (void)awakeFromNib
-{
-    self.window.frameAutosaveName = self.windowNibName;
-}
-
-#pragma mark Notifications, delegates, data sources
-
-- (void)windowDidResize:(NSNotification *)notification
-{
-    [self autosaveWindowFrame];
-}
-
-- (void)windowDidMove:(NSNotification *)notification
-{
-    [self autosaveWindowFrame];
-}
-
-#pragma mark Private
-
-- (void)autosaveWindowFrame
-{
-    // Work around an AppKit bug: the frame that gets saved in NSUserDefaults is the window's old position, not the new one.
-    // We get notified after the window has been moved/resized and the defaults changed.
-
-    NSWindow *window = self.window;
-    // Sometimes we get called before the window's autosave name is set (when the nib is loading), so check that.
-    if (window.frameAutosaveName) {
-        [window saveFrameUsingName:window.frameAutosaveName];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-}
-
 @end
