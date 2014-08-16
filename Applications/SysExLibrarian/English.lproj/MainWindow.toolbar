@@ -9,19 +9,19 @@
     itemInfoByIdentifier = {
         Play = {
             action = "play:";
-            imageName = "ToolbarPlay";
+            imageName = "ToolbarPlayTemplate";
             label = "Play";
             toolTip = "Play back the selected file(s)";
         };
         RecordOne = {
             action = "recordOne:";
-            imageName = "ToolbarRecordOne";
+            imageName = "ToolbarRecordOneTemplate";
             label = "Record One";
             toolTip = "Record one SysEx message";
         };
         RecordMany = {
             action = "recordMany:";
-            imageName = "ToolbarRecordMany";
+            imageName = "ToolbarRecordMultipleTemplate";
             label = "Record Many";
             toolTip = "Record one or more SysEx messages";
         };
