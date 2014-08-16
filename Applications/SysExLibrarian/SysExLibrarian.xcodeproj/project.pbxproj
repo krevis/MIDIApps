@@ -18,8 +18,6 @@
 		16F033540984B76F006C8A44 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
 		16F033560984B76F006C8A44 /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = F559F90A01DEC5E001000164 /* Preferences.nib */; };
 		16F033570984B76F006C8A44 /* MainWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = F559F90F01DEFA9701000164 /* MainWindow.nib */; };
-		16F033580984B76F006C8A44 /* TableHeaderReverseSort.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F561AFAA0208780001000164 /* TableHeaderReverseSort.tiff */; };
-		16F033590984B76F006C8A44 /* TableHeaderSort.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F561AFAB0208780001000164 /* TableHeaderSort.tiff */; };
 		16F0335A0984B76F006C8A44 /* SysExLibrarian.icns in Resources */ = {isa = PBXBuildFile; fileRef = F57D1E5902122FA501000164 /* SysExLibrarian.icns */; };
 		16F0335B0984B76F006C8A44 /* LibraryDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = F57D1E5C02127DF401000164 /* LibraryDocument.icns */; };
 		16F0335C0984B76F006C8A44 /* MIDIDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = F57D1E5D02127DF401000164 /* MIDIDocument.icns */; };
@@ -217,8 +215,6 @@
 		F559F90701DEC1D801000164 /* SSEPreferencesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEPreferencesWindowController.m; sourceTree = "<group>"; };
 		F559F90B01DEC5E001000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Preferences.nib; sourceTree = "<group>"; };
 		F559F90D01DEF5E001000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainWindow.nib; sourceTree = "<group>"; };
-		F561AFAA0208780001000164 /* TableHeaderReverseSort.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = TableHeaderReverseSort.tiff; sourceTree = "<group>"; };
-		F561AFAB0208780001000164 /* TableHeaderSort.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = TableHeaderSort.tiff; sourceTree = "<group>"; };
 		F565B6E501E1419001000164 /* SSEMainWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEMainWindowController.h; sourceTree = "<group>"; };
 		F565B6E601E1419001000164 /* SSEMainWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEMainWindowController.m; sourceTree = "<group>"; };
 		F565B6E901E1498301000164 /* SSEMIDIController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEMIDIController.h; sourceTree = "<group>"; };
@@ -410,8 +406,6 @@
 				F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				F5D90FD1021628DF01000164 /* Credits.html */,
-				F561AFAA0208780001000164 /* TableHeaderReverseSort.tiff */,
-				F561AFAB0208780001000164 /* TableHeaderSort.tiff */,
 				F5308FEB0233012701000164 /* Icons */,
 				F587526F0214CEDD01000164 /* MainWindow.toolbar */,
 				F5308FEC0233012701000164 /* Toolbar Images */,
@@ -735,8 +729,6 @@
 				16F033540984B76F006C8A44 /* MainMenu.nib in Resources */,
 				16F033560984B76F006C8A44 /* Preferences.nib in Resources */,
 				16F033570984B76F006C8A44 /* MainWindow.nib in Resources */,
-				16F033580984B76F006C8A44 /* TableHeaderReverseSort.tiff in Resources */,
-				16F033590984B76F006C8A44 /* TableHeaderSort.tiff in Resources */,
 				16F0335A0984B76F006C8A44 /* SysExLibrarian.icns in Resources */,
 				16F0335B0984B76F006C8A44 /* LibraryDocument.icns in Resources */,
 				16F0335C0984B76F006C8A44 /* MIDIDocument.icns in Resources */,
