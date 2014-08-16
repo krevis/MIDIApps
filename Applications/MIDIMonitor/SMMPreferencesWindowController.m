@@ -53,6 +53,13 @@ NSString* const SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreference
     return controller;
 }
 
++ (void)restoreWindowWithIdentifier:(NSString *)identifier state:(NSCoder *)state completionHandler:(void (^)(NSWindow *, NSError *))completionHandler
+{
+    if (completionHandler) {
+        completionHandler([[self preferencesWindowController] window], nil);
+    }
+}
+
 - (id)init
 {
     return [super initWithWindowNibName:@"Preferences"];
@@ -69,6 +76,8 @@ NSString* const SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreference
 	NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
 	
     [super windowDidLoad];
+
+    self.window.restorationClass = [self class];
 
     // Make sure the first tab is selected (just in case someone changed it while editing the nib)
     [self.tabView selectFirstTabViewItem:nil];
