@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <deployment version="1050" defaultVersion="1070" identifier="macosx"/>
+        <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5056"/>
     </dependencies>
     <objects>
@@ -531,7 +531,7 @@
                     <button id="384" customClass="SNDisclosureButton">
                         <rect key="frame" x="20" y="407" width="80" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="square" title="Filter" bezelStyle="shadowlessSquare" image="5E6BA6E0-E762-4D45-A9E0-11316578E5EB" imagePosition="left" alignment="left" alternateImage="4B97F26C-40E6-4ABF-9D58-6061EBDF9A4B" state="on" inset="2" id="504">
+                        <buttonCell key="cell" type="square" title="Filter" bezelStyle="shadowlessSquare" image="7FC16AA8-95D8-4232-A8D1-7294A81F45A0" imagePosition="left" alignment="left" alternateImage="9C4CE64B-8FF7-4405-BDB8-8E75D103CE24" state="on" inset="2" id="504">
                             <behavior key="behavior" pushIn="YES" changeContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -543,7 +543,7 @@
                     <button id="447" customClass="SNDisclosureButton">
                         <rect key="frame" x="20" y="537" width="80" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="square" title="Sources" bezelStyle="shadowlessSquare" image="20FD5EDC-37CE-4C8A-B25C-E6286CEF7BEB" imagePosition="left" alignment="left" alternateImage="8C09EE6D-1890-44F0-9E8F-C7B3E1922422" state="on" inset="2" id="505">
+                        <buttonCell key="cell" type="square" title="Sources" bezelStyle="shadowlessSquare" image="9FACDC69-AA6B-4571-9894-3198F5E634A4" imagePosition="left" alignment="left" alternateImage="B8DB8850-C7C2-4983-BF8F-AC921FE607E6" state="on" inset="2" id="505">
                             <behavior key="behavior" pushIn="YES" changeContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -561,7 +561,7 @@
         </window>
     </objects>
     <resources>
-        <image name="20FD5EDC-37CE-4C8A-B25C-E6286CEF7BEB" width="0.0" height="0.0">
+        <image name="7FC16AA8-95D8-4232-A8D1-7294A81F45A0" width="0.0" height="0.0">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGOTpYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoKwHCBEW
 GxwiIyotMzZVJG51bGzUCQoLDA0ODxBWJGNsYXNzXE5TSW1hZ2VGbGFnc1ZOU1JlcHNXTlNDb2xvcoAL
@@ -576,7 +576,7 @@ AMYAyAE4AT0BSAFRAVcBWgFgAWkBbgF2AXkBgAGIAZUBmgGcAZ4BowGrAa4BswG7Ab4B0AHTAdgAAAAA
 AAACAQAAAAAAAAA9AAAAAAAAAAAAAAAAAAAB2g
 </mutableData>
         </image>
-        <image name="4B97F26C-40E6-4ABF-9D58-6061EBDF9A4B" width="0.0" height="0.0">
+        <image name="9C4CE64B-8FF7-4405-BDB8-8E75D103CE24" width="0.0" height="0.0">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGOTpYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoKwHCBEW
 GxwiIyotMzZVJG51bGzUCQoLDA0ODxBWJGNsYXNzXE5TSW1hZ2VGbGFnc1ZOU1JlcHNXTlNDb2xvcoAL
@@ -591,7 +591,7 @@ xgDIATcBPAFHAVABVgFZAV8BaAFtAXUBeAF/AYcBlAGZAZsBnQGiAaoBrQGyAboBvQHPAdIB1wAAAAAA
 AAIBAAAAAAAAAD0AAAAAAAAAAAAAAAAAAAHZA
 </mutableData>
         </image>
-        <image name="5E6BA6E0-E762-4D45-A9E0-11316578E5EB" width="0.0" height="0.0">
+        <image name="9FACDC69-AA6B-4571-9894-3198F5E634A4" width="0.0" height="0.0">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGOTpYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoKwHCBEW
 GxwiIyotMzZVJG51bGzUCQoLDA0ODxBWJGNsYXNzXE5TSW1hZ2VGbGFnc1ZOU1JlcHNXTlNDb2xvcoAL
@@ -606,7 +606,7 @@ AMYAyAE4AT0BSAFRAVcBWgFgAWkBbgF2AXkBgAGIAZUBmgGcAZ4BowGrAa4BswG7Ab4B0AHTAdgAAAAA
 AAACAQAAAAAAAAA9AAAAAAAAAAAAAAAAAAAB2g
 </mutableData>
         </image>
-        <image name="8C09EE6D-1890-44F0-9E8F-C7B3E1922422" width="0.0" height="0.0">
+        <image name="B8DB8850-C7C2-4983-BF8F-AC921FE607E6" width="0.0" height="0.0">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGOTpYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoKwHCBEW
 GxwiIyotMzZVJG51bGzUCQoLDA0ODxBWJGNsYXNzXE5TSW1hZ2VGbGFnc1ZOU1JlcHNXTlNDb2xvcoAL
