@@ -27,8 +27,7 @@
 {
     NSWindow *window;
 
-    if ([[self superclass] instancesRespondToSelector:@selector(awakeFromNib)])
-        [super awakeFromNib];
+    [super awakeFromNib];
 
     if ((window = [self window]))
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidUpdate:) name:NSWindowDidUpdateNotification object:window];

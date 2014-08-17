@@ -16,9 +16,7 @@
 
 - (void)awakeFromNib
 {
-    if ([[self superclass] instancesRespondToSelector:@selector(awakeFromNib)]) {
-        [super awakeFromNib];
-    }
+    [super awakeFromNib];
 
     self.animationResizeTimeScaleFactor = 0.75;
 }

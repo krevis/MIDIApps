@@ -58,9 +58,7 @@ const float kDefaultHiddenHeight = 0.0;
 
 - (void)awakeFromNib
 {
-    if ([[self superclass] instancesRespondToSelector:@selector(awakeFromNib)]) {
-        [super awakeFromNib];
-    }
+    [super awakeFromNib];
 
     if ([self autoresizingMask] & NSViewHeightSizable) {
         NSLog(@"Warning: SNDisclosableView: You probably don't want this view to be resizeable vertically. I suggest turning that off in the inspector in IB.");
