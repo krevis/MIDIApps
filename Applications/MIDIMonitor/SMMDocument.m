@@ -25,6 +25,9 @@ NSString* const SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey = @"SM
 NSString* const SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoSelectSpyingDestinations";
 NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosingModifiedWindow";
 
+NSString* const SMMFileType = @"com.snoize.midimonitor";
+NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
+
 @interface SMMDocument ()
 
 // Redeclare read-write
@@ -124,8 +127,15 @@ NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeC
     }
 }
 
-- (NSData *)dataRepresentationOfType:(NSString *)type
+- (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError
 {
+    if (![SMMFileType isEqual:typeName]) {
+        if (outError) {
+            *outError = [self badFileTypeError];
+        }
+        return nil;
+    }
+
     NSMutableDictionary* dict = [[NSMutableDictionary alloc] init];
     dict[@"version"] = @2;
 
@@ -163,17 +173,30 @@ NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeC
         [dict addEntriesFromDictionary:windowSettings];
     }
 
-    NSData* data = [NSPropertyListSerialization dataFromPropertyList:dict format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
-    
+    NSData *data = [NSPropertyListSerialization dataWithPropertyList:dict format:NSPropertyListBinaryFormat_v1_0 options:0 error:outError];
+
     [dict release];
     
     return data;
 }
 
-- (BOOL)loadDataRepresentation:(NSData *)data ofType:(NSString *)type
+- (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
 {
-    id propertyList = [NSPropertyListSerialization propertyListFromData:data mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
-    if (!propertyList || ![propertyList isKindOfClass:[NSDictionary class]]) {
+    if (![SMMFileType isEqual:typeName]) {
+        if (outError) {
+            *outError = [self badFileTypeError];
+        }
+        return NO;
+    }
+
+    id propertyList = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:outError];
+    if (!propertyList) {
+        return NO;
+    }
+    if (![propertyList isKindOfClass:[NSDictionary class]]) {
+        if (outError) {
+            *outError = [self badFileContentsError];
+        }
         return NO;
 	}
 
@@ -197,6 +220,9 @@ NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeC
             break;
 
         default:
+            if (outError) {
+                *outError = [self badFileContentsError];
+            }
             return NO;
     }
 
@@ -382,6 +408,18 @@ NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeC
 }
 
 #pragma mark Private
+
+- (NSError *)badFileTypeError
+{
+    NSString* reason = NSLocalizedStringFromTableInBundle(@"Unknown file type.", @"MIDIMonitor", SMBundleForObject(self), "error reason for unknown file type read or write");
+    return [NSError errorWithDomain:SMMErrorDomain code:1 userInfo:@{NSLocalizedFailureReasonErrorKey: reason}];
+}
+
+- (NSError *)badFileContentsError
+{
+    NSString* reason = NSLocalizedStringFromTableInBundle(@"Can't read the contents of the file.", @"MIDIMonitor", SMBundleForObject(self), "error reason for unknown file contents");
+    return [NSError errorWithDomain:SMMErrorDomain code:2 userInfo:@{NSLocalizedFailureReasonErrorKey: reason}];
+}
 
 - (void)sourceListDidChange:(NSNotification *)notification
 {
