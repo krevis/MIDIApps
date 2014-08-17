@@ -287,7 +287,7 @@ const float kDefaultHiddenHeight = 0.0;
         
         window.preservesContentDuringLiveResize = didPreserve;
     } else {
-        [window setFrame:newWindowFrame display:NO];
+        [window setFrame:newWindowFrame display:NO animate:NO];
     }
 
     // Adjust the window's min and max sizes to make sense.
