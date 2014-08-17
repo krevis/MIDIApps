@@ -17,7 +17,5 @@
 
 // Actions
 - (IBAction)toggleDisclosure:(id)sender;
-- (IBAction)hide:(id)sender;
-- (IBAction)show:(id)sender;
 
 @end

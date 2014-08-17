@@ -72,6 +72,7 @@ const float kDefaultHiddenHeight = 0.0;
     return NO;
 }
 
+
 //
 // New methods
 //
@@ -80,10 +81,11 @@ const float kDefaultHiddenHeight = 0.0;
 {
     if (value != _shown) {
         if (value) {
-            [self show:nil];
+            [self show];
         } else {
-            [self hide:nil];
+            [self hide];
         }
+        _shown = value;
     }
 }
 
@@ -96,16 +98,14 @@ const float kDefaultHiddenHeight = 0.0;
     self.shown = !self.isShown;
 }
 
-- (IBAction)hide:(id)sender
-{
-    if (!_shown) {
-        return;
-    }
+#pragma mark Private
 
+- (void)hide
+{
     NSView *keyLoopView = self.nextKeyView;
     if ([keyLoopView isDescendantOf:self]) {
         // We need to remove our subviews (which will be hidden) from the key loop.
-    
+
         // Remember our nextKeyView so we can restore it later.
         self.nonretainedOriginalNextKeyView = keyLoopView;
 
@@ -118,7 +118,7 @@ const float kDefaultHiddenHeight = 0.0;
                 break;
             }
         }
-            
+
         // Set our nextKeyView to its nextKeyView, and set its nextKeyView to nil.
         // (If we don't do the last step, when we restore the key loop later, it will be missing views in the backwards direction.)
         self.nextKeyView = keyLoopView;
@@ -136,18 +136,12 @@ const float kDefaultHiddenHeight = 0.0;
     // Also remove the subviews from the view hierarchy.
     [self changeWindowHeightBy:-(self.originalHeight - self.hiddenHeight)];
     [self removeSubviews];
-    
-    [self setNeedsDisplay:YES];
 
-    _shown = NO;
+    [self setNeedsDisplay:YES];
 }
 
-- (IBAction)show:(id)sender
+- (void)show
 {
-    if (_shown) {
-        return;
-    }
-
     // Expand the window, causing this view to expand, and put our hidden subviews back into the view hierarchy.
     [self restoreSubviews];
 
@@ -159,7 +153,7 @@ const float kDefaultHiddenHeight = 0.0;
     [self setFrameSize:NSMakeSize(hiddenSize.width, self.originalHeight)];
     [self resizeSubviewsWithOldSize:self.sizeBeforeHidden];
     [self setFrameSize:hiddenSize];
-    
+
     [self changeWindowHeightBy:(self.originalHeight - self.hiddenHeight)];
 
     if (self.nonretainedOriginalNextKeyView) {
@@ -168,12 +162,8 @@ const float kDefaultHiddenHeight = 0.0;
         self.nextKeyView = self.nonretainedOriginalNextKeyView;
     }
 
-    _shown = YES;
-
     [self setNeedsDisplay:YES];
 }
-
-#pragma mark Private
 
 - (void)removeSubviews
 {
