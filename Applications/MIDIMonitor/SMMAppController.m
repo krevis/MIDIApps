@@ -16,6 +16,7 @@
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 #import "SMMDocument.h"
+#import "SMMMonitorWindowController.h"
 #import "SMMPreferencesWindowController.h"
 
 
@@ -187,8 +188,9 @@ NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNe
     [document makeWindowControllers];
     [document setSelectedInputSources:self.newlyAppearedSources];
     [document showWindows];
-    [document setAreSourcesShown:YES];
-    [document revealInputSources:self.newlyAppearedSources];
+    SMMMonitorWindowController *wc = document.windowControllers.firstObject;
+    [wc revealInputSources:self.newlyAppearedSources];
+    [document updateChangeCount:NSChangeCleared];
 
     self.newlyAppearedSources = nil;
 }

@@ -14,29 +14,12 @@
 
 - (instancetype)init;
 
-// Actions
-- (IBAction)clearMessages:(id)sender;
-- (IBAction)setMaximumMessageCount:(id)sender;
-- (IBAction)changeFilter:(id)sender;
-- (IBAction)changeFilterFromMatrix:(id)sender;
-- (IBAction)setChannelRadioButton:(id)sender;
-- (IBAction)setChannel:(id)sender;
-- (IBAction)toggleSourcesShown:(id)sender;
-- (IBAction)toggleFilterShown:(id)sender;
-- (IBAction)showDetailsOfSelectedMessages:(id)sender;
-- (IBAction)copy:(id)sender;
-
 // Other API
-
-- (void)synchronizeInterface;
-    // Calls each of the following:
 
 - (void)synchronizeMessagesWithScrollToBottom:(BOOL)shouldScrollToBottom;
 - (void)synchronizeSources;
-- (void)synchronizeSourcesShown;
 - (void)synchronizeMaxMessageCount;
 - (void)synchronizeFilterControls;
-- (void)synchronizeFilterShown;
 
 - (void)couldNotFindSourcesNamed:(NSArray *)sourceNames;
 
@@ -45,8 +28,7 @@
 
 - (void)revealInputSources:(NSSet *)inputSources;
 
-- (NSPoint)messagesScrollPoint;
-
-- (void)setWindowStateFromDocument;
++ (NSArray *)windowSettingsKeys;
+- (NSDictionary *)windowSettings;
 
 @end

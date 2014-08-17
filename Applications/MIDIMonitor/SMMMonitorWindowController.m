@@ -59,7 +59,6 @@
 @property (nonatomic, assign) NSUInteger oneChannel;
 @property (nonatomic, retain) NSArray *groupedInputSources;
 @property (nonatomic, retain) NSArray *displayedMessages;
-@property (nonatomic, assign) BOOL sendWindowFrameChangesToDocument;
 @property (nonatomic, assign) BOOL messagesNeedScrollToBottom;
 @property (nonatomic, retain) NSDate *nextMessagesRefreshDate;
 @property (nonatomic, assign) NSTimer *nextMessagesRefreshTimer;
@@ -77,9 +76,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 
         _oneChannel = 1;
 
-        // We don't want to tell our document about window frame changes while we are still in the middle
-        // of loading it, because we may do some resizing.
-        _sendWindowFrameChangesToDocument = NO;
+        self.shouldCascadeWindows = YES;
     }
 
     return self;
@@ -155,10 +152,14 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     [super setDocument:document];
 
     if (document) {
-        [self setupWindowCascading];
         [self window];	// Make sure the window is loaded
-        [self synchronizeInterface];
-        [self setWindowStateFromDocument];
+
+        [self synchronizeMessagesWithScrollToBottom:NO];
+        [self synchronizeSources];
+        [self synchronizeMaxMessageCount];
+        [self synchronizeFilterControls];
+
+        [self restoreWindowSettings:((SMMDocument *)document).windowSettings];
     }
 }
 
@@ -237,20 +238,23 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 
 - (IBAction)toggleFilterShown:(id)sender
 {
-    // Toggle the button immediately, which looks better.
-    // NOTE This is absolutely a dumb place to do it, but I CANNOT get it to work any other way. See comment in -synchronizeDisclosableView:button:withIsShown:.
-    [sender setIntValue:![sender intValue]];
+    [self.filterDisclosableView toggleDisclosure:sender];
 
-    self.midiDocument.isFilterShown = !self.midiDocument.isFilterShown;
+    // Mark the document as dirty, so the state of the window gets saved.
+    // However, use NSChangeDiscardable, so it doesn't cause a locked document to get dirtied for a trivial change.
+    // Also, don't do it for untitled, unsaved documents which have no fileURL yet, because that's annoying.
+    if (self.midiDocument.fileURL) {
+        [self.midiDocument updateChangeCount:(NSChangeDiscardable | NSChangeDone)];
+    }
 }
 
 - (IBAction)toggleSourcesShown:(id)sender
 {
-    // Toggle the button immediately, which looks better.
-    // NOTE This is absolutely a dumb place to do it, but I CANNOT get it to work any other way. See comment in -synchronizeDisclosableView:button:withIsShown:.
-    [sender setIntValue:![sender intValue]];
+    [self.sourcesDisclosableView toggleDisclosure:sender];
 
-    self.midiDocument.areSourcesShown = !self.midiDocument.areSourcesShown;
+    if (self.midiDocument.fileURL) {
+        [self.midiDocument updateChangeCount:(NSChangeDiscardable | NSChangeDone)];
+    }
 }
 
 - (IBAction)showDetailsOfSelectedMessages:(id)sender
@@ -290,17 +294,6 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 // Other API
 //
 
-- (void)synchronizeInterface
-{
-    [self synchronizeMessagesWithScrollToBottom:NO];
-    
-    [self synchronizeSources];
-    [self synchronizeSourcesShown];
-    [self synchronizeMaxMessageCount];
-    [self synchronizeFilterControls];
-    [self synchronizeFilterShown];
-}
-
 - (void)synchronizeMessagesWithScrollToBottom:(BOOL)shouldScrollToBottom
 {
     // Reloading the NSTableView can be excruciatingly slow, and if messages are coming in quickly,
@@ -331,11 +324,6 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     self.groupedInputSources = self.midiDocument.groupedInputSources;
 
     [self.sourcesOutlineView reloadData];
-}
-
-- (void)synchronizeSourcesShown
-{
-    [self synchronizeDisclosableView:self.sourcesDisclosableView button:self.sourcesDisclosureButton withIsShown:self.midiDocument.areSourcesShown];
 }
 
 - (void)synchronizeMaxMessageCount
@@ -386,11 +374,6 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     self.oneChannelField.objectValue = [NSNumber numberWithUnsignedInt:self.oneChannel];
 }
 
-- (void)synchronizeFilterShown
-{
-    [self synchronizeDisclosableView:self.filterDisclosableView button:self.filterDisclosureButton withIsShown:self.midiDocument.isFilterShown];
-}
-
 - (void)couldNotFindSourcesNamed:(NSArray *)sourceNames
 {
     NSUInteger sourceNamesCount = sourceNames.count;
@@ -432,9 +415,12 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 
 - (void)revealInputSources:(NSSet *)inputSources
 {
+    // Show the sources first
+    self.sourcesDisclosableView.shown = YES;
+    [self.sourcesDisclosureButton setIntValue: 1];
+
     // Of all of the input sources, find the first one which is in the given set.
     // Then expand the outline view to show this source, and scroll it to be visible.
-
     for (NSDictionary *group in self.groupedInputSources) {
         if (![[group objectForKey:@"isNotExpandable"] boolValue]) {
             NSArray *groupSources;
@@ -459,47 +445,72 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     }
 }
 
-- (NSPoint)messagesScrollPoint
+
+#pragma mark Window settings
+
+static NSString * const SMMSourcesShownKey = @"areSourcesShown";
+static NSString * const SMMFilterShownKey = @"isFilterShown";
+static NSString * const SMMWindowFrameKey = @"windowFrame";
+static NSString * const SMMMessagesScrollPointX = @"messagesScrollPointX";
+static NSString * const SMMMessagesScrollPointY = @"messagesScrollPointY";
+
++ (NSArray *)windowSettingsKeys
 {
-    NSView *clipView = self.messagesTableView.enclosingScrollView.contentView;
-    NSRect clipBounds = clipView.bounds;
-    return [self.messagesTableView convertPoint:clipBounds.origin fromView:clipView];
+    return @[SMMSourcesShownKey, SMMFilterShownKey, SMMWindowFrameKey, SMMMessagesScrollPointX, SMMMessagesScrollPointY];
 }
 
-- (void)setWindowStateFromDocument
+- (NSDictionary *)windowSettings
 {
-    self.sendWindowFrameChangesToDocument = NO;
-    
-    NSString *frameDescription = self.midiDocument.windowFrameDescription;
-    if (frameDescription) {
-        [self.window setFrameFromString:frameDescription];
+    NSMutableDictionary *windowSettings = [NSMutableDictionary dictionary];
+
+    // Remember whether our sections are shown or hidden
+    if (self.sourcesDisclosableView.shown) {
+        windowSettings[SMMSourcesShownKey] = @YES;
     }
-    
-    // From now on, tell the document about any window frame changes
-    self.sendWindowFrameChangesToDocument = YES;
-    
-    // Also update scroll position in the message list
-    [self updateDisplayedMessages];
-    [self.messagesTableView reloadData];
-    [self.messagesTableView scrollPoint:self.midiDocument.messagesScrollPoint];
+    if (self.filterDisclosableView.shown) {
+        windowSettings[SMMFilterShownKey] = @YES;
+    }
+
+    // And remember the window frame, so we can restore it after restoring those
+    NSString *windowFrameDescription = self.window.stringWithSavedFrame;
+    if (windowFrameDescription) {
+        windowSettings[SMMWindowFrameKey] = windowFrameDescription;
+    }
+
+    // And the scroll position of the messages
+    NSView *clipView = self.messagesTableView.enclosingScrollView.contentView;
+    NSRect clipBounds = clipView.bounds;
+    NSPoint scrollPoint = [self.messagesTableView convertPoint:clipBounds.origin fromView:clipView];
+    windowSettings[SMMMessagesScrollPointX] = @(scrollPoint.x);
+    windowSettings[SMMMessagesScrollPointY] = @(scrollPoint.y);
+
+    return windowSettings;
+}
+
+- (void)restoreWindowSettings:(NSDictionary *)windowSettings
+{
+    // Restore visibility of sections
+    BOOL sourcesShown = [@YES isEqual:windowSettings[SMMSourcesShownKey]];
+    [self.sourcesDisclosureButton setIntValue:sourcesShown ? 1 : 0];
+    self.sourcesDisclosableView.shown = sourcesShown;
+
+    BOOL filterShown = [@YES isEqual:windowSettings[SMMFilterShownKey]];
+    [self.filterDisclosureButton setIntValue:filterShown ? 1 : 0];
+    self.filterDisclosableView.shown = filterShown;
+
+    // Then, since those may have resized the window, set the frame back to what we expect.
+    NSString *windowFrame = windowSettings[SMMWindowFrameKey];
+    if ([windowFrame isKindOfClass:[NSString class]]) {
+        [self.window setFrameFromString:windowFrame];
+    }
+
+    if ([windowSettings[SMMMessagesScrollPointX] isKindOfClass:[NSNumber class]] && [windowSettings[SMMMessagesScrollPointY] isKindOfClass:[NSNumber class]]) {
+        NSPoint scrollPoint = (NSPoint){ [windowSettings[SMMMessagesScrollPointX] floatValue], [windowSettings[SMMMessagesScrollPointY] floatValue] };
+        [self.messagesTableView scrollPoint:scrollPoint];
+    }
 }
 
 #pragma mark Delegates & Data Sources
-
-//
-// NSWindow delegate
-//
-
-- (void)windowDidResize:(NSNotification *)notification
-{
-    [self updateDocumentWindowFrameDescription];
-}
-
-- (void)windowDidMove:(NSNotification *)notification
-{
-    [self updateDocumentWindowFrameDescription];
-}
-
 
 //
 // NSOutlineView data source
@@ -625,23 +636,6 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     [self.messagesTableView reloadData];
 }
 
-- (void)setupWindowCascading
-{
-    // If the document specifies a window frame, we don't want to cascade.
-    // Otherwise, this is a new document, and we do.
-    // This must happen before the window is loaded (before we ever call [self window])
-    // or it won't take effect.
-
-    self.shouldCascadeWindows = self.midiDocument.windowFrameDescription == nil;
-}
-
-- (void)updateDocumentWindowFrameDescription
-{
-    if (self.sendWindowFrameChangesToDocument) {
-        self.midiDocument.windowFrameDescription = [self.window stringWithSavedFrame];
-    }
-}
-
 - (void)updateDisplayedMessages
 {
     self.displayedMessages = self.midiDocument.savedMessages;
@@ -727,22 +721,6 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     }
 
     return areAnySelected ? NSOnState : NSOffState;
-}
-
-- (void)synchronizeDisclosableView:(SNDisclosableView *)view button:(NSButton *)button withIsShown:(BOOL)isShown
-{
-    // Temporarily stop sending window frame changes to the document,
-    // while we're doing the animated resize.
-    BOOL savedSendWindowFrameChangesToDocument = self.sendWindowFrameChangesToDocument;
-    self.sendWindowFrameChangesToDocument = NO;
-
-    // Important: it's less flickery if we update the button first, then animate the disclosure view
-    [button setIntValue:(isShown ? 1 : 0)];
-    view.shown = isShown;
-
-    self.sendWindowFrameChangesToDocument = savedSendWindowFrameChangesToDocument;
-    // Now we can update the document, once instead of many times.
-    [self updateDocumentWindowFrameDescription];
 }
 
 @end

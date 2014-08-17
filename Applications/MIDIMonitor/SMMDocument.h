@@ -22,8 +22,6 @@
 
 @property (nonatomic, retain) NSSet* selectedInputSources;
 
-- (void)revealInputSources:(NSSet *)inputSources;
-
 @property (nonatomic, assign) NSUInteger maxMessageCount;
 
 - (SMMessageType)filterMask;
@@ -34,14 +32,10 @@
 - (void)showAllChannels;
 - (void)showOnlyOneChannel:(NSUInteger)channel;
 
-@property (nonatomic, assign) BOOL areSourcesShown;
-@property (nonatomic, assign) BOOL isFilterShown;
-@property (nonatomic, copy) NSString *windowFrameDescription;
+@property (nonatomic, readonly, copy) NSDictionary *windowSettings;
 
 - (void)clearSavedMessages;
 - (NSArray *)savedMessages;
-
-- (NSPoint)messagesScrollPoint;
 
 @end
 

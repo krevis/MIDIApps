@@ -27,13 +27,13 @@ NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeC
 
 @interface SMMDocument ()
 
+// Redeclare read-write
+@property (nonatomic, readwrite, copy) NSDictionary *windowSettings;
+
 // MIDI processing
 @property (nonatomic, retain) SMMCombinationInputStream *stream;
 @property (nonatomic, retain) SMMessageFilter *messageFilter;
 @property (nonatomic, retain) SMMessageHistory *history;
-
-// Other settings
-@property (nonatomic, assign) NSPoint messagesScrollPoint;
 
 // Transient data
 @property (nonatomic, retain) NSArray *missingSourceNames;
@@ -97,12 +97,12 @@ NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeC
     _messageFilter.messageDestination = nil;
     [_messageFilter release];
     _messageFilter = nil;
-    [_windowFrameDescription release];
-    _windowFrameDescription = nil;
     [_missingSourceNames release];
     _missingSourceNames = nil;
     [_history release];
     _history = nil;
+    [_windowSettings release];
+    _windowSettings = nil;
 
     [super dealloc];
 }
@@ -149,18 +149,6 @@ NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeC
         dict[@"channelMask"] = @(channelMask);
     }
 
-    if (self.areSourcesShown) {
-        dict[@"areSourcesShown"] = @YES;
-    }
-
-    if (self.isFilterShown) {
-        dict[@"isFilterShown"] = @YES;
-    }
-
-    if (self.windowFrameDescription) {
-        dict[@"windowFrame"] = self.windowFrameDescription;
-    }
-
     NSArray* savedMessages = self.history.savedMessages;
     if (savedMessages.count) {
         NSData* messageData = [NSKeyedArchiver archivedDataWithRootObject:savedMessages];
@@ -168,14 +156,13 @@ NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeC
             dict[@"messageData"] = messageData;
         }
     }
-    
-    SMMMonitorWindowController* wc = self.windowControllers.lastObject;
-    if (wc) {
-        self.messagesScrollPoint = wc.messagesScrollPoint;
-        dict[@"messagesScrollPointX"] = @(self.messagesScrollPoint.x);
-        dict[@"messagesScrollPointY"] = @(self.messagesScrollPoint.y);
+
+    SMMMonitorWindowController* wc = self.windowControllers.firstObject;
+    NSDictionary *windowSettings = wc.windowSettings;
+    if (windowSettings) {
+        [dict addEntriesFromDictionary:windowSettings];
     }
-    
+
     NSData* data = [NSPropertyListSerialization dataFromPropertyList:dict format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
     
     [dict release];
@@ -192,7 +179,6 @@ NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeC
 
     NSDictionary *dict = propertyList;
     NSNumber *number;
-    NSString *string;
     NSDictionary *streamSettings = nil;
 
     int version = [dict[@"version"] intValue];
@@ -230,25 +216,6 @@ NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeC
     number = dict[@"channelMask"];
     self.channelMask = number ? [number unsignedIntValue] : SMChannelMaskAll;
 
-    number = dict[@"areSourcesShown"];
-    self.areSourcesShown = number ? [number boolValue] : NO;
-
-    number = dict[@"isFilterShown"];
-    self.isFilterShown = number ? [number boolValue] : NO;
-
-    if ((string = dict[@"windowFrame"])) {
-        self.windowFrameDescription = string;
-    }
-
-    NSPoint messagesScrollPoint = NSZeroPoint;
-    if ((number = [dict objectForKey:@"messagesScrollPointX"])) {
-        messagesScrollPoint.x = [number floatValue];
-    }
-    if ((number = [dict objectForKey:@"messagesScrollPointY"])) {
-        messagesScrollPoint.y = [number floatValue];
-    }
-    self.messagesScrollPoint = messagesScrollPoint;
-    
     NSData* messageData = [dict objectForKey:@"messageData"];
     if (messageData) {
         id obj = [NSKeyedUnarchiver unarchiveObjectWithData:messageData];
@@ -256,8 +223,15 @@ NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeC
             self.history.savedMessages = (NSArray*)obj;
         }
     }
-    
-    [self.windowControllers makeObjectsPerformSelector:@selector(setWindowStateFromDocument)];
+
+    NSMutableDictionary *windowSettings = [NSMutableDictionary dictionary];
+    for (NSString *key in [SMMMonitorWindowController windowSettingsKeys]) {
+        id object = dict[key];
+        if (object) {
+            windowSettings[key] = object;
+        }
+    }
+    self.windowSettings = windowSettings;
 
     // Doing the above caused undo actions to be remembered, but we don't want the user to see them
     [self updateChangeCount:NSChangeCleared];
@@ -281,6 +255,8 @@ NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeC
     [self updateVirtualEndpointName];
 }
 
+// TODO See about removing this; it doesn't make sense with autosave, restore, etc.  Would be better to just not dirty the document if it would be annoying.
+#if 0
 - (void)canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
 {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SMMAskBeforeClosingModifiedWindowPreferenceKey]) {
@@ -292,6 +268,7 @@ NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeC
         objc_msgSendTyped(delegate, shouldCloseSelector, self, YES /* close now */, contextInfo);
     }
 }
+#endif
 
 
 //
@@ -321,11 +298,6 @@ NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeC
     [self.undoManager setActionName:NSLocalizedStringFromTableInBundle(@"Change Selected Sources", @"MIDIMonitor", SMBundleForObject(self), "change source undo action")];
 
     [self.windowControllers makeObjectsPerformSelector:@selector(synchronizeSources)];
-}
-
-- (void)revealInputSources:(NSSet *)inputSources
-{
-    [self.windowControllers makeObjectsPerformSelector:@selector(revealInputSources:) withObject:inputSources];
 }
 
 - (NSUInteger)maxMessageCount
@@ -395,22 +367,6 @@ NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeC
 - (void)showOnlyOneChannel:(NSUInteger)channel
 {
     self.channelMask = 1 << (channel - 1);
-}
-
-- (void)setAreSourcesShown:(BOOL)newValue
-{
-    if (newValue != _areSourcesShown) {
-        _areSourcesShown = newValue;
-        [self.windowControllers makeObjectsPerformSelector:@selector(synchronizeSourcesShown)];
-    }
-}
-
-- (void)setIsFilterShown:(BOOL)newValue
-{
-    if (newValue != _isFilterShown) {
-        _isFilterShown = newValue;
-        [self.windowControllers makeObjectsPerformSelector:@selector(synchronizeFilterShown)];
-    }
 }
 
 - (void)clearSavedMessages
