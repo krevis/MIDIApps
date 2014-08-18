@@ -15,6 +15,7 @@
 #import <objc/objc-runtime.h>
 
 #import "SMMCombinationInputStream.h"
+#import "SMMDetailsWindowController.h"
 #import "SMMMonitorWindowController.h"
 
 
@@ -154,8 +155,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
         }
     }
 
-    SMMMonitorWindowController* wc = self.windowControllers.firstObject;
-    NSDictionary *windowSettings = wc.windowSettings;
+    NSDictionary *windowSettings = self.monitorWindowController.windowSettings;
     if (windowSettings) {
         [dict addEntriesFromDictionary:windowSettings];
     }
@@ -215,7 +215,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
 
     if (streamSettings) {
         [self.stream takePersistentSettings:streamSettings];
-        [self.windowControllers makeObjectsPerformSelector:@selector(synchronizeSources)];
+        [self.monitorWindowController synchronizeSources];
     } else {
         self.selectedInputSources = [NSSet set];
     }
@@ -320,7 +320,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
     [(SMMDocument *)[self.undoManager prepareWithInvocationTarget:self] setSelectedInputSources:oldInputSources];
     [self.undoManager setActionName:NSLocalizedStringFromTableInBundle(@"Change Selected Sources", @"MIDIMonitor", SMBundleForObject(self), "change source undo action")];
 
-    [self.windowControllers makeObjectsPerformSelector:@selector(synchronizeSources)];
+    [self.monitorWindowController synchronizeSources];
 }
 
 - (NSUInteger)maxMessageCount
@@ -336,7 +336,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
 
         self.history.historySize = newValue;
 
-        [self.windowControllers makeObjectsPerformSelector:@selector(synchronizeMaxMessageCount)];
+        [self.monitorWindowController synchronizeMaxMessageCount];
     }
 }
 
@@ -404,6 +404,81 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
     return self.history.savedMessages;
 }
 
+- (SMMMonitorWindowController *)monitorWindowController
+{
+    for (NSWindowController *wc in self.windowControllers) {
+        if ([wc isKindOfClass:[SMMMonitorWindowController class]]) {
+            return (SMMMonitorWindowController *)wc;
+        }
+    }
+
+    return nil;
+}
+
+- (NSArray *)detailsWindowControllers
+{
+    NSMutableArray *detailWCs = [NSMutableArray array];
+
+    for (NSWindowController *wc in self.windowControllers) {
+        if ([wc isKindOfClass:[SMMDetailsWindowController class]]) {
+            [detailWCs addObject:wc];
+        }
+    }
+
+    return detailWCs;
+}
+
+- (SMMDetailsWindowController *)detailsWindowControllerForMessage:(SMMessage *)message
+{
+    if (![SMMDetailsWindowController canShowDetailsForMessage:message]) {
+        return nil;
+    }
+
+    for (SMMDetailsWindowController *detailsWC in self.detailsWindowControllers) {
+        if (detailsWC.message == message) {
+            return detailsWC;
+        }
+    }
+
+    SMMDetailsWindowController *detailsWC = [SMMDetailsWindowController detailsWindowControllerWithMessage:message];
+    [self addWindowController:detailsWC];
+    return detailsWC;
+}
+
+- (void)encodeRestorableState:(NSCoder *)state forDetailsWindowController:(SMMDetailsWindowController *)detailsWC
+{
+    NSUInteger messageIndex = [self.savedMessages indexOfObjectIdenticalTo:detailsWC.message];
+    if (messageIndex != NSNotFound) {
+        [state encodeObject:[NSNumber numberWithUnsignedInteger:messageIndex] forKey:@"messageIndex"];
+    }
+}
+
+- (void)restoreDocumentWindowWithIdentifier:(NSString *)identifier state:(NSCoder *)state completionHandler:(void (^)(NSWindow *, NSError *))completionHandler
+{
+    if ([identifier isEqualToString:@"monitor"]) {
+        [super restoreDocumentWindowWithIdentifier:identifier state:state completionHandler:completionHandler];
+    } else {
+        SMMDetailsWindowController* detailsWC = nil;
+
+        id messageIndexNumber = [state decodeObjectForKey:@"messageIndex"];
+        if ([messageIndexNumber isKindOfClass:[NSNumber class]]) {
+            NSUInteger messageIndex = [(NSNumber *)messageIndexNumber unsignedIntegerValue];
+            if (messageIndex < self.savedMessages.count) {
+                SMMessage* message = self.savedMessages[messageIndex];
+                detailsWC = [self detailsWindowControllerForMessage:message];
+            }
+        }
+
+        if (completionHandler) {
+            if (detailsWC) {
+                completionHandler(detailsWC.window, nil);
+            } else {
+                completionHandler(nil, nil);
+            }
+        }
+    }
+}
+
 #pragma mark Private
 
 - (NSError *)badFileTypeError
@@ -420,7 +495,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
 
 - (void)sourceListDidChange:(NSNotification *)notification
 {
-    [self.windowControllers makeObjectsPerformSelector:@selector(synchronizeSources)];
+    [self.monitorWindowController synchronizeSources];
 
     // Also, it's possible that the endpoint names went from being unique to non-unique, so we need
     // to refresh the messages displayed.
@@ -435,7 +510,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
         [self.undoManager setActionName:NSLocalizedStringFromTableInBundle(@"Change Filter", @"MIDIMonitor", SMBundleForObject(self), change filter undo action)];
 
         self.messageFilter.filterMask = newMask;
-        [self.windowControllers makeObjectsPerformSelector:@selector(synchronizeFilterControls)];
+        [self.monitorWindowController synchronizeFilterControls];
     }
 }
 
@@ -447,7 +522,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
         [self.undoManager setActionName:NSLocalizedStringFromTableInBundle(@"Change Channel", @"MIDIMonitor", SMBundleForObject(self), change filter channel undo action)];
 
         self.messageFilter.channelMask = newMask;
-        [self.windowControllers makeObjectsPerformSelector:@selector(synchronizeFilterControls)];
+        [self.monitorWindowController synchronizeFilterControls];
     }
 }
 
@@ -499,9 +574,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
 
 - (void)synchronizeMessagesWithScroll:(BOOL)shouldScroll
 {
-    for (SMMMonitorWindowController *wc in self.windowControllers) {
-        [wc synchronizeMessagesWithScrollToBottom:shouldScroll];
-    }
+    [self.monitorWindowController synchronizeMessagesWithScrollToBottom:shouldScroll];
 }
 
 - (void)readingSysEx:(NSNotification *)notification
@@ -518,7 +591,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
 - (void)updateSysExReadIndicators
 {
     self.isSysExUpdateQueued = NO;
-    [self.windowControllers makeObjectsPerformSelector:@selector(updateSysExReadIndicatorWithBytes:) withObject:[NSNumber numberWithUnsignedInteger:self.sysExBytesRead]];
+    [self.monitorWindowController updateSysExReadIndicatorWithBytes:[NSNumber numberWithUnsignedInteger:self.sysExBytesRead]];
 }
 
 - (void)doneReadingSysEx:(NSNotification *)notification
@@ -531,7 +604,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
         self.isSysExUpdateQueued = NO;
     }
     
-    [self.windowControllers makeObjectsPerformSelector:@selector(stopSysExReadIndicatorWithBytes:) withObject:number];
+    [self.monitorWindowController stopSysExReadIndicatorWithBytes:number];
 }
 
 @end

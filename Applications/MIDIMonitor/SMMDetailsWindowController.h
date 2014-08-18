@@ -12,18 +12,17 @@
 
 #import "SMMWindowController.h"
 
-@class SMMessage, SMMMonitorWindowController;
+@class SMMessage;
 
 @interface SMMDetailsWindowController : SMMWindowController
 
 + (BOOL)canShowDetailsForMessage:(SMMessage *)inMessage;
 
-+ (SMMDetailsWindowController *)detailsWindowControllerWithMessage:(SMMessage *)inMessage monitorWindowController:(SMMMonitorWindowController *)monitorWindowController;
++ (SMMDetailsWindowController *)detailsWindowControllerWithMessage:(SMMessage *)inMessage;
 
-- (instancetype)initWithMessage:(SMMessage *)inMessage monitorWindowController:(SMMMonitorWindowController *)monitorWindowController;
+- (instancetype)initWithMessage:(SMMessage *)inMessage;
 
 @property (nonatomic, readonly) SMMessage *message;
-@property (nonatomic, readonly) SMMMonitorWindowController *monitorWindowController;
 
 // To be overridden by subclasses
 

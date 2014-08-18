@@ -14,7 +14,7 @@
 
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
-#import "SMMMonitorWindowController.h"
+#import "SMMDocument.h"
 #import "SMMPreferencesWindowController.h"
 #import "SMMSysExWindowController.h"
 
@@ -33,16 +33,17 @@
     return ([self subclassForMessage:inMessage] != Nil);
 }
 
-+ (SMMDetailsWindowController *)detailsWindowControllerWithMessage:(SMMessage *)inMessage monitorWindowController:(SMMMonitorWindowController *)monitorWindowController
++ (SMMDetailsWindowController *)detailsWindowControllerWithMessage:(SMMessage *)inMessage
 {
-    return [[[[self subclassForMessage:inMessage] alloc] initWithMessage:inMessage monitorWindowController:monitorWindowController] autorelease];
+    return [[[[self subclassForMessage:inMessage] alloc] initWithMessage:inMessage] autorelease];
 }
 
-- (id)initWithMessage:(SMMessage *)inMessage monitorWindowController:(SMMMonitorWindowController *)monitorWindowController
+- (id)initWithMessage:(SMMessage *)inMessage
 {
     if ((self = [super initWithWindowNibName:[[self class] windowNibName]])) {
         _message = [inMessage retain];
-        _monitorWindowController = [monitorWindowController retain];
+
+        self.shouldCascadeWindows = YES;
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayPreferencesDidChange:) name:SMMDisplayPreferenceChangedNotification object:nil];
     }
@@ -63,9 +64,6 @@
     [_message release];
     _message = nil;
 
-    [_monitorWindowController release];
-    _monitorWindowController = nil;
-
     [super dealloc];
 }
 
@@ -85,6 +83,16 @@
     [self.textView setString:[self formatData:[self dataForDisplay]]];
 }
 
+- (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName
+{
+    return [displayName stringByAppendingString:@" Details"];
+}
+
+- (void)window:(NSWindow *)window willEncodeRestorableState:(NSCoder *)state
+{
+    [self.midiDocument encodeRestorableState:state forDetailsWindowController:self];
+}
+
 //
 // To be overridden by subclasses
 //
@@ -99,15 +107,6 @@
     return self.message.otherData;
 }
 
-
-#pragma mark Delegates
-
-- (void)windowWillClose:(NSNotification *)notification
-{
-    [[self retain] autorelease];
-    [self.monitorWindowController detailsWindowControllerWillClose:self];
-}
-
 #pragma mark Private
 
 + (Class)subclassForMessage:(SMMessage *)inMessage
@@ -119,6 +118,11 @@
     } else {
         return Nil;
     }
+}
+
+- (SMMDocument *)midiDocument
+{
+    return (SMMDocument *)self.document;
 }
 
 - (void)displayPreferencesDidChange:(NSNotification *)notification

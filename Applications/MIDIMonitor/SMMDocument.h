@@ -13,6 +13,8 @@
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 @class SMMCombinationInputStream;
+@class SMMDetailsWindowController;
+@class SMMMonitorWindowController;
 
 
 @interface SMMDocument : NSDocument
@@ -36,6 +38,11 @@
 
 - (void)clearSavedMessages;
 - (NSArray *)savedMessages;
+
+- (SMMMonitorWindowController *)monitorWindowController;
+- (NSArray *)detailsWindowControllers;
+- (SMMDetailsWindowController *)detailsWindowControllerForMessage:(SMMessage *)message;
+- (void)encodeRestorableState:(NSCoder *)state forDetailsWindowController:(SMMDetailsWindowController *)detailsWC;
 
 @end
 
