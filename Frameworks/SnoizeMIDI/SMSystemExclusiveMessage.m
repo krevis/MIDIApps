@@ -232,15 +232,28 @@ fail:
 
 - (NSString *)dataForDisplay;
 {
-    NSString *manufacturerName, *lengthString;
+    NSString *manufacturerName = [self manufacturerName];
+    NSString *lengthString = [self sizeForDisplay];
+    NSString *dataString = [self expertDataForDisplay];
 
-    manufacturerName = [self manufacturerName];
-    lengthString = [self sizeForDisplay];
+    NSMutableString *result = [NSMutableString string];
+    if (manufacturerName) {
+        [result appendString:manufacturerName];
+    }
+    if (lengthString) {
+        if (result.length > 0) {
+            [result appendString:@" "];
+        }
+        [result appendString:lengthString];
+    }
+    if (dataString) {
+        if (result.length > 0) {
+            [result appendString:@"\t"];
+        }
+        [result appendString:dataString];
+    }
 
-    if (manufacturerName)
-        return [[manufacturerName stringByAppendingString:@"\t"] stringByAppendingString:lengthString];
-    else
-        return lengthString;
+    return result;
 }
 
 //

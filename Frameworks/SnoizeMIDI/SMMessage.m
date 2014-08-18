@@ -202,6 +202,27 @@ NSString *SMExpertModePreferenceKey = @"SMExpertMode";
     }
 }
 
++ (NSString *)formatExpertStatusByte:(Byte)statusByte andOtherData:(NSData *)otherData
+{
+    NSMutableString *result = [NSMutableString string];
+
+    [result appendFormat:@"%02X", statusByte];
+
+    if (otherData.length) {
+        const unsigned char *bytes = otherData.bytes;
+        NSUInteger i;
+        NSUInteger length = otherData.length;
+        for (i = 0; i < 31 && i < length; i++) {
+            [result appendFormat:@" %02X", bytes[i]];
+        }
+        if (i < length) {
+            [result appendString:@"…"];
+        }
+    }
+
+    return result;
+}
+
 + (NSString *)nameForManufacturerIdentifier:(NSData *)manufacturerIdentifierData;
 {
     static NSDictionary *manufacturerNames = nil;
@@ -465,6 +486,11 @@ fail:
 - (NSString *)dataForDisplay;
 {
     return [SMMessage formatData:[self otherData]];
+}
+
+- (NSString *)expertDataForDisplay
+{
+    return [SMMessage formatExpertStatusByte:self.statusByte andOtherData:self.otherData];
 }
 
 - (NSString *)originatingEndpointForDisplay

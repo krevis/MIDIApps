@@ -219,11 +219,12 @@
                                             </connections>
                                         </button>
                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="321">
-                                            <rect key="frame" x="32" y="9" width="286" height="34"/>
+                                            <rect key="frame" x="32" y="0.0" width="286" height="46"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="322">
                                                 <font key="font" metaFont="smallSystem"/>
-                                                <string key="title">• Note On with velocity 0 shows as Note Off
+                                                <string key="title">• Data formatted according to settings above
+• Note On with velocity 0 shows as Note Off
 • Zero timestamp shows time received</string>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -235,7 +236,7 @@
                             <tabViewItem label="Sources" identifier="Sources" id="159">
                                 <view key="view" id="160">
                                     <rect key="frame" x="10" y="33" width="349" height="364"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textField verticalHuggingPriority="750" id="193">
                                             <rect key="frame" x="17" y="327" width="309" height="17"/>

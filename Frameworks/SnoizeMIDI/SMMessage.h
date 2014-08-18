@@ -146,6 +146,7 @@ extern NSString *SMExpertModePreferenceKey;
 - (NSString *)channelForDisplay;
 - (NSString *)typeForDisplay;
 - (NSString *)dataForDisplay;
+- (NSString *)expertDataForDisplay;
 - (NSString *)originatingEndpointForDisplay;
 
 @end

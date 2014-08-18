@@ -603,7 +603,11 @@ static NSString * const SMMMessagesScrollPointY = @"messagesScrollPointY";
     } else if ([identifier isEqualToString:@"channel"]) {
         return message.channelForDisplay;
     } else if ([identifier isEqualToString:@"data"]) {
-        return message.dataForDisplay;
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SMExpertModePreferenceKey]) {
+            return message.expertDataForDisplay;
+        } else {
+            return message.dataForDisplay;
+        }
     } else {
         return nil;
     }
