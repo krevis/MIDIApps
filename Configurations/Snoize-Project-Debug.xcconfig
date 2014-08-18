@@ -8,3 +8,6 @@ GCC_PREPROCESSOR_DEFINITIONS = DEBUG
 
 // Debug builds only the chosen architecture, not all, to make builds faster
 ONLY_ACTIVE_ARCH = YES
+
+// Use DWARF debug symbols, which are faster
+DEBUG_INFORMATION_FORMAT = dwarf

@@ -1,1 +1,4 @@
 #include "Snoize-Project-Global.xcconfig"
+
+// Generate .dsym debug symbol files
+DEBUG_INFORMATION_FORMAT = dwarf-with-dsym
