@@ -111,12 +111,10 @@
 
 + (Class)subclassForMessage:(SMMessage *)inMessage
 {
-    if ([inMessage isKindOfClass:[SMInvalidMessage class]]) {
-        return [SMMDetailsWindowController class];
-    } else if ([inMessage isKindOfClass:[SMSystemExclusiveMessage class]]) {
+    if ([inMessage isKindOfClass:[SMSystemExclusiveMessage class]]) {
         return [SMMSysExWindowController class];
     } else {
-        return Nil;
+        return [SMMDetailsWindowController class];
     }
 }
 
