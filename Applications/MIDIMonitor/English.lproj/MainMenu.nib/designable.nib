@@ -175,7 +175,7 @@
                                     <action selector="clearMessages:" target="-1" id="227"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Show Detailed Data" id="226">
+                            <menuItem title="Show Detailed Data" keyEquivalent="d" id="226">
                                 <connections>
                                     <action selector="showDetailsOfSelectedMessages:" target="-1" id="228"/>
                                 </connections>
