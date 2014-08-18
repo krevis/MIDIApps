@@ -62,6 +62,7 @@
 @property (nonatomic, assign) BOOL messagesNeedScrollToBottom;
 @property (nonatomic, retain) NSDate *nextMessagesRefreshDate;
 @property (nonatomic, assign) NSTimer *nextMessagesRefreshTimer;
+@property (nonatomic, retain) NSMapTable *messageToDetailsWindowControllerMap;
 
 @end
 
@@ -75,6 +76,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayPreferencesDidChange:) name:SMMDisplayPreferenceChangedNotification object:nil];
 
         _oneChannel = 1;
+        _messageToDetailsWindowControllerMap = [[NSMapTable alloc]initWithKeyOptions:(NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPointerPersonality) valueOptions:(NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality) capacity:0];
 
         self.shouldCascadeWindows = YES;
     }
@@ -101,10 +103,12 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 
     [_nextMessagesRefreshDate release];
 
-    if (self.nextMessagesRefreshTimer) {
-		[self.nextMessagesRefreshTimer invalidate];
-        self.nextMessagesRefreshTimer = nil;
+    if (_nextMessagesRefreshTimer) {
+		[_nextMessagesRefreshTimer invalidate];
+        _nextMessagesRefreshTimer = nil;
     }
+
+    [_messageToDetailsWindowControllerMap release];
 
     [super dealloc];
 }
@@ -251,7 +255,12 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 - (IBAction)showDetailsOfSelectedMessages:(id)sender
 {
     for (SMMessage *message in self.selectedMessagesWithDetails) {
-        [[SMMDetailsWindowController detailsWindowControllerWithMessage:message] showWindow:nil];
+        SMMDetailsWindowController *detailsWC = [self.messageToDetailsWindowControllerMap objectForKey:message];
+        if (!detailsWC) {
+            detailsWC = [SMMDetailsWindowController detailsWindowControllerWithMessage:message monitorWindowController:self];
+            [self.messageToDetailsWindowControllerMap setObject:detailsWC forKey:message];
+        }
+        [detailsWC showWindow:nil];
     }
 }
 
@@ -436,6 +445,10 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     }
 }
 
+- (void)detailsWindowControllerWillClose:(SMMDetailsWindowController *)detailsWindowController
+{
+    [self.messageToDetailsWindowControllerMap removeObjectForKey:detailsWindowController.message];
+}
 
 #pragma mark Window settings
 
@@ -502,6 +515,14 @@ static NSString * const SMMMessagesScrollPointY = @"messagesScrollPointY";
 }
 
 #pragma mark Delegates & Data Sources
+
+- (void)windowWillClose:(NSNotification *)notification
+{
+    // Also close our details windows
+    for (SMMDetailsWindowController* detailsWC in self.messageToDetailsWindowControllerMap.objectEnumerator) {
+        [detailsWC close];
+    }
+}
 
 //
 // NSWindowRestoration

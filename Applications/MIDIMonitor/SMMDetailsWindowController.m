@@ -14,6 +14,7 @@
 
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
+#import "SMMMonitorWindowController.h"
 #import "SMMPreferencesWindowController.h"
 #import "SMMSysExWindowController.h"
 
@@ -27,38 +28,21 @@
 
 @implementation SMMDetailsWindowController
 
-static NSMapTable* messageToControllerMapTable = NULL;
-
 + (BOOL)canShowDetailsForMessage:(SMMessage *)inMessage
 {
     return ([self subclassForMessage:inMessage] != Nil);
 }
 
-+ (SMMDetailsWindowController *)detailsWindowControllerWithMessage:(SMMessage *)inMessage
++ (SMMDetailsWindowController *)detailsWindowControllerWithMessage:(SMMessage *)inMessage monitorWindowController:(SMMMonitorWindowController *)monitorWindowController
 {
-    SMMDetailsWindowController *controller;
-
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        messageToControllerMapTable = NSCreateMapTable(NSNonRetainedObjectMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
-    });
-
-    controller = NSMapGet(messageToControllerMapTable, inMessage);
-    if (!controller) {
-        controller = [[[self subclassForMessage:inMessage] alloc] initWithMessage:inMessage];
-        if (controller) {
-            NSMapInsertKnownAbsent(messageToControllerMapTable, inMessage, controller);
-            [controller release];            
-        }
-    }
-
-    return controller;
+    return [[[[self subclassForMessage:inMessage] alloc] initWithMessage:inMessage monitorWindowController:monitorWindowController] autorelease];
 }
 
-- (id)initWithMessage:(SMMessage *)inMessage
+- (id)initWithMessage:(SMMessage *)inMessage monitorWindowController:(SMMMonitorWindowController *)monitorWindowController
 {
     if ((self = [super initWithWindowNibName:[[self class] windowNibName]])) {
         _message = [inMessage retain];
+        _monitorWindowController = [monitorWindowController retain];
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayPreferencesDidChange:) name:SMMDisplayPreferenceChangedNotification object:nil];
     }
@@ -78,7 +62,10 @@ static NSMapTable* messageToControllerMapTable = NULL;
 
     [_message release];
     _message = nil;
-    
+
+    [_monitorWindowController release];
+    _monitorWindowController = nil;
+
     [super dealloc];
 }
 
@@ -118,7 +105,7 @@ static NSMapTable* messageToControllerMapTable = NULL;
 - (void)windowWillClose:(NSNotification *)notification
 {
     [[self retain] autorelease];
-    NSMapRemove(messageToControllerMapTable, self);
+    [self.monitorWindowController detailsWindowControllerWillClose:self];
 }
 
 #pragma mark Private
