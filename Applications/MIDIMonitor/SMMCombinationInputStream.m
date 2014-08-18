@@ -52,7 +52,7 @@
         [self observeNotificationsFromObject:_virtualInputStream];
     }
 
-    MIDISpyClientRef spyClient = [[NSApp delegate] midiSpyClient];
+    MIDISpyClientRef spyClient = [(SMMAppController *)[NSApp delegate] midiSpyClient];
     if (spyClient) {
         _spyingInputStream = [[SMMSpyingInputStream alloc] initWithMIDISpyClient:spyClient];
         if (_spyingInputStream) {
