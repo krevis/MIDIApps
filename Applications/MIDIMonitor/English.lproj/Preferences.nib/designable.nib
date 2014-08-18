@@ -345,7 +345,7 @@
                                             </connections>
                                         </button>
                                         <button id="288">
-                                            <rect key="frame" x="18" y="194" width="229" height="18"/>
+                                            <rect key="frame" x="18" y="176" width="229" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Automatically check for updates:" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="289">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -356,11 +356,11 @@
                                             </connections>
                                         </button>
                                         <popUpButton verticalHuggingPriority="750" id="290">
-                                            <rect key="frame" x="53" y="164" width="129" height="26"/>
+                                            <rect key="frame" x="53" y="146" width="129" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <popUpButtonCell key="cell" type="push" title="Daily" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="86400" imageScaling="proportionallyDown" inset="2" selectedItem="293" id="291">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" metaFont="menu"/>
                                                 <menu key="menu" title="OtherViews" id="292">
                                                     <items>
                                                         <menuItem title="Daily" state="on" tag="86400" id="293"/>
@@ -374,6 +374,18 @@
                                                 <binding destination="287" name="selectedTag" keyPath="updateCheckInterval" id="302"/>
                                             </connections>
                                         </popUpButton>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="khN-uK-h7m">
+                                            <rect key="frame" x="34" y="224" width="293" height="42"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" id="Hos-kL-LuU">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <string key="title">This works only when the System Preference 
+"Ask to keep changes when closing documents"
+is turned ON.</string>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
                                     </subviews>
                                 </view>
                             </tabViewItem>

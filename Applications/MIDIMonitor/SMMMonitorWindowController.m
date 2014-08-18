@@ -239,22 +239,13 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 - (IBAction)toggleFilterShown:(id)sender
 {
     [self.filterDisclosableView toggleDisclosure:sender];
-
-    // Mark the document as dirty, so the state of the window gets saved.
-    // However, use NSChangeDiscardable, so it doesn't cause a locked document to get dirtied for a trivial change.
-    // Also, don't do it for untitled, unsaved documents which have no fileURL yet, because that's annoying.
-    if (self.midiDocument.fileURL) {
-        [self.midiDocument updateChangeCount:(NSChangeDiscardable | NSChangeDone)];
-    }
+    [self trivialWindowSettingsDidChange];
 }
 
 - (IBAction)toggleSourcesShown:(id)sender
 {
     [self.sourcesDisclosableView toggleDisclosure:sender];
-
-    if (self.midiDocument.fileURL) {
-        [self.midiDocument updateChangeCount:(NSChangeDiscardable | NSChangeDone)];
-    }
+    [self trivialWindowSettingsDidChange];
 }
 
 - (IBAction)showDetailsOfSelectedMessages:(id)sender
@@ -513,6 +504,30 @@ static NSString * const SMMMessagesScrollPointY = @"messagesScrollPointY";
 #pragma mark Delegates & Data Sources
 
 //
+// NSWindowRestoration
+//
+// In some cases, the document's saved window settings will not match
+// the window size that was automatically encoded in restorable state.
+// (For instance, if we don't dirty the document when the window settings
+// were changed, and the user didn't save before quitting, and autosave
+// is turned off.)
+// Therefore, we must also put the window settings into the restorable
+// state, and restore that after the regular document settings are done.
+
+- (void)window:(NSWindow *)window willEncodeRestorableState:(NSCoder *)state
+{
+    [state encodeObject:self.windowSettings forKey:@"windowSettings"];
+}
+
+- (void)window:(NSWindow *)window didDecodeRestorableState:(NSCoder *)state
+{
+    id obj = [state decodeObjectForKey:@"windowSettings"];
+    if ([obj isKindOfClass:[NSDictionary class]]) {
+        [self restoreWindowSettings:(NSDictionary *)obj];
+    }
+}
+
+//
 // NSOutlineView data source
 //
 
@@ -629,6 +644,17 @@ static NSString * const SMMMessagesScrollPointY = @"messagesScrollPointY";
 - (SMMDocument *)midiDocument
 {
     return (SMMDocument *)self.document;
+}
+
+- (void)trivialWindowSettingsDidChange
+{
+    // Mark the document as dirty, so the state of the window gets saved.
+    // However, use NSChangeDiscardable, so it doesn't cause a locked document to get dirtied for a trivial change.
+    // Also, don't do it for untitled, unsaved documents which have no fileURL yet, because that's annoying.
+    // Similarly, don't do it if "Ask to keep changes when closing documents" is turned on.
+    if (self.midiDocument.fileURL && ![[NSUserDefaults standardUserDefaults] boolForKey:@"NSCloseAlwaysConfirmsChanges"]) {
+        [self.midiDocument updateChangeCount:(NSChangeDiscardable | NSChangeDone)];
+    }
 }
 
 - (void)displayPreferencesDidChange:(NSNotification *)notification

@@ -281,21 +281,31 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
     [self updateVirtualEndpointName];
 }
 
-// TODO See about removing this; it doesn't make sense with autosave, restore, etc.  Would be better to just not dirty the document if it would be annoying.
-#if 0
 - (void)canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
 {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SMMAskBeforeClosingModifiedWindowPreferenceKey]) {
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+
+    if (![ud boolForKey:@"NSCloseAlwaysConfirmsChanges"]) {
+        // The system preference for "Ask to keep changes when closing documents" is turned OFF.
+        // Documents are automatically saved, so don't do anything special.
         [super canCloseDocumentWithDelegate:delegate shouldCloseSelector:shouldCloseSelector contextInfo:contextInfo];
     } else {
-        // Tell the delegate to close now, regardless of what the document's dirty flag may be.
-        // Unfortunately this is not easy in Objective-C...
-        void (*objc_msgSendTyped)(id self, SEL _cmd, NSDocument *document, BOOL shouldClose, void *contextInfo) = (void*)objc_msgSend;
-        objc_msgSendTyped(delegate, shouldCloseSelector, self, YES /* close now */, contextInfo);
+        // The system preference for "Ask to keep changes when closing documents" is turned ON.
+        // Therefore, our documents are not automatically saved.
+        // It's easy for us to dirty the document, but the user may not generally care to save the documents.
+        // Let the user set a preference for whether or not to warn when closing a dirty document.
+
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SMMAskBeforeClosingModifiedWindowPreferenceKey]) {
+            // Do the same as normal: ask if the user wants to save.
+            [super canCloseDocumentWithDelegate:delegate shouldCloseSelector:shouldCloseSelector contextInfo:contextInfo];
+        } else {
+            // Tell the delegate to close now, regardless of what the document's dirty flag may be.
+            // Unfortunately this is not easy in Objective-C...
+            void (*objc_msgSendTyped)(id self, SEL _cmd, NSDocument *document, BOOL shouldClose, void *contextInfo) = (void*)objc_msgSend;
+            objc_msgSendTyped(delegate, shouldCloseSelector, self, YES /* close now */, contextInfo);
+        }
     }
 }
-#endif
-
 
 //
 // API for SMMMonitorWindowController
