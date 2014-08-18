@@ -374,7 +374,7 @@
                                                 <binding destination="287" name="selectedTag" keyPath="updateCheckInterval" id="302"/>
                                             </connections>
                                         </popUpButton>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="khN-uK-h7m">
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="khN-uK-h7m">
                                             <rect key="frame" x="34" y="224" width="293" height="42"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" id="Hos-kL-LuU">
