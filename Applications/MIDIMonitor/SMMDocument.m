@@ -39,7 +39,6 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
 @property (nonatomic, retain) SMMessageHistory *history;
 
 // Transient data
-@property (nonatomic, retain) NSArray *missingSourceNames;
 @property (nonatomic, assign) NSUInteger sysExBytesRead;
 @property (nonatomic, assign) BOOL isSysExUpdateQueued;
 
@@ -100,8 +99,6 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
     _messageFilter.messageDestination = nil;
     [_messageFilter release];
     _messageFilter = nil;
-    [_missingSourceNames release];
-    _missingSourceNames = nil;
     [_history release];
     _history = nil;
     [_windowSettings release];
@@ -115,16 +112,6 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
     NSWindowController *controller = [[SMMMonitorWindowController alloc] init];
     [self addWindowController:controller];
     [controller release];
-}
-
-- (void)showWindows
-{
-    [super showWindows];
-
-    if (self.missingSourceNames) {
-        [self.windowControllers makeObjectsPerformSelector:@selector(couldNotFindSourcesNamed:) withObject:self.missingSourceNames];
-        self.missingSourceNames = nil;
-    }
 }
 
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError
@@ -227,7 +214,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
     }
 
     if (streamSettings) {
-        self.missingSourceNames = [self.stream takePersistentSettings:streamSettings];
+        [self.stream takePersistentSettings:streamSettings];
         [self.windowControllers makeObjectsPerformSelector:@selector(synchronizeSources)];
     } else {
         self.selectedInputSources = [NSSet set];

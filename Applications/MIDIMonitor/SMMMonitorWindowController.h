@@ -23,8 +23,6 @@
 - (void)synchronizeMaxMessageCount;
 - (void)synchronizeFilterControls;
 
-- (void)couldNotFindSourcesNamed:(NSArray *)sourceNames;
-
 - (void)updateSysExReadIndicatorWithBytes:(NSNumber *)bytesReadNumber;
 - (void)stopSysExReadIndicatorWithBytes:(NSNumber *)bytesReadNumber;
 

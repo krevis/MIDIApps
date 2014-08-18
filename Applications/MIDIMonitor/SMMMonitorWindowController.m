@@ -21,7 +21,6 @@
 #import "SMMDetailsWindowController.h"
 #import "SNDisclosableView.h"
 #import "SNDisclosureButton.h"
-#import "NSArray-SMMExtensions.h"
 #import "NSString-SMMExtensions.h"
 
 
@@ -372,35 +371,6 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
         self.oneChannel = self.midiDocument.oneChannelToShow;
     }
     self.oneChannelField.objectValue = [NSNumber numberWithUnsignedInt:self.oneChannel];
-}
-
-- (void)couldNotFindSourcesNamed:(NSArray *)sourceNames
-{
-    NSUInteger sourceNamesCount = sourceNames.count;
-    if (sourceNamesCount != 0) {
-        NSString *title, *message;
-
-        if (sourceNamesCount == 1) {
-            title = NSLocalizedStringFromTableInBundle(@"Missing Source", @"MIDIMonitor", SMBundleForObject(self), "if document's source is missing, title of sheet");
-            NSString *messageFormat = NSLocalizedStringFromTableInBundle(@"The source named \"%@\" could not be found.", @"MIDIMonitor", SMBundleForObject(self), "if document's source is missing, message in sheet (with source name)");
-            message = [NSString stringWithFormat:messageFormat, [sourceNames objectAtIndex:0]];
-        } else {
-            title = NSLocalizedStringFromTableInBundle(@"Missing Sources", @"MIDIMonitor", SMBundleForObject(self), "if more than one of document's sources are missing, title of sheet");
-
-            NSMutableArray *sourceNamesInQuotes = [NSMutableArray arrayWithCapacity:sourceNamesCount];
-            for (NSString *sourceName in sourceNames) {
-                [sourceNamesInQuotes addObject:[NSString stringWithFormat:@"\"%@\"", sourceName]];
-            }
-
-            NSString *concatenatedSourceNames = [sourceNamesInQuotes SMM_componentsJoinedByCommaAndAnd];
-            
-            NSString *messageFormat = NSLocalizedStringFromTableInBundle(@"The sources named %@ could not be found.", @"MIDIMonitor", SMBundleForObject(self), "if more than one of document's sources are missing, message in sheet (with source names)");
-
-            message = [NSString stringWithFormat:messageFormat, concatenatedSourceNames];        
-        }
-
-        NSBeginAlertSheet(title, nil, nil, nil, self.window, nil, NULL, NULL, NULL, @"%@", message);
-    }
 }
 
 - (void)updateSysExReadIndicatorWithBytes:(NSNumber *)bytesReadNumber
