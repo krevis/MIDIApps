@@ -1,202 +1,328 @@
-<html>
-<head>
-<title>MIDI Monitor Documentation</title>
-</head>
-<body bgcolor="white">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MIDI Monitor Documentation</title>
 
-<table height="98%" width="100%" border="0">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
 
-<tr>
-<td width="200" valign="top">
-</td>
-<td align="center">
-<img src="icon.gif" border="1">
-<P><font size="+3" face="arial, helvetica"><b>MIDI Monitor</b></font>
-<P><font size="+1" face="arial, helvetica"><b>Documentation</b></font>
-</td>
-<td width="200"></td>
-</tr>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body style="padding-top: 50px;">
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="http://www.snoize.com/MIDIMonitor/">MIDI Monitor</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Documentation</a></li>
+            <li><a href="#basics">Basics</a></li>
+            <li><a href="#howto">How to use it</a></li>
+            <li><a href="#preferences">Preferences</a></li>
+            <li><a href="#advanced">Advanced</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
 
-<tr align="left"><td colspan="3">
+    <div class="container">
 
-<P><BR><BR><font size="+1" face="arial, helvetica"><b>Basics</b></font>
-<P><b>MIDI Monitor</b> is a utility for Mac OS X which displays MIDI signals in a variety of formats. It can watch both incoming and outgoing MIDI streams, and can filter them by message type and channel.
-<P>
-Musicians will find it handy for tracking down confusing MIDI problems, and programmers can use it to test MIDI drivers and applications.
-<P>MIDI Monitor is FREE to download and use. The source code is available as Open Source (under the BSD license).
-<P>Please note that MIDI Monitor requires an Intel Mac with OS X 10.5 or later.
-<P>The MIDI Monitor web page can be found at this URL:
-<BR><a href="http://www.snoize.com/MIDIMonitor/">http://www.snoize.com/MIDIMonitor/</A>
-<BR>Please check there for news and updates.
+      <div class="row">
+        <div class="col-xs-2">
+          <img src="icon.gif" class="img-responsive" alt="MIDI Monitor Icon">
+        </div>
+        <div class="col-xs-10">
+          <div class="page-header">
+            <h1><b>MIDI Monitor</b><br><small>Documentation</small></h1>
+          </div>
+        </div>
+      </div>
 
-<P><BR><BR><font size="+1" face="arial, helvetica"><b>How to use it</b></font>
+      <div class="page-header">
+        <h1 id="basics">Basics</h1>
+      </div>
 
-<P><B>Parts of the window</B>
+      <p><b>MIDI Monitor</b> is an app to display MIDI signals going in and out of your Mac. Musicians will find it handy for tracking down confusing MIDI problems, and programmers can use it to test MIDI drivers and applications.</p>
+      <p>MIDI Monitor is FREE to download and use. The source code is available as Open Source, under the BSD license.</p>
+      <p>MIDI Monitor requires a Mac with OS X 10.7 or later.</p>
+      <p>Please check <a href="http://www.snoize.com/MIDIMonitor/">http://www.snoize.com/MIDIMonitor/</A> for news and updates.</p>
 
-<img src="mainWindow.gif" align="right">
+      <div class="page-header">
+        <h1 id="howto">How to use it</h1>
+      </div>
 
-<P>When you launch MIDI Monitor, it will automatically open a new document. The window shows you the MIDI events that MIDI Monitor receives. There are also two sections, <i>Sources</i> and <i>Filter</i>, which start out hidden; click the gray arrows to expand them.
+      <div class="row">
+        <div class="col-md-6">
+          <p>When you launch MIDI Monitor, it will automatically open a new document. The window shows you the MIDI messages that MIDI Monitor receives. There are also two sections, <b>Sources</b> and <b>Filter</b>, which start out hidden. Click the gray arrows to expand them.<p>
 
-<P>MIDI Monitor uses the standard Mac interface for dealing with documents; just open, close, and save as usual. A MIDI Monitor document saves its settings and the MIDI events which it is displaying.
+          <p>MIDI Monitor uses the standard Mac interface for dealing with documents. Just open, close, and save as usual. A MIDI Monitor document saves its settings and the displayed MIDI events.</p>
+        </div>
+        <div class="col-md-6">
+          <img src="mainWindow.png" class="img-responsive" alt="Main Window">
+        </div>
+      </div>
 
-<BR clear="all">
+      <h3>Events</h3>
 
-<P><B>Events</B>
+      <p>The main part of the window shows the events that MIDI Monitor has received, in order from oldest to newest.</p>
+        <dl class="dl-horizontal">
+          <dt>Time</dt>
+          <dd>When the event was received by the computer</dd>
+          <dt>Source</dt>
+          <dd>Where the event came from</dd>
+          <dt>Message</dt>
+          <dd>What kind of event happened: note on, note off, controller, etc.</dd>
+          <dt>Chan</dt>
+          <dd>What channel the event was on. Some types of events do not have a channel.</dd>
+          <dt>Data</dt>
+          <dd>The specific data in the event. The format depends on the type of event. Some events have no data.</dd>
+        </dl>
 
-<P>The main part of the window is a list of events that MIDI Monitor has received, in chronological order. The columns are as follows:
-<P><i>Time:</i> When the event was received by the computer
-<br><i>Source:</i> Where the event came from
-<br><i>Message:</i> What kind of event happened (e.g. note on, note off, controller)
-<br><i>Chan:</I> What channel the event was on. (Some types of messages do not have a channel.)
-<br><i>Data:</i> The specific data in the event. The format depends on the type of message. (Some messages have no data.)
+      <p>To clear the list of events, press the <span class="label label-default">Clear</span> button, use the menu command <span class="label label-default">Events</span> &gt; <span class="label label-default">Clear Events</span>, or press <kbd>&#8984;K</kbd>.  To change the number of events that the list will remember, just change the number in the text field and press return.</p>
 
-<P>You can clear the list of events by pressing the Clear button, using the Events>Clear Events menu command, or typing Command-K.  You can also change the number of events that the list will remember by changing the number in the text field.
+      <p>Some events contain more data than can be shown in one line: <b>System Exclusive</b> (or <b>SysEx</b>) events and <b>Invalid</b> events. To show the full contents of any event, double-click it, or use the menu command <span class="label label-default">Events</span> &gt; <span class="label label-default">Show Detailed Data</span>.</p>
 
-<p>Some kinds of events contain more data than can be shown in one line. These are System Exclusive (or SysEx) events and Invalid events. To show the full contents of the event, double-click it, or use the Events->Show Detailed Data menu command.  (More on that later.)
+      <h3>Sources</h3>
 
-<P><B>Sources</B>
+      <div class="row">
+        <div class="col-md-6">
+          <p>This section lets you choose the sources of MIDI events that this window listens to.</p>
+        </div>
+        <div class="col-md-6">
+          <img src="sources.png" class="img-responsive" alt="Sources">
+        </div>
+      </div>
 
-<img src="sources.gif" align="right">
+      <p>Sources come in three categories:</p>
+      <dl>
+        <dt>MIDI sources</dt>
+        <dd>These are ordinary MIDI sources, such as the input ports on your MIDI interface. Other applications on the computer may also appear in the list, if they are running and can act as MIDI sources.
+        </dd>
 
-<P>This section lets you choose the sources of MIDI events that this window listens to.  The sources come in three categories:
-<br clear="all">
+        <dt>Act as destination for other programs</dt>
+        <dd>If you choose this, other applications will be able to send their output to this MIDI Monitor window, as though it was a MIDI output port.</dd>
 
-<ul>
-<li><i>MIDI sources:</i> These are ordinary MIDI sources, such as the input ports on your MIDI interface.  Other applications on the computer may also appear in the list, if they are running and can act as MIDI sources.
-<BR>(If your MIDI devices don't appear in this list, see the <a href="#Troubleshooting">Troubleshooting</a> section.)
-<P>
-<li><i>Act as destination for other programs:</i> If you choose this, other applications will be able to send their output to this MIDI Monitor window, as though it was a MIDI output port.
-<P>
-<li><i>Spy on output to destinations:</i> Each MIDI destination on your computer is listed: this includes MIDI output ports and applications which act as destinations.  Selecting a destination lets you "spy" on all of the data that is sent to that destination. This happens outside of the system's normal MIDI processing. so the application which sends the data does not know that it is being spied upon.
-<P>(In order to do this, MIDI Monitor installs a MIDI driver in the Library/Audio/MIDI Drivers folder in your home folder. This driver does not have any effect on other applications, and does nothing when MIDI Monitor is not using it.)
-</ul>
+        <dt>Spy on output to destinations</dt>
+        <dd>Each MIDI destination on your computer is listed, including normal MIDI output ports, and applications which act as destinations. Selecting a destination lets you "spy" on the data that other apps send to that destination. This happens outside of the system's normal MIDI processing, so the application sending the data does not know that it is being spied upon.
 
-<P><B>Filter</B>
+          <p class="text-muted"><span class="glyphicon glyphicon-info-sign"></span>
+            In order to do this, MIDI Monitor installs a MIDI driver in the Library/Audio/MIDI Drivers folder in your home folder. This driver does not have any effect on other applications, and does nothing when MIDI Monitor is not using it.
+          </p>
+        </dd>
+      </dl>
 
-<img src="filter.gif" align="right">
+      <h3>Filter</h3>
 
-<P>MIDI Monitor also provides a filter, so you can see only the events you are interested in. 
-<P>New windows start with all of the checkboxes checked, meaning that all messages are displayed. The large checkboxes control the filters for a whole category of messages; the small checkboxes each control the filter for one specific type of message. For "voice" messages, which include a channel number, you can also choose whether to listen to all channels or just one.
+      <div class="row">
+        <div class="col-md-6">
+          <p>MIDI Monitor also provides a filter, so you can see only the events you are interested in.</p>
+          <p>New windows start with all of the checkboxes checked, meaning that all messages are displayed. The large checkboxes control the filters for a whole category of messages; the small checkboxes each control the filter for one specific type of message. For "voice" messages, which include a channel number, you can also choose whether to listen to all channels or just one.</p>
+        </div>
+        <div class="col-md-6">
+          <img src="filter.png" class="img-responsive" alt="Filter">
+        </div>
+      </div>
 
-<br clear="all">
+      <div class="page-header">
+        <h1 id="preferences">Preferences</h1>
+      </div>
 
-<P><BR><BR><font size="+1" face="arial, helvetica"><b>Preferences</b></font>
+      <p>The preferences window lets you change the way that MIDI Monitor displays values, as well as some other behavior. Changes in this window take effect immediately.</p>
 
-<P>The preferences window lets you change the way that MIDI Monitor displays values, as well as some other behavior. Changes in this window take effect immediately, and are automatically saved.
+      <div class="row">
+        <div class="col-md-7">
+          <h3>Display</h3>
+          <h4>Time format</h4>
+          <p>Controls how events' timestamps are displayed.</p>
+          <dl>
+            <dt>Clock time</dt>
+            <dd>Shows the timestamp in terms of normal human time, to the nearest 0.001 second. This is the most useful setting.</dd>
+            <dt>Host time</dt>
+            <dd>Shows the timestamp in terms of the computer's internal timebase. Most people won't find this very useful, but programmers might.
 
-<P><BR><B>Display Preferences</B>
-<BR><img src="prefs1.png" align="right">
+              <dl class="dl-horizontal">
+                <dt>Integer</dt>
+                <dd>The time as returned by <code>AudioGetCurrentHostTime()</code> or <code>UpTime()</code>. This is an unsigned, 64-bit integer, which starts at 0 when the computer is started. This number will always increase at the same rate while the machine is running; however, one unit may represent different amounts of time on different machines, or different revisions of the operating system.</dd>
 
-<P><i>Time format:</i> The method of displaying the timestamps of events.
-<ul>
-<li><i>Clock time:</i> Shows the timestamp in terms of normal human time, to the nearest 0.001 second. This is the most useful setting.
-<P>
-<li><i>Host time:</i> Shows the timestamp in terms of the computer's internal timebase. This is not very interesting for humans, but programmers may find it useful.
-<ul>
-<li><i>Integer:</I> the time as returned by AudioGetCurrentHostTime() or UpTime(). This is an unsigned, 64-bit integer, which starts at 0 when the computer is started. This number will always increase at the same rate while the machine is running; however, one unit may represent different amounts of time on different machines, or different revisions of the operating system.
-<li><i>Seconds:</i> The integer time divided by the number of ticks per second, as reported by AudioGetHostClockFrequency(). The value is shown to three decimal places.
-<li><i>Nanoseconds:</i> The same as above, but with more digits displayed.
-</ul>
-</ul>
+                <dt>Seconds</dt>
+                <dd>The integer time divided by the number of ticks per second, as reported by <code>AudioGetHostClockFrequency()</code>. The value is shown to three decimal places.</dd>
 
-<P><i>Note format:</I> The method of displaying the musical note associated with note-on and note-off events.
-<ul>
-<li><i>Note (Middle C = C3):</I> The name of the note in musical notation. Middle C (note 60) is displayed as C3, and the full range is from C-2 to G8. Yamaha uses this convention for naming notes, as do some (most?) other manufacturers.
-<P>
-<li><i>Note (Middle C = C4):</I> As above, but displayed an octave higher. Middle C (note 60) is displayed as C4, and the full range is from C-1 to G9. Roland uses this convention.
-<P>
-<li><i>Decimal number:</I> The note number in base 10, from 0 to 127.
-<P>
-<li><i>Hexadecimal number:</I> The note number in base 16, from $00 to $7F.
-</ul>
+                <dt>Nanoseconds</dt>
+                <dd>The same as above, but with more digits displayed.</dd>
+              </dl>
+            </dd>
+          </dl>
 
-<P><i>Controller format:</I> The method of displaying the name or number of control events.
-<ul>
-<li><i>Standard name:</I> The name of this controller as given in the MIDI standard. For example, controller 72 means &quot;Release Time&quot;. Controllers without standard names are displayed as decimal numbers. Some controllers come in pairs; one controller conveys the &quot;coarse&quot; value (or high byte) and the other conveys the &quot;fine&quot; value (or low byte).
-<P>
-<li><i>Decimal number:</I> The controller number in base 10, from 0 to 127.
-<P>
-<li><i>Hexadecimal number:</I> The controller number in base 16, from $00 to $7F.
-</ul>
+          <h4>Note format</h4>
+          <p>Controls how MIDI Monitor displays the musical note in note-on and note-off events.</p>
 
-<P><i>Data format:</I> The method of displaying any other data in events.
-<ul>
-<li><i>Decimal number:</I> The value in base 10. One byte values range from 0 to 127; signed two byte values range from -8192 to 8191.
-<P>
-<li><i>Hexadecimal number:</I> The value in base 16. One byte values range from $00 to $7F; two byte values range from $0000 to $3FFF, with $2000 as the &quot;center&quot; value.
-</ul>
+          <dl class="dl-horizontal">
+            <dt>Note (Middle C = C3)</dt>
+            <dd>The name of the note in musical notation. Middle C (note 60) is displayed as C3, and the full range is from C-2 to G8. Yamaha uses this convention for naming notes, as do some (most?) other manufacturers.</dd>
 
-<P><i>Expert Mode:</I> Changes the display slightly. Intended for experts only.
-<ul>
-<li><i>Note off events:</I> According to the MIDI specification, a Note On event with velocity 0 is to be interpreted as the same as a Note Off event. Normally, MIDI Monitor shows &quot;Note Off&quot;, to avoid confusion. (&quot;Why does my keyboard send two note on events when I only pressed one key?&quot;) In expert mode, it will show &quot;Note On&quot;.
-<P>
-<li><i>Zero timestamp:</I> When a program sends MIDI, it can provide a timestamp to schedule when the MIDI data should be sent, or zero which means &quot;send it immediately&quot;. Normally, when MIDI Monitor sees a zero timestamp, it will substitute a timestamp of when it received the data, to avoid confusion. (&quot;Why do the timestamps say 0? Is something broken?&quot;)  In expert mode, it will show &quot;0&quot;.
-</ul>
+            <dt>Note (Middle C = C4)</dt>
+            <dd>As above, but displayed an octave higher. Middle C (note 60) is displayed as C4, and the full range is from C-1 to G9. Roland uses this convention.</dd>
+
+            <dt>Decimal number</dt>
+            <dd>The note number in base 10, from 0 to 127.</dd>
+
+            <dt>Hexadecimal number</dt>
+            <dd>The note number in base 16, from $00 to $7F.</dd>
+          </dl>
+
+          <h4>Controller format</h4>
+          <p>The method of displaying the name or number of control events.</p>
+
+          <dl class="dl-horizontal">
+            <dt>Standard name</dt>
+            <dd>The name of this controller as given in the MIDI standard. For example, controller 72 means &quot;Release Time&quot;. Controllers without standard names are displayed as decimal numbers. Some controllers come in pairs; one controller conveys the &quot;coarse&quot; value (or high byte) and the other conveys the &quot;fine&quot; value (or low byte).</dd>
+
+            <dt>Decimal number</dt>
+            <dd>The controller number in base 10, from 0 to 127.</dd>
+
+            <dt>Hexadecimal number</dt>
+            <dd>The controller number in base 16, from $00 to $7F.</dd>
+          </dl>
+
+          <h4>Data format</h4>
+          <p>The method of displaying any other data in events.</p>
+          <dl class="dl-horizontal">
+            <dt>Decimal number</dt>
+            <dd>The value in base 10. One byte values range from 0 to 127; signed two byte values range from -8192 to 8191.</dd>
+
+            <dt>Hexadecimal number</dt>
+            <dd>The value in base 16. One byte values range from $00 to $7F; two byte values range from $0000 to $3FFF, with $2000 as the &quot;center&quot; value.</dd>
+          </dl>
+
+          <h4>Expert mode</h4>
+          <p>Changes the display of all events. Intended for experts only.</p>
+          <dl class="dl-horizontal">
+            <dt>Data formatting</dt>
+            <dd>Data is displayed as raw hexadecimal bytes, without any interpretation.</dd>
+
+            <dt>Note off events</dt>
+            <dd>According to the MIDI specification, a Note On event with velocity 0 is to be interpreted as the same as a Note Off event. Normally, MIDI Monitor shows &quot;Note Off&quot;, to avoid confusion. In expert mode, it will show &quot;Note On&quot;</dd>
+
+            <dt>Zero timestamp</dt>
+            <dd>When a program sends MIDI, it can provide a timestamp to schedule when the MIDI data should be sent, or zero which means &quot;send it immediately&quot;. Normally, when MIDI Monitor sees a zero timestamp, it will substitute a timestamp of when it received the data, to avoid confusion. (&quot;Why do the timestamps say 0? Is something broken?&quot;)  In expert mode, it will show &quot;0&quot;.</dd>
+          </dl>
+        </div>
+
+        <div class="col-md-5">
+          <img src="prefs1.png" class="img-responsive" alt="Display Preferences">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-7">
+          <h3>Sources</h3>
+
+          <dl>
+            <dt>New windows will use these sources</dt>
+            <dd>When new windows are created, all of the sources in each of the checked categories will be selected.</dd>
+
+            <dt>Automatically open windows for new sources:</dt>
+            <dd>If this checkbox is checked, when new sources become available, MIDI Monitor will open a new window which listens to the new sources.</dd>
+          </dl>
+        </div>
+        <div class="col-md-5">
+          <img src="prefs2.png" class="img-responsive" alt="Sources Preferences">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-7">
+          <h3>Other</h3>
+
+          <dl>
+            <dt>Save SysEx</dt>
+            <dd>This option lets you control how SysEx messages are saved to files. SysEx messages should always end with an EOX byte (hexadecimal F7). However, some devices do not follow this rule.
+              <dl class="dl-horizontal">
+                <dt>always with EOX byte ($F7)</dt>
+                <dd>The file will end with an EOX byte, even if the message didn't have one when it was received. This is the default, and the most useful setting (especially if you want to use the SysEx file in another application).</dd>
+
+                <dt>as it was received</dt>
+                <dd>Saves the message exactly the same way as it was received, with or without the EOX byte.</dd>
+              </dl>
+            </dd>
+
+            <dt>Ask to save when a changed window is closed</dt>
+            <dd>When checked, MIDI Monitor will ask you to save a modified window when you close it, which is the standard Mac behavior. If you don't tend to save MIDI Monitor documents, this can get annoying, so uncheck this preference to turn off the warning.
+
+              <p class="text-muted"><span class="glyphicon glyphicon-info-sign"></span>
+                This preference depends on "Ask to keep changes when closing documents" in the General section of System Preferences.  If that is OFF (which it is, by default) then documents are automatically saved for you, and the MIDI Monitor preference only affects untitled documents. If the system preference is ON, then the MIDI Monitor preference affects all documents.
+              </p>
+            </dd>
+
+            <dt>Automatically check for updates</dt>
+            <dd>When checked, MIDI Monitor will periodically check if a newer version is available.</dd>
+
+          </dl>
+        </div>
+        <div class="col-md-5">
+          <img src="prefs3.png" class="img-responsive" alt="Other Preferences">
+        </div>
+      </div>
+
+      <div class="page-header">
+        <h1 id="advanced">Advanced Features</h1>
+      </div>
+
+      <div class="row">
+        <div class="col-md-7">
+          <h3>Detailed Event Data</h3>
+
+          <p>To see the contents of an event, double-click it, or select it and use the menu command <span class="label label-default">Events</span> &gt; <span class="label label-default">Show Detailed Data</span>.</p>
+
+          <p>The window shows information about the event, as well as a dump of the event's data in both hexadecimal and ASCII formats. Press the &quot;Save As&quot; button to save the event data to a file.</p>
+
+          <h3>Rescan MIDI</h3>
+          <p>You can use the menu command <span class="label label-default">Special</span> &gt; <span class="label label-default">Rescan MIDI</span> to reinitialize the entire MIDI system and look for available devices. Generally you shouldn't need to do this, but I've included it as a convenience. The Audio MIDI Setup application has a &quot;Rescan MIDI&quot; button that does exactly the same thing. <br>(Developers: the menu command just calls CoreMIDI's <code>MIDIRestart()</code> function.)</p>
+
+        </div>
+        <div class="col-md-5">
+          <img src="sysexWindow.png" class="img-responsive" alt="SysEx Event Data">
+        </div>
+      </div>
 
 
-<P><BR><B>Sources Preferences</B>
-<BR><img src="prefs2.png" align="right">
+      <div class="page-header">
+        <h1 id="contact">Contact</h1>
+      </div>
 
-<P><i>New windows will use these sources:</i> When new windows are created, all of the sources in each of the checked categories will be selected.
-
-<P><i>Automatically open windows for new sources:</I> If this checkbox is checked, when new sources become available, MIDI Monitor will open a new window which listens to the new sources.
-
-<BR clear="all">
-
-<P><BR><B>Other Preferences</B>
-<BR><img src="prefs3.png" align="right">
-
-<P><i>Save SysEx:</i> This option lets you control how SysEx messages are saved to files. SysEx messages should always end with an EOX byte (hexadecimal F7). However, some devices do not follow this rule. 
-<ul>
-<li><i>always with EOX byte ($F7):</I> The file will end with an EOX byte, even if the message didn't have one when it was received. This is the default, and the most useful setting (especially if you want to use the SysEx file in another application).
-<P>
-<li><i>as it was received:</I> Saves the message exactly the same way as it was received, with or without the EOX byte.
-</ul>
-
-<P><i>Ask to save when a changed window is closed:</i> When checked, MIDI Monitor will ask you to save a modified window when you close it, which is the standard Mac behavior. If you don't tend to save MIDI Monitor documents, this can get annoying, so uncheck this preference to turn off the warning.
-
-<P><i>Automatically check for updates:</i> When checked, MIDI Monitor will periodically check if a newer version is available.
-
-<BR clear="all">
+      <p>Please send questions or comments to: <a href="mailto:MIDIMonitor@snoize.com">MIDIMonitor@snoize.com</a>
+      <br>If you find this app useful, if you encounter bugs, or if you have suggestions for improvement, I'd love to hear about it!</p>
 
 
-<P><BR><BR><font size="+1" face="arial, helvetica"><b>SysEx Event Data</b></font>
-<BR><img src="sysexWindow.gif" align="right">
+      <h3>Acknowledgements</h3>
 
-<P>To see the contents of a SysEx event, double-click it, or select it and use the Events->Show Detailed Data menu command.
+      <P>MIDI Monitor is copyright &copy; 2001-2014 by Kurt Revis. All rights reserved.
 
-<P>The window shows information about the event, as well as a dump of the event's data in both hexadecimal and ASCII formats. Also, you may save the event data to a file using the &quot;Save As&quot; button.
+      <P>Thanks to the folks on the <a href="https://lists.apple.com/mailman/listinfo/coreaudio-api">CoreAudio-API mailing list</a> for all the help they have provided, and to everyone who has sent in bug reports and feature requests.
 
-<P><BR><BR><font size="+1" face="arial, helvetica"><b>Invalid Event Data</b></font>
-
-<P>When MIDI Monitor receives data that does not conform to the MIDI specification, it shows the data in an Invalid event.  To see the contents of the event, double-click it, or select it and use the Events->Show Detailed Data menu command.
-
-<br clear="all">
-
-<P><BR><BR><font size="+1" face="arial, helvetica"><b>Advanced Features</b></font>
-
-<P>You can use the menu command &quot;Rescan MIDI&quot;, in the &quot;Special&quot; menu, to reinitialize the entire MIDI system and look for available devices. Generally you shouldn't need to do this, but I've included it as a convenience.  The Audio MIDI Setup application has a &quot;Rescan MIDI&quot; button that does exactly the same thing.
-(Developers: the menu command just calls CoreMIDI's MIDIRestart() function.)
+    </div><!-- /.container -->
 
 
-<P><BR><BR><a name="Troubleshooting"><font size="+1" face="arial, helvetica"><b>Troubleshooting</b></font></a>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
 
-<P>If nothing is listed under <i>MIDI Sources</i> in the Sources section, then there are no MIDI devices available. You must have Mac OS X drivers for your devices; Mac OS 9 drivers will <i>not</i> work. Please check with the manufacturer of your device for drivers.
-
-
-<P><BR><BR><font size="+1" face="arial, helvetica"><b>Contact</b></font>
-<P>Please send questions or comments to: <a href="mailto:MIDIMonitor@snoize.com">MIDIMonitor@snoize.com</a>
-<br>If you find this program useful, I'd love to hear about it! And if you encounter bugs or have suggestions for improvement, please let me know.
-
-<P><BR><BR><font size="+1" face="arial, helvetica"><b>Acknowledgements</b></font>
-<P>MIDI Monitor is copyright &copy; 2001-2012 by Kurt Revis. All rights reserved.
-
-<P>Thanks to the folks on the <a href="http://www.lists.apple.com/coreaudio-api">CoreAudio-API mailing list</a> for all the help they have provided, and to everyone who has sent in bug reports and feature requests.
-
-<P><BR><BR>
-
-</td></tr>
-</table>
-
-</body>
+  </body>
 </html>
