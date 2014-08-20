@@ -1,175 +1,238 @@
-<html>
-<head>
-<title>SysEx Librarian Documentation</title>
-</head>
-<body bgcolor="white">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SysEx Librarian Documentation</title>
 
-<table height="98%" width="100%" border="0">
+    <!-- Bootstrap -->
+    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-<tr>
-<td width="200" valign="top">
-</td>
-<td align="center">
-<img src="icon.gif" border="0">
-<P><font size="+3" face="arial, helvetica"><b>SysEx Librarian</b></font>
-<P><font size="+1" face="arial, helvetica"><b>Documentation</b></font>
-</td>
-<td width="200"></td>
-</tr>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body style="padding-top: 60px;">
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="http://www.snoize.com/SysExLibrarian/">SysEx Librarian</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Documentation</a></li>
+            <li><a href="#basics">Basics</a></li>
+            <li><a href="#quickstart">Quick Start</a></li>
+            <li><a href="#moredetail">In More Detail</a></li>
+            <li><a href="#preferences">Preferences</a></li>
+            <li><a href="#troubleshooting">Troubleshooting</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
 
-<tr align="left"><td colspan="3">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-2">
+          <img src="icon.png" class="img-responsive" alt="SysEx Librarian Icon">
+        </div>
+        <div class="col-xs-10">
+          <div class="page-header">
+            <h1><b>SysEx Librarian</b><br><small>Documentation</small></h1>
+          </div>
+        </div>
+      </div>
 
-<P><BR><BR><font size="+1" face="arial, helvetica"><b>Basics</b></font>
+      <div class="page-header">
+        <h1 id="basics">Basics</h1>
+      </div>
 
-<P><b>SysEx Librarian</b> is a utility for Mac OS X which lets you communicate with MIDI devices using System Exclusive messages, also known as SysEx. The most common use is to backup patch data from synthesizers, although there are others (such as sending firmware updates).  SysEx Librarian makes it easy to keep a library of the SysEx files you use most often, and to record new SysEx files.
+      <p><b>SysEx Librarian</b> is an app to let your Mac communicate with MIDI devices using System Exclusive messages, also known as SysEx. The most common use is to backup patch data from synthesizers, although there are others (such as sending firmware updates).</p>
+      <p>It's easy to keep a library of the SysEx files you use most often, and to record new SysEx files.</p>
 
-<P>SysEx Librarian is free to download and use. The source code is available as Open Source (under the BSD license).
-<P>The SysEx Librarian web page can be found at this URL:
-<BR><a href="http://www.snoize.com/SysExLibrarian/">http://www.snoize.com/SysExLibrarian/</A>
-<BR>Please check there for news and updates.
+      <p>SysEx Librarian is free to download and use. The <a href="http://github.com/krevis/MIDIApps">source code</a> is available as Open Source, under the BSD license.</p>
 
+      <p>Please check <a href="http://www.snoize.com/SysExLibrarian/">http://www.snoize.com/SysExLibrarian/</a> for news and updates.</p>
 
-<P><BR><BR><font size="+1" face="arial, helvetica"><b>Quick Start</b></font>
+      <div class="page-header">
+        <h1 id="quickstart">Quick Start</h1>
+      </div>
 
-<p>To save data from your MIDI device:
-<ol>
-	<li>Run SysEx Librarian
-	<li>Press the &quot;Record Many...&quot; button
-	<li>Tell your device to send sysex, by pressing buttons on it. (Every MIDI device is different; check the manual!)
-	<li>When the transmission is done, press the &quot;Done&quot; button in SysEx Librarian.
-</ol>
+      <h5>To save data from your MIDI device</h5>
+      <ol>
+        <li>Run SysEx Librarian
+        <li>Press the <span class="label label-default">Record Many</span> button
+        <li>Tell your device to send sysex, by pressing buttons on it.<br>(Every MIDI device is different. Check the manual for your device for more details.)
+        <li>When the transmission is done, press the  <span class="label label-default">Done</span> button in SysEx Librarian.
+      </ol>
 
-<p>To send data to your MIDI device:
-<ol>
-	<li>Press the &quot;Add...&quot; button in the lower-left corner of the window, and choose the .syx file you want to transfer.
-		<br>This will add it to the list of files that SysEx Librarian knows about.
-		<br>You can also drag the file directly into the list from the Finder.
-	<li>In SysEx Librarian's toolbar, there's a pop-up menu named &quot;Destination&quot;. 
-		<br>Click it and choose the MIDI port that you want to send to.
-		<br>(It's probably named something like &quot;Port 1&quot; or &quot;Port A&quot;&mdash;it depends on your MIDI interface. &quot;Act as a source for other programs&quot; is NOT what you want.)
-	<li>Click the file in the list to select it
-	<li>Press the "Play" button
-</ol>
+      <h5>To send data to your MIDI device</h5>
+      <ol>
+        <li>Press the  <span class="label label-default">Add...</span> button in the lower-left corner of the window, and choose the .syx file you want to transfer.
+          <br>This will add it to the list of files that SysEx Librarian knows about.
+          <br>You can also drag the file directly into the list from the Finder.
+        <li>In SysEx Librarian's toolbar, there's a pop-up menu named <span class="label label-default">Destination</span>. 
+          <br>Click it and choose the MIDI port that you want to send to.
+          <br>(It's probably named something like &quot;Port 1&quot; or &quot;Port A&quot;&mdash;it depends on your MIDI interface. &quot;Act as a source for other programs&quot; is <i>not</i> what you want.)
+        <li>Click the file in the list to select it
+        <li>Press the <span class="label label-default">Play</span> button
+      </ol>
 
+      <div class="page-header">
+        <h1 id="moredetail">In More Detail</h1>
+      </div>
 
-<P><BR><BR><font size="+1" face="arial, helvetica"><b>In More Detail</b></font>
+      <div class="row">
+        <div class="col-md-6">
+          <p>SysEx Librarian is based around the idea of a library of files. Each file contains one or more SysEx messages.  If you are familiar with iTunes, you will find that SysEx Librarian works much the same way.</p>
+          <p>The main part of the window contains the list of files in the library.  The columns are as follows:</p>
+          <dl class="dl-horizontal">
+            <dt>SysEx File</dt><dd>The name of the file</dd>
+            <dt>Manufacturer</dt><dd>The manufacturer of the device that this SysEx data is for.</dd>
+            <dt># Msgs</dt><dd>The number of individual SysEx messages in the file.</dd>
+            <dt>Size</dt><dd>The size of all of the SysEx data in the file.</dd>
+          </dl>
+        </div>
+        <div class="col-md-6">
+          <img src="MainWindow.png" class="img-responsive" alt="Main Window">
+        </div>
+      </div>
 
-<P>SysEx Librarian is based around the idea of a library of files. Each file contains one or more SysEx messages.  If you are familiar with iTunes, you will find that SysEx Librarian works much the same way.
+      <p>To add files to the library, use the  <span class="label label-default">Add...</span> button and pick a file.  You may also drag files or folders from the Finder into the list of files, or onto the SysEx Librarian icon in the dock.  SysEx Librarian understands raw SysEx files (which often have the extension <code>.syx</code> at the end of the file name) and can also read SysEx messages from standard MIDI files (which usually have the extension <code>.mid</code>).</p>
 
-<P><img src="MainWindowSmall.gif" align="right">
+      <p>You can change a file's name by double-clicking its name, or by selecting it and choosing <span class="label label-default">Change Name</span> from the menu.  Use the <span class="label label-default">Delete</span> button or the <kbd>Delete</kbd> key on your keyboard to delete a file from the library.  To see the actual file on your disk, choose it and press the <span class="label label-default">Show File</span> button (or use the menu command <span class="label label-default">Show SysEx File</span>.</p>
 
-<P>The main part of the window contains the list of files in the library.  The columns are as follows:
-<p><i>SysEx File:</i> The name of the file
-<p><i>Manufacturer:</i> The manufacturer of the device that this SysEx data is for.
-<p><i># Msgs:</i> The number of individual SysEx messages in the file.
-<p><i>Size:</i> The size of all of the SysEx data in the file.
+      <p>To send SysEx to a device, select a file by clicking on it. (Shift-click or command-click to select more than one file.) Then press the <span class="label label-default">Play</span> button, and the SysEx messages in the selected files will be sent to the selected destination.  A progress indicator will show the number of messages and amount of data sent.</p>
 
-<br clear="all">
+      <p>(If you choose the destination named &quot;Act as a source for other programs&quot;, other MIDI programs running on the computer will see an input source named &quot;SysEx Librarian&quot;. You can then play SysEx messages to those programs. Sending will happen instantaneously, so no progress indicator will be shown.)</p>
 
-<P>To add files to the library, use the Add... button to open the standard Mac open dialog.  You may also drag files or folders from the Finder into the list of files, or onto the SysEx Librarian icon in the dock.  SysEx Librarian understands raw SysEx files (which often have the .syx extension) and can also read SysEx messages from standard MIDI files (which usually have the extension .mid).
+      <p>To record a new file, press the <span class="label label-default">Record One</span> or <span class="label label-default">Record Many</span> button.  <span class="label label-default">Record One</span> records just one SysEx message, and then automatically stops recording. <span class="label label-default">Record Many</span> will keep recording messages until you tell it to stop. SysEx Librarian listens to all input ports on all MIDI interfaces connected to your computer, so you don't need to select any one in particular.</p>
 
-<P>You can change a file's name by double-clicking its name, or by selecting it and choosing &quot;Change Name&quot; from the menu.  Use the Delete button or the Delete key on your keyboard to delete a file from the library.  To see the actual file on your disk, choose it and press the Show File button (or use the Show SysEx File menu command); the Finder will select the file and show it to you.
+      <p>Recorded files are stored in your SysEx folder. By default, this is a folder named &quot;SysEx Librarian&quot;, in the Documents folder in your home folder. However, you may change this location in the preferences.  Note that you may also move files around on your disk; SysEx Librarian will try to find them even if they have moved. If a file can't be found, SysEx Librarian will ask you to locate it.</p>
 
-<P>To send SysEx to a device, select a file by clicking on it. (Shift-click or command-click to select more than one file.) Then press the Play button, and the SysEx messages in the selected files will be sent to the selected destination.  A progress indicator will show the number of messages and amount of data sent.
+      <div class="row">
+        <div class="col-md-6">
+          <h4>SysEx File Contents</h4>
 
-<P>(If you choose the destination named &quot;Act as a source for other programs&quot;, other MIDI programs running on the computer will see an input source named &quot;SysEx Librarian&quot;. You can then play SysEx messages to those programs. Sending will happen instantaneously, so no progress indicator will be shown.)
+          <p>To see the contents of a SysEx file, select it and press the <span class="label label-default">Contents</span> button, or use the <span class="label label-default">Show Contents</span> menu command. This will open a new window showing a list of messages in the file.</p>
+          <p>Click on a message to see its data in hexadecimal and ASCII formats.</p>
+        </div>
+        <div class="col-md-6">
+          <img src="Contents.png" class="img-responsive" alt="SysEx File Contents">
+        </div>
+      </div>
 
-<P>To record a new file, press the Record One or Record Many button.  Record One records just one SysEx message, and then automatically stops recording. Record Many will keep recording messages until you tell it to stop. SysEx Librarian listens to all input ports on all MIDI interfaces connected to your computer, so you don't need to select any one in particular.
+      <div class="page-header">
+        <h1 id="preferences">Preferences</h1>
+      </div>
 
-<P>Recorded files are stored in your SysEx folder. By default, this is a folder named &quot;SysEx Librarian&quot;, in the Documents folder in your home folder. However, you may change this location in the preferences.  Note that you may also move files around on your disk; SysEx Librarian will try to find them even if they have moved. If a file can't be found, SysEx Librarian will ask you to locate it.
+      <div class="row">
+        <div class="col-md-6">
+          <p>The preferences window lets you change the way that SysEx Librarian works. Changes in this window take effect immediately.</p>
 
+          <dl>
+            <dt>SysEx Folder Location</dt>
+            <dd>The location where newly recorded SysEx files are stored, by default.  To change this, press the <span class="label label-default">Change</span> button and choose a different folder.</dd>
 
-<P><BR><BR><font size="+1" face="arial, helvetica"><b>SysEx File Contents</b></font>
-<BR><img src="ContentsSmall.gif" align="right">
+            <dt>Show file size as Abbreviated / Full</dt>
+            <dd>Switches the file size shown in the main window between an abbreviated format (like &quot;1.2 KB&quot;) and the full number of bytes (like &quot;1234&quot;).</dd>
 
-<P>To see the contents of a SysEx file, select it and press the Contents button, or use the Show Contents menu command. This will open a new window showing a list of messages in the file.
-<br>Click on a message to see its data in hexadecimal and ASCII formats.
+            <dt>Pause between played messages</dt>
+            <dd>The amount of time that SysEx Librarian pauses between each SysEx message that it plays. Some devices need some time to process a message before they can accept another one. The default (150 milliseconds) should be enough for most devices. Many devices don't need any delay at all; try turning the pause down to 0 to make playback as quick as possible.</dd>
 
-<br clear="all">
+            <dt>SysEx receive timeout</dt>
+            <dd>If a SysEx message does not end normally, SysEx Librarian will wait this amount of time before deciding that the message is finished.  The default (1 second) should be fine for most cases.</dd>
 
+            <dt>Transmit Speed</dt> 
+            <dd>Most MIDI devices can handle sysex messages sent at full speed, but a few older ones have problems keeping up.  If your device doesn't work, try turning down the transmit speed a little bit.  Note that you can change the speed on an individual device, if you've set it up in Audio MIDI Setup.  This is the recommended way to do it (instead of setting the speed on the whole output port), because SysEx Librarian will use the appropriate speed even if you change which port the device is hooked up to.</dd>
+          </dl>
+        </div>
+        <div class="col-md-6">
+          <img src="Preferences.png" class="img-responsive" alt="Preferences">
+        </div>
+      </div>
 
+      <div class="page-header">
+        <h1 id="troubleshooting">Troubleshooting</h1>
+      </div>
 
-<P><BR><BR><font size="+1" face="arial, helvetica"><b>Preferences</b></font>
+      <p>Please note two things:
+      <ul>
+        <li><b>SysEx Librarian is absolutely dependent on the MIDI interface's driver</b>
+        <li><b>MIDI drivers can and do have bugs, especially when dealing with SysEx messages</b>
+      </ul>
 
-<P>The preferences window lets you change the way that SysEx Librarian works. Changes in this window take effect immediately, and are automatically saved.
+      <p>If you're having problems, your first step should be to <b>get the latest version of the driver for your MIDI interface.</b>  Almost all manufacturers have web sites where the drivers can be downloaded&mdash;please check with the manufacturer of your particular device.</p>
 
-<P><img src="PreferencesSmall.gif" align="right">
+      <p>Because MIDI is a very old and primitive communications protocol, it doesn't have the kind of error checking that we take for granted in more modern systems.  When SysEx Librarian records a message coming from your device, it has almost no way of checking that it received the message correctly.  The message could have been corrupted while in transit&mdash;either by the MIDI hardware or by the software in the driver&mdash;but SysEx Librarian cannot tell the difference between a correct message and a bogus one.  Similarly, when SysEx Librarian sends a message to a MIDI device, it cannot tell whether the message was successfully received.
 
-<P><i>SysEx Folder Location:</i> The location where newly recorded SysEx files are stored, by default.  To change this, press the Change button and choose a different folder.
-<P><i>Show file size as Abbreviated / Full:</i> Switches the file size shown in the main window between an abbreviated format (like &quot;1.2 KB&quot;) and the full number of bytes (like &quot;1234&quot;).
-<P><i>Pause between played messages:</i> The amount of time that SysEx Librarian pauses between each SysEx message that it plays. Some devices need some time to process a message before they can accept another one. The default (150 milliseconds) should be enough for most devices. Many devices don't need any delay at all; try turning the pause down to 0 to make playback as quick as possible.
-<P><i>SysEx receive timeout:</i> If a SysEx message does not end normally, SysEx Librarian will wait this amount of time before deciding that the message is finished.  The default (1 second) should be fine for just about everyone.
-<P><i>Transmit Speed:</i> Most MIDI devices can handle sysex messages sent at full speed, but a few older ones have problems keeping up.  If your device doesn't work, try turning down the transmit speed a little bit.  Note that you can change the speed on an individual device, if you've set it up in Audio MIDI Setup.  This is the recommended way to do it (instead of setting the speed on the whole output port), because SysEx Librarian will use the appropriate speed even if you change which port the device is hooked up to.
+      <p>As a result, many apparent "bugs" in SysEx Librarian really turn out to be bugs in the MIDI driver.
 
-<br clear="all">
+      <h4>I can send SysEx to my device, but it doesn't recognize the message. Why?</h4>
 
-<P><BR><BR><a name="Troubleshooting"><font size="+1" face="arial, helvetica"><b>Troubleshooting</b></font></a>
+      <p>To trace this problem, we need to know a few things:</p>
+      <dl>
+        <dt>Is a full-speed sysex transmission too fast for your device?</dt>
+        <dd>Some devices, especially older ones (1980s and early 1990s), cannot deal with sysex that is transmitted at full speed.  Unfortunately there's no real way to find out if this is the case, other than experimenting. You can use the Transmit Speed controls in the Preferences to turn down the speed.</dd>
 
-<P>Please note two things:
-<ul>
-<li><B>SysEx Librarian is absolutely dependent on the MIDI interface's driver</B>
-<li><B>MIDI drivers can and do have bugs, especially when dealing with SysEx messages</B>
-</ul>
+        <dt>Is the SysEx message correct? (not corrupted somehow&mdash;e.g. missing bytes, containing extra bytes, etc.)</dt>
+        <dd>Where did your SysEx file originally come from?  If you downloaded it from the Internet, chances are that it is good (although that's not a certainty).  If you recorded it using SysEx Librarian, it may have been corrupted on the way in.  Try to find a file that you trust to be correct.</dd>
 
-<P>If you're having problems, your first step should be to <b>get the latest version of the driver for your MIDI interface.</b>  Almost all manufacturers have web sites where the drivers can be downloaded -- please check with the manufacturer of your particular device.
+        <dt>Is your MIDI interface is correctly sending the data that SysEx Librarian tells it to?</dt>
+        <dd>Here's a way to see if SysEx Librarian is sending the right data, and to see if the MIDI interface is sending what SysEx Librarian tells it to send. 
+          <ol>
+            <li>Run <a href="http://www.snoize.com/MIDIMonitor/">MIDI Monitor</a>.
+            <li>Make sure it's listening to MIDI input.<br>Press a button or turn a knob on your MIDI device&mdash;anything that would send a MIDI message. The message should appear in MIDI Monitor.
+            <li>Connect a MIDI cable from the output of your MIDI interface, <i>directly</i> back to an input on the same MIDI interface.
+            <li>In the MIDI Monitor window, in the Sources section, open the "Spy on output to destinations" section and check the box for your MIDI interface.
+            <li>Run SysEx Librarian, and have it send to your MIDI interface.
+          </ol>
+          <p>You should see two sysex messages in the MIDI Monitor window, one labeled "To <i>your MIDI interface</i>" and one labeled "From <i>your MIDI interface</i>". They should have the same length and the same contents, and they should be the same as the message that appears in SysEx Librarian.
+          <p>If the "To <i>your MIDI interface</i>" message is different from the one in SysEx Librarian, then SysEx Librarian is doing the wrong thing.  I don't think this will happen, but if it does, please let me know.
+          <p>If the "From <i>your MIDI interface</i>" message is different from the "To <i>your MIDI interface</i>" message, then the driver either didn't send the same thing that SysEx Librarian told it to, or it couldn't receive the same message back again without corrupting it.   Either way, it's a bug in the driver.
+        </dd>
+      </dl>
 
-<P>You must have a Mac OS X driver for your MIDI interface; Mac OS 9 drivers will <i>not</i> work.
+      <div class="page-header">
+        <h1 id="contact">Contact</h1>
+      </div>
 
-<P>Because MIDI is a very old and primitive communications protocol, it doesn't have the kind of error checking that we take for granted in more modern systems.  When SysEx Librarian records a message coming from your device, it has almost no way of checking that it received the message correctly.  The message could have been corrupted while in transit -- either by the MIDI hardware or by the software in the driver -- but SysEx Librarian cannot tell the difference between a correct message and a bogus one.  Similarly, when SysEx Librarian sends a message to a MIDI device, it cannot tell whether the message was successfully received.
+      <p>Please send questions or comments to <a href="mailto:SysExLibrarian@snoize.com">SysExLibrarian@snoize.com</a>
+      <br>If you find this app useful, if you encounter bugs, or if you have suggestions for improvement, I'd love to hear about it!</p>
 
-<P>As a result, many apparent "bugs" in SysEx Librarian really turn out to be bugs in the MIDI driver.
+      <div class="page-header">
+        <h1>Acknowledgements</h1>
+      </div>
 
-<P><b><i>I can send SysEx to my device, but it doesn't recognize the message. Why?</i></b>
-<BR>In order to trace this problem, we need to know a few things:
-<ul>
-<li>Is a full-speed sysex transmission too fast for your device?
-<p>Some devices, especially older ones (1980s and early 1990s), cannot deal with sysex that is transmitted at full speed.  Unfortunately there's no real way to find out if this is the case, other than experimenting. You can use the Transmit Speed controls in the Preferences to turn down the speed.
+      <P>SysEx Librarian is copyright &copy; 2002-2014 by Kurt Revis. All rights reserved.
 
-<li>Is the SysEx message correct? (not corrupted somehow -- e.g. missing bytes, containing extra bytes, etc.)
-<p>Where did your SysEx file originally come from?  If you downloaded it from the Internet, chances are that it is good (although that's not a certainty).  If you recorded it using SysEx Librarian, it may have been corrupted on the way in.  If you can, try to find a file that you know is correct.
-</li>
+      <p>It is released under the BSD license (<a href="SELLicense.html">details</a>).  The source code is available at <a href="https://github.com/krevis/MIDIApps">https://github.com/krevis/MIDIApps</a>.
 
-<li>Is your MIDI interface is correctly sending the data that SysEx Librarian tells it to?
-<P>Here's a way to see if SysEx Librarian is sending the right data, and to see if the MIDI interface is sending what SysEx Librarian tells it to send. 
-<ol>
-<li>Run my program <a href="http://www.snoize.com/MIDIMonitor/">MIDI Monitor</a>.
-<li>Make sure it's listening to MIDI input.  Press a button or turn a knob on your MIDI device--anything that would send a MIDI message. The message should appear in MIDI Monitor.
-<li>Hook up a MIDI cable from the output of your MIDI interface, <b>directly</b> back to an input on the same MIDI interface.
-<li>In the MIDI Monitor window, in the Sources section, open the "Spy on output to destinations" section and check the box for your MIDI interface.
-<li>Run SysEx Librarian, and have it send to your MIDI interface.
-</ol>
-<br>You should see two sysex messages in the MIDI Monitor window, one labeled "To <i>your MIDI interface</i>" and one labeled "From <i>your MIDI interface</i>". They should have the same length and the same contents, and they should be the same as the message that appears in SysEx Librarian.
-<p>If the "To <i>your MIDI interface</i>" message is different from the one in SysEx Librarian, then SysEx Librarian is doing the wrong thing.  I don't think this will happen, but if it does, please let me know.
-<p>If the "From <i>your MIDI interface</i>" message is different from the "To <i>your MIDI interface</i>" message, then the driver either didn't send the same thing that SysEx Librarian told it to, or it couldn't receive the same message back again without corrupting it.   Either way, it's a bug in the driver.
+      <P>SysEx Librarian uses:
+      <ul>
+      <li>BDAlias, from <a href="http://www.bdistributed.com/">bDistributed.com, Inc.</a> (<a href="BDAliasLicense.html">copyright and license</a>)
+      <li>CocoaCryptoHashing, from <a href="http://stoneship.org/software/">Denis Defreyne</a> (<a href="CocoaCryptoHashingLicense.html">copyright and license</a>)
+      </ul>
+      <p>Also: Thanks to the folks on the <a href="https://lists.apple.com/mailman/listinfo/coreaudio-api">CoreAudio-API mailing list</a> for all the help they have provided, and to everyone who has sent in bug reports and feature requests.
+      <p>Also thanks to Steve Grace for his original <b>SysEx</b> app for Classic Mac OS.
 
-</li>
+    </div><!-- /.container -->
 
-</ul>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
 
-<P><b><i>Having other problems?</i></b>
-<BR>Please let me know and I'll try to help find a solution.
-
-
-<P><BR><BR><font size="+1" face="arial, helvetica"><b>Contact</b></font>
-<P>Please send questions or comments to: <a href="mailto:SysExLibrarian@snoize.com">SysExLibrarian@snoize.com</a>
-<br>If you find this program useful, I'd love to hear about it! And if you encounter bugs or have suggestions for improvement, please let me know.
-
-<P><BR><BR><font size="+1" face="arial, helvetica"><b>Acknowledgements</b></font>
-<P>SysExLibrarian is copyright &copy; 2002-2012 by Kurt Revis. All rights reserved.
-<P>It is released under the BSD license (<a href="SELLicense.html">details</a>).  The source code is available at <a href="https://github.com/krevis/MIDIApps">https://github.com/krevis/MIDIApps</a>.
-
-<P>SysEx Librarian uses:
-<ul>
-<li>BDAlias, from <a href="http://www.bdistributed.com/">bDistributed.com, Inc.</a> (<a href="BDAliasLicense.html">copyright and license</a>)
-<li>CocoaCrypoHashing, from <a href="http://stoneship.org/software/">Denis Defreyne</a> (<a href="CocoaCryptoHashingLicense.html">copyright and license</a>)
-</ul>
-<P>Also: Thanks to the folks on the <a href="http://www.lists.apple.com/coreaudio-api">CoreAudio-API mailing list</a> for all the help they have provided, and to everyone who has sent in bug reports and feature requests.
-<P>Also thanks to Steve Grace for his original <a href="http://pobox.com/~sgrace/sysex/">SysEx utility</a> for the Classic Mac OS.
-
-<P><BR><BR>
-
-</td></tr>
-</table>
-
-</body>
+  </body>
 </html>
