@@ -18,27 +18,28 @@
         <window title="SysEx Librarian" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="SysEx Librarian" animationBehavior="default" id="5" userLabel="Main Window">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="123" y="792" width="450" height="296"/>
+            <rect key="contentRect" x="92" y="489" width="450" height="296"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
+            <value key="minSize" type="size" width="400" height="200"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="450" height="296"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="19">
-                        <rect key="frame" x="20" y="60" width="416" height="226"/>
+                        <rect key="frame" x="-1" y="55" width="452" height="242"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="Ivx-gw-hP2">
-                            <rect key="frame" x="1" y="17" width="414" height="208"/>
+                            <rect key="frame" x="1" y="17" width="450" height="224"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" rowHeight="14" headerView="300054" id="21" customClass="SSETableView">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="208"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="450" height="224"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
-                                        <tableColumn identifier="name" width="176" minWidth="65.458999633789062" maxWidth="1000" id="20">
+                                        <tableColumn identifier="name" width="199" minWidth="65.458999633789062" maxWidth="1000" id="20">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="SysEx File">
                                                 <font key="font" size="11" name="LucidaGrande"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -63,8 +64,8 @@
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </tableColumn>
-                                        <tableColumn identifier="messageCount" editable="NO" width="43" minWidth="43" maxWidth="43" id="184">
-                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="right" title="# Msgs">
+                                        <tableColumn identifier="messageCount" editable="NO" width="50" minWidth="50" maxWidth="50" id="184">
+                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="right" title="#Msgs">
                                                 <font key="font" size="11" name="LucidaGrande"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -87,7 +88,7 @@
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </tableColumn>
-                                        <tableColumn identifier="programNumber" width="40" minWidth="40" maxWidth="40" id="300022">
+                                        <tableColumn identifier="programNumber" width="46" minWidth="46" maxWidth="46" id="300022">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="right" title="Prog#">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -122,21 +123,21 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="300055">
-                            <rect key="frame" x="399" y="17" width="16" height="208"/>
+                            <rect key="frame" x="435" y="17" width="16" height="224"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <tableHeaderView key="headerView" id="300054">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="17"/>
+                            <rect key="frame" x="0.0" y="0.0" width="450" height="17"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
                         <connections>
                             <outlet property="nextKeyView" destination="23" id="358"/>
                         </connections>
                     </scrollView>
-                    <button verticalHuggingPriority="750" id="23">
-                        <rect key="frame" x="14" y="12" width="86" height="32"/>
+                    <button toolTip="Add a file" verticalHuggingPriority="750" id="23">
+                        <rect key="frame" x="14" y="7" width="39" height="38"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <buttonCell key="cell" type="push" title="Add..." bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="300044">
+                        <buttonCell key="cell" type="round" bezelStyle="circular" image="NSAddTemplate" imagePosition="overlaps" alignment="center" borderStyle="border" inset="2" id="300044">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -145,10 +146,10 @@
                             <outlet property="nextKeyView" destination="24" id="352"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" id="24" customClass="SSEValidatingButton">
-                        <rect key="frame" x="100" y="12" width="86" height="32"/>
+                    <button toolTip="Remove selected file(s)" verticalHuggingPriority="750" id="24" customClass="SSEValidatingButton">
+                        <rect key="frame" x="56" y="7" width="39" height="38"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <buttonCell key="cell" type="push" title="Delete" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="300045">
+                        <buttonCell key="cell" type="round" bezelStyle="circular" image="NSRemoveTemplate" imagePosition="only" alignment="center" borderStyle="border" inset="2" id="300045">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -157,20 +158,8 @@
                             <outlet property="nextKeyView" destination="356" id="359"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" id="205" customClass="SSEValidatingButton">
-                        <rect key="frame" x="343" y="12" width="99" height="32"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                        <buttonCell key="cell" type="push" title="Show File" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="300046">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="showFileInFinder:" target="-2" id="294"/>
-                            <outlet property="nextKeyView" destination="21" id="355"/>
-                        </connections>
-                    </button>
-                    <button verticalHuggingPriority="750" id="356" customClass="SSEValidatingButton">
-                        <rect key="frame" x="246" y="12" width="97" height="32"/>
+                    <button toolTip="Show contents of selected file(s)" verticalHuggingPriority="750" id="356" customClass="SSEValidatingButton">
+                        <rect key="frame" x="339" y="12" width="97" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                         <buttonCell key="cell" type="push" title="Contents" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="300047">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -178,7 +167,6 @@
                         </buttonCell>
                         <connections>
                             <action selector="showDetails:" target="-2" id="357"/>
-                            <outlet property="nextKeyView" destination="205" id="360"/>
                         </connections>
                     </button>
                 </subviews>
@@ -197,7 +185,7 @@
                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                     <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="335" id="300048">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
+                        <font key="font" metaFont="menu"/>
                         <menu key="menu" title="OtherViews" id="338">
                             <items>
                                 <menuItem title="Item1" state="on" id="335"/>
@@ -213,4 +201,8 @@
             </subviews>
         </customView>
     </objects>
+    <resources>
+        <image name="NSAddTemplate" width="8" height="8"/>
+        <image name="NSRemoveTemplate" width="8" height="8"/>
+    </resources>
 </document>
