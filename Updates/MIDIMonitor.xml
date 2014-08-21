@@ -11,7 +11,7 @@
               <description><![CDATA[
                   <h3>Version 1.3.1:</h3>
                   <p>First update in a while!
-                  <p><b>NOTE:</b> After you install the update, you may get an error message saying &quot;There is an old version of MIDI Monitor's driver installed, but it could not be removed.&quot;. <b>Just quit the app, wait a few seconds, and run it again.</b> If that doesn't work, restart your computer and try again.
+                  <p><b>NOTE:</b> After you install the update, you may get an error message saying &quot;There is an old version of MIDI Monitor's driver installed, but it could not be removed.&quot; <b>Just quit the app, wait a few seconds, and run it again.</b> If that doesn't work, restart your computer and try again.
                   <p>Changes:
                   <ul>
                   <li>MIDI Monitor now auto-saves documents and automatically restores them on launch, like modern OS X apps do.
@@ -25,7 +25,7 @@
               </description>
               <pubDate>Wed, 20 Aug 2014 19:02:36 -0700</pubDate>
               <enclosure url="http://www.snoize.com/MIDIMonitor/MIDIMonitor_1_3_1.zip" sparkle:version="1.3.1" sparkle:dsaSignature="MCwCFGW0jo9ZE5q3i1XzpPtVjky1suNPAhRFytw1zFUbQxWWJOLfyT5SAQhM3A==" length="2346102" type="application/octet-stream"/>
-        </item>
+         </item>
          <item>
             <title>Version 1.3</title>
             <description><![CDATA[
