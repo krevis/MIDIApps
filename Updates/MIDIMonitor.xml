@@ -5,6 +5,27 @@
       <link>http://www.snoize.com/MIDIMonitor/MIDIMonitor.xml</link>
       <description>Most recent changes with links to updates.</description>
       <language>en</language>
+          <item>
+              <title>Version 1.3.1</title>
+              <sparkle:minimumSystemVersion>10.7.0</sparkle:minimumSystemVersion>
+              <description><![CDATA[
+                  <h3>Version 1.3.1:</h3>
+                  <p>First update in a while!
+                  <p><b>NOTE:</b> After you install the update, you may get an error message saying &quot;There is an old version of MIDI Monitor's driver installed, but it could not be removed.&quot;. <b>Just quit the app, wait a few seconds, and run it again.</b> If that doesn't work, restart your computer and try again.
+                  <p>Changes:
+                  <ul>
+                  <li>MIDI Monitor now auto-saves documents and automatically restores them on launch, like modern OS X apps do.
+                  <li>Fixed a bug causing "Untitled" documents to appear when they shouldn't have.
+                  <li>Don't warn when opening a document whose sources are not currently present. It's more annoying than helpful.
+                  <li>Show more details in the "data" line for sysex events. In "expert mode", show the raw bytes of the event. Allow viewing the detailed hex data for all kinds of events, not just sysex.
+                  <li>Modernized UI slightly: lists now fill the whole window.
+                  <li>Updated app signature so it launches without warning on Mac OS X 10.9.5.
+                  </ul>
+              ]]>
+              </description>
+              <pubDate>Wed, 20 Aug 2014 19:02:36 -0700</pubDate>
+              <enclosure url="http://www.snoize.com/MIDIMonitor/MIDIMonitor_1_3_1.zip" sparkle:version="1.3.1" sparkle:dsaSignature="MCwCFGW0jo9ZE5q3i1XzpPtVjky1suNPAhRFytw1zFUbQxWWJOLfyT5SAQhM3A==" length="2346102" type="application/octet-stream"/>
+        </item>
          <item>
             <title>Version 1.3</title>
             <description><![CDATA[
