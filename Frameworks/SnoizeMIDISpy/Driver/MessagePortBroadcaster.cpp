@@ -255,7 +255,7 @@ void	MessagePortBroadcaster::AddListener(CFDataRef listenerIdentifierData)
     if (!listenerIdentifierNumber)
         return;
 
-    listenerPortName = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%@-%d"), mBroadcasterName, listenerIdentifier);
+    listenerPortName = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%@-%d"), mBroadcasterName, (int)listenerIdentifier);
 
     remotePort = CFMessagePortCreateRemote(kCFAllocatorDefault, listenerPortName);
     if (remotePort) {
