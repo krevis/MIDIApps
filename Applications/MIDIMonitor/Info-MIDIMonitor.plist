@@ -32,7 +32,7 @@
 	<key>CFBundleExecutable</key>
 	<string>MIDI Monitor</string>
 	<key>CFBundleGetInfoString</key>
-	<string>1.3.1, Copyright 2001-2014 Kurt Revis</string>
+	<string>1.3.2, Copyright 2001-2014 Kurt Revis</string>
 	<key>CFBundleIconFile</key>
 	<string>MIDIMonitor.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -44,11 +44,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.3.1</string>
+	<string>1.3.2</string>
 	<key>CFBundleSignature</key>
 	<string>mMon</string>
 	<key>CFBundleVersion</key>
-	<string>1.3.1</string>
+	<string>1.3.2</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.7.0</string>
 	<key>NSHumanReadableCopyright</key>
