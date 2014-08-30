@@ -250,7 +250,6 @@
 		F58752700214CEDD01000164 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = English; path = English.lproj/MainWindow.toolbar; sourceTree = "<group>"; };
 		F58752740214D73401000164 /* SSEValidatingButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEValidatingButton.h; sourceTree = "<group>"; };
 		F58752750214D73401000164 /* SSEValidatingButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEValidatingButton.m; sourceTree = "<group>"; };
-		F597D8FC026BC47A01000164 /* Read Me.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "Read Me.html"; sourceTree = "<group>"; };
 		F5C54B9C030C6F9D01000164 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SysExLibrarian.strings; sourceTree = "<group>"; };
 		F5D90FD2021628DF01000164 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = English; path = English.lproj/Credits.html; sourceTree = "<group>"; };
 		F5D90FE5021630C101000164 /* English */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = text.html; name = English; path = English.lproj/docs.htmld; sourceTree = "<group>"; };
@@ -416,7 +415,6 @@
 				F587526F0214CEDD01000164 /* MainWindow.toolbar */,
 				F5308FEC0233012701000164 /* Toolbar Images */,
 				F5D90FE4021630C101000164 /* docs.htmld */,
-				F597D8FC026BC47A01000164 /* Read Me.html */,
 				161B721215D8EA13006E21D4 /* dsa_pub.pem */,
 			);
 			name = Resources;

@@ -212,7 +212,6 @@
 		F56E05CF0206BF0C01000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SysEx.nib; sourceTree = "<group>"; };
 		F57053DA018D364A01000164 /* Document.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Document.icns; sourceTree = "<group>"; };
 		F579B5E9018D0F0D01000164 /* MIDIMonitor.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = MIDIMonitor.icns; sourceTree = "<group>"; };
-		F57B0567026BB81F01000164 /* Read Me.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "Read Me.html"; sourceTree = "<group>"; };
 		F57F628A0261C8FC01000164 /* SMMSourcesOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMSourcesOutlineView.h; sourceTree = "<group>"; };
 		F57F628B0261C8FC01000164 /* SMMSourcesOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMSourcesOutlineView.m; sourceTree = "<group>"; };
 		F57F628F0261D5A701000164 /* SMMNonHighlightingCells.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMNonHighlightingCells.h; sourceTree = "<group>"; };
@@ -394,7 +393,6 @@
 				F579B5E9018D0F0D01000164 /* MIDIMonitor.icns */,
 				F57053DA018D364A01000164 /* Document.icns */,
 				F56D31A30195A90E01000164 /* docs.htmld */,
-				F57B0567026BB81F01000164 /* Read Me.html */,
 				16C267D015D836B2009F4BE4 /* SNDisclosureArrowDown.tiff */,
 				163FB5E8199ED5810017B664 /* SNDisclosureArrowDown@2x.tiff */,
 				16C267D115D836B2009F4BE4 /* SNDisclosureArrowRight.tiff */,
