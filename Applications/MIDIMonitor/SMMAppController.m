@@ -14,6 +14,7 @@
 
 #import <CoreMIDI/CoreMIDI.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
+#import <Sparkle/Sparkle.h>
 
 #import "SMMDocument.h"
 #import "SMMMonitorWindowController.h"
@@ -22,7 +23,7 @@
 
 NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSources";
 
-@interface SMMAppController ()
+@interface SMMAppController () <SUUpdaterDelegate>
 
 @property (nonatomic, assign) BOOL shouldOpenUntitledDocument;
 @property (nonatomic, retain) NSMutableSet *newlyAppearedSources;
@@ -164,6 +165,31 @@ NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNe
 
         NSRunAlertPanel(title, message, nil, nil, nil, status);        
     }
+}
+
+#pragma mark SUUpdaterDelegate
+
+- (BOOL)updater:(SUUpdater *)updater shouldPostponeRelaunchForUpdate:(SUAppcastItem *)item untilInvoking:(NSInvocation *)invocation
+{
+    // The update might contain a MIDI driver that needs to get
+    // installed. In order for it to work immediately,
+    // we want the MIDIServer to shut down now, so we can install
+    // the driver and then trigger the MIDIServer to run again.
+
+    // Remove our connections to the MIDIServer first:
+    [SMClient disposeSharedClient];
+    MIDISpyClientDispose(_midiSpyClient);
+    MIDISpyClientDisposeSharedMIDIClient();
+
+    // Wait a few seconds for the MIDIServer to hopefully shut down,
+    // then relaunch for the update:
+    [invocation retain];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(6 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [invocation invoke];
+        [invocation release];
+    });
+
+    return YES;
 }
 
 #pragma mark Private

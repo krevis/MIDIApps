@@ -235,6 +235,10 @@
             </items>
         </menu>
         <customObject id="199" userLabel="SMMAppController" customClass="SMMAppController"/>
-        <customObject id="236" customClass="SUUpdater"/>
+        <customObject id="236" customClass="SUUpdater">
+            <connections>
+                <outlet property="delegate" destination="199" id="Kel-0m-z8D"/>
+            </connections>
+        </customObject>
     </objects>
 </document>
