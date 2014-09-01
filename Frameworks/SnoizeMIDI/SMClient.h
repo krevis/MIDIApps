@@ -28,6 +28,9 @@
 
 + (SMClient *)sharedClient;
 
++ (void)disposeSharedClient;
+    // Use only in special circumstances, if you want to remove the app's connection to the MIDIServer
+
 - (MIDIClientRef)midiClient;
 - (NSString *)name;
 

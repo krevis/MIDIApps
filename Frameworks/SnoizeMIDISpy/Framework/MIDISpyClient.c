@@ -250,6 +250,14 @@ OSStatus MIDISpyClientDispose(MIDISpyClientRef clientRef)
     return noErr;
 }
 
+void MIDISpyClientDisposeSharedMIDIClient(void)
+{
+    if (sMIDIClientRef) {
+        MIDIClientDispose(sMIDIClientRef);
+        sMIDIClientRef = NULL;
+    }
+}
+
 
 OSStatus MIDISpyPortCreate(MIDISpyClientRef clientRef, MIDIReadProc readProc, void *refCon, MIDISpyPortRef *outSpyPortRefPtr)
 {

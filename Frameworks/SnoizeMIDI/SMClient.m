@@ -73,6 +73,12 @@ static SMClient *sharedClient = nil;
     return sharedClient;
 }
 
++ (void)disposeSharedClient
+{
+    [sharedClient release];
+    sharedClient = nil;
+}
+
 - (id)init;
 {
     OSStatus status;
