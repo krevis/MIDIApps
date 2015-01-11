@@ -1,3 +1,6 @@
 // Frameworks are installed inside the app
 INSTALL_PATH = @rpath
 SKIP_INSTALL = YES
+
+// Turn on modules, so the framework can be used from Swift
+DEFINES_MODULE = YES
