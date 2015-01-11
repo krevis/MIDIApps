@@ -11,6 +11,7 @@
 		160386CE1A630C8A00E69572 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 160386CD1A630C8A00E69572 /* Images.xcassets */; };
 		160386D11A630C8A00E69572 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 160386CF1A630C8A00E69572 /* MainMenu.xib */; };
 		160386DD1A630C8A00E69572 /* SwiftAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160386DC1A630C8A00E69572 /* SwiftAppTests.swift */; };
+		160387031A630F6800E69572 /* SnoizeMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 160386EE1A630CD300E69572 /* SnoizeMIDI.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -20,6 +21,27 @@
 			proxyType = 1;
 			remoteGlobalIDString = 160386C51A630C8A00E69572;
 			remoteInfo = SwiftApp;
+		};
+		160386ED1A630CD300E69572 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 160386E71A630CD300E69572 /* SnoizeMIDI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
+			remoteInfo = SnoizeMIDI;
+		};
+		160386EF1A630CD300E69572 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 160386E71A630CD300E69572 /* SnoizeMIDI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A53DDB97148F4219006D2FFD;
+			remoteInfo = SnoizeMIDIiOS;
+		};
+		160386F11A630CD300E69572 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 160386E71A630CD300E69572 /* SnoizeMIDI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A581997216AF687400325CF3;
+			remoteInfo = SnoizeMIDIOSX;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -32,6 +54,13 @@
 		160386D61A630C8A00E69572 /* SwiftAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		160386DB1A630C8A00E69572 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		160386DC1A630C8A00E69572 /* SwiftAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftAppTests.swift; sourceTree = "<group>"; };
+		160386E71A630CD300E69572 /* SnoizeMIDI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDI.xcodeproj; path = ../../Frameworks/SnoizeMIDI/SnoizeMIDI.xcodeproj; sourceTree = "<group>"; };
+		160386F41A630CFC00E69572 /* Snoize-Application-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Snoize-Application-Debug.xcconfig"; path = "../../Configurations/Snoize-Application-Debug.xcconfig"; sourceTree = "<group>"; };
+		160386F51A630CFC00E69572 /* Snoize-Application-Global.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Snoize-Application-Global.xcconfig"; path = "../../Configurations/Snoize-Application-Global.xcconfig"; sourceTree = "<group>"; };
+		160386F61A630CFC00E69572 /* Snoize-Application-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Snoize-Application-Release.xcconfig"; path = "../../Configurations/Snoize-Application-Release.xcconfig"; sourceTree = "<group>"; };
+		160386F71A630CFC00E69572 /* Snoize-Project-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Debug.xcconfig"; path = "../../Configurations/Snoize-Project-Debug.xcconfig"; sourceTree = "<group>"; };
+		160386F81A630CFC00E69572 /* Snoize-Project-Global.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Global.xcconfig"; path = "../../Configurations/Snoize-Project-Global.xcconfig"; sourceTree = "<group>"; };
+		160386F91A630CFC00E69572 /* Snoize-Project-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Release.xcconfig"; path = "../../Configurations/Snoize-Project-Release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				160387031A630F6800E69572 /* SnoizeMIDI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,6 +87,8 @@
 			children = (
 				160386C81A630C8A00E69572 /* SwiftApp */,
 				160386D91A630C8A00E69572 /* SwiftAppTests */,
+				160386F31A630CE400E69572 /* Configurations */,
+				160386E61A630CB700E69572 /* Other Projects */,
 				160386C71A630C8A00E69572 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -104,6 +136,37 @@
 				160386DB1A630C8A00E69572 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		160386E61A630CB700E69572 /* Other Projects */ = {
+			isa = PBXGroup;
+			children = (
+				160386E71A630CD300E69572 /* SnoizeMIDI.xcodeproj */,
+			);
+			name = "Other Projects";
+			sourceTree = "<group>";
+		};
+		160386E81A630CD300E69572 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				160386EE1A630CD300E69572 /* SnoizeMIDI.framework */,
+				160386F01A630CD300E69572 /* libSnoizeMIDIiOS.a */,
+				160386F21A630CD300E69572 /* libSnoizeMIDI.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		160386F31A630CE400E69572 /* Configurations */ = {
+			isa = PBXGroup;
+			children = (
+				160386F41A630CFC00E69572 /* Snoize-Application-Debug.xcconfig */,
+				160386F51A630CFC00E69572 /* Snoize-Application-Global.xcconfig */,
+				160386F61A630CFC00E69572 /* Snoize-Application-Release.xcconfig */,
+				160386F71A630CFC00E69572 /* Snoize-Project-Debug.xcconfig */,
+				160386F81A630CFC00E69572 /* Snoize-Project-Global.xcconfig */,
+				160386F91A630CFC00E69572 /* Snoize-Project-Release.xcconfig */,
+			);
+			name = Configurations;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -173,6 +236,12 @@
 			mainGroup = 160386BD1A630C8A00E69572;
 			productRefGroup = 160386C71A630C8A00E69572 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 160386E81A630CD300E69572 /* Products */;
+					ProjectRef = 160386E71A630CD300E69572 /* SnoizeMIDI.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				160386C51A630C8A00E69572 /* SwiftApp */,
@@ -180,6 +249,30 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		160386EE1A630CD300E69572 /* SnoizeMIDI.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SnoizeMIDI.framework;
+			remoteRef = 160386ED1A630CD300E69572 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		160386F01A630CD300E69572 /* libSnoizeMIDIiOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSnoizeMIDIiOS.a;
+			remoteRef = 160386EF1A630CD300E69572 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		160386F21A630CD300E69572 /* libSnoizeMIDI.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSnoizeMIDI.a;
+			remoteRef = 160386F11A630CD300E69572 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		160386C41A630C8A00E69572 /* Resources */ = {
@@ -241,6 +334,7 @@
 /* Begin XCBuildConfiguration section */
 		160386DE1A630C8A00E69572 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 160386F71A630CFC00E69572 /* Snoize-Project-Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -283,6 +377,7 @@
 		};
 		160386DF1A630C8A00E69572 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 160386F91A630CFC00E69572 /* Snoize-Project-Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -318,6 +413,7 @@
 		};
 		160386E11A630C8A00E69572 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 160386F41A630CFC00E69572 /* Snoize-Application-Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -329,6 +425,7 @@
 		};
 		160386E21A630C8A00E69572 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 160386F61A630CFC00E69572 /* Snoize-Application-Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -340,6 +437,7 @@
 		};
 		160386E41A630C8A00E69572 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 160386F41A630CFC00E69572 /* Snoize-Application-Debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -360,6 +458,7 @@
 		};
 		160386E51A630C8A00E69572 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 160386F61A630CFC00E69572 /* Snoize-Application-Release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -393,6 +492,7 @@
 				160386E21A630C8A00E69572 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		160386E31A630C8A00E69572 /* Build configuration list for PBXNativeTarget "SwiftAppTests" */ = {
 			isa = XCConfigurationList;
@@ -401,6 +501,7 @@
 				160386E51A630C8A00E69572 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
