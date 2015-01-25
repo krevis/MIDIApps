@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:ShowMIDIPackets/ShowMIDIPackets.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Applications/MIDIMonitor/MIDIMonitor.xcodeproj">
    </FileRef>
    <FileRef
