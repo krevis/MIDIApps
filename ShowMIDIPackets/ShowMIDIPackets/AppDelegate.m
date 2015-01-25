@@ -158,7 +158,7 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
     for (int i = 0; i < packetList->numPackets; i++) {
         NSMutableString *formattedData = [NSMutableString string];
         for (int j = 0; j < packet->length; j++) {
-            [formattedData appendFormat:@"%02x ", packet->data[j]];
+            [formattedData appendFormat:@"%02X ", packet->data[j]];
         }
 
         [self appendFormat:@"  Packet %d: time %llu, length %u, data %@", i, packet->timeStamp, (unsigned)packet->length, formattedData];

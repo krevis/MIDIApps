@@ -82,7 +82,7 @@ typedef enum _SMSystemRealTimeMessageType {
                 case SMSystemRealTimeMessageTypeStop:
                 case SMSystemRealTimeMessageTypeActiveSense:
                 case SMSystemRealTimeMessageTypeReset:
-                    message = [NSString stringWithFormat:@"SystemRealTime %02x", byte];
+                    message = [NSString stringWithFormat:@"SystemRealTime %02X", byte];
                     break;
         
                 default:
@@ -101,9 +101,9 @@ typedef enum _SMSystemRealTimeMessageType {
                     if (pendingDataIndex == pendingDataLength) {
                         // This message is now done--send it
                         if (pendingMessageStatus >= 0xF0) {
-                            message = [NSString stringWithFormat:@"SystemCommon %02x %@", pendingMessageStatus, [self formatData:pendingData withLength:pendingDataLength]];
+                            message = [NSString stringWithFormat:@"SystemCommon %02X %@", pendingMessageStatus, [self formatData:pendingData withLength:pendingDataLength]];
                         } else {
-                            message = [NSString stringWithFormat:@"Voice %02x %@", pendingMessageStatus, [self formatData:pendingData withLength:pendingDataLength]];
+                            message = [NSString stringWithFormat:@"Voice %02X %@", pendingMessageStatus, [self formatData:pendingData withLength:pendingDataLength]];
                         }
 
                         pendingDataLength = 0;
@@ -161,7 +161,7 @@ typedef enum _SMSystemRealTimeMessageType {
                                 break;
     
                             case SMSystemCommonMessageTypeTuneRequest:
-                                message = [NSString stringWithFormat:@"SystemCommon %02x", byte];
+                                message = [NSString stringWithFormat:@"SystemCommon %02X", byte];
                                 break;
                             
                             default:
@@ -225,7 +225,7 @@ typedef enum _SMSystemRealTimeMessageType {
 
     NSMutableString *str = [NSMutableString string];
     for (UInt16 i = 0; i < length; i++) {
-        [str appendFormat:@"%02x ", data[i]];
+        [str appendFormat:@"%02X ", data[i]];
     }
     return str;
 }
@@ -243,7 +243,7 @@ typedef enum _SMSystemRealTimeMessageType {
 
     NSMutableString *str = [NSMutableString string];
     for (NSUInteger i = 0; i < data.length; i++) {
-        [str appendFormat:@"%02x ", bytes[i]];
+        [str appendFormat:@"%02X ", bytes[i]];
     }
     return str;
 }
