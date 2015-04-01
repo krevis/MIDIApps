@@ -960,10 +960,6 @@
 			baseConfigurationReference = 16F033300984B760006C8A44 /* Snoize-Application-Debug.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../../../Library/Developer/Xcode/DerivedData/MIDIApps-ebblttgvuqergyalshlldsfqjcnw/Build/Products/Debug\"",
-				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PrecompHeader.h;
 				INFOPLIST_FILE = "Info-SysExLibrarian.plist";
@@ -978,10 +974,6 @@
 			baseConfigurationReference = 16F033320984B760006C8A44 /* Snoize-Application-Release.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../../../Library/Developer/Xcode/DerivedData/MIDIApps-ebblttgvuqergyalshlldsfqjcnw/Build/Products/Debug\"",
-				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PrecompHeader.h;
 				INFOPLIST_FILE = "Info-SysExLibrarian.plist";
