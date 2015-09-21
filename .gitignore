@@ -6,3 +6,4 @@ build
 xcuserdata
 project.xcworkspace
 *.xccheckout
+*.xcscmblueprint
