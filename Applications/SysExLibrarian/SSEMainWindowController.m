@@ -240,27 +240,15 @@ static SSEMainWindowController *controller = nil;
 
 - (IBAction)addToLibrary:(id)sender;
 {
-    NSOpenPanel *openPanel;
-
     if ([self finishEditingResultsInError])
         return;
     
-    openPanel = [NSOpenPanel openPanel];
+    NSOpenPanel *openPanel = [NSOpenPanel openPanel];
     [openPanel setAllowsMultipleSelection:YES];
-
-    if ([openPanel respondsToSelector:@selector(beginSheetModalForWindow:completionHandler:)]) {
-        [openPanel setAllowedFileTypes:[library allowedFileTypes]];
-        [openPanel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
-            [self openPanelDidEnd:openPanel returnCode:result contextInfo:NULL];
-        }];
-    } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-
-        [openPanel beginSheetForDirectory:nil file:nil types:[library allowedFileTypes] modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:) contextInfo:nil];
-
-#pragma clang diagnostic pop
-    }
+    [openPanel setAllowedFileTypes:[library allowedFileTypes]];
+    [openPanel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
+        [self openPanelDidEnd:openPanel returnCode:result contextInfo:NULL];
+    }];
 }
 
 - (IBAction)delete:(id)sender;

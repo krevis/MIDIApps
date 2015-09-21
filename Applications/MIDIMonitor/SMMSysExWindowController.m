@@ -48,19 +48,9 @@ NSString* const SMMSaveSysExWithEOXAlwaysPreferenceKey = @"SMMSaveSysExWithEOXAl
 - (IBAction)save:(id)sender
 {
     NSSavePanel* savePanel = [NSSavePanel savePanel];
-
-    if ([savePanel respondsToSelector:@selector(beginSheetModalForWindow:completionHandler:)]) {
-        [savePanel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
-            [self savePanelDidEnd:savePanel returnCode:result contextInfo:NULL];
-        }];
-    } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-
-        [savePanel beginSheetForDirectory:nil file:nil modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(savePanelDidEnd:returnCode:contextInfo:) contextInfo:nil];
-    
-#pragma clang diagnostic pop
-    }
+    [savePanel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
+        [self savePanelDidEnd:savePanel returnCode:result contextInfo:NULL];
+    }];
 }
 
 #pragma mark Private

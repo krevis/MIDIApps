@@ -135,30 +135,17 @@ NSString *SSEListenForProgramChangesPreferenceChangedNotification = @"SSEListenF
 
 - (IBAction)changeSysExFolder:(id)sender
 {
-    NSOpenPanel *openPanel;
-    NSString *oldPath;
-
-    openPanel = [NSOpenPanel openPanel];
+    NSOpenPanel *openPanel = [NSOpenPanel openPanel];
     [openPanel setCanChooseDirectories:YES];
     [openPanel setCanChooseFiles:NO];
     [openPanel setAllowsMultipleSelection:NO];
 
-    oldPath = [[SSELibrary sharedLibrary] fileDirectoryPath];
+    NSString *oldPath = [[SSELibrary sharedLibrary] fileDirectoryPath];
     
-    if ([openPanel respondsToSelector:@selector(beginSheetModalForWindow:completionHandler:)]) {
-        [openPanel setDirectoryURL:[NSURL fileURLWithPath:oldPath isDirectory:YES]];
-        [openPanel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
-            [self openPanelDidEnd:openPanel returnCode:result contextInfo:NULL];
-        }];
-    } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        
-        [openPanel beginSheetForDirectory:oldPath file:nil types:nil modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:) contextInfo:NULL];
-        
-#pragma clang diagnostic pop
-    }
-
+    [openPanel setDirectoryURL:[NSURL fileURLWithPath:oldPath isDirectory:YES]];
+    [openPanel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
+        [self openPanelDidEnd:openPanel returnCode:result contextInfo:NULL];
+    }];
 }
 
 - (IBAction)changeReadTimeOut:(id)sender

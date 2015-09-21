@@ -109,23 +109,12 @@
 
 - (void)runOpenSheetForMissingFile;
 {
-    NSOpenPanel *openPanel;
-
-    openPanel = [NSOpenPanel openPanel];
+    NSOpenPanel *openPanel = [NSOpenPanel openPanel];
     
-    if ([openPanel respondsToSelector:@selector(beginSheetModalForWindow:completionHandler:)]) {
-        [openPanel setAllowedFileTypes:[nonretainedLibrary allowedFileTypes]];
-        [openPanel beginSheetModalForWindow:[nonretainedMainWindowController window] completionHandler:^(NSInteger result) {
-            [self findMissingFileOpenPanelDidEnd:openPanel returnCode:result contextInfo:NULL];
-        }];
-    } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    
-        [openPanel beginSheetForDirectory:nil file:nil types:[nonretainedLibrary allowedFileTypes] modalForWindow:[nonretainedMainWindowController window] modalDelegate:self didEndSelector:@selector(findMissingFileOpenPanelDidEnd:returnCode:contextInfo:) contextInfo:NULL];
-        
-#pragma clang diagnostic pop
-    }
+    [openPanel setAllowedFileTypes:[nonretainedLibrary allowedFileTypes]];
+    [openPanel beginSheetModalForWindow:[nonretainedMainWindowController window] completionHandler:^(NSInteger result) {
+        [self findMissingFileOpenPanelDidEnd:openPanel returnCode:result contextInfo:NULL];
+    }];
 }
 
 - (void)findMissingFileOpenPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void *)contextInfo;

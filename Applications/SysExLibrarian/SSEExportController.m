@@ -49,20 +49,17 @@
 
 - (void)exportMessages:(NSArray *)messages fromFileName:(NSString*)fileName asSMF: (BOOL)asSMF
 {
-    NSSavePanel *savePanel;
-    NSString *defaultFileName;
-    NSString *extension;
-
     [messages retain];
     exportingAsSMF = asSMF;
 
     // Pick a file name to export to.
-    extension = asSMF ? @"mid" : @"syx";
-    savePanel = [NSSavePanel savePanel];
+    NSString *extension = asSMF ? @"mid" : @"syx";
+    NSSavePanel *savePanel = [NSSavePanel savePanel];
     [savePanel setAllowedFileTypes:[NSArray arrayWithObject:extension]];
     [savePanel setCanSelectHiddenExtension: YES];
     [savePanel setAllowsOtherFileTypes: YES];
 
+    NSString *defaultFileName;
     if (fileName) {
         defaultFileName = [fileName stringByDeletingPathExtension];
     } else {
@@ -70,19 +67,10 @@
     }
     defaultFileName = [defaultFileName stringByAppendingPathExtension:extension];
     
-    if ([savePanel respondsToSelector:@selector(beginSheetModalForWindow:completionHandler:)]) {
-        [savePanel setNameFieldStringValue:defaultFileName];
-        [savePanel beginSheetModalForWindow:[nonretainedMainWindowController window] completionHandler:^(NSInteger result) {
-            [self saveSheetDidEnd:savePanel returnCode:result contextInfo:messages];
-        }];
-    } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-
-        [savePanel beginSheetForDirectory:nil file:defaultFileName modalForWindow:[nonretainedMainWindowController window] modalDelegate:self didEndSelector:@selector(saveSheetDidEnd:returnCode:contextInfo:) contextInfo:messages];
-
-#pragma clang diagnostic pop
-    }
+    [savePanel setNameFieldStringValue:defaultFileName];
+    [savePanel beginSheetModalForWindow:[nonretainedMainWindowController window] completionHandler:^(NSInteger result) {
+        [self saveSheetDidEnd:savePanel returnCode:result contextInfo:messages];
+    }];
 }
 
 @end
