@@ -18,7 +18,6 @@
 #import "SSELibraryEntry.h"
 #import "BDAlias.h"
 #import "NSFileManager-Extensions.h"
-#import "NSWorkspace-Extensions.h"
 
 
 @interface SSELibrary ()
@@ -446,7 +445,7 @@ NSString *SSESysExFileExtension = @"syx";
     return matchingEntries;
 }
 
-- (BOOL)moveFilesInLibraryDirectoryToTrashForEntries:(NSArray *)entriesToTrash
+- (void)moveFilesInLibraryDirectoryToTrashForEntries:(NSArray *)entriesToTrash
 {
     unsigned int entryCount, entryIndex;
     NSMutableArray *filesToTrash;
@@ -461,10 +460,16 @@ NSString *SSESysExFileExtension = @"syx";
             [filesToTrash addObject:[entry path]];
     }
 
-    if ([filesToTrash count] > 0)
-        return [[NSWorkspace sharedWorkspace] SSE_moveFilesToTrash:filesToTrash];
-    else
-        return YES;
+    if ([filesToTrash count] > 0) {
+        NSMutableArray *urls = [NSMutableArray array];
+        for (NSString *filePath in filesToTrash) {
+            NSURL *url = [NSURL fileURLWithPath:filePath];
+            if (url) {
+                [urls addObject:url];
+            }
+        }
+        [[NSWorkspace sharedWorkspace] recycleURLs:urls completionHandler:nil];
+    }
 }
 
 

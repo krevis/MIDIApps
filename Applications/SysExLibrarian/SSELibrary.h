@@ -55,7 +55,7 @@ typedef NS_ENUM(NSInteger, SSELibraryFileType) {
 
 - (NSArray *)findEntriesForFiles:(NSArray *)filePaths returningNonMatchingFiles:(NSArray **)nonMatchingFilePathsPtr;
 
-- (BOOL)moveFilesInLibraryDirectoryToTrashForEntries:(NSArray *)entriesToTrash;
+- (void)moveFilesInLibraryDirectoryToTrashForEntries:(NSArray *)entriesToTrash;
 
 @end
 

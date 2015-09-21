@@ -49,7 +49,6 @@
 		16F033740984B76F006C8A44 /* SSELibraryEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = F583CEB901EE3E4401000164 /* SSELibraryEntry.m */; };
 		16F033750984B76F006C8A44 /* BDAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = F551751D01F3745B01000164 /* BDAlias.m */; };
 		16F033760984B76F006C8A44 /* SSETableView.m in Sources */ = {isa = PBXBuildFile; fileRef = F551752101F3ACED01000164 /* SSETableView.m */; };
-		16F033770984B76F006C8A44 /* NSWorkspace-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = F539E383020F19A501000164 /* NSWorkspace-Extensions.m */; };
 		16F033780984B76F006C8A44 /* SSEWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F58752680214C25201000164 /* SSEWindowController.m */; };
 		16F033790984B76F006C8A44 /* NSToolbarItem-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = F587526C0214CA4E01000164 /* NSToolbarItem-Extensions.m */; };
 		16F0337A0984B76F006C8A44 /* SSEValidatingButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F58752750214D73401000164 /* SSEValidatingButton.m */; };
@@ -208,8 +207,6 @@
 		F530900F023350F901000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Import.nib; sourceTree = "<group>"; };
 		F53090120233540701000164 /* SSEFindMissingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEFindMissingController.h; sourceTree = "<group>"; };
 		F53090130233540701000164 /* SSEFindMissingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEFindMissingController.m; sourceTree = "<group>"; };
-		F539E382020F19A501000164 /* NSWorkspace-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSWorkspace-Extensions.h"; sourceTree = "<group>"; };
-		F539E383020F19A501000164 /* NSWorkspace-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "NSWorkspace-Extensions.m"; sourceTree = "<group>"; };
 		F539E386020F2C2F01000164 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		F547DDDC03184C5C01000164 /* PrecompHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrecompHeader.h; sourceTree = "<group>"; };
 		F551751C01F3745B01000164 /* BDAlias.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDAlias.h; sourceTree = "<group>"; };
@@ -574,8 +571,6 @@
 				F565B6EF01E1567501000164 /* NSPopUpButton-Extensions.m */,
 				F587526B0214CA4E01000164 /* NSToolbarItem-Extensions.h */,
 				F587526C0214CA4E01000164 /* NSToolbarItem-Extensions.m */,
-				F539E382020F19A501000164 /* NSWorkspace-Extensions.h */,
-				F539E383020F19A501000164 /* NSWorkspace-Extensions.m */,
 				F551752001F3ACED01000164 /* SSETableView.h */,
 				F551752101F3ACED01000164 /* SSETableView.m */,
 				F58752740214D73401000164 /* SSEValidatingButton.h */,
@@ -797,7 +792,6 @@
 				16F033740984B76F006C8A44 /* SSELibraryEntry.m in Sources */,
 				16F033750984B76F006C8A44 /* BDAlias.m in Sources */,
 				16F033760984B76F006C8A44 /* SSETableView.m in Sources */,
-				16F033770984B76F006C8A44 /* NSWorkspace-Extensions.m in Sources */,
 				16F033780984B76F006C8A44 /* SSEWindowController.m in Sources */,
 				16F033790984B76F006C8A44 /* NSToolbarItem-Extensions.m in Sources */,
 				16F0337A0984B76F006C8A44 /* SSEValidatingButton.m in Sources */,
