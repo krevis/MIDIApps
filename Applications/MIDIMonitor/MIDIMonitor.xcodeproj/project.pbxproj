@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		16133B7415F5C75C00533536 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 161B71EF15D8D76B006E21D4 /* Sparkle.framework */; };
+		16133B7415F5C75C00533536 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 161B71EF15D8D76B006E21D4 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		161B71F815D8D79E006E21D4 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 161B71EF15D8D76B006E21D4 /* Sparkle.framework */; };
 		161B71FA15D8DD83006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B71F915D8DD83006E21D4 /* dsa_pub.pem */; };
-		162972B1097B414800158D7B /* SnoizeMIDI.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */; };
-		162972B2097B414C00158D7B /* SnoizeMIDISpy.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71B1097B242A001AFB58 /* SnoizeMIDISpy.framework */; };
+		162972B1097B414800158D7B /* SnoizeMIDI.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		162972B2097B414C00158D7B /* SnoizeMIDISpy.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71B1097B242A001AFB58 /* SnoizeMIDISpy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		163FB5EA199ED5810017B664 /* SNDisclosureArrowDown@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB5E8199ED5810017B664 /* SNDisclosureArrowDown@2x.tiff */; };
 		163FB5EB199ED5810017B664 /* SNDisclosureArrowRight@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB5E9199ED5810017B664 /* SNDisclosureArrowRight@2x.tiff */; };
 		167B881906ED4D650053D305 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
@@ -470,7 +470,7 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0620;
+				LastUpgradeCheck = 0700;
 			};
 			buildConfigurationList = 16AF264E097B1EFB00BC87DC /* Build configuration list for PBXProject "MIDIMonitor" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -747,6 +747,7 @@
 				GCC_PREFIX_HEADER = PrecompHeader.h;
 				INFOPLIST_FILE = "Info-MIDIMonitor.plist";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.MIDIMonitor;
 				PRODUCT_NAME = "MIDI Monitor";
 				WRAPPER_EXTENSION = app;
 			};
@@ -768,6 +769,7 @@
 				GCC_PREFIX_HEADER = PrecompHeader.h;
 				INFOPLIST_FILE = "Info-MIDIMonitor.plist";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.MIDIMonitor;
 				PRODUCT_NAME = "MIDI Monitor";
 				WRAPPER_EXTENSION = app;
 			};
@@ -777,6 +779,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 169E7114097B2021001AFB58 /* Snoize-Project-Debug.xcconfig */;
 			buildSettings = {
+				ENABLE_TESTABILITY = YES;
 				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;

@@ -27,7 +27,7 @@
 		164103FF09735FA6008DABCC /* MessagePortBroadcaster.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F540CCB2023F41B101000164 /* MessagePortBroadcaster.cpp */; };
 		1641040009735FA6008DABCC /* MessageQueue.c in Sources */ = {isa = PBXBuildFile; fileRef = F540CCB4023F41B101000164 /* MessageQueue.c */; };
 		1641040209735FA6008DABCC /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F540CCC3023F42EA01000164 /* CoreFoundation.framework */; };
-		1641040E09735FA6008DABCC /* MIDI Monitor.plugin in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1641040B09735FA6008DABCC /* MIDI Monitor.plugin */; };
+		1641040E09735FA6008DABCC /* MIDI Monitor.plugin in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1641040B09735FA6008DABCC /* MIDI Monitor.plugin */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		16E651A1176EDB370005B53C /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16E651A0176EDB370005B53C /* CoreMIDI.framework */; };
 /* End PBXBuildFile section */
 
@@ -359,7 +359,7 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0620;
+				LastUpgradeCheck = 0700;
 			};
 			buildConfigurationList = 164103D209735F77008DABCC /* Build configuration list for PBXProject "SnoizeMIDISpy" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -465,6 +465,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1641044B09736388008DABCC /* Snoize-Project-Debug.xcconfig */;
 			buildSettings = {
+				ENABLE_TESTABILITY = YES;
 				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
@@ -484,6 +485,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				INFOPLIST_FILE = "Info-SnoizeMIDISpy.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.MIDISpyFramework;
 				PRODUCT_NAME = SnoizeMIDISpy;
 				WRAPPER_EXTENSION = framework;
 			};
@@ -497,6 +499,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				INFOPLIST_FILE = "Info-SnoizeMIDISpy.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.MIDISpyFramework;
 				PRODUCT_NAME = SnoizeMIDISpy;
 				WRAPPER_EXTENSION = framework;
 			};
@@ -510,6 +513,7 @@
 				EXPORTED_SYMBOLS_FILE = Driver/SpyingMIDIDriver.exp;
 				INFOPLIST_FILE = "Info-SpyingMIDIDriver.plist";
 				INSTALL_PATH = "/Library/Audio/MIDI Drivers";
+				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.MIDIMonitorDriver;
 				PRODUCT_NAME = "MIDI Monitor";
 				WRAPPER_EXTENSION = plugin;
 			};
@@ -523,6 +527,7 @@
 				EXPORTED_SYMBOLS_FILE = Driver/SpyingMIDIDriver.exp;
 				INFOPLIST_FILE = "Info-SpyingMIDIDriver.plist";
 				INSTALL_PATH = "/Library/Audio/MIDI Drivers";
+				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.MIDIMonitorDriver;
 				PRODUCT_NAME = "MIDI Monitor";
 				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = plugin;

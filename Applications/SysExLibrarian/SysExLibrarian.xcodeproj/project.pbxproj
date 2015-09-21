@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		16133B7515F5C78100533536 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 161B720815D8E97D006E21D4 /* Sparkle.framework */; };
+		16133B7515F5C78100533536 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 161B720815D8E97D006E21D4 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		161B721115D8E9BC006E21D4 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 161B720815D8E97D006E21D4 /* Sparkle.framework */; };
 		161B721315D8EA13006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B721215D8EA13006E21D4 /* dsa_pub.pem */; };
 		161B721615D8EA7F006E21D4 /* SysExLibrarian.xml in Resources */ = {isa = PBXBuildFile; fileRef = 161B721515D8EA7F006E21D4 /* SysExLibrarian.xml */; };
@@ -69,7 +69,7 @@
 		16F0338B0984B76F006C8A44 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F559F8FA01DEC0C601000164 /* CoreMIDI.framework */; };
 		16F0338D0984B76F006C8A44 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F539E386020F2C2F01000164 /* Carbon.framework */; };
 		16F034250984BA49006C8A44 /* SnoizeMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16F0332F0984B74B006C8A44 /* SnoizeMIDI.framework */; };
-		16F034320984BABA006C8A44 /* SnoizeMIDI.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 16F0332F0984B74B006C8A44 /* SnoizeMIDI.framework */; };
+		16F034320984BABA006C8A44 /* SnoizeMIDI.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 16F0332F0984B74B006C8A44 /* SnoizeMIDI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		16F0384C0984C9D7006C8A44 /* Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 16F0384B0984C9D7006C8A44 /* Defaults.plist */; };
 /* End PBXBuildFile section */
 
@@ -633,7 +633,7 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0620;
+				LastUpgradeCheck = 0700;
 			};
 			buildConfigurationList = 16F032BA0984B5DD006C8A44 /* Build configuration list for PBXProject "SysExLibrarian" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -958,6 +958,7 @@
 				GCC_PREFIX_HEADER = PrecompHeader.h;
 				INFOPLIST_FILE = "Info-SysExLibrarian.plist";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.SysExLibrarian;
 				PRODUCT_NAME = "SysEx Librarian";
 				WRAPPER_EXTENSION = app;
 			};
@@ -972,6 +973,7 @@
 				GCC_PREFIX_HEADER = PrecompHeader.h;
 				INFOPLIST_FILE = "Info-SysExLibrarian.plist";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.SysExLibrarian;
 				PRODUCT_NAME = "SysEx Librarian";
 				WRAPPER_EXTENSION = app;
 			};
@@ -981,6 +983,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 16F033330984B760006C8A44 /* Snoize-Project-Debug.xcconfig */;
 			buildSettings = {
+				ENABLE_TESTABILITY = YES;
 				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;

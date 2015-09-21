@@ -77,7 +77,7 @@
 	<key>CFBundleIconFile</key>
 	<string>SysExLibrarian.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.snoize.SysExLibrarian</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

@@ -705,7 +705,7 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0700;
 			};
 			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "SnoizeMIDI" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -901,6 +901,7 @@
 				GCC_PREFIX_HEADER = SnoizeMIDI_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.SnoizeMIDI;
 				PRODUCT_NAME = SnoizeMIDI;
 				WRAPPER_EXTENSION = framework;
 			};
@@ -917,6 +918,7 @@
 				GCC_PREFIX_HEADER = SnoizeMIDI_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.SnoizeMIDI;
 				PRODUCT_NAME = SnoizeMIDI;
 				WRAPPER_EXTENSION = framework;
 			};
@@ -926,6 +928,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 161D6C940972111A00CA5276 /* Snoize-Project-Debug.xcconfig */;
 			buildSettings = {
+				ENABLE_TESTABILITY = YES;
 				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
