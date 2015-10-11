@@ -21,16 +21,6 @@
 #import "SMInvalidMessage.h"
 
 
-@interface SMMessageParser (Private)
-
-- (NSArray *)messagesForPacket:(const MIDIPacket *)packet;
-
-- (SMSystemExclusiveMessage *)finishSysExMessageWithValidEnd:(BOOL)isEndValid;
-- (void)sysExTimedOut;
-
-@end
-
-
 @implementation SMMessageParser
 
 - (id)init;
@@ -95,7 +85,7 @@
     ignoreInvalidData = value;
 }
 
-- (void)takePacketList:(const MIDIPacketList *)packetList;
+- (void)takePacketList:(const MIDIPacketList *)packetList receivedAtTime:(MIDITimeStamp)receivedTimeStamp
 {
     NSMutableArray *messages = nil;
     UInt32 packetCount;
@@ -104,9 +94,7 @@
     packetCount = packetList->numPackets;
     packet = packetList->packet;
     while (packetCount--) {
-        NSArray *messagesForPacket;
-
-        messagesForPacket = [self messagesForPacket:packet];
+        NSArray *messagesForPacket = [self messagesForPacket:packet receivedAtTime:receivedTimeStamp];
         if (messagesForPacket) {
             if (!messages)
                 messages = [NSMutableArray arrayWithArray:messagesForPacket];
@@ -165,12 +153,9 @@
     return cancelled;
 }
 
-@end
+#pragma mark - Private
 
-
-@implementation SMMessageParser (Private)
-
-- (NSArray *)messagesForPacket:(const MIDIPacket *)packet;
+- (NSArray *)messagesForPacket:(const MIDIPacket *)packet receivedAtTime:(MIDITimeStamp)receivedTimeStamp
 {
     // Split this packet into separate MIDI messages    
     NSMutableArray *messages = nil;
@@ -322,7 +307,8 @@
         
         if (message) {
             [message setOriginatingEndpoint:nonretainedOriginatingEndpoint];
-            
+            message.receivedTimeStamp = receivedTimeStamp;
+
             if (!messages)
                 messages = [NSMutableArray arrayWithObject:message];
             else

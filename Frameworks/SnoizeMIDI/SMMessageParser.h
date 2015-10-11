@@ -43,7 +43,7 @@
 - (BOOL)ignoresInvalidData;
 - (void)setIgnoresInvalidData:(BOOL)value;
 
-- (void)takePacketList:(const MIDIPacketList *)packetList;
+- (void)takePacketList:(const MIDIPacketList *)packetList receivedAtTime:(MIDITimeStamp)receivedTimeStamp;
 
 - (BOOL)cancelReceivingSysExMessage;
     // Returns YES if it successfully cancels a sysex message which is being received, and NO otherwise.

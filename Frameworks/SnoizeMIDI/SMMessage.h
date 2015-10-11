@@ -123,6 +123,8 @@ extern NSString *SMExpertModePreferenceKey;
 - (MIDITimeStamp)timeStamp;
 - (void)setTimeStamp:(MIDITimeStamp)value;
 
+@property (nonatomic) MIDITimeStamp receivedTimeStamp;
+
 - (Byte)statusByte;
     // First MIDI byte
     

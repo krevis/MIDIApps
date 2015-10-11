@@ -416,10 +416,16 @@ fail:
 - (NSString *)timeStampForDisplay;
 {
     SMTimeFormattingOption option = (SMTimeFormattingOption)[[NSUserDefaults standardUserDefaults] integerForKey:SMTimeFormatPreferenceKey];
-    
-    BOOL displayZero = timeStampWasZeroWhenReceived && [[NSUserDefaults standardUserDefaults] boolForKey:SMExpertModePreferenceKey];
-    MIDITimeStamp displayTimeStamp = displayZero ? 0 : timeStamp;
-    
+
+    MIDITimeStamp displayTimeStamp = timeStamp;
+    BOOL displayZero = NO;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SMExpertModePreferenceKey]) {
+        displayZero = timeStampWasZeroWhenReceived;
+        // temporary hack: instead of showing the time stamp, show the difference between receivedTimeStamp and timeStamp
+        // (if timeStampWasZeroWhenReceived this would be 0)
+        displayTimeStamp = _receivedTimeStamp - timeStamp;
+    }
+
     switch (option) {
         case SMTimeFormatHostTimeInteger:
         {
@@ -448,7 +454,7 @@ fail:
         }
             
         case SMTimeFormatHostTimeSeconds:
-            return [NSString stringWithFormat:@"%.3lf", SMConvertHostTimeToNanos(displayTimeStamp) / 1.0e9];
+            return [NSString stringWithFormat:@"%.6lf", SMConvertHostTimeToNanos(displayTimeStamp) / 1.0e9];
             
         case SMTimeFormatClockTime:
         default:
@@ -537,6 +543,16 @@ static NSString *formatNoteNumberWithBaseOctave(Byte noteNumber, int octave)
 {
     timeStampWasZeroWhenReceived = (newTimeStamp == 0);
     timeStamp = timeStampWasZeroWhenReceived ? SMGetCurrentHostTime() : newTimeStamp;
+}
+
+- (void)setReceivedTimeStamp:(MIDITimeStamp)receivedTimeStamp
+{
+    _receivedTimeStamp = receivedTimeStamp;
+
+    // we rely on this being called after _setTimeStamp:
+    if (timeStampWasZeroWhenReceived) {
+        timeStamp = receivedTimeStamp;  // correct earlier value from SMGetCurrentHostTime()
+    }
 }
 
 @end

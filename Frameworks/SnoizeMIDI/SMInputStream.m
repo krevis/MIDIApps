@@ -15,6 +15,7 @@
 
 #import "SMClient.h"
 #import "SMEndpoint.h"
+#import "SMHostTime.h"
 #import "SMMessage.h"
 #import "SMSystemExclusiveMessage.h"
 #import "SMMessageParser.h"
@@ -311,7 +312,8 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
 typedef struct PendingPacketList {
     void *readProcRefCon;
     void *srcConnRefCon;
-    MIDIPacketList packetList;
+    MIDITimeStamp receivedTimeStamp;
+    MIDIPacketList packetList;  // variable size, must be last
 } PendingPacketList;
 
 static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon, void *srcConnRefCon)
@@ -351,6 +353,7 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
     pendingPacketList = (PendingPacketList *)[data bytes];
     pendingPacketList->readProcRefCon = readProcRefCon;
     pendingPacketList->srcConnRefCon = srcConnRefCon;
+    pendingPacketList->receivedTimeStamp = SMGetCurrentHostTime();
     memcpy(&pendingPacketList->packetList, packetList, packetListSize);
     
     // Get off the CoreMIDI time-contrained thread.
@@ -376,7 +379,7 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
         SMMessageParser *parser = [inputStream parserForSourceConnectionRefCon:pendingPacketList->srcConnRefCon];
         if (parser) {   // parser may be nil if input stream was disconnected from this source
             // and give it the packet list
-            [parser takePacketList:&(pendingPacketList->packetList)];
+            [parser takePacketList:&(pendingPacketList->packetList) receivedAtTime:pendingPacketList->receivedTimeStamp];
         }
 
         // Now that we're done with the input stream and its ref con (whatever that is),
