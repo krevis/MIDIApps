@@ -255,6 +255,11 @@ static CFStringRef FSRefToPathCopy(const FSRef *inRef)
 
 - (NSString *)fullPathRelativeToPath:(NSString *)relPath
 {
+    return [self fullPathRelativeToPath:relPath allowingUI:YES];
+}
+
+- (NSString *)fullPathRelativeToPath:(NSString *)relPath allowingUI:(BOOL)allowUI
+{
     OSStatus	anErr = noErr;
     FSRef	relPathRef;
     FSRef	tempRef;
@@ -262,6 +267,7 @@ static CFStringRef FSRefToPathCopy(const FSRef *inRef)
     Boolean	wasChanged;
     
     if (_alias != NULL) {
+        unsigned long mountFlags = allowUI ? 0 : kResolveAliasFileNoUI;
         if (relPath != nil) {
             anErr = PathToFSRef((CFStringRef)relPath, &relPathRef);
             
@@ -269,9 +275,9 @@ static CFStringRef FSRefToPathCopy(const FSRef *inRef)
                 return NULL;
             }
             
-            anErr = FSResolveAlias(&relPathRef, _alias, &tempRef, &wasChanged);
+            anErr = FSResolveAliasWithMountFlags(&relPathRef, _alias, &tempRef, &wasChanged, mountFlags);
         } else {
-            anErr = FSResolveAlias(NULL, _alias, &tempRef, &wasChanged);
+            anErr = FSResolveAliasWithMountFlags(NULL, _alias, &tempRef, &wasChanged, mountFlags);
         }
         
         if (anErr != noErr) {

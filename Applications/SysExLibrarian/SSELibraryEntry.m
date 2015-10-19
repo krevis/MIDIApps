@@ -123,7 +123,7 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
 
     wasFilePresent = flags.hasLookedForFile && flags.isFilePresent;
     
-    path = [alias fullPath];
+    path = [alias fullPathRelativeToPath:nil allowingUI:NO];
 
     flags.hasLookedForFile = YES;
     flags.isFilePresent = (path && [[NSFileManager defaultManager] fileExistsAtPath:path]);

@@ -60,6 +60,7 @@
 
 - (NSString *)fullPath;
 - (NSString *)fullPathRelativeToPath:(NSString *)relPath;
+- (NSString *)fullPathRelativeToPath:(NSString *)relPath allowingUI:(BOOL)allowUI;
 
 + (BDAlias *)aliasWithAliasHandle:(AliasHandle)alias;
 + (BDAlias *)aliasWithData:(NSData *)data;
