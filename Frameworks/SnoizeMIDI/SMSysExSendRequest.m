@@ -13,9 +13,103 @@
 
 #import "SMSysExSendRequest.h"
 
+#import "SMClient.h"
 #import "SMEndpoint.h"
 #import "SMSystemExclusiveMessage.h"
 #import "SMUtilities.h"
+
+
+#define USE_CUSTOM_SYSEX_SENDER 1
+
+#if USE_CUSTOM_SYSEX_SENDER
+
+// MIDI-OX default settings:
+// 256 byte buffers
+// Delay 60 ms between buffers
+// (also: Delay 60 ms after F7)
+#define BUFFER_SIZE 256
+#define BUFFER_DELAY_MS 60
+
+// at 3125 bytes/sec, sending 256 bytes = 0.0819 sec
+// then pause 60 ms additional          = 0.0600 sec
+// so total time:  256 bytes / 0.1419 sec = 1804 bytes/sec = 57% of normal speed
+
+static void SendNextBytes(MIDISysexSendRequest *request, MIDIPortRef port, MIDIPacketList *packetList, const Byte *dataEnd, dispatch_queue_t queue)
+{
+    size_t packetBytes = MIN(BUFFER_SIZE, request->bytesToSend);
+    packetList->packet[0].length = packetBytes;
+    memcpy(packetList->packet[0].data, dataEnd - request->bytesToSend, packetBytes);
+
+    MIDISend(port, request->destination, packetList);
+
+    request->bytesToSend -= packetBytes;
+    if (request->bytesToSend == 0) {
+        request->complete = 1;
+    }
+
+    if (!request->complete) {
+        dispatch_time_t nextTime = dispatch_time(DISPATCH_TIME_NOW, BUFFER_DELAY_MS * NSEC_PER_MSEC);
+        dispatch_after(nextTime, queue, ^{
+            SendNextBytes(request, port, packetList, dataEnd, queue);
+        });
+    }
+    else {
+        if (request->completionProc) {
+            request->completionProc(request);
+        }
+
+        MIDIPortDispose(port);
+        free(packetList);
+        dispatch_release(queue);
+    }
+}
+
+static OSStatus CustomMIDISendSysex(MIDISysexSendRequest *request) {
+    if (!request || !request->destination || !request->data) {
+        return -50; // paramErr
+    }
+
+    if (request->bytesToSend == 0) {
+        request->complete = 1;
+    }
+
+    if (request->complete) {
+        if (request->completionProc) {
+            request->completionProc(request);
+        }
+        return 0;   // noErr
+    }
+
+    MIDIPortRef port;
+    OSStatus status = MIDIOutputPortCreate([[SMClient sharedClient] midiClient], CFSTR("CustomMIDISendSysex"), &port);
+    if (status != 0) {
+        return status;
+    }
+
+    size_t packetListSize = BUFFER_SIZE + offsetof(MIDIPacket, data) + offsetof(MIDIPacketList, packet);
+    MIDIPacketList *packetList = calloc(1, packetListSize);
+    if (!packetList) {
+        return -41; // mFulErr
+    }
+    packetList->numPackets = 1;
+    packetList->packet[0].timeStamp = 0;
+
+    const Byte *dataEnd = request->data + request->bytesToSend;
+
+    dispatch_queue_t queue = dispatch_queue_create("com.snoize.SnoizeMIDI.CustomMIDISendSysex", DISPATCH_QUEUE_SERIAL);
+    if (!queue) {
+        return -41; // mFulErr
+    }
+    dispatch_set_target_queue(queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+
+    dispatch_async(queue, ^{
+        SendNextBytes(request, port, packetList, dataEnd, queue);
+    });
+
+    return 0;   // noErr
+}
+
+#endif
 
 
 @interface SMSysExSendRequest (Private)
@@ -89,8 +183,12 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
     // Retain ourself, so we are guaranteed to stick around while the send is happening.
     // When we are notified that the request is finished, we will release ourself.
     [self retain];
-    
+
+#if USE_CUSTOM_SYSEX_SENDER
+    status = CustomMIDISendSysex(&request);
+#else
     status = MIDISendSysex(&request);
+#endif
     if (status) {
         NSLog(@"MIDISendSysex() returned error: %ld", (long)status);
         [self release];
