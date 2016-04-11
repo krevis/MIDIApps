@@ -93,6 +93,7 @@ extern NSString *SSESysExReadTimeOutPreferenceKey;
 extern NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey;
 extern NSString *SSEListenForProgramChangesPreferenceKey;
 extern NSString *SSEInterruptOnProgramChangePreferenceKey;
+extern NSString *SSECustomSysexBufferSizePreferenceKey;
 
 // Notifications
 extern NSString *SSEMIDIControllerReadStatusChangedNotification;

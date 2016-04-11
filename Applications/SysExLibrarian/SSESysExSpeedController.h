@@ -17,6 +17,7 @@
 @interface SSESysExSpeedController : NSObject
 {
     IBOutlet NSOutlineView *outlineView;
+    IBOutlet NSPopUpButton *bufferSizePopUpButton;
 
     NSArray *endpoints;
     NSArray *externalDevices;
@@ -27,5 +28,7 @@
 
 - (void)willShow;
 - (void)willHide;
+
+- (IBAction)changeBufferSize:(id)sender;
 
 @end

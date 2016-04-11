@@ -57,6 +57,7 @@ NSString *SSESysExReadTimeOutPreferenceKey = @"SSESysExReadTimeOut";
 NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey = @"SSESysExIntervalBetweenSentMessages";
 NSString *SSEListenForProgramChangesPreferenceKey = @"SSEListenForProgramChanges";
 NSString *SSEInterruptOnProgramChangePreferenceKey = @"SSEInterruptOnProgramChange";
+NSString *SSECustomSysexBufferSizePreferenceKey = @"SSECustomSysexBufferSize";
 
 NSString *SSEMIDIControllerReadStatusChangedNotification = @"SSEMIDIControllerReadStatusChangedNotification";
 NSString *SSEMIDIControllerReadFinishedNotification = @"SSEMIDIControllerReadFinishedNotification";
