@@ -28,6 +28,7 @@
     MIDIPortRef outputPort;
     NSMutableSet *endpoints;
     NSMutableArray *sysExSendRequests;
+    NSInteger customSysExBufferSize;
 }
 
 - (NSSet *)endpoints;
@@ -41,6 +42,8 @@
 
 - (void)cancelPendingSysExSendRequests;
 - (NSArray *)pendingSysExSendRequests;
+
+@property (nonatomic) NSInteger customSysExBufferSize;
 
 @end
 

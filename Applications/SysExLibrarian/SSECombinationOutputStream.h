@@ -25,6 +25,8 @@
     SInt32 virtualEndpointUniqueID;
     NSString *virtualEndpointName;
 
+    NSInteger customSysExBufferSize;
+
     struct {
         unsigned int ignoresTimeStamps:1;
         unsigned int sendsSysExAsynchronously:1;
@@ -61,6 +63,8 @@
     // If YES, then use MIDISendSysex() to send sysex messages. Otherwise, use plain old MIDI packets.
     // (This can only work on port streams, not virtual ones.)
 - (BOOL)canSendSysExAsynchronously;
+
+@property (nonatomic) NSInteger customSysExBufferSize;
 
 - (void)cancelPendingSysExSendRequests;
 - (SMSysExSendRequest *)currentSysExSendRequest;

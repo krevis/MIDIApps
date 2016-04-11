@@ -22,13 +22,17 @@
     MIDISysexSendRequest request;
     NSData *fullMessageData;
     SMSystemExclusiveMessage *message;
+    NSInteger customSysExBufferSize;
 }
 
 + (SMSysExSendRequest *)sysExSendRequestWithMessage:(SMSystemExclusiveMessage *)aMessage endpoint:(SMDestinationEndpoint *)endpoint;
 
 - (id)initWithMessage:(SMSystemExclusiveMessage *)aMessage endpoint:(SMDestinationEndpoint *)endpoint;
 
+- (id)initWithMessage:(SMSystemExclusiveMessage *)aMessage endpoint:(SMDestinationEndpoint *)endpoint customSysExBufferSize:(NSInteger)bufferSize;
+
 - (SMSystemExclusiveMessage *)message;
+- (NSInteger)customSysExBufferSize;
 
 - (void)send;
 - (BOOL)cancel;

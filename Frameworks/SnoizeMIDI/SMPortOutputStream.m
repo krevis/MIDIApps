@@ -37,6 +37,8 @@
 
 @implementation SMPortOutputStream
 
+@synthesize customSysExBufferSize = customSysExBufferSize;
+
 NSString *SMPortOutputStreamEndpointDisappearedNotification = @"SMPortOutputStreamEndpointDisappearedNotification";
 NSString *SMPortOutputStreamWillStartSysExSendNotification = @"SMPortOutputStreamWillStartSysExSendNotification";
 NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStreamFinishedSysExSendNotification";
@@ -265,13 +267,15 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
         while ((endpoint = [enumerator nextObject])) {
             SMSysExSendRequest *sendRequest;
 
-            sendRequest = [SMSysExSendRequest sysExSendRequestWithMessage:message endpoint:endpoint];
+            sendRequest = [[SMSysExSendRequest alloc] initWithMessage:message endpoint:endpoint customSysExBufferSize:customSysExBufferSize];
+
             [sysExSendRequests addObject:sendRequest];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sysExSendRequestFinished:) name:SMSysExSendRequestFinishedNotification object:sendRequest];
 
             [[NSNotificationCenter defaultCenter] postNotificationName:SMPortOutputStreamWillStartSysExSendNotification object:self userInfo:[NSDictionary dictionaryWithObject:sendRequest forKey:@"sendRequest"]];
 
             [sendRequest send];
+            [sendRequest release];
         }
     }
 }

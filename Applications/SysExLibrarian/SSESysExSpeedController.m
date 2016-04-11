@@ -119,6 +119,7 @@
     else {
         [[NSUserDefaults standardUserDefaults] setInteger:customBufferSize forKey:SSECustomSysexBufferSizePreferenceKey];
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName: SSECustomSysexBufferSizePreferenceChangedNotification object:nil];
 }
 
 @end
