@@ -34,9 +34,11 @@
 // then pause 60 ms additional          = 0.0600 sec
 // so total time:  256 bytes / 0.1419 sec = 1804 bytes/sec = 57% of normal speed
 
-static void SendNextBytes(MIDISysexSendRequest *request, MIDIPortRef port, MIDIPacketList *packetList, const Byte *dataEnd, dispatch_queue_t queue)
+static void SendNextSysexBuffer(MIDISysexSendRequest *request, MIDIPortRef port, MIDIPacketList *packetList, const Byte *dataEnd, dispatch_queue_t queue)
 {
-    size_t packetBytes = MIN(BUFFER_SIZE, request->bytesToSend);
+    size_t packetBytes = MIN(request->bytesToSend, BUFFER_SIZE);
+    packetList->numPackets = 1;
+    packetList->packet[0].timeStamp = 0;
     packetList->packet[0].length = packetBytes;
     memcpy(packetList->packet[0].data, dataEnd - request->bytesToSend, packetBytes);
 
@@ -50,7 +52,7 @@ static void SendNextBytes(MIDISysexSendRequest *request, MIDIPortRef port, MIDIP
     if (!request->complete) {
         dispatch_time_t nextTime = dispatch_time(DISPATCH_TIME_NOW, BUFFER_DELAY_MS * NSEC_PER_MSEC);
         dispatch_after(nextTime, queue, ^{
-            SendNextBytes(request, port, packetList, dataEnd, queue);
+            SendNextSysexBuffer(request, port, packetList, dataEnd, queue);
         });
     }
     else {
@@ -91,10 +93,6 @@ static OSStatus CustomMIDISendSysex(MIDISysexSendRequest *request) {
     if (!packetList) {
         return -41; // mFulErr
     }
-    packetList->numPackets = 1;
-    packetList->packet[0].timeStamp = 0;
-
-    const Byte *dataEnd = request->data + request->bytesToSend;
 
     dispatch_queue_t queue = dispatch_queue_create("com.snoize.SnoizeMIDI.CustomMIDISendSysex", DISPATCH_QUEUE_SERIAL);
     if (!queue) {
@@ -102,8 +100,10 @@ static OSStatus CustomMIDISendSysex(MIDISysexSendRequest *request) {
     }
     dispatch_set_target_queue(queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
 
+    const Byte *dataEnd = request->data + request->bytesToSend;
+
     dispatch_async(queue, ^{
-        SendNextBytes(request, port, packetList, dataEnd, queue);
+        SendNextSysexBuffer(request, port, packetList, dataEnd, queue);
     });
 
     return 0;   // noErr
