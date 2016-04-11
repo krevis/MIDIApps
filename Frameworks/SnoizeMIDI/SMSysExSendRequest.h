@@ -23,6 +23,8 @@
     NSData *fullMessageData;
     SMSystemExclusiveMessage *message;
     NSInteger customSysExBufferSize;
+    NSInteger maxSysExSpeed;
+    BOOL didComplete;
 }
 
 + (SMSysExSendRequest *)sysExSendRequestWithMessage:(SMSystemExclusiveMessage *)aMessage endpoint:(SMDestinationEndpoint *)endpoint;

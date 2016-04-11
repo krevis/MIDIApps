@@ -19,17 +19,7 @@
 #import "SMUtilities.h"
 
 
-// MIDI-OX default settings:
-// 256 byte buffers
-// Delay 60 ms between buffers
-// (also: Delay 60 ms after F7)
-#define BUFFER_DELAY_MS 60
-
-// at 3125 bytes/sec, sending 256 bytes = 0.0819 sec
-// then pause 60 ms additional          = 0.0600 sec
-// so total time:  256 bytes / 0.1419 sec = 1804 bytes/sec = 57% of normal speed
-
-static void SendNextSysexBuffer(MIDISysexSendRequest *request, MIDIPortRef port, MIDIPacketList *packetList, const Byte *dataEnd, dispatch_queue_t queue, NSInteger bufferSize)
+static void SendNextSysexBuffer(MIDISysexSendRequest *request, MIDIPortRef port, MIDIPacketList *packetList, const Byte *dataEnd, dispatch_queue_t queue, NSInteger bufferSize, NSInteger perBufferDelayMS)
 {
     size_t packetBytes = MIN(request->bytesToSend, bufferSize);
     packetList->numPackets = 1;
@@ -45,9 +35,9 @@ static void SendNextSysexBuffer(MIDISysexSendRequest *request, MIDIPortRef port,
     }
 
     if (!request->complete) {
-        dispatch_time_t nextTime = dispatch_time(DISPATCH_TIME_NOW, BUFFER_DELAY_MS * NSEC_PER_MSEC);
+        dispatch_time_t nextTime = dispatch_time(DISPATCH_TIME_NOW, perBufferDelayMS * NSEC_PER_MSEC);
         dispatch_after(nextTime, queue, ^{
-            SendNextSysexBuffer(request, port, packetList, dataEnd, queue, bufferSize);
+            SendNextSysexBuffer(request, port, packetList, dataEnd, queue, bufferSize, perBufferDelayMS);
         });
     }
     else {
@@ -61,7 +51,7 @@ static void SendNextSysexBuffer(MIDISysexSendRequest *request, MIDIPortRef port,
     }
 }
 
-static OSStatus CustomMIDISendSysex(MIDISysexSendRequest *request, NSInteger bufferSize) {
+static OSStatus CustomMIDISendSysex(MIDISysexSendRequest *request, NSInteger bufferSize, NSInteger perBufferDelayMS) {
     if (!request || !request->destination || !request->data || bufferSize < 4 || bufferSize > 32767) {
         return -50; // paramErr
     }
@@ -98,7 +88,7 @@ static OSStatus CustomMIDISendSysex(MIDISysexSendRequest *request, NSInteger buf
     const Byte *dataEnd = request->data + request->bytesToSend;
 
     dispatch_async(queue, ^{
-        SendNextSysexBuffer(request, port, packetList, dataEnd, queue, bufferSize);
+        SendNextSysexBuffer(request, port, packetList, dataEnd, queue, bufferSize, perBufferDelayMS);
     });
 
     return 0;   // noErr
@@ -109,6 +99,7 @@ static OSStatus CustomMIDISendSysex(MIDISysexSendRequest *request, NSInteger buf
 
 static void completionProc(MIDISysexSendRequest *request);
 - (void)completionProc;
+- (void)didComplete;
 
 @end
 
@@ -137,6 +128,7 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
     message = [aMessage retain];
     fullMessageData = [[message fullMessageData] retain];
     customSysExBufferSize = bufferSize;
+    maxSysExSpeed = [endpoint maxSysExSpeed];
 
     // MIDISysexSendRequest length is "only" a UInt32
     if ([fullMessageData length] > UINT32_MAX) {
@@ -189,8 +181,22 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
     [self retain];
 
     if (customSysExBufferSize >= 4) {
-        // we have a reasonable buffer size value, so use it
-        status = CustomMIDISendSysex(&request, customSysExBufferSize);
+        // We have a reasonable buffer size value, so use it.
+        //
+        // Calculate a delay between buffers to get the expected speed:
+        // maxSysExSpeed is in bytes/second (default 3125)
+        //
+        // Transmitting B bytes, with T additional delay, takes a duration of (B/3125) sec + T.
+        // Therefore speed S = B / (B/3125 + T)
+        // and solving for T = B (1/S - 1/3125)
+        //
+        // Note that MIDI-OX default settings use 256 byte buffers, with 60 ms between buffers,
+        // leading to a speed of 1804 bytes/sec, or 57% of normal speed.
+
+        NSInteger perBufferDelayMS = ceil(customSysExBufferSize * ( (1000.0 / maxSysExSpeed) - (1000.0 / 3125.0) ));
+        //NSLog(@"buf size %lu, speed %lu -> perBufferDelayMS %lu", customSysExBufferSize, maxSysExSpeed, perBufferDelayMS);
+
+        status = CustomMIDISendSysex(&request, customSysExBufferSize, perBufferDelayMS);
     } else {
         // probably 0 meaning default, so use CoreMIDI's sender
         status = MIDISendSysex(&request);
@@ -208,6 +214,10 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
         return NO;
 
     request.complete = TRUE;
+
+    // Don't wait for the completion to run, it may be waiting for a while.
+    [self didComplete];
+
     return YES;
 }
 
@@ -254,10 +264,18 @@ static void completionProc(MIDISysexSendRequest *request)
     [pool release];
 }
 
-- (void)completionProc;
+- (void)completionProc
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMSysExSendRequestFinishedNotification object:self];
+    [self didComplete];
     [self release];
+}
+
+- (void)didComplete
+{
+    if (!didComplete) {
+        didComplete = YES;
+        [[NSNotificationCenter defaultCenter] postNotificationName:SMSysExSendRequestFinishedNotification object:self];
+    }
 }
 
 @end
