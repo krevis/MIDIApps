@@ -34,6 +34,8 @@
 
 @implementation SSECombinationOutputStream
 
+@synthesize customSysExBufferSize = customSysExBufferSize;
+
 NSString *SSECombinationOutputStreamSelectedDestinationDisappearedNotification = @"SSECombinationOutputStreamSelectedDestinationDisappearedNotification";
 NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECombinationOutputStreamDestinationListChangedNotification";
 
@@ -237,6 +239,12 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
     return ([self stream] == portStream);
 }
 
+- (void)setCustomSysExBufferSize:(NSInteger)value
+{
+    customSysExBufferSize = value;
+    [portStream setCustomSysExBufferSize:value];
+}
+
 - (void)cancelPendingSysExSendRequests;
 {
     if ([[self stream] respondsToSelector:@selector(cancelPendingSysExSendRequests)])
@@ -296,6 +304,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
         portStream = [[SMPortOutputStream alloc] init];
         [portStream setIgnoresTimeStamps:flags.ignoresTimeStamps];
         [portStream setSendsSysExAsynchronously:flags.sendsSysExAsynchronously];
+        [portStream setCustomSysExBufferSize:customSysExBufferSize];
     } NS_HANDLER {
         [portStream release];
         portStream = nil;

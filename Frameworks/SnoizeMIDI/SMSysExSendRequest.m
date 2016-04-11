@@ -13,15 +13,93 @@
 
 #import "SMSysExSendRequest.h"
 
+#import "SMClient.h"
 #import "SMEndpoint.h"
 #import "SMSystemExclusiveMessage.h"
 #import "SMUtilities.h"
+
+
+static void SendNextSysexBuffer(MIDISysexSendRequest *request, MIDIPortRef port, MIDIPacketList *packetList, const Byte *dataEnd, dispatch_queue_t queue, NSInteger bufferSize, NSInteger perBufferDelayMS)
+{
+    size_t packetBytes = MIN(request->bytesToSend, bufferSize);
+    packetList->numPackets = 1;
+    packetList->packet[0].timeStamp = 0;
+    packetList->packet[0].length = packetBytes;
+    memcpy(packetList->packet[0].data, dataEnd - request->bytesToSend, packetBytes);
+
+    MIDISend(port, request->destination, packetList);
+
+    request->bytesToSend -= packetBytes;
+    if (request->bytesToSend == 0) {
+        request->complete = 1;
+    }
+
+    if (!request->complete) {
+        dispatch_time_t nextTime = dispatch_time(DISPATCH_TIME_NOW, perBufferDelayMS * NSEC_PER_MSEC);
+        dispatch_after(nextTime, queue, ^{
+            SendNextSysexBuffer(request, port, packetList, dataEnd, queue, bufferSize, perBufferDelayMS);
+        });
+    }
+    else {
+        if (request->completionProc) {
+            request->completionProc(request);
+        }
+
+        MIDIPortDispose(port);
+        free(packetList);
+        dispatch_release(queue);
+    }
+}
+
+static OSStatus CustomMIDISendSysex(MIDISysexSendRequest *request, NSInteger bufferSize, NSInteger perBufferDelayMS) {
+    if (!request || !request->destination || !request->data || bufferSize < 4 || bufferSize > 32767) {
+        return -50; // paramErr
+    }
+
+    if (request->bytesToSend == 0) {
+        request->complete = 1;
+    }
+
+    if (request->complete) {
+        if (request->completionProc) {
+            request->completionProc(request);
+        }
+        return 0;   // noErr
+    }
+
+    MIDIPortRef port;
+    OSStatus status = MIDIOutputPortCreate([[SMClient sharedClient] midiClient], CFSTR("CustomMIDISendSysex"), &port);
+    if (status != 0) {
+        return status;
+    }
+
+    size_t packetListSize = bufferSize + offsetof(MIDIPacket, data) + offsetof(MIDIPacketList, packet);
+    MIDIPacketList *packetList = calloc(1, packetListSize);
+    if (!packetList) {
+        return -41; // mFulErr
+    }
+
+    dispatch_queue_t queue = dispatch_queue_create("com.snoize.SnoizeMIDI.CustomMIDISendSysex", DISPATCH_QUEUE_SERIAL);
+    if (!queue) {
+        return -41; // mFulErr
+    }
+    dispatch_set_target_queue(queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+
+    const Byte *dataEnd = request->data + request->bytesToSend;
+
+    dispatch_async(queue, ^{
+        SendNextSysexBuffer(request, port, packetList, dataEnd, queue, bufferSize, perBufferDelayMS);
+    });
+
+    return 0;   // noErr
+}
 
 
 @interface SMSysExSendRequest (Private)
 
 static void completionProc(MIDISysexSendRequest *request);
 - (void)completionProc;
+- (void)didComplete;
 
 @end
 
@@ -37,6 +115,11 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
 
 - (id)initWithMessage:(SMSystemExclusiveMessage *)aMessage endpoint:(SMDestinationEndpoint *)endpoint;
 {
+    return [self initWithMessage:aMessage endpoint:endpoint customSysExBufferSize:0];
+}
+
+- (id)initWithMessage:(SMSystemExclusiveMessage *)aMessage endpoint:(SMDestinationEndpoint *)endpoint customSysExBufferSize:(NSInteger)bufferSize
+{
     if (!(self = [super init]))
         return nil;
 
@@ -44,6 +127,8 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
 
     message = [aMessage retain];
     fullMessageData = [[message fullMessageData] retain];
+    customSysExBufferSize = bufferSize;
+    maxSysExSpeed = [endpoint maxSysExSpeed];
 
     // MIDISysexSendRequest length is "only" a UInt32
     if ([fullMessageData length] > UINT32_MAX) {
@@ -82,6 +167,11 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
     return message;
 }
 
+- (NSInteger)customSysExBufferSize
+{
+    return customSysExBufferSize;
+}
+
 - (void)send;
 {
     OSStatus status;
@@ -89,8 +179,29 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
     // Retain ourself, so we are guaranteed to stick around while the send is happening.
     // When we are notified that the request is finished, we will release ourself.
     [self retain];
-    
-    status = MIDISendSysex(&request);
+
+    if (customSysExBufferSize >= 4) {
+        // We have a reasonable buffer size value, so use it.
+        //
+        // Calculate a delay between buffers to get the expected speed:
+        // maxSysExSpeed is in bytes/second (default 3125)
+        //
+        // Transmitting B bytes, with T additional delay, takes a duration of (B/3125) sec + T.
+        // Therefore speed S = B / (B/3125 + T)
+        // and solving for T = B (1/S - 1/3125)
+        //
+        // Note that MIDI-OX default settings use 256 byte buffers, with 60 ms between buffers,
+        // leading to a speed of 1804 bytes/sec, or 57% of normal speed.
+
+        NSInteger perBufferDelayMS = ceil(customSysExBufferSize * ( (1000.0 / maxSysExSpeed) - (1000.0 / 3125.0) ));
+        //NSLog(@"buf size %lu, speed %lu -> perBufferDelayMS %lu", customSysExBufferSize, maxSysExSpeed, perBufferDelayMS);
+
+        status = CustomMIDISendSysex(&request, customSysExBufferSize, perBufferDelayMS);
+    } else {
+        // probably 0 meaning default, so use CoreMIDI's sender
+        status = MIDISendSysex(&request);
+    }
+
     if (status) {
         NSLog(@"MIDISendSysex() returned error: %ld", (long)status);
         [self release];
@@ -103,6 +214,10 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
         return NO;
 
     request.complete = TRUE;
+
+    // Don't wait for the completion to run, it may be waiting for a while.
+    [self didComplete];
+
     return YES;
 }
 
@@ -149,10 +264,18 @@ static void completionProc(MIDISysexSendRequest *request)
     [pool release];
 }
 
-- (void)completionProc;
+- (void)completionProc
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMSysExSendRequestFinishedNotification object:self];
+    [self didComplete];
     [self release];
+}
+
+- (void)didComplete
+{
+    if (!didComplete) {
+        didComplete = YES;
+        [[NSNotificationCenter defaultCenter] postNotificationName:SMSysExSendRequestFinishedNotification object:self];
+    }
 }
 
 @end

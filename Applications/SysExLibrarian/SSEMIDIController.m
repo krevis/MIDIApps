@@ -57,12 +57,14 @@ NSString *SSESysExReadTimeOutPreferenceKey = @"SSESysExReadTimeOut";
 NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey = @"SSESysExIntervalBetweenSentMessages";
 NSString *SSEListenForProgramChangesPreferenceKey = @"SSEListenForProgramChanges";
 NSString *SSEInterruptOnProgramChangePreferenceKey = @"SSEInterruptOnProgramChange";
+NSString *SSECustomSysexBufferSizePreferenceKey = @"SSECustomSysexBufferSize";
 
 NSString *SSEMIDIControllerReadStatusChangedNotification = @"SSEMIDIControllerReadStatusChangedNotification";
 NSString *SSEMIDIControllerReadFinishedNotification = @"SSEMIDIControllerReadFinishedNotification";
 NSString *SSEMIDIControllerSendWillStartNotification = @"SSEMIDIControllerSendWillStartNotification";
 NSString *SSEMIDIControllerSendFinishedNotification = @"SSEMIDIControllerSendFinishedNotification";
 NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIControllerSendFinishedImmediatelyNotification";
+NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSysexBufferSizePreferenceChangedNotification";
 
 
 - (id)initWithWindowController:(SSEMainWindowController *)mainWindowController;
@@ -91,8 +93,10 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
     [center addObserver:self selector:@selector(outputStreamSelectedDestinationDisappeared:) name:SSECombinationOutputStreamSelectedDestinationDisappearedNotification object:outputStream];
     [center addObserver:self selector:@selector(willStartSendingSysEx:) name:SMPortOutputStreamWillStartSysExSendNotification object:outputStream];
     [center addObserver:self selector:@selector(doneSendingSysEx:) name:SMPortOutputStreamFinishedSysExSendNotification object:outputStream];
+    [center addObserver:self selector:@selector(customSysexBufferSizeChanged:) name:SSECustomSysexBufferSizePreferenceChangedNotification object:nil];
     [outputStream setIgnoresTimeStamps:YES];
     [outputStream setSendsSysExAsynchronously:YES];
+    [outputStream setCustomSysExBufferSize:[[NSUserDefaults standardUserDefaults] integerForKey:SSECustomSysexBufferSizePreferenceKey]];
     [outputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a source for other programs", @"SysExLibrarian", SMBundleForObject(self), "display name of virtual source")];
 
     [center addObserver:self selector:@selector(sourceEndpointsAppeared:) name:SMMIDIObjectsAppearedNotification object:[SMSourceEndpoint class]];
@@ -413,6 +417,11 @@ NSString *SSEMIDIControllerSendFinishedImmediatelyNotification = @"SSEMIDIContro
 - (void)midiSetupChanged:(NSNotification *)notification;
 {
     [nonretainedMainWindowController synchronizeDestinations];
+}
+
+- (void)customSysexBufferSizeChanged:(NSNotification *)notification
+{
+    [outputStream setCustomSysExBufferSize:[[NSUserDefaults standardUserDefaults] integerForKey:SSECustomSysexBufferSizePreferenceKey]];
 }
 
 - (void)outputStreamSelectedDestinationDisappeared:(NSNotification *)notification;

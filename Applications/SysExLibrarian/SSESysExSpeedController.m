@@ -13,6 +13,7 @@
 
 #import "SSESysExSpeedController.h"
 #import "SSECombinationOutputStream.h"
+#import "SSEMIDIController.h"
 
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
@@ -62,6 +63,12 @@
     [self captureEndpointsAndExternalDevices];
      
     [outlineView reloadData];
+
+    NSInteger customBufferSize = [[NSUserDefaults standardUserDefaults] integerForKey:SSECustomSysexBufferSizePreferenceKey];
+    [bufferSizePopUpButton selectItemWithTag:customBufferSize];
+    if ([bufferSizePopUpButton selectedTag] != customBufferSize) {
+        [bufferSizePopUpButton selectItemWithTag:0];
+    }
 }
 
 - (void)willHide
@@ -78,7 +85,7 @@
 // Actions
 //
 
-- (void) takeSpeedFromSelectedCellInTableView: (id) sender
+- (void)takeSpeedFromSelectedCellInTableView:(id)sender
 {
     // sender is the outline view; get the selected cell to find its new value.    
     NSCell* cell = [outlineView selectedCell];
@@ -101,6 +108,18 @@
     
     // redisplay
     [self invalidateRowAndParent: row];
+}
+
+- (IBAction)changeBufferSize:(id)sender
+{
+    NSInteger customBufferSize = [bufferSizePopUpButton selectedTag];
+    if (customBufferSize == 0) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:SSECustomSysexBufferSizePreferenceKey];
+    }
+    else {
+        [[NSUserDefaults standardUserDefaults] setInteger:customBufferSize forKey:SSECustomSysexBufferSizePreferenceKey];
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName: SSECustomSysexBufferSizePreferenceChangedNotification object:nil];
 }
 
 @end

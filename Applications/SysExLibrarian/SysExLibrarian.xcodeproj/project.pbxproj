@@ -39,7 +39,6 @@
 		16F033690984B76F006C8A44 /* Delete.nib in Resources */ = {isa = PBXBuildFile; fileRef = F53090060233385B01000164 /* Delete.nib */; };
 		16F0336A0984B76F006C8A44 /* Import.nib in Resources */ = {isa = PBXBuildFile; fileRef = F530900E023350F901000164 /* Import.nib */; };
 		16F0336B0984B76F006C8A44 /* SysExLibrarian.strings in Resources */ = {isa = PBXBuildFile; fileRef = F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */; };
-		16F0336C0984B76F006C8A44 /* SysExSpeed.nib in Resources */ = {isa = PBXBuildFile; fileRef = 169A4DC304D376F8007059A2 /* SysExSpeed.nib */; };
 		16F0336E0984B76F006C8A44 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		16F0336F0984B76F006C8A44 /* SSEPreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F559F90701DEC1D801000164 /* SSEPreferencesWindowController.m */; };
 		16F033700984B76F006C8A44 /* SSEMainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F565B6E601E1419001000164 /* SSEMainWindowController.m */; };
@@ -170,7 +169,6 @@
 		1658B8A909F36B5E00F42BFB /* SSESysexSpeedOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSESysexSpeedOutlineView.m; sourceTree = "<group>"; };
 		16666D820AB404250084C23B /* CocoaCryptoHashing.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CocoaCryptoHashing.h; sourceTree = "<group>"; };
 		16666D830AB404250084C23B /* CocoaCryptoHashing.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CocoaCryptoHashing.m; sourceTree = "<group>"; };
-		169A4DC404D376F8007059A2 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SysExSpeed.nib; sourceTree = "<group>"; };
 		16DC48480AB3A359002ECBD6 /* SSESysExSpeedController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SSESysExSpeedController.h; sourceTree = "<group>"; };
 		16DC48490AB3A359002ECBD6 /* SSESysExSpeedController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SSESysExSpeedController.m; sourceTree = "<group>"; };
 		16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDI.xcodeproj; path = ../../Frameworks/SnoizeMIDI/SnoizeMIDI.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -396,7 +394,6 @@
 				16F0384B0984C9D7006C8A44 /* Defaults.plist */,
 				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
 				F559F90A01DEC5E001000164 /* Preferences.nib */,
-				169A4DC304D376F8007059A2 /* SysExSpeed.nib */,
 				F5F52C15022015AC01000164 /* Details.nib */,
 				F559F90F01DEFA9701000164 /* MainWindow.nib */,
 				F5308FFD023315AD01000164 /* Play.nib */,
@@ -748,7 +745,6 @@
 				16F033690984B76F006C8A44 /* Delete.nib in Resources */,
 				16F0336A0984B76F006C8A44 /* Import.nib in Resources */,
 				16F0336B0984B76F006C8A44 /* SysExLibrarian.strings in Resources */,
-				16F0336C0984B76F006C8A44 /* SysExSpeed.nib in Resources */,
 				163FB607199EE2530017B664 /* ToolbarPlayTemplate.tiff in Resources */,
 				163FB608199EE2530017B664 /* ToolbarPlayTemplate@2x.tiff in Resources */,
 				163FB60F199EE6810017B664 /* ToolbarRecordOneTemplate.tiff in Resources */,
@@ -826,14 +822,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		169A4DC304D376F8007059A2 /* SysExSpeed.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				169A4DC404D376F8007059A2 /* English */,
-			);
-			name = SysExSpeed.nib;
-			sourceTree = "<group>";
-		};
 		2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */ = {
 			isa = PBXVariantGroup;
 			children = (

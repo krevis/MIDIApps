@@ -93,6 +93,7 @@ extern NSString *SSESysExReadTimeOutPreferenceKey;
 extern NSString *SSESysExIntervalBetweenSentMessagesPreferenceKey;
 extern NSString *SSEListenForProgramChangesPreferenceKey;
 extern NSString *SSEInterruptOnProgramChangePreferenceKey;
+extern NSString *SSECustomSysexBufferSizePreferenceKey;
 
 // Notifications
 extern NSString *SSEMIDIControllerReadStatusChangedNotification;
@@ -101,3 +102,4 @@ extern NSString *SSEMIDIControllerSendWillStartNotification;
 extern NSString *SSEMIDIControllerSendFinishedNotification;
     // userInfo has NSNumber for key "success" indicating if all messages were sent
 extern NSString *SSEMIDIControllerSendFinishedImmediatelyNotification;
+extern NSString *SSECustomSysexBufferSizePreferenceChangedNotification;

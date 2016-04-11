@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <deployment defaultVersion="1070" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5056"/>
+        <deployment identifier="macosx"/>
+        <development version="6300" identifier="xcode"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SSEPreferencesWindowController">
@@ -21,7 +22,7 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window title="SysEx Librarian Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="Preferences" animationBehavior="default" id="287" userLabel="Window1">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -192,15 +193,6 @@
                                                 <action selector="changeIntervalBetweenSentMessages:" target="-2" id="387"/>
                                             </connections>
                                         </slider>
-                                        <textField verticalHuggingPriority="750" id="340">
-                                            <rect key="frame" x="20" y="135" width="9" height="13"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="0" id="300424">
-                                                <font key="font" metaFont="label"/>
-                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                            </textFieldCell>
-                                        </textField>
                                         <textField verticalHuggingPriority="750" id="341">
                                             <rect key="frame" x="378" y="153" width="30" height="13"/>
                                             <autoresizingMask key="autoresizingMask"/>
@@ -276,31 +268,40 @@
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
+                                        <textField verticalHuggingPriority="750" id="340">
+                                            <rect key="frame" x="20" y="153" width="20" height="13"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="0" id="300424">
+                                                <font key="font" metaFont="label"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
                                     </subviews>
                                 </view>
                             </tabViewItem>
                             <tabViewItem label="Transmit Speed" identifier="speed" id="319">
                                 <view key="view" id="320">
                                     <rect key="frame" x="10" y="33" width="427" height="371"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="0.0" verticalLineScroll="19" verticalPageScroll="0.0" usesPredominantAxisScrolling="NO" id="352">
-                                            <rect key="frame" x="16" y="18" width="395" height="339"/>
+                                            <rect key="frame" x="16" y="54" width="395" height="303"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="YyG-ou-Q1J">
-                                                <rect key="frame" x="1" y="17" width="393" height="321"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <rect key="frame" x="1" y="0.0" width="393" height="302"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" headerView="300439" id="353" customClass="SSESysexSpeedOutlineView">
-                                                        <rect key="frame" x="0.0" y="0.0" width="393" height="321"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="393" height="285"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <size key="intercellSpacing" width="3" height="2"/>
-                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                         <tableColumns>
                                                             <tableColumn identifier="name" editable="NO" width="146" minWidth="40" maxWidth="1000" id="360">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Ports and Devices">
-                                                                    <font key="font" size="11" name="LucidaGrande"/>
+                                                                    <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
                                                                 </tableHeaderCell>
@@ -313,11 +314,11 @@
                                                             </tableColumn>
                                                             <tableColumn identifier="speed" width="110" minWidth="110" maxWidth="110" id="354">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Speed">
-                                                                    <font key="font" size="11" name="LucidaGrande"/>
+                                                                    <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
                                                                 </tableHeaderCell>
-                                                                <sliderCell key="dataCell" controlSize="small" continuous="YES" alignment="left" minValue="1" maxValue="3125" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="10" sliderType="linear" id="356">
+                                                                <sliderCell key="dataCell" controlSize="small" continuous="YES" alignment="left" minValue="10" maxValue="3125" doubleValue="10" tickMarkPosition="below" numberOfTickMarks="10" sliderType="linear" id="356">
                                                                     <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="355">
                                                                         <attributedString key="attributedStringForZero">
                                                                             <fragment content="0"/>
@@ -394,6 +395,42 @@
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </tableHeaderView>
                                         </scrollView>
+                                        <popUpButton verticalHuggingPriority="750" id="ucK-tF-u1Y">
+                                            <rect key="frame" x="148" y="14" width="161" height="26"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="X3d-T6-FOz">
+                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="menu"/>
+                                                <menu key="menu" id="tu0-F5-lqd">
+                                                    <items>
+                                                        <menuItem title="4" tag="4" id="5YT-zj-eQh"/>
+                                                        <menuItem title="8" tag="8" id="Pg7-OD-Yl6"/>
+                                                        <menuItem title="16" tag="16" id="auP-5V-5Kx"/>
+                                                        <menuItem title="32" tag="32" id="abN-W7-Twd"/>
+                                                        <menuItem title="64" tag="64" id="f3o-a2-687"/>
+                                                        <menuItem title="128" tag="128" id="Qq9-4p-Vth"/>
+                                                        <menuItem title="256" tag="256" id="YTs-fL-5yb">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Default" id="Ud2-jg-BHn">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                    </items>
+                                                </menu>
+                                                <connections>
+                                                    <action selector="changeBufferSize:" target="368" id="EVk-Y9-4Rv"/>
+                                                </connections>
+                                            </popUpButtonCell>
+                                        </popUpButton>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="rE9-HJ-Hwr">
+                                            <rect key="frame" x="15" y="20" width="129" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Transmit buffer size:" id="djO-JZ-FSR">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
                                     </subviews>
                                 </view>
                             </tabViewItem>
@@ -467,7 +504,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <popUpButtonCell key="cell" type="push" title="Daily" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="86400" imageScaling="proportionallyDown" inset="2" selectedItem="300457" id="300453">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" metaFont="menu"/>
                                                 <menu key="menu" title="OtherViews" id="300454">
                                                     <items>
                                                         <menuItem title="Daily" state="on" tag="86400" id="300457"/>
@@ -497,6 +534,7 @@
         </window>
         <customObject id="368" userLabel="SSESysExSpeedController" customClass="SSESysExSpeedController">
             <connections>
+                <outlet property="bufferSizePopUpButton" destination="ucK-tF-u1Y" id="Pxf-1d-teo"/>
                 <outlet property="outlineView" destination="353" id="369"/>
             </connections>
         </customObject>
