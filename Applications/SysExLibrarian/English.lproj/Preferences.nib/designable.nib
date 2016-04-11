@@ -318,7 +318,7 @@
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
                                                                 </tableHeaderCell>
-                                                                <sliderCell key="dataCell" controlSize="small" continuous="YES" alignment="left" minValue="1" maxValue="3125" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="10" sliderType="linear" id="356">
+                                                                <sliderCell key="dataCell" controlSize="small" continuous="YES" alignment="left" minValue="10" maxValue="3125" doubleValue="10" tickMarkPosition="below" numberOfTickMarks="10" sliderType="linear" id="356">
                                                                     <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="355">
                                                                         <attributedString key="attributedStringForZero">
                                                                             <fragment content="0"/>
