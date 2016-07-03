@@ -218,7 +218,7 @@ fail:
         length = [data length];
         cachedDataWithEOX = [[NSMutableData alloc] initWithLength:length + 1];
         bytes = [cachedDataWithEOX mutableBytes];
-        [data getBytes:bytes];
+        [data getBytes:bytes length:length];
         *(bytes + length) = 0xF7;
     }
 
@@ -717,7 +717,7 @@ void writeVariableLengthFieldIntoSMF(Byte **pPtr, const UInt32 value)
     bytes = [dataWithStartByte mutableBytes];
 
     *bytes = 0xF0;
-    [someData getBytes:bytes+1];
+    [someData getBytes:bytes+1 length:length];
 
     return dataWithStartByte;
 }
