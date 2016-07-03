@@ -195,11 +195,11 @@ NSString *SSEListenForProgramChangesPreferenceChangedNotification = @"SSEListenF
     
     [sizeFormatMatrix selectCellWithTag:[defaults boolForKey:SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey]];
     [sysExFolderPathField setStringValue:[[SSELibrary sharedLibrary] fileDirectoryPath]];
-    [sysExReadTimeOutSlider setIntValue:[defaults integerForKey:SSESysExReadTimeOutPreferenceKey]];
+    [sysExReadTimeOutSlider setIntegerValue:[defaults integerForKey:SSESysExReadTimeOutPreferenceKey]];
 	[listenForProgramChangesButton setIntValue:[defaults boolForKey:SSEListenForProgramChangesPreferenceKey]];
     [interruptOnProgramChangeButton setIntValue:[defaults boolForKey:SSEInterruptOnProgramChangePreferenceKey]];
     [self synchronizeReadTimeOutField];
-    [sysExIntervalBetweenSentMessagesSlider setIntValue:[defaults integerForKey: SSESysExIntervalBetweenSentMessagesPreferenceKey]];
+    [sysExIntervalBetweenSentMessagesSlider setIntegerValue:[defaults integerForKey: SSESysExIntervalBetweenSentMessagesPreferenceKey]];
     [self synchronizeIntervalBetweenSentMessagesField];
 }
 
@@ -213,23 +213,23 @@ NSString *SSEListenForProgramChangesPreferenceChangedNotification = @"SSEListenF
     [sysExIntervalBetweenSentMessagesField setStringValue:[self formatMilliseconds:[[NSUserDefaults standardUserDefaults] integerForKey: SSESysExIntervalBetweenSentMessagesPreferenceKey]]];
 }
 
-- (NSString *)formatMilliseconds:(int)msec
+- (NSString *)formatMilliseconds:(NSInteger)msec
 {
     static NSString *oneSecond = nil;
     static NSString *millisecondsFormat = nil;
 
     if (!oneSecond)
-        oneSecond =  [NSLocalizedStringFromTableInBundle(@"1 second", @"SysExLibrarian", SMBundleForObject(self), "one second (formatting of milliseconds)") retain];
+        oneSecond = [NSLocalizedStringFromTableInBundle(@"1 second", @"SysExLibrarian", SMBundleForObject(self), "one second (formatting of milliseconds)") retain];
     if (!millisecondsFormat)
-        millisecondsFormat = [NSLocalizedStringFromTableInBundle(@"%d milliseconds", @"SysExLibrarian", SMBundleForObject(self), "format for milliseconds") retain];
+        millisecondsFormat = [NSLocalizedStringFromTableInBundle(@"%ld milliseconds", @"SysExLibrarian", SMBundleForObject(self), "format for milliseconds") retain];
     
     if (msec == 1000)
         return oneSecond;
     else
-        return [NSString stringWithFormat:millisecondsFormat, msec];
+        return [NSString stringWithFormat:millisecondsFormat, (long)msec];
 }
 
-- (void)openPanelDidEnd:(NSOpenPanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
+- (void)openPanelDidEnd:(NSOpenPanel *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
 {
     if (returnCode == NSOKButton) {
         if ([[sheet URLs] count] == 1) {

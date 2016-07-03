@@ -29,7 +29,7 @@
 - (void)updateProgressAndRepeat;
 - (void)updateProgress;
 
-- (void)sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)sheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
 
 - (void)setCurrentEntry:(SSELibraryEntry *)entry;
 - (void)setQueuedEntry:(SSELibraryEntry *)entry;
@@ -140,7 +140,7 @@
 
 - (void)sendWillStart:(NSNotification *)notification;
 {
-    unsigned int bytesToSend;
+    NSUInteger bytesToSend;
 
 	transmitting = YES;
     [progressIndicator setMinValue:0.0];
@@ -219,7 +219,7 @@
     static NSString *sendingFormatString = nil;
     static NSString *sendingString = nil;
     static NSString *doneString = nil;
-    unsigned int messageIndex, messageCount, bytesToSend, bytesSent;
+    NSUInteger messageIndex, messageCount, bytesToSend, bytesSent;
     NSString *message;
 
     if (!sendingFormatString)
@@ -247,7 +247,7 @@
     [progressMessageField setStringValue:message];
 }
 
-- (void)sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)sheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
 {
     // We don't really care how this sheet ended
     [sheet orderOut:nil];

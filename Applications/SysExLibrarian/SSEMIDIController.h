@@ -42,16 +42,16 @@ typedef enum {
     // ... for listening for sysex
     BOOL listeningToSysexMessages;
     BOOL listenToMultipleSysexMessages;
-    unsigned int messageBytesRead;
-    unsigned int totalBytesRead;
+    NSUInteger messageBytesRead;
+    NSUInteger totalBytesRead;
 
     // ... for sending sysex
     NSTimeInterval pauseTimeBetweenMessages;
     SMSysExSendRequest *nonretainedCurrentSendRequest;
-    unsigned int sendingMessageCount;
-    unsigned int sendingMessageIndex;
-    unsigned int bytesToSend;
-    unsigned int bytesSent;
+    NSUInteger sendingMessageCount;
+    NSUInteger sendingMessageIndex;
+    NSUInteger bytesToSend;
+    NSUInteger bytesSent;
     SSEMIDIControllerSendStatus sendStatus;
     BOOL scheduledUpdateSysExReadIndicator;
     
@@ -76,14 +76,14 @@ typedef enum {
 - (void)cancelMessageListen;
 - (void)doneWithMultipleMessageListen;
 
-- (void)getMessageCount:(unsigned int *)messageCountPtr bytesRead:(unsigned int *)bytesReadPtr totalBytesRead:(unsigned int *)totalBytesReadPtr;
+- (void)getMessageCount:(NSUInteger *)messageCountPtr bytesRead:(NSUInteger *)bytesReadPtr totalBytesRead:(NSUInteger *)totalBytesReadPtr;
 
 // Sending sysex messages
 
 - (void)sendMessages;
 - (void)cancelSendingMessages;
 
-- (void)getMessageCount:(unsigned int *)messageCountPtr messageIndex:(unsigned int *)messageIndexPtr bytesToSend:(unsigned int *)bytesToSendPtr bytesSent:(unsigned int *)bytesSentPtr;
+- (void)getMessageCount:(NSUInteger *)messageCountPtr messageIndex:(NSUInteger *)messageIndexPtr bytesToSend:(NSUInteger *)bytesToSendPtr bytesSent:(NSUInteger *)bytesSentPtr;
 
 @end
 

@@ -34,8 +34,8 @@
 
     NSLock *importStatusLock;
     NSString *importFilePath;
-    unsigned int importFileIndex;
-    unsigned int importFileCount;
+    NSUInteger importFileIndex;
+    NSUInteger importFileCount;
 
     BOOL importCancelled;    
     BOOL queuedUpdate;

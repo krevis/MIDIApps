@@ -100,7 +100,7 @@
     SMRequestConcreteImplementation(self, _cmd);
 }
 
-- (void)updateIndicatorsWithMessageCount:(unsigned int)messageCount bytesRead:(unsigned int)bytesRead totalBytesRead:(unsigned int)totalBytesRead;
+- (void)updateIndicatorsWithMessageCount:(NSUInteger)messageCount bytesRead:(NSUInteger)bytesRead totalBytesRead:(NSUInteger)totalBytesRead;
 {
     SMRequestConcreteImplementation(self, _cmd);
 }
@@ -145,7 +145,7 @@
 
 - (void)updateIndicators;
 {
-    unsigned int messageCount, bytesRead, totalBytesRead;
+    NSUInteger messageCount, bytesRead, totalBytesRead;
     
     [nonretainedMIDIController getMessageCount:&messageCount bytesRead:&bytesRead totalBytesRead:&totalBytesRead];
     

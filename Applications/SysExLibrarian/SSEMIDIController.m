@@ -47,6 +47,8 @@
 - (void)doneSendingSysEx:(NSNotification *)notification;
 - (void)finishedSendingMessagesWithSuccess:(BOOL)success;
 
+- (void)customSysexBufferSizeChanged:(NSNotification *)notification;
+
 @end
 
 
@@ -204,7 +206,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
     }
     
     bytesToSend = 0;
-    unsigned int messageIndex, messageCount = [messages count];
+    NSUInteger messageIndex, messageCount = [messages count];
     for (messageIndex = 0; messageIndex < messageCount; messageIndex++)
         bytesToSend += [[messages objectAtIndex:messageIndex] fullMessageDataLength];
     
@@ -246,7 +248,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
     [inputStream cancelReceivingSysExMessage];
 }
 
-- (void)getMessageCount:(unsigned int *)messageCountPtr bytesRead:(unsigned int *)bytesReadPtr totalBytesRead:(unsigned int *)totalBytesReadPtr;
+- (void)getMessageCount:(NSUInteger *)messageCountPtr bytesRead:(NSUInteger *)bytesReadPtr totalBytesRead:(NSUInteger *)totalBytesReadPtr;
 {
     SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
 
@@ -310,7 +312,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
     }
 }
 
-- (void)getMessageCount:(unsigned int *)messageCountPtr messageIndex:(unsigned int *)messageIndexPtr bytesToSend:(unsigned int *)bytesToSendPtr bytesSent:(unsigned int *)bytesSentPtr;
+- (void)getMessageCount:(NSUInteger *)messageCountPtr messageIndex:(NSUInteger *)messageIndexPtr bytesToSend:(NSUInteger *)bytesToSendPtr bytesSent:(NSUInteger *)bytesSentPtr;
 {
     SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
 
@@ -334,7 +336,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
 
 - (void)takeMIDIMessages:(NSArray *)messagesToTake;
 {
-    unsigned int messageCount, messageIndex;
+    NSUInteger messageCount, messageIndex;
         
     messageCount = [messagesToTake count];
     for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {
@@ -407,7 +409,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
 
 - (void)addEndpointsToInputStream:(NSArray *)endpoints;
 {
-    unsigned int endpointIndex, endpointCount;
+    NSUInteger endpointIndex, endpointCount;
 
     endpointCount = [endpoints count];
     for (endpointIndex = 0; endpointIndex < endpointCount; endpointIndex++)
@@ -417,11 +419,6 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
 - (void)midiSetupChanged:(NSNotification *)notification;
 {
     [nonretainedMainWindowController synchronizeDestinations];
-}
-
-- (void)customSysexBufferSizeChanged:(NSNotification *)notification
-{
-    [outputStream setCustomSysExBufferSize:[[NSUserDefaults standardUserDefaults] integerForKey:SSECustomSysexBufferSizePreferenceKey]];
 }
 
 - (void)outputStreamSelectedDestinationDisappeared:(NSNotification *)notification;
@@ -587,6 +584,11 @@ static MIDITimeStamp pauseStartTimeStamp = 0;
     [self setMessages:nil];
     
     sendStatus = SSEMIDIControllerIdle;
+}
+
+- (void)customSysexBufferSizeChanged:(NSNotification *)notification
+{
+    [outputStream setCustomSysExBufferSize:[[NSUserDefaults standardUserDefaults] integerForKey:SSECustomSysexBufferSizePreferenceKey]];
 }
 
 @end

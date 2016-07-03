@@ -126,7 +126,7 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
 - (BOOL)areAnyFilesDirectories:(NSArray *)filePaths;
 {
     NSFileManager *fileManager;
-    unsigned int fileIndex, fileCount;
+    NSUInteger fileIndex, fileCount;
 
     fileManager = [NSFileManager defaultManager];
 
@@ -149,7 +149,7 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
 - (void)showImportWarning;
 {
     BOOL areAllFilesInLibraryDirectory = YES;
-    unsigned int fileIndex;
+    NSUInteger fileIndex;
 
     fileIndex = [filePathsToImport count];
     while (fileIndex--) {
@@ -231,7 +231,7 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
     static NSString *scanningString = nil;
     static NSString *xOfYFormatString = nil;
     NSString *filePath;
-    unsigned int fileIndex, fileCount;
+    NSUInteger fileIndex, fileCount;
 
     if (!scanningString)
         scanningString = [NSLocalizedStringFromTableInBundle(@"Scanning...", @"SysExLibrarian", SMBundleForObject(self), "Scanning...") retain];
@@ -295,7 +295,7 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
 - (NSArray *)workThreadExpandAndFilterFiles:(NSArray *)filePaths;
 {
     NSFileManager *fileManager;
-    unsigned int fileIndex, fileCount;
+    NSUInteger fileIndex, fileCount;
     NSMutableArray *acceptableFilePaths;
 
     fileManager = [NSFileManager defaultManager];
@@ -321,7 +321,7 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
         if (isDirectory) {
             // Handle this directory's contents recursively            
             NSArray *children;
-            unsigned int childIndex, childCount;
+            NSUInteger childIndex, childCount;
             NSMutableArray *fullChildPaths;
             NSArray *acceptableChildren;
             
@@ -372,7 +372,7 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
     // NOTE: This may be happening in the main thread or a work thread.
 
     NSArray *existingEntries;
-    unsigned int fileIndex, fileCount;
+    NSUInteger fileIndex, fileCount;
     NSMutableArray *addedEntries;
     NSMutableArray *badFilePaths = nil;
 
@@ -446,7 +446,7 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
 
 - (void)showErrorMessageForFilesWithNoSysEx:(NSArray *)badFilePaths;
 {
-    unsigned int badFileCount;
+    NSUInteger badFileCount;
     NSString *title;
     NSString *message;
 

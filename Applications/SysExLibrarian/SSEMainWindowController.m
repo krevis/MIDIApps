@@ -59,7 +59,7 @@
 - (void)exportSelectedEntriesAsSYX;
 - (void)exportSelectedEntriesAsSMFOrSYX: (BOOL) asSMF;
 
-- (void)openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
 
 - (BOOL)areAnyFilesAcceptableForImport:(NSArray *)filePaths;
 
@@ -311,7 +311,7 @@ static SSEMainWindowController *controller = nil;
 
 - (IBAction)rename:(id)sender;
 {
-    int columnIndex = [libraryTableView columnWithIdentifier:@"name"];
+    NSInteger columnIndex = [libraryTableView columnWithIdentifier:@"name"];
 
     if ([libraryTableView editedRow] >= 0 && [libraryTableView editedColumn] == columnIndex) {
         // We are already editing the name column of the table view, so don't do anything
@@ -329,7 +329,7 @@ static SSEMainWindowController *controller = nil;
 
 - (IBAction)changeProgramNumber:(id)sender
 {
-    int columnIndex = [libraryTableView columnWithIdentifier:@"programNumber"];
+    NSInteger columnIndex = [libraryTableView columnWithIdentifier:@"programNumber"];
 
     if ([libraryTableView editedRow] >= 0 && [libraryTableView editedColumn] == columnIndex) {
         // We are already editing the program# column of the table view, so don't do anything
@@ -379,7 +379,7 @@ static SSEMainWindowController *controller = nil;
 - (void)synchronizeDestinations;
 {
     NSMutableArray *groupedDestinations;
-    unsigned int groupIndex;
+    NSUInteger groupIndex;
     id <SSEOutputStreamDestination> currentDestination;
 
     // Remove empty groups from groupedDestinations
@@ -513,7 +513,7 @@ static SSEMainWindowController *controller = nil;
 
 - (void)selectEntries:(NSArray *)entries;
 {
-    unsigned int entryCount, entryIndex;
+    NSUInteger entryCount, entryIndex;
     
     [libraryTableView deselectAll:nil];
     
@@ -539,7 +539,7 @@ static SSEMainWindowController *controller = nil;
 // NSTableView data source
 //
 
-- (int)numberOfRowsInTableView:(NSTableView *)tableView;
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView;
 {
     return [sortedLibraryEntries count];
 }
@@ -724,7 +724,7 @@ static SSEMainWindowController *controller = nil;
 - (void)synchronizeDestinationPopUpWithDestinationGroups:(NSArray *)groupedDestinations currentDestination:(id <SSEOutputStreamDestination>)currentDestination;
 {
     BOOL wasAutodisplay;
-    unsigned int groupCount, groupIndex;
+    NSUInteger groupCount, groupIndex;
     BOOL found = NO;
 
     // The pop up button redraws whenever it's changed, so turn off autodisplay to stop the blinkiness
@@ -736,7 +736,7 @@ static SSEMainWindowController *controller = nil;
     groupCount = [groupedDestinations count];
     for (groupIndex = 0; groupIndex < groupCount; groupIndex++) {
         NSArray *dests;
-        unsigned int destIndex, destCount;
+        NSUInteger destIndex, destCount;
 
         dests = [groupedDestinations objectAtIndex:groupIndex];
         destCount = [dests count];
@@ -776,8 +776,8 @@ static SSEMainWindowController *controller = nil;
     NSString *selectedDestinationTitle;
     NSString *topTitle;
     NSMenu *submenu;
-    unsigned int submenuIndex;
-    unsigned int groupCount, groupIndex;
+    NSUInteger submenuIndex;
+    NSUInteger groupCount, groupIndex;
     BOOL found = NO;
     
     topMenuItem = [nonretainedDestinationToolbarItem menuFormRepresentation];
@@ -797,7 +797,7 @@ static SSEMainWindowController *controller = nil;
     groupCount = [groupedDestinations count];
     for (groupIndex = 0; groupIndex < groupCount; groupIndex++) {
         NSArray *dests;
-        unsigned int destIndex, destCount;
+        NSUInteger destIndex, destCount;
 
         dests = [groupedDestinations objectAtIndex:groupIndex];
         destCount = [dests count];
@@ -888,8 +888,8 @@ static NSInteger libraryEntryComparator(id object1, id object2, void *context)
 
 - (void)scrollToEntries:(NSArray *)entries;
 {
-    unsigned int entryCount, entryIndex;
-    unsigned int lowestRow = UINT_MAX;
+    NSUInteger entryCount, entryIndex;
+    NSUInteger lowestRow = UINT_MAX;
 
     entryCount = [entries count];
     if (entryCount == 0)
@@ -914,7 +914,7 @@ static NSInteger libraryEntryComparator(id object1, id object2, void *context)
 {
     NSArray *selectedEntries;
     NSMutableArray *messages;
-    unsigned int entryCount, entryIndex;
+    NSUInteger entryCount, entryIndex;
 
     selectedEntries = [self selectedEntries];
 
@@ -935,7 +935,7 @@ static NSInteger libraryEntryComparator(id object1, id object2, void *context)
 - (void)showDetailsOfSelectedEntries;
 {
     NSArray *selectedEntries;
-    unsigned int entryCount, entryIndex;
+    NSUInteger entryCount, entryIndex;
 
     selectedEntries = [self selectedEntries];
     entryCount = [selectedEntries count];
@@ -961,7 +961,7 @@ static NSInteger libraryEntryComparator(id object1, id object2, void *context)
 {
     NSArray *selectedEntries;
     NSMutableArray *messages;
-    unsigned int entryCount, entryIndex;
+    NSUInteger entryCount, entryIndex;
     NSString* fileName;
 
     selectedEntries = [self selectedEntries];
@@ -985,7 +985,7 @@ static NSInteger libraryEntryComparator(id object1, id object2, void *context)
 // Add files / importing
 //
 
-- (void)openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
+- (void)openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(NSInteger)returnCode contextInfo:(void  *)contextInfo;
 {
     if (returnCode == NSOKButton) {
         [openPanel orderOut:nil];
@@ -1006,7 +1006,7 @@ static NSInteger libraryEntryComparator(id object1, id object2, void *context)
 - (BOOL)areAnyFilesAcceptableForImport:(NSArray *)filePaths;
 {
     NSFileManager *fileManager;
-    unsigned int fileIndex, fileCount;
+    NSUInteger fileIndex, fileCount;
 
     fileManager = [NSFileManager defaultManager];
 
@@ -1036,7 +1036,7 @@ static NSInteger libraryEntryComparator(id object1, id object2, void *context)
 - (void)findMissingFilesAndPerformSelector:(SEL)selector;
 {
     NSArray *selectedEntries;
-    unsigned int entryCount, entryIndex;
+    NSUInteger entryCount, entryIndex;
     NSMutableArray *entriesWithMissingFiles;
 
     selectedEntries = [self selectedEntries];

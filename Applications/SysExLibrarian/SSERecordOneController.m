@@ -39,7 +39,7 @@
     [nonretainedMIDIController listenForOneMessage];    
 }
 
-- (void)updateIndicatorsWithMessageCount:(unsigned int)messageCount bytesRead:(unsigned int)bytesRead totalBytesRead:(unsigned int)totalBytesRead;
+- (void)updateIndicatorsWithMessageCount:(NSUInteger)messageCount bytesRead:(NSUInteger)bytesRead totalBytesRead:(NSUInteger)totalBytesRead;
 {
     if ((bytesRead == 0 && messageCount == 0)) {
         [progressMessageField setStringValue:[self waitingForSysexMessage]];

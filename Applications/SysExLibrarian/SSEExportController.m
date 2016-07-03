@@ -30,7 +30,7 @@
 
 @interface SSEExportController (Private)
 
-- (void)saveSheetDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)saveSheetDidEnd:(NSSavePanel *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
 
 @end
 
@@ -78,7 +78,7 @@
 
 @implementation SSEExportController (Private)
 
-- (void)saveSheetDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
+- (void)saveSheetDidEnd:(NSSavePanel *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
 {
     NSArray *messages = (NSArray *)contextInfo;
 

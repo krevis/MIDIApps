@@ -69,7 +69,7 @@
 	char finaldigest[32];
 	int i;
 	
-	CC_MD5([self bytes],[self length],digest);
+	CC_MD5([self bytes], (CC_LONG)[self length], digest);
 	for(i=0;i<16;i++) sprintf(finaldigest+i*2,"%02x",digest[i]);
 	
 	return [[[NSString alloc] initWithBytes:finaldigest length:32 encoding:NSUTF8StringEncoding] autorelease];
@@ -79,7 +79,7 @@
 {
 	unsigned char digest[16];
 	
-	CC_MD5([self bytes],[self length],digest);
+	CC_MD5([self bytes], (CC_LONG)[self length], digest);
 	
 	return [NSData dataWithBytes:&digest length:16];
 }
@@ -90,7 +90,7 @@
 	char finaldigest[40];
 	int i;
 	
-	CC_SHA1([self bytes],[self length],digest);
+	CC_SHA1([self bytes], (CC_LONG)[self length], digest);
 	for(i=0;i<20;i++) sprintf(finaldigest+i*2,"%02x",digest[i]);
 	
 	return [[[NSString alloc] initWithBytes:finaldigest length:40 encoding:NSUTF8StringEncoding] autorelease];
@@ -100,7 +100,7 @@
 {
 	unsigned char digest[20];
 	
-	CC_SHA1([self bytes],[self length],digest);
+	CC_SHA1([self bytes], (CC_LONG)[self length], digest);
 	
 	return [NSData dataWithBytes:&digest length:20];
 }

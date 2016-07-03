@@ -42,7 +42,7 @@
 // To be implemented in subclasses
 - (NSString *)nibName;
 - (void)tellMIDIControllerToStartRecording;
-- (void)updateIndicatorsWithMessageCount:(unsigned int)messageCount bytesRead:(unsigned int)bytesRead totalBytesRead:(unsigned int)totalBytesRead;
+- (void)updateIndicatorsWithMessageCount:(NSUInteger)messageCount bytesRead:(NSUInteger)bytesRead totalBytesRead:(NSUInteger)totalBytesRead;
 
 // May be overridden by subclasses
 - (void)observeMIDIController;

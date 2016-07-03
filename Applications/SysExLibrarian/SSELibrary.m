@@ -286,7 +286,7 @@ NSString *SSESysExFileExtension = @"syx";
 
 - (void)removeEntries:(NSArray *)entriesToRemove
 {
-    unsigned int entryIndex;
+    NSUInteger entryIndex;
 
     entryIndex = [entriesToRemove count];
     while (entryIndex--) {
@@ -328,7 +328,7 @@ NSString *SSESysExFileExtension = @"syx";
     
     NSMutableDictionary *dictionary;
     NSMutableArray *entryDicts;
-    unsigned int entryCount, entryIndex;
+    NSUInteger entryCount, entryIndex;
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSString *libraryFilePath = [self libraryFilePath];
     NSDictionary *fileAttributes;
@@ -415,7 +415,7 @@ NSString *SSESysExFileExtension = @"syx";
     NSDictionary *entriesByFilePath;
     NSMutableArray *nonMatchingFilePaths;
     NSMutableArray *matchingEntries;
-    unsigned int filePathIndex, filePathCount;
+    NSUInteger filePathIndex, filePathCount;
 
     entriesByFilePath = [self entriesByFilePath];
 
@@ -447,7 +447,7 @@ NSString *SSESysExFileExtension = @"syx";
 
 - (void)moveFilesInLibraryDirectoryToTrashForEntries:(NSArray *)entriesToTrash
 {
-    unsigned int entryCount, entryIndex;
+    NSUInteger entryCount, entryIndex;
     NSMutableArray *filesToTrash;
 
     entryCount = [entriesToTrash count];
@@ -652,7 +652,7 @@ NSString *SSESysExFileExtension = @"syx";
     NSString *libraryFilePath;
     NSDictionary *libraryDictionary = nil;
     NSArray *entryDicts;
-    unsigned int entryDictIndex, entryDictCount;
+    NSUInteger entryDictIndex, entryDictCount;
 
     // We should only be called once at startup
     SMAssert([entries count] == 0);
@@ -694,7 +694,7 @@ NSString *SSESysExFileExtension = @"syx";
 
     osTypes = [documentTypeDict objectForKey:@"CFBundleTypeOSTypes"];
     if (osTypes && [osTypes isKindOfClass:[NSArray class]]) {
-        unsigned int osTypeIndex, osTypeCount;
+        NSUInteger osTypeIndex, osTypeCount;
 
         osTypeCount = [osTypes count];
         for (osTypeIndex = 0; osTypeIndex < osTypeCount; osTypeIndex++) {
@@ -707,7 +707,7 @@ NSString *SSESysExFileExtension = @"syx";
 
 - (NSDictionary *)entriesByFilePath
 {
-    unsigned int entryIndex, entryCount;
+    NSUInteger entryIndex, entryCount;
     NSMutableDictionary *entriesByFilePath;
 
     entryCount = [entries count];

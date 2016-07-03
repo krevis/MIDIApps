@@ -165,7 +165,7 @@
 
         p += sprintf(p, "%.*lX", lengthDigitCount, (unsigned long)dataIndex);
         
-        for (unsigned int index = dataIndex; index < dataIndex+16; index++) {
+        for (NSUInteger index = dataIndex; index < dataIndex+16; index++) {
             *p++ = ' ';
             if (index % 8 == 0) {
                 *p++ = ' ';
@@ -185,7 +185,7 @@
         *p++ = ' ';
         *p++ = '|';
 
-        for (unsigned int index = dataIndex; index < dataIndex+16 && index < dataLength; index++) {
+        for (NSUInteger index = dataIndex; index < dataIndex+16 && index < dataLength; index++) {
             unsigned char byte = bytes[index];
             *p++ = (isprint(byte) ? byte : ' ');
         }

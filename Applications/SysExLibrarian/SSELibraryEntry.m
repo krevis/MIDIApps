@@ -364,7 +364,7 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
 
 + (NSString *)manufacturerFromMessages:(NSArray *)messages;
 {
-    unsigned int messageIndex;
+    NSUInteger messageIndex;
     NSString *newManufacturer = nil;
 
     messageIndex = [messages count];
@@ -391,19 +391,19 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
 
 + (NSNumber *)sizeFromMessages:(NSArray *)messages;
 {
-    unsigned int messageIndex;
-    unsigned int size = 0;
+    NSUInteger messageIndex;
+    NSUInteger size = 0;
 
     messageIndex = [messages count];
     while (messageIndex--)
         size += [[messages objectAtIndex:messageIndex] fullMessageDataLength];
 
-    return [NSNumber numberWithUnsignedInt:size];
+    return [NSNumber numberWithUnsignedInteger:size];
 }
 
 + (NSNumber *)messageCountFromMessages:(NSArray *)messages;
 {
-    return [NSNumber numberWithUnsignedInt:[messages count]];
+    return [NSNumber numberWithUnsignedInteger:[messages count]];
 }
 
 - (void)setValuesFromDictionary:(NSDictionary *)dict;

@@ -26,7 +26,7 @@
 
 - (int)effectiveSpeedForItem:(SMMIDIObject*)item;
 
-- (void)invalidateRowAndParent: (int)row;
+- (void)invalidateRowAndParent:(NSInteger)row;
 
 @end
 
@@ -45,15 +45,15 @@
 
 - (void) awakeFromNib
 {
-    [outlineView setAutoresizesOutlineColumn: NO];
+    [outlineView setAutoresizesOutlineColumn:NO];
 
     // Workaround to get continuous updates from the sliders in the table view.
     // You can't just set it, or its cell, to be continuous -- that still doesn't
     // give you continuous updates through the normal table view interface.
     // What DOES work is to have the cell message us directly.
-    NSTableColumn* col = [outlineView tableColumnWithIdentifier: @"speed"];
-    [[col dataCell] setTarget: self];
-    [[col dataCell] setAction: @selector(takeSpeedFromSelectedCellInTableView:)];
+    NSTableColumn* col = [outlineView tableColumnWithIdentifier:@"speed"];
+    [[col dataCell] setTarget:self];
+    [[col dataCell] setAction:@selector(takeSpeedFromSelectedCellInTableView:)];
 }
 
 - (void)willShow
@@ -95,19 +95,19 @@
     // continuously.  Instead, remember which item is getting tracked and what its value
     // is "supposed" to be.  When tracking finishes, the new value comes through 
     // -outlineView:setObjectValue:..., and we'll set it for real. 
-    int row = [outlineView clickedRow];
-    SMMIDIObject* item = (SMMIDIObject*)[outlineView itemAtRow: row];
+    NSInteger row = [outlineView clickedRow];
+    SMMIDIObject* item = (SMMIDIObject*)[outlineView itemAtRow:row];
     trackingMIDIObject = item;
     speedOfTrackingMIDIObject = newValue;  
 
     // update the slider value based on the effective speed (which may be different than the tracking value)
-    int effectiveValue = [self effectiveSpeedForItem: item];
+    int effectiveValue = [self effectiveSpeedForItem:item];
     if (newValue != effectiveValue) {
-        [cell setIntValue: effectiveValue];
+        [cell setIntValue:effectiveValue];
     }    
     
     // redisplay
-    [self invalidateRowAndParent: row];
+    [self invalidateRowAndParent:row];
 }
 
 - (IBAction)changeBufferSize:(id)sender
@@ -119,7 +119,7 @@
     else {
         [[NSUserDefaults standardUserDefaults] setInteger:customBufferSize forKey:SSECustomSysexBufferSizePreferenceKey];
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName: SSECustomSysexBufferSizePreferenceChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SSECustomSysexBufferSizePreferenceChangedNotification object:nil];
 }
 
 @end
@@ -133,13 +133,13 @@
     
     if (item == nil) {
         if (index < [endpoints count]) {
-            child = [endpoints objectAtIndex: index];
+            child = [endpoints objectAtIndex:index];
         }
     } else {
         SMDestinationEndpoint* endpoint = (SMDestinationEndpoint*)item;
         NSArray* connectedExternalDevices = [endpoint connectedExternalDevices];
         if (index < [connectedExternalDevices count]) {
-            child = [[endpoint connectedExternalDevices] objectAtIndex: index];
+            child = [[endpoint connectedExternalDevices] objectAtIndex:index];
         }
     }
     
@@ -152,7 +152,7 @@
     
     if (item == nil) {
         isItemExpandable = YES;
-    } else if ([item isKindOfClass: [SMDestinationEndpoint class]]) {
+    } else if ([item isKindOfClass:[SMDestinationEndpoint class]]) {
         SMDestinationEndpoint* endpoint = (SMDestinationEndpoint*)item;
         isItemExpandable = ([[endpoint connectedExternalDevices] count] > 0);
     }
@@ -160,13 +160,13 @@
     return isItemExpandable;    
 }
 
-- (int)outlineView:(NSOutlineView *)anOutlineView numberOfChildrenOfItem:(id)item
+- (NSInteger)outlineView:(NSOutlineView *)anOutlineView numberOfChildrenOfItem:(id)item
 {
-    int childCount = 0;
+    NSInteger childCount = 0;
     
     if (item == nil) {
         childCount = [endpoints count];
-    } else if ([item isKindOfClass: [SMDestinationEndpoint class]]) {
+    } else if ([item isKindOfClass:[SMDestinationEndpoint class]]) {
         SMDestinationEndpoint* endpoint = (SMDestinationEndpoint*)item;
         childCount = [[endpoint connectedExternalDevices] count];
     }
@@ -183,11 +183,11 @@
         
         if ([identifier isEqualToString:@"name"]) {
             objectValue = [item name];
-        } else if ([identifier isEqualToString:@"speed"] || [identifier isEqualToString: @"bytesPerSecond"]) {
-            int speed = [self effectiveSpeedForItem: (SMMIDIObject*)item];
+        } else if ([identifier isEqualToString:@"speed"] || [identifier isEqualToString:@"bytesPerSecond"]) {
+            int speed = [self effectiveSpeedForItem:(SMMIDIObject*)item];
             objectValue = [NSNumber numberWithInt:speed];
         } else if ([identifier isEqualToString:@"percent"]) {
-            int speed = [self effectiveSpeedForItem: (SMMIDIObject*)item];
+            int speed = [self effectiveSpeedForItem:(SMMIDIObject*)item];
             float percent = (speed / 3125.0) * 100.0;
             objectValue = [NSNumber numberWithFloat:percent];
         }
@@ -273,12 +273,12 @@
     NSString* propertyName = [[notification userInfo] objectForKey:SMMIDIObjectChangedPropertyName];    
     if ([propertyName isEqualToString:(NSString *)kMIDIPropertyName]) {
         // invalidate only the row for this object
-        int row = [outlineView rowForItem: [notification object]];
-        [outlineView setNeedsDisplayInRect: [outlineView rectOfRow: row]];            
+        NSInteger row = [outlineView rowForItem:[notification object]];
+        [outlineView setNeedsDisplayInRect:[outlineView rectOfRow:row]];
     } else if ([propertyName isEqualToString:(NSString *)kMIDIPropertyMaxSysExSpeed]) {
         // invalidate this row and the parent (if any)
-        int row = [outlineView rowForItem: [notification object]];
-        [self invalidateRowAndParent: row];
+        NSInteger row = [outlineView rowForItem:[notification object]];
+        [self invalidateRowAndParent:row];
     }
 }
 
@@ -286,7 +286,7 @@
 {
     int effectiveSpeed = (item == trackingMIDIObject) ? speedOfTrackingMIDIObject : [item maxSysExSpeed];        
 
-    if ([item isKindOfClass: [SMDestinationEndpoint class]]) {
+    if ([item isKindOfClass:[SMDestinationEndpoint class]]) {
         // Return the minimum of this endpoint's speed and all of its external devices' speeds
         NSEnumerator* oe = [[(SMDestinationEndpoint*)item connectedExternalDevices] objectEnumerator];
         SMMIDIObject* extDevice;
@@ -299,17 +299,17 @@
     return effectiveSpeed;
 }
 
-- (void)invalidateRowAndParent: (int)row
+- (void)invalidateRowAndParent:(NSInteger)row
 {
     if (row >= 0) {
-        [outlineView setNeedsDisplayInRect: [outlineView rectOfRow: row]];
+        [outlineView setNeedsDisplayInRect:[outlineView rectOfRow:row]];
 
-        int level = [outlineView levelForRow: row];
+        NSInteger level = [outlineView levelForRow:row];
         if (level > 0) {
             // walk up rows until we hit one at a higher level -- that will be our parent
-            while (row > 0 && [outlineView levelForRow: --row] == level)
+            while (row > 0 && [outlineView levelForRow:--row] == level)
                 ;   // nothing needs doing
-            [outlineView setNeedsDisplayInRect: [outlineView rectOfRow: row]];
+            [outlineView setNeedsDisplayInRect:[outlineView rectOfRow:row]];
         }
     }
 }

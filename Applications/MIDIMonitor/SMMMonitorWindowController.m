@@ -214,7 +214,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
             break;
     }
     
-    [self.midiDocument changeFilterMask:[sender tag] turnBitsOn:turnBitsOn];
+    [self.midiDocument changeFilterMask:(SMMessageType)[sender tag] turnBitsOn:turnBitsOn];
 }
 
 - (IBAction)changeFilterFromMatrix:(id)sender
@@ -327,7 +327,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     SMMessageType currentMask = self.midiDocument.filterMask;
 
     for (NSButton *checkbox in self.filterCheckboxes) {
-        SMMessageType buttonMask = checkbox.tag;
+        SMMessageType buttonMask = (SMMessageType)checkbox.tag;
 
         int newState;
         if ((currentMask & buttonMask) == buttonMask) {
@@ -342,7 +342,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
     }
 
     for (NSButtonCell *checkbox in self.filterMatrixCells) {
-        SMMessageType buttonMask = checkbox.tag;
+        SMMessageType buttonMask = (SMMessageType)checkbox.tag;
 
         int newState;
         if ((currentMask & buttonMask) == buttonMask) {
@@ -362,7 +362,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
         self.oneChannelField.enabled = YES;
         self.oneChannel = self.midiDocument.oneChannelToShow;
     }
-    self.oneChannelField.objectValue = [NSNumber numberWithUnsignedInt:self.oneChannel];
+    self.oneChannelField.objectValue = [NSNumber numberWithUnsignedInteger:self.oneChannel];
 }
 
 - (void)updateSysExReadIndicatorWithBytes:(NSNumber *)bytesReadNumber
@@ -515,7 +515,7 @@ static NSString * const SMMMessagesScrollPointY = @"messagesScrollPointY";
     return [item isKindOfClass:[NSDictionary class]] && ![item[@"isNotExpandable"] boolValue];
 }
 
-- (int)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
+- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
 {
     if (item == nil) {
         return self.groupedInputSources.count;
@@ -684,7 +684,7 @@ static NSString * const SMMMessagesScrollPointY = @"messagesScrollPointY";
 
 - (NSArray *)selectedMessagesWithDetails
 {
-    int selectedRowCount = [self.messagesTableView numberOfSelectedRows];
+    NSInteger selectedRowCount = [self.messagesTableView numberOfSelectedRows];
     if (selectedRowCount == 0) {
         return [NSArray array];
     }

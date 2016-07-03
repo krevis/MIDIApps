@@ -30,13 +30,13 @@
     }
     
     NSArray* components = [newFilePath pathComponents];
-    unsigned int componentCount = [components count];
+    NSUInteger componentCount = [components count];
     
     if (componentCount <= 1) {
         [NSException raise: NSGenericException format: @"After standardizing '%@', cannot create path to invalid file with no components: '%@'.", originalFilePath, newFilePath];
     }
 
-    unsigned int componentIndex;
+    NSUInteger componentIndex;
     NSString* partialPath = @"";
     NSString* failureReason = nil;
     for (componentIndex = 0; !failureReason && componentIndex < componentCount - 1; componentIndex++) {
@@ -70,12 +70,12 @@
     NSString* originalPathExtension = [originalPath pathExtension];
 
     NSString* testPath = originalPath;
-    unsigned int suffix = 0;
+    NSUInteger suffix = 0;
     
     while ([self fileExistsAtPath: testPath])
     {
         suffix++;
-        testPath = [[originalPathWithoutExtension stringByAppendingFormat: @"-%u", suffix] stringByAppendingPathExtension: originalPathExtension];
+        testPath = [[originalPathWithoutExtension stringByAppendingFormat: @"-%lu", (unsigned long)suffix] stringByAppendingPathExtension: originalPathExtension];
     }
     
     return testPath;

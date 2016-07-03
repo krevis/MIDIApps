@@ -113,7 +113,7 @@ NSString *SSEShowWarningOnDeletePreferenceKey = @"SSEShowWarningOnDelete";
 
 - (void)checkForFilesInLibraryDirectory;
 {
-    unsigned int entryIndex;
+    NSUInteger entryIndex;
     BOOL areAnyFilesInLibraryDirectory = NO;
 
     entryIndex = [entriesToDelete count];

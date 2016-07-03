@@ -39,7 +39,7 @@ static NSMutableArray *controllers = nil;
 
 + (SSEDetailsWindowController *)detailsWindowControllerWithEntry:(SSELibraryEntry *)inEntry;
 {
-    unsigned int controllerIndex;
+    NSUInteger controllerIndex;
     SSEDetailsWindowController *controller;
 
     if (!controllers) {
@@ -147,7 +147,7 @@ static NSMutableArray *controllers = nil;
 // NSTableView data source
 //
 
-- (int)numberOfRowsInTableView:(NSTableView *)tableView;
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView;
 {
     return [cachedMessages count];
 }
@@ -240,7 +240,7 @@ const CGFloat kMinTextViewHeight = 32.f;
 
 - (void)synchronizeMessageDataDisplay;
 {
-    int selectedRow;
+    NSInteger selectedRow;
     NSString *formattedData;
 
     selectedRow = [messagesTableView selectedRow];
@@ -271,12 +271,12 @@ const CGFloat kMinTextViewHeight = 32.f;
 
 - (NSString *)formatSysExData:(NSData *)data;
 {
-    unsigned int dataLength;
+    NSUInteger dataLength;
     const unsigned char *bytes;
     NSMutableString *formattedString;
-    unsigned int dataIndex;
+    NSUInteger dataIndex;
     int lengthDigitCount;
-    unsigned int scratchLength;
+    NSUInteger scratchLength;
 
     dataLength = [data length];
     if (dataLength == 0)
@@ -297,13 +297,13 @@ const CGFloat kMinTextViewHeight = 32.f;
         static const char hexchars[] = "0123456789ABCDEF";
         char lineBuffer[100];
         char *p;
-        unsigned int index;
+        NSUInteger index;
         NSString *lineString;
 
         // This C stuff may be a little ugly but it is a hell of a lot faster than doing it with NSStrings...
 
         p = lineBuffer;
-        p += sprintf(p, "%.*X", lengthDigitCount, dataIndex);
+        p += sprintf(p, "%.*lX", lengthDigitCount, (unsigned long)dataIndex);
         
         for (index = dataIndex; index < dataIndex+16; index++) {
             *p++ = ' ';

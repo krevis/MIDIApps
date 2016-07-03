@@ -45,7 +45,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
 
 	NSMutableArray *destinations = [NSMutableArray arrayWithArray:[SMDestinationEndpoint destinationEndpoints]];
 
-    unsigned destinationsIndex = [destinations count];
+    NSUInteger destinationsIndex = [destinations count];
     while (destinationsIndex--) {
         if ([[destinations objectAtIndex:destinationsIndex] isOwnedByThisProcess])
             [destinations removeObjectAtIndex:destinationsIndex];
@@ -93,7 +93,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
 {
     // Collapse the groups into a flat list
     NSArray *groups;
-    unsigned int groupIndex, groupCount;
+    NSUInteger groupIndex, groupCount;
     NSArray *results = nil;
 
     groups = [self groupedDestinations];

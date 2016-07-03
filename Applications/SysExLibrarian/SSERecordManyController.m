@@ -32,7 +32,7 @@
     [nonretainedMIDIController listenForMultipleMessages];
 }
 
-- (void)updateIndicatorsWithMessageCount:(unsigned int)messageCount bytesRead:(unsigned int)bytesRead totalBytesRead:(unsigned int)totalBytesRead;
+- (void)updateIndicatorsWithMessageCount:(NSUInteger)messageCount bytesRead:(NSUInteger)bytesRead totalBytesRead:(NSUInteger)totalBytesRead;
 {
     static NSString *totalProgressFormatString = nil;
     static NSString *totalProgressPluralFormatString = nil;

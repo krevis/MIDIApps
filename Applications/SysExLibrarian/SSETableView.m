@@ -81,7 +81,7 @@
 - (void)setSortColumn:(NSTableColumn *)sortColumn isAscending:(BOOL)isSortAscending;
 {
     NSArray *columns;
-    unsigned int columnIndex;
+    NSUInteger columnIndex;
 
     columns = [self tableColumns];
     columnIndex = [columns count];
