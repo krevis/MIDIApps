@@ -32,6 +32,13 @@ NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNe
 
 @implementation SMMAppController
 
+- (void)dealloc
+{
+    // Appease the analyzer
+    [_newlyAppearedSources release];
+    [super dealloc];
+}
+
 - (void)applicationWillFinishLaunching:(NSNotification *)notification
 {
     // Before CoreMIDI is initialized, make sure the spying driver is installed

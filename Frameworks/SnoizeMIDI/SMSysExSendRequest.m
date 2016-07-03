@@ -81,6 +81,7 @@ static OSStatus CustomMIDISendSysex(MIDISysexSendRequest *request, NSInteger buf
 
     dispatch_queue_t queue = dispatch_queue_create("com.snoize.SnoizeMIDI.CustomMIDISendSysex", DISPATCH_QUEUE_SERIAL);
     if (!queue) {
+        free(packetList);
         return -41; // mFulErr
     }
     dispatch_set_target_queue(queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
@@ -124,6 +125,10 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
         return nil;
 
     SMAssert(aMessage != nil);
+    if (aMessage == nil) {
+        [self release];
+        return nil;
+    }
 
     message = [aMessage retain];
     fullMessageData = [[message fullMessageData] retain];

@@ -44,7 +44,7 @@
 
 - (NSColor *)highlightColorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView
 {
-    return nil;
+    return [NSColor clearColor];
 }
 
 @end
