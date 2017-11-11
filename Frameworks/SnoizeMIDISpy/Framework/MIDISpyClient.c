@@ -127,7 +127,7 @@ OSStatus MIDISpyClientCreate(MIDISpyClientRef *outClientRefPtr)
     // Look for the message port which our MIDI driver provides
     driverPort = CFMessagePortCreateRemote(kCFAllocatorDefault, kSpyingMIDIDriverPortName);
     if (!driverPort) {
-        debug_string("MIDISpyClientCreate: Couldn't find message port for Spying MIDI Driver");
+        __Debug_String("MIDISpyClientCreate: Couldn't find message port for Spying MIDI Driver");
         return kMIDISpyDriverMissing;
     }
 
@@ -143,11 +143,11 @@ OSStatus MIDISpyClientCreate(MIDISpyClientRef *outClientRefPtr)
     sendStatus = CFMessagePortSendRequest(driverPort, kSpyingMIDIDriverGetNextListenerIdentifierMessageID, NULL, 300, 300, kCFRunLoopDefaultMode, &identifierData);
 
     if (sendStatus != kCFMessagePortSuccess) {
-        debug_string("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverGetNextListenerIdentifierMessageID) returned error");
+        __Debug_String("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverGetNextListenerIdentifierMessageID) returned error");
     } else if (!identifierData) {
-        debug_string("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverGetNextListenerIdentifierMessageID) returned no data!");
+        __Debug_String("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverGetNextListenerIdentifierMessageID) returned no data!");
     } else if (CFDataGetLength(identifierData) != sizeof(SInt32)) {
-        debug_string("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverGetNextListenerIdentifierMessageID) returned wrong number of bytes");
+        __Debug_String("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverGetNextListenerIdentifierMessageID) returned wrong number of bytes");
     } else {
         CFStringRef localPortName;
         CFMessagePortContext context = { 0, NULL, NULL, NULL, NULL };
@@ -161,20 +161,20 @@ OSStatus MIDISpyClientCreate(MIDISpyClientRef *outClientRefPtr)
         CFRelease(localPortName);
 
         if (!clientRef->localPort) {
-            debug_string("MIDISpyClientCreate: CFMessagePortCreateLocal failed!");
+            __Debug_String("MIDISpyClientCreate: CFMessagePortCreateLocal failed!");
         } else {
             // Create a new thread which listens on the local port
             clientRef->runLoopSource = CFMessagePortCreateRunLoopSource(kCFAllocatorDefault, clientRef->localPort, 0);
 
             if (!clientRef->runLoopSource) {
-                debug_string("MIDISpyClientCreate: CFMessagePortCreateRunLoopSource failed!");
+                __Debug_String("MIDISpyClientCreate: CFMessagePortCreateRunLoopSource failed!");
             } else {
                 SpawnListenerThread(clientRef);
 
                 // And now tell the spying driver to add us as a listener. Don't wait for a response.
                 sendStatus = CFMessagePortSendRequest(driverPort, kSpyingMIDIDriverAddListenerMessageID, identifierData, 300, 0, NULL, NULL);
                 if (sendStatus != kCFMessagePortSuccess) {
-                    debug_string("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverAddListenerMessageID) returned error");
+                    __Debug_String("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverAddListenerMessageID) returned error");
                 } else {
                     // Now create the array of ports, and dictionary of connnections for each endpoint
                     clientRef->ports = CFArrayCreateMutable(kCFAllocatorDefault, 0, NULL);
@@ -601,10 +601,10 @@ static CFDataRef LocalMessagePortCallback(CFMessagePortRef local, SInt32 msgid, 
     MIDISpyClientRef clientRef = (MIDISpyClientRef)info;
 
     if (!data) {
-        debug_string("MIDISpyClient: Got empty data from driver!");
+        __Debug_String("MIDISpyClient: Got empty data from driver!");
         return NULL;
     } else if (CFDataGetLength(data) < (sizeof(SInt32) + sizeof(SInt32))) {
-        debug_string("MIDISpyClient: Got too-small data from driver!");
+        __Debug_String("MIDISpyClient: Got too-small data from driver!");
         return NULL;
     }
 

@@ -109,19 +109,19 @@ static Boolean FindDriverInFramework(CFURLRef *urlPtr, UInt32 *versionPtr)
     // Find this framework's bundle
     frameworkBundle = CFBundleGetBundleWithIdentifier(kSpyingMIDIDriverFrameworkIdentifier);
     if (!frameworkBundle) {
-        debug_string("MIDISpyClient: Couldn't find our own framework's bundle!");
+        __Debug_String("MIDISpyClient: Couldn't find our own framework's bundle!");
     } else {
         // Find the copy of the plugin in the framework's resources
         driverURL = CFBundleCopyResourceURL(frameworkBundle, kSpyingMIDIDriverPlugInName, NULL, NULL);
         if (!driverURL) {
-            debug_string("MIDISpyClient: Couldn't find the copy of the plugin in our framework!");
+            __Debug_String("MIDISpyClient: Couldn't find the copy of the plugin in our framework!");
         } else {
             // Make a CFBundle with it.
             CFBundleRef driverBundle;
 
             driverBundle = CFBundleCreate(kCFAllocatorDefault, driverURL);
             if (!driverBundle) {
-                debug_string("MIDISpyClient: Couldn't create a CFBundle for the copy of the plugin in our framework!");
+                __Debug_String("MIDISpyClient: Couldn't create a CFBundle for the copy of the plugin in our framework!");
                 CFRelease(driverURL);
                 driverURL = NULL;
             } else {
@@ -157,10 +157,10 @@ static Boolean FindInstalledDriver(CFURLRef *urlPtr, UInt32 *versionPtr)
     // See if the driver is installed anywhere.
     driverBundle = CFBundleGetBundleWithIdentifier(kSpyingMIDIDriverPlugInIdentifier);
     if (!driverBundle) {
-        debug_string("MIDISpyClient: Couldn't find an installed driver");
+        __Debug_String("MIDISpyClient: Couldn't find an installed driver");
     } else if (!CFArrayContainsValue(createdBundles, CFRangeMake(0, CFArrayGetCount(createdBundles)), driverBundle)) {
         // The driver we found is not in one of the standard locations. Ignore it.
-        debug_string("MIDISpyClient: Found driver bundle in a non-standard location, ignoring");
+        __Debug_String("MIDISpyClient: Found driver bundle in a non-standard location, ignoring");
     } else {
         // Remember the URL and version of the bundle.
         driverURL = CFBundleCopyBundleURL(driverBundle);
@@ -221,7 +221,7 @@ static Boolean InstallDriver(CFURLRef ourDriverURL)
     // Find the MIDI Drivers directory for the current user. If it doesn't exist, create it.
     error = FSFindFolder(kUserDomain, kMIDIDriversFolderType, kCreateFolder, &folderFSRef);
     if (error != noErr) {
-        debug_string("MIDISpy: FSFindFolder(kUserDomain, kMIDIDriversFolderType, kCreateFolder) returned error");
+        __Debug_String("MIDISpy: FSFindFolder(kUserDomain, kMIDIDriversFolderType, kCreateFolder) returned error");
     } else {
         FSRef driverFSRef;
 
