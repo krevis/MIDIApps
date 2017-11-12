@@ -22,7 +22,7 @@ extern "C" {
 typedef void (*MessageQueueHandler)(CFTypeRef objectFromQueue, void *refCon);
 
 void CreateMessageQueue(MessageQueueHandler inHandler, void *inHandlerRefCon);
-void DestroyMessageQueue();
+void DestroyMessageQueue(void);
 
 void AddToMessageQueue(CFTypeRef objectToAdd);
 

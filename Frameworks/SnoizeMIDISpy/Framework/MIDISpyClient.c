@@ -75,7 +75,7 @@ static void SpawnListenerThread(MIDISpyClientRef clientRef);
 static void *RunListenerThread(void *refCon);
 
 static void ReceiveMIDINotification(const MIDINotification *message, void *refCon);
-static void RebuildEndpointUniqueIDDictionary();
+static void RebuildEndpointUniqueIDDictionary(void);
 static MIDIEndpointRef EndpointWithUniqueID(SInt32 uniqueID);
 
 static MIDISpyPortConnection *GetPortConnection(MIDISpyPortRef spyPortRef, MIDIEndpointRef destinationEndpoint);

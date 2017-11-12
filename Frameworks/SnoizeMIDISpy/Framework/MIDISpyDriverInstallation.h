@@ -28,7 +28,7 @@ enum {
 };
 
 
-extern SInt32 MIDISpyInstallDriverIfNecessary();
+extern SInt32 MIDISpyInstallDriverIfNecessary(void);
 
 
 #if defined(__cplusplus)
