@@ -122,6 +122,20 @@
 			remoteGlobalIDString = A581997216AF687400325CF3;
 			remoteInfo = SnoizeMIDIOSX;
 		};
+		16E58EB61FB7C68400FDD31D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 161B71FF15D8E97C006E21D4 /* Sparkle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 726B2B5D1C645FC900388755;
+			remoteInfo = "UI Tests";
+		};
+		16E58EB81FB7C68400FDD31D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 161B71FF15D8E97C006E21D4 /* Sparkle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 722954B41D04ADAF00ECF9CA;
+			remoteInfo = fileop;
+		};
 		16F0332E0984B74B006C8A44 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */;
@@ -298,6 +312,8 @@
 				161B720C15D8E97D006E21D4 /* Sparkle Unit Tests.xctest */,
 				161B720E15D8E97D006E21D4 /* BinaryDelta */,
 				161B721015D8E97D006E21D4 /* Autoupdate.app */,
+				16E58EB71FB7C68400FDD31D /* UI Tests.xctest */,
+				16E58EB91FB7C68400FDD31D /* fileop */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -630,7 +646,7 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0910;
 			};
 			buildConfigurationList = 16F032BA0984B5DD006C8A44 /* Build configuration list for PBXProject "SysExLibrarian" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -709,6 +725,20 @@
 			fileType = archive.ar;
 			path = libSnoizeMIDI.a;
 			remoteRef = 1682E81A176EE3C400089623 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		16E58EB71FB7C68400FDD31D /* UI Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "UI Tests.xctest";
+			remoteRef = 16E58EB61FB7C68400FDD31D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		16E58EB91FB7C68400FDD31D /* fileop */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = fileop;
+			remoteRef = 16E58EB81FB7C68400FDD31D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		16F0332F0984B74B006C8A44 /* SnoizeMIDI.framework */ = {
@@ -971,6 +1001,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 16F033330984B760006C8A44 /* Snoize-Project-Debug.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				ENABLE_TESTABILITY = YES;
 				ONLY_ACTIVE_ARCH = YES;
 			};
@@ -980,6 +1018,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 16F033350984B760006C8A44 /* Snoize-Project-Release.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 			};
 			name = Release;
 		};

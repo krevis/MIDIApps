@@ -135,6 +135,20 @@
 			remoteGlobalIDString = 164103F309735FA6008DABCC;
 			remoteInfo = SnoizeMIDISpy.framework;
 		};
+		16E58EC71FB7C69200FDD31D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 161B71E015D8D76A006E21D4 /* Sparkle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 726B2B5D1C645FC900388755;
+			remoteInfo = "UI Tests";
+		};
+		16E58EC91FB7C69200FDD31D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 161B71E015D8D76A006E21D4 /* Sparkle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 722954B41D04ADAF00ECF9CA;
+			remoteInfo = fileop;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -266,6 +280,8 @@
 				161B71F315D8D76B006E21D4 /* Sparkle Unit Tests.xctest */,
 				161B71F515D8D76B006E21D4 /* BinaryDelta */,
 				161B71F715D8D76B006E21D4 /* Autoupdate.app */,
+				16E58EC81FB7C69200FDD31D /* UI Tests.xctest */,
+				16E58ECA1FB7C69200FDD31D /* fileop */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -470,7 +486,7 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0910;
 			};
 			buildConfigurationList = 16AF264E097B1EFB00BC87DC /* Build configuration list for PBXProject "MIDIMonitor" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -574,6 +590,20 @@
 			fileType = wrapper.framework;
 			path = SnoizeMIDISpy.framework;
 			remoteRef = 169E71B0097B242A001AFB58 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		16E58EC81FB7C69200FDD31D /* UI Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "UI Tests.xctest";
+			remoteRef = 16E58EC71FB7C69200FDD31D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		16E58ECA1FB7C69200FDD31D /* fileop */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = fileop;
+			remoteRef = 16E58EC91FB7C69200FDD31D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -757,6 +787,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 169E7116097B2021001AFB58 /* Snoize-Project-Release.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 			};
 			name = Release;
 		};
@@ -779,6 +817,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 169E7114097B2021001AFB58 /* Snoize-Project-Debug.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				ENABLE_TESTABILITY = YES;
 				ONLY_ACTIVE_ARCH = YES;
 			};
