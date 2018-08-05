@@ -58,7 +58,7 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
     nonretainedMainWindowController = mainWindowController;
     nonretainedLibrary = library;
 
-    if (![NSBundle loadNibNamed:@"Import" owner:self]) {
+    if (![[NSBundle mainBundle] loadNibNamed:@"Import" owner:self topLevelObjects:nil]) {
         [self release];
         return nil;
     }

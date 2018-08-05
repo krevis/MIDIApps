@@ -50,7 +50,7 @@
     nonretainedMainWindowController = mainWindowController;
     nonretainedMIDIController = midiController;
 
-    if (![NSBundle loadNibNamed:@"Play" owner:self]) {
+    if (![[NSBundle mainBundle] loadNibNamed:@"Play" owner:self topLevelObjects:nil]) {
         [self release];
         return nil;
     }

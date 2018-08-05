@@ -35,7 +35,7 @@
     nonretainedMainWindowController = mainWindowController;
     nonretainedMIDIController = midiController;
 
-    if (![NSBundle loadNibNamed:[self nibName] owner:self]) {
+    if (![[NSBundle mainBundle] loadNibNamed:[self nibName] owner:self topLevelObjects:nil]) {
         [self release];
         return nil;
     }

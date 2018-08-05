@@ -39,7 +39,7 @@ NSString *SSEShowWarningOnDeletePreferenceKey = @"SSEShowWarningOnDelete";
 
     nonretainedMainWindowController = mainWindowController;
 
-    if (![NSBundle loadNibNamed:@"Delete" owner:self]) {
+    if (![[NSBundle mainBundle] loadNibNamed:@"Delete" owner:self topLevelObjects:nil]) {
         [self release];
         return nil;
     }
