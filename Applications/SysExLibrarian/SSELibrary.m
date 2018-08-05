@@ -106,7 +106,11 @@ NSString *SSESysExFileExtension = @"syx";
     if (!libraryFilePath) {
         NSString *preferencesFolderPath;
 
-        preferencesFolderPath = [self findFolder:kPreferencesFolderType];
+        // TODO Should probably keep the library file in Application Support now.
+        // Use NSFileManager URLForDirectory:NSApplicationSupportDirectory, etc.
+        // We would have to look for a library in the old location, migrate it to the new location, and remove or rename the old one.
+        // There is no direct replacement for this, we aren't supposed to be directly accessing the preferences folder anymore.
+        preferencesFolderPath = nil; //[self findFolder:kPreferencesFolderType];
         // That shouldn't have failed, but let's be sure...
         if (!preferencesFolderPath) {
             NSArray *paths;
@@ -475,26 +479,6 @@ NSString *SSESysExFileExtension = @"syx";
 
 #pragma mark Private
 
-- (NSString *)findFolder:(OSType)folderType
-{
-    OSErr error;
-    FSRef folderFSRef;
-    NSString *path = nil;
-
-    error = FSFindFolder(kUserDomain, folderType, kCreateFolder, &folderFSRef);
-    if (error == noErr) {
-        CFURLRef url;
-
-        url = CFURLCreateFromFSRef(kCFAllocatorDefault, &folderFSRef);
-        if (url) {
-            path = [(NSString *)CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle) autorelease];
-            CFRelease(url);
-        }
-    }
-
-    return path;    
-}
-
 - (NSString *)resolveAliasesInPath:(NSString *)path
 {
     // NOTE This only works if all components in the path actually exist.
@@ -502,6 +486,7 @@ NSString *SSESysExFileExtension = @"syx";
     // If any errors occur, the original path will be returned.
     
     NSString *resolvedPath = nil;
+    /* TODO Figure out if we really need any of this. Sigh.
     CFURLRef url;
 
     url = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)path, kCFURLPOSIXPathStyle, false);
@@ -524,6 +509,7 @@ NSString *SSESysExFileExtension = @"syx";
 
         CFRelease(url);
     }
+     */
 
     if (!resolvedPath)
         resolvedPath = [path copy];
@@ -535,7 +521,8 @@ NSString *SSESysExFileExtension = @"syx";
 {
     NSString *documentsFolderPath;
 
-    documentsFolderPath = [self findFolder:kDocumentsFolderType];
+    // TODO as above, use NSFileManager now
+    documentsFolderPath = nil;//[self findFolder:kDocumentsFolderType];
     if (!documentsFolderPath) {
         // Fall back to hard-coding it
         documentsFolderPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
