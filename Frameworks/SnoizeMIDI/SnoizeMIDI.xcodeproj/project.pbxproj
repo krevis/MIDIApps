@@ -959,7 +959,6 @@
 		A53DDBA1148F4219006D2FFD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				DSTROOT = /tmp/SnoizeMIDIiOS.dst;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -990,7 +989,6 @@
 		A53DDBA2148F4219006D2FFD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DSTROOT = /tmp/SnoizeMIDIiOS.dst;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
