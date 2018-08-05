@@ -146,14 +146,27 @@ static NSThread *sMainThread = nil;
 
 - (IBAction)showAboutBox:(id)sender;
 {
-    NSMutableDictionary *optionsDictionary;
+    NSMutableDictionary *options = [[NSMutableDictionary alloc] init];
+    options[@"Version"] = @"";
 
-    optionsDictionary = [[NSMutableDictionary alloc] init];
-    [optionsDictionary setObject:@"" forKey:@"Version"];
+    // The RTF file Credits.rtf has foreground text color = black, but that's wrong for 10.14 dark mode.
+    // Similarly the font is not necessarily the systme font. Override both.
+    if (@available(macOS 10.13, *)) {
+        NSURL *creditsURL = [[NSBundle mainBundle] URLForResource:@"Credits" withExtension:@"rtf"];
+        if (creditsURL) {
+            NSMutableAttributedString *credits = [[NSMutableAttributedString alloc] initWithURL:creditsURL documentAttributes:NULL];
+            NSRange range = NSMakeRange(0, credits.length);
+            [credits addAttribute:NSFontAttributeName value:[NSFont labelFontOfSize:[NSFont labelFontSize]] range:range];
+            if (@available(macOS 10.14, *)) {
+                [credits addAttribute:NSForegroundColorAttributeName value:[NSColor labelColor] range:range];
+            }
+            options[NSAboutPanelOptionCredits] = credits;
+        }
+    }
 
-    [NSApp orderFrontStandardAboutPanelWithOptions:optionsDictionary];
+    [NSApp orderFrontStandardAboutPanelWithOptions:options];
 
-    [optionsDictionary release];
+    [options release];
 }
 
 - (IBAction)showHelp:(id)sender;

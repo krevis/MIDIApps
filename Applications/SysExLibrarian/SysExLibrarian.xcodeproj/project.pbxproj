@@ -32,7 +32,6 @@
 		16F033600984B76F006C8A44 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		16F033630984B76F006C8A44 /* docs.htmld in Resources */ = {isa = PBXBuildFile; fileRef = F5D90FE4021630C101000164 /* docs.htmld */; };
 		16F033640984B76F006C8A44 /* Details.nib in Resources */ = {isa = PBXBuildFile; fileRef = F5F52C15022015AC01000164 /* Details.nib */; };
-		16F033650984B76F006C8A44 /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = F5D90FD1021628DF01000164 /* Credits.html */; };
 		16F033660984B76F006C8A44 /* RecordOne.nib in Resources */ = {isa = PBXBuildFile; fileRef = F5308FE80232F9D401000164 /* RecordOne.nib */; };
 		16F033670984B76F006C8A44 /* RecordMany.nib in Resources */ = {isa = PBXBuildFile; fileRef = F5308FF10233059B01000164 /* RecordMany.nib */; };
 		16F033680984B76F006C8A44 /* Play.nib in Resources */ = {isa = PBXBuildFile; fileRef = F5308FFD023315AD01000164 /* Play.nib */; };
@@ -121,6 +120,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = A581997216AF687400325CF3;
 			remoteInfo = SnoizeMIDIOSX;
+		};
+		16E1F9F52116CF7E00CF9EC0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 161B71FF15D8E97C006E21D4 /* Sparkle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5AE13FB31E0D9E07000D2C2C;
+			remoteInfo = generate_appcast;
 		};
 		16E58EB61FB7C68400FDD31D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -260,7 +266,6 @@
 		F58752740214D73401000164 /* SSEValidatingButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEValidatingButton.h; sourceTree = "<group>"; };
 		F58752750214D73401000164 /* SSEValidatingButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEValidatingButton.m; sourceTree = "<group>"; };
 		F5C54B9C030C6F9D01000164 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SysExLibrarian.strings; sourceTree = "<group>"; };
-		F5D90FD2021628DF01000164 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = English; path = English.lproj/Credits.html; sourceTree = "<group>"; };
 		F5D90FE5021630C101000164 /* English */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = text.html; name = English; path = English.lproj/docs.htmld; sourceTree = "<group>"; };
 		F5DFAC8302F7715701000164 /* SSEExportController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEExportController.h; sourceTree = "<group>"; };
 		F5DFAC8402F7715701000164 /* SSEExportController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEExportController.m; sourceTree = "<group>"; };
@@ -314,6 +319,7 @@
 				161B721015D8E97D006E21D4 /* Autoupdate.app */,
 				16E58EB71FB7C68400FDD31D /* UI Tests.xctest */,
 				16E58EB91FB7C68400FDD31D /* fileop */,
+				16E1F9F62116CF7E00CF9EC0 /* generate_appcast */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -420,7 +426,6 @@
 				16F033940984B76F006C8A44 /* Info-SysExLibrarian.plist */,
 				F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
-				F5D90FD1021628DF01000164 /* Credits.html */,
 				F5308FEB0233012701000164 /* Icons */,
 				F587526F0214CEDD01000164 /* MainWindow.toolbar */,
 				F5308FEC0233012701000164 /* Toolbar Images */,
@@ -727,6 +732,13 @@
 			remoteRef = 1682E81A176EE3C400089623 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		16E1F9F62116CF7E00CF9EC0 /* generate_appcast */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = generate_appcast;
+			remoteRef = 16E1F9F52116CF7E00CF9EC0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		16E58EB71FB7C68400FDD31D /* UI Tests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
@@ -767,7 +779,6 @@
 				16F033600984B76F006C8A44 /* Credits.rtf in Resources */,
 				16F033630984B76F006C8A44 /* docs.htmld in Resources */,
 				16F033640984B76F006C8A44 /* Details.nib in Resources */,
-				16F033650984B76F006C8A44 /* Credits.html in Resources */,
 				16F033660984B76F006C8A44 /* RecordOne.nib in Resources */,
 				16F033670984B76F006C8A44 /* RecordMany.nib in Resources */,
 				16F033680984B76F006C8A44 /* Play.nib in Resources */,
@@ -938,14 +949,6 @@
 				F5C54B9C030C6F9D01000164 /* English */,
 			);
 			name = SysExLibrarian.strings;
-			sourceTree = "<group>";
-		};
-		F5D90FD1021628DF01000164 /* Credits.html */ = {
-			isa = PBXVariantGroup;
-			children = (
-				F5D90FD2021628DF01000164 /* English */,
-			);
-			name = Credits.html;
 			sourceTree = "<group>";
 		};
 		F5D90FE4021630C101000164 /* docs.htmld */ = {

@@ -116,7 +116,27 @@ NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNe
 
 - (IBAction)showAboutBox:(id)sender
 {
-    [[NSApplication sharedApplication] orderFrontStandardAboutPanelWithOptions: @{@"Version": @""}];
+    NSMutableDictionary *options = [[NSMutableDictionary alloc] init];
+    options[@"Version"] = @"";
+
+    // The RTF file Credits.rtf has foreground text color = black, but that's wrong for 10.14 dark mode.
+    // Similarly the font is not necessarily the systme font. Override both.
+    if (@available(macOS 10.13, *)) {
+        NSURL *creditsURL = [[NSBundle mainBundle] URLForResource:@"Credits" withExtension:@"rtf"];
+        if (creditsURL) {
+            NSMutableAttributedString *credits = [[NSMutableAttributedString alloc] initWithURL:creditsURL documentAttributes:NULL];
+            NSRange range = NSMakeRange(0, credits.length);
+            [credits addAttribute:NSFontAttributeName value:[NSFont labelFontOfSize:[NSFont labelFontSize]] range:range];
+            if (@available(macOS 10.14, *)) {
+                [credits addAttribute:NSForegroundColorAttributeName value:[NSColor labelColor] range:range];
+            }
+            options[NSAboutPanelOptionCredits] = credits;
+        }
+    }
+
+    [NSApp orderFrontStandardAboutPanelWithOptions:options];
+
+    [options release];
 }
 
 - (IBAction)showHelp:(id)sender
