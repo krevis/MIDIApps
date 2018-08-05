@@ -12,7 +12,6 @@
 
 #import "SSELibrary.h"
 
-#import <Carbon/Carbon.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
 #import "SSELibraryEntry.h"
