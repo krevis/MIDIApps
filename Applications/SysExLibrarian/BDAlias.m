@@ -39,6 +39,9 @@
 
 #import "BDAlias.h"
 
+// TODO Replace this horrible old stuff with NSURLBookmarks.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated"
 
 static Handle DataToHandle(CFDataRef inData);
 static CFDataRef HandleToData(Handle inHandle) CF_RETURNS_RETAINED;
@@ -321,3 +324,5 @@ static CFStringRef FSRefToPathCopy(const FSRef *inRef)
 }
 
 @end
+
+#pragma clang diagnostic pop
