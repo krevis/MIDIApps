@@ -13,6 +13,7 @@
 #if !defined(__SNOIZE_MIDISPYDRIVERINSTALLATION__)
 #define __SNOIZE_MIDISPYDRIVERINSTALLATION__ 1
 
+#include <AssertMacros.h>
 #include <CoreFoundation/CoreFoundation.h>
 
 #if defined(__cplusplus)

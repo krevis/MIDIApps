@@ -13,6 +13,7 @@
 #if !defined(__SNOIZE_MIDISPYCLIENT__)
 #define __SNOIZE_MIDISPYCLIENT__ 1
 
+#include <AssertMacros.h>
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreMIDI/CoreMIDI.h>
 
