@@ -12,7 +12,7 @@
 
 #include "MIDISpyDriverInstallation.h"
 
-#include "FSCopyObject.h"
+#import <Foundation/Foundation.h>
 
 //
 // Constant string declarations and definitions
@@ -177,59 +177,66 @@ static Boolean FindInstalledDriver(CFURLRef *urlPtr, UInt32 *versionPtr)
 }
 
 
+static NSURL *UserMIDIDriversURL(void) {
+    NSError *error = nil;
+    NSURL *libraryURL = [[NSFileManager defaultManager] URLForDirectory:NSLibraryDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:&error];
+    if (!libraryURL || error) {
+        return nil;
+    }
+
+    // concatenate Audio/MIDI Drivers
+    NSURL *folderURL = [[libraryURL URLByAppendingPathComponent:@"Audio" isDirectory:YES] URLByAppendingPathComponent:@"MIDI Drivers" isDirectory:YES];
+    return folderURL;
+}
+
+
 static void CreateBundlesForDriversInDomain(short findFolderDomain, CFMutableArrayRef createdBundles)
 {
-    FSRef folderFSRef;
-    CFURLRef folderURL;
-    CFArrayRef newBundles;
-    CFIndex newBundlesCount;
-
-    if (FSFindFolder(findFolderDomain, kMIDIDriversFolderType, kDontCreateFolder, &folderFSRef) != noErr)
+    NSURL *folderURL = UserMIDIDriversURL();
+    if (!folderURL) {
         return;
+    }
 
-    folderURL = CFURLCreateFromFSRef(kCFAllocatorDefault, &folderFSRef);
-
-    newBundles = CFBundleCreateBundlesFromDirectory(kCFAllocatorDefault, folderURL, NULL);
+    CFArrayRef newBundles = CFBundleCreateBundlesFromDirectory(kCFAllocatorDefault, (__bridge CFURLRef)folderURL, NULL);
     if (newBundles) {
-        if ((newBundlesCount = CFArrayGetCount(newBundles))) {
+        CFIndex newBundlesCount = CFArrayGetCount(newBundles);
+        if (newBundlesCount > 0) {
             CFArrayAppendArray(createdBundles, newBundles, CFRangeMake(0, newBundlesCount));
         }
         CFRelease(newBundles);
     }
-
-    CFRelease(folderURL);
 }
 
 
 static Boolean RemoveInstalledDriver(CFURLRef driverURL)
 {
-    FSRef driverFSRef;
-
-    if (!CFURLGetFSRef(driverURL, &driverFSRef))
-        return FALSE;
-    else
-        return (noErr == FSDeleteObjects(&driverFSRef));
+    return [[NSFileManager defaultManager] removeItemAtURL:(__bridge NSURL *)driverURL error:nil];
 }
 
 
 static Boolean InstallDriver(CFURLRef ourDriverURL)
 {
-    OSErr error;
-    FSRef folderFSRef;
-    Boolean success = FALSE;
-
-    // Find the MIDI Drivers directory for the current user. If it doesn't exist, create it.
-    error = FSFindFolder(kUserDomain, kMIDIDriversFolderType, kCreateFolder, &folderFSRef);
-    if (error != noErr) {
-        __Debug_String("MIDISpy: FSFindFolder(kUserDomain, kMIDIDriversFolderType, kCreateFolder) returned error");
-    } else {
-        FSRef driverFSRef;
-
-        if (CFURLGetFSRef(ourDriverURL, &driverFSRef)) {
-            error = FSCopyObjectSync(&driverFSRef, &folderFSRef, NULL, NULL, kFSFileOperationDefaultOptions);
-            success = (error == noErr);
-        }
+    NSString *driverName = [(__bridge NSURL *)ourDriverURL lastPathComponent];
+    if (!driverName) {
+        return FALSE;
     }
- 
-    return success;
+
+    NSURL *folderURL = UserMIDIDriversURL();
+    if (!folderURL) {
+        __Debug_String("MIDISpy: Couldn't get URL to ~/Library/Audio/MIDI Drivers");
+        return FALSE;
+    }
+
+    BOOL directoryCreatedOrExists = [[NSFileManager defaultManager] createDirectoryAtURL:folderURL withIntermediateDirectories:YES attributes:nil error:nil];
+    if (!directoryCreatedOrExists) {
+        __Debug_String("MIDISpy: ~/Library/Audio/MIDI Drivers did not exist and couldn't be created");
+        return FALSE;
+    }
+
+    NSURL *copiedDriverURL = [folderURL URLByAppendingPathComponent:driverName];
+    if (!copiedDriverURL) {
+        return FALSE;
+    }
+
+    return [[NSFileManager defaultManager] copyItemAtURL:(__bridge NSURL *)ourDriverURL toURL:copiedDriverURL error:nil];
 }
