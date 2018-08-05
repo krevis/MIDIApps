@@ -16,6 +16,7 @@
 
 @interface SSEDeleteController : NSObject
 {
+    NSArray *topLevelObjects;
     IBOutlet NSPanel *deleteWarningSheetWindow;
     IBOutlet NSButton *doNotWarnOnDeleteAgainCheckbox;
     IBOutlet NSPanel *deleteLibraryFilesWarningSheetWindow;

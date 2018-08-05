@@ -18,6 +18,7 @@
 
 @interface SSERecordController : NSObject
 {
+    NSArray* topLevelObjects;
     IBOutlet NSPanel *sheetWindow;
     IBOutlet NSProgressIndicator *progressIndicator;
     IBOutlet NSTextField *progressMessageField;

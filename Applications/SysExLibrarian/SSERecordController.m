@@ -35,10 +35,11 @@
     nonretainedMainWindowController = mainWindowController;
     nonretainedMIDIController = midiController;
 
-    if (![[NSBundle mainBundle] loadNibNamed:[self nibName] owner:self topLevelObjects:nil]) {
+    if (![[NSBundle mainBundle] loadNibNamed:[self nibName] owner:self topLevelObjects:&topLevelObjects]) {
         [self release];
         return nil;
     }
+    [topLevelObjects retain];
     
     return self;
 }
@@ -47,10 +48,8 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
-    // Top-level nib objects
-    [sheetWindow release];
-    sheetWindow = nil;
-        
+    [topLevelObjects release];
+
     [super dealloc];
 }
 

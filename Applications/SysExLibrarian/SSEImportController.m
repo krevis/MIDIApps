@@ -58,10 +58,11 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
     nonretainedMainWindowController = mainWindowController;
     nonretainedLibrary = library;
 
-    if (![[NSBundle mainBundle] loadNibNamed:@"Import" owner:self topLevelObjects:nil]) {
+    if (![[NSBundle mainBundle] loadNibNamed:@"Import" owner:self topLevelObjects:&topLevelObjects]) {
         [self release];
         return nil;
     }
+    [topLevelObjects retain];
 
     importStatusLock = [[NSLock alloc] init];
 
@@ -70,12 +71,8 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
 
 - (void)dealloc;
 {
-    // Top-level nib objects
-    [importSheetWindow release];
-    importSheetWindow = nil;
-    [importWarningSheetWindow release];
-    importWarningSheetWindow = nil;
-    
+    [topLevelObjects release];
+
     [filePathsToImport release];
     filePathsToImport = nil;
     [importStatusLock release];

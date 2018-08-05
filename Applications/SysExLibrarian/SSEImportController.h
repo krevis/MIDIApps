@@ -17,6 +17,7 @@
 
 @interface SSEImportController : NSObject
 {
+    NSArray *topLevelObjects;
     IBOutlet NSPanel *importSheetWindow;
     IBOutlet NSProgressIndicator *progressIndicator;
     IBOutlet NSTextField *progressMessageField;

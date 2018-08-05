@@ -39,21 +39,18 @@ NSString *SSEShowWarningOnDeletePreferenceKey = @"SSEShowWarningOnDelete";
 
     nonretainedMainWindowController = mainWindowController;
 
-    if (![[NSBundle mainBundle] loadNibNamed:@"Delete" owner:self topLevelObjects:nil]) {
+    if (![[NSBundle mainBundle] loadNibNamed:@"Delete" owner:self topLevelObjects:&topLevelObjects]) {
         [self release];
         return nil;
     }
+    [topLevelObjects retain];
     
     return self;
 }
 
 - (void)dealloc;
 {
-    // Top-level nib objects
-    [deleteWarningSheetWindow release];
-    deleteWarningSheetWindow = nil;
-    [deleteLibraryFilesWarningSheetWindow release];
-    deleteLibraryFilesWarningSheetWindow = nil;
+    [topLevelObjects release];
     
     [entriesToDelete release];
     entriesToDelete = nil;
