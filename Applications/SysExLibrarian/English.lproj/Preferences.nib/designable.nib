@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.3.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <development version="6300" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.3.2"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SSEPreferencesWindowController">
@@ -98,7 +98,7 @@
                                         <box boxType="secondary" borderType="bezel" titlePosition="noTitle" id="329">
                                             <rect key="frame" x="17" y="297" width="283" height="47"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <view key="contentView">
+                                            <view key="contentView" id="zA0-eS-JzU">
                                                 <rect key="frame" x="3" y="3" width="277" height="41"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
@@ -113,8 +113,6 @@
                                                     </textField>
                                                 </subviews>
                                             </view>
-                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <font key="titleFont" metaFont="message"/>
                                         </box>
                                         <textField verticalHuggingPriority="750" id="332">
@@ -380,13 +378,12 @@
                                                         </connections>
                                                     </tableView>
                                                 </subviews>
-                                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </clipView>
-                                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="300438">
+                                            <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="300438">
                                                 <rect key="frame" x="1" y="-30" width="393" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
-                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="300440">
+                                            <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="300440">
                                                 <rect key="frame" x="-30" y="17" width="15" height="213"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
@@ -437,7 +434,7 @@
                             <tabViewItem label="Program Change" identifier="programChange" id="300365">
                                 <view key="view" id="300366">
                                     <rect key="frame" x="10" y="33" width="427" height="371"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button id="300367">
                                             <rect key="frame" x="15" y="241" width="397" height="18"/>
@@ -462,7 +459,7 @@
                                             </connections>
                                         </button>
                                         <textField verticalHuggingPriority="750" id="300371">
-                                            <rect key="frame" x="32" y="286" width="381" height="39"/>
+                                            <rect key="frame" x="32" y="265" width="364" height="63"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="300435">
                                                 <font key="font" metaFont="system" size="10"/>
@@ -472,7 +469,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="300373">
-                                            <rect key="frame" x="32" y="196" width="381" height="39"/>
+                                            <rect key="frame" x="32" y="188" width="381" height="47"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="When a Program Change event is received, SysEx Librarian will cancel any SysEx send currently in progress." id="300436">
                                                 <font key="font" metaFont="system" size="10"/>
@@ -531,6 +528,7 @@
             <connections>
                 <outlet property="delegate" destination="-2" id="385"/>
             </connections>
+            <point key="canvasLocation" x="138.5" y="146.5"/>
         </window>
         <customObject id="368" userLabel="SSESysExSpeedController" customClass="SSESysExSpeedController">
             <connections>
