@@ -107,81 +107,65 @@ NSString* const SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreference
 - (IBAction)changeTimeFormat:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey:SMTimeFormatPreferenceKey];
-    [self synchronizeDefaults];
     [self sendDisplayPreferenceChangedNotification];
 }
 
 - (IBAction)changeNoteFormat:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey:SMNoteFormatPreferenceKey];
-    [self synchronizeDefaults];
     [self sendDisplayPreferenceChangedNotification];
 }
  
 - (IBAction)changeControllerFormat:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey: SMControllerFormatPreferenceKey];
-    [self synchronizeDefaults];
     [self sendDisplayPreferenceChangedNotification];
 }
 
 - (IBAction)changeDataFormat:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey:SMDataFormatPreferenceKey];
-    [self synchronizeDefaults];
     [self sendDisplayPreferenceChangedNotification];
 }
 
 - (IBAction)changeAutoSelectOrdinarySources:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey];
-    [self synchronizeDefaults];
 }
 
 - (IBAction)changeAutoSelectVirtualDestination:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey];
-    [self synchronizeDefaults];
 }
 
 - (IBAction)changeAutoSelectSpyingDestinations:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey];
-    [self synchronizeDefaults];
 }
 
 - (IBAction)changeOpenWindowsForNewSources:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMMOpenWindowsForNewSourcesPreferenceKey];
-    [self synchronizeDefaults];
 }
 
 - (IBAction)changeAskBeforeClosingModifiedWindow:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMMAskBeforeClosingModifiedWindowPreferenceKey];
-    [self synchronizeDefaults];
 }
 
 - (IBAction)changeAlwaysSaveSysExWithEOX:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey: SMMSaveSysExWithEOXAlwaysPreferenceKey];
-    [self synchronizeDefaults];
 }
 
 - (IBAction)changeExpertMode:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey:SMExpertModePreferenceKey];
-    [self synchronizeDefaults];
     [self updateExpertModeTextField];
     [self sendDisplayPreferenceChangedNotification];
 }
 
 #pragma mark Private
-
-- (void)synchronizeDefaults
-{
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
 
 - (void)sendDisplayPreferenceChangedNotification
 {

@@ -129,7 +129,6 @@ NSString *SSEListenForProgramChangesPreferenceChangedNotification = @"SSEListenF
 - (IBAction)changeSizeFormat:(id)sender
 {
     [[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey:SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey];
-    [self synchronizeDefaults];
     [[NSNotificationCenter defaultCenter] postNotificationName:SSEDisplayPreferenceChangedNotification object:nil];
 }
 
@@ -152,7 +151,6 @@ NSString *SSEListenForProgramChangesPreferenceChangedNotification = @"SSEListenF
 {
     [[NSUserDefaults standardUserDefaults] setInteger:[sender intValue] forKey:SSESysExReadTimeOutPreferenceKey];
     [self synchronizeReadTimeOutField];
-    [self synchronizeDefaults];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:SSESysExReceivePreferenceChangedNotification object:nil];
 }
@@ -161,7 +159,6 @@ NSString *SSEListenForProgramChangesPreferenceChangedNotification = @"SSEListenF
 {
     [[NSUserDefaults standardUserDefaults] setInteger:[sender intValue] forKey:SSESysExIntervalBetweenSentMessagesPreferenceKey];
     [self synchronizeIntervalBetweenSentMessagesField];
-    [self synchronizeDefaults];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:SSESysExSendPreferenceChangedNotification object:nil];
 }
@@ -169,7 +166,6 @@ NSString *SSEListenForProgramChangesPreferenceChangedNotification = @"SSEListenF
 - (IBAction)listenForProgramChanges:(id)sender
 {
     [[NSUserDefaults standardUserDefaults] setBool:([sender intValue] ? YES : NO) forKey:SSEListenForProgramChangesPreferenceKey];
-    [self synchronizeDefaults];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:SSEListenForProgramChangesPreferenceChangedNotification object:nil];
 }
@@ -177,17 +173,11 @@ NSString *SSEListenForProgramChangesPreferenceChangedNotification = @"SSEListenF
 - (IBAction)interruptOnProgramChange:(id)sender
 {
     [[NSUserDefaults standardUserDefaults] setBool:([sender intValue] ? YES : NO) forKey:SSEInterruptOnProgramChangePreferenceKey];
-    [self synchronizeDefaults];    
     // no need for a notification to be posted; relevant code looks up this value each time
 }
 
 
 #pragma mark Private
-
-- (void)synchronizeDefaults
-{
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
 
 - (void)synchronizeControls
 {
@@ -235,7 +225,6 @@ NSString *SSEListenForProgramChangesPreferenceChangedNotification = @"SSEListenF
         if ([[sheet URLs] count] == 1) {
             NSURL* url = [[sheet URLs] objectAtIndex:0];
             [[SSELibrary sharedLibrary] setFileDirectoryPath:[url path]];
-            [self synchronizeDefaults];
             [self synchronizeControls];
         }
     }

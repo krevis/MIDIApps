@@ -228,7 +228,6 @@
     // Sometimes we get called before the window's autosave name is set (when the nib is loading), so check that.
     if ((autosaveName = [window frameAutosaveName])) {
         [window saveFrameUsingName:autosaveName];
-        [[NSUserDefaults standardUserDefaults] synchronize];
     }
 }
 

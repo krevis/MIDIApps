@@ -79,7 +79,6 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
         if (![ud boolForKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey]) {
             [ud setBool:NO forKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey];
             [ud setBool:YES forKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey];
-            [ud synchronize];
         }
 
         [self autoselectSources];
