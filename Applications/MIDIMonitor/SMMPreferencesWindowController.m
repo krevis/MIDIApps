@@ -29,6 +29,7 @@ NSString* const SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreference
 @property (nonatomic, assign) IBOutlet NSMatrix *noteFormatMatrix;
 @property (nonatomic, assign) IBOutlet NSMatrix *controllerFormatMatrix;
 @property (nonatomic, assign) IBOutlet NSMatrix *dataFormatMatrix;
+@property (nonatomic, assign) IBOutlet NSMatrix *programChangeBaseIndexMatrix;
 @property (nonatomic, assign) IBOutlet NSButton *autoSelectOrdinarySourcesCheckbox;
 @property (nonatomic, assign) IBOutlet NSButton *autoSelectVirtualDestinationCheckbox;
 @property (nonatomic, assign) IBOutlet NSButton *autoSelectSpyingDestinationsCheckbox;
@@ -86,6 +87,7 @@ NSString* const SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreference
     [self.noteFormatMatrix selectCellWithTag:[defaults integerForKey: SMNoteFormatPreferenceKey]];
     [self.controllerFormatMatrix selectCellWithTag:[defaults integerForKey: SMControllerFormatPreferenceKey]];
 	[self.dataFormatMatrix selectCellWithTag:[defaults integerForKey: SMDataFormatPreferenceKey]];
+    [self.programChangeBaseIndexMatrix selectCellWithTag:[defaults integerForKey: SMProgramChangeBaseIndexPreferenceKey]];
 
     [self.expertModeCheckbox setIntValue:[defaults boolForKey:SMExpertModePreferenceKey]];
     [self updateExpertModeTextField];
@@ -162,6 +164,12 @@ NSString* const SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreference
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey:SMExpertModePreferenceKey];
     [self updateExpertModeTextField];
+    [self sendDisplayPreferenceChangedNotification];
+}
+
+- (IBAction)changeProgramChangeBaseIndex:(id)sender
+{
+    [[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey:SMProgramChangeBaseIndexPreferenceKey];
     [self sendDisplayPreferenceChangedNotification];
 }
 

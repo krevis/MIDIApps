@@ -92,6 +92,7 @@ extern NSString *SMControllerFormatPreferenceKey;
 extern NSString *SMDataFormatPreferenceKey;
 extern NSString *SMTimeFormatPreferenceKey;
 extern NSString *SMExpertModePreferenceKey;
+extern NSString *SMProgramChangeBaseIndexPreferenceKey;
 
 @interface SMMessage : NSObject <NSCopying, NSCoding>
 {
@@ -107,6 +108,7 @@ extern NSString *SMExpertModePreferenceKey;
 + (NSString *)formatControllerNumber:(Byte)controllerNumber;
 + (NSString *)formatControllerNumber:(Byte)controllerNumber usingOption:(SMControllerFormattingOption)option;
 + (NSString *)nameForControllerNumber:(Byte)controllerNumber;
++ (NSString *)formatProgramNumber:(Byte)programNumber;
 + (NSString *)formatData:(NSData *)data;
 + (NSString *)formatDataBytes:(const Byte *)bytes length:(NSUInteger)length;
 + (NSString *)formatDataByte:(Byte)dataByte;

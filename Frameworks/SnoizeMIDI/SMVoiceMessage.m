@@ -188,6 +188,9 @@ fail:
             break;
             
         case SMVoiceMessageStatusProgram:
+            part1 = [SMMessage formatProgramNumber:dataBytes[0]];
+            break;
+
         case SMVoiceMessageStatusChannelPressure:
             // Use super's implementation
             break;

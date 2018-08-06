@@ -36,6 +36,7 @@ NSString *SMControllerFormatPreferenceKey = @"SMControllerFormat";
 NSString *SMDataFormatPreferenceKey = @"SMDataFormat";
 NSString *SMTimeFormatPreferenceKey = @"SMTimeFormat";
 NSString *SMExpertModePreferenceKey = @"SMExpertMode";
+NSString *SMProgramChangeBaseIndexPreferenceKey = @"SMProgramChangeBaseIndex";
 
 + (NSString *)formatNoteNumber:(Byte)noteNumber;
 {
@@ -122,6 +123,20 @@ NSString *SMExpertModePreferenceKey = @"SMExpertMode";
     }
 
     return [controllerNames objectAtIndex:controllerNumber];
+}
+
++ (NSString *)formatProgramNumber:(Byte)programNumber
+{
+    switch ((SMDataFormattingOption)[[NSUserDefaults standardUserDefaults] integerForKey:SMDataFormatPreferenceKey]) {
+        case SMDataFormatDecimal:
+        default: {
+            NSInteger baseIndex = [[NSUserDefaults standardUserDefaults] integerForKey:SMProgramChangeBaseIndexPreferenceKey];
+            return [NSString stringWithFormat:@"%ld", baseIndex + programNumber];
+        }
+
+        case SMDataFormatHexadecimal:
+            return [NSString stringWithFormat:@"$%02X", programNumber];
+    }
 }
 
 + (NSString *)formatData:(NSData *)data;

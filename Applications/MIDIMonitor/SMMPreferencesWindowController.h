@@ -21,6 +21,7 @@
 - (IBAction)changeNoteFormat:(id)sender;
 - (IBAction)changeControllerFormat:(id)sender;
 - (IBAction)changeDataFormat:(id)sender;
+- (IBAction)changeProgramChangeBaseIndex:(id)sender;
 - (IBAction)changeAutoSelectOrdinarySources:(id)sender;
 - (IBAction)changeAutoSelectVirtualDestination:(id)sender;
 - (IBAction)changeAutoSelectSpyingDestinations:(id)sender;

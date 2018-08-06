@@ -26,5 +26,7 @@
 	<integer>1</integer>
 	<key>SMExpertMode</key>
 	<false/>
+	<key>SMProgramChangeBaseIndex</key>
+	<integer>1</integer>
 </dict>
 </plist>
