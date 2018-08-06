@@ -10,6 +10,7 @@
             <connections>
                 <outlet property="interruptOnProgramChangeButton" destination="300367" id="300409"/>
                 <outlet property="listenForProgramChangesButton" destination="300368" id="300410"/>
+                <outlet property="programChangeBaseIndexMatrix" destination="Lgo-tg-VNj" id="m4A-FP-OWF"/>
                 <outlet property="sizeFormatMatrix" destination="323" id="375"/>
                 <outlet property="sysExFolderPathField" destination="331" id="376"/>
                 <outlet property="sysExIntervalBetweenSentMessagesField" destination="347" id="377"/>
@@ -379,11 +380,11 @@
                                                     </tableView>
                                                 </subviews>
                                             </clipView>
-                                            <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="300438">
+                                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="300438">
                                                 <rect key="frame" x="1" y="-30" width="393" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
-                                            <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="300440">
+                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="300440">
                                                 <rect key="frame" x="-30" y="17" width="15" height="213"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
@@ -463,7 +464,8 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="300435">
                                                 <font key="font" metaFont="system" size="10"/>
-                                                <string key="title">When checked, you may use another app to send MIDI Program Change events to SysEx Librarian. It will find the first SysEx file in the list with that program number and immediately send it.</string>
+                                                <string key="title">When checked, you may use another app to send MIDI Program Change events to SysEx Librarian. It will find the first SysEx file in the list with that program number and immediately send it.
+(Set the program number by clicking in the "Prog#" column of the file.)</string>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
@@ -473,6 +475,41 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="When a Program Change event is received, SysEx Librarian will cancel any SysEx send currently in progress." id="300436">
                                                 <font key="font" metaFont="system" size="10"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="Lgo-tg-VNj">
+                                            <rect key="frame" x="179" y="151" width="215" height="38"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            <size key="cellSize" width="215" height="18"/>
+                                            <size key="intercellSpacing" width="4" height="2"/>
+                                            <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="Uhn-sY-kOf">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <cells>
+                                                <column>
+                                                    <buttonCell type="radio" title="1 - 128 (Standard)" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="6Zk-DJ-b7i">
+                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <buttonCell type="radio" title="0 - 127 (Less common)" imagePosition="left" alignment="left" inset="2" id="bkM-qa-VdD">
+                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                </column>
+                                            </cells>
+                                            <connections>
+                                                <action selector="programChangeBaseIndex:" target="-2" id="OOP-H0-EmB"/>
+                                            </connections>
+                                        </matrix>
+                                        <textField verticalHuggingPriority="750" id="N1a-hb-rV5">
+                                            <rect key="frame" x="15" y="172" width="158" height="17"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Show program change as" id="MEG-vB-429">
+                                                <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>

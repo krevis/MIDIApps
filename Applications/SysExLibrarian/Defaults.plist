@@ -6,6 +6,8 @@
 	<false/>
 	<key>SSEInterruptOnProgramChange</key>
 	<true/>
+	<key>SSEProgramChangeBaseIndex</key>
+	<integer>1</integer>
 	<key>SMControllerFormat</key>
 	<integer>2</integer>
 	<key>SMNoteFormat</key>

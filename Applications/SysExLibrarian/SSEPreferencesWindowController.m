@@ -29,6 +29,7 @@
     IBOutlet NSTabView *tabView;
 	IBOutlet NSButton *listenForProgramChangesButton;
 	IBOutlet NSButton *interruptOnProgramChangeButton;
+    IBOutlet NSMatrix *programChangeBaseIndexMatrix;
     IBOutlet SSESysExSpeedController *sysExSpeedController;
 
     struct {
@@ -176,6 +177,13 @@ NSString *SSEListenForProgramChangesPreferenceChangedNotification = @"SSEListenF
     // no need for a notification to be posted; relevant code looks up this value each time
 }
 
+- (IBAction)programChangeBaseIndex:(id)sender
+{
+    [[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey:SSEProgramChangeBaseIndexPreferenceKey];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:SSEProgramChangeBaseIndexPreferenceChangedNotification object:nil];
+}
+
 
 #pragma mark Private
 
@@ -188,6 +196,7 @@ NSString *SSEListenForProgramChangesPreferenceChangedNotification = @"SSEListenF
     [sysExReadTimeOutSlider setIntegerValue:[defaults integerForKey:SSESysExReadTimeOutPreferenceKey]];
 	[listenForProgramChangesButton setIntValue:[defaults boolForKey:SSEListenForProgramChangesPreferenceKey]];
     [interruptOnProgramChangeButton setIntValue:[defaults boolForKey:SSEInterruptOnProgramChangePreferenceKey]];
+    [programChangeBaseIndexMatrix selectCellWithTag:[defaults integerForKey:SSEProgramChangeBaseIndexPreferenceKey]];
     [self synchronizeReadTimeOutField];
     [sysExIntervalBetweenSentMessagesSlider setIntegerValue:[defaults integerForKey: SSESysExIntervalBetweenSentMessagesPreferenceKey]];
     [self synchronizeIntervalBetweenSentMessagesField];

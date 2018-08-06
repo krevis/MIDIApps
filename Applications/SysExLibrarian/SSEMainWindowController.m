@@ -41,6 +41,8 @@
 
 - (void)displayPreferencesDidChange:(NSNotification *)notification;
 - (void)listenForProgramChangesDidChange:(NSNotification *)notification;
+- (void)programChangeBaseIndexDidChange:(NSNotification *)notification;
+- (void)updateProgramChangeTableColumnFormatter;
 
 - (BOOL)finishEditingResultsInError;
 
@@ -92,7 +94,8 @@ static SSEMainWindowController *controller = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(libraryDidChange:) name:SSELibraryDidChangeNotification object:library];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayPreferencesDidChange:) name:SSEDisplayPreferenceChangedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(listenForProgramChangesDidChange:) name:SSEListenForProgramChangesPreferenceChangedNotification object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(programChangeBaseIndexDidChange:) name:SSEProgramChangeBaseIndexPreferenceChangedNotification object:nil];
+
     sortColumnIdentifier = @"name";
     isSortAscending = YES;
 
@@ -155,6 +158,7 @@ static SSEMainWindowController *controller = nil;
     midiController = [[SSEMIDIController alloc] initWithWindowController:self];
 	
     [programChangeTableColumn retain];  // extra retain in case we remove it from the table view
+    [self updateProgramChangeTableColumnFormatter];
 	[self listenForProgramChangesDidChange:nil];
 }
 
@@ -567,7 +571,14 @@ static SSEMainWindowController *controller = nil;
     } else if ([identifier isEqualToString:@"messageCount"]) {
         return [entry messageCount];
 	} else if ([identifier isEqualToString:@"programNumber"]) {
-        return [entry programNumber];
+        NSNumber *programNumber = [entry programNumber];
+        if (programNumber) {
+            NSInteger offset = [[NSUserDefaults standardUserDefaults] integerForKey:SSEProgramChangeBaseIndexPreferenceKey];
+            return @( [programNumber integerValue] + offset );
+        }
+        else {
+            return nil;
+        }
     } else {
         return nil;
     }
@@ -595,9 +606,13 @@ static SSEMainWindowController *controller = nil;
     } else if ([identifier isEqualToString:@"programNumber"]) {
         NSNumber* newProgramNumber = nil;
 		if (object) {
-            int intValue = [object intValue];
+            NSInteger intValue = [object integerValue];
+
+            NSInteger baseIndex = [[NSUserDefaults standardUserDefaults] integerForKey:SSEProgramChangeBaseIndexPreferenceKey];
+            intValue -= baseIndex;
+
             if (intValue >= 0 && intValue <= 127) {
-                newProgramNumber = [NSNumber numberWithUnsignedInt:intValue];
+                newProgramNumber = @(intValue);
             }
         }
         [entry setProgramNumber:newProgramNumber];
@@ -709,6 +724,20 @@ static SSEMainWindowController *controller = nil;
             [nameCol setWidth:[nameCol width] + [programChangeTableColumn width] + 3];
         }
     }
+}
+
+- (void)programChangeBaseIndexDidChange:(NSNotification *)notification
+{
+    [self updateProgramChangeTableColumnFormatter];
+    [libraryTableView reloadData];
+}
+
+- (void)updateProgramChangeTableColumnFormatter
+{
+    NSNumberFormatter *formatter = ((NSCell *)programChangeTableColumn.dataCell).formatter;
+    NSInteger baseIndex = [[NSUserDefaults standardUserDefaults] integerForKey:SSEProgramChangeBaseIndexPreferenceKey];
+    formatter.minimum = @(baseIndex + 0  );
+    formatter.maximum = @(baseIndex + 127);
 }
 
 - (BOOL)finishEditingResultsInError;

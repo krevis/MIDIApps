@@ -34,13 +34,13 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" rowHeight="14" headerView="300054" id="21" customClass="SSETableView">
-                                    <rect key="frame" x="0.0" y="0.0" width="456" height="224"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="450" height="224"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
-                                        <tableColumn identifier="name" width="199" minWidth="65.458999633789062" maxWidth="1000" id="20">
+                                        <tableColumn identifier="name" width="193" minWidth="65.458999633789062" maxWidth="1000" id="20">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="SysEx File">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -118,16 +118,16 @@
                                 </tableView>
                             </subviews>
                         </clipView>
-                        <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="300053">
+                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="300053">
                             <rect key="frame" x="-100" y="-100" width="425" height="15"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="300055">
+                        <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="300055">
                             <rect key="frame" x="435" y="17" width="16" height="224"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <tableHeaderView key="headerView" id="300054">
-                            <rect key="frame" x="0.0" y="0.0" width="456" height="17"/>
+                            <rect key="frame" x="0.0" y="0.0" width="450" height="17"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
                         <connections>

@@ -27,7 +27,7 @@
     NSString *manufacturer;
     NSNumber *sizeNumber;
     NSNumber *messageCountNumber;
-	NSNumber *programNumber;
+	NSNumber *programNumber;    // 0 - 127
 	
     struct {
         unsigned int isFilePresent:1;
