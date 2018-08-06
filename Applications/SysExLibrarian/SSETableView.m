@@ -126,18 +126,6 @@
     }
 }
 
-/* TODO Evaluate if still need this
-- (void)mouseDown:(NSEvent *)event;
-{
-    // Workaround for bug where triple-click aborts double-click's edit session instead of selecting all of the text in the column to be edited
-
-    if ([event clickCount] < 3)
-        [super mouseDown:event];
-    else if (_editingCell)
-        [[[self window] firstResponder] selectAll:nil];
-}
-*/
-
 - (void)drawRect:(NSRect)rect;
 {
     [super drawRect:rect];
