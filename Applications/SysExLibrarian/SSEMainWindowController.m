@@ -657,7 +657,23 @@ static SSEMainWindowController *controller = nil;
     NSColor *color;
     
     entry = [sortedLibraryEntries objectAtIndex:row];
-    color = [entry isFilePresent] ? [NSColor blackColor] : [NSColor redColor];
+    if ([entry isFilePresent]) {
+        if (@available(macOS 10.14, *)) {
+            color = [NSColor labelColor];
+        }
+        else {
+            color = [NSColor blackColor];
+        }
+    }
+    else {
+        if (@available(macOS 10.14, *)) {
+            color = [NSColor systemRedColor];
+        }
+        else {
+            color = [NSColor redColor];
+        }
+    }
+
     [cell setTextColor:color];
 }
 
