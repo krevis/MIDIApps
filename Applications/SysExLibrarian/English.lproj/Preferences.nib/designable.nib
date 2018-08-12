@@ -137,7 +137,7 @@
                                             </connections>
                                         </button>
                                         <slider verticalHuggingPriority="750" id="334">
-                                            <rect key="frame" x="107" y="84" width="296" height="25"/>
+                                            <rect key="frame" x="14" y="84" width="389" height="25"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <sliderCell key="cell" continuous="YES" alignment="left" minValue="250" maxValue="1000" doubleValue="1000" tickMarkPosition="below" numberOfTickMarks="4" sliderType="linear" id="300418">
                                                 <font key="font" size="12" name="Helvetica"/>
@@ -165,7 +165,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="337">
-                                            <rect key="frame" x="90" y="69" width="52" height="13"/>
+                                            <rect key="frame" x="15" y="69" width="52" height="13"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="250 msec" id="300421">
                                                 <font key="font" metaFont="label"/>
@@ -183,67 +183,19 @@
                                             </textFieldCell>
                                         </textField>
                                         <slider verticalHuggingPriority="750" id="339">
-                                            <rect key="frame" x="15" y="168" width="388" height="25"/>
+                                            <rect key="frame" x="15" y="168" width="388" height="24"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <sliderCell key="cell" continuous="YES" alignment="left" maxValue="1000" doubleValue="199.18700000000001" tickMarkPosition="below" numberOfTickMarks="5" sliderType="linear" id="300423">
+                                            <sliderCell key="cell" continuous="YES" alignment="left" maxValue="5000" doubleValue="150" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="300423">
                                                 <font key="font" size="12" name="Helvetica"/>
                                             </sliderCell>
                                             <connections>
                                                 <action selector="changeIntervalBetweenSentMessages:" target="-2" id="387"/>
                                             </connections>
                                         </slider>
-                                        <textField verticalHuggingPriority="750" id="341">
-                                            <rect key="frame" x="378" y="153" width="30" height="13"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="1 sec" id="300425">
-                                                <font key="font" metaFont="label"/>
-                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                            </textFieldCell>
-                                        </textField>
-                                        <textField verticalHuggingPriority="750" id="342">
-                                            <rect key="frame" x="182" y="153" width="52" height="13"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="500 msec" id="300426">
-                                                <font key="font" metaFont="label"/>
-                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                            </textFieldCell>
-                                        </textField>
                                         <textField verticalHuggingPriority="750" id="343">
-                                            <rect key="frame" x="182" y="69" width="52" height="13"/>
+                                            <rect key="frame" x="117" y="69" width="52" height="13"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="500 msec" id="300427">
-                                                <font key="font" metaFont="label"/>
-                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                            </textFieldCell>
-                                        </textField>
-                                        <textField verticalHuggingPriority="750" id="344">
-                                            <rect key="frame" x="274" y="69" width="52" height="13"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="750 msec" id="300428">
-                                                <font key="font" metaFont="label"/>
-                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                            </textFieldCell>
-                                        </textField>
-                                        <textField verticalHuggingPriority="750" id="345">
-                                            <rect key="frame" x="90" y="153" width="52" height="13"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="250 msec" id="300429">
-                                                <font key="font" metaFont="label"/>
-                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                            </textFieldCell>
-                                            <connections>
-                                                <action selector="changeIntervalBetweenSentMessages:" target="-2" id="383"/>
-                                            </connections>
-                                        </textField>
-                                        <textField verticalHuggingPriority="750" id="346">
-                                            <rect key="frame" x="274" y="153" width="52" height="13"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="750 msec" id="300430">
                                                 <font key="font" metaFont="label"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -271,6 +223,60 @@
                                             <rect key="frame" x="20" y="153" width="20" height="13"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="0" id="300424">
+                                                <font key="font" metaFont="label"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField verticalHuggingPriority="750" id="341">
+                                            <rect key="frame" x="378" y="153" width="31" height="13"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="5 sec" id="300425">
+                                                <font key="font" metaFont="label"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField verticalHuggingPriority="750" id="v5i-oH-Qjl">
+                                            <rect key="frame" x="85" y="153" width="29" height="13"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="1 sec" id="K0J-ro-J4q">
+                                                <font key="font" metaFont="label"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField verticalHuggingPriority="750" id="Boa-Op-a6J">
+                                            <rect key="frame" x="158" y="153" width="30" height="13"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="2 sec" id="Z6I-od-B6c">
+                                                <font key="font" metaFont="label"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField verticalHuggingPriority="750" id="vk6-h2-9is">
+                                            <rect key="frame" x="231" y="153" width="31" height="13"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="3 sec" id="pwf-WP-0P1">
+                                                <font key="font" metaFont="label"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField verticalHuggingPriority="750" id="UPh-NK-sYZ">
+                                            <rect key="frame" x="304" y="153" width="31" height="13"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="4 sec" id="ss8-9S-tes">
+                                                <font key="font" metaFont="label"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField verticalHuggingPriority="750" id="344">
+                                            <rect key="frame" x="243" y="69" width="52" height="13"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="750 msec" id="300428">
                                                 <font key="font" metaFont="label"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

@@ -214,16 +214,16 @@ NSString *SSEListenForProgramChangesPreferenceChangedNotification = @"SSEListenF
 
 - (NSString *)formatMilliseconds:(NSInteger)msec
 {
-    static NSString *oneSecond = nil;
+    static NSString *oneSecondOrMoreFormat = nil;
     static NSString *millisecondsFormat = nil;
 
-    if (!oneSecond)
-        oneSecond = [NSLocalizedStringFromTableInBundle(@"1 second", @"SysExLibrarian", SMBundleForObject(self), "one second (formatting of milliseconds)") retain];
+    if (!oneSecondOrMoreFormat)
+        oneSecondOrMoreFormat = [NSLocalizedStringFromTableInBundle(@"%#.3g seconds", @"SysExLibrarian", SMBundleForObject(self), "one second or more (formatting of milliseconds)") retain];
     if (!millisecondsFormat)
         millisecondsFormat = [NSLocalizedStringFromTableInBundle(@"%ld milliseconds", @"SysExLibrarian", SMBundleForObject(self), "format for milliseconds") retain];
     
-    if (msec == 1000)
-        return oneSecond;
+    if (msec >= 1000)
+        return [NSString stringWithFormat:oneSecondOrMoreFormat, (double)msec / 1000.0];
     else
         return [NSString stringWithFormat:millisecondsFormat, (long)msec];
 }
