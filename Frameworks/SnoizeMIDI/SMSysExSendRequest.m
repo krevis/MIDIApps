@@ -52,7 +52,7 @@ static void SendNextSysexBuffer(MIDISysexSendRequest *request, MIDIPortRef port,
 }
 
 static OSStatus CustomMIDISendSysex(MIDISysexSendRequest *request, NSInteger bufferSize, NSInteger perBufferDelayMS) {
-    if (!request || !request->destination || !request->data || bufferSize < 4 || bufferSize > 32767) {
+    if (!request || !request->destination || !request->data || bufferSize < 3 || bufferSize > 32767) {
         return -50; // paramErr
     }
 
@@ -187,7 +187,18 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
 
     if (customSysExBufferSize >= 4) {
         // We have a reasonable buffer size value, so use it.
-        //
+
+        // First, work around a bug with cheap USB-MIDI interfaces.
+        // If we are sending to a destination that uses a USB-MIDI driver, it packages the bytes of the buffer
+        // into USB-MIDI commands containing exactly 3 bytes of data. If the buffer contains an extra 1 or 2
+        // bytes of data, but the sysex hasn't ended, then the driver has to either (1) hold on to those bytes
+        // and wait for more data to be sent later, or (2) send them immediately as 1-byte "unparsed" USB-MIDI
+        // commands. CoreMIDI's class compliant driver appears to do the latter.
+        // Unfortunately, some interfaces don't understand the 1-byte unparsed MIDI messages, and either
+        // drop them or get confused.
+        // To avoid this issue, round the buffer size down to be a multiple of 3.
+        customSysExBufferSize = customSysExBufferSize / 3 * 3;
+
         // Calculate a delay between buffers to get the expected speed:
         // maxSysExSpeed is in bytes/second (default 3125)
         //
