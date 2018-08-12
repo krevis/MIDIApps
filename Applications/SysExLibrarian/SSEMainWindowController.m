@@ -709,6 +709,12 @@ static SSEMainWindowController *controller = nil;
     }
 }
 
+- (BOOL)tableViewKeyDownReceivedSpace:(SSETableView *)tableView {
+    // Space key is used as a shortcut for -play:
+    [self play:nil];
+    return YES;
+}
+
 @end
 
 
@@ -760,6 +766,11 @@ static SSEMainWindowController *controller = nil;
 {
     [self finishEditingInWindow];
     return ([[self window] attachedSheet] != nil);
+}
+
+- (NSResponder *)firstResponderWhenNotEditing
+{
+    return libraryTableView;
 }
 
 //

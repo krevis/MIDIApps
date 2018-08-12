@@ -107,12 +107,17 @@
 
 - (void)finishEditingInWindow;
 {
-    if ([[self window] makeFirstResponder:nil]) {
+    if ([[self window] makeFirstResponder:[self firstResponderWhenNotEditing]]) {
         // Validation turned out OK
     } else {
         // Validation of the field didn't work, but we need to end editing NOW regardless
         [[self window] endEditingFor:nil];
     }
+}
+
+- (NSResponder *)firstResponderWhenNotEditing
+{
+    return [self window];
 }
 
 //

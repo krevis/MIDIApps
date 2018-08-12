@@ -45,3 +45,13 @@
 - (BOOL)tableView:(SSETableView *)tableView performDragOperation:(id <NSDraggingInfo>)sender;
 
 @end
+
+
+@protocol SSETableViewDelegate <NSTableViewDelegate>
+
+@optional
+
+- (BOOL)tableViewKeyDownReceivedSpace:(SSETableView *)tableView;
+    // Return YES if delegate handled the space key. Return NO if you did nothing and want the table view to do it.
+
+@end

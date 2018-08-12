@@ -28,6 +28,7 @@
 
 // Window utility methods
 - (void)finishEditingInWindow;
+- (NSResponder *)firstResponderWhenNotEditing;
 
 // Undo-related
 - (void)willUndoOrRedo:(NSNotification *)notification;
