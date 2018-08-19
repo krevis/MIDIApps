@@ -125,9 +125,11 @@ NSString *SSESysExFileExtension = @"syx";
             preferencesFolderPath = [homeLibraryPath stringByAppendingPathComponent:@"Preferences"];
         }
 
-        preferencesFolderPath = [self resolveAliasesInPath:preferencesFolderPath];        
+        // preferencesFolderPath = [self resolveAliasesInPath:preferencesFolderPath];
+            // should not be necessary, why would you replace this with an alias
         libraryFilePath = [preferencesFolderPath stringByAppendingPathComponent:@"SysEx Librarian Library.sXLb"];
-        libraryFilePath = [self resolveAliasesInPath:libraryFilePath];
+        // libraryFilePath = [self resolveAliasesInPath:libraryFilePath];
+            // should not be necessary either, why would you replace this with an alias?
         [libraryFilePath retain];
     }
 
@@ -160,6 +162,7 @@ NSString *SSESysExFileExtension = @"syx";
         path = [self defaultFileDirectoryPath];
 
     path = [self resolveAliasesInPath:path];
+        // not sure if good idea
 
     return path;
 }
@@ -486,6 +489,8 @@ NSString *SSESysExFileExtension = @"syx";
     
     NSString *resolvedPath = nil;
     /* TODO Figure out if we really need any of this. Sigh.
+     Use NSURL URLByResolvingAliasFileAtURL:... except that's only available on 10.10
+
     CFURLRef url;
 
     url = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)path, kCFURLPOSIXPathStyle, false);
@@ -520,7 +525,7 @@ NSString *SSESysExFileExtension = @"syx";
 {
     NSString *documentsFolderPath;
 
-    // TODO as above, use NSFileManager now
+    // TODO as above, use NSFileManager now. NSDocumentDirectory
     documentsFolderPath = nil;//[self findFolder:kDocumentsFolderType];
     if (!documentsFolderPath) {
         // Fall back to hard-coding it
@@ -528,6 +533,7 @@ NSString *SSESysExFileExtension = @"syx";
     }
 
     documentsFolderPath = [self resolveAliasesInPath:documentsFolderPath];
+        // Prob necessary, somebody will try to do it
     documentsFolderPath = [documentsFolderPath stringByAppendingPathComponent:@"SysEx Librarian"];
 
     return documentsFolderPath;
