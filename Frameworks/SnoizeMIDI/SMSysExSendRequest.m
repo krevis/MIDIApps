@@ -201,16 +201,12 @@ NSString *SMSysExSendRequestFinishedNotification = @"SMSysExSendRequestFinishedN
 
         // Calculate a delay between buffers to get the expected speed:
         // maxSysExSpeed is in bytes/second (default 3125)
-        //
-        // Transmitting B bytes, with T additional delay, takes a duration of (B/3125) sec + T.
-        // Therefore speed S = B / (B/3125 + T)
-        // and solving for T = B (1/S - 1/3125)
+        // Transmitting B bytes, at speed S, takes a duration of (B/S) sec or (B * 1000 / S) milliseconds.
         //
         // Note that MIDI-OX default settings use 256 byte buffers, with 60 ms between buffers,
         // leading to a speed of 1804 bytes/sec, or 57% of normal speed.
-
-        NSInteger perBufferDelayMS = ceil(customSysExBufferSize * ( (1000.0 / maxSysExSpeed) - (1000.0 / 3125.0) ));
-        //NSLog(@"buf size %lu, speed %lu -> perBufferDelayMS %lu", customSysExBufferSize, maxSysExSpeed, perBufferDelayMS);
+        NSInteger realMaxSysExSpeed = (maxSysExSpeed > 0) ? maxSysExSpeed : 3125;
+        NSInteger perBufferDelayMS = ceil(customSysExBufferSize * (1000.0 / realMaxSysExSpeed));
 
         status = CustomMIDISendSysex(&request, customSysExBufferSize, perBufferDelayMS);
     } else {
