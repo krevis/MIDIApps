@@ -71,13 +71,6 @@
 {
     [super windowDidLoad];
 
-    // Try to change the main text's font from Monaco 10 to Menlo 10,
-    // which looks a lot better, but is only available on 10.6 and later.
-    NSFont* menloFont = [NSFont fontWithName:@"Menlo-Regular" size:10.];
-    if (menloFont) {
-        [self.textView setFont:menloFont];
-    }
-
     [self synchronizeDescriptionFields];
 
     [self.textView setString:[self formatData:[self dataForDisplay]]];
