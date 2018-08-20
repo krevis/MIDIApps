@@ -15,8 +15,6 @@
 
 @implementation SSESysexSpeedOutlineView
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3
-
 - (void)selectRowIndexes:(NSIndexSet *)indexes byExtendingSelection:(BOOL)extend
 {
     // Do nothing.  We don't want a selection.
@@ -27,15 +25,6 @@
     // Even though we do this, cells will still highlight if you click on them.
     // SSENonHighlightingTextFieldCell fixes that.
 }
-
-#else
-
-- (void)selectRow:(int)row byExtendingSelection:(BOOL)extend
-{
-    // Ditto, but for compatibility before 10.3.
-}
-
-#endif
 
 @end
 
