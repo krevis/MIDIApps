@@ -131,6 +131,7 @@ NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNe
                 [credits addAttribute:NSForegroundColorAttributeName value:[NSColor labelColor] range:range];
             }
             options[NSAboutPanelOptionCredits] = credits;
+            [credits release];
         }
     }
 

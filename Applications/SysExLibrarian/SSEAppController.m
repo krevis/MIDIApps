@@ -161,6 +161,7 @@ static NSThread *sMainThread = nil;
                 [credits addAttribute:NSForegroundColorAttributeName value:[NSColor labelColor] range:range];
             }
             options[NSAboutPanelOptionCredits] = credits;
+            [credits release];
         }
     }
 
