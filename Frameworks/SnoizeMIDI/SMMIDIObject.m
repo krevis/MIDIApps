@@ -46,8 +46,6 @@ static NSInteger midiObjectOrdinalComparator(id object1, id object2, void *conte
 
 + (void)refreshObjectOrdinals;
 
-+ (void)midiSetupChanged:(NSNotification *)notification;
-
 - (void)updateUniqueID;
 
 - (void)postRemovedNotification;
@@ -492,25 +490,14 @@ static CFMutableDictionaryRef classToObjectsMapTable = NULL;
     client = [SMClient sharedClient];
     center = [NSNotificationCenter defaultCenter];
 
-    // Also subscribe to the object property changed notification, if it will be posted.
+    // Also subscribe to the object property changed notification.
     // We will receive this notification and then dispatch it to the correct object.
-    if ([client postsObjectPropertyChangedNotifications]) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(midiObjectPropertyChanged:) name:SMClientObjectPropertyChangedNotification object:[SMClient sharedClient]];
-    }
+    [center addObserver:self selector:@selector(midiObjectPropertyChanged:) name:SMClientObjectPropertyChangedNotification object:[SMClient sharedClient]];
 
-    // And subscribe to object added/removed notifications, if they will be posted.
+    // And subscribe to object added/removed notifications.
     // We will dispatch these to the correct subclass.
-    if ([client postsObjectAddedAndRemovedNotifications]) {
-        [center addObserver:self selector:@selector(midiObjectWasAdded:) name:SMClientObjectAddedNotification object:client];
-        [center addObserver:self selector:@selector(midiObjectWasRemoved:) name:SMClientObjectRemovedNotification object:client];
-    } else {
-        // Otherwise, make each subclass listen to the general "something changed" notification.
-        enumerator = [leafSubclasses objectEnumerator];
-        while ((aClassValue = [enumerator nextObject])) {
-            Class aClass = [aClassValue pointerValue];
-            [center addObserver:aClass selector:@selector(midiSetupChanged:) name:SMClientSetupChangedInternalNotification object:client];
-        }
-    }    
+    [center addObserver:self selector:@selector(midiObjectWasAdded:) name:SMClientObjectAddedNotification object:client];
+    [center addObserver:self selector:@selector(midiObjectWasRemoved:) name:SMClientObjectRemovedNotification object:client];
 }
 
 + (NSSet *)leafSubclasses;
@@ -599,17 +586,11 @@ static CFMutableDictionaryRef classToObjectsMapTable = NULL;
 
 + (BOOL)isUniqueIDInUse:(MIDIUniqueID)proposedUniqueID;
 {
-    if ([[SMClient sharedClient] coreMIDICanFindObjectByUniqueID]) {
-        MIDIObjectRef object = (MIDIObjectRef)0;
-        MIDIObjectType type;
+    MIDIObjectRef object = (MIDIObjectRef)0;
+    MIDIObjectType type;
 
-        MIDIObjectFindByUniqueID(proposedUniqueID, &object, &type);
-        return (object != (MIDIObjectRef)0);
-    } else {
-        // This search is not as complete as it could be, but it'll have to do.
-        // We're only going to set unique IDs on virtual endpoints, anyway.
-        return ([SMSourceEndpoint sourceEndpointWithUniqueID:proposedUniqueID] != nil || [SMDestinationEndpoint destinationEndpointWithUniqueID:proposedUniqueID] != nil);
-    }
+    MIDIObjectFindByUniqueID(proposedUniqueID, &object, &type);
+    return (object != (MIDIObjectRef)0);
 }
 
 //
@@ -724,13 +705,6 @@ static CFMutableDictionaryRef classToObjectsMapTable = NULL;
         MIDIObjectRef ref = [self midiObjectAtIndex:index];
         [[self objectWithObjectRef:ref] setOrdinal:index];
     }
-}
-
-+ (void)midiSetupChanged:(NSNotification *)notification;
-{
-    SMAssert(self != [SMMIDIObject class]);
-
-    [self refreshAllObjects];
 }
 
 - (void)updateUniqueID;

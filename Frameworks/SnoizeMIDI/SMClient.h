@@ -39,16 +39,6 @@
 
 - (BOOL)isHandlingSetupChange;
 
-- (CFStringRef)coreMIDIPropertyNameConstantNamed:(NSString *)name;
-- (UInt32)coreMIDIFrameworkVersion;
-
-- (BOOL)postsObjectAddedAndRemovedNotifications;
-- (BOOL)postsObjectPropertyChangedNotifications;
-- (BOOL)coreMIDIUsesWrongRunLoop;
-- (BOOL)coreMIDICanFindObjectByUniqueID;
-- (BOOL)coreMIDICanGetDeviceFromEntity;
-- (BOOL)doesSendSysExRespectExternalDeviceSpeed;
-
 - (void)forceCoreMIDIToUseNewSysExSpeed;
 
 @end
