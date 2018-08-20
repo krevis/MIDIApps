@@ -14,25 +14,26 @@
 #define __SNOIZE_MIDISPYDRIVERINSTALLATION__ 1
 
 #include <AssertMacros.h>
-#include <CoreFoundation/CoreFoundation.h>
 #include <Foundation/Foundation.h>
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-    
-enum {
-    kMIDISpyDriverAlreadyInstalled = 0,
-    kMIDISpyDriverInstalledSuccessfully = 1,
-    kMIDISpyDriverInstallationFailed = 2,
-    kMIDISpyDriverCouldNotRemoveOldDriver = 3
+
+extern NSError * MIDISpyInstallDriverIfNecessary(void);
+
+extern NSString * const MIDISpyDriverInstallationErrorDomain;
+
+typedef NS_ENUM(NSInteger, MIDISpyDriverInstallationErrorCode) {
+    MIDISpyDriverInstallationErrorCouldNotFindBundle,
+    MIDISpyDriverInstallationErrorCouldNotFindPlugIn,
+    MIDISpyDriverInstallationErrorCouldNotMakeBundleForPlugIn,
+    MIDISpyDriverInstallationErrorDriverHasNoName,
+    MIDISpyDriverInstallationErrorCannotMakeDriversURL,
+    MIDISpyDriverInstallationErrorCannotMakeDriverDestinationURL,
 };
 
-
-extern SInt32 MIDISpyInstallDriverIfNecessary(void);
-
-extern NSURL *MIDISpyUserMIDIDriversURL(void);
 
 #if defined(__cplusplus)
 }

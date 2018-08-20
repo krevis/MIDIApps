@@ -7,15 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		162A7BA7212AA39F008CE4DA /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 162A7BA6212AA39F008CE4DA /* AppKit.framework */; };
 		164103DB09735FA5008DABCC /* SnoizeMIDISpy.h in Headers */ = {isa = PBXBuildFile; fileRef = F5BCCEC8023F631901000164 /* SnoizeMIDISpy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		164103DC09735FA5008DABCC /* MIDISpyClient.h in Headers */ = {isa = PBXBuildFile; fileRef = F5BCCEC3023F486D01000164 /* MIDISpyClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		164103DD09735FA5008DABCC /* MIDISpyDriverInstallation.h in Headers */ = {isa = PBXBuildFile; fileRef = F5B4DD96025DA07801000164 /* MIDISpyDriverInstallation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		164103E109735FA5008DABCC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
 		164103E309735FA5008DABCC /* MIDISpyClient.c in Sources */ = {isa = PBXBuildFile; fileRef = 08FB77B4FE84181DC02AAC07 /* MIDISpyClient.c */; settings = {ATTRIBUTES = (); }; };
 		164103E409735FA5008DABCC /* MIDISpyDriverInstallation.m in Sources */ = {isa = PBXBuildFile; fileRef = F5B4DD94025DA04101000164 /* MIDISpyDriverInstallation.m */; };
-		164103E709735FA5008DABCC /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5BCCEC1023F47DC01000164 /* CoreFoundation.framework */; };
 		164103E809735FA5008DABCC /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5BCCEC5023F4AE501000164 /* CoreMIDI.framework */; };
-		164103E909735FA5008DABCC /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56214910240BADA01000164 /* Carbon.framework */; };
 		164103F609735FA6008DABCC /* MIDIDriverClass.h in Headers */ = {isa = PBXBuildFile; fileRef = F540CCAD023F41B101000164 /* MIDIDriverClass.h */; };
 		164103F709735FA6008DABCC /* SpyingMIDIDriver.h in Headers */ = {isa = PBXBuildFile; fileRef = F540CCAF023F41B101000164 /* SpyingMIDIDriver.h */; };
 		164103F809735FA6008DABCC /* MessagePortBroadcaster.h in Headers */ = {isa = PBXBuildFile; fileRef = F540CCB1023F41B101000164 /* MessagePortBroadcaster.h */; };
@@ -55,6 +54,7 @@
 /* Begin PBXFileReference section */
 		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		08FB77B4FE84181DC02AAC07 /* MIDISpyClient.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = MIDISpyClient.c; sourceTree = "<group>"; };
+		162A7BA6212AA39F008CE4DA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		164103F209735FA6008DABCC /* Info-SnoizeMIDISpy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-SnoizeMIDISpy.plist"; path = "../Info-SnoizeMIDISpy.plist"; sourceTree = "<group>"; };
 		164103F309735FA6008DABCC /* SnoizeMIDISpy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SnoizeMIDISpy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1641040A09735FA6008DABCC /* Info-SpyingMIDIDriver.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-SpyingMIDIDriver.plist"; path = "../Info-SpyingMIDIDriver.plist"; sourceTree = "<group>"; };
@@ -91,9 +91,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				164103E709735FA5008DABCC /* CoreFoundation.framework in Frameworks */,
+				162A7BA7212AA39F008CE4DA /* AppKit.framework in Frameworks */,
 				164103E809735FA5008DABCC /* CoreMIDI.framework in Frameworks */,
-				164103E909735FA5008DABCC /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,6 +126,7 @@
 				F540CCA5023F40E701000164 /* Framework */,
 				164104470973636B008DABCC /* Configurations */,
 				034768DFFF38A50411DB9C8B /* Products */,
+				162A7BA5212AA39F008CE4DA /* Frameworks */,
 			);
 			name = MIDISpy;
 			sourceTree = "<group>";
@@ -176,6 +176,14 @@
 			children = (
 			);
 			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		162A7BA5212AA39F008CE4DA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				162A7BA6212AA39F008CE4DA /* AppKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		1641041209736033008DABCC /* Resources */ = {

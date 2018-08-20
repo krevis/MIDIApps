@@ -12,7 +12,7 @@
 
 #include "MIDISpyClient.h"
 
-#include <Carbon/Carbon.h>
+#include <Carbon/Carbon.h>   // only for Mac error codes
 #include <pthread.h>
 
 #include "MIDISpyShared.h"

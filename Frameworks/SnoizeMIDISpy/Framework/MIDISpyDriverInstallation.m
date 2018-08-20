@@ -30,37 +30,38 @@ void InitializeConstantStrings(void)
     kSpyingMIDIDriverFrameworkIdentifier = CFSTR("com.snoize.MIDISpyFramework");
 }
 
+NSString * const MIDISpyDriverInstallationErrorDomain = @"com.snoize.MIDISpy";
+
 
 //
 // Private function declarations
 //
 
-static Boolean FindDriverInFramework(CFURLRef *urlPtr, UInt32 *versionPtr);
-static Boolean FindInstalledDriver(CFURLRef *urlPtr, UInt32 *versionPtr);
+static NSError * FindDriverInFramework(CFURLRef *urlPtr, UInt32 *versionPtr);
+static NSURL *UserMIDIDriversURL(NSError **outErrorPtr);
+static BOOL FindInstalledDriver(CFURLRef *urlPtr, UInt32 *versionPtr);
 static void CreateBundlesForDriversInDomain(short findFolderDomain, CFMutableArrayRef createdBundles);
-static Boolean RemoveInstalledDriver(CFURLRef driverURL);
-static Boolean InstallDriver(CFURLRef ourDriverURL);
+static NSError * RemoveInstalledDriver(CFURLRef driverURL);
+static NSError * InstallDriver(CFURLRef ourDriverURL);
 
 
 //
 // Public functions
 //
 
-SInt32 MIDISpyInstallDriverIfNecessary(void)
+NSError * MIDISpyInstallDriverIfNecessary(void)
 {
-    SInt32 returnStatus;
-    CFURLRef ourDriverURL = NULL;
-    UInt32 ourDriverVersion;
-    CFURLRef installedDriverURL = NULL;
-    UInt32 installedDriverVersion;
-    Boolean foundInstalledDriver;
+    NSError *error;
 
     // Look for the installed driver first, before we make a bundle for the driver in our framework.
-    foundInstalledDriver = FindInstalledDriver(&installedDriverURL, &installedDriverVersion);
+    CFURLRef installedDriverURL = NULL;
+    UInt32 installedDriverVersion;
+    BOOL foundInstalledDriver = FindInstalledDriver(&installedDriverURL, &installedDriverVersion);
 
     // Then search for the copy of the driver in our framework.
-    if (!FindDriverInFramework(&ourDriverURL, &ourDriverVersion)) {
-        returnStatus =  kMIDISpyDriverInstallationFailed;
+    CFURLRef ourDriverURL = NULL;
+    UInt32 ourDriverVersion;
+    if ((error = FindDriverInFramework(&ourDriverURL, &ourDriverVersion))) {
         goto done;
     }
 
@@ -68,28 +69,31 @@ SInt32 MIDISpyInstallDriverIfNecessary(void)
     // TODO Or someone might have left a directory with our plugin name in the way, but w/o proper plugin files in it. Who knows.
     if (foundInstalledDriver) {
         if (installedDriverVersion == ourDriverVersion) {
-            returnStatus = kMIDISpyDriverAlreadyInstalled;
+            // Success: Already installed
+            error = nil;
             goto done;
         } else {
-            if (!RemoveInstalledDriver(installedDriverURL)) {
-                returnStatus = kMIDISpyDriverCouldNotRemoveOldDriver;
-                goto done;                
+            if ((error = RemoveInstalledDriver(installedDriverURL))) {
+                goto done;
             }            
         }        
     }
 
-    if (InstallDriver(ourDriverURL))
-        returnStatus = kMIDISpyDriverInstalledSuccessfully;
-    else
-        returnStatus = kMIDISpyDriverInstallationFailed;
-        
+    if ((error = InstallDriver(ourDriverURL))) {
+        goto done;
+    }
+    else {
+        // Success: Installed
+        error = nil;
+    }
+
 done:
     if (ourDriverURL)
         CFRelease(ourDriverURL);
     if (installedDriverURL)
         CFRelease(installedDriverURL);
-        
-    return returnStatus;
+
+    return error;
 }
 
 
@@ -99,22 +103,40 @@ done:
 
 // Driver installation
 
-static Boolean FindDriverInFramework(CFURLRef *urlPtr, UInt32 *versionPtr)
+static NSError * FindDriverInFramework(CFURLRef *urlPtr, UInt32 *versionPtr)
 {
     CFBundleRef frameworkBundle = NULL;
     CFURLRef driverURL = NULL;
     UInt32 driverVersion = 0;
-    Boolean success = FALSE;
+    NSError *error;
 
     // Find this framework's bundle
-    frameworkBundle = CFBundleGetBundleWithIdentifier(kSpyingMIDIDriverFrameworkIdentifier);
+    frameworkBundle = nil;// CFBundleGetBundleWithIdentifier(kSpyingMIDIDriverFrameworkIdentifier);
     if (!frameworkBundle) {
         __Debug_String("MIDISpyClient: Couldn't find our own framework's bundle!");
+        NSDictionary *userInfo = @{
+                                   NSLocalizedDescriptionKey: @"Something happened.",
+                                   NSLocalizedFailureReasonErrorKey: @"Here's why: bad things happen sometimes.",
+                                   NSLocalizedRecoverySuggestionErrorKey: @"Here's what you should do. Let me tell you all about it.",
+                                   NSLocalizedRecoveryOptionsErrorKey: @[ @"Continue" ],
+        };
+        error = [NSError errorWithDomain:MIDISpyDriverInstallationErrorDomain code:MIDISpyDriverInstallationErrorCouldNotFindBundle userInfo:userInfo];
+
+        // TODO Do better at NSError parameters for all 6 errors we have. Work out how to do restart / show location.
+        // If a URL is involved consider stashing it in userInfo under NSURLErrorKey.
+
+//        FOUNDATION_EXPORT NSErrorUserInfoKey const NSLocalizedDescriptionKey;             // NSString, a complete sentence (or more) describing ideally both what failed and why it failed.
+//        FOUNDATION_EXPORT NSErrorUserInfoKey const NSLocalizedFailureReasonErrorKey;      // NSString, a complete sentence (or more) describing why the operation failed.
+//        FOUNDATION_EXPORT NSErrorUserInfoKey const NSLocalizedRecoverySuggestionErrorKey; // NSString, a complete sentence (or more) describing what the user can do to fix the problem.
+//        FOUNDATION_EXPORT NSErrorUserInfoKey const NSLocalizedRecoveryOptionsErrorKey;    // NSArray of NSStrings corresponding to button titles.
+//        FOUNDATION_EXPORT NSErrorUserInfoKey const NSRecoveryAttempterErrorKey;           // Instance of a subclass of NSObject that conforms to the NSErrorRecoveryAttempting informal protocol
+
     } else {
         // Find the copy of the plugin in the framework's resources
         driverURL = CFBundleCopyResourceURL(frameworkBundle, kSpyingMIDIDriverPlugInName, NULL, NULL);
         if (!driverURL) {
             __Debug_String("MIDISpyClient: Couldn't find the copy of the plugin in our framework!");
+            error = [NSError errorWithDomain:MIDISpyDriverInstallationErrorDomain code:MIDISpyDriverInstallationErrorCouldNotFindPlugIn userInfo:nil];
         } else {
             // Make a CFBundle with it.
             CFBundleRef driverBundle;
@@ -124,29 +146,30 @@ static Boolean FindDriverInFramework(CFURLRef *urlPtr, UInt32 *versionPtr)
                 __Debug_String("MIDISpyClient: Couldn't create a CFBundle for the copy of the plugin in our framework!");
                 CFRelease(driverURL);
                 driverURL = NULL;
+                error = [NSError errorWithDomain:MIDISpyDriverInstallationErrorDomain code:MIDISpyDriverInstallationErrorCouldNotMakeBundleForPlugIn userInfo:nil];
             } else {
                 // Remember the version of the bundle.
                 driverVersion = CFBundleGetVersionNumber(driverBundle);
                 // Then get rid of the bundle--we no longer need it.
                 CFRelease(driverBundle);
-                success = TRUE;
+                error = nil;
             }
         }
     }
 
     *urlPtr = driverURL;
     *versionPtr = driverVersion;
-    return success;
+    return error;
 }
 
 
-static Boolean FindInstalledDriver(CFURLRef *urlPtr, UInt32 *versionPtr)
+static BOOL FindInstalledDriver(CFURLRef *urlPtr, UInt32 *versionPtr)
 {
     CFMutableArrayRef createdBundles = NULL;
     CFBundleRef driverBundle = NULL;
     CFURLRef driverURL = NULL;
     UInt32 driverVersion = 0;
-    Boolean success = FALSE;
+    BOOL success = NO;
 
     createdBundles = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
     CreateBundlesForDriversInDomain(kSystemDomain, createdBundles);
@@ -165,7 +188,7 @@ static Boolean FindInstalledDriver(CFURLRef *urlPtr, UInt32 *versionPtr)
         // Remember the URL and version of the bundle.
         driverURL = CFBundleCopyBundleURL(driverBundle);
         driverVersion = CFBundleGetVersionNumber(driverBundle);
-        success = TRUE;
+        success = YES;
     }
 
     if (createdBundles)
@@ -177,22 +200,35 @@ static Boolean FindInstalledDriver(CFURLRef *urlPtr, UInt32 *versionPtr)
 }
 
 
-NSURL *MIDISpyUserMIDIDriversURL(void) {
+static NSURL *UserMIDIDriversURL(NSError **outErrorPtr) {
     NSError *error = nil;
     NSURL *libraryURL = [[NSFileManager defaultManager] URLForDirectory:NSLibraryDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:&error];
-    if (!libraryURL || error) {
+    if (!libraryURL) {
+        if (outErrorPtr) {
+            *outErrorPtr = error;
+        }
         return nil;
     }
 
     // concatenate Audio/MIDI Drivers
     NSURL *folderURL = [[libraryURL URLByAppendingPathComponent:@"Audio" isDirectory:YES] URLByAppendingPathComponent:@"MIDI Drivers" isDirectory:YES];
+    if (!folderURL) {
+        if (outErrorPtr) {
+            *outErrorPtr = [NSError errorWithDomain:MIDISpyDriverInstallationErrorDomain code:MIDISpyDriverInstallationErrorCannotMakeDriversURL userInfo:nil];
+        }
+        return nil;
+    }
+
+    if (outErrorPtr) {
+        *outErrorPtr = nil;
+    }
     return folderURL;
 }
 
 
 static void CreateBundlesForDriversInDomain(short findFolderDomain, CFMutableArrayRef createdBundles)
 {
-    NSURL *folderURL = MIDISpyUserMIDIDriversURL();
+    NSURL *folderURL = UserMIDIDriversURL(NULL);
     if (!folderURL) {
         return;
     }
@@ -208,35 +244,47 @@ static void CreateBundlesForDriversInDomain(short findFolderDomain, CFMutableArr
 }
 
 
-static Boolean RemoveInstalledDriver(CFURLRef driverURL)
+static NSError * RemoveInstalledDriver(CFURLRef driverURL)
 {
-    return [[NSFileManager defaultManager] removeItemAtURL:(__bridge NSURL *)driverURL error:nil];
+    NSError *error = nil;
+    if ([[NSFileManager defaultManager] removeItemAtURL:(__bridge NSURL *)driverURL error:&error]) {
+        return nil;
+    }
+    else {
+        return error;
+    }
 }
 
 
-static Boolean InstallDriver(CFURLRef ourDriverURL)
+static NSError * InstallDriver(CFURLRef ourDriverURL)
 {
     NSString *driverName = [(__bridge NSURL *)ourDriverURL lastPathComponent];
     if (!driverName) {
-        return FALSE;
+        return [NSError errorWithDomain:MIDISpyDriverInstallationErrorDomain code:MIDISpyDriverInstallationErrorDriverHasNoName userInfo:nil];
     }
 
-    NSURL *folderURL = MIDISpyUserMIDIDriversURL();
+    NSError *error = nil;
+    NSURL *folderURL = UserMIDIDriversURL(&error);
     if (!folderURL) {
         __Debug_String("MIDISpy: Couldn't get URL to ~/Library/Audio/MIDI Drivers");
-        return FALSE;
+        return error;
     }
 
-    BOOL directoryCreatedOrExists = [[NSFileManager defaultManager] createDirectoryAtURL:folderURL withIntermediateDirectories:YES attributes:nil error:nil];
+    BOOL directoryCreatedOrExists = [[NSFileManager defaultManager] createDirectoryAtURL:folderURL withIntermediateDirectories:YES attributes:nil error:&error];
     if (!directoryCreatedOrExists) {
         __Debug_String("MIDISpy: ~/Library/Audio/MIDI Drivers did not exist and couldn't be created");
-        return FALSE;
+        return error;
     }
 
     NSURL *copiedDriverURL = [folderURL URLByAppendingPathComponent:driverName];
     if (!copiedDriverURL) {
-        return FALSE;
+        return [NSError errorWithDomain:MIDISpyDriverInstallationErrorDomain code:MIDISpyDriverInstallationErrorCannotMakeDriverDestinationURL userInfo:nil];
     }
 
-    return [[NSFileManager defaultManager] copyItemAtURL:(__bridge NSURL *)ourDriverURL toURL:copiedDriverURL error:nil];
+    BOOL copied = [[NSFileManager defaultManager] copyItemAtURL:(__bridge NSURL *)ourDriverURL toURL:copiedDriverURL error:&error];
+    if (!copied) {
+        return error;
+    }
+
+    return nil;
 }
