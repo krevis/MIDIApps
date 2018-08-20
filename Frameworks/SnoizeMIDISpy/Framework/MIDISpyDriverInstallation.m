@@ -46,7 +46,7 @@ static Boolean InstallDriver(CFURLRef ourDriverURL);
 // Public functions
 //
 
-SInt32 MIDISpyInstallDriverIfNecessary()
+SInt32 MIDISpyInstallDriverIfNecessary(void)
 {
     SInt32 returnStatus;
     CFURLRef ourDriverURL = NULL;
@@ -177,7 +177,7 @@ static Boolean FindInstalledDriver(CFURLRef *urlPtr, UInt32 *versionPtr)
 }
 
 
-static NSURL *UserMIDIDriversURL(void) {
+NSURL *MIDISpyUserMIDIDriversURL(void) {
     NSError *error = nil;
     NSURL *libraryURL = [[NSFileManager defaultManager] URLForDirectory:NSLibraryDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:&error];
     if (!libraryURL || error) {
@@ -192,7 +192,7 @@ static NSURL *UserMIDIDriversURL(void) {
 
 static void CreateBundlesForDriversInDomain(short findFolderDomain, CFMutableArrayRef createdBundles)
 {
-    NSURL *folderURL = UserMIDIDriversURL();
+    NSURL *folderURL = MIDISpyUserMIDIDriversURL();
     if (!folderURL) {
         return;
     }
@@ -221,7 +221,7 @@ static Boolean InstallDriver(CFURLRef ourDriverURL)
         return FALSE;
     }
 
-    NSURL *folderURL = UserMIDIDriversURL();
+    NSURL *folderURL = MIDISpyUserMIDIDriversURL();
     if (!folderURL) {
         __Debug_String("MIDISpy: Couldn't get URL to ~/Library/Audio/MIDI Drivers");
         return FALSE;

@@ -15,6 +15,7 @@
 
 #include <AssertMacros.h>
 #include <CoreFoundation/CoreFoundation.h>
+#include <Foundation/Foundation.h>
 
 #if defined(__cplusplus)
 extern "C" {
@@ -31,6 +32,7 @@ enum {
 
 extern SInt32 MIDISpyInstallDriverIfNecessary(void);
 
+extern NSURL *MIDISpyUserMIDIDriversURL(void);
 
 #if defined(__cplusplus)
 }
