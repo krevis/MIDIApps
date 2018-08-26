@@ -65,6 +65,7 @@
 		1641044B09736388008DABCC /* Snoize-Project-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Debug.xcconfig"; path = "../../Configurations/Snoize-Project-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		1641044C09736388008DABCC /* Snoize-Project-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Global.xcconfig"; path = "../../Configurations/Snoize-Project-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
 		1641044D09736388008DABCC /* Snoize-Project-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Release.xcconfig"; path = "../../Configurations/Snoize-Project-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
+		16CDFB8B2133641E000CCD7B /* MIDI Monitor-i386 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.bundle"; path = "MIDI Monitor-i386"; sourceTree = "<group>"; };
 		16E651A0176EDB370005B53C /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
 		F53956EE0256D06A01000164 /* MIDISpyShared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIDISpyShared.h; sourceTree = SOURCE_ROOT; };
 		F540CCAD023F41B101000164 /* MIDIDriverClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIDIDriverClass.h; sourceTree = "<group>"; };
@@ -247,6 +248,7 @@
 			isa = PBXGroup;
 			children = (
 				F540CCB5023F41B101000164 /* SpyingMIDIDriver.exp */,
+				16CDFB8B2133641E000CCD7B /* MIDI Monitor-i386 */,
 			);
 			name = Other;
 			sourceTree = "<group>";
@@ -343,6 +345,7 @@
 				164103FC09735FA6008DABCC /* Sources */,
 				1641040109735FA6008DABCC /* Frameworks */,
 				1641040409735FA6008DABCC /* Rez */,
+				16CDFB8C2133643E000CCD7B /* Lipo old i386 driver into built driver */,
 			);
 			buildRules = (
 			);
@@ -417,6 +420,29 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXRezBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		16CDFB8C2133643E000CCD7B /* Lipo old i386 driver into built driver */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/MIDI Monitor.plugin/Contents/MacOS/MIDI Monitor",
+				"$(SRCROOT)/Driver/MIDI Monitor-i386",
+			);
+			name = "Lipo old i386 driver into built driver";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "/bin/sh -x";
+			shellScript = "lipo \"${SCRIPT_INPUT_FILE_0}\" \"${SCRIPT_INPUT_FILE_1}\" -create -output \"${SCRIPT_INPUT_FILE_0}\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		164103E209735FA5008DABCC /* Sources */ = {
