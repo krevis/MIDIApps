@@ -76,12 +76,19 @@ NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNe
             alert.messageText = NSLocalizedStringFromTableInBundle(@"MIDI Monitor could not make a connection to its MIDI driver.", @"MIDIMonitor", bundle, "error message if MIDI spy client creation fails");
             alert.informativeText = NSLocalizedStringFromTableInBundle(@"If you continue, MIDI Monitor will not be able to see the output of other MIDI applications, but all other features will still work.\n\nTo fix the problem, restart your computer.", @"MIDIMonitor", bundle, "second line of warning when MIDI spy is unavailable");
             [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Continue", @"MIDIMonitor", bundle, "Continue button after MIDI spy client creation fails")];
-            [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Restart Now",  @"MIDIMonitor", bundle, "Restart button after MIDI spy client creation fails")];
+            [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Restart",  @"MIDIMonitor", bundle, "Restart button after MIDI spy client creation fails")];
 
             if ([alert runModal] == NSAlertSecondButtonReturn) { // Restart
-                NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:@"tell application \"Finder\" to restart"];
-                [appleScript executeAndReturnError:NULL];
-                [appleScript release];
+                NSAlert *ynAlert = [[NSAlert alloc] init];
+                ynAlert.messageText = NSLocalizedStringFromTableInBundle(@"Are you sure you want to restart now?", @"MIDIMonitor", bundle, "Restart y/n?");
+                [ynAlert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Restart", @"MIDIMonitor", bundle, "Restart button title")];
+                [ynAlert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Cancel", @"MIDIMonitor", bundle, "Cancel button title")];
+                if ([ynAlert runModal] == NSAlertFirstButtonReturn) {
+                    NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:@"tell application \"Finder\" to restart"];
+                    [appleScript executeAndReturnError:NULL];
+                    [appleScript release];
+                }
+                [ynAlert release];
             }
 
             [alert release];
