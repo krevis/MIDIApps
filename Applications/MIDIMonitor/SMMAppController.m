@@ -50,14 +50,13 @@ NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNe
         NSBundle *bundle = SMBundleForObject(self);
         NSAlert *alert = [[NSAlert alloc] init];
         alert.alertStyle = NSAlertStyleCritical;
-        alert.messageText = NSLocalizedStringFromTableInBundle(@"There was a problem initializing the MIDI system. To try to fix this, restart the computer.", @"MIDIMonitor", bundle, "error message if MIDI initialization fails");
+        alert.messageText = NSLocalizedStringFromTableInBundle(@"The MIDI system could not be started.", @"MIDIMonitor", bundle, "error message if MIDI initialization fails");
+        alert.informativeText = NSLocalizedStringFromTableInBundle(@"This probably affects all apps that use MIDI, not just MIDI Monitor.\n\nMost likely, the cause is a bad MIDI driver. Remove any MIDI drivers that you don't recognize, then try again.", @"MIDIMonitor", bundle, "informative text if MIDI initialization fails");
         [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Quit", @"MIDIMonitor", bundle, "title of quit button")];
-        [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Restart Now",  @"MIDIMonitor", bundle, "Restart button after MIDI spy client creation fails")];
+        [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Show MIDI Drivers",  @"MIDIMonitor", bundle, "Show MIDI Drivers button after MIDI spy client creation fails")];
 
-        if ([alert runModal] == NSAlertSecondButtonReturn) { // Restart
-            NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:@"tell application \"Finder\" to restart"];
-            [appleScript executeAndReturnError:NULL];
-            [appleScript release];
+        if ([alert runModal] == NSAlertSecondButtonReturn) {
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL fileURLWithPath:@"/Library/Audio/MIDI Drivers"]];
         }
 
         [alert release];
