@@ -111,32 +111,18 @@ static NSError * FindDriverInFramework(CFURLRef *urlPtr, UInt32 *versionPtr)
     NSError *error;
 
     // Find this framework's bundle
-    frameworkBundle = nil;// CFBundleGetBundleWithIdentifier(kSpyingMIDIDriverFrameworkIdentifier);
+    frameworkBundle = CFBundleGetBundleWithIdentifier(kSpyingMIDIDriverFrameworkIdentifier);
     if (!frameworkBundle) {
         __Debug_String("MIDISpyClient: Couldn't find our own framework's bundle!");
-        NSDictionary *userInfo = @{
-                                   NSLocalizedDescriptionKey: @"Something happened.",
-                                   NSLocalizedFailureReasonErrorKey: @"Here's why: bad things happen sometimes.",
-                                   NSLocalizedRecoverySuggestionErrorKey: @"Here's what you should do. Let me tell you all about it.",
-                                   NSLocalizedRecoveryOptionsErrorKey: @[ @"Continue" ],
-        };
-        error = [NSError errorWithDomain:MIDISpyDriverInstallationErrorDomain code:MIDISpyDriverInstallationErrorCouldNotFindBundle userInfo:userInfo];
-
-        // TODO Do better at NSError parameters for all 6 errors we have. Work out how to do restart / show location.
-        // If a URL is involved consider stashing it in userInfo under NSURLErrorKey.
-
-//        FOUNDATION_EXPORT NSErrorUserInfoKey const NSLocalizedDescriptionKey;             // NSString, a complete sentence (or more) describing ideally both what failed and why it failed.
-//        FOUNDATION_EXPORT NSErrorUserInfoKey const NSLocalizedFailureReasonErrorKey;      // NSString, a complete sentence (or more) describing why the operation failed.
-//        FOUNDATION_EXPORT NSErrorUserInfoKey const NSLocalizedRecoverySuggestionErrorKey; // NSString, a complete sentence (or more) describing what the user can do to fix the problem.
-//        FOUNDATION_EXPORT NSErrorUserInfoKey const NSLocalizedRecoveryOptionsErrorKey;    // NSArray of NSStrings corresponding to button titles.
-//        FOUNDATION_EXPORT NSErrorUserInfoKey const NSRecoveryAttempterErrorKey;           // Instance of a subclass of NSObject that conforms to the NSErrorRecoveryAttempting informal protocol
-
+        NSString *reason = @"The driver's framework could not be found inside the app.";
+        error = [NSError errorWithDomain:MIDISpyDriverInstallationErrorDomain code:MIDISpyDriverInstallationErrorCouldNotFindBundle userInfo:@{NSLocalizedFailureReasonErrorKey: reason}];
     } else {
         // Find the copy of the plugin in the framework's resources
         driverURL = CFBundleCopyResourceURL(frameworkBundle, kSpyingMIDIDriverPlugInName, NULL, NULL);
         if (!driverURL) {
             __Debug_String("MIDISpyClient: Couldn't find the copy of the plugin in our framework!");
-            error = [NSError errorWithDomain:MIDISpyDriverInstallationErrorDomain code:MIDISpyDriverInstallationErrorCouldNotFindPlugIn userInfo:nil];
+            NSString *reason = @"The driver could not be found inside the app.";
+            error = [NSError errorWithDomain:MIDISpyDriverInstallationErrorDomain code:MIDISpyDriverInstallationErrorCouldNotFindPlugIn userInfo:@{NSLocalizedFailureReasonErrorKey: reason}];
         } else {
             // Make a CFBundle with it.
             CFBundleRef driverBundle;
@@ -146,7 +132,8 @@ static NSError * FindDriverInFramework(CFURLRef *urlPtr, UInt32 *versionPtr)
                 __Debug_String("MIDISpyClient: Couldn't create a CFBundle for the copy of the plugin in our framework!");
                 CFRelease(driverURL);
                 driverURL = NULL;
-                error = [NSError errorWithDomain:MIDISpyDriverInstallationErrorDomain code:MIDISpyDriverInstallationErrorCouldNotMakeBundleForPlugIn userInfo:nil];
+                NSString *reason = @"Could not make a bundle for the driver.";
+                error = [NSError errorWithDomain:MIDISpyDriverInstallationErrorDomain code:MIDISpyDriverInstallationErrorCouldNotMakeBundleForPlugIn userInfo:@{NSLocalizedFailureReasonErrorKey: reason}];
             } else {
                 // Remember the version of the bundle.
                 driverVersion = CFBundleGetVersionNumber(driverBundle);
@@ -214,7 +201,8 @@ static NSURL *UserMIDIDriversURL(NSError **outErrorPtr) {
     NSURL *folderURL = [[libraryURL URLByAppendingPathComponent:@"Audio" isDirectory:YES] URLByAppendingPathComponent:@"MIDI Drivers" isDirectory:YES];
     if (!folderURL) {
         if (outErrorPtr) {
-            *outErrorPtr = [NSError errorWithDomain:MIDISpyDriverInstallationErrorDomain code:MIDISpyDriverInstallationErrorCannotMakeDriversURL userInfo:nil];
+            NSString *reason = @"Could not make a URL for the user's Library/Audio/MIDI Drivers folder.";
+            *outErrorPtr = [NSError errorWithDomain:MIDISpyDriverInstallationErrorDomain code:MIDISpyDriverInstallationErrorCannotMakeDriversURL userInfo:@{NSLocalizedFailureReasonErrorKey: reason}];
         }
         return nil;
     }
@@ -260,7 +248,8 @@ static NSError * InstallDriver(CFURLRef ourDriverURL)
 {
     NSString *driverName = [(__bridge NSURL *)ourDriverURL lastPathComponent];
     if (!driverName) {
-        return [NSError errorWithDomain:MIDISpyDriverInstallationErrorDomain code:MIDISpyDriverInstallationErrorDriverHasNoName userInfo:nil];
+        NSString *reason = @"Could not determine the driver's name.";
+        return [NSError errorWithDomain:MIDISpyDriverInstallationErrorDomain code:MIDISpyDriverInstallationErrorDriverHasNoName userInfo:@{NSLocalizedFailureReasonErrorKey: reason}];
     }
 
     NSError *error = nil;
@@ -278,7 +267,8 @@ static NSError * InstallDriver(CFURLRef ourDriverURL)
 
     NSURL *copiedDriverURL = [folderURL URLByAppendingPathComponent:driverName];
     if (!copiedDriverURL) {
-        return [NSError errorWithDomain:MIDISpyDriverInstallationErrorDomain code:MIDISpyDriverInstallationErrorCannotMakeDriverDestinationURL userInfo:nil];
+        NSString *reason = @"Could not make a URL to copy the driver to, inside the user's Library/Audio/MIDI Drivers folder.";
+        return [NSError errorWithDomain:MIDISpyDriverInstallationErrorDomain code:MIDISpyDriverInstallationErrorCannotMakeDriverDestinationURL userInfo:@{NSLocalizedFailureReasonErrorKey: reason}];
     }
 
     BOOL copied = [[NSFileManager defaultManager] copyItemAtURL:(__bridge NSURL *)ourDriverURL toURL:copiedDriverURL error:&error];

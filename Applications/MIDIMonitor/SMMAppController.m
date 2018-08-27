@@ -47,103 +47,23 @@ NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNe
     // Initialize CoreMIDI while the app's icon is still bouncing, so we don't have a large pause after it stops bouncing
     // but before the app's window opens.  (CoreMIDI needs to find and possibly start its server process, which can take a while.)
     if ([SMClient sharedClient] == nil) {
-        NSBundle *bundle = SMBundleForObject(self);
-        NSAlert *alert = [[NSAlert alloc] init];
-        alert.alertStyle = NSAlertStyleCritical;
-        alert.messageText = NSLocalizedStringFromTableInBundle(@"The MIDI system could not be started.", @"MIDIMonitor", bundle, "error message if MIDI initialization fails");
-        alert.informativeText = NSLocalizedStringFromTableInBundle(@"This probably affects all apps that use MIDI, not just MIDI Monitor.\n\nMost likely, the cause is a bad MIDI driver. Remove any MIDI drivers that you don't recognize, then try again.", @"MIDIMonitor", bundle, "informative text if MIDI initialization fails");
-        [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Quit", @"MIDIMonitor", bundle, "title of quit button")];
-        [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Show MIDI Drivers",  @"MIDIMonitor", bundle, "Show MIDI Drivers button after MIDI spy client creation fails")];
-
-        if ([alert runModal] == NSAlertSecondButtonReturn) {
-            [[NSWorkspace sharedWorkspace] openURL:[NSURL fileURLWithPath:@"/Library/Audio/MIDI Drivers"]];
-        }
-
-        [alert release];
-        [NSApp terminate:nil];
+        [self failedToInitCoreMIDI];
         return;
     }
 
     // After this point, we are OK to open documents (untitled or otherwise)
     self.shouldOpenUntitledDocument = YES;
 
-    if (!installError) {
+    if (installError) {
+        [self failedToInstallSpyDriverWithError:installError];
+    }
+    else {
         // Create our client for spying on MIDI output.
         OSStatus status = MIDISpyClientCreate(&_midiSpyClient);
         if (status != noErr) {
-            NSBundle *bundle = SMBundleForObject(self);
-            NSAlert *alert = [[NSAlert alloc] init];
-            alert.messageText = NSLocalizedStringFromTableInBundle(@"MIDI Monitor could not make a connection to its MIDI driver.", @"MIDIMonitor", bundle, "error message if MIDI spy client creation fails");
-            alert.informativeText = NSLocalizedStringFromTableInBundle(@"If you continue, MIDI Monitor will not be able to see the output of other MIDI applications, but all other features will still work.\n\nTo fix the problem, restart your computer.", @"MIDIMonitor", bundle, "second line of warning when MIDI spy is unavailable");
-            [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Continue", @"MIDIMonitor", bundle, "Continue button after MIDI spy client creation fails")];
-            [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Restart",  @"MIDIMonitor", bundle, "Restart button after MIDI spy client creation fails")];
-
-            if ([alert runModal] == NSAlertSecondButtonReturn) { // Restart
-                NSAlert *ynAlert = [[NSAlert alloc] init];
-                ynAlert.messageText = NSLocalizedStringFromTableInBundle(@"Are you sure you want to restart now?", @"MIDIMonitor", bundle, "Restart y/n?");
-                [ynAlert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Restart", @"MIDIMonitor", bundle, "Restart button title")];
-                [ynAlert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Cancel", @"MIDIMonitor", bundle, "Cancel button title")];
-                if ([ynAlert runModal] == NSAlertFirstButtonReturn) {
-                    NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:@"tell application \"Finder\" to restart"];
-                    [appleScript executeAndReturnError:NULL];
-                    [appleScript release];
-                }
-                [ynAlert release];
-            }
-
-            [alert release];
+            [self failedToConnectToSpyClient];
         }
     }
-    else {  // Failure to install
-        NSAlert *alert = [NSAlert alertWithError:installError];
-        [alert runModal];
-    }
-
-    /*
-
-        case kMIDISpyDriverCouldNotRemoveOldDriver: {
-            NSURL *driversURL = MIDISpyUserMIDIDriversURL();    // should be non-nil, but might be nil if there's a really weird error
-
-            NSAlert *alert = [[NSAlert alloc] init];
-            alert.messageText = NSLocalizedStringFromTableInBundle(@"MIDI Monitor tried to install a new version of its MIDI driver, but it could not remove the old version.", @"MIDIMonitor", bundle, "error message if MIDI spy driver installation fails because couldn't remove");
-            alert.informativeText = NSLocalizedStringFromTableInBundle(@"To fix this, remove the old driver.\n\nMIDI Monitor will not be able to see the output of other MIDI applications, but all other features will still work.", @"MIDIMonitor", bundle, "error message if old MIDI spy driver could not be removed");
-            [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Continue", @"MIDIMonitor", bundle, "Continue button after MIDI spy driver installation fails")];
-            alert.buttons[0].tag = 0;
-            if (driversURL) {
-                [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Show Driver Location",  @"MIDIMonitor", bundle, "Show Driver Location button after MIDI spy driver installation fails because couldn't remove")];
-                alert.buttons[1].tag = 1;
-            }
-
-            if ([alert runModal] == 1) { // Show Driver Location
-                [[NSWorkspace sharedWorkspace] selectFile:driversURL.path inFileViewerRootedAtPath:@""];
-            }
-
-            [alert release];
-            break;
-        }
-
-        case kMIDISpyDriverInstallationFailed:
-        default: {
-            NSURL *driversURL = MIDISpyUserMIDIDriversURL();    // should be non-nil, but might be nil if there's a really weird error
-
-            NSAlert *alert = [[NSAlert alloc] init];
-            alert.messageText = NSLocalizedStringFromTableInBundle(@"MIDI Monitor tried to install a MIDI driver, but it failed.", @"MIDIMonitor", bundle, "error message if MIDI spy driver installation fails");
-            alert.informativeText = NSLocalizedStringFromTableInBundle(@"The privileges of the install location might not allow write access.\n\nMIDI Monitor will not be able to see the output of other MIDI applications, but all other features will still work.", @"MIDIMonitor", bundle, "second line of warning when MIDI spy driver installation fails");
-            [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Continue", @"MIDIMonitor", bundle, "Continue button after MIDI spy driver installation fails")];
-            alert.buttons[0].tag = 0;
-            if (driversURL) {
-                [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Show Install Location",  @"MIDIMonitor", bundle, "Show Install Location button after MIDI spy driver installation fails")];
-                alert.buttons[1].tag = 1;
-            }
-
-            if ([alert runModal] == 1) { // Show Install Location
-                [[NSWorkspace sharedWorkspace] selectFile:driversURL.path inFileViewerRootedAtPath:@""];
-            }
-
-            [alert release];
-            break;
-        }
-    */
 }
 
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender
@@ -270,6 +190,140 @@ NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNe
 }
 
 #pragma mark Private
+
+// Various launch failure paths
+
+- (void)failedToInitCoreMIDI
+{
+    NSBundle *bundle = SMBundleForObject(self);
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.alertStyle = NSAlertStyleCritical;
+    alert.messageText = NSLocalizedStringFromTableInBundle(@"The MIDI system could not be started.", @"MIDIMonitor", bundle, "error message if MIDI initialization fails");
+    alert.informativeText = NSLocalizedStringFromTableInBundle(@"This probably affects all apps that use MIDI, not just MIDI Monitor.\n\nMost likely, the cause is a bad MIDI driver. Remove any MIDI drivers that you don't recognize, then try again.", @"MIDIMonitor", bundle, "informative text if MIDI initialization fails");
+    [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Quit", @"MIDIMonitor", bundle, "title of quit button")];
+    [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Show MIDI Drivers",  @"MIDIMonitor", bundle, "Show MIDI Drivers button after MIDI spy client creation fails")];
+
+    if ([alert runModal] == NSAlertSecondButtonReturn) {
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL fileURLWithPath:@"/Library/Audio/MIDI Drivers"]];
+    }
+
+    [alert release];
+    [NSApp terminate:nil];
+}
+
+- (void)failedToInstallSpyDriverWithError:(NSError *)installError
+{
+    // Failure to install. Customize the error before presenting it.
+
+    NSBundle *bundle = SMBundleForObject(self);
+
+    NSMutableDictionary *presentedErrorUserInfo = [[installError userInfo] mutableCopy];
+    presentedErrorUserInfo[NSLocalizedDescriptionKey] = NSLocalizedStringFromTableInBundle(@"MIDI Monitor could not install its driver.", @"MIDIMonitor", bundle, "error message if spy driver install fails");
+
+    if (installError.domain == MIDISpyDriverInstallationErrorDomain) {
+        // Errors with this domain should be very rare and indicate a problem with the app itself.
+
+        NSMutableString *fullSuggestion = [NSMutableString string];
+        NSString *reason = [installError localizedFailureReason];
+        if (reason && ![@"" isEqualToString:reason]) {
+            [fullSuggestion appendString:reason];
+            [fullSuggestion appendString:@"\n\n"];
+            [fullSuggestion appendString:NSLocalizedStringFromTableInBundle(@"This shouldn't happen. Try downloading MIDI Monitor again.", @"MIDIMonitor", bundle, "suggestion if spy driver install fails due to our own error")];
+            [fullSuggestion appendString:@"\n\n"];
+            [fullSuggestion appendString:NSLocalizedStringFromTableInBundle(@"MIDI Monitor will not be able to see the output of other MIDI applications, but all other features will still work.", @"MIDIMonitor", bundle, "more suggestion if spy driver install fails")];
+        }
+
+        if (![@"" isEqualToString:fullSuggestion]) {
+            presentedErrorUserInfo[NSLocalizedRecoverySuggestionErrorKey] = fullSuggestion;
+        }
+    }
+    else {
+        NSMutableString *fullSuggestion = [NSMutableString string];
+        NSString *reason = [installError localizedDescription];
+        if (reason && ![@"" isEqualToString:reason]) {
+            [fullSuggestion appendString:reason];
+        }
+
+        NSString *suggestion = [installError localizedRecoverySuggestion];
+        if (suggestion && ![@"" isEqualToString:suggestion]) {
+            if (![@"" isEqualToString:fullSuggestion]) {
+                [fullSuggestion appendString:@"\n\n"];
+            }
+            [fullSuggestion appendString:suggestion];
+        }
+
+        if (![@"" isEqualToString:fullSuggestion]) {
+            [fullSuggestion appendString:@"\n\n"];
+            [fullSuggestion appendString:NSLocalizedStringFromTableInBundle(@"MIDI Monitor will not be able to see the output of other MIDI applications, but all other features will still work.", @"MIDIMonitor", bundle, "more suggestion if spy driver install fails")];
+            presentedErrorUserInfo[NSLocalizedRecoverySuggestionErrorKey] = fullSuggestion;
+        }
+
+        // To find the path involved, look for NSDestinationFilePath first (it's set for failures to copy, and is better than the source path),
+        // then fall back to the documented keys.
+        NSString *filePath = installError.userInfo[@"NSDestinationFilePath"];
+        if (!filePath) {
+            filePath = installError.userInfo[NSFilePathErrorKey];
+        }
+        if (!filePath) {
+            NSURL *url = installError.userInfo[NSURLErrorKey];
+            if (url && [url isFileURL]) {
+                filePath = [url path];
+            }
+        }
+
+        if (filePath && ![@"" isEqualToString:filePath]) {
+            presentedErrorUserInfo[NSFilePathErrorKey] = filePath;
+            presentedErrorUserInfo[NSLocalizedRecoveryOptionsErrorKey] = @[
+                NSLocalizedStringFromTableInBundle(@"Continue", @"MIDIMonitor", bundle, "Continue button if spy driver install fails"),
+                NSLocalizedStringFromTableInBundle(@"Show in Finder", @"MIDIMonitor", bundle, "Show in Finder button if spy driver install fails"),
+            ];
+            presentedErrorUserInfo[NSRecoveryAttempterErrorKey] = self;
+        }
+    }
+
+    NSError *presentedError = [NSError errorWithDomain:installError.domain code:installError.code userInfo:presentedErrorUserInfo];
+    [presentedErrorUserInfo release];
+    [NSApp presentError:presentedError];
+}
+
+// NSErrorRecoveryAttempting
+- (BOOL)attemptRecoveryFromError:(NSError *)error optionIndex:(NSUInteger)recoveryOptionIndex
+{
+    if (recoveryOptionIndex == 0) {
+        // Continue: do nothing
+    }
+    else if (recoveryOptionIndex == 1) {
+        NSString *filePath = error.userInfo[NSFilePathErrorKey];
+        [[NSWorkspace sharedWorkspace] selectFile:filePath inFileViewerRootedAtPath:@""];
+    }
+
+    return YES; // recovery was successful
+}
+
+- (void)failedToConnectToSpyClient
+{
+    NSBundle *bundle = SMBundleForObject(self);
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.messageText = NSLocalizedStringFromTableInBundle(@"MIDI Monitor could not make a connection to its MIDI driver.", @"MIDIMonitor", bundle, "error message if MIDI spy client creation fails");
+    alert.informativeText = NSLocalizedStringFromTableInBundle(@"If you continue, MIDI Monitor will not be able to see the output of other MIDI applications, but all other features will still work.\n\nTo fix the problem, restart your computer.", @"MIDIMonitor", bundle, "second line of warning when MIDI spy is unavailable");
+    [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Continue", @"MIDIMonitor", bundle, "Continue button after MIDI spy client creation fails")];
+    [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Restart",  @"MIDIMonitor", bundle, "Restart button after MIDI spy client creation fails")];
+
+    if ([alert runModal] == NSAlertSecondButtonReturn) { // Restart
+        NSAlert *ynAlert = [[NSAlert alloc] init];
+        ynAlert.messageText = NSLocalizedStringFromTableInBundle(@"Are you sure you want to restart now?", @"MIDIMonitor", bundle, "Restart y/n?");
+        [ynAlert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Restart", @"MIDIMonitor", bundle, "Restart button title")];
+        [ynAlert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Cancel", @"MIDIMonitor", bundle, "Cancel button title")];
+        if ([ynAlert runModal] == NSAlertFirstButtonReturn) {
+            NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:@"tell application \"Finder\" to restart"];
+            [appleScript executeAndReturnError:NULL];
+            [appleScript release];
+        }
+        [ynAlert release];
+    }
+
+    [alert release];
+}
 
 - (void)sourceEndpointsAppeared:(NSNotification *)notification
 {
