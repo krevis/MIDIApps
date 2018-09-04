@@ -17,7 +17,7 @@
 - (id)initWithPath:(NSString *)fullPath;
 - (id)initWithAliasRecordData:(NSData *)aliasRecordData;
 
-- (NSData *)data;
+@property (nonatomic, readonly) NSData *data;
 
 - (NSString *)path;
 - (NSString *)pathAllowingUI:(BOOL)allowUI;

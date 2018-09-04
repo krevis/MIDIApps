@@ -10,197 +10,171 @@
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !__has_feature(objc_arc)
+#error This file requires ARC.
+#endif
+
 #import "SSELibraryEntry.h"
 
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
-#import "BDAlias.h"
+#import "SSEAlias.h"
 #import "SSELibrary.h"
 
 
-@interface SSELibraryEntry (Private)
+@interface SSELibraryEntry ()
 
-+ (NSString *)manufacturerFromMessages:(NSArray *)messages;
-+ (NSNumber *)sizeFromMessages:(NSArray *)messages;
-+ (NSNumber *)messageCountFromMessages:(NSArray *)messages;
+// Redeclare readwrite
+@property (nonatomic, weak, readwrite) SSELibrary *library;
+@property (nonatomic, readwrite) NSString *name;
+@property (nonatomic, readwrite) NSString *manufacturer;
+@property (nonatomic, readwrite) NSNumber *size;
+@property (nonatomic, readwrite) NSNumber *messageCount;
 
-- (void)setValuesFromDictionary:(NSDictionary *)dict;
-
-- (void)updateDerivedInformationFromMessages:(NSArray *)messages;
-
-- (void)setManufacturer:(NSString *)value;
-- (void)setSize:(NSNumber *)value;
-- (void)setMessageCount:(NSNumber *)value;
+@property (nonatomic) SSEAlias *alias;
+@property (nonatomic) NSData *oldAliasRecordData;
 
 @end
 
 
 @implementation SSELibraryEntry
+{
+    struct {
+        unsigned int isFilePresent:1;
+        unsigned int hasLookedForFile:1;
+    } _flags;
+}
 
 NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidChangeNotification";
 
 
-- (id)initWithLibrary:(SSELibrary *)library;
+- (id)initWithLibrary:(SSELibrary *)library
 {
-    if (!(self = [super init]))
-        return nil;
-
-    nonretainedLibrary = library;
-    flags.hasLookedForFile = NO;
-    flags.isFilePresent = NO;
+    if ((self = [super init])) {
+        _library = library;
+        _flags.hasLookedForFile = NO;
+        _flags.isFilePresent = NO;
+    }
 
     return self;
 }
 
-- (id)initWithLibrary:(SSELibrary *)library dictionary:(NSDictionary *)dict;
+- (id)initWithLibrary:(SSELibrary *)library dictionary:(NSDictionary *)dict
 {
-    if (!(self = [self initWithLibrary:library]))
-        return nil;
-
-    [self setValuesFromDictionary:dict];
+    if ((self = [self initWithLibrary:library])) {
+        [self setValuesFromDictionary:dict];
+    }
     
     return self;
 }
 
-- (id)init;
+- (id)init
 {
     SMRejectUnusedImplementation(self, _cmd);
     return nil;
 }
 
-- (void)dealloc
+- (NSDictionary *)dictionaryValues
 {
-    nonretainedLibrary = nil;
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    if (_alias.data) {
+        [dict setObject:_alias.data forKey:@"bookmark"];
+    }
+    if (_oldAliasRecordData) {
+        [dict setObject:_oldAliasRecordData forKey:@"alias"];
+    }
+    if (_name) {
+        [dict setObject:_name forKey:@"name"];
+    }
 
-    [name release];
-    name = nil;
-    [alias release];
-    alias = nil;
-
-    [manufacturer release];
-    manufacturer = nil;
-    [sizeNumber release];
-    sizeNumber = nil;
-    [messageCountNumber release];
-    messageCountNumber = nil;
-	[programNumber release];
-	programNumber = nil;
-    
-    [super dealloc];
-}
-
-- (SSELibrary *)library;
-{
-    return nonretainedLibrary;
-}
-
-- (NSDictionary *)dictionaryValues;
-{
-    NSMutableDictionary *dict;
-
-    dict = [NSMutableDictionary dictionary];
-    if (alias)
-        [dict setObject:[alias aliasData] forKey:@"alias"];
-    if (name)
-        [dict setObject:name forKey:@"name"];
-
-    if (manufacturer)
-        [dict setObject:manufacturer forKey:@"manufacturerName"];
-    if (sizeNumber)
-        [dict setObject:sizeNumber forKey:@"size"];
-    if (messageCountNumber)
-        [dict setObject:messageCountNumber forKey:@"messageCount"];
-	if (programNumber)
-        [dict setObject:programNumber forKey:@"programNumber"];
+    if (_manufacturer) {
+        [dict setObject:_manufacturer forKey:@"manufacturerName"];
+    }
+    if (_size) {
+        [dict setObject:_size forKey:@"size"];
+    }
+    if (_messageCount) {
+        [dict setObject:_messageCount forKey:@"messageCount"];
+    }
+    if (_programNumber) {
+        [dict setObject:_programNumber forKey:@"programNumber"];
+    }
 
     return dict;
 }
 
-- (NSString *)path;
+- (NSString *)path
 {
-    BOOL wasFilePresent;
-    NSString *path;
-
-    wasFilePresent = flags.hasLookedForFile && flags.isFilePresent;
+    BOOL wasFilePresent = _flags.hasLookedForFile && _flags.isFilePresent;
     
-    path = [alias fullPathRelativeToPath:nil allowingUI:NO];
+    NSString *path = [_alias pathAllowingUI:NO];
 
-    flags.hasLookedForFile = YES;
-    flags.isFilePresent = (path && [[NSFileManager defaultManager] fileExistsAtPath:path]);
+    _flags.hasLookedForFile = YES;
+    _flags.isFilePresent = (path && [[NSFileManager defaultManager] fileExistsAtPath:path]);
 
-    if (flags.isFilePresent != wasFilePresent)
-        [nonretainedLibrary noteEntryChanged];
+    if (_flags.isFilePresent != wasFilePresent) {
+        [self.library noteEntryChanged];
+    }
 
-    if (flags.isFilePresent)
+    if (_flags.isFilePresent) {
         [self setName:[[NSFileManager defaultManager] displayNameAtPath:path]];
+    }
 
     return path;
 }
 
-- (void)setPath:(NSString *)value;
+- (void)setPath:(NSString *)value
 {
-    [alias release];
-    alias = [[BDAlias alloc] initWithPath:value];
+    _alias = [[SSEAlias alloc] initWithPath:value];
+    _oldAliasRecordData = nil;
 
-    [nonretainedLibrary noteEntryChanged];
+    [self.library noteEntryChanged];
 }
 
-- (NSString *)name;
+- (void)setName:(NSString *)value
 {
-    return name;
-}
-
-- (void)setName:(NSString *)value;
-{
-    if (name != value && ![name isEqualToString:value]) {
-        [name release];
-        name = [value retain];
+    if (_name != value && ![_name isEqualToString:value]) {
+        _name = value;
 
         [[NSNotificationCenter defaultCenter] postNotificationName:SSELibraryEntryNameDidChangeNotification object:self];
-        [nonretainedLibrary noteEntryChanged];
+        [self.library noteEntryChanged];
     }
 }
 
-- (void)setNameFromFile;
+- (void)setNameFromFile
 {
-    NSString *path;
     NSString *newName = nil;
 
-    if ((path = [self path]))
+    NSString *path = [self path];
+    if (path) {
         newName = [[NSFileManager defaultManager] displayNameAtPath:path];
+    }
 
-    if (!newName)
+    if (!newName) {
         newName = NSLocalizedStringFromTableInBundle(@"Unknown", @"SysExLibrarian", SMBundleForObject(self), "Unknown");
+    }
 
     [self setName:newName];
 }
 
-- (BOOL)renameFileTo:(NSString *)newFileName;
+- (BOOL)renameFileTo:(NSString *)newFileName
 {
-    NSString *path;
-    NSString *fileName;
-    NSString *extension;
-    NSString *modifiedNewFileName;
-    NSString *newPath;
-    BOOL shouldHideExtension = NO;
-    BOOL shouldShowExtension = NO;
-    NSFileManager *fileManager;
-    BOOL success = NO;
-
-    path = [self path];
-    if (!path)
+    NSString *path = [self path];
+    if (!path) {
         return NO;
+    }
 
-    fileName = [path lastPathComponent];
-    extension = [fileName pathExtension];
+    NSString *fileName = [path lastPathComponent];
+    NSString *extension = [fileName pathExtension];
 
     // Calculate the new file name, keeping the same extension as before.
     // TODO Is that really exactly what we want?
+    NSString *modifiedNewFileName;
+    BOOL shouldHideExtension = NO;
+    BOOL shouldShowExtension = NO;
     if (extension && [extension length] > 0) {
         // The old file name had an extension. We need to make sure the new name has the same extension.
-        NSString *newExtension;
-        
-        newExtension = [newFileName pathExtension];
+        NSString *newExtension = [newFileName pathExtension];
         if (newExtension && [newExtension length] > 0) {
             // Both the old and new file names have extensions.
             if ([newExtension isEqualToString:extension]) {
@@ -246,21 +220,24 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
     // Path separator idiocy:
     // The Finder does not allow the ':' character in file names -- it beeps and changes it to '-'. So we do the same.
     // We always need to change '/' to a different character, since (as far as I know) there is no way of escaping the '/' character from NSFileManager calls. It gets changed to ":" in the Finder for all file systems, so let's just do that. (Note that the character will still display as '/'!)
-    NSMutableString* muModifiedNewFileName = [[modifiedNewFileName mutableCopy] autorelease];
+    NSMutableString* muModifiedNewFileName = [modifiedNewFileName mutableCopy];
     [muModifiedNewFileName replaceOccurrencesOfString:@":" withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [muModifiedNewFileName length])];
     [muModifiedNewFileName replaceOccurrencesOfString:@"/" withString:@":" options:NSLiteralSearch range:NSMakeRange(0, [muModifiedNewFileName length])];
     modifiedNewFileName = muModifiedNewFileName;
 
-    newPath = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:modifiedNewFileName];
+    NSString *newPath = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:modifiedNewFileName];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    BOOL success = NO;
 
-    fileManager = [NSFileManager defaultManager];
-    
-    if ([newPath isEqualToString:path])
+    if ([newPath isEqualToString:path]) {
         success = YES;
-    else if ([fileManager fileExistsAtPath:newPath])
+    }
+    else if ([fileManager fileExistsAtPath:newPath]) {
         success = NO;
-    else
+    }
+    else {
         success = [fileManager moveItemAtPath:path toPath:newPath error:NULL];
+    }
 
     if (success && (shouldHideExtension || shouldShowExtension)) {
         NSDictionary *attributes;
@@ -278,25 +255,23 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
     return success;
 }
 
-- (NSArray *)messages;
+- (NSArray *)messages
 {
-    NSString *path;
-    SSELibraryFileType fileType;
-    NSArray *messages = nil;
-
-    path = [self path];
-    if (!path)
+    NSString *path = [self path];
+    if (!path) {
         return nil;
+    }
 
-    fileType = [nonretainedLibrary typeOfFileAtPath:path];
-
+    SSELibraryFileType fileType = [self.library typeOfFileAtPath:path];
+    NSArray *messages = nil;
     if (fileType == SSELibraryFileTypeStandardMIDI) {
         messages = [SMSystemExclusiveMessage systemExclusiveMessagesInStandardMIDIFile:path];
-    } else if (fileType == SSELibraryFileTypeRaw) {
-        NSData *data;
-
-        if ((data = [NSData dataWithContentsOfFile:path]))
+    }
+    else if (fileType == SSELibraryFileTypeRaw) {
+        NSData *data = [NSData dataWithContentsOfFile:path];
+        if (data) {
             messages = [SMSystemExclusiveMessage systemExclusiveMessagesInData:data];
+        }
     }
 
     // Always update this stuff when we read the messages
@@ -305,75 +280,51 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
     return messages;
 }
 
-- (NSString *)manufacturer;
+- (BOOL)isFilePresent
 {
-    return manufacturer;
-}
-
-- (NSNumber *)size;
-{
-    return sizeNumber;
-}
-
-- (NSNumber *)messageCount;
-{
-    return messageCountNumber;
-}
-
-- (BOOL)isFilePresent;
-{
-    if (!flags.hasLookedForFile)
+    if (!_flags.hasLookedForFile) {
         [self path];
+    }
 
-    SMAssert(flags.hasLookedForFile);
-    return flags.isFilePresent;
+    SMAssert(_flags.hasLookedForFile);
+    return _flags.isFilePresent;
 }
 
-- (BOOL)isFilePresentIgnoringCachedValue;
+- (BOOL)isFilePresentIgnoringCachedValue
 {
-    flags.hasLookedForFile = NO;
+    _flags.hasLookedForFile = NO;
     return [self isFilePresent];
 }
 
-- (BOOL)isFileInLibraryFileDirectory;
+- (BOOL)isFileInLibraryFileDirectory
 {
-    if (![self isFilePresentIgnoringCachedValue])
+    if (![self isFilePresentIgnoringCachedValue]) {
         return NO;
-
-    return [nonretainedLibrary isPathInFileDirectory:[self path]];
-}
-
-- (void)setProgramNumber:(NSNumber *)value;
-{
-    if (value != programNumber && ![programNumber isEqual:value]) {
-        [programNumber release];
-        programNumber = [value retain];
-        
-        [nonretainedLibrary noteEntryChanged];
     }
+
+    return [self.library isPathInFileDirectory:[self path]];
 }
-- (NSNumber *)programNumber
+
+- (void)setProgramNumber:(NSNumber *)value
 {
-	return programNumber;
-}
-	
-@end
+    if (value != _programNumber && ![_programNumber isEqual:value]) {
+        _programNumber = value;
+        
+        [self.library noteEntryChanged];
+    }
+}	
 
+#pragma mark Private
 
-@implementation SSELibraryEntry (Private)
-
-+ (NSString *)manufacturerFromMessages:(NSArray *)messages;
++ (NSString *)manufacturerFromMessages:(NSArray *)messages
 {
-    NSUInteger messageIndex;
     NSString *newManufacturer = nil;
 
-    messageIndex = [messages count];
-    while (messageIndex--) {
-        NSString *messageManufacturer;
-
-        messageManufacturer = [[messages objectAtIndex:messageIndex] manufacturerName];
-        if (!messageManufacturer)
+    for (SMSystemExclusiveMessage *message in messages) {
+        NSString *messageManufacturer = [message manufacturerName];
+        if (!messageManufacturer) {
             continue;
+        }
 
         if (!newManufacturer) {
             newManufacturer = messageManufacturer;
@@ -383,104 +334,112 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
         }
     }
 
-    if (!newManufacturer)
+    if (!newManufacturer) {
         newManufacturer = NSLocalizedStringFromTableInBundle(@"Unknown", @"SysExLibrarian", SMBundleForObject(self), "Unknown");
+    }
 
     return newManufacturer;
 }
 
-+ (NSNumber *)sizeFromMessages:(NSArray *)messages;
++ (NSNumber *)sizeFromMessages:(NSArray *)messages
 {
-    NSUInteger messageIndex;
     NSUInteger size = 0;
-
-    messageIndex = [messages count];
-    while (messageIndex--)
-        size += [[messages objectAtIndex:messageIndex] fullMessageDataLength];
+    for (SMSystemExclusiveMessage *message in messages) {
+        size += [message fullMessageDataLength];
+    }
 
     return [NSNumber numberWithUnsignedInteger:size];
 }
 
-+ (NSNumber *)messageCountFromMessages:(NSArray *)messages;
++ (NSNumber *)messageCountFromMessages:(NSArray *)messages
 {
     return [NSNumber numberWithUnsignedInteger:[messages count]];
 }
 
-- (void)setValuesFromDictionary:(NSDictionary *)dict;
+- (void)setValuesFromDictionary:(NSDictionary *)dict
 {
     id data, string, number;
 
-    SMAssert(alias == nil);
-    data = [dict objectForKey:@"alias"];
-    if (data && [data isKindOfClass:[NSData class]])
-        alias = [[BDAlias alloc] initWithData:data];
+    SMAssert(_alias == nil);
+    data = [dict objectForKey:@"bookmark"];
+    if (data && [data isKindOfClass:[NSData class]]) {
+        _alias = [[SSEAlias alloc] initWithData:data];
+    }
 
-    SMAssert(name == nil);
+    // backwards compatibility
+    data = [dict objectForKey:@"alias"];
+    if (data && [data isKindOfClass:[NSData class]]) {
+        // Use this to create an alias if we didn't already
+        if (!_alias) {
+            _alias = [[SSEAlias alloc] initWithAliasRecordData:data];
+        }
+        // Save this data to write out for old clients
+        _oldAliasRecordData = data;
+    }
+
+    SMAssert(_name == nil);
     string = [dict objectForKey:@"name"];
     if (string && [string isKindOfClass:[NSString class]]) {
-        name = [string retain];
+        _name = string;
     } else {
         [self setNameFromFile];
     }
 
-    SMAssert(manufacturer == nil);
+    SMAssert(_manufacturer == nil);
     string = [dict objectForKey:@"manufacturerName"];
     if (string && [string isKindOfClass:[NSString class]]) {
-        manufacturer = [string retain];
+        _manufacturer = string;
     }
 
     number = [dict objectForKey:@"programNumber"];
     if (number && [number isKindOfClass:[NSNumber class]]) {
-        programNumber = [number retain];
+        _programNumber = number;
     }
 	
-    SMAssert(sizeNumber == nil);
+    SMAssert(_size == nil);
     number = [dict objectForKey:@"size"];
     if (number && [number isKindOfClass:[NSNumber class]]) {
-        sizeNumber = [number retain];
+        _size = number;
     }
 
-    SMAssert(messageCountNumber == nil);
+    SMAssert(_messageCount == nil);
     number = [dict objectForKey:@"messageCount"];
     if (number && [number isKindOfClass:[NSNumber class]]) {
-        messageCountNumber = [number retain];
+        _messageCount = number;
     }
 }
 
-- (void)updateDerivedInformationFromMessages:(NSArray *)messages;
+- (void)updateDerivedInformationFromMessages:(NSArray *)messages
 {
     [self setManufacturer:[[self class] manufacturerFromMessages:messages]];
     [self setSize:[[self class] sizeFromMessages:messages]];
     [self setMessageCount:[[self class] messageCountFromMessages:messages]];
 }
 
-- (void)setManufacturer:(NSString *)value;
+- (void)setManufacturer:(NSString *)value
 {
-    if (value != manufacturer && ![manufacturer isEqualToString:value]) {
-        [manufacturer release];
-        manufacturer = [value retain];
+    if (value != _manufacturer && ![_manufacturer isEqualToString:value]) {
+        _manufacturer = value;
 
-        [nonretainedLibrary noteEntryChanged];
+        [self.library noteEntryChanged];
     }
 }
 
-- (void)setSize:(NSNumber *)value;
+- (void)setSize:(NSNumber *)value
 {
-    if (value != sizeNumber && ![sizeNumber isEqual:value]) {
-        [sizeNumber release];
-        sizeNumber = [value retain];
+    if (value != _size && ![_size isEqual:value]) {
+        _size = value;
         
-        [nonretainedLibrary noteEntryChanged];
+        [self.library noteEntryChanged];
     }
 }
 
-- (void)setMessageCount:(NSNumber *)value;
+- (void)setMessageCount:(NSNumber *)value
 {
-    if (value != messageCountNumber && ![messageCountNumber isEqual:value]) {
-        [messageCountNumber release];
-        messageCountNumber = [value retain];
+    if (value != _messageCount && ![_messageCount isEqual:value]) {
+        _messageCount = value;
 
-        [nonretainedLibrary noteEntryChanged];
+        [self.library noteEntryChanged];
     }
 }
 

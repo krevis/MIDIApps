@@ -11,6 +11,8 @@
 		161B721115D8E9BC006E21D4 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 161B720815D8E97D006E21D4 /* Sparkle.framework */; };
 		161B721315D8EA13006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B721215D8EA13006E21D4 /* dsa_pub.pem */; };
 		161B721615D8EA7F006E21D4 /* SysExLibrarian.xml in Resources */ = {isa = PBXBuildFile; fileRef = 161B721515D8EA7F006E21D4 /* SysExLibrarian.xml */; };
+		163A3FC1213E09460075F8A0 /* NSString+SymlinksAndAliases.m in Sources */ = {isa = PBXBuildFile; fileRef = 163A3FC0213E09460075F8A0 /* NSString+SymlinksAndAliases.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		163A3FC4213E1B540075F8A0 /* SSEAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = 163A3FC3213E1B540075F8A0 /* SSEAlias.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		163E35AB09E9EFA600138102 /* NSFileManager-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 163E35A909E9EFA600138102 /* NSFileManager-Extensions.m */; };
 		163FB607199EE2530017B664 /* ToolbarPlayTemplate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB605199EE2530017B664 /* ToolbarPlayTemplate.tiff */; };
 		163FB608199EE2530017B664 /* ToolbarPlayTemplate@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB606199EE2530017B664 /* ToolbarPlayTemplate@2x.tiff */; };
@@ -44,8 +46,7 @@
 		16F033710984B76F006C8A44 /* SSEMIDIController.m in Sources */ = {isa = PBXBuildFile; fileRef = F565B6EA01E1498301000164 /* SSEMIDIController.m */; };
 		16F033720984B76F006C8A44 /* NSPopUpButton-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = F565B6EF01E1567501000164 /* NSPopUpButton-Extensions.m */; };
 		16F033730984B76F006C8A44 /* SSELibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = F583CEB501EE3D3801000164 /* SSELibrary.m */; };
-		16F033740984B76F006C8A44 /* SSELibraryEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = F583CEB901EE3E4401000164 /* SSELibraryEntry.m */; };
-		16F033750984B76F006C8A44 /* BDAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = F551751D01F3745B01000164 /* BDAlias.m */; };
+		16F033740984B76F006C8A44 /* SSELibraryEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = F583CEB901EE3E4401000164 /* SSELibraryEntry.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		16F033760984B76F006C8A44 /* SSETableView.m in Sources */ = {isa = PBXBuildFile; fileRef = F551752101F3ACED01000164 /* SSETableView.m */; };
 		16F033780984B76F006C8A44 /* SSEWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F58752680214C25201000164 /* SSEWindowController.m */; };
 		16F033790984B76F006C8A44 /* NSToolbarItem-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = F587526C0214CA4E01000164 /* NSToolbarItem-Extensions.m */; };
@@ -177,6 +178,10 @@
 		161B71FF15D8E97C006E21D4 /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = ../../ThirdParty/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		161B721215D8EA13006E21D4 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dsa_pub.pem; path = ../../Updates/dsa_pub.pem; sourceTree = "<group>"; };
 		161B721515D8EA7F006E21D4 /* SysExLibrarian.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = SysExLibrarian.xml; path = ../../Updates/SysExLibrarian.xml; sourceTree = "<group>"; };
+		163A3FB2213E09460075F8A0 /* NSString+SymlinksAndAliases.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+SymlinksAndAliases.h"; sourceTree = "<group>"; };
+		163A3FC0213E09460075F8A0 /* NSString+SymlinksAndAliases.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+SymlinksAndAliases.m"; sourceTree = "<group>"; };
+		163A3FC2213E1B540075F8A0 /* SSEAlias.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SSEAlias.h; sourceTree = "<group>"; };
+		163A3FC3213E1B540075F8A0 /* SSEAlias.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SSEAlias.m; sourceTree = "<group>"; };
 		163E35A809E9EFA600138102 /* NSFileManager-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSFileManager-Extensions.h"; sourceTree = "<group>"; };
 		163E35A909E9EFA600138102 /* NSFileManager-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager-Extensions.m"; sourceTree = "<group>"; };
 		163FB605199EE2530017B664 /* ToolbarPlayTemplate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarPlayTemplate.tiff; sourceTree = "<group>"; };
@@ -227,8 +232,6 @@
 		F53090130233540701000164 /* SSEFindMissingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEFindMissingController.m; sourceTree = "<group>"; };
 		F539E386020F2C2F01000164 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		F547DDDC03184C5C01000164 /* PrecompHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrecompHeader.h; sourceTree = "<group>"; };
-		F551751C01F3745B01000164 /* BDAlias.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDAlias.h; sourceTree = "<group>"; };
-		F551751D01F3745B01000164 /* BDAlias.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDAlias.m; sourceTree = "<group>"; };
 		F551752001F3ACED01000164 /* SSETableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSETableView.h; sourceTree = "<group>"; };
 		F551752101F3ACED01000164 /* SSETableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSETableView.m; sourceTree = "<group>"; };
 		F559F8FA01DEC0C601000164 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
@@ -501,8 +504,8 @@
 				F583CEB501EE3D3801000164 /* SSELibrary.m */,
 				F583CEB801EE3E4401000164 /* SSELibraryEntry.h */,
 				F583CEB901EE3E4401000164 /* SSELibraryEntry.m */,
-				F551751C01F3745B01000164 /* BDAlias.h */,
-				F551751D01F3745B01000164 /* BDAlias.m */,
+				163A3FC2213E1B540075F8A0 /* SSEAlias.h */,
+				163A3FC3213E1B540075F8A0 /* SSEAlias.m */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -587,6 +590,8 @@
 				163E35A909E9EFA600138102 /* NSFileManager-Extensions.m */,
 				F565B6EE01E1567501000164 /* NSPopUpButton-Extensions.h */,
 				F565B6EF01E1567501000164 /* NSPopUpButton-Extensions.m */,
+				163A3FB2213E09460075F8A0 /* NSString+SymlinksAndAliases.h */,
+				163A3FC0213E09460075F8A0 /* NSString+SymlinksAndAliases.m */,
 				F587526B0214CA4E01000164 /* NSToolbarItem-Extensions.h */,
 				F587526C0214CA4E01000164 /* NSToolbarItem-Extensions.m */,
 				F551752001F3ACED01000164 /* SSETableView.h */,
@@ -824,12 +829,13 @@
 				16F0336F0984B76F006C8A44 /* SSEPreferencesWindowController.m in Sources */,
 				16F033700984B76F006C8A44 /* SSEMainWindowController.m in Sources */,
 				16F033710984B76F006C8A44 /* SSEMIDIController.m in Sources */,
+				163A3FC4213E1B540075F8A0 /* SSEAlias.m in Sources */,
 				16F033720984B76F006C8A44 /* NSPopUpButton-Extensions.m in Sources */,
 				16F033730984B76F006C8A44 /* SSELibrary.m in Sources */,
 				16F033740984B76F006C8A44 /* SSELibraryEntry.m in Sources */,
-				16F033750984B76F006C8A44 /* BDAlias.m in Sources */,
 				16F033760984B76F006C8A44 /* SSETableView.m in Sources */,
 				16F033780984B76F006C8A44 /* SSEWindowController.m in Sources */,
+				163A3FC1213E09460075F8A0 /* NSString+SymlinksAndAliases.m in Sources */,
 				16F033790984B76F006C8A44 /* NSToolbarItem-Extensions.m in Sources */,
 				16F0337A0984B76F006C8A44 /* SSEValidatingButton.m in Sources */,
 				16F0337B0984B76F006C8A44 /* SSEDetailsWindowController.m in Sources */,

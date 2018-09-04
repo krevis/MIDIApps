@@ -14,12 +14,13 @@
 
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
+#import "SSEAlias.h"
 #import "SSELibraryEntry.h"
-#import "BDAlias.h"
+#import "NSString+SymlinksAndAliases.h"
 #import "NSFileManager-Extensions.h"
 
 
-@interface SSELibrary ()
+@implementation SSELibrary
 {
     NSMutableArray<SSELibraryEntry *> *entries;
     struct {
@@ -32,21 +33,17 @@
     NSArray<NSString *> *allowedFileTypes;
 }
 
-@end
+NSNotificationName const SSELibraryDidChangeNotification = @"SSELibraryDidChangeNotification";
+NSNotificationName const SSELibraryEntryWillBeRemovedNotification = @"SSELibraryEntryWillBeRemovedNotification";
 
-
-@implementation SSELibrary
-
-NSString *SSELibraryDidChangeNotification = @"SSELibraryDidChangeNotification";
-NSString *SSELibraryEntryWillBeRemovedNotification = @"SSELibraryEntryWillBeRemovedNotification";
-
-NSString *SSELibraryFileDirectoryAliasPreferenceKey = @"SSELibraryFileDirectoryAlias";
-NSString *SSELibraryFileDirectoryPathPreferenceKey = @"SSELibraryFileDirectoryPath";
+NSString * const SSELibraryFileDirectoryBookmarkPreferenceKey = @"SSELibraryFileDirectoryBookmark";
+NSString * const SSELibraryFileDirectoryAliasPreferenceKey = @"SSELibraryFileDirectoryAlias";
+NSString * const SSELibraryFileDirectoryPathPreferenceKey = @"SSELibraryFileDirectoryPath";
 
 const FourCharCode SSEApplicationCreatorCode = 'SnSX';
 const FourCharCode SSELibraryFileTypeCode = 'sXLb';
 const FourCharCode SSESysExFileTypeCode = 'sysX';
-NSString *SSESysExFileExtension = @"syx";
+NSString * const SSESysExFileExtension = @"syx";
 
 + (SSELibrary *)sharedLibrary
 {
@@ -108,7 +105,6 @@ NSString *SSESysExFileExtension = @"syx";
         // This path should exist as-is; don't bother trying to resolve symlinks or aliases.
 
         libraryFilePath = [preferencesFolderPath stringByAppendingPathComponent:@"SysEx Librarian Library.sXLb"];
-        // TODO resolve this if it's a symlink or alias? or let our caller do it
 
         [libraryFilePath retain];
     }
@@ -120,26 +116,30 @@ NSString *SSESysExFileExtension = @"syx";
 {
     NSString *path = nil;
 
-    NSData *aliasData = [[NSUserDefaults standardUserDefaults] dataForKey:SSELibraryFileDirectoryAliasPreferenceKey];
-    if (aliasData) {    
-        path = [[BDAlias aliasWithData:aliasData] fullPath];
-        if (path) {
-            // Make sure the saved path is in sync with what the alias resolved
-            [[NSUserDefaults standardUserDefaults] setObject:path forKey:SSELibraryFileDirectoryPathPreferenceKey];
-        } else {
-            // Couldn't resolve the alias, so fall back to the path (which may not exist yet)
-            path = [[NSUserDefaults standardUserDefaults] stringForKey:SSELibraryFileDirectoryPathPreferenceKey];
+    NSData *bookmarkData = [[NSUserDefaults standardUserDefaults] dataForKey:SSELibraryFileDirectoryBookmarkPreferenceKey];
+    if (bookmarkData) {
+        path = [[SSEAlias aliasWithData:bookmarkData] path];
+    }
+    else {
+        NSData *aliasData = [[NSUserDefaults standardUserDefaults] dataForKey:SSELibraryFileDirectoryAliasPreferenceKey];
+        if (aliasData) {
+            path = [[SSEAlias aliasWithAliasRecordData:aliasData] path];
         }
+    }
+
+    if (path) {
+        // Make sure the saved path is in sync with what the alias resolved
+        [[NSUserDefaults standardUserDefaults] setObject:path forKey:SSELibraryFileDirectoryPathPreferenceKey];
+    } else {
+        // Couldn't resolve the alias, so fall back to the path (which may not exist yet)
+        path = [[NSUserDefaults standardUserDefaults] stringForKey:SSELibraryFileDirectoryPathPreferenceKey];
     }
 
     if (!path) {
         path = [self defaultFileDirectoryPath];
-        // TODO maybe resolve symlinks/aliases here
     }
 
-    path = [self resolveAliasesInPath:path];
-        // TODO maybe resolve symlinks/aliases here
-        // not sure if good idea
+    path = [path SSE_stringByResolvingSymlinksAndAliases];
 
     return path;
 }
@@ -147,14 +147,15 @@ NSString *SSESysExFileExtension = @"syx";
 - (void)setFileDirectoryPath:(NSString *)newPath
 {
     if (!newPath) {
-        newPath = [self defaultFileDirectoryPath];
-        // TODO how can this happen and does this need to resolve aliases/symlinks
+        newPath = [[self defaultFileDirectoryPath] SSE_stringByResolvingSymlinksAndAliases];
+        // TODO how does this happen in reality?
     }
     
-    BDAlias *alias = [BDAlias aliasWithPath:newPath];
-    SMAssert([alias fullPath] != nil);
+    SSEAlias *alias = [SSEAlias aliasWithPath:newPath];
+    SMAssert([alias path] != nil);
 
-    [[NSUserDefaults standardUserDefaults] setObject:[alias aliasData] forKey:SSELibraryFileDirectoryAliasPreferenceKey];
+    [[NSUserDefaults standardUserDefaults] setObject:[alias data] forKey:SSELibraryFileDirectoryBookmarkPreferenceKey];
+    // TODO back-compat save data for SSELibraryFileDirectoryAliasPreferenceKey ?
     [[NSUserDefaults standardUserDefaults] setObject:newPath forKey:SSELibraryFileDirectoryPathPreferenceKey];
 }
 
@@ -169,6 +170,7 @@ NSString *SSESysExFileExtension = @"syx";
 
     if ((errorMessage = [self preflightLibrary])) {
         NSString *format = NSLocalizedStringFromTableInBundle(@"There is a problem accessing the library \"%@\".\n%@", @"SysExLibrarian", SMBundleForObject(self), "error message if library file can't be read (preflight)");
+        // TODO perhaps resolve the path here. only the last component should be problematic
         NSString *path = [[self libraryFilePath] stringByDeletingPathExtension];
         return [NSString stringWithFormat:format, path, errorMessage];
     }
@@ -297,6 +299,7 @@ NSString *SSESysExFileExtension = @"syx";
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSString *libraryFilePath = [self libraryFilePath];
+    // TODO resolve symlinks / aliases
     NSString *errorMessage = nil;
 
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
@@ -315,6 +318,7 @@ NSString *SSESysExFileExtension = @"syx";
     if (errorMessage) {
         [errorMessage autorelease]; // docs say we're supposed to release this string, oddly enough
     } else {    
+        // TODO This should basically not be necessary while we are using Preferences
         @try {
             [fileManager SSE_createPathToFile:libraryFilePath attributes:nil];
         }
@@ -328,17 +332,18 @@ NSString *SSESysExFileExtension = @"syx";
             [NSNumber numberWithUnsignedLong:SSELibraryFileTypeCode], NSFileHFSTypeCode,
             [NSNumber numberWithUnsignedLong:SSEApplicationCreatorCode], NSFileHFSCreatorCode,
             [NSNumber numberWithBool:YES], NSFileExtensionHidden, nil];
-        
+
+        // TODO use a method that returns an NSError, perhaps (on NSData, but then how to set attributes?)
         if (![fileManager createFileAtPath:libraryFilePath contents:fileData attributes:fileAttributes]) {
             errorMessage = NSLocalizedStringFromTableInBundle(@"The file could not be written.", @"SysExLibrarian", SMBundleForObject(self), "error message if sysex file can't be written");
         }
     }
 
     if (errorMessage) {
-        NSString *title, *messageFormat;
+        // TODO this should use NSError
 
-        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", SMBundleForObject(self), "title of error alert");
-        messageFormat = NSLocalizedStringFromTableInBundle(@"The library \"%@\" could not be saved.\n%@", @"SysExLibrarian", SMBundleForObject(self), "format of error message if the library file can't be saved");
+        NSString *title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", SMBundleForObject(self), "title of error alert");
+        NSString *messageFormat = NSLocalizedStringFromTableInBundle(@"The library \"%@\" could not be saved.\n%@", @"SysExLibrarian", SMBundleForObject(self), "format of error message if the library file can't be saved");
         
         NSRunCriticalAlertPanel(title, messageFormat, nil, nil, nil, libraryFilePath, errorMessage);
         // NOTE This is not fantastic UI, but it basically works.  This should not happen unless the user is trying to provoke us, anyway.
@@ -426,56 +431,11 @@ NSString *SSESysExFileExtension = @"syx";
 
 #pragma mark Private
 
-- (NSString *)resolveAliasesInPath:(NSString *)path
-{
-    // NOTE This only works if all components in the path actually exist.
-    // (And it's not possible to determine that ahead of time, since any component could be an alias...)
-    // If any errors occur, the original path will be returned.
-    
-    NSString *resolvedPath = nil;
-    /* TODO Figure out if we really need any of this. Sigh.
-     Use NSURL URLByResolvingAliasFileAtURL:... except that's only available on 10.10
-
-    CFURLRef url;
-
-    url = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)path, kCFURLPOSIXPathStyle, false);
-    if (url) {
-        FSRef fsRef;
-
-        if (CFURLGetFSRef(url, &fsRef)) {
-            Boolean targetIsFolder, wasAliased;
-
-            if (FSResolveAliasFile(&fsRef, true, &targetIsFolder, &wasAliased) == noErr && wasAliased) {
-                CFURLRef resolvedURL;
-
-                resolvedURL = CFURLCreateFromFSRef(kCFAllocatorDefault, &fsRef);
-                if (resolvedURL) {
-                    resolvedPath = (NSString*)CFURLCopyFileSystemPath(resolvedURL, kCFURLPOSIXPathStyle);
-                    CFRelease(resolvedURL);
-                }
-            }
-        }
-
-        CFRelease(url);
-    }
-     */
-
-    if (!resolvedPath)
-        resolvedPath = [path copy];
-
-    return [resolvedPath autorelease];
-}
-
 - (NSString *)defaultFileDirectoryPath
 {
     NSArray<NSString *> *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsFolderPath = [paths firstObject] ?: [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
-
-//    documentsFolderPath = [self resolveAliasesInPath:documentsFolderPath];
-//        // TODO Prob necessary, somebody will try to do it. But should be done by caller probably
     documentsFolderPath = [documentsFolderPath stringByAppendingPathComponent:@"SysEx Librarian"];
-        // TOOD should also resolve this? In case somebody made it a symlink or alias
-        // Or just let the user resolve this whole thing
 
     return documentsFolderPath;
 }
@@ -487,9 +447,24 @@ NSString *SSESysExFileExtension = @"syx";
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
     NSString *libraryFilePath = [self libraryFilePath];
-    // TODO resolve symlinks/aliases?
+    if (!libraryFilePath) {
+        // TODO something very wrong
+    }
+
+    NSString *libraryFileParentPath = [libraryFilePath stringByDeletingLastPathComponent];
+    if (!libraryFileParentPath) {
+        // TODO something very wrong
+    }
+
+    NSString *resolvedLibraryFileParentPath = [libraryFileParentPath SSE_stringByResolvingSymlinksAndAliases];
+    if (!resolvedLibraryFileParentPath) {
+        // TODO something very wrong
+        // although I'm not sure this is really worth handling
+        
+    }
 
     // Try creating the path to the file, first.
+    // TODO This should basically not be necessary while we are using Preferences
     @try {
         [fileManager SSE_createPathToFile:libraryFilePath attributes:nil];
     }
@@ -513,6 +488,7 @@ NSString *SSESysExFileExtension = @"syx";
     }
     
     // Now check the actual file, if it exists.
+
     BOOL isDirectory;
     if ([fileManager fileExistsAtPath:libraryFilePath isDirectory:&isDirectory]) {
         NSDictionary *libraryDictionary;
@@ -528,6 +504,9 @@ NSString *SSESysExFileExtension = @"syx";
         if (![fileManager isWritableFileAtPath:libraryFilePath]) {
             return NSLocalizedStringFromTableInBundle(@"The file's privileges do not allow writing.", @"SysExLibrarian", SMBundleForObject(self), "error message if library file isn't writable");
         }
+
+        // TODO at this point the file could be an alias. should try resolving it, and if we get a different path, then loop
+        //      try not to get caught in an alias loop, too
 
         libraryDictionary = [NSDictionary dictionaryWithContentsOfFile:libraryFilePath];
         if (!libraryDictionary) {
@@ -588,12 +567,11 @@ NSString *SSESysExFileExtension = @"syx";
     // We should only be called once at startup
     SMAssert([entries count] == 0);
 
-    // NOTE: We don't do much error checking here; that should have already been taken care of in +performPreflightChecks.
+    // NOTE: We don't do much error checking here; that should have already been taken care of in -preflightLibrary.
     // (Of course something could have changed since then and now, but that's pretty unlikely.)
-    // TODO that's a race...
 
     NSString *libraryFilePath = [self libraryFilePath];
-        // TODO resolve symlinks / aliases
+    libraryFilePath = [libraryFilePath SSE_stringByResolvingSymlinksAndAliases];
 
     NSDictionary *libraryDictionary = [NSDictionary dictionaryWithContentsOfFile:libraryFilePath];
     NSArray *entryDicts = [libraryDictionary objectForKey:@"Entries"];

@@ -12,58 +12,39 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class BDAlias;
+@class SSEAlias;
 @class SSELibrary;
 
 
 @interface SSELibraryEntry : NSObject
-{
-    SSELibrary *nonretainedLibrary;
-
-    NSString *name;
-    BDAlias *alias;
-
-    // Caches of file information
-    NSString *manufacturer;
-    NSNumber *sizeNumber;
-    NSNumber *messageCountNumber;
-	NSNumber *programNumber;    // 0 - 127
-	
-    struct {
-        unsigned int isFilePresent:1;
-        unsigned int hasLookedForFile:1;
-    } flags;
-}
 
 - (id)initWithLibrary:(SSELibrary *)library;
 - (id)initWithLibrary:(SSELibrary *)library dictionary:(NSDictionary *)dict;
 
-- (SSELibrary *)library;
+@property (nonatomic, weak, readonly) SSELibrary *library;
 
 - (NSDictionary *)dictionaryValues;
 
-- (NSString *)path;
-- (void)setPath:(NSString *)value;
+@property (nonatomic, strong) NSString *path;
 
-- (NSString *)name;
-- (void)setName:(NSString *)value;
+@property (nonatomic, readonly) NSString *name;
 - (void)setNameFromFile;
 - (BOOL)renameFileTo:(NSString *)newFileName;
 
-- (NSArray *)messages;
+@property (nonatomic, readonly) NSArray *messages;
 
-// Derived information (comes from messages, but gets cached in the entry)
-
-- (NSString *)manufacturer;
-- (NSNumber *)size;
-- (NSNumber *)messageCount;
 - (BOOL)isFilePresent;
 - (BOOL)isFilePresentIgnoringCachedValue;
 
 - (BOOL)isFileInLibraryFileDirectory;
 
-- (void)setProgramNumber:(NSNumber *)value;
-- (NSNumber *)programNumber;
+@property (nonatomic, strong) NSNumber *programNumber;    // 0 - 127
+
+// Derived information (comes from messages, but gets cached in the entry)
+
+@property (nonatomic, readonly) NSString *manufacturer;
+@property (nonatomic, readonly) NSNumber *size;
+@property (nonatomic, readonly) NSNumber *messageCount;
 
 @end
 

@@ -59,9 +59,10 @@ typedef NS_ENUM(NSInteger, SSELibraryFileType) {
 @end
 
 // Notifications
-extern NSString *SSELibraryDidChangeNotification;
-extern NSString *SSELibraryEntryWillBeRemovedNotification;	// notification's object is the entry
+extern NSNotificationName const SSELibraryDidChangeNotification;
+extern NSNotificationName const SSELibraryEntryWillBeRemovedNotification;	// notification's object is the entry
 
 // Preference keys
-extern NSString *SSELibraryFileDirectoryAliasPreferenceKey;
-extern NSString *SSELibraryFileDirectoryPathPreferenceKey;
+extern NSString * const SSELibraryFileDirectoryBookmarkPreferenceKey;
+extern NSString * const SSELibraryFileDirectoryAliasPreferenceKey;
+extern NSString * const SSELibraryFileDirectoryPathPreferenceKey;

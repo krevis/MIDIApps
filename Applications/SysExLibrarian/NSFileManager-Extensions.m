@@ -17,6 +17,10 @@
 
 - (void) SSE_createPathToFile:(NSString *)newFilePath attributes:(NSDictionary*)attributes
 {
+    // TODO is there a better way now?
+    // NSFileManager createDirectoryAtPath:withIntermediateDirectories:...
+    // or rely on caller to have resolved everything
+
     if (!newFilePath || [newFilePath length] == 0 || ![newFilePath isAbsolutePath]) {
         [NSException raise: NSGenericException format: @"Cannot create path to invalid file: '%@'.", newFilePath]; 
     }
