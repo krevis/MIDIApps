@@ -148,14 +148,13 @@ NSString * const SSESysExFileExtension = @"syx";
 {
     if (!newPath) {
         newPath = [[self defaultFileDirectoryPath] SSE_stringByResolvingSymlinksAndAliases];
-        // TODO how does this happen in reality?
     }
     
     SSEAlias *alias = [SSEAlias aliasWithPath:newPath];
     SMAssert([alias path] != nil);
 
     [[NSUserDefaults standardUserDefaults] setObject:[alias data] forKey:SSELibraryFileDirectoryBookmarkPreferenceKey];
-    // TODO back-compat save data for SSELibraryFileDirectoryAliasPreferenceKey ?
+    // TODO back-compat save data for SSELibraryFileDirectoryAliasPreferenceKey ? or clear it?
     [[NSUserDefaults standardUserDefaults] setObject:newPath forKey:SSELibraryFileDirectoryPathPreferenceKey];
 }
 
@@ -299,7 +298,7 @@ NSString * const SSESysExFileExtension = @"syx";
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSString *libraryFilePath = [self libraryFilePath];
-    // TODO resolve symlinks / aliases
+    // TODO resolve symlinks / aliases in libraryFilePath in save
     NSString *errorMessage = nil;
 
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
@@ -318,7 +317,7 @@ NSString * const SSESysExFileExtension = @"syx";
     if (errorMessage) {
         [errorMessage autorelease]; // docs say we're supposed to release this string, oddly enough
     } else {    
-        // TODO This should basically not be necessary while we are using Preferences
+        // TODO SSE_createPathToFile should basically not be necessary while we are using Preferences
         @try {
             [fileManager SSE_createPathToFile:libraryFilePath attributes:nil];
         }
@@ -448,19 +447,17 @@ NSString * const SSESysExFileExtension = @"syx";
 
     NSString *libraryFilePath = [self libraryFilePath];
     if (!libraryFilePath) {
-        // TODO something very wrong
+        // TODO preflight library, no libraryFilePath, something very wrong
     }
 
     NSString *libraryFileParentPath = [libraryFilePath stringByDeletingLastPathComponent];
     if (!libraryFileParentPath) {
-        // TODO something very wrong
+        // TODO preflight library, no libraryFileParentPath, something very wrong
     }
 
     NSString *resolvedLibraryFileParentPath = [libraryFileParentPath SSE_stringByResolvingSymlinksAndAliases];
     if (!resolvedLibraryFileParentPath) {
-        // TODO something very wrong
-        // although I'm not sure this is really worth handling
-        
+        // TODO preflight library, can't resolve libraryFileParentPath, something very wrong -or- a component hasn't been created yet...
     }
 
     // Try creating the path to the file, first.
@@ -543,9 +540,7 @@ NSString * const SSESysExFileExtension = @"syx";
             return NSLocalizedStringFromTableInBundle(@"The folder's privileges do not allow searching.", @"SysExLibrarian", SMBundleForObject(self), "error message if sysex file directory isn't searchable");
     } else {
         // The directory doesn't exist. Try to create it.        
-        NSString *bogusFilePath;
-
-        bogusFilePath = [fileDirectoryPath stringByAppendingPathComponent:@"file"];
+        NSString *bogusFilePath = [fileDirectoryPath stringByAppendingPathComponent:@"file"];
         @try {
             [fileManager SSE_createPathToFile:bogusFilePath attributes:nil];
         }

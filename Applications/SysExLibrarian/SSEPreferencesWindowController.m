@@ -234,6 +234,7 @@ NSString *SSEListenForProgramChangesPreferenceChangedNotification = @"SSEListenF
         if ([[sheet URLs] count] == 1) {
             NSURL* url = [[sheet URLs] objectAtIndex:0];
             [[SSELibrary sharedLibrary] setFileDirectoryPath:[url path]];
+            // TODO Should check if this directory is readable and writable
             [self synchronizeControls];
         }
     }
