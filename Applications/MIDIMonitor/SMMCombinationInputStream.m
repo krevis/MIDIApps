@@ -36,11 +36,12 @@
     if (!(self = [super init]))
         return nil;
 
-    NS_DURING {
+    @try {
         _portInputStream = [[SMPortInputStream alloc] init];
-    } NS_HANDLER {
+    }
+    @catch {
         _portInputStream = nil;
-    } NS_ENDHANDLER;
+    }
     if (_portInputStream) {
         _portInputStream.messageDestination = self;
         [self observeNotificationsFromObject:_portInputStream];

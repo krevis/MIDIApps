@@ -153,13 +153,14 @@ static SMClient *sharedClient = nil;
     // To fix this, we send a tiny sysex message to a different device.  Unfortunately we can't just use a NULL endpoint,
     // it has to be a real live endpoint.    
     
-    NS_DURING {
+    @try {
         SMDestinationEndpoint* endpoint = [SMDestinationEndpoint sysExSpeedWorkaroundDestinationEndpoint];           
         SMSystemExclusiveMessage* message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp: 0 data: [NSData data]];
         [[SMSysExSendRequest sysExSendRequestWithMessage: message endpoint: endpoint] send];
-    } NS_HANDLER {
+    }
+    @catch (id ignored) {
         // don't care
-    } NS_ENDHANDLER;    
+    }
 }
 
 @end

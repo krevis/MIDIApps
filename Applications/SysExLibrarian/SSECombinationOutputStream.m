@@ -300,15 +300,16 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
 {
     SMAssert(portStream == nil);
 
-    NS_DURING {
+    @try {
         portStream = [[SMPortOutputStream alloc] init];
         [portStream setIgnoresTimeStamps:flags.ignoresTimeStamps];
         [portStream setSendsSysExAsynchronously:flags.sendsSysExAsynchronously];
         [portStream setCustomSysExBufferSize:customSysExBufferSize];
-    } NS_HANDLER {
+    }
+    @catch (id ignored) {
         [portStream release];
         portStream = nil;
-    } NS_ENDHANDLER;
+    }
 
     if (portStream) {
         NSNotificationCenter *center;

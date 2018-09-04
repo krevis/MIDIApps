@@ -482,11 +482,12 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 {
     SInt32 value;
     
-    NS_DURING {
+    @try {
         value = [self integerForProperty:(CFStringRef)SMEndpointPropertyOwnerPID];
-    } NS_HANDLER {
+    }
+    @catch (id ignored) {
         value = 0;
-    } NS_ENDHANDLER;
+    }
 
     return value;
 }

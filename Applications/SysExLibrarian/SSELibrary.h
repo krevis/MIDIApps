@@ -27,7 +27,6 @@ typedef NS_ENUM(NSInteger, SSELibraryFileType) {
 + (SSELibrary *)sharedLibrary;
 
 - (NSString *)libraryFilePath;
-- (NSString *)libraryFilePathForDisplay;
 
 - (NSString *)fileDirectoryPath;
 - (void)setFileDirectoryPath:(NSString *)newPath;
@@ -36,7 +35,7 @@ typedef NS_ENUM(NSInteger, SSELibraryFileType) {
 - (NSString *)preflightAndLoadEntries;
     // Returns an error message if something critical is wrong
 
-- (NSArray *)entries;
+- (NSArray<SSELibraryEntry *> *)entries;
 
 - (SSELibraryEntry *)addEntryForFile:(NSString *)filePath;
     // NOTE: This will return nil, and add no entry, if no messages are in the file
@@ -44,7 +43,7 @@ typedef NS_ENUM(NSInteger, SSELibraryFileType) {
     // NOTE: This method will raise an exception on failure
 
 - (void)removeEntry:(SSELibraryEntry *)entry;
-- (void)removeEntries:(NSArray *)entriesToRemove;
+- (void)removeEntries:(NSArray<SSELibraryEntry *> *)entriesToRemove;
 
 - (void)noteEntryChanged;
 - (void)autosave;
@@ -53,9 +52,9 @@ typedef NS_ENUM(NSInteger, SSELibraryFileType) {
 - (NSArray *)allowedFileTypes;
 - (SSELibraryFileType)typeOfFileAtPath:(NSString *)filePath;
 
-- (NSArray *)findEntriesForFiles:(NSArray *)filePaths returningNonMatchingFiles:(NSArray **)nonMatchingFilePathsPtr;
+- (NSArray<SSELibraryEntry *> *)findEntriesForFiles:(NSArray *)filePaths returningNonMatchingFiles:(NSArray **)nonMatchingFilePathsPtr;
 
-- (void)moveFilesInLibraryDirectoryToTrashForEntries:(NSArray *)entriesToTrash;
+- (void)moveFilesInLibraryDirectoryToTrashForEntries:(NSArray<SSELibraryEntry *> *)entriesToTrash;
 
 @end
 

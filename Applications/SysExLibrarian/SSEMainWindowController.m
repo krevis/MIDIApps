@@ -453,11 +453,12 @@ static SSEMainWindowController *controller = nil;
     if (!allSysexData)
         return;	// No messages, no data, nothing to do
     
-    NS_DURING {
+    @try {
         entry = [library addNewEntryWithData:allSysexData];
-    } NS_HANDLER {
+    }
+    @catch (NSException *localException) {
         exceptionReason = [[[localException reason] retain] autorelease];
-    } NS_ENDHANDLER;
+    }
 
     if (entry) {
         [self showNewEntries:[NSArray arrayWithObject:entry]];
