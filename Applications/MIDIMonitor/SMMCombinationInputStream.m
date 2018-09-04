@@ -39,7 +39,7 @@
     @try {
         _portInputStream = [[SMPortInputStream alloc] init];
     }
-    @catch {
+    @catch (id ignored) {
         _portInputStream = nil;
     }
     if (_portInputStream) {
