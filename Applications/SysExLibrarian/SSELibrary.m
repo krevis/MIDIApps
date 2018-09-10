@@ -99,14 +99,15 @@ NSString * const SSESysExFileExtension = @"syx";
     static NSString *libraryFilePath = nil;
 
     if (!libraryFilePath) {
-        NSArray<NSString *> *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
-        NSString *homeLibraryPath = [paths firstObject] ?: [NSHomeDirectory() stringByAppendingPathComponent:@"Library"];
-        NSString *preferencesFolderPath = [homeLibraryPath stringByAppendingPathComponent:@"Preferences"];
-        // This path should exist as-is; don't bother trying to resolve symlinks or aliases.
+        NSURL *homeLibraryURL = [[NSFileManager defaultManager] URLForDirectory:NSLibraryDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
+        if (homeLibraryURL) {
+            NSString *homeLibraryPath = [homeLibraryURL path];
+            NSString *preferencesFolderPath = [homeLibraryPath stringByAppendingPathComponent:@"Preferences"];
+            // This path should exist as-is; don't bother trying to resolve symlinks or aliases.
 
-        libraryFilePath = [preferencesFolderPath stringByAppendingPathComponent:@"SysEx Librarian Library.sXLb"];
-
-        [libraryFilePath retain];
+            libraryFilePath = [preferencesFolderPath stringByAppendingPathComponent:@"SysEx Librarian Library.sXLb"];
+            [libraryFilePath retain];
+        }
     }
 
     return libraryFilePath;
@@ -139,6 +140,7 @@ NSString * const SSESysExFileExtension = @"syx";
         path = [self defaultFileDirectoryPath];
     }
 
+    // TODO returns nil if any portion of this path doesn't exist yet. That's a problem. We need to create it.
     path = [path SSE_stringByResolvingSymlinksAndAliases];
 
     return path;
@@ -147,6 +149,7 @@ NSString * const SSESysExFileExtension = @"syx";
 - (void)setFileDirectoryPath:(NSString *)newPath
 {
     if (!newPath) {
+        // TODO returns nil if any portion of this path doesn't exist yet. That's a problem. We need to create it.
         newPath = [[self defaultFileDirectoryPath] SSE_stringByResolvingSymlinksAndAliases];
     }
     
@@ -168,10 +171,9 @@ NSString * const SSESysExFileExtension = @"syx";
     NSString *errorMessage;
 
     if ((errorMessage = [self preflightLibrary])) {
-        NSString *format = NSLocalizedStringFromTableInBundle(@"There is a problem accessing the library \"%@\".\n%@", @"SysExLibrarian", SMBundleForObject(self), "error message if library file can't be read (preflight)");
-        // TODO perhaps resolve the path here. only the last component should be problematic
-        NSString *path = [[self libraryFilePath] stringByDeletingPathExtension];
-        return [NSString stringWithFormat:format, path, errorMessage];
+        // Currently, the only reason this can fail is in the unlikely event that we can't get a URL to ~/Library/
+        NSString *format = NSLocalizedStringFromTableInBundle(@"There is a problem accessing the SysEx Librarian preferences.\n%@", @"SysExLibrarian", SMBundleForObject(self), "error message on preflight library");
+        return [NSString stringWithFormat:format, errorMessage];
     }
 
     if ((errorMessage = [self preflightFileDirectory])) {
@@ -296,11 +298,6 @@ NSString * const SSESysExFileExtension = @"syx";
         return;
     }
     
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSString *libraryFilePath = [self libraryFilePath];
-    // TODO resolve symlinks / aliases in libraryFilePath in save
-    NSString *errorMessage = nil;
-
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
     NSMutableArray *entryDicts = [NSMutableArray array];
 
@@ -313,40 +310,30 @@ NSString * const SSESysExFileExtension = @"syx";
 
     [dictionary setObject:entryDicts forKey:@"Entries"];
 
-    NSData *fileData = [NSPropertyListSerialization dataFromPropertyList:dictionary format:NSPropertyListXMLFormat_v1_0 errorDescription:&errorMessage];
-    if (errorMessage) {
-        [errorMessage autorelease]; // docs say we're supposed to release this string, oddly enough
-    } else {    
-        // TODO SSE_createPathToFile should basically not be necessary while we are using Preferences
-        @try {
-            [fileManager SSE_createPathToFile:libraryFilePath attributes:nil];
-        }
-        @catch (NSException *localException) {
-            errorMessage = [[[localException reason] retain] autorelease];
-        }
-    }
+    NSString *libraryFilePath = [self libraryFilePath];
 
-    if (!errorMessage) {
-        NSDictionary *fileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-            [NSNumber numberWithUnsignedLong:SSELibraryFileTypeCode], NSFileHFSTypeCode,
-            [NSNumber numberWithUnsignedLong:SSEApplicationCreatorCode], NSFileHFSCreatorCode,
-            [NSNumber numberWithBool:YES], NSFileExtensionHidden, nil];
-
-        // TODO use a method that returns an NSError, perhaps (on NSData, but then how to set attributes?)
-        if (![fileManager createFileAtPath:libraryFilePath contents:fileData attributes:fileAttributes]) {
-            errorMessage = NSLocalizedStringFromTableInBundle(@"The file could not be written.", @"SysExLibrarian", SMBundleForObject(self), "error message if sysex file can't be written");
+    NSError *error = nil;
+    NSData* fileData = [NSPropertyListSerialization dataWithPropertyList:dictionary format:NSPropertyListXMLFormat_v1_0 options:0 error:&error];
+    if (fileData) {
+        BOOL wrote = [fileData writeToFile:libraryFilePath options:NSDataWritingAtomic error:&error];
+        if (wrote) {
+            NSDictionary *fileAttributes = @{ NSFileHFSTypeCode: [NSNumber numberWithUnsignedLong:SSELibraryFileTypeCode],
+                                              NSFileHFSCreatorCode: [NSNumber numberWithUnsignedLong:SSEApplicationCreatorCode],
+                                              NSFileExtensionHidden: @(YES),
+                                              };
+            [[NSFileManager defaultManager] setAttributes:fileAttributes ofItemAtPath:libraryFilePath error:NULL];
+            // If we fail to set attributes, it doesn't really matter
         }
     }
 
-    if (errorMessage) {
-        // TODO this should use NSError
-
+    if (error) {
+        // Present the error, Can't continue saving, but can continue with the app.
+        // This is not fantastic UI, but it works.  This should not happen unless the user is trying to provoke us, anyway.
         NSString *title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", SMBundleForObject(self), "title of error alert");
         NSString *messageFormat = NSLocalizedStringFromTableInBundle(@"The library \"%@\" could not be saved.\n%@", @"SysExLibrarian", SMBundleForObject(self), "format of error message if the library file can't be saved");
-        
-        NSRunCriticalAlertPanel(title, messageFormat, nil, nil, nil, libraryFilePath, errorMessage);
-        // NOTE This is not fantastic UI, but it basically works.  This should not happen unless the user is trying to provoke us, anyway.
-    } else {
+        NSRunCriticalAlertPanel(title, messageFormat, nil, nil, nil, libraryFilePath, error.localizedDescription);
+    }
+    else {
         flags.isDirty = NO;
     }
 }
@@ -441,77 +428,15 @@ NSString * const SSESysExFileExtension = @"syx";
 
 - (NSString *)preflightLibrary
 {
-    // Check that the library file can be read and written.
+    // This used to do more, but now we only check for absolutely fatal errors.
 
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-
-    NSString *libraryFilePath = [self libraryFilePath];
-    if (!libraryFilePath) {
-        // TODO preflight library, no libraryFilePath, something very wrong
+    NSError *error;
+    NSURL *homeLibraryURL = [[NSFileManager defaultManager] URLForDirectory:NSLibraryDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:&error];
+    if (!homeLibraryURL) {
+        // This is really unlikely, but we really can't do much if this fails. Fatal error.
+        return [error localizedDescription];
     }
 
-    NSString *libraryFileParentPath = [libraryFilePath stringByDeletingLastPathComponent];
-    if (!libraryFileParentPath) {
-        // TODO preflight library, no libraryFileParentPath, something very wrong
-    }
-
-    NSString *resolvedLibraryFileParentPath = [libraryFileParentPath SSE_stringByResolvingSymlinksAndAliases];
-    if (!resolvedLibraryFileParentPath) {
-        // TODO preflight library, can't resolve libraryFileParentPath, something very wrong -or- a component hasn't been created yet...
-    }
-
-    // Try creating the path to the file, first.
-    // TODO This should basically not be necessary while we are using Preferences
-    @try {
-        [fileManager SSE_createPathToFile:libraryFilePath attributes:nil];
-    }
-    @catch (NSException *exception) {
-        return [exception reason];
-    }
-
-    // Then check that the file's parent directory is readable, writable, and searchable.
-    NSString *parentDirectoryPath = [libraryFilePath stringByDeletingLastPathComponent];
-    NSString *errorFormat = nil;
-    if (![fileManager isReadableFileAtPath:parentDirectoryPath]) {
-        errorFormat = NSLocalizedStringFromTableInBundle(@"The privileges of the folder \"%@\" do not allow reading.", @"SysExLibrarian", SMBundleForObject(self), "format of error message if library file's folder can't be read");
-    } else if (![fileManager isWritableFileAtPath:parentDirectoryPath]) {
-        errorFormat = NSLocalizedStringFromTableInBundle(@"The privileges of the folder \"%@\" do not allow writing.", @"SysExLibrarian", SMBundleForObject(self), "format of error message if library file's folder can't be written");
-    } else if (![fileManager isExecutableFileAtPath:parentDirectoryPath]) {
-        errorFormat = NSLocalizedStringFromTableInBundle(@"The privileges of the folder \"%@\" do not allow searching.", @"SysExLibrarian", SMBundleForObject(self), "format of error message if library file's folder can't be searched");
-    }
-
-    if (errorFormat) {
-        return [NSString stringWithFormat:errorFormat, [parentDirectoryPath lastPathComponent]];
-    }
-    
-    // Now check the actual file, if it exists.
-
-    BOOL isDirectory;
-    if ([fileManager fileExistsAtPath:libraryFilePath isDirectory:&isDirectory]) {
-        NSDictionary *libraryDictionary;
-
-        if (isDirectory) {
-            return NSLocalizedStringFromTableInBundle(@"There is a folder where the file should be.", @"SysExLibrarian", SMBundleForObject(self), "error message if library file is really a directory");
-        }
-
-        if (![fileManager isReadableFileAtPath:libraryFilePath]) {
-            return NSLocalizedStringFromTableInBundle(@"The file's privileges do not allow reading.", @"SysExLibrarian", SMBundleForObject(self), "error message if library file isn't readable");
-        }
-
-        if (![fileManager isWritableFileAtPath:libraryFilePath]) {
-            return NSLocalizedStringFromTableInBundle(@"The file's privileges do not allow writing.", @"SysExLibrarian", SMBundleForObject(self), "error message if library file isn't writable");
-        }
-
-        // TODO at this point the file could be an alias. should try resolving it, and if we get a different path, then loop
-        //      try not to get caught in an alias loop, too
-
-        libraryDictionary = [NSDictionary dictionaryWithContentsOfFile:libraryFilePath];
-        if (!libraryDictionary) {
-            return NSLocalizedStringFromTableInBundle(@"The file could not be read.", @"SysExLibrarian", SMBundleForObject(self), "error message if library file can't be read");
-        }
-    }
-
-    // Everything is fine.
     return nil;
 }
 
@@ -562,20 +487,46 @@ NSString * const SSESysExFileExtension = @"syx";
     // We should only be called once at startup
     SMAssert([entries count] == 0);
 
-    // NOTE: We don't do much error checking here; that should have already been taken care of in -preflightLibrary.
-    // (Of course something could have changed since then and now, but that's pretty unlikely.)
-
     NSString *libraryFilePath = [self libraryFilePath];
-    libraryFilePath = [libraryFilePath SSE_stringByResolvingSymlinksAndAliases];
+    // Handle the case when someone has replaced our file with a symlink, an alias, or a symlink to an alias.
+    // (If you have more symlinks or aliases chained together, well, sorry.)
+    // Note that this only affects the data that we read. When we write we will replace the symlink or alias with a plain file.
+    NSString *resolvedLibraryFilePath = [[libraryFilePath SSE_stringByResolvingSymlink] SSE_stringByResolvingAlias];
 
-    NSDictionary *libraryDictionary = [NSDictionary dictionaryWithContentsOfFile:libraryFilePath];
-    NSArray *entryDicts = [libraryDictionary objectForKey:@"Entries"];
-    for (NSDictionary *entryDict in entryDicts) {
-        SSELibraryEntry *entry = [[SSELibraryEntry alloc] initWithLibrary:self dictionary:entryDict];
-        if (entry) {
-            [entries addObject:entry];
+    NSError *error = nil;
+    NSData* data = [NSData dataWithContentsOfFile:resolvedLibraryFilePath options:0 error:&error];
+    if (data) {
+        id propertyList = [NSPropertyListSerialization propertyListWithData:data options:0 format:NULL error:&error];
+        if (propertyList && [propertyList isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *libraryDictionary = (NSDictionary *)propertyList;
+            NSArray *entryDicts = [libraryDictionary objectForKey:@"Entries"];
+            for (NSDictionary *entryDict in entryDicts) {
+                SSELibraryEntry *entry = [[SSELibraryEntry alloc] initWithLibrary:self dictionary:entryDict];
+                if (entry) {
+                    [entries addObject:entry];
+                }
+                [entry release];
+            }
         }
-        [entry release];
+    }
+    else /* data == nil */ {
+        // Ignore file not found errors. That just means there isn't a file to read from.
+        if (error && error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError) {
+            error = nil;
+        }
+        else {
+            NSError *underlyingError = error.userInfo[NSUnderlyingErrorKey];
+            if (underlyingError && underlyingError.domain == NSPOSIXErrorDomain && underlyingError.code == ENOENT) {
+                error = nil;
+            }
+        }
+    }
+
+    if (error) {
+        // Report on error, then continue with an empty library.
+        NSString *title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", SMBundleForObject(self), "title of error alert");
+        NSString *messageFormat = NSLocalizedStringFromTableInBundle(@"The library \"%@\" could not be read.\n%@", @"SysExLibrarian", SMBundleForObject(self), "format of error message if the library file can't be read");
+        NSRunCriticalAlertPanel(title, messageFormat, nil, nil, nil, libraryFilePath, error.localizedDescription);
     }
 
     // Ignore any changes that came from reading entries

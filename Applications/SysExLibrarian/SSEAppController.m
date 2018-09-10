@@ -68,24 +68,21 @@ static NSThread *sMainThread = nil;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification;
 {
-    NSString *preflightError;
-    
     hasFinishedLaunching = YES;
 
-    preflightError = [[SSELibrary sharedLibrary] preflightAndLoadEntries];
+    NSString *preflightError = [[SSELibrary sharedLibrary] preflightAndLoadEntries];
     if (preflightError) {
-        NSString *title, *quit;
-        
-        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", SMBundleForObject(self), "title of error alert");
-        quit = NSLocalizedStringFromTableInBundle(@"Quit", @"SysExLibrarian", SMBundleForObject(self), "title of quit button");
+        NSString *title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", SMBundleForObject(self), "title of error alert");
+        NSString *quit = NSLocalizedStringFromTableInBundle(@"Quit", @"SysExLibrarian", SMBundleForObject(self), "title of quit button");
 
         NSRunCriticalAlertPanel(title, @"%@", quit, nil, nil, preflightError);
         [NSApp terminate:nil];
     } else {
         [self showMainWindow:nil];
 
-        if (filesToImport)
+        if (filesToImport) {
             [self importFiles];
+        }
     }
 }
 
