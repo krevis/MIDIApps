@@ -39,8 +39,8 @@ typedef NS_ENUM(NSInteger, SSELibraryFileType) {
 
 - (SSELibraryEntry *)addEntryForFile:(NSString *)filePath;
     // NOTE: This will return nil, and add no entry, if no messages are in the file
-- (SSELibraryEntry *)addNewEntryWithData:(NSData *)sysexData;
-    // NOTE: This method will raise an exception on failure
+
+- (SSELibraryEntry *)addNewEntryWithData:(NSData *)sysexData error:(NSError **)error;
 
 - (void)removeEntry:(SSELibraryEntry *)entry;
 - (void)removeEntries:(NSArray<SSELibraryEntry *> *)entriesToRemove;

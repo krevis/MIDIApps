@@ -15,59 +15,6 @@
 
 @implementation NSFileManager (SSEExtensions)
 
-- (void) SSE_createPathToFile:(NSString *)newFilePath attributes:(NSDictionary*)attributes
-{
-    // TODO is there a better way now?
-    // NSFileManager createDirectoryAtPath:withIntermediateDirectories:...
-    // or rely on caller to have resolved everything
-
-    if (!newFilePath || [newFilePath length] == 0 || ![newFilePath isAbsolutePath]) {
-        [NSException raise: NSGenericException format: @"Cannot create path to invalid file: '%@'.", newFilePath]; 
-    }
-    
-    // Standardize the path and follow symlinks, so we won't hit any symlinks later on
-    NSString* originalFilePath = newFilePath;
-    newFilePath = [[newFilePath stringByStandardizingPath] stringByResolvingSymlinksInPath];
-
-    if (!newFilePath || [newFilePath length] == 0 || ![newFilePath isAbsolutePath]) {
-        [NSException raise: NSGenericException format: @"After standardizing '%@', cannot create path to invalid file: '%@'.", originalFilePath, newFilePath];
-    }
-    
-    NSArray* components = [newFilePath pathComponents];
-    NSUInteger componentCount = [components count];
-    
-    if (componentCount <= 1) {
-        [NSException raise: NSGenericException format: @"After standardizing '%@', cannot create path to invalid file with no components: '%@'.", originalFilePath, newFilePath];
-    }
-
-    NSUInteger componentIndex;
-    NSString* partialPath = @"";
-    NSString* failureReason = nil;
-    for (componentIndex = 0; !failureReason && componentIndex < componentCount - 1; componentIndex++) {
-        partialPath = [partialPath stringByAppendingPathComponent: [components objectAtIndex: componentIndex]];
-        
-        BOOL isDirectory;
-        if ([self fileExistsAtPath: partialPath isDirectory: &isDirectory]) {
-            if (isDirectory) {
-                // OK, no problem, go on to the next component
-            } else {
-                // File already exists there, and isn't a symlink...
-                failureReason = [NSString stringWithFormat: @"Cannot create path to file '%@' because an ordinary file already exists at '%@'.", newFilePath, partialPath];
-            }            
-        } else {
-            // directory doesn't exist; try to create
-            NSError* error = nil;
-            if (![self createDirectoryAtPath: partialPath withIntermediateDirectories:NO attributes: attributes error:&error]) {
-                failureReason = [NSString stringWithFormat: @"The directory '%@' could not be created. Error: (%@ %ld) %@", partialPath, error.domain, (long)error.code, error.localizedDescription];
-            }
-        }
-    }
-        
-    if (failureReason) {
-        [NSException raise: NSGenericException format: @"%@", failureReason];
-    }
-}
-
 - (NSString*) SSE_uniqueFilenameFromName: (NSString*) originalPath
 {
     NSString* originalPathWithoutExtension = [originalPath stringByDeletingPathExtension];

@@ -113,7 +113,7 @@ NSString * const SSESysExFileExtension = @"syx";
     return libraryFilePath;
 }
 
-- (NSString *)fileDirectoryPath
+- (NSString *)rememberedFileDirectoryPath
 {
     NSString *path = nil;
 
@@ -126,39 +126,37 @@ NSString * const SSESysExFileExtension = @"syx";
         if (aliasData) {
             path = [[SSEAlias aliasWithAliasRecordData:aliasData] path];
         }
+        else {
+            path = [[NSUserDefaults standardUserDefaults] stringForKey:SSELibraryFileDirectoryPathPreferenceKey];
+        }
     }
-
-    if (path) {
-        // Make sure the saved path is in sync with what the alias resolved
-        [[NSUserDefaults standardUserDefaults] setObject:path forKey:SSELibraryFileDirectoryPathPreferenceKey];
-    } else {
-        // Couldn't resolve the alias, so fall back to the path (which may not exist yet)
-        path = [[NSUserDefaults standardUserDefaults] stringForKey:SSELibraryFileDirectoryPathPreferenceKey];
-    }
-
-    if (!path) {
-        path = [self defaultFileDirectoryPath];
-    }
-
-    // TODO returns nil if any portion of this path doesn't exist yet. That's a problem. We need to create it.
-    path = [path SSE_stringByResolvingSymlinksAndAliases];
 
     return path;
 }
 
+- (void)clearRememberedFileDirectoryPath
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults removeObjectForKey:SSELibraryFileDirectoryBookmarkPreferenceKey];
+    [defaults removeObjectForKey:SSELibraryFileDirectoryAliasPreferenceKey];
+    [defaults removeObjectForKey:SSELibraryFileDirectoryPathPreferenceKey];
+}
+
+- (NSString *)fileDirectoryPath
+{
+    return [self rememberedFileDirectoryPath] ?: [self defaultFileDirectoryPath];
+}
+
 - (void)setFileDirectoryPath:(NSString *)newPath
 {
-    if (!newPath) {
-        // TODO returns nil if any portion of this path doesn't exist yet. That's a problem. We need to create it.
-        newPath = [[self defaultFileDirectoryPath] SSE_stringByResolvingSymlinksAndAliases];
-    }
-    
     SSEAlias *alias = [SSEAlias aliasWithPath:newPath];
     SMAssert([alias path] != nil);
 
-    [[NSUserDefaults standardUserDefaults] setObject:[alias data] forKey:SSELibraryFileDirectoryBookmarkPreferenceKey];
-    // TODO back-compat save data for SSELibraryFileDirectoryAliasPreferenceKey ? or clear it?
-    [[NSUserDefaults standardUserDefaults] setObject:newPath forKey:SSELibraryFileDirectoryPathPreferenceKey];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:[alias data] forKey:SSELibraryFileDirectoryBookmarkPreferenceKey];
+    // Clear anything that might have been in old SSELibraryFileDirectoryAliasPreferenceKey. if someone runs an old version of the app, let it fall back via the path.
+    [defaults setObject:nil forKey:SSELibraryFileDirectoryAliasPreferenceKey];
+    [defaults setObject:newPath forKey:SSELibraryFileDirectoryPathPreferenceKey];
 }
 
 - (BOOL)isPathInFileDirectory:(NSString *)path
@@ -168,19 +166,14 @@ NSString * const SSESysExFileExtension = @"syx";
 
 - (NSString *)preflightAndLoadEntries
 {
-    NSString *errorMessage;
-
-    if ((errorMessage = [self preflightLibrary])) {
+    NSString *errorMessage = [self preflightLibrary];
+    if (errorMessage) {
         // Currently, the only reason this can fail is in the unlikely event that we can't get a URL to ~/Library/
         NSString *format = NSLocalizedStringFromTableInBundle(@"There is a problem accessing the SysEx Librarian preferences.\n%@", @"SysExLibrarian", SMBundleForObject(self), "error message on preflight library");
         return [NSString stringWithFormat:format, errorMessage];
     }
 
-    if ((errorMessage = [self preflightFileDirectory])) {
-        NSString *format = NSLocalizedStringFromTableInBundle(@"There is a problem accessing the SysEx files folder \"%@\".\n%@", @"SysExLibrarian", SMBundleForObject(self), "error message if SysEx files folder can't be accessed (preflight)");
-        NSString *path = [self fileDirectoryPath];
-        return [NSString stringWithFormat:format, path, errorMessage];
-    }
+    [self preflightFileDirectory];  // can't produce any fatal errors for launch
 
     [self loadEntries];
     return nil;
@@ -216,35 +209,41 @@ NSString * const SSESysExFileExtension = @"syx";
     return entry;
 }
 
-- (SSELibraryEntry *)addNewEntryWithData:(NSData *)sysexData
+- (SSELibraryEntry *)addNewEntryWithData:(NSData *)sysexData error:(NSError **)outErrorPtr
 {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-
-    NSString *newFileName = NSLocalizedStringFromTableInBundle(@"Untitled", @"SysExLibrarian", SMBundleForObject(self), "name of new sysex file");
-    NSString *newFilePath = [[[self fileDirectoryPath] stringByAppendingPathComponent:newFileName] stringByAppendingPathExtension:SSESysExFileExtension];
-    newFilePath = [fileManager SSE_uniqueFilenameFromName:newFilePath];
-
-    [fileManager SSE_createPathToFile:newFilePath attributes:nil];
-    // NOTE This will raise an NSGenericException if it fails
-
-    NSDictionary *newFileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-        [NSNumber numberWithUnsignedLong:SSESysExFileTypeCode], NSFileHFSTypeCode,
-        [NSNumber numberWithUnsignedLong:SSEApplicationCreatorCode], NSFileHFSCreatorCode,
-        [NSNumber numberWithBool:YES], NSFileExtensionHidden, nil];
-
     SSELibraryEntry *entry = nil;
-    if ([fileManager createFileAtPath:newFilePath contents:sysexData attributes:newFileAttributes]) {
-        entry = [self addEntryForFile:newFilePath];
-        // TODO We will write out the file and then soon afterwards read it in again to get the messages. Pretty inefficient.
-    } else {
-        NSString *format;
 
-        format = NSLocalizedStringFromTableInBundle(@"Couldn't create the file %@", @"SysExLibrarian", SMBundleForObject(self), "format of exception if can't create new sysex file");
-        [NSException raise:NSGenericException format:format, newFilePath];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *fileDirectoryPath = [self fileDirectoryPath];
+
+    // ensure the file directory exists; if not we can't write there
+    NSDictionary<NSFileAttributeKey, id> *attributes = @{NSFilePosixPermissions : @0755};
+    NSError *error = nil;
+    BOOL createdOrExists = [fileManager createDirectoryAtPath:fileDirectoryPath withIntermediateDirectories:YES attributes:attributes error:&error];
+    if (createdOrExists) {
+        NSString *newFileName = NSLocalizedStringFromTableInBundle(@"Untitled", @"SysExLibrarian", SMBundleForObject(self), "name of new sysex file");
+        NSString *newFilePath = [[fileDirectoryPath stringByAppendingPathComponent:newFileName] stringByAppendingPathExtension:SSESysExFileExtension];
+        newFilePath = [fileManager SSE_uniqueFilenameFromName:newFilePath];
+
+        BOOL wrote = [sysexData writeToFile:newFilePath options:NSDataWritingAtomic error:&error];
+        if (wrote) {
+            NSDictionary *fileAttributes = @{ NSFileHFSTypeCode: [NSNumber numberWithUnsignedLong:SSESysExFileTypeCode],
+                                              NSFileHFSCreatorCode: [NSNumber numberWithUnsignedLong:SSEApplicationCreatorCode],
+                                              NSFileExtensionHidden: @(YES),
+                                              };
+            [[NSFileManager defaultManager] setAttributes:fileAttributes ofItemAtPath:newFilePath error:NULL];
+            // If we fail to set attributes, it doesn't really matter
+
+            entry = [self addEntryForFile:newFilePath];
+            // TODO We will write out the file and then soon afterwards read it in again to get the messages. Pretty inefficient.
+        }
+    }
+
+    if (error && outErrorPtr) {
+        *outErrorPtr = error;
     }
 
     SMAssert(entry != nil);
-
     return entry;
 }
 
@@ -419,11 +418,10 @@ NSString * const SSESysExFileExtension = @"syx";
 
 - (NSString *)defaultFileDirectoryPath
 {
-    NSArray<NSString *> *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsFolderPath = [paths firstObject] ?: [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
-    documentsFolderPath = [documentsFolderPath stringByAppendingPathComponent:@"SysEx Librarian"];
-
-    return documentsFolderPath;
+    // Ideally put it in ~/Documents
+    NSURL *homeDocumentsURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
+    NSString *parentPath = homeDocumentsURL.path ?: [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
+    return [parentPath stringByAppendingPathComponent:@"SysEx Librarian"];
 }
 
 - (NSString *)preflightLibrary
@@ -440,46 +438,30 @@ NSString * const SSESysExFileExtension = @"syx";
     return nil;
 }
 
-- (NSString *)preflightFileDirectory
+- (void)preflightFileDirectory
 {
-    // Make sure the file directory exists.  If it isn't there, try to create it.
+    // Note: the fileDirectory only really affects the location of newly added files,
+    // and whether we show alerts when removing files. Its value isn't critical, as long
+    // as we can find somewhere we can write to.
 
-    NSString *fileDirectoryPath;
-    NSFileManager *fileManager;
-    BOOL isDirectory;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
 
-    fileDirectoryPath = [self fileDirectoryPath];
-    fileManager = [NSFileManager defaultManager];
-
-    if ([fileManager fileExistsAtPath:fileDirectoryPath isDirectory:&isDirectory]) {
-        if (!isDirectory)
-            return NSLocalizedStringFromTableInBundle(@"There is a file where the folder should be.", @"SysExLibrarian", SMBundleForObject(self), "error message if sysex file directory is really a file");
-
-        if (![fileManager isReadableFileAtPath:fileDirectoryPath])
-            return NSLocalizedStringFromTableInBundle(@"The folder's privileges do not allow reading.", @"SysExLibrarian", SMBundleForObject(self), "error message if sysex file directory isn't readable");
-
-        if (![fileManager isWritableFileAtPath:fileDirectoryPath])
-            return NSLocalizedStringFromTableInBundle(@"The folder's privileges do not allow writing.", @"SysExLibrarian", SMBundleForObject(self), "error message if sysex file directory isn't writable");
-        
-        if (![fileManager isExecutableFileAtPath:fileDirectoryPath])
-            return NSLocalizedStringFromTableInBundle(@"The folder's privileges do not allow searching.", @"SysExLibrarian", SMBundleForObject(self), "error message if sysex file directory isn't searchable");
-    } else {
-        // The directory doesn't exist. Try to create it.        
-        NSString *bogusFilePath = [fileDirectoryPath stringByAppendingPathComponent:@"file"];
-        @try {
-            [fileManager SSE_createPathToFile:bogusFilePath attributes:nil];
+    // If we have a remembered file directory (either via a bookmark, alias, or path),
+    // check whether it still exists. If not, then clear it and go back to the default.
+    // (If it doesn't exist, it could be for some user name that doesn't exist, or could be wrong
+    //  for some reason that's hard to recover from. Better to just ignore it.)
+    NSString *rememberedFileDirectoryPath = [self rememberedFileDirectoryPath];
+    if (rememberedFileDirectoryPath) {
+        BOOL isDirectory;
+        BOOL exists = [fileManager fileExistsAtPath:rememberedFileDirectoryPath isDirectory:&isDirectory];
+        if (!(exists && isDirectory)) {
+            [self clearRememberedFileDirectoryPath];
+            rememberedFileDirectoryPath = nil;
         }
-        @catch (NSException *localException) {
-            NSString *format = NSLocalizedStringFromTableInBundle(@"The folder %@ could not be created.\n%@", @"SysExLibrarian", SMBundleForObject(self), "error message if sysex file directory can't be created");
-            return [NSString stringWithFormat:format, fileDirectoryPath, [localException reason]];
-        }
-
-        // We succeeded in creating the directory, so now update the alias we have saved.
-        [self setFileDirectoryPath:fileDirectoryPath];
     }
-        
-    // Everything is fine.
-    return nil;
+
+    // There is no need to do anything else with fileDirectoryPath. When we use it when recording a new sysex file,
+    // we will ensure it (and its intermediate directories) exists, and present an error if there are any problems.
 }
 
 - (void)loadEntries

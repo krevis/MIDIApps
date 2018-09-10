@@ -447,32 +447,20 @@ static SSEMainWindowController *controller = nil;
 {
     NSData *allSysexData;
     SSELibraryEntry *entry = nil;
-    NSString *exceptionReason = nil;
 
     allSysexData = [SMSystemExclusiveMessage dataForSystemExclusiveMessages:[midiController messages]];
     if (!allSysexData)
         return;	// No messages, no data, nothing to do
     
-    @try {
-        entry = [library addNewEntryWithData:allSysexData];
-    }
-    @catch (NSException *localException) {
-        exceptionReason = [[[localException reason] retain] autorelease];
-    }
+    NSError *error = nil;
+    entry = [library addNewEntryWithData:allSysexData error:&error];
 
     if (entry) {
         [self showNewEntries:[NSArray arrayWithObject:entry]];
     } else {
-        NSWindow *attachedSheet;
-        NSString *title, *message;
-
-        if (!exceptionReason) {
-            // NOTE I don't see how this could happen, but let's handle it...
-            exceptionReason = NSLocalizedStringFromTableInBundle(@"Unknown error", @"SysExLibrarian", SMBundleForObject(self), "unknown exception when adding newly recorded messages to library");
-        }
-
         // We need to get rid of the sheet right away, instead of after the delay (see -[SSERecordOneController readFinished]).
-        if ((attachedSheet = [[self window] attachedSheet])) {
+        NSWindow *attachedSheet =  [[self window] attachedSheet];
+        if (attachedSheet) {
             [NSObject cancelPreviousPerformRequestsWithTarget:NSApp selector:@selector(endSheet:) object:attachedSheet];
             [NSApp endSheet:attachedSheet];
         }
@@ -480,10 +468,10 @@ static SSEMainWindowController *controller = nil;
         // Now we can start another sheet.
         SMAssert([[self window] attachedSheet] == nil);
         
-        title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", SMBundleForObject(self), "title of error alert");
-        message = NSLocalizedStringFromTableInBundle(@"The file could not be created.\n%@", @"SysExLibrarian", SMBundleForObject(self), "message of alert when recording to a new file fails");
+        NSString *title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", SMBundleForObject(self), "title of error alert");
+        NSString *message = NSLocalizedStringFromTableInBundle(@"The file could not be created.\n%@", @"SysExLibrarian", SMBundleForObject(self), "message of alert when recording to a new file fails");
 
-        NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, message, exceptionReason);
+        NSBeginAlertSheet(title, nil, nil, nil, [self window], nil, NULL, NULL, NULL, message, error.localizedDescription ?: @"");
     }
 }
 
