@@ -11,11 +11,10 @@ The source code is Open Source under the BSD license. See LICENSE for the legal 
 
 ## How to build ##
 
-1. Open MIDIApps.xcworkspace with Xcode 4.
-2. In the "Scheme" popup menu in the toolbar, select either MIDI Monitor or SysEx Librarian.
-3. Build and run!
-
-(You may be able to use the projects in earlier versions of Xcode, but no guarantees.)
+1. `git submodule update --init --recursive` 
+2. Open MIDIApps.xcworkspace with Xcode.
+3. In the "Scheme" popup menu in the toolbar, select either MIDI Monitor or SysEx Librarian.
+4. Build and run!
 
 
 ## What's inside ##
@@ -64,7 +63,7 @@ The framework is used by apps that want to spy. It manages the communication bet
 
 This code is currently only used by MIDI Monitor, but it could be useful in other contexts. MIDI Monitor contains some code to channel the "spy" MIDI data into the rest of the SnoizeMIDI stream system, so it acts just like any other MIDI source.
 
-The driver is written in C++, and the framework is plain C code.  You should be able to easily use the code from a Cocoa or Carbon application
+The driver is written in C++, and the framework is C and Objective-C. You should be able to easily use the code from an application.
 
 ### Configurations ###
 
