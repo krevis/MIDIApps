@@ -153,13 +153,47 @@
 
             <dt>SysEx receive timeout</dt>
             <dd>If a SysEx message does not end normally, SysEx Librarian will wait this amount of time before deciding that the message is finished.  The default (1 second) should be fine for most cases.</dd>
-
-            <dt>Transmit Speed</dt> 
-            <dd>Most MIDI devices can handle sysex messages sent at full speed, but a few older ones have problems keeping up.  If your device doesn't work, try turning down the transmit speed a little bit.  Note that you can change the speed on an individual device, if you've set it up in Audio MIDI Setup.  This is the recommended way to do it (instead of setting the speed on the whole output port), because SysEx Librarian will use the appropriate speed even if you change which port the device is hooked up to.</dd>
           </dl>
         </div>
         <div class="col-md-6">
-          <img src="Preferences.png" class="img-responsive" alt="Preferences">
+          <img src="Preferences1.png" class="img-responsive" alt="Preferences">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <dl>
+            <dt>Transmit Speed</dt> 
+            <dd>Most MIDI devices can handle sysex messages sent at full speed, but a few older ones have problems keeping up.  If your device doesn't work, try turning down the transmit speed a little bit.  <br>Note that you can change the speed on an individual device, if you've set it up in Audio MIDI Setup.  This is the recommended way to do it (instead of setting the speed on the whole output port), because SysEx Librarian will use the appropriate speed even if you change which port the device is hooked up to.</dd>
+
+            <dt>Transmit buffer size</dt> 
+            <dd>This lets you control the way that sysex data is sent to the MIDI interface. Most MIDI interfaces will work fine with the &quot;Default&quot; buffer size.<br>If you suspect that your sysex data is not being received properly, try decreasing the buffer size to 256 or smaller.</dd>
+          </dl>
+        </div>
+        <div class="col-md-6">
+          <img src="Preferences2.png" class="img-responsive" alt="Preferences">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <dl>
+            <dt>Program Change</dt> 
+            <dd>When SysEx Librarian sees a program change event, it can look for an item whose program change number matches the one in the event, and then play it.
+              <br>This feature was added because someone wanted to use MainStage to trigger sending sysex files. MainStage could already send program change events, SysEx Librarian just needed to listen for them.
+              <ol><li>Click the checkbox &quot;Listen for program changes&quot;.</li>
+              <li>You should see a new column &quot;Prog#&quot; show up in the library window. Do a slow double-click to edit that column. Enter a number to assign a program change number to an item.</li>
+              <li>Tell your other MIDI app (MainStage or some other DAW) to send MIDI to &quot;SysEx Librarian&quot;.</li>
+              <li>Set up your other MIDI app to send a program change event.</li>
+              </ol>
+            </dd>
+
+            <dt>Show program change as 1-128, 0-127</dt> 
+            <dd>Most MIDI devices number their programs starting at 1. A few start at 0. Set this to match whatever your device does.</dd>
+          </dl>
+        </div>
+        <div class="col-md-6">
+          <img src="Preferences3.png" class="img-responsive" alt="Preferences">
         </div>
       </div>
 
@@ -169,15 +203,15 @@
 
       <p>Please note two things:
       <ul>
-        <li><b>SysEx Librarian is absolutely dependent on the MIDI interface's driver</b>
-        <li><b>MIDI drivers can and do have bugs, especially when dealing with SysEx messages</b>
+        <li><b>SysEx Librarian is absolutely dependent on your MIDI interface and its driver</b>
+        <li><b>MIDI interfaces can have bugs, especially when dealing with SysEx messages</b>
       </ul>
 
       <p>If you're having problems, your first step should be to <b>get the latest version of the driver for your MIDI interface.</b>  Almost all manufacturers have web sites where the drivers can be downloaded&mdash;please check with the manufacturer of your particular device.</p>
 
       <p>Because MIDI is a very old and primitive communications protocol, it doesn't have the kind of error checking that we take for granted in more modern systems.  When SysEx Librarian records a message coming from your device, it has almost no way of checking that it received the message correctly.  The message could have been corrupted while in transit&mdash;either by the MIDI hardware or by the software in the driver&mdash;but SysEx Librarian cannot tell the difference between a correct message and a bogus one.  Similarly, when SysEx Librarian sends a message to a MIDI device, it cannot tell whether the message was successfully received.
 
-      <p>As a result, many apparent "bugs" in SysEx Librarian really turn out to be bugs in the MIDI driver.
+      <p>As a result, many apparent &quot;bugs&quot; in SysEx Librarian really turn out to be bugs in the MIDI interface or its driver.
 
       <h4>I can send SysEx to my device, but it doesn't recognize the message. Why?</h4>
 
@@ -185,6 +219,9 @@
       <dl>
         <dt>Is a full-speed sysex transmission too fast for your device?</dt>
         <dd>Some devices, especially older ones (1980s and early 1990s), cannot deal with sysex that is transmitted at full speed.  Unfortunately there's no real way to find out if this is the case, other than experimenting. You can use the Transmit Speed controls in the Preferences to turn down the speed.</dd>
+
+        <dt>Does the MIDI interface need a smaller buffer size?</dt>
+        <dd>Try setting the &quot;Transmit buffer size&quot; to 256 or smaller. This may be necessary for some MIDI interfaces, especially the very low end 1-in 1-out &quot;USB MIDI cables&quot;.</dd>
 
         <dt>Is the SysEx message correct? (not corrupted somehow&mdash;e.g. missing bytes, containing extra bytes, etc.)</dt>
         <dd>Where did your SysEx file originally come from?  If you downloaded it from the Internet, chances are that it is good (although that's not a certainty).  If you recorded it using SysEx Librarian, it may have been corrupted on the way in.  Try to find a file that you trust to be correct.</dd>
@@ -195,12 +232,12 @@
             <li>Run <a href="http://www.snoize.com/MIDIMonitor/">MIDI Monitor</a>.
             <li>Make sure it's listening to MIDI input.<br>Press a button or turn a knob on your MIDI device&mdash;anything that would send a MIDI message. The message should appear in MIDI Monitor.
             <li>Connect a MIDI cable from the output of your MIDI interface, <i>directly</i> back to an input on the same MIDI interface.
-            <li>In the MIDI Monitor window, in the Sources section, open the "Spy on output to destinations" section and check the box for your MIDI interface.
+            <li>In the MIDI Monitor window, in the Sources section, open the &quot;Spy on output to destinations&quot; section and check the box for your MIDI interface.
             <li>Run SysEx Librarian, and have it send to your MIDI interface.
           </ol>
-          <p>You should see two sysex messages in the MIDI Monitor window, one labeled "To <i>your MIDI interface</i>" and one labeled "From <i>your MIDI interface</i>". They should have the same length and the same contents, and they should be the same as the message that appears in SysEx Librarian.
-          <p>If the "To <i>your MIDI interface</i>" message is different from the one in SysEx Librarian, then SysEx Librarian is doing the wrong thing.  I don't think this will happen, but if it does, please let me know.
-          <p>If the "From <i>your MIDI interface</i>" message is different from the "To <i>your MIDI interface</i>" message, then the driver either didn't send the same thing that SysEx Librarian told it to, or it couldn't receive the same message back again without corrupting it.   Either way, it's a bug in the driver.
+          <p>You should see two sysex messages in the MIDI Monitor window, one labeled &quot;To <i>your MIDI interface</i>&quot; and one labeled &quot;From <i>your MIDI interface</i>&quot;. They should have the same length and the same contents, and they should be the same as the message that appears in SysEx Librarian.
+          <p>If the &quot;To <i>your MIDI interface</i>&quot; message is different from the one in SysEx Librarian, then SysEx Librarian is doing the wrong thing.  I don't think this will happen, but if it does, please let me know.
+          <p>If the &quot;From <i>your MIDI interface</i>&quot; message is different from the &quot;To <i>your MIDI interface</i>&quot; message, then the driver either didn't send the same thing that SysEx Librarian told it to, or it couldn't receive the same message back again without corrupting it.   Either way, it's a bug in the driver.
         </dd>
       </dl>
 
