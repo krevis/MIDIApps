@@ -243,7 +243,6 @@ NSString * const SSESysExFileExtension = @"syx";
         *outErrorPtr = error;
     }
 
-    SMAssert(entry != nil);
     return entry;
 }
 
