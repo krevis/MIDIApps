@@ -10,7 +10,6 @@
 		16133B7515F5C78100533536 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 161B720815D8E97D006E21D4 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		161B721115D8E9BC006E21D4 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 161B720815D8E97D006E21D4 /* Sparkle.framework */; };
 		161B721315D8EA13006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B721215D8EA13006E21D4 /* dsa_pub.pem */; };
-		161B721615D8EA7F006E21D4 /* SysExLibrarian.xml in Resources */ = {isa = PBXBuildFile; fileRef = 161B721515D8EA7F006E21D4 /* SysExLibrarian.xml */; };
 		163A3FC1213E09460075F8A0 /* NSString+SymlinksAndAliases.m in Sources */ = {isa = PBXBuildFile; fileRef = 163A3FC0213E09460075F8A0 /* NSString+SymlinksAndAliases.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		163A3FC4213E1B540075F8A0 /* SSEAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = 163A3FC3213E1B540075F8A0 /* SSEAlias.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		163E35AB09E9EFA600138102 /* NSFileManager-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 163E35A909E9EFA600138102 /* NSFileManager-Extensions.m */; };
@@ -797,7 +796,6 @@
 				16F0384C0984C9D7006C8A44 /* Defaults.plist in Resources */,
 				161B721315D8EA13006E21D4 /* dsa_pub.pem in Resources */,
 				163FB60B199EE3C30017B664 /* ToolbarRecordMultipleTemplate.tiff in Resources */,
-				161B721615D8EA7F006E21D4 /* SysExLibrarian.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
