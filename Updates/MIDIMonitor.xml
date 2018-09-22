@@ -10,7 +10,6 @@
               <sparkle:minimumSystemVersion>10.9.0</sparkle:minimumSystemVersion>
               <description><![CDATA[
                   <h3>Version 1.4</h3>
-                  <p><b>NOTE:</b> After you install the update, you may get an error message saying &quot;There is an old version of MIDI Monitor's driver installed, but it could not be removed.&quot; <b>Just quit the app, wait at least 10 seconds, and run it again.</b> If that doesn't work, restart your computer and try again.
                   <p>Changes:
                   <ul>
                     <li>Updated for macOS 10.14 Mojave, including Dark Mode.</li>
