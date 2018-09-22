@@ -6,6 +6,31 @@
       <description>Most recent changes with links to updates.</description>
       <language>en</language>
           <item>
+              <title>Version 1.4</title>
+              <sparkle:minimumSystemVersion>10.9.0</sparkle:minimumSystemVersion>
+              <description><![CDATA[
+                  <h3>Version 1.4</h3>
+                  <p>Changes:
+                  <ul>
+                    <li>Updated for macOS 10.14 Mojave, including Dark Mode.</li>
+                    <li>Bug fixes:
+                      <ul>
+                        <li>Allow setting the buffer size for sending sysex. Some MIDI interfaces may work better with a smaller buffer size.</li>
+                        <li>Added menu items and key equivalents to play and record. Press <i>space</i> to play, <i>r</i> to record, <i>R</i> to record all.</li>
+                        <li>At startup, if sysex files can't be found, don't ask the user to find every single one.</li>
+                        <li>Updated MIDI manufacturer names and IDs.</li>
+                        <li>Show program changes as 1-128 or 0-127 depending on a preference.</li>
+                        <li>Increased the maximum interval between sent messages up to 5 seconds.</li>
+                        <li>Improved error handling at launch when the library directory doesn’t exist or isn’t writable.</li>
+                      </ul>
+                    </li>
+                  </ul>
+              ]]>
+              </description>
+              <pubDate>Sat, 22 Sep 2018 12:43:29 -0700</pubDate>
+              <enclosure url="https://www.snoize.com/MIDIMonitor/SysExLibrarian_1_4.zip" sparkle:version="1.4" sparkle:dsaSignature="MC0CFHhUZC7WO5D4i5fnqXiIRRiagkU/AhUAgsuYiQH5+rqg/rXmsSZzQiNtFg4=" length="2818504" type="application/octet-stream"/>
+          </item>
+          <item>
               <title>Version 1.3.1</title>
               <sparkle:minimumSystemVersion>10.7.0</sparkle:minimumSystemVersion>
               <description><![CDATA[
