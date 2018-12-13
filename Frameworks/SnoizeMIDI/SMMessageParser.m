@@ -18,6 +18,7 @@
 #import "SMSystemCommonMessage.h"
 #import "SMSystemRealTimeMessage.h"
 #import "SMSystemExclusiveMessage.h"
+#import "SMShowControlMessage.h"
 #import "SMInvalidMessage.h"
 
 
@@ -341,7 +342,11 @@
     // The MIDI spec says that messages should end with this byte, but apparently that is not always the case in practice.
 
     if (readingSysExData) {
-        message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:startSysExTimeStamp data:readingSysExData];
+        if (((uint8_t *)readingSysExData.mutableBytes)[2] == 0x02) { // MIDI Show Control Message
+            message = [SMShowControlMessage showControlMessageWithTimeStamp:startSysExTimeStamp data:readingSysExData];
+        } else {
+            message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:startSysExTimeStamp data:readingSysExData];
+        }
         
         [readingSysExData release];
         readingSysExData = nil;
