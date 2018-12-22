@@ -78,6 +78,8 @@
 		9A6D1B1821C0605C00D9872C /* ShowControlCommandNames.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9A6D1B1721C0605C00D9872C /* ShowControlCommandNames.plist */; };
 		9A6D1B2521C2F65B00D9872C /* SnoizeMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC2EF5B0486A6940098B216 /* SnoizeMIDI.framework */; };
 		9A6D1B2B21C2F67100D9872C /* SMShowControlMessageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A6D1B1A21C2F53000D9872C /* SMShowControlMessageTest.m */; };
+		9AD4AE8021CE560100E7BBF0 /* SMShowControlUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AD4AE7F21CE560100E7BBF0 /* SMShowControlUtilities.m */; };
+		9AD4AE8321CE577800E7BBF0 /* SMShowControlUtilitiesTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AD4AE8221CE577800E7BBF0 /* SMShowControlUtilitiesTest.m */; };
 		A53DDB9A148F4219006D2FFD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A53DDB99148F4219006D2FFD /* Foundation.framework */; };
 		A53DDBDF148F4349006D2FFD /* SMClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B5E0971D40100DB1DB5 /* SMClient.m */; };
 		A53DDBE0148F434C006D2FFD /* SMHostTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B660971D40100DB1DB5 /* SMHostTime.m */; };
@@ -298,6 +300,9 @@
 		9A6D1B1A21C2F53000D9872C /* SMShowControlMessageTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SMShowControlMessageTest.m; sourceTree = "<group>"; };
 		9A6D1B2021C2F65B00D9872C /* SnoizeMIDITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SnoizeMIDITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A6D1B2421C2F65B00D9872C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9AD4AE7F21CE560100E7BBF0 /* SMShowControlUtilities.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SMShowControlUtilities.m; sourceTree = "<group>"; };
+		9AD4AE8121CE562900E7BBF0 /* SMShowControlUtilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SMShowControlUtilities.h; sourceTree = "<group>"; };
+		9AD4AE8221CE577800E7BBF0 /* SMShowControlUtilitiesTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SMShowControlUtilitiesTest.m; sourceTree = "<group>"; };
 		A53DDB97148F4219006D2FFD /* libSnoizeMIDIiOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSnoizeMIDIiOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A53DDB99148F4219006D2FFD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A53DDB9D148F4219006D2FFD /* SnoizeMIDIiOS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SnoizeMIDIiOS-Prefix.pch"; sourceTree = "<group>"; };
@@ -426,6 +431,8 @@
 				16B11B660971D40100DB1DB5 /* SMHostTime.m */,
 				16B11B890971D40100DB1DB5 /* SMUtilities.h */,
 				16B11B8A0971D40100DB1DB5 /* SMUtilities.m */,
+				9AD4AE8121CE562900E7BBF0 /* SMShowControlUtilities.h */,
+				9AD4AE7F21CE560100E7BBF0 /* SMShowControlUtilities.m */,
 			);
 			name = "Global / Utilities";
 			sourceTree = "<group>";
@@ -550,8 +557,9 @@
 		9A6D1B2121C2F65B00D9872C /* SnoizeMIDITests */ = {
 			isa = PBXGroup;
 			children = (
-				9A6D1B1A21C2F53000D9872C /* SMShowControlMessageTest.m */,
 				9A6D1B2421C2F65B00D9872C /* Info.plist */,
+				9A6D1B1A21C2F53000D9872C /* SMShowControlMessageTest.m */,
+				9AD4AE8221CE577800E7BBF0 /* SMShowControlUtilitiesTest.m */,
 			);
 			path = SnoizeMIDITests;
 			sourceTree = "<group>";
@@ -854,6 +862,7 @@
 				16B11BCB0971D40100DB1DB5 /* SMVirtualOutputStream.m in Sources */,
 				16B11BCD0971D40100DB1DB5 /* SMVoiceMessage.m in Sources */,
 				164876610E6D2A22002CF387 /* SMMessageTimeBase.m in Sources */,
+				9AD4AE8021CE560100E7BBF0 /* SMShowControlUtilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -862,6 +871,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9A6D1B2B21C2F67100D9872C /* SMShowControlMessageTest.m in Sources */,
+				9AD4AE8321CE577800E7BBF0 /* SMShowControlUtilitiesTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
