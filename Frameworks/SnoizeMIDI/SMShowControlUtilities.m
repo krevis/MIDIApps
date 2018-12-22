@@ -48,21 +48,18 @@ Timecode parseTimecodeBytes(NSData *timecodeBytes) {
 
 NSArray *parseCueItemsBytes(NSData *cueItemsBytes) {
     NSMutableArray *result = [[NSMutableArray alloc] init];
+    NSUInteger length = [cueItemsBytes length];
     
     const Byte *cueData = cueItemsBytes.bytes;
-    if (*cueData == 0xF7) {
-        // All empty
-        return result;
-    }
     
-    NSMutableString *cueItem = [[NSMutableString alloc] init];
-    while (cueData != cueItemsBytes.bytes + [cueItemsBytes length]) {
-        Byte thingy = *cueData++;
-        if (thingy == 0x0 || (thingy == 0xF7 && [cueItem length] > 0)) {
-            [result addObject:[[NSString alloc] initWithString:cueItem]];
-            cueItem = [[NSMutableString alloc] init];
-        } else {
-            [cueItem appendFormat:@"%c", thingy];
+    NSUInteger startIndex = 0;
+    for (NSUInteger i = 0; i < [cueItemsBytes length]; i++) {
+        Byte currentByte = *(cueData + i);
+        NSUInteger copyLength = (currentByte != 0x00 ? i - startIndex + 1: i - startIndex);
+        
+        if ((currentByte == 0x0 || i == length - 1) && copyLength > 0) {
+            [result addObject:[[NSString alloc] initWithBytes:cueItemsBytes.bytes + startIndex length:copyLength encoding:NSASCIIStringEncoding]];
+            startIndex = i + 1;
         }
     }
     

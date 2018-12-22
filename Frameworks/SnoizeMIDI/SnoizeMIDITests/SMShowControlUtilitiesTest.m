@@ -61,7 +61,7 @@
 }
 
 -(void)testParseCueListWithSingleCue {
-    Byte bytes[] = { 0x31, 0x31, 0xF7 };
+    Byte bytes[] = { 0x31, 0x31 };
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
     
     NSArray *cues = parseCueItemsBytes(testData);
@@ -71,7 +71,7 @@
 }
 
 -(void)testParseCueListWithFullPath {
-    Byte bytes[] = { 0x31, 0x31, 0x00, 0x32, 0x32, 0x00, 0x33, 0x33, 0xF7 };
+    Byte bytes[] = { 0x31, 0x31, 0x00, 0x32, 0x32, 0x00, 0x33, 0x33 };
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
     
     NSArray *cues = parseCueItemsBytes(testData);
@@ -80,6 +80,18 @@
     XCTAssertEqualObjects([cues objectAtIndex:0], @"11");
     XCTAssertEqualObjects([cues objectAtIndex:1], @"22");
     XCTAssertEqualObjects([cues objectAtIndex:2], @"33");
+}
+
+-(void)testParseCueListWithFullPathOfOneNumberCues {
+    Byte bytes[] = { 0x31, 0x00, 0x32, 0x00, 0x33 };
+    NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
+    
+    NSArray *cues = parseCueItemsBytes(testData);
+    
+    XCTAssertEqual([cues count], 3);
+    XCTAssertEqualObjects([cues objectAtIndex:0], @"1");
+    XCTAssertEqualObjects([cues objectAtIndex:1], @"2");
+    XCTAssertEqualObjects([cues objectAtIndex:2], @"3");
 }
 
 -(void)testParseCueListWithoutEntries {

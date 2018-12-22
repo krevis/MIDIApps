@@ -80,7 +80,6 @@ fail:
     SMShowControlDataType dataType = [SMShowControlMessage dataTypeForCommand:mscCommand];
     
     int hdrSize = 5;
-    NSData *data = [self otherData];
     NSData *parameterData = [NSData dataWithBytes:(data.bytes + hdrSize) length:data.length - hdrSize];
     
     if (dataType == cue) {
@@ -125,7 +124,7 @@ fail:
         uint16 value = *((uint8 *)parameterData.bytes + 2) | *((uint8 *)parameterData.bytes + 3) << 7;
         
         [result appendFormat:@" Control %d to value %d", control, value];
-        if ([parameterData length] == 10) {
+        if ([parameterData length] == 9) {
             // Timecode included
             NSData *timecodeBytes = [NSData dataWithBytes:(parameterData.bytes + 4) length:5];
             [result appendString:@" @ "];
