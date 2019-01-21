@@ -14,9 +14,9 @@
 #define BITFIELD_MASK(start, len)     ( BIT_MASK(len)<<(start) )
 #define BITFIELD_GET(y, start, len)   ( ((y)>>(start)) & BIT_MASK(len) )
 
-Timecode parseTimecodeBytes(NSData *timecodeBytes) {
-    Timecode timecode;
-    const Byte *byte = timecodeBytes.bytes;
+SMTimecode parseTimecodeData(NSData *timecodeData) {
+    SMTimecode timecode;
+    const Byte *byte = timecodeData.bytes;
     // Hours and type: 0 tt hhhhh
     timecode.timecodeType = BITFIELD_GET(*byte, 5, 2);
     timecode.hours = BITFIELD_GET(*byte++, 0, 5);
@@ -46,19 +46,22 @@ Timecode parseTimecodeBytes(NSData *timecodeBytes) {
     return timecode;
 }
 
-NSArray *parseCueItemsBytes(NSData *cueItemsBytes) {
+NSArray *parseCueItemsData(NSData *cueItemsData) {
     NSMutableArray *result = [[NSMutableArray alloc] init];
-    NSUInteger length = [cueItemsBytes length];
+    NSUInteger length = cueItemsData.length;
     
-    const Byte *cueData = cueItemsBytes.bytes;
+    const Byte *bytes = cueItemsData.bytes;
     
     NSUInteger startIndex = 0;
-    for (NSUInteger i = 0; i < [cueItemsBytes length]; i++) {
-        Byte currentByte = *(cueData + i);
+    for (NSUInteger i = 0; i < length; i++) {
+        Byte currentByte = *(bytes + i);
         NSUInteger copyLength = (currentByte != 0x00 ? i - startIndex + 1: i - startIndex);
         
         if ((currentByte == 0x0 || i == length - 1) && copyLength > 0) {
-            [result addObject:[[NSString alloc] initWithBytes:cueItemsBytes.bytes + startIndex length:copyLength encoding:NSASCIIStringEncoding]];
+            NSString *cueItemString = [[NSString alloc] initWithBytes:bytes + startIndex length:copyLength encoding:NSASCIIStringEncoding];
+            [result addObject:cueItemString];
+            [cueItemString release];
+
             startIndex = i + 1;
         }
     }

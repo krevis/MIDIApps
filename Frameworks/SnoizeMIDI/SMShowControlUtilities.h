@@ -5,8 +5,7 @@
 //  Created by Hugo Trippaers on 22/12/2018.
 //
 
-#ifndef SMShowControlUtilities_h
-#define SMShowControlUtilities_h
+#import <Foundation/Foundation.h>
 
 // Based on the structure described in
 // MIDI Show Control 1.1 pg 6
@@ -23,7 +22,7 @@ typedef struct {
     int statusEstimatedCodeFlag;
     int statusInvalidCode;
     int statusVideoFieldIndentification;
-} Timecode;
+} SMTimecode;
 
 /*
  * Parses the provided bytes into a timecode structure
@@ -36,18 +35,17 @@ typedef struct {
  * Returns
  *   Timecode, struct with all components contains in the timecode data
  */
-extern Timecode parseTimecodeBytes(NSData *timecodeBytes);
+extern SMTimecode parseTimecodeData(NSData *timecodeData);
 
 /*
  * Parses the provided bytes into an array with one
  * string per cue item in the list
  *
  * Parameters
- *   NSData *cueItemsBytes, object with a variable number of bytes terminated by 0xF7
+ *   NSData *cueItemsData, object with a variable number of bytes terminated by 0xF7
  *
  * Returns
  *   NSArray *, array containing an NSString * for every cueitem found in the data
  */
-extern NSArray *parseCueItemsBytes(NSData *cueItemsBytes);
+extern NSArray *parseCueItemsData(NSData *cueItemsData);
 
-#endif /* SMShowControlUtilities_h */

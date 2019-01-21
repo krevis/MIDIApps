@@ -151,4 +151,6 @@ extern NSString *SMProgramChangeBaseIndexPreferenceKey;
 - (NSString *)expertDataForDisplay;
 - (NSString *)originatingEndpointForDisplay;
 
+- (void)invalidateDisplayCache;
+
 @end

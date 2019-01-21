@@ -7,7 +7,7 @@
 
 #import <XCTest/XCTest.h>
 
-#import "SMShowControlUtilities.h"
+#import <SnoizeMIDI/SMShowControlUtilities.h>
 
 @interface SMShowControlUtilitiesTest : XCTestCase
 
@@ -27,7 +27,7 @@
     Byte bytes[] = { 0x61, 0x02, 0x03, 0x04, 0x05 };
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
     
-    Timecode timecode = parseTimecodeBytes(testData);
+    SMTimecode timecode = parseTimecodeData(testData);
     
     XCTAssertEqual(timecode.hours, 1);
     XCTAssertEqual(timecode.timecodeType, 3);
@@ -44,7 +44,7 @@
     Byte bytes[] = { 0x61, 0x02, 0x03, 0x24, 0x50 };
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
     
-    Timecode timecode = parseTimecodeBytes(testData);
+    SMTimecode timecode = parseTimecodeData(testData);
     
     XCTAssertEqual(timecode.hours, 1);
     XCTAssertEqual(timecode.timecodeType, 3);
@@ -60,21 +60,21 @@
     XCTAssertEqual(timecode.statusEstimatedCodeFlag, 1);
 }
 
--(void)testParseCueListWithSingleCue {
+- (void)testParseCueListWithSingleCue {
     Byte bytes[] = { 0x31, 0x31 };
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
     
-    NSArray *cues = parseCueItemsBytes(testData);
+    NSArray *cues = parseCueItemsData(testData);
     
     XCTAssertEqual([cues count], 1);
     XCTAssertEqualObjects([cues objectAtIndex:0], @"11");
 }
 
--(void)testParseCueListWithFullPath {
+- (void)testParseCueListWithFullPath {
     Byte bytes[] = { 0x31, 0x31, 0x00, 0x32, 0x32, 0x00, 0x33, 0x33 };
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
     
-    NSArray *cues = parseCueItemsBytes(testData);
+    NSArray *cues = parseCueItemsData(testData);
     
     XCTAssertEqual([cues count], 3);
     XCTAssertEqualObjects([cues objectAtIndex:0], @"11");
@@ -82,11 +82,11 @@
     XCTAssertEqualObjects([cues objectAtIndex:2], @"33");
 }
 
--(void)testParseCueListWithFullPathOfOneNumberCues {
+- (void)testParseCueListWithFullPathOfOneNumberCues {
     Byte bytes[] = { 0x31, 0x00, 0x32, 0x00, 0x33 };
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
     
-    NSArray *cues = parseCueItemsBytes(testData);
+    NSArray *cues = parseCueItemsData(testData);
     
     XCTAssertEqual([cues count], 3);
     XCTAssertEqualObjects([cues objectAtIndex:0], @"1");
@@ -94,12 +94,13 @@
     XCTAssertEqualObjects([cues objectAtIndex:2], @"3");
 }
 
--(void)testParseCueListWithoutEntries {
+- (void)testParseCueListWithoutEntries {
     Byte bytes[] = { 0xF7 };
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
     
-    NSArray *cues = parseCueItemsBytes(testData);
+    NSArray *cues = parseCueItemsData(testData);
 
+    // TODO This is failing, returning 1 not 0
     XCTAssertEqual([cues count], 0);
 }
 

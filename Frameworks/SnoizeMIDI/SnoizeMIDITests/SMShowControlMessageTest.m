@@ -7,7 +7,7 @@
 
 #import <XCTest/XCTest.h>
 
-#import "SMShowControlMessage.h"
+#import <SnoizeMIDI/SMSystemExclusiveMessage.h>
 
 @interface SMShowControlMessageTest : XCTestCase
 
@@ -27,7 +27,7 @@
     Byte bytes[] = { 0x7F, 0x00, 0x02, 0x7F, 0x01 };
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:5];
     
-    SMShowControlMessage *message = [SMShowControlMessage showControlMessageWithTimeStamp:0 data:testData];
+    SMSystemExclusiveMessage *message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:testData];
     [message setWasReceivedWithEOX:TRUE];
     
     XCTAssertNotNil(message);
@@ -39,8 +39,8 @@
     Byte bytes[] = { 0x7F, 0x00, 0x02, 0x7F, 0x01 };
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:5];
     
-    SMShowControlMessage *message = [SMShowControlMessage showControlMessageWithTimeStamp:0 data:testData];
-    
+    SMSystemExclusiveMessage *message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:testData];
+
     XCTAssertEqualObjects(@"GO", [message dataForDisplay]);
 }
 
@@ -50,8 +50,8 @@
     
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:17];
     
-    SMShowControlMessage *message = [SMShowControlMessage showControlMessageWithTimeStamp:0 data:testData];
-    
+    SMSystemExclusiveMessage *message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:testData];
+
     XCTAssertEqualObjects(@"GO Cue 123, List 456, Path 23.2", [message dataForDisplay]);
 }
 
@@ -61,8 +61,8 @@
     
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
     
-    SMShowControlMessage *message = [SMShowControlMessage showControlMessageWithTimeStamp:0 data:testData];
-    
+    SMSystemExclusiveMessage *message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:testData];
+
     XCTAssertEqualObjects(@"GO/JAM_CLOCK Cue 123, List 23.2", [message dataForDisplay]);
 }
 
@@ -72,8 +72,8 @@
 
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
     
-    SMShowControlMessage *message = [SMShowControlMessage showControlMessageWithTimeStamp:0 data:testData];
-    
+    SMSystemExclusiveMessage *message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:testData];
+
     XCTAssertEqualObjects(@"TIMED_GO Cue 1, List 2 @ 1:02:03:04/05 (30 fps/non-drop)", [message dataForDisplay]);
 }
 
@@ -82,8 +82,8 @@
     
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
     
-    SMShowControlMessage *message = [SMShowControlMessage showControlMessageWithTimeStamp:0 data:testData];
-    
+    SMSystemExclusiveMessage *message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:testData];
+
     XCTAssertEqualObjects(@"TIMED_GO @ 1:02:03:04/05 (30 fps/non-drop)", [message dataForDisplay]);
 }
 
@@ -92,8 +92,8 @@
     
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
     
-    SMShowControlMessage *message = [SMShowControlMessage showControlMessageWithTimeStamp:0 data:testData];
-    
+    SMSystemExclusiveMessage *message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:testData];
+
     XCTAssertEqualObjects(@"SET Control 524 to value 425", [message dataForDisplay]);
 }
 
@@ -102,8 +102,8 @@
     
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
     
-    SMShowControlMessage *message = [SMShowControlMessage showControlMessageWithTimeStamp:0 data:testData];
-    
+    SMSystemExclusiveMessage *message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:testData];
+
     XCTAssertEqualObjects(@"SET Control 524 to value 425 @ 1:02:03:04/05 (30 fps/non-drop)", [message dataForDisplay]);
 }
 
@@ -112,8 +112,8 @@
     
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
     
-    SMShowControlMessage *message = [SMShowControlMessage showControlMessageWithTimeStamp:0 data:testData];
-    
+    SMSystemExclusiveMessage *message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:testData];
+
     XCTAssertEqualObjects(@"FIRE Macro 101", [message dataForDisplay]);
 }
 
@@ -122,8 +122,8 @@
     
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
     
-    SMShowControlMessage *message = [SMShowControlMessage showControlMessageWithTimeStamp:0 data:testData];
-    
+    SMSystemExclusiveMessage *message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:testData];
+
     XCTAssertEqualObjects(@"ZERO_CLOCK Cue List 21", [message dataForDisplay]);
 }
 
@@ -132,8 +132,8 @@
     
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
     
-    SMShowControlMessage *message = [SMShowControlMessage showControlMessageWithTimeStamp:0 data:testData];
-    
+    SMSystemExclusiveMessage *message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:testData];
+
     XCTAssertEqualObjects(@"OPEN_CUE_PATH Cue Path 21", [message dataForDisplay]);
 }
 
@@ -142,8 +142,8 @@
     
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
     
-    SMShowControlMessage *message = [SMShowControlMessage showControlMessageWithTimeStamp:0 data:testData];
-    
+    SMSystemExclusiveMessage *message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:testData];
+
     XCTAssertEqualObjects(@"SET_CLOCK 1:02:03:04/05 (30 fps/non-drop) for Cue List 21", [message dataForDisplay]);
 }
 
@@ -152,8 +152,8 @@
     
     NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
     
-    SMShowControlMessage *message = [SMShowControlMessage showControlMessageWithTimeStamp:0 data:testData];
-    
+    SMSystemExclusiveMessage *message = [SMSystemExclusiveMessage systemExclusiveMessageWithTimeStamp:0 data:testData];
+
     XCTAssertEqualObjects(@"SET_CLOCK 1:02:03:04/05 (30 fps/non-drop)", [message dataForDisplay]);
 }
 

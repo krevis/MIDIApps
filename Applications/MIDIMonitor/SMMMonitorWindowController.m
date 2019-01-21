@@ -633,6 +633,8 @@ static NSString * const SMMMessagesScrollPointY = @"messagesScrollPointY";
 
 - (void)displayPreferencesDidChange:(NSNotification *)notification
 {
+    [self.displayedMessages makeObjectsPerformSelector:@selector(invalidateDisplayCache)];
+
     [self.messagesTableView reloadData];
 }
 
