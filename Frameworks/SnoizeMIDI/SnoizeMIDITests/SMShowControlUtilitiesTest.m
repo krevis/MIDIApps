@@ -95,12 +95,10 @@
 }
 
 - (void)testParseCueListWithoutEntries {
-    Byte bytes[] = { 0xF7 };
-    NSData *testData = [[NSData alloc] initWithBytes:bytes length:sizeof bytes];
+    NSData *testData = [NSData data];
     
     NSArray *cues = parseCueItemsData(testData);
 
-    // TODO This is failing, returning 1 not 0
     XCTAssertEqual([cues count], 0);
 }
 

@@ -47,24 +47,6 @@ SMTimecode parseTimecodeData(NSData *timecodeData) {
 }
 
 NSArray *parseCueItemsData(NSData *cueItemsData) {
-    NSMutableArray *result = [[NSMutableArray alloc] init];
-    NSUInteger length = cueItemsData.length;
-    
-    const Byte *bytes = cueItemsData.bytes;
-    
-    NSUInteger startIndex = 0;
-    for (NSUInteger i = 0; i < length; i++) {
-        Byte currentByte = *(bytes + i);
-        NSUInteger copyLength = (currentByte != 0x00 ? i - startIndex + 1: i - startIndex);
-        
-        if ((currentByte == 0x0 || i == length - 1) && copyLength > 0) {
-            NSString *cueItemString = [[NSString alloc] initWithBytes:bytes + startIndex length:copyLength encoding:NSASCIIStringEncoding];
-            [result addObject:cueItemString];
-            [cueItemString release];
-
-            startIndex = i + 1;
-        }
-    }
-    
-    return result;
+    NSString *cueItemString = [[NSString alloc] initWithData:cueItemsData encoding:NSASCIIStringEncoding];
+    return cueItemString.length > 0 ? [cueItemString componentsSeparatedByString:@"\0"] : @[];
 }
