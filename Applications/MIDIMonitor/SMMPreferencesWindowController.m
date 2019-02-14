@@ -34,6 +34,7 @@ NSString* const SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreference
 @property (nonatomic, assign) IBOutlet NSButton *autoSelectVirtualDestinationCheckbox;
 @property (nonatomic, assign) IBOutlet NSButton *autoSelectSpyingDestinationsCheckbox;
 @property (nonatomic, assign) IBOutlet NSButton *openWindowsForNewSourcesCheckbox;
+@property (nonatomic, assign) IBOutlet NSButton *autoConnectForNewSourcesCheckbox;
 @property (nonatomic, assign) IBOutlet NSButton *askBeforeClosingModifiedWindowCheckbox;
 @property (nonatomic, assign) IBOutlet NSMatrix *alwaysSaveSysExWithEOXMatrix;
 @property (nonatomic, assign) IBOutlet NSButton *expertModeCheckbox;
@@ -96,6 +97,7 @@ NSString* const SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreference
     [self.autoSelectVirtualDestinationCheckbox setIntValue:[defaults boolForKey:SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey]];
     [self.autoSelectSpyingDestinationsCheckbox setIntValue:[defaults boolForKey:SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey]];
     [self.openWindowsForNewSourcesCheckbox setIntValue:[defaults boolForKey:SMMOpenWindowsForNewSourcesPreferenceKey]];
+    [self.autoConnectForNewSourcesCheckbox setIntValue: [defaults boolForKey:SMMAutoConnectForNewSourcesPreferenceKey]];
 
     [self.askBeforeClosingModifiedWindowCheckbox setIntValue:[defaults boolForKey:SMMAskBeforeClosingModifiedWindowPreferenceKey]];
     [self.alwaysSaveSysExWithEOXMatrix selectCellWithTag:[defaults boolForKey:SMMSaveSysExWithEOXAlwaysPreferenceKey]];
@@ -148,6 +150,13 @@ NSString* const SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreference
 - (IBAction)changeOpenWindowsForNewSources:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMMOpenWindowsForNewSourcesPreferenceKey];
+}
+
+- (IBAction)changeAutoConnectForNewSources:(id)sender
+{
+    [[NSUserDefaults standardUserDefaults] setBool:
+        [sender intValue] forKey:
+        SMMAutoConnectForNewSourcesPreferenceKey];
 }
 
 - (IBAction)changeAskBeforeClosingModifiedWindow:(id)sender

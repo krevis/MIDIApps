@@ -22,6 +22,7 @@
 
 
 NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSources";
+NSString* const SMMAutoConnectForNewSourcesPreferenceKey = @"SMMAutoConnectToNewSources";
 
 @interface SMMAppController () <SUUpdaterDelegate>
 
@@ -341,6 +342,16 @@ NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNe
         }
         [self.newlyAppearedSources addObjectsFromArray:endpoints];
     }
+    
+    else if ([[NSUserDefaults standardUserDefaults] boolForKey:SMMAutoConnectForNewSourcesPreferenceKey]) {
+        NSArray *endpoints = [[notification userInfo] objectForKey:SMMIDIObjectsThatAppeared];
+        
+        if (!self.newlyAppearedSources) {
+            self.newlyAppearedSources = [NSMutableSet set];
+            [self performSelector:@selector(autoConnectToNewlyAppearedSources) withObject:nil afterDelay:0.1 inModes:@[NSDefaultRunLoopMode]];
+        }
+        [self.newlyAppearedSources addObjectsFromArray:endpoints];
+    }
 }
 
 - (void)openWindowForNewlyAppearedSources
@@ -355,6 +366,43 @@ NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNe
     [document updateChangeCount:NSChangeCleared];
 
     self.newlyAppearedSources = nil;
+}
+
+- (void)autoConnectToNewlyAppearedSources
+{
+    //Get id for current window
+    
+    NSDocumentController *dc = [NSDocumentController sharedDocumentController];
+    
+    //Set Selected input sources as newlyAppearedSources
+    SMMDocument *document = [dc currentDocument];
+    [document setSelectedInputSources:self.newlyAppearedSources];
+    SMMMonitorWindowController *wc = document.windowControllers.firstObject;
+    [wc revealInputSources:self.newlyAppearedSources];
+    [document updateChangeCount:NSChangeCleared];
+    self.newlyAppearedSources = nil;
+    
+    
+    //[currentDocument setSelectedInputSources:self.newlyAppearedSources];
+    //Show new input sources
+    
+    //updateChangeCount
+    
+    //set new sources back to zero
+    
+    /*
+    NSDocumentController *dc = [NSDocumentController sharedDocumentController];
+    SMMDocument *document = [dc openUntitledDocumentAndDisplay:NO error:NULL];
+    [document makeWindowControllers];
+    [document setSelectedInputSources:self.newlyAppearedSources];
+    [document showWindows];
+    SMMMonitorWindowController *wc = document.windowControllers.firstObject;
+    [wc revealInputSources:self.newlyAppearedSources];
+    [document updateChangeCount:NSChangeCleared];
+    
+    self.newlyAppearedSources = nil;
+    */
+    
 }
 
 @end
