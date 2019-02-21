@@ -16,6 +16,8 @@
 	<false/>
 	<key>SMMOpenWindowsForNewSources</key>
 	<false/>
+	<key>SMMAutoConnectForNewSources</key>
+	<false/>
 	<key>SMMSaveSysExWithEOXAlways</key>
 	<true/>
 	<key>SMNoteFormat</key>

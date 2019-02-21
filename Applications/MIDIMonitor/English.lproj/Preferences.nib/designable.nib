@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.3.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.3.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -10,6 +10,7 @@
             <connections>
                 <outlet property="alwaysSaveSysExWithEOXMatrix" destination="241" id="245"/>
                 <outlet property="askBeforeClosingModifiedWindowCheckbox" destination="267" id="269"/>
+                <outlet property="autoConnectForNewSourcesCheckbox" destination="yPP-cz-Vh8" id="deG-xk-cnK"/>
                 <outlet property="autoSelectOrdinarySourcesCheckbox" destination="253" id="256"/>
                 <outlet property="autoSelectSpyingDestinationsCheckbox" destination="255" id="259"/>
                 <outlet property="autoSelectVirtualDestinationCheckbox" destination="254" id="257"/>
@@ -328,6 +329,17 @@
                                             </buttonCell>
                                             <connections>
                                                 <action selector="changeAutoSelectSpyingDestinations:" target="-2" id="262"/>
+                                            </connections>
+                                        </button>
+                                        <button misplaced="YES" id="yPP-cz-Vh8">
+                                            <rect key="frame" x="16" y="257" width="300" height="18"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <buttonCell key="cell" type="check" title="Automatically connect to new MIDI devices" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="JSO-1b-5FO">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="changeAutoConnectForNewSources:" target="-2" id="fxS-ya-5Nn"/>
                                             </connections>
                                         </button>
                                     </subviews>
