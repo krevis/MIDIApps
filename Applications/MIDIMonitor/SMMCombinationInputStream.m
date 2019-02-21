@@ -139,7 +139,7 @@
 
     return inputSources;
 }
-//WORK HERE
+
 - (void)setSelectedInputSources:(NSSet *)inputSources
 {
     if (!inputSources) {
