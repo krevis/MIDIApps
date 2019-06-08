@@ -33,8 +33,7 @@ NSString* const SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreference
 @property (nonatomic, assign) IBOutlet NSButton *autoSelectOrdinarySourcesCheckbox;
 @property (nonatomic, assign) IBOutlet NSButton *autoSelectVirtualDestinationCheckbox;
 @property (nonatomic, assign) IBOutlet NSButton *autoSelectSpyingDestinationsCheckbox;
-@property (nonatomic, assign) IBOutlet NSButton *openWindowsForNewSourcesCheckbox;
-@property (nonatomic, assign) IBOutlet NSButton *autoConnectForNewSourcesCheckbox;
+@property (nonatomic, assign) IBOutlet NSMatrix *autoConnectRadioButtons;
 @property (nonatomic, assign) IBOutlet NSButton *askBeforeClosingModifiedWindowCheckbox;
 @property (nonatomic, assign) IBOutlet NSMatrix *alwaysSaveSysExWithEOXMatrix;
 @property (nonatomic, assign) IBOutlet NSButton *expertModeCheckbox;
@@ -96,8 +95,8 @@ NSString* const SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreference
     [self.autoSelectOrdinarySourcesCheckbox setIntValue:[defaults boolForKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey]];
     [self.autoSelectVirtualDestinationCheckbox setIntValue:[defaults boolForKey:SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey]];
     [self.autoSelectSpyingDestinationsCheckbox setIntValue:[defaults boolForKey:SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey]];
-    [self.openWindowsForNewSourcesCheckbox setIntValue:[defaults boolForKey:SMMOpenWindowsForNewSourcesPreferenceKey]];
-    [self.autoConnectForNewSourcesCheckbox setIntValue: [defaults boolForKey:SMMAutoConnectForNewSourcesPreferenceKey]];
+    [self.autoConnectRadioButtons selectCellWithTag:[defaults integerForKey:SMMAutoConnectNewSourcesPreferenceKey]];
+
 
     [self.askBeforeClosingModifiedWindowCheckbox setIntValue:[defaults boolForKey:SMMAskBeforeClosingModifiedWindowPreferenceKey]];
     [self.alwaysSaveSysExWithEOXMatrix selectCellWithTag:[defaults boolForKey:SMMSaveSysExWithEOXAlwaysPreferenceKey]];
@@ -147,18 +146,6 @@ NSString* const SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreference
 	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey];
 }
 
-- (IBAction)changeOpenWindowsForNewSources:(id)sender
-{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMMOpenWindowsForNewSourcesPreferenceKey];
-}
-
-- (IBAction)changeAutoConnectForNewSources:(id)sender
-{
-    [[NSUserDefaults standardUserDefaults] setBool:
-        [sender intValue] forKey:
-        SMMAutoConnectForNewSourcesPreferenceKey];
-}
-
 - (IBAction)changeAskBeforeClosingModifiedWindow:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey: SMMAskBeforeClosingModifiedWindowPreferenceKey];
@@ -173,6 +160,12 @@ NSString* const SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreference
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[sender intValue] forKey:SMExpertModePreferenceKey];
     [self updateExpertModeTextField];
+    [self sendDisplayPreferenceChangedNotification];
+}
+
+- (IBAction)changeNewSourcesRadio:(id)sender
+{
+    [[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey:SMMAutoConnectNewSourcesPreferenceKey];
     [self sendDisplayPreferenceChangedNotification];
 }
 
