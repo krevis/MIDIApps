@@ -20,9 +20,7 @@
 #import "SMMMonitorWindowController.h"
 #import "SMMPreferencesWindowController.h"
 
-
-NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSources";
-NSString* const SMMAutoConnectForNewSourcesPreferenceKey = @"SMMAutoConnectToNewSources";
+NSString* const SMMAutoConnectNewSourcesPreferenceKey = @"SMMAutoConnectNewSources";
 
 @interface SMMAppController () <SUUpdaterDelegate>
 
@@ -333,22 +331,24 @@ NSString* const SMMAutoConnectForNewSourcesPreferenceKey = @"SMMAutoConnectToNew
 
 - (void)sourceEndpointsAppeared:(NSNotification *)notification
 {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SMMOpenWindowsForNewSourcesPreferenceKey]) {
-        NSArray *endpoints = [[notification userInfo] objectForKey:SMMIDIObjectsThatAppeared];
-
-        if (!self.newlyAppearedSources) {
-            self.newlyAppearedSources = [NSMutableSet set];
-            [self performSelector:@selector(openWindowForNewlyAppearedSources) withObject:nil afterDelay:0.1 inModes:@[NSDefaultRunLoopMode]];
-        }
-        [self.newlyAppearedSources addObjectsFromArray:endpoints];
-    }
+    NSInteger option = [[NSUserDefaults standardUserDefaults] integerForKey:SMMAutoConnectNewSourcesPreferenceKey];
     
-    else if ([[NSUserDefaults standardUserDefaults] boolForKey:SMMAutoConnectForNewSourcesPreferenceKey]) {
+    if (option == 1) {
         NSArray *endpoints = [[notification userInfo] objectForKey:SMMIDIObjectsThatAppeared];
         
         if (!self.newlyAppearedSources) {
             self.newlyAppearedSources = [NSMutableSet set];
             [self performSelector:@selector(autoConnectToNewlyAppearedSources) withObject:nil afterDelay:0.1 inModes:@[NSDefaultRunLoopMode]];
+        }
+        [self.newlyAppearedSources addObjectsFromArray:endpoints];
+    }
+    
+    else if (option == 2) {
+        NSArray *endpoints = [[notification userInfo] objectForKey:SMMIDIObjectsThatAppeared];
+        
+        if (!self.newlyAppearedSources) {
+            self.newlyAppearedSources = [NSMutableSet set];
+            [self performSelector:@selector(openWindowForNewlyAppearedSources) withObject:nil afterDelay:0.1 inModes:@[NSDefaultRunLoopMode]];
         }
         [self.newlyAppearedSources addObjectsFromArray:endpoints];
     }
@@ -370,39 +370,13 @@ NSString* const SMMAutoConnectForNewSourcesPreferenceKey = @"SMMAutoConnectToNew
 
 - (void)autoConnectToNewlyAppearedSources
 {
-    //Get id for current window
-    
     NSDocumentController *dc = [NSDocumentController sharedDocumentController];
-    
-    //Set Selected input sources as newlyAppearedSources
     SMMDocument *document = [dc currentDocument];
     [document setSelectedInputSources:self.newlyAppearedSources];
     SMMMonitorWindowController *wc = document.windowControllers.firstObject;
     [wc revealInputSources:self.newlyAppearedSources];
     [document updateChangeCount:NSChangeCleared];
     self.newlyAppearedSources = nil;
-    
-    
-    //[currentDocument setSelectedInputSources:self.newlyAppearedSources];
-    //Show new input sources
-    
-    //updateChangeCount
-    
-    //set new sources back to zero
-    
-    /*
-    NSDocumentController *dc = [NSDocumentController sharedDocumentController];
-    SMMDocument *document = [dc openUntitledDocumentAndDisplay:NO error:NULL];
-    [document makeWindowControllers];
-    [document setSelectedInputSources:self.newlyAppearedSources];
-    [document showWindows];
-    SMMMonitorWindowController *wc = document.windowControllers.firstObject;
-    [wc revealInputSources:self.newlyAppearedSources];
-    [document updateChangeCount:NSChangeCleared];
-    
-    self.newlyAppearedSources = nil;
-    */
-    
 }
 
 @end
