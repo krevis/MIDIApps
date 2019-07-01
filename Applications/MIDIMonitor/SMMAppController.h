@@ -20,6 +20,6 @@
 
 // Preference keys
 extern NSString* const SMMAutoConnectNewSourcesPreferenceKey;
-//extern NSString* const SMMOpenWindowsForNewSourcesPreferenceKey;
-//extern NSString* const SMMAutoConnectForNewSourcesPreferenceKey;
+extern NSString* const SMMOpenWindowsForNewSourcesPreferenceKey;
+
 
