@@ -21,6 +21,15 @@
 #import "SMMPreferencesWindowController.h"
 
 NSString* const SMMAutoConnectNewSourcesPreferenceKey = @"SMMAutoConnectNewSources";
+NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSources";
+
+typedef enum _SMMAutoConnectOption {
+    SMMDisableAutoConnect                = 0,
+    SMMAutoConnectToNewlyAppearedSources = 1,
+    SMMOpenWindowForNewlyAppearedSources = 2
+} SMMAutoConnectOption;
+
+
 
 @interface SMMAppController () <SUUpdaterDelegate>
 
@@ -49,7 +58,7 @@ NSString* const SMMAutoConnectNewSourcesPreferenceKey = @"SMMAutoConnectNewSourc
         [self failedToInitCoreMIDI];
         return;
     }
-
+    
     // After this point, we are OK to open documents (untitled or otherwise)
     self.shouldOpenUntitledDocument = YES;
 
@@ -63,6 +72,16 @@ NSString* const SMMAutoConnectNewSourcesPreferenceKey = @"SMMAutoConnectNewSourc
             [self failedToConnectToSpyClient];
         }
     }
+    
+    //Migrate autoconnect preference
+    //Checks to see if user had OpenWindowForNewSources checked. If true, then set radio button to autoconnect sources in new window.
+    SMMAutoConnectOption option = (SMMAutoConnectOption)[[NSUserDefaults standardUserDefaults] boolForKey:SMMOpenWindowsForNewSourcesPreferenceKey];
+    
+    if([[NSUserDefaults standardUserDefaults] dataForKey:SMMAutoConnectNewSourcesPreferenceKey] == nil)
+    {
+        [[NSUserDefaults standardUserDefaults] setInteger:option forKey:SMMAutoConnectNewSourcesPreferenceKey];
+    }
+    
 }
 
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender
@@ -331,27 +350,19 @@ NSString* const SMMAutoConnectNewSourcesPreferenceKey = @"SMMAutoConnectNewSourc
 
 - (void)sourceEndpointsAppeared:(NSNotification *)notification
 {
-    NSInteger option = [[NSUserDefaults standardUserDefaults] integerForKey:SMMAutoConnectNewSourcesPreferenceKey];
+    SMMAutoConnectOption option = (SMMAutoConnectOption)[[NSUserDefaults standardUserDefaults] integerForKey:SMMAutoConnectNewSourcesPreferenceKey];
     
-    if (option == 1) {
-        NSArray *endpoints = [[notification userInfo] objectForKey:SMMIDIObjectsThatAppeared];
+    NSArray *endpoints = [[notification userInfo] objectForKey:SMMIDIObjectsThatAppeared];
         
-        if (!self.newlyAppearedSources) {
-            self.newlyAppearedSources = [NSMutableSet set];
+    if (!self.newlyAppearedSources)
+    {
+        self.newlyAppearedSources = [NSMutableSet set];
+        if(option == SMMAutoConnectToNewlyAppearedSources)
             [self performSelector:@selector(autoConnectToNewlyAppearedSources) withObject:nil afterDelay:0.1 inModes:@[NSDefaultRunLoopMode]];
-        }
-        [self.newlyAppearedSources addObjectsFromArray:endpoints];
-    }
-    
-    else if (option == 2) {
-        NSArray *endpoints = [[notification userInfo] objectForKey:SMMIDIObjectsThatAppeared];
-        
-        if (!self.newlyAppearedSources) {
-            self.newlyAppearedSources = [NSMutableSet set];
+        else if(option == SMMOpenWindowForNewlyAppearedSources)
             [self performSelector:@selector(openWindowForNewlyAppearedSources) withObject:nil afterDelay:0.1 inModes:@[NSDefaultRunLoopMode]];
-        }
-        [self.newlyAppearedSources addObjectsFromArray:endpoints];
     }
+    [self.newlyAppearedSources addObjectsFromArray:endpoints];
 }
 
 - (void)openWindowForNewlyAppearedSources
