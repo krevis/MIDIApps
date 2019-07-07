@@ -166,7 +166,6 @@ NSString* const SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreference
 - (IBAction)changeNewSourcesRadio:(id)sender
 {
     [[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey:SMMAutoConnectNewSourcesPreferenceKey];
-    [self sendDisplayPreferenceChangedNotification];
 }
 
 - (IBAction)changeProgramChangeBaseIndex:(id)sender
