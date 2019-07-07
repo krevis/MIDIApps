@@ -20,15 +20,14 @@
 #import "SMMMonitorWindowController.h"
 #import "SMMPreferencesWindowController.h"
 
+NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSources";  // Obsolete
 NSString* const SMMAutoConnectNewSourcesPreferenceKey = @"SMMAutoConnectNewSources";
-NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSources";
 
-typedef enum _SMMAutoConnectOption {
-    SMMDisableAutoConnect                = 0,
-    SMMAutoConnectToNewlyAppearedSources = 1,
-    SMMOpenWindowForNewlyAppearedSources = 2
+typedef enum {
+    SMMAutoConnectOptionDisabled            = 0,
+    SMMAutoConnectOptionAddInCurrentWindow  = 1,
+    SMMAutoConnectOptionOpenNewWindow       = 2,
 } SMMAutoConnectOption;
-
 
 
 @interface SMMAppController () <SUUpdaterDelegate>
@@ -39,6 +38,20 @@ typedef enum _SMMAutoConnectOption {
 @end
 
 @implementation SMMAppController
+
+- (void)awakeFromNib
+{
+    // Migrate autoconnect preference, before we show any windows.
+    // Old: SMMOpenWindowsForNewSourcesPreferenceKey = BOOL (default: false)
+    // New: SMMAutoConnectNewSourcesPreferenceKey = int (SMMAutoConnectOption, default: 1 = SMMAutoConnectOptionAddInCurrentWindow)
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if ([defaults objectForKey:SMMOpenWindowsForNewSourcesPreferenceKey] != nil) {
+        SMMAutoConnectOption option = [defaults boolForKey:SMMOpenWindowsForNewSourcesPreferenceKey] ? SMMAutoConnectOptionOpenNewWindow : SMMAutoConnectOptionDisabled;
+        [defaults setInteger:option forKey:SMMAutoConnectNewSourcesPreferenceKey];
+        [defaults removeObjectForKey:SMMOpenWindowsForNewSourcesPreferenceKey];
+    }
+}
 
 - (void)dealloc
 {
@@ -58,7 +71,7 @@ typedef enum _SMMAutoConnectOption {
         [self failedToInitCoreMIDI];
         return;
     }
-    
+
     // After this point, we are OK to open documents (untitled or otherwise)
     self.shouldOpenUntitledDocument = YES;
 
@@ -72,16 +85,6 @@ typedef enum _SMMAutoConnectOption {
             [self failedToConnectToSpyClient];
         }
     }
-    
-    //Migrate autoconnect preference
-    //Checks to see if user had OpenWindowForNewSources checked. If true, then set radio button to autoconnect sources in new window.
-    SMMAutoConnectOption option = (SMMAutoConnectOption)[[NSUserDefaults standardUserDefaults] boolForKey:SMMOpenWindowsForNewSourcesPreferenceKey];
-    
-    if([[NSUserDefaults standardUserDefaults] dataForKey:SMMAutoConnectNewSourcesPreferenceKey] == nil)
-    {
-        [[NSUserDefaults standardUserDefaults] setInteger:option forKey:SMMAutoConnectNewSourcesPreferenceKey];
-    }
-    
 }
 
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender
@@ -350,19 +353,23 @@ typedef enum _SMMAutoConnectOption {
 
 - (void)sourceEndpointsAppeared:(NSNotification *)notification
 {
-    SMMAutoConnectOption option = (SMMAutoConnectOption)[[NSUserDefaults standardUserDefaults] integerForKey:SMMAutoConnectNewSourcesPreferenceKey];
-    
     NSArray *endpoints = [[notification userInfo] objectForKey:SMMIDIObjectsThatAppeared];
-        
-    if (!self.newlyAppearedSources)
-    {
-        self.newlyAppearedSources = [NSMutableSet set];
-        if(option == SMMAutoConnectToNewlyAppearedSources)
-            [self performSelector:@selector(autoConnectToNewlyAppearedSources) withObject:nil afterDelay:0.1 inModes:@[NSDefaultRunLoopMode]];
-        else if(option == SMMOpenWindowForNewlyAppearedSources)
-            [self performSelector:@selector(openWindowForNewlyAppearedSources) withObject:nil afterDelay:0.1 inModes:@[NSDefaultRunLoopMode]];
+    if ([endpoints count] > 0) {
+        SMMAutoConnectOption autoConnectOption = (SMMAutoConnectOption)[[NSUserDefaults standardUserDefaults] integerForKey:SMMAutoConnectNewSourcesPreferenceKey];
+
+        if (!self.newlyAppearedSources) {
+            self.newlyAppearedSources = [NSMutableSet set];
+
+            if (autoConnectOption == SMMAutoConnectOptionAddInCurrentWindow) {
+                [self performSelector:@selector(autoConnectToNewlyAppearedSources) withObject:nil afterDelay:0.1];
+            }
+            else if (autoConnectOption == SMMAutoConnectOptionOpenNewWindow) {
+                [self performSelector:@selector(openWindowForNewlyAppearedSources) withObject:nil afterDelay:0.1];
+            }
+        }
+
+        [self.newlyAppearedSources addObjectsFromArray:endpoints];
     }
-    [self.newlyAppearedSources addObjectsFromArray:endpoints];
 }
 
 - (void)openWindowForNewlyAppearedSources
@@ -372,6 +379,7 @@ typedef enum _SMMAutoConnectOption {
     [document makeWindowControllers];
     [document setSelectedInputSources:self.newlyAppearedSources];
     [document showWindows];
+
     SMMMonitorWindowController *wc = document.windowControllers.firstObject;
     [wc revealInputSources:self.newlyAppearedSources];
     [document updateChangeCount:NSChangeCleared];
@@ -382,11 +390,15 @@ typedef enum _SMMAutoConnectOption {
 - (void)autoConnectToNewlyAppearedSources
 {
     NSDocumentController *dc = [NSDocumentController sharedDocumentController];
-    SMMDocument *document = [dc currentDocument];
-    [document setSelectedInputSources:self.newlyAppearedSources];
-    SMMMonitorWindowController *wc = document.windowControllers.firstObject;
-    [wc revealInputSources:self.newlyAppearedSources];
-    [document updateChangeCount:NSChangeCleared];
+    SMMDocument *document = [dc currentDocument] ?: [[[NSApplication sharedApplication] orderedDocuments] firstObject];
+    if (document) {
+        [document setSelectedInputSources:[self.newlyAppearedSources setByAddingObjectsFromSet:[document selectedInputSources]]];
+
+        SMMMonitorWindowController *wc = document.windowControllers.firstObject;
+        [wc revealInputSources:self.newlyAppearedSources];
+        [document updateChangeCount:NSChangeCleared];
+    }
+
     self.newlyAppearedSources = nil;
 }
 
