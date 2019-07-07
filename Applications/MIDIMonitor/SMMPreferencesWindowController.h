@@ -25,10 +25,11 @@
 - (IBAction)changeAutoSelectOrdinarySources:(id)sender;
 - (IBAction)changeAutoSelectVirtualDestination:(id)sender;
 - (IBAction)changeAutoSelectSpyingDestinations:(id)sender;
-- (IBAction)changeOpenWindowsForNewSources:(id)sender;
 - (IBAction)changeAskBeforeClosingModifiedWindow:(id)sender;
 - (IBAction)changeAlwaysSaveSysExWithEOX:(id)sender;
 - (IBAction)changeExpertMode:(id)sender;
+- (IBAction)changeNewSourcesRadio:(id)sender;
+
 
 @end
 

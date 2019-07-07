@@ -14,8 +14,8 @@
 	<false/>
 	<key>SMMAutoSelectVirtualDestination</key>
 	<false/>
-	<key>SMMOpenWindowsForNewSources</key>
-	<false/>
+	<key>SMMAutoConnectNewSources</key>
+	<integer>1</integer>
 	<key>SMMSaveSysExWithEOXAlways</key>
 	<true/>
 	<key>SMNoteFormat</key>

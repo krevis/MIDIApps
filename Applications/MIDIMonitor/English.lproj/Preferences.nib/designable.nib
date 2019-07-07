@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.3.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.3.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -10,6 +10,7 @@
             <connections>
                 <outlet property="alwaysSaveSysExWithEOXMatrix" destination="241" id="245"/>
                 <outlet property="askBeforeClosingModifiedWindowCheckbox" destination="267" id="269"/>
+                <outlet property="autoConnectRadioButtons" destination="8FA-H3-vub" id="1kM-nm-g64"/>
                 <outlet property="autoSelectOrdinarySourcesCheckbox" destination="253" id="256"/>
                 <outlet property="autoSelectSpyingDestinationsCheckbox" destination="255" id="259"/>
                 <outlet property="autoSelectVirtualDestinationCheckbox" destination="254" id="257"/>
@@ -18,7 +19,6 @@
                 <outlet property="expertModeCheckbox" destination="317" id="325"/>
                 <outlet property="expertModeTextField" destination="321" id="327"/>
                 <outlet property="noteFormatMatrix" destination="165" id="210"/>
-                <outlet property="openWindowsForNewSourcesCheckbox" destination="204" id="222"/>
                 <outlet property="programChangeBaseIndexMatrix" destination="Sad-MU-mAb" id="YLp-LM-M5K"/>
                 <outlet property="tabView" destination="158" id="263"/>
                 <outlet property="timeFormatMatrix" destination="172" id="209"/>
@@ -286,19 +286,8 @@
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <button id="204">
-                                            <rect key="frame" x="16" y="277" width="300" height="18"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <buttonCell key="cell" type="check" title="Automatically open window for new sources" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="276">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="changeOpenWindowsForNewSources:" target="-2" id="224"/>
-                                            </connections>
-                                        </button>
-                                        <button id="253">
-                                            <rect key="frame" x="28" y="355" width="104" height="18"/>
+                                        <button misplaced="YES" id="253">
+                                            <rect key="frame" x="28" y="358" width="104" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="MIDI sources" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="277">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -308,8 +297,8 @@
                                                 <action selector="changeAutoSelectOrdinarySources:" target="-2" id="260"/>
                                             </connections>
                                         </button>
-                                        <button id="254">
-                                            <rect key="frame" x="28" y="333" width="260" height="18"/>
+                                        <button misplaced="YES" id="254">
+                                            <rect key="frame" x="28" y="336" width="260" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Act as destination for other programs" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="278">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -319,8 +308,17 @@
                                                 <action selector="changeAutoSelectVirtualDestination:" target="-2" id="261"/>
                                             </connections>
                                         </button>
-                                        <button id="255">
-                                            <rect key="frame" x="28" y="311" width="209" height="18"/>
+                                        <textField verticalHuggingPriority="750" misplaced="YES" id="MnG-tK-BBF">
+                                            <rect key="frame" x="15" y="276" width="187" height="22"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" title="Auto connection preferences" id="MKx-x1-Y1S">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <button misplaced="YES" id="255">
+                                            <rect key="frame" x="28" y="314" width="209" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Spy on output to destinations" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="279">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -330,6 +328,45 @@
                                                 <action selector="changeAutoSelectSpyingDestinations:" target="-2" id="262"/>
                                             </connections>
                                         </button>
+                                        <matrix verticalHuggingPriority="750" misplaced="YES" allowsEmptySelection="NO" autosizesCells="NO" id="8FA-H3-vub" userLabel="New Sources">
+                                            <rect key="frame" x="17" y="222" width="299" height="56"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            <size key="cellSize" width="299" height="16"/>
+                                            <size key="intercellSpacing" width="0.0" height="4"/>
+                                            <buttonCell key="prototype" type="radio" title="Automatically open window for new sources" bezelStyle="regularSquare" imagePosition="left" inset="2" id="KT4-es-mQW">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <cells>
+                                                <column>
+                                                    <buttonCell type="radio" title="Disable autoconnect" bezelStyle="regularSquare" imagePosition="left" inset="2" id="276">
+                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                        <connections>
+                                                            <action selector="changeNewSourcesRadio:" target="-2" id="RNs-5Y-FxQ"/>
+                                                        </connections>
+                                                    </buttonCell>
+                                                    <buttonCell type="radio" title="Automatically connect to new MIDI devices" bezelStyle="regularSquare" imagePosition="left" tag="1" inset="2" id="JSO-1b-5FO">
+                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                        <connections>
+                                                            <action selector="changeNewSourcesRadio:" target="-2" id="xp0-Yb-3pY"/>
+                                                        </connections>
+                                                    </buttonCell>
+                                                    <buttonCell type="radio" title="Automatically open window for new sources" bezelStyle="regularSquare" imagePosition="left" tag="2" inset="2" id="bEc-Kb-Kvx">
+                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                        <connections>
+                                                            <action selector="changeNewSourcesRadio:" target="-2" id="4NW-Bo-bCP"/>
+                                                        </connections>
+                                                    </buttonCell>
+                                                </column>
+                                            </cells>
+                                            <connections>
+                                                <action selector="changeNewSourcesRadio:" target="-2" id="tAc-pR-mAg"/>
+                                            </connections>
+                                        </matrix>
                                     </subviews>
                                 </view>
                             </tabViewItem>
@@ -435,8 +472,9 @@ If OFF, it applies only to Untitled documents.</string>
             <connections>
                 <outlet property="delegate" destination="-2" id="207"/>
             </connections>
-            <point key="canvasLocation" x="139" y="176"/>
+            <point key="canvasLocation" x="-359" y="77"/>
         </window>
         <customObject id="287" customClass="SUUpdater"/>
+        <userDefaultsController representsSharedInstance="YES" id="hTq-ws-cwy"/>
     </objects>
 </document>
