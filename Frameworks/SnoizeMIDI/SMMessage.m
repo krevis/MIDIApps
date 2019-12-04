@@ -131,7 +131,7 @@ NSString *SMProgramChangeBaseIndexPreferenceKey = @"SMProgramChangeBaseIndex";
         case SMDataFormatDecimal:
         default: {
             NSInteger baseIndex = [[NSUserDefaults standardUserDefaults] integerForKey:SMProgramChangeBaseIndexPreferenceKey];
-            return [NSString stringWithFormat:@"%ld", baseIndex + programNumber];
+            return [NSString stringWithFormat:@"%ld", (long)(baseIndex + programNumber)];
         }
 
         case SMDataFormatHexadecimal:
