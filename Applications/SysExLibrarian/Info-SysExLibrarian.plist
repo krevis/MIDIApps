@@ -73,7 +73,7 @@
 	<key>CFBundleExecutable</key>
 	<string>SysEx Librarian</string>
 	<key>CFBundleGetInfoString</key>
-	<string>1.4, Copyright 2002-2018 Kurt Revis</string>
+	<string>1.4.1, Copyright 2002-2019 Kurt Revis</string>
 	<key>CFBundleIconFile</key>
 	<string>SysExLibrarian.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -85,15 +85,15 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.4</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>SnSX</string>
 	<key>CFBundleVersion</key>
-	<string>1.4</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.9.0</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2002-2018 Kurt Revis</string>
+	<string>Copyright © 2002-2019 Kurt Revis</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
