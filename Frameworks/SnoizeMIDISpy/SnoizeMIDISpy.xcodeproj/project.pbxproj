@@ -440,7 +440,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/bin/sh -x";
-			shellScript = "lipo \"${SCRIPT_INPUT_FILE_0}\" \"${SCRIPT_INPUT_FILE_1}\" -create -output \"${SCRIPT_INPUT_FILE_0}\"\n";
+			shellScript = "lipo \"${SCRIPT_INPUT_FILE_0}\" -verify_arch i386 || lipo \"${SCRIPT_INPUT_FILE_0}\" \"${SCRIPT_INPUT_FILE_1}\" -create -output \"${SCRIPT_INPUT_FILE_0}\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
