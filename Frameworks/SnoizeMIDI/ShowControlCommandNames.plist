@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>0</key>
+	<string>Reserved for extensions</string>
+	<key>1</key>
+	<string>GO</string>
+	<key>2</key>
+	<string>STOP</string>
+	<key>3</key>
+	<string>RESUME</string>
+	<key>4</key>
+	<string>TIMED_GO</string>
+	<key>5</key>
+	<string>LOAD</string>
+	<key>6</key>
+	<string>SET</string>
+	<key>7</key>
+	<string>FIRE</string>
+	<key>8</key>
+	<string>ALL_OFF</string>
+	<key>9</key>
+	<string>RESTORE</string>
+	<key>A</key>
+	<string>RESET</string>
+	<key>B</key>
+	<string>GO_OFF</string>
+	<key>10</key>
+	<string>GO/JAM_CLOCK</string>
+	<key>11</key>
+	<string>STANDBY_+</string>
+	<key>12</key>
+	<string>STANDBY_-</string>
+	<key>13</key>
+	<string>SEQUENCE_+</string>
+	<key>14</key>
+	<string>SEQUENCE_-</string>
+	<key>15</key>
+	<string>START_CLOCK</string>
+	<key>16</key>
+	<string>STOP_CLOCK</string>
+	<key>17</key>
+	<string>ZERO_CLOCK</string>
+	<key>18</key>
+	<string>SET_CLOCK</string>
+	<key>19</key>
+	<string>MTC_CHASE_ON</string>
+	<key>1A</key>
+	<string>MTC_CHASE_OFF</string>
+	<key>1B</key>
+	<string>OPEN_CUE_LIST</string>
+	<key>1C</key>
+	<string>CLOSE_CUE_LIST</string>
+	<key>1D</key>
+	<string>OPEN_CUE_PATH</string>
+	<key>1E</key>
+	<string>CLOSE_CUE_PATH</string>
+	<key>20</key>
+	<string>STANDBY</string>
+	<key>21</key>
+	<string>STANDING_BY</string>
+	<key>22</key>
+	<string>GO_2PC</string>
+	<key>23</key>
+	<string>COMPLETE</string>
+	<key>24</key>
+	<string>CANCEL</string>
+	<key>25</key>
+	<string>CANCELLED</string>
+	<key>26</key>
+	<string>ABORT</string>
+</dict>
+</plist>

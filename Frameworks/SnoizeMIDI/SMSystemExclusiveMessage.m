@@ -14,7 +14,19 @@
 #import "SMSystemExclusiveMessage.h"
 
 #import "SMUtilities.h"
+#import "SMShowControlUtilities.h"
 
+typedef NS_ENUM(NSInteger, SMShowControlDataType) {
+    SMShowControlDataTypeUnknown = 1,           // Yet undefined data
+    SMShowControlDataTypeCue,                   // optional Cue, optional List, optional Path
+    SMShowControlDataTypeCueWithTimecode,       // timecode, optional Cue, optional List, optional Path
+    SMShowControlDataTypeNoData,                // No additional data
+    SMShowControlDataTypeSetControl,            // Specific for SET
+    SMShowControlDataTypeFireMacro,             // Specific for FIRE
+    SMShowControlDataTypeCueList,               // Cue List
+    SMShowControlDataTypeCuePath,               // Cue Path
+    SMShowControlDataTypeCueListWithTimecode,   // timecode optional Cue list
+};
 
 
 @interface SMSystemExclusiveMessage (Private)
@@ -30,10 +42,33 @@ static void writeVariableLengthFieldIntoSMF(Byte **pPtr, const UInt32 value);
 
 - (NSData *)dataByAddingStartByte:(NSData *)someData;
 
+- (BOOL)isShowControl;
+- (NSString *)showControlDataForDisplay;
++ (NSString *)nameForShowControlCommand:(Byte)command;
++ (SMShowControlDataType)dataTypeForShowControlCommand:(Byte)command;
++ (NSString *)formatShowControlCue:(NSData *)cueData;
++ (NSString *)formatShowControlCueList:(NSData *)cuePathData;
++ (NSString *)formatShowControlCuePath:(NSData *)cuePathData;
++ (NSString *)formatShowControlTimecode:(NSData *)timecodeData;
+
+
 @end
 
 
-@implementation SMSystemExclusiveMessage : SMMessage
+@implementation SMSystemExclusiveMessage
+{
+    NSData *data;
+    // data does not include the starting 0xF0 or the ending 0xF7 (EOX)
+
+    struct {
+        unsigned int wasReceivedWithEOX:1;
+    } flags;
+
+    NSMutableData *cachedDataWithEOX;
+
+    NSString *cachedDataForDisplay;
+}
+
 
 + (SMSystemExclusiveMessage *)systemExclusiveMessageWithTimeStamp:(MIDITimeStamp)aTimeStamp data:(NSData *)aData
 {
@@ -227,33 +262,59 @@ fail:
 
 - (NSString *)typeForDisplay;
 {
-    return NSLocalizedStringFromTableInBundle(@"SysEx", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of System Exclusive event");
+    if ([self isShowControl]) {
+        return NSLocalizedStringFromTableInBundle(@"Show Control", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of System Exclusive Show Control event");
+    }
+    else {
+        return NSLocalizedStringFromTableInBundle(@"SysEx", @"SnoizeMIDI", SMBundleForObject(self), "displayed type of System Exclusive event");
+    }
 }
 
 - (NSString *)dataForDisplay;
 {
-    NSString *manufacturerName = [self manufacturerName];
-    NSString *lengthString = [self sizeForDisplay];
-    NSString *dataString = [self expertDataForDisplay];
-
-    NSMutableString *result = [NSMutableString string];
-    if (manufacturerName) {
-        [result appendString:manufacturerName];
-    }
-    if (lengthString) {
-        if (result.length > 0) {
-            [result appendString:@" "];
-        }
-        [result appendString:lengthString];
-    }
-    if (dataString) {
-        if (result.length > 0) {
-            [result appendString:@"\t"];
-        }
-        [result appendString:dataString];
+    if (cachedDataForDisplay) {
+        return cachedDataForDisplay;
     }
 
-    return result;
+    if ([self isShowControl]) {
+        // Show control
+        cachedDataForDisplay = [[self showControlDataForDisplay] copy];
+    }
+    else {
+        // Normal sysex
+
+        NSMutableString *result = [NSMutableString string];
+
+        NSString *manufacturerName = [self manufacturerName];
+        NSString *lengthString = [self sizeForDisplay];
+        NSString *dataString = [self expertDataForDisplay];
+
+        if (manufacturerName) {
+            [result appendString:manufacturerName];
+        }
+        if (lengthString) {
+            if (result.length > 0) {
+                [result appendString:@" "];
+            }
+            [result appendString:lengthString];
+        }
+        if (dataString) {
+            if (result.length > 0) {
+                [result appendString:@"\t"];
+            }
+            [result appendString:dataString];
+        }
+
+        cachedDataForDisplay = [result copy];
+    }
+
+    return cachedDataForDisplay;
+}
+
+- (void)invalidateDisplayCache
+{
+    [cachedDataForDisplay release];
+    cachedDataForDisplay = nil;
 }
 
 //
@@ -720,6 +781,274 @@ void writeVariableLengthFieldIntoSMF(Byte **pPtr, const UInt32 value)
     [someData getBytes:bytes+1 length:length];
 
     return dataWithStartByte;
+}
+
+//
+// Show Control
+//
+
+static const int showControlHeaderSize = 5;
+
+- (BOOL)isShowControl
+{
+    Byte *bytes = (Byte *)data.bytes;
+    return data.length >= showControlHeaderSize && bytes[0] == 0x7F && bytes[2] == 0x02;
+    // Byte 0: Manufacturer ID = 0x7F "Universal Real Time"
+    // Byte 1: Destination Device ID
+    // Byte 2: MIDI Show Control message = 0x02
+    // Byte 3: command_format
+    // Byte 4: command
+    // Byte 5+: data
+}
+
+- (NSString *)showControlDataForDisplay
+{
+    NSMutableString *result = [NSMutableString string];
+
+    Byte *bytes = (Byte *)data.bytes;
+//    Byte commandFormat = bytes[3];  // TODO is this really unused?
+    Byte command = bytes[4];
+
+    [result appendString:[SMSystemExclusiveMessage nameForShowControlCommand:command]];
+
+    const int showControlHeaderSize = 5;
+    NSData *parameterData = [data subdataWithRange:NSMakeRange(showControlHeaderSize, data.length - showControlHeaderSize)];
+
+    SMShowControlDataType dataType = [SMSystemExclusiveMessage dataTypeForShowControlCommand:command];
+    switch (dataType) {
+        case SMShowControlDataTypeCue: {
+            NSString *cueString = [SMSystemExclusiveMessage formatShowControlCue:parameterData];
+            if (cueString.length) {
+                [result appendFormat:@" %@", cueString];
+            }
+            break;
+        }
+
+        case SMShowControlDataTypeCueWithTimecode: {
+            // TODO Check that data is expected length for both of these
+            NSData *timecodeData = [parameterData subdataWithRange:NSMakeRange(0, 5)];
+            NSString *timecodeString = [SMSystemExclusiveMessage formatShowControlTimecode:timecodeData];
+
+            NSData *cueData = [parameterData subdataWithRange:NSMakeRange(5, parameterData.length - 5)];
+            NSString *cueString = [SMSystemExclusiveMessage formatShowControlCue:cueData];
+
+            if (cueString.length) {
+                [result appendFormat:@" %@", cueString];
+            }
+            [result appendFormat:@" @ %@", timecodeString];
+            break;
+        }
+
+        case SMShowControlDataTypeCuePath: {
+            NSString *cuePathString = [SMSystemExclusiveMessage formatShowControlCuePath:parameterData];
+            if (cuePathString.length) {
+                [result appendFormat:@" %@", cuePathString];
+            }
+            break;
+        }
+
+        case SMShowControlDataTypeCueList: {
+            NSString *cueListString = [SMSystemExclusiveMessage formatShowControlCueList:parameterData];
+            if (cueListString.length) {
+                [result appendFormat:@" %@", cueListString];
+            }
+            break;
+        }
+
+        case SMShowControlDataTypeCueListWithTimecode: {
+            NSData *timecodeData = [parameterData subdataWithRange:NSMakeRange(0, 5)];
+            NSString *timecodeString = [SMSystemExclusiveMessage formatShowControlTimecode:timecodeData];
+
+            NSData *cueListData = [parameterData subdataWithRange:NSMakeRange(5, parameterData.length - 5)];
+            NSString *cueListString = [SMSystemExclusiveMessage formatShowControlCueList:cueListData];
+
+            [result appendFormat:@" %@", timecodeString];
+            if (cueListString.length) {
+                [result appendFormat:@" for %@", cueListString];
+            }
+            break;
+        }
+
+        case SMShowControlDataTypeSetControl: {
+            // 14 bit number (two bytes with 7 bit LSB first)
+            uint16 control = *(uint8 *)parameterData.bytes | *((uint8 *)parameterData.bytes + 1) << 7;
+            uint16 value = *((uint8 *)parameterData.bytes + 2) | *((uint8 *)parameterData.bytes + 3) << 7;
+
+            [result appendFormat:@" Control %d to value %d", control, value];
+            if ([parameterData length] == 9) {
+                // Timecode included
+                NSData *timecodeBytes = [NSData dataWithBytes:(parameterData.bytes + 4) length:5];
+                [result appendString:@" @ "];
+                [result appendString:[SMSystemExclusiveMessage formatShowControlTimecode:timecodeBytes]];
+            }
+            break;
+        }
+
+        case SMShowControlDataTypeFireMacro: {
+            // one 7 bit macro number
+            [result appendFormat:@" Macro %d", *(Byte *)parameterData.bytes];
+            break;
+        }
+
+        case SMShowControlDataTypeUnknown: {
+            NSString *dataString = [self expertDataForDisplay];
+            if (dataString) {
+                if (result.length > 0) {
+                    [result appendString:@"\t"];
+                }
+                [result appendString:dataString];
+            }
+            break;
+        }
+
+        case SMShowControlDataTypeNoData: {
+            // TODO What?
+            break;
+        }
+    }
+
+    return result;
+}
+
++ (NSString *)nameForShowControlCommand:(Byte)command
+{
+    static NSDictionary *showControlCommands = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSString *path = [SMBundleForObject(self) pathForResource:@"ShowControlCommandNames" ofType:@"plist"];
+        if (path) {
+            showControlCommands = [NSDictionary dictionaryWithContentsOfFile:path];
+            if (!showControlCommands) {
+                NSLog(@"Couldn't read ShowControlCommandNames.plist!");
+            }
+        } else {
+            NSLog(@"Couldn't find ShowControlCommandNames.plist!");
+        }
+
+        if (!showControlCommands) {
+            showControlCommands = [NSDictionary dictionary];
+        }
+        [showControlCommands retain];
+    });
+
+    NSString *identifierString = [NSString stringWithFormat:@"%X", command];
+    NSString *name = showControlCommands[identifierString];
+    return name ?: NSLocalizedStringFromTableInBundle(@"Unknown Command", @"SnoizeMIDI", SMBundleForObject(self), "unknown command name");
+}
+
++ (SMShowControlDataType)dataTypeForShowControlCommand:(Byte)command;
+{
+    switch (command) {
+        case 0x01:
+        case 0x02:
+        case 0x03:
+        case 0x05:
+        case 0x0B:
+        case 0x10:
+            return SMShowControlDataTypeCue;
+        case 0x04:
+            return SMShowControlDataTypeCueWithTimecode;
+        case 0x08:
+        case 0x09:
+        case 0x0A:
+            return SMShowControlDataTypeNoData;
+        case 0x06:
+            return SMShowControlDataTypeSetControl;
+        case 0x07:
+            return SMShowControlDataTypeFireMacro;
+        case 0x11:
+        case 0x12:
+        case 0x13:
+        case 0x14:
+        case 0x15:
+        case 0x16:
+        case 0x17:
+        case 0x19:
+        case 0x1A:
+        case 0x1B:
+        case 0x1C:
+            return SMShowControlDataTypeCueList;
+        case 0x1D:
+        case 0x1E:
+            return SMShowControlDataTypeCuePath;
+        case 0x18:
+            return SMShowControlDataTypeCueListWithTimecode;
+        default:
+            return SMShowControlDataTypeUnknown;
+    }
+}
+
++ (NSString *)formatShowControlCue:(NSData *)data
+{
+    NSMutableString *result = [NSMutableString string];
+
+    NSArray *items = parseCueItemsData(data);
+    if ([items count] >= 1) {
+        [result appendFormat:@"Cue %@", [items objectAtIndex:0]];
+    }
+    if ([items count] >= 2) {
+        [result appendFormat:@", List %@", [items objectAtIndex:1]];
+    }
+    if ([items count] == 3) {
+        [result appendFormat:@", Path %@", [items objectAtIndex:2]];
+    }
+
+    return result;
+}
+
++ (NSString *)formatShowControlCueList:(NSData *)data
+{
+    NSMutableString *result = [NSMutableString string];
+
+    NSArray *items = parseCueItemsData(data);
+    if ([items count] >= 1) {
+        [result appendFormat:@"Cue List %@", [items objectAtIndex:0]];
+    }
+
+    return result;
+}
+
++ (NSString *)formatShowControlCuePath:(NSData *)data
+{
+    NSMutableString *result = [NSMutableString string];
+
+    NSArray *items = parseCueItemsData(data);
+    if ([items count] >= 1) {
+        [result appendFormat:@"Cue Path %@", [items objectAtIndex:0]];
+    }
+
+    return result;
+}
+
++ (NSString *)formatShowControlTimecode:(NSData *)data
+{
+    NSMutableString *result = [NSMutableString string];
+
+    SMTimecode timecode = parseTimecodeData(data);
+
+    [result appendFormat:@"%d:%02d:%02d:%02d", timecode.hours, timecode.minutes, timecode.seconds, timecode.frames];
+    if (timecode.form == 0) {
+        [result appendFormat:@"/%02d", timecode.subframes];
+    }
+
+    switch (timecode.timecodeType) {
+        case 0:
+            [result appendString:@" (24 fps)"];
+            break;
+        case 1:
+            [result appendString:@" (25 fps)"];
+            break;
+        case 2:
+            [result appendString:@" (30 fps/drop)"];
+            break;
+        case 3:
+            [result appendString:@" (30 fps/non-drop)"];
+            break;
+        default:
+            [result appendString:@" (unknown)"];
+    }
+
+    return result;
 }
 
 @end

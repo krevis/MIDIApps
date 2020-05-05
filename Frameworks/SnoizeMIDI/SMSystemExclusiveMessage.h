@@ -18,16 +18,6 @@
 
 @interface SMSystemExclusiveMessage : SMMessage
     // TODO Should this be a SMSystemCommonMessage too? Would we gain anything from that?
-{
-    NSData *data;
-    // data does not include the starting 0xF0 or the ending 0xF7 (EOX)
-    
-    struct {
-        unsigned int wasReceivedWithEOX:1;
-    } flags;
-
-    NSMutableData *cachedDataWithEOX;
-}
 
 + (SMSystemExclusiveMessage *)systemExclusiveMessageWithTimeStamp:(MIDITimeStamp)aTimeStamp data:(NSData *)aData;
     // data should NOT include the starting 0xF0 or the ending 0xF7 (EOX)

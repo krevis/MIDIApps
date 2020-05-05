@@ -73,7 +73,15 @@
 		16B11BF60971D78500DB1DB5 /* SnoizeMIDI.strings in Resources */ = {isa = PBXBuildFile; fileRef = 16B11BF40971D78500DB1DB5 /* SnoizeMIDI.strings */; };
 		16B11DF20971D80F00DB1DB5 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B11DF00971D80F00DB1DB5 /* CoreMIDI.framework */; };
 		16B11DF30971D81400DB1DB5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D69BFE84028FC02AAC07 /* Foundation.framework */; };
+		16B4B56321F5CE8C00C1AC09 /* SMShowControlUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 9AD4AE8121CE562900E7BBF0 /* SMShowControlUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		16B4B56421F5CE9200C1AC09 /* SMShowControlUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 9AD4AE8121CE562900E7BBF0 /* SMShowControlUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		16B4B56521F5CE9300C1AC09 /* SMShowControlUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 9AD4AE8121CE562900E7BBF0 /* SMShowControlUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
+		9A6D1B1821C0605C00D9872C /* ShowControlCommandNames.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9A6D1B1721C0605C00D9872C /* ShowControlCommandNames.plist */; };
+		9A6D1B2521C2F65B00D9872C /* SnoizeMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC2EF5B0486A6940098B216 /* SnoizeMIDI.framework */; };
+		9A6D1B2B21C2F67100D9872C /* SMShowControlMessageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A6D1B1A21C2F53000D9872C /* SMShowControlMessageTest.m */; };
+		9AD4AE8021CE560100E7BBF0 /* SMShowControlUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AD4AE7F21CE560100E7BBF0 /* SMShowControlUtilities.m */; };
+		9AD4AE8321CE577800E7BBF0 /* SMShowControlUtilitiesTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AD4AE8221CE577800E7BBF0 /* SMShowControlUtilitiesTest.m */; };
 		A53DDB9A148F4219006D2FFD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A53DDB99148F4219006D2FFD /* Foundation.framework */; };
 		A53DDBDF148F4349006D2FFD /* SMClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B5E0971D40100DB1DB5 /* SMClient.m */; };
 		A53DDBE0148F434C006D2FFD /* SMHostTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B660971D40100DB1DB5 /* SMHostTime.m */; };
@@ -201,6 +209,16 @@
 		A581999816AF699100325CF3 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A581999716AF699100325CF3 /* CoreMIDI.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		9A6D1B2621C2F65B00D9872C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
+			remoteInfo = SnoizeMIDI;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -278,6 +296,13 @@
 		32DBCF5E0370ADEE00C91783 /* SnoizeMIDI_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnoizeMIDI_Prefix.pch; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* SnoizeMIDI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SnoizeMIDI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9A6D1B1721C0605C00D9872C /* ShowControlCommandNames.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ShowControlCommandNames.plist; sourceTree = "<group>"; };
+		9A6D1B1A21C2F53000D9872C /* SMShowControlMessageTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SMShowControlMessageTest.m; sourceTree = "<group>"; };
+		9A6D1B2021C2F65B00D9872C /* SnoizeMIDITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SnoizeMIDITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9A6D1B2421C2F65B00D9872C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9AD4AE7F21CE560100E7BBF0 /* SMShowControlUtilities.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SMShowControlUtilities.m; sourceTree = "<group>"; };
+		9AD4AE8121CE562900E7BBF0 /* SMShowControlUtilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SMShowControlUtilities.h; sourceTree = "<group>"; };
+		9AD4AE8221CE577800E7BBF0 /* SMShowControlUtilitiesTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SMShowControlUtilitiesTest.m; sourceTree = "<group>"; };
 		A53DDB97148F4219006D2FFD /* libSnoizeMIDIiOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSnoizeMIDIiOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A53DDB99148F4219006D2FFD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A53DDB9D148F4219006D2FFD /* SnoizeMIDIiOS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SnoizeMIDIiOS-Prefix.pch"; sourceTree = "<group>"; };
@@ -292,6 +317,14 @@
 			files = (
 				16B11DF20971D80F00DB1DB5 /* CoreMIDI.framework in Frameworks */,
 				16B11DF30971D81400DB1DB5 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9A6D1B1D21C2F65B00D9872C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9A6D1B2521C2F65B00D9872C /* SnoizeMIDI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,6 +354,7 @@
 				8DC2EF5B0486A6940098B216 /* SnoizeMIDI.framework */,
 				A53DDB97148F4219006D2FFD /* libSnoizeMIDIiOS.a */,
 				A581997216AF687400325CF3 /* libSnoizeMIDI.a */,
+				9A6D1B2021C2F65B00D9872C /* SnoizeMIDITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -332,6 +366,7 @@
 				089C1665FE841158C02AAC07 /* Resources */,
 				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
 				161D6C970972112200CA5276 /* Configurations */,
+				9A6D1B2121C2F65B00D9872C /* SnoizeMIDITests */,
 				A53DDB98148F4219006D2FFD /* Frameworks */,
 				034768DFFF38A50411DB9C8B /* Products */,
 			);
@@ -355,6 +390,7 @@
 				16B11BF40971D78500DB1DB5 /* SnoizeMIDI.strings */,
 				16B11BEE0971D77600DB1DB5 /* ControllerNames.plist */,
 				16B11BF00971D77600DB1DB5 /* ManufacturerNames.plist */,
+				9A6D1B1721C0605C00D9872C /* ShowControlCommandNames.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -395,6 +431,8 @@
 				16B11B660971D40100DB1DB5 /* SMHostTime.m */,
 				16B11B890971D40100DB1DB5 /* SMUtilities.h */,
 				16B11B8A0971D40100DB1DB5 /* SMUtilities.m */,
+				9AD4AE8121CE562900E7BBF0 /* SMShowControlUtilities.h */,
+				9AD4AE7F21CE560100E7BBF0 /* SMShowControlUtilities.m */,
 			);
 			name = "Global / Utilities";
 			sourceTree = "<group>";
@@ -514,6 +552,16 @@
 			name = Processors;
 			sourceTree = "<group>";
 		};
+		9A6D1B2121C2F65B00D9872C /* SnoizeMIDITests */ = {
+			isa = PBXGroup;
+			children = (
+				9A6D1B2421C2F65B00D9872C /* Info.plist */,
+				9A6D1B1A21C2F53000D9872C /* SMShowControlMessageTest.m */,
+				9AD4AE8221CE577800E7BBF0 /* SMShowControlUtilitiesTest.m */,
+			);
+			path = SnoizeMIDITests;
+			sourceTree = "<group>";
+		};
 		A53DDB98148F4219006D2FFD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -540,6 +588,7 @@
 				16B11BA20971D40100DB1DB5 /* SMHostTime.h in Headers */,
 				16B11BA40971D40100DB1DB5 /* SMInputStream.h in Headers */,
 				16B11BA60971D40100DB1DB5 /* SMInputStreamSource.h in Headers */,
+				16B4B56321F5CE8C00C1AC09 /* SMShowControlUtilities.h in Headers */,
 				16B11BA80971D40100DB1DB5 /* SMInvalidMessage.h in Headers */,
 				16B11BAA0971D40100DB1DB5 /* SMMessage.h in Headers */,
 				16B11BAC0971D40100DB1DB5 /* SMMessageDestinationProtocol.h in Headers */,
@@ -579,6 +628,7 @@
 				A53DDC1F148F4C89006D2FFD /* SMMIDIObject.h in Headers */,
 				A53DDC20148F4C89006D2FFD /* SMMIDIObject-Private.h in Headers */,
 				A53DDC21148F4C89006D2FFD /* SMDevice.h in Headers */,
+				16B4B56521F5CE9300C1AC09 /* SMShowControlUtilities.h in Headers */,
 				A53DDC22148F4C89006D2FFD /* SMEndpoint.h in Headers */,
 				A53DDC23148F4C89006D2FFD /* SMExternalDevice.h in Headers */,
 				A53DDC24148F4C94006D2FFD /* SMMessage.h in Headers */,
@@ -618,6 +668,7 @@
 				A581995616AF687400325CF3 /* SMMIDIObject.h in Headers */,
 				A581995716AF687400325CF3 /* SMMIDIObject-Private.h in Headers */,
 				A581995816AF687400325CF3 /* SMDevice.h in Headers */,
+				16B4B56421F5CE9200C1AC09 /* SMShowControlUtilities.h in Headers */,
 				A581995916AF687400325CF3 /* SMEndpoint.h in Headers */,
 				A581995A16AF687400325CF3 /* SMExternalDevice.h in Headers */,
 				A581995B16AF687400325CF3 /* SMMessage.h in Headers */,
@@ -665,6 +716,24 @@
 			productReference = 8DC2EF5B0486A6940098B216 /* SnoizeMIDI.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		9A6D1B1F21C2F65B00D9872C /* SnoizeMIDITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9A6D1B2821C2F65B00D9872C /* Build configuration list for PBXNativeTarget "SnoizeMIDITests" */;
+			buildPhases = (
+				9A6D1B1C21C2F65B00D9872C /* Sources */,
+				9A6D1B1D21C2F65B00D9872C /* Frameworks */,
+				9A6D1B1E21C2F65B00D9872C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9A6D1B2721C2F65B00D9872C /* PBXTargetDependency */,
+			);
+			name = SnoizeMIDITests;
+			productName = SnoizeMIDITests;
+			productReference = 9A6D1B2021C2F65B00D9872C /* SnoizeMIDITests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		A53DDB96148F4219006D2FFD /* SnoizeMIDIiOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A53DDBA3148F4219006D2FFD /* Build configuration list for PBXNativeTarget "SnoizeMIDIiOS" */;
@@ -706,6 +775,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1000;
+				TargetAttributes = {
+					9A6D1B1F21C2F65B00D9872C = {
+						CreatedOnToolsVersion = 10.1;
+						DevelopmentTeam = 832NCTF3R5;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "SnoizeMIDI" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -725,6 +801,7 @@
 				8DC2EF4F0486A6940098B216 /* SnoizeMIDI */,
 				A53DDB96148F4219006D2FFD /* SnoizeMIDIiOS */,
 				A581992D16AF687400325CF3 /* SnoizeMIDIOSX */,
+				9A6D1B1F21C2F65B00D9872C /* SnoizeMIDITests */,
 			);
 		};
 /* End PBXProject section */
@@ -738,6 +815,14 @@
 				16B11BF20971D77600DB1DB5 /* ControllerNames.plist in Resources */,
 				16B11BF30971D77600DB1DB5 /* ManufacturerNames.plist in Resources */,
 				16B11BF60971D78500DB1DB5 /* SnoizeMIDI.strings in Resources */,
+				9A6D1B1821C0605C00D9872C /* ShowControlCommandNames.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9A6D1B1E21C2F65B00D9872C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -777,6 +862,16 @@
 				16B11BCB0971D40100DB1DB5 /* SMVirtualOutputStream.m in Sources */,
 				16B11BCD0971D40100DB1DB5 /* SMVoiceMessage.m in Sources */,
 				164876610E6D2A22002CF387 /* SMMessageTimeBase.m in Sources */,
+				9AD4AE8021CE560100E7BBF0 /* SMShowControlUtilities.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9A6D1B1C21C2F65B00D9872C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9A6D1B2B21C2F67100D9872C /* SMShowControlMessageTest.m in Sources */,
+				9AD4AE8321CE577800E7BBF0 /* SMShowControlUtilitiesTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -853,6 +948,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9A6D1B2721C2F65B00D9872C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8DC2EF4F0486A6940098B216 /* SnoizeMIDI */;
+			targetProxy = 9A6D1B2621C2F65B00D9872C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		089C1666FE841158C02AAC07 /* InfoPlist.strings */ = {
@@ -959,6 +1062,103 @@
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+			};
+			name = Release;
+		};
+		9A6D1B2921C2F65B00D9872C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = SnoizeMIDITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.SnoizeMIDITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		9A6D1B2A21C2F65B00D9872C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = SnoizeMIDITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.SnoizeMIDITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -1091,6 +1291,15 @@
 			buildConfigurations = (
 				1DEB91B208733DA50010E9CD /* Debug */,
 				1DEB91B308733DA50010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9A6D1B2821C2F65B00D9872C /* Build configuration list for PBXNativeTarget "SnoizeMIDITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9A6D1B2921C2F65B00D9872C /* Debug */,
+				9A6D1B2A21C2F65B00D9872C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

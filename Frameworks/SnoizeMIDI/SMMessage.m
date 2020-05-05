@@ -530,6 +530,11 @@ fail:
     }
 }
 
+- (void)invalidateDisplayCache
+{
+    // Do nothing by default. Subclasses that cache results that depend on display preferences should override to invalidate their cache.
+}
+
 @end
 
 
