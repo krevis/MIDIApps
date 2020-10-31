@@ -365,6 +365,10 @@
 			attributes = {
 				LastUpgradeCheck = 1000;
 				TargetAttributes = {
+					164103D709735FA5008DABCC = {
+						DevelopmentTeam = YDJAW5GX9U;
+						ProvisioningStyle = Automatic;
+					};
 					164103F409735FA6008DABCC = {
 						DevelopmentTeam = YDJAW5GX9U;
 						ProvisioningStyle = Automatic;
@@ -535,12 +539,16 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1641044809736388008DABCC /* Snoize-Framework-Debug.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = YDJAW5GX9U;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				INFOPLIST_FILE = "Info-SnoizeMIDISpy.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.MIDISpyFramework;
 				PRODUCT_NAME = SnoizeMIDISpy;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Debug;
@@ -549,12 +557,16 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1641044A09736388008DABCC /* Snoize-Framework-Release.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = YDJAW5GX9U;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				INFOPLIST_FILE = "Info-SnoizeMIDISpy.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.MIDISpyFramework;
 				PRODUCT_NAME = SnoizeMIDISpy;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Release;
