@@ -28,7 +28,8 @@ extern NSString * const MIDISpyDriverInstallationErrorDomain;
 typedef NS_ENUM(NSInteger, MIDISpyDriverInstallationErrorCode) {
     MIDISpyDriverInstallationErrorCouldNotFindBundle,
     MIDISpyDriverInstallationErrorCouldNotFindPlugIn,
-    MIDISpyDriverInstallationErrorCouldNotMakeBundleForPlugIn,
+    MIDISpyDriverInstallationErrorCouldNotGetPlugInInfo,
+    MIDISpyDriverInstallationErrorCouldNotGetPlugInVersion,
     MIDISpyDriverInstallationErrorDriverHasNoName,
     MIDISpyDriverInstallationErrorCannotMakeDriversURL,
     MIDISpyDriverInstallationErrorCannotMakeDriverDestinationURL,
