@@ -10,7 +10,8 @@ GCC_PREPROCESSOR_DEFINITIONS = DEBUG
 ONLY_ACTIVE_ARCH = YES
 
 // Use DWARF debug symbols, which are faster
-DEBUG_INFORMATION_FORMAT = dwarf
+//DEBUG_INFORMATION_FORMAT = dwarf
 
 // Don't strip debug symbols when copying frameworks
 COPY_PHASE_STRIP = NO
+STRIP_INSTALLED_PRODUCT = NO
