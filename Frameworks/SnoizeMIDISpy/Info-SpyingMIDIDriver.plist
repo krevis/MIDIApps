@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>MIDI Monitor</string>
 	<key>CFBundleGetInfoString</key>
-	<string>MIDI Monitor driver version 1.4, Copyright 2002-2018, Kurt Revis</string>
+	<string>MIDI Monitor driver version 1.4.1, Copyright 2002-2020, Kurt Revis</string>
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
@@ -19,11 +19,11 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.4</string>
+	<string>1.4.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.4</string>
+	<string>1.4.1</string>
 	<key>CFPlugInFactories</key>
 	<dict>
 		<key>4FA13C6B-2D94-11D6-8C2F-000A27B4965C</key>
