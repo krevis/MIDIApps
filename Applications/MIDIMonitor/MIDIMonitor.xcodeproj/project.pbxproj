@@ -207,6 +207,7 @@
 		161B71FC15D8DFA5006E21D4 /* MIDIMonitor.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = MIDIMonitor.xml; path = ../../Updates/MIDIMonitor.xml; sourceTree = "<group>"; };
 		162310440E6CCC6100A700CA /* SnoizeMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SnoizeMIDI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		162310450E6CCC6100A700CA /* SnoizeMIDISpy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SnoizeMIDISpy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		162A31F0254E91B5008E1F38 /* Snoize-Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Snoize-Signing.xcconfig"; path = "../../Configurations/Snoize-Signing.xcconfig"; sourceTree = "<group>"; };
 		163FB5E8199ED5810017B664 /* SNDisclosureArrowDown@2x.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "SNDisclosureArrowDown@2x.tiff"; sourceTree = "<group>"; };
 		163FB5E9199ED5810017B664 /* SNDisclosureArrowRight@2x.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "SNDisclosureArrowRight@2x.tiff"; sourceTree = "<group>"; };
 		167B884206ED4D650053D305 /* Info-MIDIMonitor.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-MIDIMonitor.plist"; sourceTree = "<group>"; };
@@ -335,6 +336,7 @@
 		169E7113097B200A001AFB58 /* Configurations */ = {
 			isa = PBXGroup;
 			children = (
+				162A31F0254E91B5008E1F38 /* Snoize-Signing.xcconfig */,
 				169E7115097B2021001AFB58 /* Snoize-Project-Global.xcconfig */,
 				169E7114097B2021001AFB58 /* Snoize-Project-Debug.xcconfig */,
 				169E7116097B2021001AFB58 /* Snoize-Project-Release.xcconfig */,

@@ -1,3 +1,5 @@
+#include "Snoize-Signing.xcconfig"
+
 // Set SDKROOT to "Latest OS X".
 // We used to set it to a specific version, in order to establish the maximum API we could use,
 // which was typically at least one or two versions behind the latest SDK.
@@ -32,5 +34,3 @@ CLANG_WARN__DUPLICATE_METHOD_MATCH = YES
 ENABLE_STRICT_OBJC_MSGSEND = YES
 
 ALWAYS_SEARCH_USER_PATHS = NO
-
-ENABLE_HARDENED_RUNTIME = YES

@@ -1,0 +1,20 @@
+// Code signing settings.
+
+// ******************************************************************
+// CHANGE THIS TO YOUR DEVELOPMENT TEAM ID.
+//
+// Go to https://developer.apple.com/account/#/membership and sign in and look for "Team ID".
+// See also https://stackoverflow.com/questions/18727894/how-can-i-find-my-apple-developer-team-id-and-team-agent-apple-id
+
+DEVELOPMENT_TEAM = YDJAW5GX9U
+
+// ******************************************************************
+
+// Turn on "Automatically manage signing" for all targets, apps and frameworks.
+// Don't change these!
+CODE_SIGN_IDENTITY = Apple Development
+CODE_SIGN_STYLE = Automatic
+PROVISIONING_PROFILE_SPECIFIER =
+
+// Enable the hardened runtime so the apps can be notarized
+ENABLE_HARDENED_RUNTIME = YES

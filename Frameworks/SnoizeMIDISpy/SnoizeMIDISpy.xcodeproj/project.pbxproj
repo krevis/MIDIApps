@@ -54,6 +54,7 @@
 /* Begin PBXFileReference section */
 		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		08FB77B4FE84181DC02AAC07 /* MIDISpyClient.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = MIDISpyClient.c; sourceTree = "<group>"; };
+		162A31F2254E95A7008E1F38 /* Snoize-Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Snoize-Signing.xcconfig"; path = "../../../Configurations/Snoize-Signing.xcconfig"; sourceTree = "<group>"; };
 		162A7BA6212AA39F008CE4DA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		164103F209735FA6008DABCC /* Info-SnoizeMIDISpy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-SnoizeMIDISpy.plist"; path = "../Info-SnoizeMIDISpy.plist"; sourceTree = "<group>"; };
 		164103F309735FA6008DABCC /* SnoizeMIDISpy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SnoizeMIDISpy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -198,6 +199,7 @@
 		164104470973636B008DABCC /* Configurations */ = {
 			isa = PBXGroup;
 			children = (
+				162A31F2254E95A7008E1F38 /* Snoize-Signing.xcconfig */,
 				1641044809736388008DABCC /* Snoize-Framework-Debug.xcconfig */,
 				1641044909736388008DABCC /* Snoize-Framework-Global.xcconfig */,
 				1641044A09736388008DABCC /* Snoize-Framework-Release.xcconfig */,
@@ -364,6 +366,16 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1000;
+				TargetAttributes = {
+					164103D709735FA5008DABCC = {
+						DevelopmentTeam = YDJAW5GX9U;
+						ProvisioningStyle = Automatic;
+					};
+					164103F409735FA6008DABCC = {
+						DevelopmentTeam = YDJAW5GX9U;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = 164103D209735F77008DABCC /* Build configuration list for PBXProject "SnoizeMIDISpy" */;
 			compatibilityVersion = "Xcode 3.2";
