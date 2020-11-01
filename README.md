@@ -13,9 +13,10 @@ The project is currently intended to be used with an up-to-date Xcode version, l
 ## How to build ##
 
 1. `git submodule update --init --recursive` 
-2. Open MIDIApps.xcworkspace with Xcode.
-3. In the "Scheme" popup menu in the toolbar, select either MIDI Monitor or SysEx Librarian.
-4. Build and run!
+2. Open `MIDIApps.xcworkspace` with Xcode.
+3. Open `Configurations/Snoize-Signing.xcconfig` and change `DEVELOPMENT_TEAM` to the Team ID of your Apple Developer account. See the file for more details.
+4. In the "Scheme" popup menu in the toolbar, select either MIDI Monitor or SysEx Librarian.
+5. Build and run!
 
 
 ## What's inside ##
