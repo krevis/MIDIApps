@@ -30,13 +30,6 @@
 #import "SSETableView.h"
 
 
-@interface NSWindow (Methods_10_4_only)
-
-- (void)setShowsToolbarButton:(BOOL)show;
-
-@end
-
-
 @interface SSEMainWindowController (Private)
 
 - (void)displayPreferencesDidChange:(NSNotification *)notification;
@@ -138,10 +131,7 @@ static SSEMainWindowController *controller = nil;
 {
     [super awakeFromNib];
 
-    NSWindow* window = [self window];
-    if ([window respondsToSelector:@selector(setShowsToolbarButton:)]) {
-        [[self window] setShowsToolbarButton: NO];
-    }
+    [[self window] setShowsToolbarButton: NO];
     
     [libraryTableView registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
     [libraryTableView setTarget:self];

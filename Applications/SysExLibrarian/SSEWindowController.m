@@ -82,6 +82,12 @@
     // Make sure that we are the window's delegate (it might not have been set in the nib)
     [[self window] setDelegate:self];
 
+    // The new Unified toolbar style doesn't leave much room for items, so use the old Expanded version
+    // with the toolbar items under the title
+    if (@available(macOS 11.0, *)) {
+        [[self window] setToolbarStyle:NSWindowToolbarStyleExpanded];
+    }
+
     [self loadToolbarNamed:[self windowNibName]]; // Might fail; that's OK
 }
 
