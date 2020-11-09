@@ -6,6 +6,20 @@
       <description>Most recent changes with links to updates.</description>
       <language>en</language>
           <item>
+              <title>Version 1.4.1</title>
+              <sparkle:minimumSystemVersion>10.9.0</sparkle:minimumSystemVersion>
+              <description><![CDATA[
+                  <h3>Version 1.4.1</h3>
+                  <p>Changes:
+                  <ul>
+                  <li>Updated to support macOS 11.0 &quot;Big Sur&quot; and Apple Silicon Macs.</li>
+                  </ul>
+              ]]>
+              </description>
+              <pubDate>Sun, 8 Nov 2020 17:18:00 -0800</pubDate>
+              <enclosure url="https://www.snoize.com/MIDIMonitor/SysExLibrarian_1_4_1.zip" sparkle:version="1.4.1" sparkle:dsaSignature="MCwCFHZOw86RQJ/rdOEm4EKfFH2WTFsNAhRGblND5fq9ZQ7a6CW1lEVvjp5UDw==" sparkle:edSignature="Yl6MZiHUEIIKZoLmEMJSrEg/PxwPH4jQULS2wIh2jm30dB3W1ZqTH2kFwmkztE5bWBeagS5XF4E/4ud+2NULBQ==" length="3363623" type="application/octet-stream"/>
+          </item>
+          <item>
               <title>Version 1.4</title>
               <sparkle:minimumSystemVersion>10.9.0</sparkle:minimumSystemVersion>
               <description><![CDATA[

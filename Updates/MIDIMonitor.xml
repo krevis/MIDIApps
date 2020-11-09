@@ -6,6 +6,31 @@
       <description>Most recent changes with links to updates.</description>
       <language>en</language>
           <item>
+              <title>Version 1.4.1</title>
+              <sparkle:minimumSystemVersion>10.9.0</sparkle:minimumSystemVersion>
+              <description><![CDATA[
+                  <h3>Version 1.4.1</h3>
+                  <p>Changes:
+                  <ul>
+                    <li>Updated to support macOS 11.0 &quot;Big Sur&quot; and Apple Silicon Macs.</li>
+                    <li><b>Big Sur note:</b> &quot;Spy on output to destinations&quot; will not work in the initial release of Big Sur, 11.0.1. That is Apple's bug, and a later release of Big Sur may fix it.</li>
+                    <li>New features:
+                      <ul>
+                        <li>Added a preference to automatically observe MIDI devices when they are added. (Thanks to Ben Stoneking.)
+                      </ul>
+                    </li>
+                    <li>Bug fixes:
+                      <ul>
+                        <li>Fixed a bug that could cause MIDI Monitor to not install its driver at startup.
+                      </ul>
+                    </li>
+                  </ul>
+              ]]>
+              </description>
+              <pubDate>Sun, 8 Nov 2020 17:18:00 -0800</pubDate>
+              <enclosure url="https://www.snoize.com/MIDIMonitor/MIDIMonitor_1_4_1.zip" sparkle:version="1.4.1" sparkle:dsaSignature="MC0CFDapTGyUrCg/iPA82Uq+xr06JAGYAhUAoORtbWJDDLGqI5xPApyJ2epUKx8=" sparkle:edSignature="NK+5r80cLyqNQ3kHMnRV7IIGAkUIBPg9wjH1uT6/ppzY7ge9ZXTYZ2e5uIsOhYzv2tV/Z+FOracTtCr1B1RQBA==" length="3553974" type="application/octet-stream"/>
+          </item>
+          <item>
               <title>Version 1.4</title>
               <sparkle:minimumSystemVersion>10.9.0</sparkle:minimumSystemVersion>
               <description><![CDATA[
