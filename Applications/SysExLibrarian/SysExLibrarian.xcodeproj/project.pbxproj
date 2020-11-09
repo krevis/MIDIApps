@@ -688,6 +688,12 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1000;
+				TargetAttributes = {
+					16F033360984B76F006C8A44 = {
+						DevelopmentTeam = YDJAW5GX9U;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = 16F032BA0984B5DD006C8A44 /* Build configuration list for PBXProject "SysExLibrarian" */;
 			compatibilityVersion = "Xcode 3.2";

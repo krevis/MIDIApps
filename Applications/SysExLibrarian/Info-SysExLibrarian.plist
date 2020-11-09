@@ -102,5 +102,7 @@
 	<string>https://www.snoize.com/SysExLibrarian/SysExLibrarian.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
+	<key>SUPublicEDKey</key>
+	<string>Zk/6WD45ECvo30iL+yu+RDMtyUtdf0eT1YDu0psPZQQ=</string>
 </dict>
 </plist>

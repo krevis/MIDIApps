@@ -61,6 +61,8 @@
 	<string>https://www.snoize.com/MIDIMonitor/MIDIMonitor.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
+	<key>SUPublicEDKey</key>
+	<string>Zk/6WD45ECvo30iL+yu+RDMtyUtdf0eT1YDu0psPZQQ=</string>
 	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>

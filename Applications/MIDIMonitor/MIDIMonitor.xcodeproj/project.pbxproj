@@ -526,6 +526,12 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1000;
+				TargetAttributes = {
+					167B880506ED4D650053D305 = {
+						DevelopmentTeam = YDJAW5GX9U;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = 16AF264E097B1EFB00BC87DC /* Build configuration list for PBXProject "MIDIMonitor" */;
 			compatibilityVersion = "Xcode 3.2";
