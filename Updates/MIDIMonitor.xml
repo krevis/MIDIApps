@@ -12,18 +12,10 @@
                   <h3>Version 1.4.1</h3>
                   <p>Changes:
                   <ul>
-                    <li>Updated to support macOS 11.0 &quot;Big Sur&quot; and Apple Silicon Macs.</li>
-                    <li><b>Big Sur note:</b> &quot;Spy on output to destinations&quot; will not work in the initial release of Big Sur, 11.0.1. That is Apple's bug, and a later release of Big Sur may fix it.</li>
-                    <li>New features:
-                      <ul>
-                        <li>Added a preference to automatically observe MIDI devices when they are added. (Thanks to Ben Stoneking.)
-                      </ul>
-                    </li>
-                    <li>Bug fixes:
-                      <ul>
-                        <li>Fixed a bug that could cause MIDI Monitor to not install its driver at startup.
-                      </ul>
-                    </li>
+                    <li>Updated to support macOS 11.0 &quot;Big Sur&quot; and Apple Silicon Macs.<br>
+                        <b>Big Sur note:</b> &quot;Spy on output to destinations&quot; will not work in the initial release of Big Sur, 11.0.1. That is Apple's bug, and a later release of Big Sur may fix it.</li>
+                    <li>Added a preference to automatically observe MIDI devices when they are added. (Thanks to Ben Stoneking.)
+                    <li>Fixed a bug that could cause MIDI Monitor to not install its driver at startup.
                   </ul>
               ]]>
               </description>
