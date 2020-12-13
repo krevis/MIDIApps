@@ -21,7 +21,6 @@
 #import "SMMDetailsWindowController.h"
 #import "SNDisclosableView.h"
 #import "SNDisclosureButton.h"
-#import "NSString-SMMExtensions.h"
 
 
 @interface SMMMonitorWindowController ()
@@ -539,7 +538,7 @@ static NSString * const SMMMessagesScrollPointY = @"messagesScrollPointY";
             NSArray *externalDeviceNames = ((id<SMInputStreamSource>)item).inputStreamSourceExternalDeviceNames;
 
             if ([externalDeviceNames count] > 0) {
-                return [[name stringByAppendingString:[NSString SMM_emdashString]] stringByAppendingString:[externalDeviceNames componentsJoinedByString:@", "]];
+                return [[name stringByAppendingString:@"—"] stringByAppendingString:[externalDeviceNames componentsJoinedByString:@", "]];
             } else {
                 return name;
             }
