@@ -33,7 +33,6 @@
 		167B882C06ED4D650053D305 /* SMMSysExWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F56E05CB0206BAB401000164 /* SMMSysExWindowController.m */; };
 		167B882D06ED4D650053D305 /* SMMSpyingInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = F562148E02408B2D01000164 /* SMMSpyingInputStream.m */; };
 		167B882E06ED4D650053D305 /* SMMCombinationInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = F55C9C150244CE3701000164 /* SMMCombinationInputStream.m */; };
-		167B882F06ED4D650053D305 /* SMMSourcesOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = F57F628B0261C8FC01000164 /* SMMSourcesOutlineView.m */; };
 		167B883206ED4D650053D305 /* SMMWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5DCBE8F02E6064E01000164 /* SMMWindowController.m */; };
 		167B883306ED4D650053D305 /* SMMDetailsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1691E0DA04CA1C1E00ACFC9D /* SMMDetailsWindowController.m */; };
 		167B883906ED4D650053D305 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
@@ -46,6 +45,7 @@
 		16E8F01D097B2E8B00B52193 /* SnoizeMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */; };
 		16F9FA312586EC0800169621 /* SMMFastAnimatingWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F9FA302586EC0800169621 /* SMMFastAnimatingWindow.swift */; };
 		16F9FA452586EDED00169621 /* SMMNonHighlightingCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F9FA442586EDED00169621 /* SMMNonHighlightingCells.swift */; };
+		16F9FA572586F0A700169621 /* SMMSourcesOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F9FA562586F0A700169621 /* SMMSourcesOutlineView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -232,6 +232,7 @@
 		16F9FA2A2586DFE300169621 /* MIDIMonitor-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MIDIMonitor-Bridging-Header.h"; sourceTree = "<group>"; };
 		16F9FA302586EC0800169621 /* SMMFastAnimatingWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMFastAnimatingWindow.swift; sourceTree = "<group>"; };
 		16F9FA442586EDED00169621 /* SMMNonHighlightingCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMNonHighlightingCells.swift; sourceTree = "<group>"; };
+		16F9FA562586F0A700169621 /* SMMSourcesOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMSourcesOutlineView.swift; sourceTree = "<group>"; };
 		2A37F4ACFDCFA73011CA2CEA /* SMMDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMDocument.m; sourceTree = "<group>"; };
 		2A37F4AEFDCFA73011CA2CEA /* SMMDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMDocument.h; sourceTree = "<group>"; };
 		2A37F4B0FDCFA73011CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -258,8 +259,6 @@
 		F56E05CF0206BF0C01000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SysEx.nib; sourceTree = "<group>"; };
 		F57053DA018D364A01000164 /* Document.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Document.icns; sourceTree = "<group>"; };
 		F579B5E9018D0F0D01000164 /* MIDIMonitor.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = MIDIMonitor.icns; sourceTree = "<group>"; };
-		F57F628A0261C8FC01000164 /* SMMSourcesOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMSourcesOutlineView.h; sourceTree = "<group>"; };
-		F57F628B0261C8FC01000164 /* SMMSourcesOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMSourcesOutlineView.m; sourceTree = "<group>"; };
 		F5B4281801A360AD01000164 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
 		F5DCBE8E02E6064E01000164 /* SMMWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMWindowController.h; sourceTree = "<group>"; };
 		F5DCBE8F02E6064E01000164 /* SMMWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMWindowController.m; sourceTree = "<group>"; };
@@ -464,8 +463,7 @@
 		F571C56C01903F3301000164 /* Cocoa Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				F57F628A0261C8FC01000164 /* SMMSourcesOutlineView.h */,
-				F57F628B0261C8FC01000164 /* SMMSourcesOutlineView.m */,
+				16F9FA562586F0A700169621 /* SMMSourcesOutlineView.swift */,
 				16F9FA442586EDED00169621 /* SMMNonHighlightingCells.swift */,
 				16F9FA302586EC0800169621 /* SMMFastAnimatingWindow.swift */,
 				F5DCBE8E02E6064E01000164 /* SMMWindowController.h */,
@@ -731,6 +729,7 @@
 			files = (
 				167B882706ED4D650053D305 /* SMMDocument.m in Sources */,
 				167B882806ED4D650053D305 /* main.m in Sources */,
+				16F9FA572586F0A700169621 /* SMMSourcesOutlineView.swift in Sources */,
 				16F9FA312586EC0800169621 /* SMMFastAnimatingWindow.swift in Sources */,
 				167B882906ED4D650053D305 /* SMMMonitorWindowController.m in Sources */,
 				167B882A06ED4D650053D305 /* SMMAppController.m in Sources */,
@@ -739,7 +738,6 @@
 				167B882D06ED4D650053D305 /* SMMSpyingInputStream.m in Sources */,
 				167B882E06ED4D650053D305 /* SMMCombinationInputStream.m in Sources */,
 				16F9FA452586EDED00169621 /* SMMNonHighlightingCells.swift in Sources */,
-				167B882F06ED4D650053D305 /* SMMSourcesOutlineView.m in Sources */,
 				167B883206ED4D650053D305 /* SMMWindowController.m in Sources */,
 				167B883306ED4D650053D305 /* SMMDetailsWindowController.m in Sources */,
 				16C267D815D836C6009F4BE4 /* SNDisclosableView.m in Sources */,

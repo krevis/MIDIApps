@@ -17,7 +17,6 @@
 #import "MIDI_Monitor-Swift.h"
 #import "SMMDocument.h"
 #import "SMMPreferencesWindowController.h"
-#import "SMMSourcesOutlineView.h"
 #import "SMMDetailsWindowController.h"
 #import "SNDisclosableView.h"
 #import "SNDisclosureButton.h"
