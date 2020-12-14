@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.3.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.3.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17506"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -33,21 +33,21 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <window identifier="monitor" title="MIDI Monitor" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="MIDIMonitor" animationBehavior="default" id="34" userLabel="Window" customClass="SMMFastAnimatingWindow">
+        <window identifier="monitor" title="MIDI Monitor" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="MIDIMonitor" animationBehavior="default" id="34" userLabel="Window" customClass="SMMFastAnimatingWindow" customModule="MIDI_Monitor" customModuleProvider="target">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="69" y="243" width="517" height="575"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
             <value key="minSize" type="size" width="500" height="500"/>
             <view key="contentView" id="45">
                 <rect key="frame" x="0.0" y="0.0" width="517" height="575"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <customView id="383" customClass="SNDisclosableView">
+                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="383" customClass="SNDisclosableView">
                         <rect key="frame" x="20" y="211" width="477" height="193"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <subviews>
-                            <button tag="262144" id="487">
+                            <button fixedFrame="YES" tag="262144" translatesAutoresizingMaskIntoConstraints="NO" id="487">
                                 <rect key="frame" x="304" y="18" width="71" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="check" title="Invalid" bezelStyle="regularSquare" imagePosition="left" alignment="left" tag="262144" inset="2" id="503">
@@ -59,7 +59,7 @@
                                     <outlet property="nextKeyView" destination="41" id="488"/>
                                 </connections>
                             </button>
-                            <button tag="131072" id="443">
+                            <button fixedFrame="YES" tag="131072" translatesAutoresizingMaskIntoConstraints="NO" id="443">
                                 <rect key="frame" x="304" y="51" width="129" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="check" title="System Exclusive" bezelStyle="regularSquare" imagePosition="left" alignment="left" tag="131072" inset="2" id="502">
@@ -71,7 +71,7 @@
                                     <outlet property="nextKeyView" destination="487" id="489"/>
                                 </connections>
                             </button>
-                            <button tag="129024" id="411">
+                            <button fixedFrame="YES" tag="129024" translatesAutoresizingMaskIntoConstraints="NO" id="411">
                                 <rect key="frame" x="304" y="172" width="84" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="check" title="Real Time" bezelStyle="regularSquare" imagePosition="left" alignment="left" tag="129024" inset="2" id="501">
@@ -83,7 +83,7 @@
                                     <outlet property="nextKeyView" destination="404" id="476"/>
                                 </connections>
                             </button>
-                            <matrix verticalHuggingPriority="750" mode="highlight" allowsEmptySelection="NO" autosizesCells="NO" id="404">
+                            <matrix verticalHuggingPriority="750" fixedFrame="YES" mode="highlight" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="404">
                                 <rect key="frame" x="318" y="90" width="139" height="78"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -118,7 +118,7 @@
                                     <outlet property="nextKeyView" destination="443" id="477"/>
                                 </connections>
                             </matrix>
-                            <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="400">
+                            <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="400">
                                 <rect key="frame" x="19" y="8" width="103" height="38"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -145,7 +145,7 @@
                                     <outlet property="nextKeyView" destination="395" id="471"/>
                                 </connections>
                             </matrix>
-                            <matrix verticalHuggingPriority="750" mode="highlight" allowsEmptySelection="NO" autosizesCells="NO" id="398">
+                            <matrix verticalHuggingPriority="750" fixedFrame="YES" mode="highlight" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="398">
                                 <rect key="frame" x="164" y="90" width="136" height="78"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -180,7 +180,7 @@
                                     <outlet property="nextKeyView" destination="411" id="475"/>
                                 </connections>
                             </matrix>
-                            <button tag="1920" id="396">
+                            <button fixedFrame="YES" tag="1920" translatesAutoresizingMaskIntoConstraints="NO" id="396">
                                 <rect key="frame" x="151" y="172" width="129" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="check" title="System Common" bezelStyle="regularSquare" imagePosition="left" alignment="left" tag="1920" inset="2" id="500">
@@ -192,7 +192,7 @@
                                     <outlet property="nextKeyView" destination="398" id="473"/>
                                 </connections>
                             </button>
-                            <textField verticalHuggingPriority="750" id="395">
+                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="395">
                                 <rect key="frame" x="128" y="7" width="25" height="22"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" enabled="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" title="1" drawsBackground="YES" id="499">
@@ -212,7 +212,7 @@
                                     <outlet property="nextKeyView" destination="396" id="472"/>
                                 </connections>
                             </textField>
-                            <button tag="127" id="390">
+                            <button fixedFrame="YES" tag="127" translatesAutoresizingMaskIntoConstraints="NO" id="390">
                                 <rect key="frame" x="19" y="172" width="122" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="check" title="Voice Messages" bezelStyle="regularSquare" imagePosition="left" alignment="left" tag="127" inset="2" id="498">
@@ -224,7 +224,7 @@
                                     <outlet property="nextKeyView" destination="387" id="469"/>
                                 </connections>
                             </button>
-                            <matrix verticalHuggingPriority="750" mode="highlight" allowsEmptySelection="NO" autosizesCells="NO" id="387">
+                            <matrix verticalHuggingPriority="750" fixedFrame="YES" mode="highlight" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="387">
                                 <rect key="frame" x="32" y="50" width="115" height="118"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -272,11 +272,11 @@
                             <outlet property="nextKeyView" destination="390" id="485"/>
                         </connections>
                     </customView>
-                    <customView id="369" customClass="SNDisclosableView">
+                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="369" customClass="SNDisclosableView">
                         <rect key="frame" x="20" y="427" width="477" height="107"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <subviews>
-                            <scrollView horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="374">
+                            <scrollView fixedFrame="YES" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="374">
                                 <rect key="frame" x="16" y="6" width="461" height="97"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <clipView key="contentView" id="4bY-Xl-CaG">
@@ -285,14 +285,13 @@
                                     <subviews>
                                         <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="372" id="375" customClass="SMMSourcesOutlineView">
                                             <rect key="frame" x="0.0" y="0.0" width="459" height="95"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
                                                 <tableColumn identifier="enabled" width="18" minWidth="16" maxWidth="18" id="372">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
-                                                        <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                                     </tableHeaderCell>
@@ -304,7 +303,6 @@
                                                 </tableColumn>
                                                 <tableColumn identifier="name" editable="NO" width="435" minWidth="16" maxWidth="1000" id="373">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Input Name">
-                                                        <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                                     </tableHeaderCell>
@@ -338,14 +336,14 @@
                             <outlet property="nextKeyView" destination="375" id="482"/>
                         </connections>
                     </customView>
-                    <box boxType="oldStyle" borderType="none" title="Title" titlePosition="noTitle" id="281">
+                    <box fixedFrame="YES" boxType="oldStyle" borderType="none" title="Title" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="281">
                         <rect key="frame" x="-2" y="0.0" width="519" height="206"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <view key="contentView" id="Cdo-wB-u8X">
                             <rect key="frame" x="0.0" y="0.0" width="519" height="206"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <button verticalHuggingPriority="750" id="57">
+                                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="57">
                                     <rect key="frame" x="421" y="174" width="84" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="push" title="Clear" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="495">
@@ -357,7 +355,7 @@
                                         <outlet property="nextKeyView" destination="39" id="464"/>
                                     </connections>
                                 </button>
-                                <scrollView borderType="none" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="29">
+                                <scrollView fixedFrame="YES" borderType="none" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="29">
                                     <rect key="frame" x="2" y="0.0" width="517" height="173"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="bCI-3e-JXC">
@@ -366,14 +364,13 @@
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" autosaveColumns="NO" rowHeight="14" headerView="519" id="39">
                                                 <rect key="frame" x="0.0" y="0.0" width="521" height="156"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                 <tableColumns>
                                                     <tableColumn identifier="timeStamp" editable="NO" width="78.1240234375" minWidth="40" maxWidth="1000" id="33">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Time">
-                                                            <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                                         </tableHeaderCell>
@@ -386,7 +383,6 @@
                                                     </tableColumn>
                                                     <tableColumn identifier="source" editable="NO" width="95.77099609375" minWidth="10" maxWidth="1000" id="236">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Source">
-                                                            <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                         </tableHeaderCell>
@@ -399,7 +395,6 @@
                                                     </tableColumn>
                                                     <tableColumn identifier="type" editable="NO" width="97" minWidth="55" maxWidth="200" id="53">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Message">
-                                                            <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                                         </tableHeaderCell>
@@ -412,7 +407,6 @@
                                                     </tableColumn>
                                                     <tableColumn identifier="channel" editable="NO" width="35" minWidth="10" maxWidth="1000" id="36">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Chan">
-                                                            <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                         </tableHeaderCell>
@@ -425,7 +419,6 @@
                                                     </tableColumn>
                                                     <tableColumn identifier="data" editable="NO" width="200.10498046875" minWidth="28.50200080871582" maxWidth="1000" id="47">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Data">
-                                                            <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                         </tableHeaderCell>
@@ -457,7 +450,7 @@
                                         <autoresizingMask key="autoresizingMask"/>
                                     </tableHeaderView>
                                 </scrollView>
-                                <textField verticalHuggingPriority="750" id="40">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="40">
                                     <rect key="frame" x="19" y="182" width="110" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Remember up to" id="493">
@@ -466,7 +459,7 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" id="41">
+                                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="41">
                                     <rect key="frame" x="134" y="180" width="61" height="22"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1000" drawsBackground="YES" id="494">
@@ -486,7 +479,7 @@
                                         <outlet property="nextKeyView" destination="57" id="463"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" id="58">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="58">
                                     <rect key="frame" x="200" y="182" width="45" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="events" id="496">
@@ -495,18 +488,18 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <box boxType="oldStyle" borderType="none" title="Title" titlePosition="noTitle" id="232">
+                                <box fixedFrame="YES" boxType="oldStyle" borderType="none" title="Title" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="232">
                                     <rect key="frame" x="286" y="181" width="115" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <view key="contentView" id="goW-6Z-Yvb">
                                         <rect key="frame" x="0.0" y="0.0" width="115" height="18"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
-                                            <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" id="227">
+                                            <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="227">
                                                 <rect key="frame" x="0.0" y="1" width="16" height="16"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </progressIndicator>
-                                            <textField verticalHuggingPriority="750" id="229">
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="229">
                                                 <rect key="frame" x="17" y="-1" width="66" height="17"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Receiving..." id="497">
@@ -523,7 +516,7 @@
                         </view>
                         <font key="titleFont" metaFont="system"/>
                     </box>
-                    <button id="384" customClass="SNDisclosureButton">
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="384" customClass="SNDisclosureButton">
                         <rect key="frame" x="20" y="407" width="80" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="square" title="Filter" bezelStyle="shadowlessSquare" image="buttonCell:504:image" imagePosition="left" alignment="left" alternateImage="buttonCell:504:alternateImage" state="on" inset="2" id="504">
@@ -535,7 +528,7 @@
                             <outlet property="nextKeyView" destination="383" id="484"/>
                         </connections>
                     </button>
-                    <button id="447" customClass="SNDisclosureButton">
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="447" customClass="SNDisclosureButton">
                         <rect key="frame" x="20" y="537" width="80" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="square" title="Sources" bezelStyle="shadowlessSquare" image="buttonCell:505:image" imagePosition="left" alignment="left" alternateImage="buttonCell:505:alternateImage" state="on" inset="2" id="505">
@@ -553,67 +546,68 @@
                 <outlet property="delegate" destination="-2" id="61"/>
                 <outlet property="initialFirstResponder" destination="41" id="462"/>
             </connections>
+            <point key="canvasLocation" x="-173" y="114"/>
         </window>
     </objects>
     <resources>
         <image name="buttonCell:504:alternateImage" width="0.0" height="0.0">
             <mutableData key="keyedArchiveRepresentation">
-YnBsaXN0MDDUAQIDBAUGODlYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoKwHCBEW
-GxwiIyksMjVVJG51bGzUCQoLDA0ODxBWJGNsYXNzXE5TSW1hZ2VGbGFnc1ZOU1JlcHNXTlNDb2xvcoAL
-EgTQAACAAoAJ0hIJExVaTlMub2JqZWN0c6EUgAOACNISCRcVohgZgASABYAIEAXTHQkeHyAhV05TLmJh
-c2VbTlMucmVsYXRpdmWAAIAHgAZfEGxmaWxlOi8vbG9jYWxob3N0L1VzZXJzL1NoYXJlZC9rcmV2aXMv
-UHJvZHVjdHMvRGlzY2xvc2FibGVWaWV3LmZyYW1ld29yay9SZXNvdXJjZXMvU05EaXNjbG9zdXJlQXJy
-b3dEb3duLnRpZmbSJCUmJ1okY2xhc3NuYW1lWCRjbGFzc2VzVU5TVVJMoiYoWE5TT2JqZWN00iQlKitX
-TlNBcnJheaIqKNMtLgkvMDFXTlNXaGl0ZVxOU0NvbG9yU3BhY2VEMCAwABADgArSJCUzNFdOU0NvbG9y
-ojMo0iQlNjdXTlNJbWFnZaI2KF8QD05TS2V5ZWRBcmNoaXZlctE6O1Ryb290gAEACAARABoAIwAtADIA
-NwBEAEoAUwBaAGcAbgB2AHgAfQB/AIEAhgCRAJMAlQCXAJwAnwChAKMApQCnAK4AtgDCAMQAxgDIATcB
-PAFHAVABVgFZAWIBZwFvAXIBeQGBAY4BkwGVAZcBnAGkAacBrAG0AbcByQHMAdEAAAAAAAACAQAAAAAA
-AAA8AAAAAAAAAAAAAAAAAAAB0w
+YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05T
+S2V5ZWRBcmNoaXZlctEICVRyb290gAGsCwwXHCEiKCkvMjg7VSRudWxs1Q0ODxAREhMUFRZWJGNsYXNz
+Xk5TUmVzaXppbmdNb2RlXE5TSW1hZ2VGbGFnc1ZOU1JlcHNXTlNDb2xvcoALEAASBNAAAIACgAnSGA0Z
+G1pOUy5vYmplY3RzoRqAA4AI0hgNHRuiHh+ABIAFgAgQBdMjDSQlJidXTlMuYmFzZVtOUy5yZWxhdGl2
+ZYAAgAeABl8QbGZpbGU6Ly9sb2NhbGhvc3QvVXNlcnMvU2hhcmVkL2tyZXZpcy9Qcm9kdWN0cy9EaXNj
+bG9zYWJsZVZpZXcuZnJhbWV3b3JrL1Jlc291cmNlcy9TTkRpc2Nsb3N1cmVBcnJvd0Rvd24udGlmZtIq
+KywtWiRjbGFzc25hbWVYJGNsYXNzZXNVTlNVUkyiLC5YTlNPYmplY3TSKiswMVdOU0FycmF5ojAu0zM0
+DTU2N1dOU1doaXRlXE5TQ29sb3JTcGFjZUQwIDAAEAOACtIqKzk6V05TQ29sb3KiOS7SKis8PVdOU0lt
+YWdlojwuAAgAEQAaACQAKQAyADcASQBMAFEAUwBgAGYAcQB4AIcAlACbAKMApQCnAKwArgCwALUAwADC
+AMQAxgDLAM4A0ADSANQA1gDdAOUA8QDzAPUA9wFmAWsBdgF/AYUBiAGRAZYBngGhAagBsAG9AcIBxAHG
+AcsB0wHWAdsB4wAAAAAAAAIBAAAAAAAAAD4AAAAAAAAAAAAAAAAAAAHmA
 </mutableData>
         </image>
         <image name="buttonCell:504:image" width="0.0" height="0.0">
             <mutableData key="keyedArchiveRepresentation">
-YnBsaXN0MDDUAQIDBAUGODlYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoKwHCBEW
-GxwiIyksMjVVJG51bGzUCQoLDA0ODxBWJGNsYXNzXE5TSW1hZ2VGbGFnc1ZOU1JlcHNXTlNDb2xvcoAL
-EgTQAACAAoAJ0hIJExVaTlMub2JqZWN0c6EUgAOACNISCRcVohgZgASABYAIEAXTHQkeHyAhV05TLmJh
-c2VbTlMucmVsYXRpdmWAAIAHgAZfEG1maWxlOi8vbG9jYWxob3N0L1VzZXJzL1NoYXJlZC9rcmV2aXMv
-UHJvZHVjdHMvRGlzY2xvc2FibGVWaWV3LmZyYW1ld29yay9SZXNvdXJjZXMvU05EaXNjbG9zdXJlQXJy
-b3dSaWdodC50aWZm0iQlJidaJGNsYXNzbmFtZVgkY2xhc3Nlc1VOU1VSTKImKFhOU09iamVjdNIkJSor
-V05TQXJyYXmiKijTLS4JLzAxV05TV2hpdGVcTlNDb2xvclNwYWNlRDAgMAAQA4AK0iQlMzRXTlNDb2xv
-cqIzKNIkJTY3V05TSW1hZ2WiNihfEA9OU0tleWVkQXJjaGl2ZXLROjtUcm9vdIABAAgAEQAaACMALQAy
-ADcARABKAFMAWgBnAG4AdgB4AH0AfwCBAIYAkQCTAJUAlwCcAJ8AoQCjAKUApwCuALYAwgDEAMYAyAE4
-AT0BSAFRAVcBWgFjAWgBcAFzAXoBggGPAZQBlgGYAZ0BpQGoAa0BtQG4AcoBzQHSAAAAAAAAAgEAAAAA
-AAAAPAAAAAAAAAAAAAAAAAAAAdQ
+YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05T
+S2V5ZWRBcmNoaXZlctEICVRyb290gAGsCwwXHCEiKCkvMjg7VSRudWxs1Q0ODxAREhMUFRZWJGNsYXNz
+Xk5TUmVzaXppbmdNb2RlXE5TSW1hZ2VGbGFnc1ZOU1JlcHNXTlNDb2xvcoALEAASBNAAAIACgAnSGA0Z
+G1pOUy5vYmplY3RzoRqAA4AI0hgNHRuiHh+ABIAFgAgQBdMjDSQlJidXTlMuYmFzZVtOUy5yZWxhdGl2
+ZYAAgAeABl8QbWZpbGU6Ly9sb2NhbGhvc3QvVXNlcnMvU2hhcmVkL2tyZXZpcy9Qcm9kdWN0cy9EaXNj
+bG9zYWJsZVZpZXcuZnJhbWV3b3JrL1Jlc291cmNlcy9TTkRpc2Nsb3N1cmVBcnJvd1JpZ2h0LnRpZmbS
+KissLVokY2xhc3NuYW1lWCRjbGFzc2VzVU5TVVJMoiwuWE5TT2JqZWN00iorMDFXTlNBcnJheaIwLtMz
+NA01NjdXTlNXaGl0ZVxOU0NvbG9yU3BhY2VEMCAwABADgArSKis5OldOU0NvbG9yojku0iorPD1XTlNJ
+bWFnZaI8LgAIABEAGgAkACkAMgA3AEkATABRAFMAYABmAHEAeACHAJQAmwCjAKUApwCsAK4AsAC1AMAA
+wgDEAMYAywDOANAA0gDUANYA3QDlAPEA8wD1APcBZwFsAXcBgAGGAYkBkgGXAZ8BogGpAbEBvgHDAcUB
+xwHMAdQB1wHcAeQAAAAAAAACAQAAAAAAAAA+AAAAAAAAAAAAAAAAAAAB5w
 </mutableData>
         </image>
         <image name="buttonCell:505:alternateImage" width="0.0" height="0.0">
             <mutableData key="keyedArchiveRepresentation">
-YnBsaXN0MDDUAQIDBAUGODlYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoKwHCBEW
-GxwiIyksMjVVJG51bGzUCQoLDA0ODxBWJGNsYXNzXE5TSW1hZ2VGbGFnc1ZOU1JlcHNXTlNDb2xvcoAL
-EgTQAACAAoAJ0hIJExVaTlMub2JqZWN0c6EUgAOACNISCRcVohgZgASABYAIEAXTHQkeHyAhV05TLmJh
-c2VbTlMucmVsYXRpdmWAAIAHgAZfEGxmaWxlOi8vbG9jYWxob3N0L1VzZXJzL1NoYXJlZC9rcmV2aXMv
-UHJvZHVjdHMvRGlzY2xvc2FibGVWaWV3LmZyYW1ld29yay9SZXNvdXJjZXMvU05EaXNjbG9zdXJlQXJy
-b3dEb3duLnRpZmbSJCUmJ1okY2xhc3NuYW1lWCRjbGFzc2VzVU5TVVJMoiYoWE5TT2JqZWN00iQlKitX
-TlNBcnJheaIqKNMtLgkvMDFXTlNXaGl0ZVxOU0NvbG9yU3BhY2VEMCAwABADgArSJCUzNFdOU0NvbG9y
-ojMo0iQlNjdXTlNJbWFnZaI2KF8QD05TS2V5ZWRBcmNoaXZlctE6O1Ryb290gAEACAARABoAIwAtADIA
-NwBEAEoAUwBaAGcAbgB2AHgAfQB/AIEAhgCRAJMAlQCXAJwAnwChAKMApQCnAK4AtgDCAMQAxgDIATcB
-PAFHAVABVgFZAWIBZwFvAXIBeQGBAY4BkwGVAZcBnAGkAacBrAG0AbcByQHMAdEAAAAAAAACAQAAAAAA
-AAA8AAAAAAAAAAAAAAAAAAAB0w
+YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05T
+S2V5ZWRBcmNoaXZlctEICVRyb290gAGsCwwXHCEiKCkvMjg7VSRudWxs1Q0ODxAREhMUFRZWJGNsYXNz
+Xk5TUmVzaXppbmdNb2RlXE5TSW1hZ2VGbGFnc1ZOU1JlcHNXTlNDb2xvcoALEAASBNAAAIACgAnSGA0Z
+G1pOUy5vYmplY3RzoRqAA4AI0hgNHRuiHh+ABIAFgAgQBdMjDSQlJidXTlMuYmFzZVtOUy5yZWxhdGl2
+ZYAAgAeABl8QbGZpbGU6Ly9sb2NhbGhvc3QvVXNlcnMvU2hhcmVkL2tyZXZpcy9Qcm9kdWN0cy9EaXNj
+bG9zYWJsZVZpZXcuZnJhbWV3b3JrL1Jlc291cmNlcy9TTkRpc2Nsb3N1cmVBcnJvd0Rvd24udGlmZtIq
+KywtWiRjbGFzc25hbWVYJGNsYXNzZXNVTlNVUkyiLC5YTlNPYmplY3TSKiswMVdOU0FycmF5ojAu0zM0
+DTU2N1dOU1doaXRlXE5TQ29sb3JTcGFjZUQwIDAAEAOACtIqKzk6V05TQ29sb3KiOS7SKis8PVdOU0lt
+YWdlojwuAAgAEQAaACQAKQAyADcASQBMAFEAUwBgAGYAcQB4AIcAlACbAKMApQCnAKwArgCwALUAwADC
+AMQAxgDLAM4A0ADSANQA1gDdAOUA8QDzAPUA9wFmAWsBdgF/AYUBiAGRAZYBngGhAagBsAG9AcIBxAHG
+AcsB0wHWAdsB4wAAAAAAAAIBAAAAAAAAAD4AAAAAAAAAAAAAAAAAAAHmA
 </mutableData>
         </image>
         <image name="buttonCell:505:image" width="0.0" height="0.0">
             <mutableData key="keyedArchiveRepresentation">
-YnBsaXN0MDDUAQIDBAUGODlYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoKwHCBEW
-GxwiIyksMjVVJG51bGzUCQoLDA0ODxBWJGNsYXNzXE5TSW1hZ2VGbGFnc1ZOU1JlcHNXTlNDb2xvcoAL
-EgTQAACAAoAJ0hIJExVaTlMub2JqZWN0c6EUgAOACNISCRcVohgZgASABYAIEAXTHQkeHyAhV05TLmJh
-c2VbTlMucmVsYXRpdmWAAIAHgAZfEG1maWxlOi8vbG9jYWxob3N0L1VzZXJzL1NoYXJlZC9rcmV2aXMv
-UHJvZHVjdHMvRGlzY2xvc2FibGVWaWV3LmZyYW1ld29yay9SZXNvdXJjZXMvU05EaXNjbG9zdXJlQXJy
-b3dSaWdodC50aWZm0iQlJidaJGNsYXNzbmFtZVgkY2xhc3Nlc1VOU1VSTKImKFhOU09iamVjdNIkJSor
-V05TQXJyYXmiKijTLS4JLzAxV05TV2hpdGVcTlNDb2xvclNwYWNlRDAgMAAQA4AK0iQlMzRXTlNDb2xv
-cqIzKNIkJTY3V05TSW1hZ2WiNihfEA9OU0tleWVkQXJjaGl2ZXLROjtUcm9vdIABAAgAEQAaACMALQAy
-ADcARABKAFMAWgBnAG4AdgB4AH0AfwCBAIYAkQCTAJUAlwCcAJ8AoQCjAKUApwCuALYAwgDEAMYAyAE4
-AT0BSAFRAVcBWgFjAWgBcAFzAXoBggGPAZQBlgGYAZ0BpQGoAa0BtQG4AcoBzQHSAAAAAAAAAgEAAAAA
-AAAAPAAAAAAAAAAAAAAAAAAAAdQ
+YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05T
+S2V5ZWRBcmNoaXZlctEICVRyb290gAGsCwwXHCEiKCkvMjg7VSRudWxs1Q0ODxAREhMUFRZWJGNsYXNz
+Xk5TUmVzaXppbmdNb2RlXE5TSW1hZ2VGbGFnc1ZOU1JlcHNXTlNDb2xvcoALEAASBNAAAIACgAnSGA0Z
+G1pOUy5vYmplY3RzoRqAA4AI0hgNHRuiHh+ABIAFgAgQBdMjDSQlJidXTlMuYmFzZVtOUy5yZWxhdGl2
+ZYAAgAeABl8QbWZpbGU6Ly9sb2NhbGhvc3QvVXNlcnMvU2hhcmVkL2tyZXZpcy9Qcm9kdWN0cy9EaXNj
+bG9zYWJsZVZpZXcuZnJhbWV3b3JrL1Jlc291cmNlcy9TTkRpc2Nsb3N1cmVBcnJvd1JpZ2h0LnRpZmbS
+KissLVokY2xhc3NuYW1lWCRjbGFzc2VzVU5TVVJMoiwuWE5TT2JqZWN00iorMDFXTlNBcnJheaIwLtMz
+NA01NjdXTlNXaGl0ZVxOU0NvbG9yU3BhY2VEMCAwABADgArSKis5OldOU0NvbG9yojku0iorPD1XTlNJ
+bWFnZaI8LgAIABEAGgAkACkAMgA3AEkATABRAFMAYABmAHEAeACHAJQAmwCjAKUApwCsAK4AsAC1AMAA
+wgDEAMYAywDOANAA0gDUANYA3QDlAPEA8wD1APcBZwFsAXcBgAGGAYkBkgGXAZ8BogGpAbEBvgHDAcUB
+xwHMAdQB1wHcAeQAAAAAAAACAQAAAAAAAAA+AAAAAAAAAAAAAAAAAAAB5w
 </mutableData>
         </image>
     </resources>
