@@ -11,6 +11,7 @@
  */
 
 #import <SnoizeMIDI/SnoizeMIDI.h>
+@import Cocoa;
 
 @class SMMCombinationInputStream;
 @class SMMDetailsWindowController;
