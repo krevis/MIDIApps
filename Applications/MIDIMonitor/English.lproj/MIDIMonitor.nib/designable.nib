@@ -516,7 +516,7 @@
                         </view>
                         <font key="titleFont" metaFont="system"/>
                     </box>
-                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="384" customClass="SNDisclosureButton">
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="384" customClass="SNDisclosureButton" customModule="MIDI_Monitor" customModuleProvider="target">
                         <rect key="frame" x="20" y="407" width="80" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="square" title="Filter" bezelStyle="shadowlessSquare" image="buttonCell:504:image" imagePosition="left" alignment="left" alternateImage="buttonCell:504:alternateImage" state="on" inset="2" id="504">
@@ -528,7 +528,7 @@
                             <outlet property="nextKeyView" destination="383" id="484"/>
                         </connections>
                     </button>
-                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="447" customClass="SNDisclosureButton">
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="447" customClass="SNDisclosureButton" customModule="MIDI_Monitor" customModuleProvider="target">
                         <rect key="frame" x="20" y="537" width="80" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="square" title="Sources" bezelStyle="shadowlessSquare" image="buttonCell:505:image" imagePosition="left" alignment="left" alternateImage="buttonCell:505:alternateImage" state="on" inset="2" id="505">

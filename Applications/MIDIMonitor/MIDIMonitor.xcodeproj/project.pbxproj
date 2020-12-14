@@ -40,12 +40,12 @@
 		16C267D215D836B2009F4BE4 /* SNDisclosureArrowDown.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 16C267D015D836B2009F4BE4 /* SNDisclosureArrowDown.tiff */; };
 		16C267D315D836B2009F4BE4 /* SNDisclosureArrowRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 16C267D115D836B2009F4BE4 /* SNDisclosureArrowRight.tiff */; };
 		16C267D815D836C6009F4BE4 /* SNDisclosableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 16C267D515D836C6009F4BE4 /* SNDisclosableView.m */; };
-		16C267D915D836C6009F4BE4 /* SNDisclosureButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 16C267D715D836C6009F4BE4 /* SNDisclosureButton.m */; };
 		16E8F01A097B2E5200B52193 /* SnoizeMIDISpy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169E71B1097B242A001AFB58 /* SnoizeMIDISpy.framework */; };
 		16E8F01D097B2E8B00B52193 /* SnoizeMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */; };
 		16F9FA312586EC0800169621 /* SMMFastAnimatingWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F9FA302586EC0800169621 /* SMMFastAnimatingWindow.swift */; };
 		16F9FA452586EDED00169621 /* SMMNonHighlightingCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F9FA442586EDED00169621 /* SMMNonHighlightingCells.swift */; };
 		16F9FA572586F0A700169621 /* SMMSourcesOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F9FA562586F0A700169621 /* SMMSourcesOutlineView.swift */; };
+		16F9FA592586F51400169621 /* SNDisclosureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F9FA582586F51400169621 /* SNDisclosureButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -226,13 +226,12 @@
 		16C267D115D836B2009F4BE4 /* SNDisclosureArrowRight.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SNDisclosureArrowRight.tiff; sourceTree = "<group>"; };
 		16C267D415D836C6009F4BE4 /* SNDisclosableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SNDisclosableView.h; sourceTree = "<group>"; };
 		16C267D515D836C6009F4BE4 /* SNDisclosableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SNDisclosableView.m; sourceTree = "<group>"; };
-		16C267D615D836C6009F4BE4 /* SNDisclosureButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SNDisclosureButton.h; sourceTree = "<group>"; };
-		16C267D715D836C6009F4BE4 /* SNDisclosureButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SNDisclosureButton.m; sourceTree = "<group>"; };
 		16F20F4906EAA14A00D9C507 /* Defaults.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = Defaults.plist; sourceTree = "<group>"; };
 		16F9FA2A2586DFE300169621 /* MIDIMonitor-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MIDIMonitor-Bridging-Header.h"; sourceTree = "<group>"; };
 		16F9FA302586EC0800169621 /* SMMFastAnimatingWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMFastAnimatingWindow.swift; sourceTree = "<group>"; };
 		16F9FA442586EDED00169621 /* SMMNonHighlightingCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMNonHighlightingCells.swift; sourceTree = "<group>"; };
 		16F9FA562586F0A700169621 /* SMMSourcesOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMSourcesOutlineView.swift; sourceTree = "<group>"; };
+		16F9FA582586F51400169621 /* SNDisclosureButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNDisclosureButton.swift; sourceTree = "<group>"; };
 		2A37F4ACFDCFA73011CA2CEA /* SMMDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMDocument.m; sourceTree = "<group>"; };
 		2A37F4AEFDCFA73011CA2CEA /* SMMDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMDocument.h; sourceTree = "<group>"; };
 		2A37F4B0FDCFA73011CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -410,8 +409,7 @@
 				F56E05CB0206BAB401000164 /* SMMSysExWindowController.m */,
 				16C267D415D836C6009F4BE4 /* SNDisclosableView.h */,
 				16C267D515D836C6009F4BE4 /* SNDisclosableView.m */,
-				16C267D615D836C6009F4BE4 /* SNDisclosureButton.h */,
-				16C267D715D836C6009F4BE4 /* SNDisclosureButton.m */,
+				16F9FA582586F51400169621 /* SNDisclosureButton.swift */,
 				F571C56C01903F3301000164 /* Cocoa Extensions */,
 				F57F62950261E14501000164 /* SnoizeMIDI Extensions */,
 			);
@@ -740,8 +738,8 @@
 				16F9FA452586EDED00169621 /* SMMNonHighlightingCells.swift in Sources */,
 				167B883206ED4D650053D305 /* SMMWindowController.m in Sources */,
 				167B883306ED4D650053D305 /* SMMDetailsWindowController.m in Sources */,
+				16F9FA592586F51400169621 /* SNDisclosureButton.swift in Sources */,
 				16C267D815D836C6009F4BE4 /* SNDisclosableView.m in Sources */,
-				16C267D915D836C6009F4BE4 /* SNDisclosureButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

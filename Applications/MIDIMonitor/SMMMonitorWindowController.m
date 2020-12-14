@@ -19,7 +19,6 @@
 #import "SMMPreferencesWindowController.h"
 #import "SMMDetailsWindowController.h"
 #import "SNDisclosableView.h"
-#import "SNDisclosureButton.h"
 
 
 @interface SMMMonitorWindowController ()
