@@ -14,8 +14,8 @@
 
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
+#import "MIDI_Monitor-Swift.h"
 #import "SMMDocument.h"
-#import "SMMNonHighlightingCells.h"
 #import "SMMPreferencesWindowController.h"
 #import "SMMSourcesOutlineView.h"
 #import "SMMDetailsWindowController.h"
