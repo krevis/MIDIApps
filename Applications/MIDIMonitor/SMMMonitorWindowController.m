@@ -18,7 +18,6 @@
 #import "SMMDocument.h"
 #import "SMMPreferencesWindowController.h"
 #import "SMMDetailsWindowController.h"
-#import "SNDisclosableView.h"
 
 
 @interface SMMMonitorWindowController ()

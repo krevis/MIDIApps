@@ -43,7 +43,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="517" height="575"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="383" customClass="SNDisclosableView">
+                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="383" customClass="SNDisclosableView" customModule="MIDI_Monitor" customModuleProvider="target">
                         <rect key="frame" x="20" y="211" width="477" height="193"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <subviews>
@@ -272,7 +272,7 @@
                             <outlet property="nextKeyView" destination="390" id="485"/>
                         </connections>
                     </customView>
-                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="369" customClass="SNDisclosableView">
+                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="369" customClass="SNDisclosableView" customModule="MIDI_Monitor" customModuleProvider="target">
                         <rect key="frame" x="20" y="427" width="477" height="107"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <subviews>
@@ -283,7 +283,7 @@
                                     <rect key="frame" x="1" y="1" width="459" height="95"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="372" id="375" customClass="SMMSourcesOutlineView">
+                                        <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="372" id="375" customClass="SMMSourcesOutlineView" customModule="MIDI_Monitor" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="459" height="95"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
