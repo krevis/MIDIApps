@@ -17,7 +17,6 @@
 #import "MIDI_Monitor-Swift.h"
 #import "SMMDocument.h"
 #import "SMMPreferencesWindowController.h"
-#import "SMMDetailsWindowController.h"
 
 
 @interface SMMMonitorWindowController ()
@@ -691,9 +690,7 @@ static NSString * const SMMMessagesScrollPointY = @"messagesScrollPointY";
     NSUInteger row;
     for (row = selectedRowIndexes.firstIndex; row != NSNotFound; row = [selectedRowIndexes indexGreaterThanIndex:row]) {
         SMMessage *message = self.displayedMessages[row];
-        if ([SMMDetailsWindowController canShowDetailsForMessage:message]) {
-            [messages addObject:message];
-        }
+        [messages addObject:message];
     }
 
     return messages;

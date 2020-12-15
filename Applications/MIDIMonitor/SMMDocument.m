@@ -14,8 +14,8 @@
 
 #import <objc/objc-runtime.h>
 
+#import "MIDI_Monitor-Swift.h"
 #import "SMMCombinationInputStream.h"
-#import "SMMDetailsWindowController.h"
 #import "SMMMonitorWindowController.h"
 
 
@@ -437,17 +437,20 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
 
 - (SMMDetailsWindowController *)detailsWindowControllerForMessage:(SMMessage *)message
 {
-    if (![SMMDetailsWindowController canShowDetailsForMessage:message]) {
-        return nil;
-    }
-
     for (SMMDetailsWindowController *detailsWC in self.detailsWindowControllers) {
         if (detailsWC.message == message) {
             return detailsWC;
         }
     }
 
-    SMMDetailsWindowController *detailsWC = [SMMDetailsWindowController detailsWindowControllerWithMessage:message];
+    Class windowControllerClass;
+    if ([message isKindOfClass:[SMSystemExclusiveMessage class]]) {
+        windowControllerClass = [SMMSysExWindowController class];
+    } else {
+        windowControllerClass = [SMMDetailsWindowController class];
+    }
+
+    SMMDetailsWindowController *detailsWC = [[windowControllerClass alloc] initWithMessage:message];
     [self addWindowController:detailsWC];
     return detailsWC;
 }

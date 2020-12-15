@@ -34,9 +34,9 @@
 		167B882D06ED4D650053D305 /* SMMSpyingInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = F562148E02408B2D01000164 /* SMMSpyingInputStream.m */; };
 		167B882E06ED4D650053D305 /* SMMCombinationInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = F55C9C150244CE3701000164 /* SMMCombinationInputStream.m */; };
 		167B883206ED4D650053D305 /* SMMWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5DCBE8F02E6064E01000164 /* SMMWindowController.m */; };
-		167B883306ED4D650053D305 /* SMMDetailsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1691E0DA04CA1C1E00ACFC9D /* SMMDetailsWindowController.m */; };
 		167B883906ED4D650053D305 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		167B883B06ED4D650053D305 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B4281801A360AD01000164 /* CoreMIDI.framework */; };
+		16980517258874BF00059CB4 /* SMMDetailsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16980516258874BF00059CB4 /* SMMDetailsWindowController.swift */; };
 		16C267D215D836B2009F4BE4 /* SNDisclosureArrowDown.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 16C267D015D836B2009F4BE4 /* SNDisclosureArrowDown.tiff */; };
 		16C267D315D836B2009F4BE4 /* SNDisclosureArrowRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 16C267D115D836B2009F4BE4 /* SNDisclosureArrowRight.tiff */; };
 		16E8F01A097B2E5200B52193 /* SnoizeMIDISpy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169E71B1097B242A001AFB58 /* SnoizeMIDISpy.framework */; };
@@ -217,6 +217,7 @@
 		1691E0D804CA1C1400ACFC9D /* SMMDetailsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMDetailsWindowController.h; sourceTree = "<group>"; };
 		1691E0DA04CA1C1E00ACFC9D /* SMMDetailsWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMDetailsWindowController.m; sourceTree = "<group>"; };
 		1691E0DD04CA26F300ACFC9D /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Details.nib; sourceTree = "<group>"; };
+		16980516258874BF00059CB4 /* SMMDetailsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMDetailsWindowController.swift; sourceTree = "<group>"; };
 		169E7114097B2021001AFB58 /* Snoize-Project-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Debug.xcconfig"; path = "../../Configurations/Snoize-Project-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		169E7115097B2021001AFB58 /* Snoize-Project-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Global.xcconfig"; path = "../../Configurations/Snoize-Project-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
 		169E7116097B2021001AFB58 /* Snoize-Project-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Release.xcconfig"; path = "../../Configurations/Snoize-Project-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
@@ -404,6 +405,7 @@
 				F53D4AB6015AAA2C01000164 /* SMMMonitorWindowController.m */,
 				F53A1C06015EB24301000164 /* SMMPreferencesWindowController.h */,
 				F53A1C07015EB24301000164 /* SMMPreferencesWindowController.m */,
+				16980516258874BF00059CB4 /* SMMDetailsWindowController.swift */,
 				1691E0D804CA1C1400ACFC9D /* SMMDetailsWindowController.h */,
 				1691E0DA04CA1C1E00ACFC9D /* SMMDetailsWindowController.m */,
 				160A5E8C258822CB008C0CE1 /* SMMSysExWindowController.swift */,
@@ -732,12 +734,12 @@
 				167B882A06ED4D650053D305 /* SMMAppController.m in Sources */,
 				167B882B06ED4D650053D305 /* SMMPreferencesWindowController.m in Sources */,
 				167B882D06ED4D650053D305 /* SMMSpyingInputStream.m in Sources */,
+				16980517258874BF00059CB4 /* SMMDetailsWindowController.swift in Sources */,
 				167B882E06ED4D650053D305 /* SMMCombinationInputStream.m in Sources */,
 				16F9FA5B2586F9BB00169621 /* main.swift in Sources */,
 				160A5EA1258825B0008C0CE1 /* SMMPreferenceKeys.swift in Sources */,
 				16F9FA452586EDED00169621 /* SMMNonHighlightingCells.swift in Sources */,
 				167B883206ED4D650053D305 /* SMMWindowController.m in Sources */,
-				167B883306ED4D650053D305 /* SMMDetailsWindowController.m in Sources */,
 				160A5E8D258822CB008C0CE1 /* SMMSysExWindowController.swift in Sources */,
 				16F9FA592586F51400169621 /* SNDisclosureButton.swift in Sources */,
 			);

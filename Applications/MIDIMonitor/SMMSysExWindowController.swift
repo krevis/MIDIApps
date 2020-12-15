@@ -14,9 +14,21 @@ import Cocoa
 
 class SMMSysExWindowController: SMMDetailsWindowController {
 
+    private let sysExMessage: SMSystemExclusiveMessage
+
+    @objc override init(message myMessage: SMMessage) {
+        guard let mySysExMessage = myMessage as? SMSystemExclusiveMessage else { fatalError() }
+        sysExMessage = mySysExMessage
+        super.init(message: myMessage)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     @IBOutlet var manufacturerNameField: NSTextField!
 
-    override class func windowNibName() -> String! {
+    override var windowNibName: NSNib.Name? {
         return "SysEx"
     }
 
@@ -24,23 +36,17 @@ class SMMSysExWindowController: SMMDetailsWindowController {
         super.windowDidLoad()
 
         // TODO manufacturerName should be a property in objc thus no parens
-        if let sysExMessage = message as? SMSystemExclusiveMessage,
-           let manufacturerName = sysExMessage.manufacturerName() {
+        if let manufacturerName = sysExMessage.manufacturerName() {
             manufacturerNameField.stringValue = manufacturerName 
         }
     }
 
-    override func dataForDisplay() -> Data! {
-        if let sysExMessage = message as? SMSystemExclusiveMessage {
-            return sysExMessage.data()
-        }
-        else {
-            return nil
-        }
+    override var dataForDisplay: Data {
+        return sysExMessage.data() ?? Data()    // TODO data should be a property
     }
 
     @IBAction func save(_ sender: AnyObject) {
-        guard let window = window, let sysExMessage = message as? SMSystemExclusiveMessage else { return }
+        guard let window = window else { return }
 
         let savePanel = NSSavePanel()
         savePanel.allowedFileTypes = ["syx"]
@@ -50,7 +56,7 @@ class SMMSysExWindowController: SMMDetailsWindowController {
 
             let saveWithEOXAlways = UserDefaults.standard.bool(forKey: SMMPreferenceKeys.saveSysExWithEOXAlways)
             // TODO fullMessageData and receivedDataWithStartByte should properties in objc thus no parens
-            if let dataToWrite = saveWithEOXAlways ? sysExMessage.fullMessageData() : sysExMessage.receivedDataWithStartByte(),
+            if let dataToWrite = saveWithEOXAlways ? self.sysExMessage.fullMessageData() : self.sysExMessage.receivedDataWithStartByte(),
                let url = savePanel.url {
                 do {
                     try dataToWrite.write(to: url, options: .atomic)
