@@ -14,10 +14,10 @@
 
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
+#import "MIDI_Monitor-Swift.h"
 #import "SMMAppController.h"
 #import "SMMDocument.h"
 #import "SMMMonitorWindowController.h"
-#import "SMMSysExWindowController.h"
 
 
 NSString* const SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreferenceChangedNotification";
@@ -99,7 +99,7 @@ NSString* const SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreference
 
 
     [self.askBeforeClosingModifiedWindowCheckbox setIntValue:[defaults boolForKey:SMMAskBeforeClosingModifiedWindowPreferenceKey]];
-    [self.alwaysSaveSysExWithEOXMatrix selectCellWithTag:[defaults boolForKey:SMMSaveSysExWithEOXAlwaysPreferenceKey]];
+    [self.alwaysSaveSysExWithEOXMatrix selectCellWithTag:[defaults boolForKey:[SMMPreferenceKeys saveSysExWithEOXAlways]]];
 }
 
 
@@ -153,7 +153,7 @@ NSString* const SMMDisplayPreferenceChangedNotification = @"SMMDisplayPreference
 
 - (IBAction)changeAlwaysSaveSysExWithEOX:(id)sender
 {
-	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey: SMMSaveSysExWithEOXAlwaysPreferenceKey];
+	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey: [SMMPreferenceKeys saveSysExWithEOXAlways]];
 }
 
 - (IBAction)changeExpertMode:(id)sender

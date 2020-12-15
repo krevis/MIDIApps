@@ -18,6 +18,8 @@ class SNDisclosableView: NSView {
     // API
     //
 
+    // TODO Remove @objc when possible
+
     @objc var shown = true {
         willSet {
             if newValue != shown {

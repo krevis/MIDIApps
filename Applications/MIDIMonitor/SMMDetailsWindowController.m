@@ -14,9 +14,9 @@
 
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
+#import "MIDI_Monitor-Swift.h"
 #import "SMMDocument.h"
 #import "SMMPreferencesWindowController.h"
-#import "SMMSysExWindowController.h"
 
 @interface SMMDetailsWindowController ()
 

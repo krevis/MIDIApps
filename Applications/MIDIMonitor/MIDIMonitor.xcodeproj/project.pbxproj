@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		160A5E8D258822CB008C0CE1 /* SMMSysExWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160A5E8C258822CB008C0CE1 /* SMMSysExWindowController.swift */; };
+		160A5EA1258825B0008C0CE1 /* SMMPreferenceKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160A5EA0258825B0008C0CE1 /* SMMPreferenceKeys.swift */; };
 		16133B7415F5C75C00533536 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 161B71EF15D8D76B006E21D4 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		161B71F815D8D79E006E21D4 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 161B71EF15D8D76B006E21D4 /* Sparkle.framework */; };
 		161B71FA15D8DD83006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B71F915D8DD83006E21D4 /* dsa_pub.pem */; };
@@ -29,7 +31,6 @@
 		167B882906ED4D650053D305 /* SMMMonitorWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F53D4AB6015AAA2C01000164 /* SMMMonitorWindowController.m */; };
 		167B882A06ED4D650053D305 /* SMMAppController.m in Sources */ = {isa = PBXBuildFile; fileRef = F53D4ABA015AAB7E01000164 /* SMMAppController.m */; };
 		167B882B06ED4D650053D305 /* SMMPreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F53A1C07015EB24301000164 /* SMMPreferencesWindowController.m */; };
-		167B882C06ED4D650053D305 /* SMMSysExWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F56E05CB0206BAB401000164 /* SMMSysExWindowController.m */; };
 		167B882D06ED4D650053D305 /* SMMSpyingInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = F562148E02408B2D01000164 /* SMMSpyingInputStream.m */; };
 		167B882E06ED4D650053D305 /* SMMCombinationInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = F55C9C150244CE3701000164 /* SMMCombinationInputStream.m */; };
 		167B883206ED4D650053D305 /* SMMWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5DCBE8F02E6064E01000164 /* SMMWindowController.m */; };
@@ -201,6 +202,8 @@
 
 /* Begin PBXFileReference section */
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		160A5E8C258822CB008C0CE1 /* SMMSysExWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMSysExWindowController.swift; sourceTree = "<group>"; };
+		160A5EA0258825B0008C0CE1 /* SMMPreferenceKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMPreferenceKeys.swift; sourceTree = "<group>"; };
 		161B71E015D8D76A006E21D4 /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = ../../ThirdParty/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		161B71F915D8DD83006E21D4 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dsa_pub.pem; path = ../../Updates/dsa_pub.pem; sourceTree = "<group>"; };
 		161B71FC15D8DFA5006E21D4 /* MIDIMonitor.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = MIDIMonitor.xml; path = ../../Updates/MIDIMonitor.xml; sourceTree = "<group>"; };
@@ -252,8 +255,6 @@
 		F562148D02408B2D01000164 /* SMMSpyingInputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMSpyingInputStream.h; sourceTree = "<group>"; };
 		F562148E02408B2D01000164 /* SMMSpyingInputStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMSpyingInputStream.m; sourceTree = "<group>"; };
 		F56D31A40195A90E01000164 /* English */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = text.html; name = English; path = English.lproj/docs.htmld; sourceTree = "<group>"; };
-		F56E05CA0206BAB401000164 /* SMMSysExWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMSysExWindowController.h; sourceTree = "<group>"; };
-		F56E05CB0206BAB401000164 /* SMMSysExWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMSysExWindowController.m; sourceTree = "<group>"; };
 		F56E05CF0206BF0C01000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SysEx.nib; sourceTree = "<group>"; };
 		F57053DA018D364A01000164 /* Document.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Document.icns; sourceTree = "<group>"; };
 		F579B5E9018D0F0D01000164 /* MIDIMonitor.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = MIDIMonitor.icns; sourceTree = "<group>"; };
@@ -398,14 +399,14 @@
 				F53D4ABA015AAB7E01000164 /* SMMAppController.m */,
 				2A37F4AEFDCFA73011CA2CEA /* SMMDocument.h */,
 				2A37F4ACFDCFA73011CA2CEA /* SMMDocument.m */,
+				160A5EA0258825B0008C0CE1 /* SMMPreferenceKeys.swift */,
 				F53D4AB5015AAA2C01000164 /* SMMMonitorWindowController.h */,
 				F53D4AB6015AAA2C01000164 /* SMMMonitorWindowController.m */,
 				F53A1C06015EB24301000164 /* SMMPreferencesWindowController.h */,
 				F53A1C07015EB24301000164 /* SMMPreferencesWindowController.m */,
 				1691E0D804CA1C1400ACFC9D /* SMMDetailsWindowController.h */,
 				1691E0DA04CA1C1E00ACFC9D /* SMMDetailsWindowController.m */,
-				F56E05CA0206BAB401000164 /* SMMSysExWindowController.h */,
-				F56E05CB0206BAB401000164 /* SMMSysExWindowController.m */,
+				160A5E8C258822CB008C0CE1 /* SMMSysExWindowController.swift */,
 				16F9FA5C2586FD0B00169621 /* SNDisclosableView.swift */,
 				16F9FA582586F51400169621 /* SNDisclosureButton.swift */,
 				F571C56C01903F3301000164 /* Cocoa Extensions */,
@@ -730,13 +731,14 @@
 				167B882906ED4D650053D305 /* SMMMonitorWindowController.m in Sources */,
 				167B882A06ED4D650053D305 /* SMMAppController.m in Sources */,
 				167B882B06ED4D650053D305 /* SMMPreferencesWindowController.m in Sources */,
-				167B882C06ED4D650053D305 /* SMMSysExWindowController.m in Sources */,
 				167B882D06ED4D650053D305 /* SMMSpyingInputStream.m in Sources */,
 				167B882E06ED4D650053D305 /* SMMCombinationInputStream.m in Sources */,
 				16F9FA5B2586F9BB00169621 /* main.swift in Sources */,
+				160A5EA1258825B0008C0CE1 /* SMMPreferenceKeys.swift in Sources */,
 				16F9FA452586EDED00169621 /* SMMNonHighlightingCells.swift in Sources */,
 				167B883206ED4D650053D305 /* SMMWindowController.m in Sources */,
 				167B883306ED4D650053D305 /* SMMDetailsWindowController.m in Sources */,
+				160A5E8D258822CB008C0CE1 /* SMMSysExWindowController.swift in Sources */,
 				16F9FA592586F51400169621 /* SNDisclosureButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
