@@ -16,7 +16,6 @@
 
 #import "MIDI_Monitor-Swift.h"
 #import "SMMDocument.h"
-#import "SMMPreferencesWindowController.h"
 
 
 @interface SMMMonitorWindowController ()
@@ -66,7 +65,7 @@ static const NSTimeInterval kMinimumMessagesRefreshDelay = 0.10; // seconds
 - (instancetype)init
 {
     if ((self = [super initWithWindowNibName:@"MIDIMonitor"])) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayPreferencesDidChange:) name:SMMDisplayPreferenceChangedNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayPreferencesDidChange:) name:[NSNotification displayPreferenceChangedNotification] object:nil];
 
         _oneChannel = 1;
 

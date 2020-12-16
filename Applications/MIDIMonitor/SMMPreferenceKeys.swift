@@ -14,9 +14,16 @@ import Foundation
 
 @objc class SMMPreferenceKeys: NSObject {
 
-    @objc static let saveSysExWithEOXAlways = "SMMSaveSysExWithEOXAlwaysPreferenceKey"
+    static let saveSysExWithEOXAlways = "SMMSaveSysExWithEOXAlways"
 
     // TODO Migrate more keys here
     // TODO Remove @objc when possible
 
+    @objc static let autoSelectOrdinarySourcesInNewDocument = "SMMAutoSelectOrdinarySources"
+    @objc static let autoSelectVirtualDestinationInNewDocument = "SMMAutoSelectVirtualDestination"
+    @objc static let autoSelectSpyingDestinationsInNewDocument = "SMMAutoSelectSpyingDestinations"
+    @objc static let askBeforeClosingModifiedWindow = "SMMAskBeforeClosingModifiedWindow"
+
+    @objc static let autoConnectNewSources = "SMMAutoConnectNewSources"
 }
+

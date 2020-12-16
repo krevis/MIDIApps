@@ -6,4 +6,4 @@
 
 #import <SnoizeMIDI/SnoizeMIDI.h>
 #import "SMMDocument.h"
-#import "SMMPreferencesWindowController.h"  // SMMDisplayPreferenceChangedNotification
+#import "SMMWindowController.h"

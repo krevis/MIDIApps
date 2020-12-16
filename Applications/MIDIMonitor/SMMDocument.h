@@ -46,9 +46,3 @@
 - (void)encodeRestorableState:(NSCoder *)state forDetailsWindowController:(SMMDetailsWindowController *)detailsWC;
 
 @end
-
-// Preference keys
-extern NSString* const SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey;
-extern NSString* const SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey;
-extern NSString* const SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey;
-extern NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey;

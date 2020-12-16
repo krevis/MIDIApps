@@ -23,7 +23,7 @@ class SMMDetailsWindowController: SMMWindowController, NSWindowDelegate {
         super.init(window: nil)
         shouldCascadeWindows = true
 
-        NotificationCenter.default.addObserver(self, selector: #selector(self.displayPreferencesDidChange(_:)), name: .SMMDisplayPreferenceChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.displayPreferencesDidChange(_:)), name: .displayPreferenceChanged, object: nil)
     }
 
     required init?(coder: NSCoder) {
@@ -31,7 +31,7 @@ class SMMDetailsWindowController: SMMWindowController, NSWindowDelegate {
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .SMMDisplayPreferenceChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .displayPreferenceChanged, object: nil)
     }
 
     //

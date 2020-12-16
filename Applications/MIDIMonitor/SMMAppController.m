@@ -16,12 +16,11 @@
 #import <SnoizeMIDI/SnoizeMIDI.h>
 #import <Sparkle/Sparkle.h>
 
+#import "MIDI_Monitor-Swift.h"
 #import "SMMDocument.h"
 #import "SMMMonitorWindowController.h"
-#import "SMMPreferencesWindowController.h"
 
 NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSources";  // Obsolete
-NSString* const SMMAutoConnectNewSourcesPreferenceKey = @"SMMAutoConnectNewSources";
 
 typedef enum {
     SMMAutoConnectOptionDisabled            = 0,
@@ -43,12 +42,12 @@ typedef enum {
 {
     // Migrate autoconnect preference, before we show any windows.
     // Old: SMMOpenWindowsForNewSourcesPreferenceKey = BOOL (default: false)
-    // New: SMMAutoConnectNewSourcesPreferenceKey = int (SMMAutoConnectOption, default: 1 = SMMAutoConnectOptionAddInCurrentWindow)
+    // New: SMMPreferenceKeys.autoConnectNewSources = int (SMMAutoConnectOption, default: 1 = SMMAutoConnectOptionAddInCurrentWindow)
 
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if ([defaults objectForKey:SMMOpenWindowsForNewSourcesPreferenceKey] != nil) {
         SMMAutoConnectOption option = [defaults boolForKey:SMMOpenWindowsForNewSourcesPreferenceKey] ? SMMAutoConnectOptionOpenNewWindow : SMMAutoConnectOptionDisabled;
-        [defaults setInteger:option forKey:SMMAutoConnectNewSourcesPreferenceKey];
+        [defaults setInteger:option forKey:[SMMPreferenceKeys autoConnectNewSources]];
         [defaults removeObjectForKey:SMMOpenWindowsForNewSourcesPreferenceKey];
     }
 }
@@ -101,7 +100,7 @@ typedef enum {
 
 - (IBAction)showPreferences:(id)sender
 {
-    [[SMMPreferencesWindowController preferencesWindowController] showWindow:nil];
+    [[SMMPreferencesWindowController sharedInstance] showWindow:nil];
 }
 
 - (IBAction)showAboutBox:(id)sender
@@ -355,7 +354,7 @@ typedef enum {
 {
     NSArray *endpoints = [[notification userInfo] objectForKey:SMMIDIObjectsThatAppeared];
     if ([endpoints count] > 0) {
-        SMMAutoConnectOption autoConnectOption = (SMMAutoConnectOption)[[NSUserDefaults standardUserDefaults] integerForKey:SMMAutoConnectNewSourcesPreferenceKey];
+        SMMAutoConnectOption autoConnectOption = (SMMAutoConnectOption)[[NSUserDefaults standardUserDefaults] integerForKey:[SMMPreferenceKeys autoConnectNewSources]];
 
         if (!self.newlyAppearedSources) {
             self.newlyAppearedSources = [NSMutableSet set];

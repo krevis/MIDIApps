@@ -21,10 +21,6 @@
 
 NSString* const SMMAutoSelectFirstSourceInNewDocumentPreferenceKey = @"SMMAutoSelectFirstSource";
     // NOTE: The above is obsolete; it's included only for compatibility
-NSString* const SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey = @"SMMAutoSelectOrdinarySources";
-NSString* const SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey = @"SMMAutoSelectVirtualDestination";
-NSString* const SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey = @"SMMAutoSelectSpyingDestinations";
-NSString* const SMMAskBeforeClosingModifiedWindowPreferenceKey = @"SMMAskBeforeClosingModifiedWindow";
 
 NSString* const SMMFileType = @"com.snoize.midimonitor";
 NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
@@ -77,7 +73,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
         // (the default value was YES)
         NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
         if (![ud boolForKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey]) {
-            [ud setBool:NO forKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey];
+            [ud setBool:NO forKey:[SMMPreferenceKeys autoSelectOrdinarySourcesInNewDocument]];
             [ud setBool:YES forKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey];
         }
 
@@ -290,7 +286,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
         }
     }
 
-    if (mayCloseWithoutSaving && ![ud boolForKey:SMMAskBeforeClosingModifiedWindowPreferenceKey]) {
+    if (mayCloseWithoutSaving && ![ud boolForKey:[SMMPreferenceKeys askBeforeClosingModifiedWindow]]) {
         // Tell the delegate to close now, regardless of what the document's dirty flag may be.
         // Unfortunately this is not easy in Objective-C...
         void (*objc_msgSendTyped)(id self, SEL _cmd, NSDocument *document, BOOL shouldClose, void *contextInfo) = (void*)objc_msgSend;
@@ -550,21 +546,21 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
     NSMutableSet *sourcesSet = [NSMutableSet set];
     NSArray *sourcesArray;
 
-    if ([defaults boolForKey:SMMAutoSelectOrdinarySourcesInNewDocumentPreferenceKey]) {
+    if ([defaults boolForKey:[SMMPreferenceKeys autoSelectOrdinarySourcesInNewDocument]]) {
         if (groupedInputSources.count > 0 && 
             (sourcesArray = groupedInputSources[0][@"sources"])) {
             [sourcesSet addObjectsFromArray:sourcesArray];
         }
     }
 
-    if ([defaults boolForKey:SMMAutoSelectVirtualDestinationInNewDocumentPreferenceKey]) {
+    if ([defaults boolForKey:[SMMPreferenceKeys autoSelectVirtualDestinationInNewDocument]]) {
         if (groupedInputSources.count > 1 && 
             (sourcesArray = groupedInputSources[1][@"sources"])) {
             [sourcesSet addObjectsFromArray:sourcesArray];
         }
     }
 
-	if ([defaults boolForKey:SMMAutoSelectSpyingDestinationsInNewDocumentPreferenceKey]) {
+	if ([defaults boolForKey:[SMMPreferenceKeys autoSelectSpyingDestinationsInNewDocument]]) {
         if (groupedInputSources.count > 2 && 
             (sourcesArray = groupedInputSources[2][@"sources"])) {
             [sourcesSet addObjectsFromArray:sourcesArray];
