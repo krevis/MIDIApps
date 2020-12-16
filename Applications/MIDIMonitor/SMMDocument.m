@@ -450,7 +450,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
         windowControllerClass = [SMMDetailsWindowController class];
     }
 
-    SMMDetailsWindowController *detailsWC = [[windowControllerClass alloc] initWithMessage:message];
+    SMMDetailsWindowController *detailsWC = [[[windowControllerClass alloc] initWithMessage:message] autorelease];
     [self addWindowController:detailsWC];
     return detailsWC;
 }
