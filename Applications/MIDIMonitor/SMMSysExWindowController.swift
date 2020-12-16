@@ -26,7 +26,7 @@ class SMMSysExWindowController: SMMDetailsWindowController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    @IBOutlet var manufacturerNameField: NSTextField!
+    @IBOutlet private var manufacturerNameField: NSTextField!
 
     override var windowNibName: NSNib.Name? {
         return "SysEx"

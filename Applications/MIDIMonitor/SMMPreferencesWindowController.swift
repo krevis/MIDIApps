@@ -24,20 +24,20 @@ class SMMPreferencesWindowController: SMMWindowController, NSWindowRestoration {
         completionHandler(sharedInstance.window, nil)
     }
 
-    @IBOutlet var tabView: NSTabView!
-    @IBOutlet var timeFormatMatrix: NSMatrix!
-    @IBOutlet var noteFormatMatrix: NSMatrix!
-    @IBOutlet var controllerFormatMatrix: NSMatrix!
-    @IBOutlet var dataFormatMatrix: NSMatrix!
-    @IBOutlet var programChangeBaseIndexMatrix: NSMatrix!
-    @IBOutlet var autoSelectOrdinarySourcesCheckbox: NSButton!
-    @IBOutlet var autoSelectVirtualDestinationCheckbox: NSButton!
-    @IBOutlet var autoSelectSpyingDestinationsCheckbox: NSButton!
-    @IBOutlet var autoConnectRadioButtons: NSMatrix!
-    @IBOutlet var askBeforeClosingModifiedWindowCheckbox: NSButton!
-    @IBOutlet var alwaysSaveSysExWithEOXMatrix: NSMatrix!
-    @IBOutlet var expertModeCheckbox: NSButton!
-    @IBOutlet var expertModeTextField: NSTextField!
+    @IBOutlet private var tabView: NSTabView!
+    @IBOutlet private var timeFormatMatrix: NSMatrix!
+    @IBOutlet private var noteFormatMatrix: NSMatrix!
+    @IBOutlet private var controllerFormatMatrix: NSMatrix!
+    @IBOutlet private var dataFormatMatrix: NSMatrix!
+    @IBOutlet private var programChangeBaseIndexMatrix: NSMatrix!
+    @IBOutlet private var autoSelectOrdinarySourcesCheckbox: NSButton!
+    @IBOutlet private var autoSelectVirtualDestinationCheckbox: NSButton!
+    @IBOutlet private var autoSelectSpyingDestinationsCheckbox: NSButton!
+    @IBOutlet private var autoConnectRadioButtons: NSMatrix!
+    @IBOutlet private var askBeforeClosingModifiedWindowCheckbox: NSButton!
+    @IBOutlet private var alwaysSaveSysExWithEOXMatrix: NSMatrix!
+    @IBOutlet private var expertModeCheckbox: NSButton!
+    @IBOutlet private var expertModeTextField: NSTextField!
 
     override func windowDidLoad() {
         guard let window = window else { fatalError() }
@@ -124,11 +124,11 @@ class SMMPreferencesWindowController: SMMWindowController, NSWindowRestoration {
         sendDisplayPreferenceChangedNotification()
     }
 
-    func sendDisplayPreferenceChangedNotification() {
+    private func sendDisplayPreferenceChangedNotification() {
         NotificationCenter.default.post(name: .displayPreferenceChanged, object: nil)
     }
 
-    func updateExpertModeTextField() {
+    private func updateExpertModeTextField() {
         let text: String
         if UserDefaults.standard.bool(forKey: SMExpertModePreferenceKey) {
             text = NSLocalizedString("EXPERT_ON", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), value: "• Data formatted as raw hexadecimal\n• Note On with velocity 0 shows as Note On\n• Zero timestamp shows 0", comment: "Explanation when expert mode is on")

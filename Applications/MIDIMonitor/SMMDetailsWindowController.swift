@@ -50,9 +50,9 @@ class SMMDetailsWindowController: SMMWindowController, NSWindowDelegate {
     // Private
     //
 
-    @IBOutlet var timeField: NSTextField!
-    @IBOutlet var sizeField: NSTextField!
-    @IBOutlet var textView: NSTextView!
+    @IBOutlet private var timeField: NSTextField!
+    @IBOutlet private var sizeField: NSTextField!
+    @IBOutlet private var textView: NSTextView!
 
     override func windowDidLoad() {
         super.windowDidLoad()
@@ -76,7 +76,7 @@ class SMMDetailsWindowController: SMMWindowController, NSWindowDelegate {
         updateDescriptionFields()
     }
 
-    func updateDescriptionFields() {
+    private func updateDescriptionFields() {
         let format = NSLocalizedString("%@ bytes", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "Details size format string");
         let formattedLength = SMMessage.formatLength(UInt(dataForDisplay.count))!
         let sizeString = String.localizedStringWithFormat(format, formattedLength)
@@ -85,7 +85,7 @@ class SMMDetailsWindowController: SMMWindowController, NSWindowDelegate {
         timeField.stringValue = message.timeStampForDisplay() ?? "" // TODO should be a non-nil property
     }
 
-    func formattedData(_ data: Data) -> String {
+    private func formattedData(_ data: Data) -> String {
         let dataLength = data.count
         if dataLength <= 0 {
             return ""
