@@ -57,9 +57,9 @@ class SMMDetailsWindowController: SMMWindowController, NSWindowDelegate {
     override func windowDidLoad() {
         super.windowDidLoad()
 
-        synchronizeDescriptionFields()
+        updateDescriptionFields()
 
-        textView.string = formatData(dataForDisplay)
+        textView.string = formattedData(dataForDisplay)
     }
 
     override func windowTitle(forDocumentDisplayName displayName: String) -> String {
@@ -67,91 +67,85 @@ class SMMDetailsWindowController: SMMWindowController, NSWindowDelegate {
     }
 
     func window(_ window: NSWindow, willEncodeRestorableState state: NSCoder) {
-        if let midiDocument = document as? SMMDocument {
-            midiDocument.encodeRestorableState(state, for: self)
-        }
+        guard let midiDocument = document as? SMMDocument else { return }
+        midiDocument.encodeRestorableState(state, for: self)
     }
 
     @objc func displayPreferencesDidChange(_ notification: NSNotification) {
-        synchronizeDescriptionFields()
+        updateDescriptionFields()
     }
 
-    func synchronizeDescriptionFields() {
+    func updateDescriptionFields() {
+        let format = NSLocalizedString("%@ bytes", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "Details size format string");
         let formattedLength = SMMessage.formatLength(UInt(dataForDisplay.count))!
-        let sizeString = "\(formattedLength) bytes"
-            // TODO Localize like NSLocalizedStringFromTableInBundle(@"%@ bytes", @"MIDIMonitor", SMBundleForObject(self), "Details size format string"),
+        let sizeString = String.localizedStringWithFormat(format, formattedLength)
 
         sizeField.stringValue = sizeString
         timeField.stringValue = message.timeStampForDisplay() ?? "" // TODO should be a non-nil property
     }
 
-    func formatData(_ data: Data) -> String {
-        // TODO Implement
-        return "TODO";
+    func formattedData(_ data: Data) -> String {
+        // TODO This should include message.statusByte as the first byte, too
 
-        /*
-         NSUInteger dataLength = data.length;
-         if (dataLength == 0) {
-             return @"";
-         }
+        let dataLength = data.count
+        if dataLength <= 0 {
+            return ""
+        }
 
-         const unsigned char *bytes = data.bytes;
+        // How many hex digits are required to represent data.count?
+        var lengthDigitCount = 0
+        var scratchLength = dataLength
+        while scratchLength > 0 {
+            lengthDigitCount += 2
+            scratchLength >>= 8
+        }
 
-         // Figure out how many bytes dataLength takes to represent
-         int lengthDigitCount = 0;
-         NSUInteger scratchLength = dataLength;
-         while (scratchLength > 0) {
-             lengthDigitCount += 2;
-             scratchLength >>= 8;
-         }
+        var formattedString = ""
 
-         NSMutableString *formattedString = [NSMutableString string];
-         for (NSUInteger dataIndex = 0; dataIndex < dataLength; dataIndex += 16) {
-             // This C stuff may be a little ugly but it is a hell of a lot faster than doing it with NSStrings...
+        // Format the data in 16 byte lines like this:
+        // <variable length index> 00 01 02 03 04 05 06 07  08 09 0A 0B 0C 0D 0E 0F  |0123456789ABCDEF|
+        // and ending in \n
 
-             static const char hexchars[] = "0123456789ABCDEF";
-             char lineBuffer[100];
-             char *p = lineBuffer;
+        let lineLength = lengthDigitCount + 3 * 8 + 1 + 3 * 8 + 2 + 1 + 16 + 1 + 1
+        formattedString.reserveCapacity((dataLength / 16) * lineLength)
 
-             p += sprintf(p, "%.*lX", lengthDigitCount, (unsigned long)dataIndex);
+        for dataIndex in stride(from: 0, to: dataLength, by: 16) {
+            let hexChars: [Character] = [ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F" ]
 
-             for (NSUInteger index = dataIndex; index < dataIndex+16; index++) {
-                 *p++ = ' ';
-                 if (index % 8 == 0) {
-                     *p++ = ' ';
-                 }
+            formattedString.append(String(format: "%.*lX", lengthDigitCount, dataIndex))
 
-                 if (index < dataLength) {
-                     unsigned char byte = bytes[index];
-                     *p++ = hexchars[(byte & 0xF0) >> 4];
-                     *p++ = hexchars[byte & 0x0F];
-                 } else {
-                     *p++ = ' ';
-                     *p++ = ' ';
-                 }
-             }
+            for index in dataIndex ..< (dataIndex+16) {
+                formattedString.append(" ")
+                if index % 8 == 0 {
+                    formattedString.append(" ")
+                }
 
-             *p++ = ' ';
-             *p++ = ' ';
-             *p++ = '|';
+                if index < dataLength {
+                    let byte = data[index]
+                    formattedString.append(hexChars[(Int(byte) & 0xF0) >> 4])
+                    formattedString.append(hexChars[(Int(byte) & 0x0F)     ])
+                }
+                else {
+                    formattedString.append("  ")
+                }
+            }
 
-             for (NSUInteger index = dataIndex; index < dataIndex+16 && index < dataLength; index++) {
-                 unsigned char byte = bytes[index];
-                 *p++ = (isprint(byte) ? byte : ' ');
-             }
+            formattedString.append("  |")
 
-             *p++ = '|';
-             *p++ = '\n';
-             *p++ = 0;
+            for index in dataIndex ..< min(dataIndex+16, dataLength) {
+                let byte = data[index]
+                if isprint(Int32(byte)) != 0 {
+                    formattedString.append(Character(Unicode.Scalar(byte)))
+                }
+                else {
+                    formattedString.append(" ")
+                }
+            }
 
-             NSString *lineString = [[NSString alloc] initWithCString:lineBuffer encoding:NSASCIIStringEncoding];
-             [formattedString appendString:lineString];
-             [lineString release];
-         }
+            formattedString.append("|\n")
+        }
 
-         return formattedString;
-
-         */
+        return formattedString
     }
 
 }
