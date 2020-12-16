@@ -214,8 +214,6 @@
 		163FB5E9199ED5810017B664 /* SNDisclosureArrowRight@2x.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "SNDisclosureArrowRight@2x.tiff"; sourceTree = "<group>"; };
 		167B884206ED4D650053D305 /* Info-MIDIMonitor.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-MIDIMonitor.plist"; sourceTree = "<group>"; };
 		167B884306ED4D650053D305 /* MIDI Monitor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MIDI Monitor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		1691E0D804CA1C1400ACFC9D /* SMMDetailsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMDetailsWindowController.h; sourceTree = "<group>"; };
-		1691E0DA04CA1C1E00ACFC9D /* SMMDetailsWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMDetailsWindowController.m; sourceTree = "<group>"; };
 		1691E0DD04CA26F300ACFC9D /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Details.nib; sourceTree = "<group>"; };
 		16980516258874BF00059CB4 /* SMMDetailsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMDetailsWindowController.swift; sourceTree = "<group>"; };
 		169E7114097B2021001AFB58 /* Snoize-Project-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Debug.xcconfig"; path = "../../Configurations/Snoize-Project-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
@@ -406,8 +404,6 @@
 				F53A1C06015EB24301000164 /* SMMPreferencesWindowController.h */,
 				F53A1C07015EB24301000164 /* SMMPreferencesWindowController.m */,
 				16980516258874BF00059CB4 /* SMMDetailsWindowController.swift */,
-				1691E0D804CA1C1400ACFC9D /* SMMDetailsWindowController.h */,
-				1691E0DA04CA1C1E00ACFC9D /* SMMDetailsWindowController.m */,
 				160A5E8C258822CB008C0CE1 /* SMMSysExWindowController.swift */,
 				16F9FA5C2586FD0B00169621 /* SNDisclosableView.swift */,
 				16F9FA582586F51400169621 /* SNDisclosureButton.swift */,
