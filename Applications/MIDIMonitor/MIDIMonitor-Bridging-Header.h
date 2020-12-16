@@ -6,4 +6,3 @@
 
 #import <SnoizeMIDI/SnoizeMIDI.h>
 #import "SMMDocument.h"
-#import "SMMWindowController.h"
