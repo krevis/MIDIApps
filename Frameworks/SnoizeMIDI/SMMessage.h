@@ -136,8 +136,11 @@ extern NSString *SMProgramChangeBaseIndexPreferenceKey;
     // Length of data after the status byte
 - (const Byte *)otherDataBuffer;
     // May return NULL, indicating no additional data
-- (NSData *)otherData;
+@property (nonatomic, readonly, strong) NSData *otherData;
     // May return nil, indicating no additional data
+
+@property (nonatomic, readonly, strong) NSData *fullData;
+    // All data including status byte and otherData
 
 - (SMEndpoint *)originatingEndpoint;
 - (void)setOriginatingEndpoint:(SMEndpoint *)value;

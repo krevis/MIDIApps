@@ -42,7 +42,7 @@ class SMMSysExWindowController: SMMDetailsWindowController {
     }
 
     override var dataForDisplay: Data {
-        return sysExMessage.data() ?? Data()    // TODO data should be a property
+        return sysExMessage.receivedDataWithStartByte() ?? Data()    // TODO should be a property
     }
 
     @IBAction func save(_ sender: AnyObject) {
@@ -55,7 +55,7 @@ class SMMSysExWindowController: SMMDetailsWindowController {
             savePanel.orderOut(nil)
 
             let saveWithEOXAlways = UserDefaults.standard.bool(forKey: SMMPreferenceKeys.saveSysExWithEOXAlways)
-            // TODO fullMessageData and receivedDataWithStartByte should properties in objc thus no parens
+            // TODO fullMessageData and receivedDataWithStartByte should be properties in objc thus no parens
             if let dataToWrite = saveWithEOXAlways ? self.sysExMessage.fullMessageData() : self.sysExMessage.receivedDataWithStartByte(),
                let url = savePanel.url {
                 do {

@@ -411,6 +411,21 @@ fail:
         return nil;
 }
 
+- (NSData *)fullData
+{
+    NSData *statusByteData = [NSData dataWithBytes:&statusByte length:1];
+
+    NSData *otherData = [self otherData];
+    if (!otherData) {
+        return statusByteData;
+    }
+    else {
+        NSMutableData* fullData = [statusByteData mutableCopy];
+        [fullData appendData:otherData];
+        return fullData;
+    }
+}
+
 - (SMEndpoint *)originatingEndpoint
 {
     return [originatingEndpointOrName isKindOfClass:[SMEndpoint class]] ? (SMEndpoint*)originatingEndpointOrName : nil;

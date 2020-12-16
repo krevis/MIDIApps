@@ -43,7 +43,7 @@ class SMMDetailsWindowController: SMMWindowController, NSWindowDelegate {
     }
 
     var dataForDisplay: Data {
-        return message.otherData() ?? Data()  // TODO otherData should be a property
+        return message.fullData ?? Data()
     }
 
     //
@@ -63,7 +63,8 @@ class SMMDetailsWindowController: SMMWindowController, NSWindowDelegate {
     }
 
     override func windowTitle(forDocumentDisplayName displayName: String) -> String {
-        return displayName.appending(" Details")    // TODO Should be localized
+        let format = NSLocalizedString("%@ Details", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "Details window title format string");
+        return String.localizedStringWithFormat(format, displayName)
     }
 
     func window(_ window: NSWindow, willEncodeRestorableState state: NSCoder) {
@@ -85,8 +86,6 @@ class SMMDetailsWindowController: SMMWindowController, NSWindowDelegate {
     }
 
     func formattedData(_ data: Data) -> String {
-        // TODO This should include message.statusByte as the first byte, too
-
         let dataLength = data.count
         if dataLength <= 0 {
             return ""
