@@ -18,7 +18,6 @@
 
 #import "MIDI_Monitor-Swift.h"
 #import "SMMDocument.h"
-#import "SMMMonitorWindowController.h"
 
 NSString* const SMMOpenWindowsForNewSourcesPreferenceKey = @"SMMOpenWindowsForNewSources";  // Obsolete
 

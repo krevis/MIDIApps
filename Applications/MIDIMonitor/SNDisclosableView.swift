@@ -35,7 +35,7 @@ class SNDisclosableView: NSView {
 
     @objc var hiddenHeight: CGFloat = 0
 
-    @IBAction func toggleDisclosure(_ sender: Any) {
+    @IBAction func toggleDisclosure(_ sender: AnyObject?) {
         shown = !shown
     }
 

@@ -16,7 +16,6 @@
 
 #import "MIDI_Monitor-Swift.h"
 #import "SMMCombinationInputStream.h"
-#import "SMMMonitorWindowController.h"
 
 
 NSString* const SMMAutoSelectFirstSourceInNewDocumentPreferenceKey = @"SMMAutoSelectFirstSource";
@@ -210,7 +209,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
 
     if (streamSettings) {
         [self.stream takePersistentSettings:streamSettings];
-        [self.monitorWindowController synchronizeSources];
+        [self.monitorWindowController updateSources];
     } else {
         self.selectedInputSources = [NSSet set];
     }
@@ -323,7 +322,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
     [(SMMDocument *)[self.undoManager prepareWithInvocationTarget:self] setSelectedInputSources:oldInputSources];
     [self.undoManager setActionName:NSLocalizedStringFromTableInBundle(@"Change Selected Sources", @"MIDIMonitor", SMBundleForObject(self), "change source undo action")];
 
-    [self.monitorWindowController synchronizeSources];
+    [self.monitorWindowController updateSources];
 }
 
 - (NSUInteger)maxMessageCount
@@ -339,7 +338,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
 
         self.history.historySize = newValue;
 
-        [self.monitorWindowController synchronizeMaxMessageCount];
+        [self.monitorWindowController updateMaxMessageCount];
     }
 }
 
@@ -501,7 +500,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
 
 - (void)sourceListDidChange:(NSNotification *)notification
 {
-    [self.monitorWindowController synchronizeSources];
+    [self.monitorWindowController updateSources];
 
     // Also, it's possible that the endpoint names went from being unique to non-unique, so we need
     // to refresh the messages displayed.
@@ -516,7 +515,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
         [self.undoManager setActionName:NSLocalizedStringFromTableInBundle(@"Change Filter", @"MIDIMonitor", SMBundleForObject(self), change filter undo action)];
 
         self.messageFilter.filterMask = newMask;
-        [self.monitorWindowController synchronizeFilterControls];
+        [self.monitorWindowController updateFilterControls];
     }
 }
 
@@ -528,7 +527,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
         [self.undoManager setActionName:NSLocalizedStringFromTableInBundle(@"Change Channel", @"MIDIMonitor", SMBundleForObject(self), change filter channel undo action)];
 
         self.messageFilter.channelMask = newMask;
-        [self.monitorWindowController synchronizeFilterControls];
+        [self.monitorWindowController updateFilterControls];
     }
 }
 
@@ -580,7 +579,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
 
 - (void)synchronizeMessagesWithScroll:(BOOL)shouldScroll
 {
-    [self.monitorWindowController synchronizeMessagesWithScrollToBottom:shouldScroll];
+    [self.monitorWindowController updateMessagesWithScrollingToBottom:shouldScroll];
 }
 
 - (void)readingSysEx:(NSNotification *)notification
@@ -597,7 +596,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
 - (void)updateSysExReadIndicators
 {
     self.isSysExUpdateQueued = NO;
-    [self.monitorWindowController updateSysExReadIndicatorWithBytes:[NSNumber numberWithUnsignedInteger:self.sysExBytesRead]];
+    [self.monitorWindowController updateSysExReadIndicatorWithBytesRead:self.sysExBytesRead];
 }
 
 - (void)doneReadingSysEx:(NSNotification *)notification
@@ -610,7 +609,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
         self.isSysExUpdateQueued = NO;
     }
     
-    [self.monitorWindowController stopSysExReadIndicatorWithBytes:number];
+    [self.monitorWindowController stopSysExReadIndicatorWithBytesRead:self.sysExBytesRead];
 }
 
 @end
