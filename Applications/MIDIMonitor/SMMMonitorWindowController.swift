@@ -71,7 +71,7 @@ class SMMMonitorWindowController: NSWindowController {
     @IBOutlet var sysExProgressField: NSTextField!
 
     // Transient data
-    var oneChannel: UInt = 0
+    var oneChannel: UInt = 1
     var groupedInputSources: [Any]? = nil  // TODO do better
     var displayedMessages: [SMMessage] = []
     var messagesNeedScrollToBottom: Bool = false
