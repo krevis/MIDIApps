@@ -19,9 +19,10 @@ import Foundation
     // TODO Migrate more keys here
     // TODO Remove @objc when possible
 
-    @objc static let autoSelectOrdinarySourcesInNewDocument = "SMMAutoSelectOrdinarySources"
-    @objc static let autoSelectVirtualDestinationInNewDocument = "SMMAutoSelectVirtualDestination"
-    @objc static let autoSelectSpyingDestinationsInNewDocument = "SMMAutoSelectSpyingDestinations"
+    @objc static let selectOrdinarySourcesInNewDocument = "SMMAutoSelectOrdinarySources"
+    @objc static let selectVirtualDestinationInNewDocument = "SMMAutoSelectVirtualDestination"
+    @objc static let selectSpyingDestinationsInNewDocument = "SMMAutoSelectSpyingDestinations"
+
     @objc static let askBeforeClosingModifiedWindow = "SMMAskBeforeClosingModifiedWindow"
 
     @objc static let autoConnectNewSources = "SMMAutoConnectNewSources"

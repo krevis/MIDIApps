@@ -60,9 +60,9 @@ class SMMPreferencesWindowController: SMMWindowController, NSWindowRestoration {
         expertModeCheckbox.intValue = defaults.bool(forKey: SMExpertModePreferenceKey) ? 1 : 0
         updateExpertModeTextField()
 
-        autoSelectOrdinarySourcesCheckbox.intValue = defaults.bool(forKey: SMMPreferenceKeys.autoSelectOrdinarySourcesInNewDocument) ? 1 : 0
-        autoSelectVirtualDestinationCheckbox.intValue = defaults.bool(forKey: SMMPreferenceKeys.autoSelectVirtualDestinationInNewDocument) ? 1 : 0
-        autoSelectSpyingDestinationsCheckbox.intValue = defaults.bool(forKey: SMMPreferenceKeys.autoSelectSpyingDestinationsInNewDocument) ? 1 : 0
+        autoSelectOrdinarySourcesCheckbox.intValue = defaults.bool(forKey: SMMPreferenceKeys.selectOrdinarySourcesInNewDocument) ? 1 : 0
+        autoSelectVirtualDestinationCheckbox.intValue = defaults.bool(forKey: SMMPreferenceKeys.selectVirtualDestinationInNewDocument) ? 1 : 0
+        autoSelectSpyingDestinationsCheckbox.intValue = defaults.bool(forKey: SMMPreferenceKeys.selectSpyingDestinationsInNewDocument) ? 1 : 0
         autoConnectRadioButtons.selectCell(withTag: defaults.integer(forKey: SMMPreferenceKeys.autoConnectNewSources))
 
         askBeforeClosingModifiedWindowCheckbox.intValue = defaults.bool(forKey: SMMPreferenceKeys.askBeforeClosingModifiedWindow) ? 1 : 0
@@ -90,15 +90,15 @@ class SMMPreferencesWindowController: SMMWindowController, NSWindowRestoration {
     }
 
     @IBAction func changeAutoSelectOrdinarySources(_ sender: NSControl!) {
-        UserDefaults.standard.set(sender.intValue, forKey: SMMPreferenceKeys.autoSelectOrdinarySourcesInNewDocument)
+        UserDefaults.standard.set(sender.intValue, forKey: SMMPreferenceKeys.selectOrdinarySourcesInNewDocument)
     }
 
     @IBAction func changeAutoSelectVirtualDestination(_ sender: NSControl!) {
-        UserDefaults.standard.set(sender.intValue, forKey: SMMPreferenceKeys.autoSelectVirtualDestinationInNewDocument)
+        UserDefaults.standard.set(sender.intValue, forKey: SMMPreferenceKeys.selectVirtualDestinationInNewDocument)
     }
 
     @IBAction func changeAutoSelectSpyingDestinations(_ sender: NSControl!) {
-        UserDefaults.standard.set(sender.intValue, forKey: SMMPreferenceKeys.autoSelectSpyingDestinationsInNewDocument)
+        UserDefaults.standard.set(sender.intValue, forKey: SMMPreferenceKeys.selectSpyingDestinationsInNewDocument)
     }
 
     @IBAction func changeAskBeforeClosingModifiedWindow(_ sender: NSControl!) {

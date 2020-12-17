@@ -72,7 +72,7 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
         // (the default value was YES)
         NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
         if (![ud boolForKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey]) {
-            [ud setBool:NO forKey:[SMMPreferenceKeys autoSelectOrdinarySourcesInNewDocument]];
+            [ud setBool:NO forKey:[SMMPreferenceKeys selectOrdinarySourcesInNewDocument]];
             [ud setBool:YES forKey:SMMAutoSelectFirstSourceInNewDocumentPreferenceKey];
         }
 
@@ -545,21 +545,21 @@ NSString* const SMMErrorDomain = @"com.snoize.midimonitor";
     NSMutableSet *sourcesSet = [NSMutableSet set];
     NSArray *sourcesArray;
 
-    if ([defaults boolForKey:[SMMPreferenceKeys autoSelectOrdinarySourcesInNewDocument]]) {
+    if ([defaults boolForKey:[SMMPreferenceKeys selectOrdinarySourcesInNewDocument]]) {
         if (groupedInputSources.count > 0 && 
             (sourcesArray = groupedInputSources[0][@"sources"])) {
             [sourcesSet addObjectsFromArray:sourcesArray];
         }
     }
 
-    if ([defaults boolForKey:[SMMPreferenceKeys autoSelectVirtualDestinationInNewDocument]]) {
+    if ([defaults boolForKey:[SMMPreferenceKeys selectVirtualDestinationInNewDocument]]) {
         if (groupedInputSources.count > 1 && 
             (sourcesArray = groupedInputSources[1][@"sources"])) {
             [sourcesSet addObjectsFromArray:sourcesArray];
         }
     }
 
-	if ([defaults boolForKey:[SMMPreferenceKeys autoSelectSpyingDestinationsInNewDocument]]) {
+	if ([defaults boolForKey:[SMMPreferenceKeys selectSpyingDestinationsInNewDocument]]) {
         if (groupedInputSources.count > 2 && 
             (sourcesArray = groupedInputSources[2][@"sources"])) {
             [sourcesSet addObjectsFromArray:sourcesArray];
