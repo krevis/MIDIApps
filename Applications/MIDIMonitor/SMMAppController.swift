@@ -18,7 +18,7 @@ class SMMAppController: NSObject {
     // TODO
     // @property (nonatomic, readonly) MIDISpyClientRef midiSpyClient;
 
-    private let SMMOpenWindowsForNewSourcesPreferenceKey = "SMMOpenWindowsForNewSources";  // Obsolete
+    private let SMMOpenWindowsForNewSourcesPreferenceKey = "SMMOpenWindowsForNewSources"  // Obsolete
 
     enum AutoConnectOption: Int {
         case disabled
@@ -71,7 +71,7 @@ extension SMMAppController: NSApplicationDelegate {
         }
         else {
             // Create our client for spying on MIDI output.
-            let status = noErr // TODO MIDISpyClientCreate(&_midiSpyClient);
+            let status = noErr // TODO MIDISpyClientCreate(&_midiSpyClient)
             if status != noErr {
                 failedToConnectToSpyClient()
             }
@@ -152,8 +152,8 @@ extension SMMAppController {
     @IBAction func sendFeedback(_ sender: AnyObject?) {
         var success = false
 
-        let feedbackEmailAddress = "MIDIMonitor@snoize.com";    // Don't localize this
-        let feedbackEmailSubject = NSLocalizedString("MIDI Monitor Feedback", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "subject of feedback email");
+        let feedbackEmailAddress = "MIDIMonitor@snoize.com"    // Don't localize this
+        let feedbackEmailSubject = NSLocalizedString("MIDI Monitor Feedback", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "subject of feedback email")
         let mailToURLString = "mailto:\(feedbackEmailAddress)?Subject=\(feedbackEmailSubject)"
 
         // Escape the whitespace characters in the URL before opening
@@ -164,7 +164,7 @@ extension SMMAppController {
         }
 
         if (!success) {
-            let message = NSLocalizedString("MIDI Monitor could not ask your email application to create a new message.\nPlease send email to:\n%@", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "message of alert when can't send feedback email");
+            let message = NSLocalizedString("MIDI Monitor could not ask your email application to create a new message.\nPlease send email to:\n%@", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "message of alert when can't send feedback email")
 
             let title = NSLocalizedString("Error", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "title of error alert")
 
