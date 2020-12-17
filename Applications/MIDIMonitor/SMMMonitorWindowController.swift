@@ -124,7 +124,7 @@ extension SMMMonitorWindowController {
             guard let document = document else { return }
             guard let smmDocument = document as? SMMDocument else { fatalError() }
 
-            _ = self.window // Make sure the window and all views are loaded first
+            _ = window // Make sure the window and all views are loaded first
 
             updateMessages(scrollingToBottom: false)
             updateSources()
@@ -422,7 +422,7 @@ extension SMMMonitorWindowController {
 
     @IBAction func changeFilterFromMatrix(_ sender: AnyObject?) {
         let matrix = sender as! NSMatrix
-        self.changeFilter(matrix.selectedCell())
+        changeFilter(matrix.selectedCell())
     }
 
     @IBAction func setChannelRadioButton(_ sender: AnyObject?) {
@@ -449,14 +449,6 @@ extension SMMMonitorWindowController: NSTableViewDataSource {
 
     @objc func updateMaxMessageCount() {
         maxMessageCountField.objectValue = NSNumber(value: midiDocument.maxMessageCount)
-    }
-
-    @objc func updateSysExReadIndicator(bytesRead: Int) {
-        showSysExProgressIndicator()
-    }
-
-    @objc func stopSysExReadIndicator(bytesRead: Int) {
-        hideSysExProgressIndicator()
     }
 
     @objc func updateMessages(scrollingToBottom: Bool) {
@@ -557,7 +549,7 @@ extension SMMMonitorWindowController: NSTableViewDataSource {
     }
 
     private func refreshMessagesTableView() {
-        updateDisplayedMessages()
+        displayedMessages = midiDocument.savedMessages() as! [SMMessage]
 
         // Scroll to the botton, iff the table view is already scrolled to the bottom.
         let isAtBottom = messagesTableView.bounds.maxY - messagesTableView.visibleRect.maxY < messagesTableView.rowHeight
@@ -582,8 +574,12 @@ extension SMMMonitorWindowController: NSTableViewDataSource {
         refreshMessagesTableView()
     }
 
-    private func updateDisplayedMessages() {
-        displayedMessages = midiDocument.savedMessages() as! [SMMessage]
+    @objc func updateSysExReadIndicator(bytesRead: Int) {
+        showSysExProgressIndicator()
+    }
+
+    @objc func stopSysExReadIndicator(bytesRead: Int) {
+        hideSysExProgressIndicator()
     }
 
     private func showSysExProgressIndicator() {
@@ -650,10 +646,11 @@ extension SMMMonitorWindowController {
         filterDisclosableView.shown = filterShown
 
         // Then, since those may have resized the window, set the frame back to what we expect.
-        if let windowFrame = windowSettings[Self.windowFrameKey] as? String {
+        if let windowFrame = windowSettings[Self.windowFrameKey] as? NSWindow.PersistableFrameDescriptor {
             window?.setFrame(from: windowFrame)
         }
 
+        // TODO This scroll location doesn't seem to restore to exactly the right place
         if let scrollX = windowSettings[Self.messagesScrollPointX] as? NSNumber,
            let scrollY = windowSettings[Self.messagesScrollPointY] as? NSNumber {
             let scrollPoint = NSPoint(x: scrollX.doubleValue, y: scrollY.doubleValue)
