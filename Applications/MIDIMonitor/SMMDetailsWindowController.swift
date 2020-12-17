@@ -111,12 +111,12 @@ class SMMDetailsWindowController: SMMWindowController, NSWindowDelegate {
         for dataIndex in stride(from: 0, to: dataLength, by: 16) {
             let hexChars: [Character] = [ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F" ]
 
-            formattedString.append(String(format: "%.*lX", lengthDigitCount, dataIndex))
+            formattedString += String(format: "%.*lX", lengthDigitCount, dataIndex)
 
             for index in dataIndex ..< (dataIndex+16) {
-                formattedString.append(" ")
+                formattedString += " "
                 if index % 8 == 0 {
-                    formattedString.append(" ")
+                    formattedString += " "
                 }
 
                 if index < dataLength {
@@ -125,11 +125,11 @@ class SMMDetailsWindowController: SMMWindowController, NSWindowDelegate {
                     formattedString.append(hexChars[(Int(byte) & 0x0F)     ])
                 }
                 else {
-                    formattedString.append("  ")
+                    formattedString += "  "
                 }
             }
 
-            formattedString.append("  |")
+            formattedString += "  |"
 
             for index in dataIndex ..< min(dataIndex+16, dataLength) {
                 let byte = data[index]
@@ -137,11 +137,11 @@ class SMMDetailsWindowController: SMMWindowController, NSWindowDelegate {
                     formattedString.append(Character(Unicode.Scalar(byte)))
                 }
                 else {
-                    formattedString.append(" ")
+                    formattedString += " "
                 }
             }
 
-            formattedString.append("|\n")
+            formattedString += "|\n"
         }
 
         return formattedString
