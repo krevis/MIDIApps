@@ -36,200 +36,7 @@ class SMMMonitorWindowController: NSWindowController, NSUserInterfaceValidations
         return "MIDIMonitor"
     }
 
-    //
-    // API
-    //
-
-    @objc func updateMessages(scrollingToBottom: Bool) {
-        // Reloading the NSTableView can be excruciatingly slow, and if messages are coming in quickly,
-        // we will hog a lot of CPU. So we make sure that we don't do it too often.
-
-        if scrollingToBottom {
-            messagesNeedScrollToBottom = true
-        }
-
-        if nextMessagesRefreshTimer != nil {
-            // We're going to refresh soon, so don't do anything now.
-            return
-        }
-
-        let ti = nextMessagesRefreshDate?.timeIntervalSinceNow ?? 0
-        if ti <= 0 {
-            // Refresh right away, since we haven't recently.
-            refreshMessagesTableView()
-        }
-        else {
-            // We have refreshed recently.
-            // Schedule an event to make us refresh when we are next allowed to do so.
-            nextMessagesRefreshTimer = Timer.scheduledTimer(timeInterval: ti, target: self, selector: #selector(self.refreshMessagesTableViewFromTimer(_:)), userInfo: nil, repeats: false)
-        }
-    }
-
-    @objc func updateSources() {
-        groupedInputSources = midiDocument.groupedInputSources()
-        sourcesOutlineView.reloadData()
-    }
-
-    @objc func updateMaxMessageCount() {
-        maxMessageCountField.objectValue = NSNumber(value: midiDocument.maxMessageCount)
-    }
-
-    @objc func updateFilterControls() {
-        // TODO this is clumsy
-        let currentMask = midiDocument.filterMask().rawValue
-
-        for checkbox in filterCheckboxes {
-            let buttonMask = UInt32(checkbox.tag)
-
-            let newState: NSControl.StateValue
-            if (currentMask & buttonMask) == buttonMask {
-                newState = .on
-            }
-            else if (currentMask & buttonMask) == 0 {
-                newState = .off
-            }
-            else {
-                newState = .mixed
-            }
-
-            checkbox.state = newState
-        }
-
-        for checkbox in filterMatrixCells {
-            let buttonMask = UInt32(checkbox.tag)
-
-            let newState: NSControl.StateValue
-            if (currentMask & buttonMask) == buttonMask {
-                newState = .on
-            }
-            else {
-                newState = .off
-            }
-
-            checkbox.state = newState
-        }
-
-        if midiDocument.isShowingAllChannels() {
-            channelRadioButtons.selectCell(withTag: 0)
-            oneChannelField.isEnabled = false
-        }
-        else {
-            channelRadioButtons.selectCell(withTag: 1)
-            oneChannelField.isEnabled = true
-            oneChannel = midiDocument.oneChannelToShow()
-        }
-        oneChannelField.objectValue = NSNumber(value: oneChannel)
-    }
-
-    @objc func updateSysExReadIndicator(bytesRead: Int) {
-        showSysExProgressIndicator()
-    }
-
-    @objc func stopSysExReadIndicator(bytesRead: Int) {
-        hideSysExProgressIndicator()
-    }
-
-    @objc func revealInputSources(_ sources: NSSet) {
-        // Show the sources first
-        sourcesDisclosableView.shown = true
-        sourcesDisclosureButton.intValue = 1
-
-        // Of all of the input sources, find the first one which is in the given set.
-        // Then expand the outline view to show this source, and scroll it to be visible.
-        guard groupedInputSources != nil else { return }
-        for group in groupedInputSources! {
-            if let itemDict = group as? [String:Any],
-               let itemNotExpandableNumber = itemDict["isNotExpandable"] as? NSNumber,
-               !itemNotExpandableNumber.boolValue {
-                let groupSources = itemDict["sources"] as! [SMInputStreamSource]
-                for source in groupSources {
-                    if sources.contains(source) {
-                        // Found one!
-                        sourcesOutlineView.expandItem(group)
-                        sourcesOutlineView.scrollRowToVisible(sourcesOutlineView.row(forItem: source))
-
-                        // And now we're done
-                        break
-                    }
-                }
-            }
-        }
-    }
-
-    private static let sourcesShownKey = "areSourcesShown"
-    private static let filterShownKey = "isFilterShown"
-    private static let windowFrameKey = "windowFrame"
-    private static let messagesScrollPointX = "messagesScrollPointX"
-    private static let messagesScrollPointY = "messagesScrollPointY"
-
-    @objc static var windowSettingsKeys: [String] {
-        return [sourcesShownKey, filterShownKey, windowFrameKey, messagesScrollPointX, messagesScrollPointY]
-    }
-
-    @objc var windowSettings: [String:AnyObject] {
-        var windowSettings: [String:AnyObject] = [:]
-
-        // Remember whether our sections are shown or hidden
-        if sourcesDisclosableView.shown {
-            windowSettings[Self.sourcesShownKey] = NSNumber(value: true)
-        }
-        if filterDisclosableView.shown {
-            windowSettings[Self.filterShownKey] = NSNumber(value: true)
-        }
-
-        // And remember the window frame, so we can restore it after restoring those
-        if let windowFrameDescriptor = window?.frameDescriptor {
-            windowSettings[Self.windowFrameKey] = windowFrameDescriptor as AnyObject
-        }
-
-        // And the scroll position of the messages
-        if let clipView = messagesTableView.enclosingScrollView?.contentView {
-            let clipBounds = clipView.bounds
-            let scrollPoint = messagesTableView.convert(clipBounds.origin, from: clipView)
-            windowSettings[Self.messagesScrollPointX] = NSNumber(value:Double(scrollPoint.x))
-            windowSettings[Self.messagesScrollPointY] = NSNumber(value:Double(scrollPoint.y))
-        }
-
-        return windowSettings
-    }
-
-    private func restoreWindowSettings(_ windowSettings: [String:AnyObject]) {
-        // Restore visibility of disclosable sections
-        let sourcesShown = (windowSettings[Self.sourcesShownKey] as? NSNumber)?.boolValue ?? false
-        sourcesDisclosureButton.intValue = sourcesShown ? 1 : 0
-        sourcesDisclosableView.shown = sourcesShown
-
-        let filterShown = (windowSettings[Self.filterShownKey] as? NSNumber)?.boolValue ?? false
-        filterDisclosureButton.intValue = filterShown ? 1 : 0
-        filterDisclosableView.shown = filterShown
-
-        // Then, since those may have resized the window, set the frame back to what we expect.
-        if let windowFrame = windowSettings[Self.windowFrameKey] as? String {
-            window?.setFrame(from: windowFrame)
-        }
-
-        if let scrollX = windowSettings[Self.messagesScrollPointX] as? NSNumber,
-           let scrollY = windowSettings[Self.messagesScrollPointY] as? NSNumber {
-            let scrollPoint = NSPoint(x: scrollX.doubleValue, y: scrollY.doubleValue)
-            messagesTableView.scroll(scrollPoint)
-        }
-    }
-
-    private func trivialWindowSettingsDidChange() {
-        // Mark the document as dirty, so the state of the window gets saved.
-        // However, use NSChangeDiscardable, so it doesn't cause a locked document to get dirtied for a trivial change.
-        // Also, don't do it for untitled, unsaved documents which have no fileURL yet, because that's annoying.
-        // Similarly, don't do it if "Ask to keep changes when closing documents" is turned on.
-
-        if midiDocument.fileURL != nil && UserDefaults.standard.bool(forKey: "NSCloseAlwaysConfirmsChanges") {
-            let change = NSDocument.ChangeType(rawValue: (NSDocument.ChangeType.changeDone.rawValue | NSDocument.ChangeType.changeDiscardable.rawValue))!
-            midiDocument.updateChangeCount(change)
-        }
-    }
-
-    //
-    // Internal
-    //
+    // MARK: Internal
 
     // Sources controls
     @IBOutlet var sourcesDisclosureButton: SNDisclosureButton!
@@ -273,6 +80,12 @@ class SMMMonitorWindowController: NSWindowController, NSUserInterfaceValidations
 
     // Constants
     let minimumMessagesRefreshDelay: TimeInterval = 0.10
+
+}
+
+extension SMMMonitorWindowController {
+
+    // MARK: Window and document
 
     override func windowDidLoad() {
         super.windowDidLoad()
@@ -328,181 +141,77 @@ class SMMMonitorWindowController: NSWindowController, NSUserInterfaceValidations
         return document as! SMMDocument
     }
 
+    private func trivialWindowSettingsDidChange() {
+        // Mark the document as dirty, so the state of the window gets saved.
+        // However, use NSChangeDiscardable, so it doesn't cause a locked document to get dirtied for a trivial change.
+        // Also, don't do it for untitled, unsaved documents which have no fileURL yet, because that's annoying.
+        // Similarly, don't do it if "Ask to keep changes when closing documents" is turned on.
+
+        if midiDocument.fileURL != nil && UserDefaults.standard.bool(forKey: "NSCloseAlwaysConfirmsChanges") {
+            let change = NSDocument.ChangeType(rawValue: (NSDocument.ChangeType.changeDone.rawValue | NSDocument.ChangeType.changeDiscardable.rawValue))!
+            midiDocument.updateChangeCount(change)
+        }
+    }
+
+}
+
+extension SMMMonitorWindowController {
+
+    // MARK: General UI
+
     func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
         switch item.action {
         case #selector(copy(_:)):
             return window?.firstResponder == messagesTableView && messagesTableView.numberOfSelectedRows > 0
         case #selector(self.showDetailsOfSelectedMessages(_:)):
-            return selectedMessagesWithDetails.count > 0
+            return selectedMessages.count > 0
         default:
             return false
         }
     }
 
-    //
-    // Actions
-    //
+}
 
-    @IBAction func clearMessages(_ sender: AnyObject?) {
-        midiDocument.clearSavedMessages()
+extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegate {
+
+    // MARK: Input Sources Outline View
+
+    @objc func updateSources() {
+        groupedInputSources = midiDocument.groupedInputSources()
+        sourcesOutlineView.reloadData()
     }
 
-    @IBAction func setMaximumMessageCount(_ sender: AnyObject?) {
-        let control = sender as! NSControl
-        if let number = control.objectValue as? NSNumber {
-            midiDocument.maxMessageCount = number.uintValue
+    @objc func revealInputSources(_ sources: NSSet) {
+        // Show the sources first
+        sourcesDisclosableView.shown = true
+        sourcesDisclosureButton.intValue = 1
+
+        // Of all of the input sources, find the first one which is in the given set.
+        // Then expand the outline view to show this source, and scroll it to be visible.
+        guard groupedInputSources != nil else { return }
+        for group in groupedInputSources! {
+            if let itemDict = group as? [String:Any],
+               let itemNotExpandableNumber = itemDict["isNotExpandable"] as? NSNumber,
+               !itemNotExpandableNumber.boolValue {
+                let groupSources = itemDict["sources"] as! [SMInputStreamSource]
+                for source in groupSources {
+                    if sources.contains(source) {
+                        // Found one!
+                        sourcesOutlineView.expandItem(group)
+                        sourcesOutlineView.scrollRowToVisible(sourcesOutlineView.row(forItem: source))
+
+                        // And now we're done
+                        break
+                    }
+                }
+            }
         }
-        else {
-            updateMaxMessageCount()
-        }
-    }
-
-    @IBAction func changeFilter(_ sender: AnyObject?) {
-        let button = sender as! NSButton
-
-        let turnBitsOn: Bool
-        switch button.state {
-        case .on, .mixed:
-            turnBitsOn = true
-        default:
-            turnBitsOn = false
-        }
-
-        midiDocument.changeFilterMask(SMMessageType(UInt32(button.tag)), turnBitsOn: turnBitsOn)
-    }
-
-    @IBAction func changeFilterFromMatrix(_ sender: AnyObject?) {
-        let matrix = sender as! NSMatrix
-        self.changeFilter(matrix.selectedCell())
-    }
-
-    @IBAction func setChannelRadioButton(_ sender: AnyObject?) {
-        let matrix = sender as! NSMatrix
-        if matrix.selectedCell()?.tag == 0 {
-            midiDocument.showAllChannels()
-        }
-        else {
-            midiDocument.showOnlyOneChannel(oneChannel)
-        }
-    }
-
-    @IBAction func setChannel(_ sender: AnyObject?) {
-        let control = sender as! NSControl
-        let channel = (control.objectValue as? NSNumber)?.uintValue ?? 0
-        midiDocument.showOnlyOneChannel(channel)
     }
 
     @IBAction func toggleSourcesShown(_ sender: AnyObject?) {
         sourcesDisclosableView.toggleDisclosure(sender)
         trivialWindowSettingsDidChange()
     }
-
-    @IBAction func toggleFilterShown(_ sender: AnyObject?) {
-        filterDisclosableView.toggleDisclosure(sender)
-        trivialWindowSettingsDidChange()
-    }
-
-    @IBAction func showDetailsOfSelectedMessages(_ sender: AnyObject?) {
-        for message in selectedMessagesWithDetails {
-            midiDocument.detailsWindowController(for: message)?.showWindow(nil)
-        }
-    }
-
-    @IBAction func copy(_ sender: AnyObject?) {
-        guard window?.firstResponder == messagesTableView else { return }
-
-        let columns = messagesTableView.tableColumns
-        let rowStrings = messagesTableView.selectedRowIndexes.map { (row) -> String in
-            let columnStrings = columns.map { (column) -> String in tableView(messagesTableView, objectValueFor: column, row: row) as! String
-            }
-            return columnStrings.joined(separator: "\t")
-        }
-        let totalString = rowStrings.joined(separator: "\n")
-
-        let pasteboard = NSPasteboard.general
-        pasteboard.declareTypes([.string], owner: nil)
-        pasteboard.setString(totalString, forType: .string)
-    }
-
-    //
-    // Other API
-    //
-
-
-    @objc func displayPreferencesDidChange(_ notification: NSNotification) {
-        messagesTableView.reloadData()
-    }
-
-    var selectedMessagesWithDetails: [SMMessage] {
-        return messagesTableView.selectedRowIndexes.map { displayedMessages[$0] }
-    }
-
-    private func refreshMessagesTableView() {
-        updateDisplayedMessages()
-
-        // Scroll to the botton, iff the table view is already scrolled to the bottom.
-        let isAtBottom = messagesTableView.bounds.maxY - messagesTableView.visibleRect.maxY < messagesTableView.rowHeight
-
-        messagesTableView.reloadData()
-
-        if messagesNeedScrollToBottom && isAtBottom {
-            let messageCount = displayedMessages.count
-            if messageCount > 0 {
-                messagesTableView.scrollRowToVisible(messageCount - 1)
-            }
-        }
-
-        messagesNeedScrollToBottom = false
-
-        // Figure out when we should next be allowed to refresh.
-        nextMessagesRefreshDate = NSDate(timeIntervalSinceNow: minimumMessagesRefreshDelay)
-    }
-
-    @objc private func refreshMessagesTableViewFromTimer(_ timer: Timer) {
-        nextMessagesRefreshTimer = nil
-        refreshMessagesTableView()
-    }
-
-    private func updateDisplayedMessages() {
-        displayedMessages = midiDocument.savedMessages() as! [SMMessage]
-    }
-
-    private func showSysExProgressIndicator() {
-        sysExProgressField.isHidden = false
-        sysExProgressIndicator.startAnimation(nil)
-    }
-
-    private func hideSysExProgressIndicator() {
-        sysExProgressField.isHidden = true
-        sysExProgressIndicator.stopAnimation(nil)
-    }
-
-    private func buttonStateForInputSources(_ sources: [SMInputStreamSource]) -> NSCell.StateValue {
-        guard let selectedSources = midiDocument.selectedInputSources else { return .off }
-
-        var areAnySelected = false
-        var areAnyNotSelected = false
-
-        for source in sources {
-            if selectedSources.contains(source as! AnyHashable) {
-                areAnySelected = true
-            }
-            else {
-                areAnyNotSelected = true
-            }
-
-            if areAnySelected && areAnyNotSelected {
-                return .mixed
-            }
-        }
-
-        return areAnySelected ? .on : .off
-    }
-}
-
-extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegate {
-
-    // Outline view showing input sources
 
     func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
         if item == nil {
@@ -614,11 +323,163 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
         (cell as! NSCell).backgroundStyle = .light
     }
 
+    private func buttonStateForInputSources(_ sources: [SMInputStreamSource]) -> NSCell.StateValue {
+        guard let selectedSources = midiDocument.selectedInputSources else { return .off }
+
+        var areAnySelected = false
+        var areAnyNotSelected = false
+
+        for source in sources {
+            if selectedSources.contains(source as! AnyHashable) {
+                areAnySelected = true
+            }
+            else {
+                areAnyNotSelected = true
+            }
+
+            if areAnySelected && areAnyNotSelected {
+                return .mixed
+            }
+        }
+
+        return areAnySelected ? .on : .off
+    }
+
+}
+
+extension SMMMonitorWindowController {
+
+    // MARK: Filter
+
+    @objc func updateFilterControls() {
+        // TODO this is clumsy
+        let currentMask = midiDocument.filterMask().rawValue
+
+        for checkbox in filterCheckboxes {
+            let buttonMask = UInt32(checkbox.tag)
+
+            let newState: NSControl.StateValue
+            if (currentMask & buttonMask) == buttonMask {
+                newState = .on
+            }
+            else if (currentMask & buttonMask) == 0 {
+                newState = .off
+            }
+            else {
+                newState = .mixed
+            }
+
+            checkbox.state = newState
+        }
+
+        for checkbox in filterMatrixCells {
+            let buttonMask = UInt32(checkbox.tag)
+
+            let newState: NSControl.StateValue
+            if (currentMask & buttonMask) == buttonMask {
+                newState = .on
+            }
+            else {
+                newState = .off
+            }
+
+            checkbox.state = newState
+        }
+
+        if midiDocument.isShowingAllChannels() {
+            channelRadioButtons.selectCell(withTag: 0)
+            oneChannelField.isEnabled = false
+        }
+        else {
+            channelRadioButtons.selectCell(withTag: 1)
+            oneChannelField.isEnabled = true
+            oneChannel = midiDocument.oneChannelToShow()
+        }
+        oneChannelField.objectValue = NSNumber(value: oneChannel)
+    }
+
+    @IBAction func toggleFilterShown(_ sender: AnyObject?) {
+        filterDisclosableView.toggleDisclosure(sender)
+        trivialWindowSettingsDidChange()
+    }
+
+    @IBAction func changeFilter(_ sender: AnyObject?) {
+        let button = sender as! NSButton
+
+        let turnBitsOn: Bool
+        switch button.state {
+        case .on, .mixed:
+            turnBitsOn = true
+        default:
+            turnBitsOn = false
+        }
+
+        midiDocument.changeFilterMask(SMMessageType(UInt32(button.tag)), turnBitsOn: turnBitsOn)
+    }
+
+    @IBAction func changeFilterFromMatrix(_ sender: AnyObject?) {
+        let matrix = sender as! NSMatrix
+        self.changeFilter(matrix.selectedCell())
+    }
+
+    @IBAction func setChannelRadioButton(_ sender: AnyObject?) {
+        let matrix = sender as! NSMatrix
+        if matrix.selectedCell()?.tag == 0 {
+            midiDocument.showAllChannels()
+        }
+        else {
+            midiDocument.showOnlyOneChannel(oneChannel)
+        }
+    }
+
+    @IBAction func setChannel(_ sender: AnyObject?) {
+        let control = sender as! NSControl
+        let channel = (control.objectValue as? NSNumber)?.uintValue ?? 0
+        midiDocument.showOnlyOneChannel(channel)
+    }
+
 }
 
 extension SMMMonitorWindowController: NSTableViewDataSource {
 
-    // Table view showing messages
+    // MARK: Messages Table View
+
+    @objc func updateMaxMessageCount() {
+        maxMessageCountField.objectValue = NSNumber(value: midiDocument.maxMessageCount)
+    }
+
+    @objc func updateSysExReadIndicator(bytesRead: Int) {
+        showSysExProgressIndicator()
+    }
+
+    @objc func stopSysExReadIndicator(bytesRead: Int) {
+        hideSysExProgressIndicator()
+    }
+
+    @objc func updateMessages(scrollingToBottom: Bool) {
+        // Reloading the NSTableView can be excruciatingly slow, and if messages are coming in quickly,
+        // we will hog a lot of CPU. So we make sure that we don't do it too often.
+
+        if scrollingToBottom {
+            messagesNeedScrollToBottom = true
+        }
+
+        if nextMessagesRefreshTimer != nil {
+            // We're going to refresh soon, so don't do anything now.
+            return
+        }
+
+        let ti = nextMessagesRefreshDate?.timeIntervalSinceNow ?? 0
+        if ti <= 0 {
+            // Refresh right away, since we haven't recently.
+            refreshMessagesTableView()
+        }
+        else {
+            // We have refreshed recently.
+            // Schedule an event to make us refresh when we are next allowed to do so.
+            nextMessagesRefreshTimer = Timer.scheduledTimer(timeInterval: ti, target: self, selector: #selector(self.refreshMessagesTableViewFromTimer(_:)), userInfo: nil, repeats: false)
+        }
+    }
 
     func numberOfRows(in tableView: NSTableView) -> Int {
         return displayedMessages.count
@@ -645,6 +506,155 @@ extension SMMMonitorWindowController: NSTableViewDataSource {
             }
         default:
             return nil
+        }
+    }
+
+    @IBAction func clearMessages(_ sender: AnyObject?) {
+        midiDocument.clearSavedMessages()
+    }
+
+    @IBAction func setMaximumMessageCount(_ sender: AnyObject?) {
+        let control = sender as! NSControl
+        if let number = control.objectValue as? NSNumber {
+            midiDocument.maxMessageCount = number.uintValue
+        }
+        else {
+            updateMaxMessageCount()
+        }
+    }
+
+    @IBAction func copy(_ sender: AnyObject?) {
+        guard window?.firstResponder == messagesTableView else { return }
+
+        let columns = messagesTableView.tableColumns
+        let rowStrings = messagesTableView.selectedRowIndexes.map { (row) -> String in
+            let columnStrings = columns.map { (column) -> String in tableView(messagesTableView, objectValueFor: column, row: row) as! String
+            }
+            return columnStrings.joined(separator: "\t")
+        }
+        let totalString = rowStrings.joined(separator: "\n")
+
+        let pasteboard = NSPasteboard.general
+        pasteboard.declareTypes([.string], owner: nil)
+        pasteboard.setString(totalString, forType: .string)
+    }
+
+    @IBAction func showDetailsOfSelectedMessages(_ sender: AnyObject?) {
+        for message in selectedMessages {
+            midiDocument.detailsWindowController(for: message)?.showWindow(nil)
+        }
+    }
+
+    @objc private func displayPreferencesDidChange(_ notification: NSNotification) {
+        messagesTableView.reloadData()
+    }
+
+    private var selectedMessages: [SMMessage] {
+        return messagesTableView.selectedRowIndexes.map { displayedMessages[$0] }
+    }
+
+    private func refreshMessagesTableView() {
+        updateDisplayedMessages()
+
+        // Scroll to the botton, iff the table view is already scrolled to the bottom.
+        let isAtBottom = messagesTableView.bounds.maxY - messagesTableView.visibleRect.maxY < messagesTableView.rowHeight
+
+        messagesTableView.reloadData()
+
+        if messagesNeedScrollToBottom && isAtBottom {
+            let messageCount = displayedMessages.count
+            if messageCount > 0 {
+                messagesTableView.scrollRowToVisible(messageCount - 1)
+            }
+        }
+
+        messagesNeedScrollToBottom = false
+
+        // Figure out when we should next be allowed to refresh.
+        nextMessagesRefreshDate = NSDate(timeIntervalSinceNow: minimumMessagesRefreshDelay)
+    }
+
+    @objc private func refreshMessagesTableViewFromTimer(_ timer: Timer) {
+        nextMessagesRefreshTimer = nil
+        refreshMessagesTableView()
+    }
+
+    private func updateDisplayedMessages() {
+        displayedMessages = midiDocument.savedMessages() as! [SMMessage]
+    }
+
+    private func showSysExProgressIndicator() {
+        sysExProgressField.isHidden = false
+        sysExProgressIndicator.startAnimation(nil)
+    }
+
+    private func hideSysExProgressIndicator() {
+        sysExProgressField.isHidden = true
+        sysExProgressIndicator.stopAnimation(nil)
+    }
+
+}
+
+extension SMMMonitorWindowController {
+
+    // MARK: Window settings
+
+    private static let sourcesShownKey = "areSourcesShown"
+    private static let filterShownKey = "isFilterShown"
+    private static let windowFrameKey = "windowFrame"
+    private static let messagesScrollPointX = "messagesScrollPointX"
+    private static let messagesScrollPointY = "messagesScrollPointY"
+
+    @objc static var windowSettingsKeys: [String] {
+        return [sourcesShownKey, filterShownKey, windowFrameKey, messagesScrollPointX, messagesScrollPointY]
+    }
+
+    @objc var windowSettings: [String:AnyObject] {
+        var windowSettings: [String:AnyObject] = [:]
+
+        // Remember whether our sections are shown or hidden
+        if sourcesDisclosableView.shown {
+            windowSettings[Self.sourcesShownKey] = NSNumber(value: true)
+        }
+        if filterDisclosableView.shown {
+            windowSettings[Self.filterShownKey] = NSNumber(value: true)
+        }
+
+        // And remember the window frame, so we can restore it after restoring those
+        if let windowFrameDescriptor = window?.frameDescriptor {
+            windowSettings[Self.windowFrameKey] = windowFrameDescriptor as AnyObject
+        }
+
+        // And the scroll position of the messages
+        if let clipView = messagesTableView.enclosingScrollView?.contentView {
+            let clipBounds = clipView.bounds
+            let scrollPoint = messagesTableView.convert(clipBounds.origin, from: clipView)
+            windowSettings[Self.messagesScrollPointX] = NSNumber(value:Double(scrollPoint.x))
+            windowSettings[Self.messagesScrollPointY] = NSNumber(value:Double(scrollPoint.y))
+        }
+
+        return windowSettings
+    }
+
+    private func restoreWindowSettings(_ windowSettings: [String:AnyObject]) {
+        // Restore visibility of disclosable sections
+        let sourcesShown = (windowSettings[Self.sourcesShownKey] as? NSNumber)?.boolValue ?? false
+        sourcesDisclosureButton.intValue = sourcesShown ? 1 : 0
+        sourcesDisclosableView.shown = sourcesShown
+
+        let filterShown = (windowSettings[Self.filterShownKey] as? NSNumber)?.boolValue ?? false
+        filterDisclosureButton.intValue = filterShown ? 1 : 0
+        filterDisclosableView.shown = filterShown
+
+        // Then, since those may have resized the window, set the frame back to what we expect.
+        if let windowFrame = windowSettings[Self.windowFrameKey] as? String {
+            window?.setFrame(from: windowFrame)
+        }
+
+        if let scrollX = windowSettings[Self.messagesScrollPointX] as? NSNumber,
+           let scrollY = windowSettings[Self.messagesScrollPointY] as? NSNumber {
+            let scrollPoint = NSPoint(x: scrollX.doubleValue, y: scrollY.doubleValue)
+            messagesTableView.scroll(scrollPoint)
         }
     }
 
