@@ -72,11 +72,11 @@ class SMMMonitorWindowController: NSWindowController {
 
     // Transient data
     var oneChannel: UInt = 1
-    var groupedInputSources: [Any]? = nil  // TODO do better
+    var groupedInputSources: [Any]? // TODO do better
     var displayedMessages: [SMMessage] = []
     var messagesNeedScrollToBottom: Bool = false
-    var nextMessagesRefreshDate: NSDate? = nil
-    var nextMessagesRefreshTimer: Timer? = nil
+    var nextMessagesRefreshDate: NSDate?
+    var nextMessagesRefreshTimer: Timer?
 
     // Constants
     let minimumMessagesRefreshDelay: TimeInterval = 0.10
@@ -131,7 +131,7 @@ extension SMMMonitorWindowController {
             updateMaxMessageCount()
             updateFilterControls()
 
-            if let windowSettings = smmDocument.windowSettings as? [String:AnyObject] {
+            if let windowSettings = smmDocument.windowSettings as? [String: AnyObject] {
                 restoreWindowSettings(windowSettings)
             }
         }
@@ -190,7 +190,7 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
         // Then expand the outline view to show this source, and scroll it to be visible.
         guard groupedInputSources != nil else { return }
         for group in groupedInputSources! {
-            if let itemDict = group as? [String:Any] {
+            if let itemDict = group as? [String: Any] {
                 let itemNotExpandableNumber = itemDict["isNotExpandable"] as? NSNumber
                 let notExpandable = (itemNotExpandableNumber?.boolValue) ?? false
                 if !notExpandable {
@@ -219,7 +219,7 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
         if item == nil {
             return groupedInputSources?.count ?? 0
         }
-        else if let itemDict = item as? [String:Any] {
+        else if let itemDict = item as? [String: Any] {
             let itemSources = itemDict["sources"] as! [Any]
             return itemSources.count
         }
@@ -232,14 +232,14 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
             return groupedInputSources![index]
         }
         else {
-            let itemDict = item as! [String:Any]
+            let itemDict = item as! [String: Any]
             let itemSources = itemDict["sources"] as! [Any]
             return itemSources[index]
         }
     }
 
     func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
-        if let itemDict = item as? [String:Any] {
+        if let itemDict = item as? [String: Any] {
             let itemNotExpandableNumber = itemDict["isNotExpandable"] as? NSNumber
             let notExpandable = (itemNotExpandableNumber?.boolValue) ?? false
             return !notExpandable
@@ -251,7 +251,7 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
 
     func outlineView(_ outlineView: NSOutlineView, objectValueFor tableColumn: NSTableColumn?, byItem item: Any?) -> Any? {
         let identifier = tableColumn?.identifier.rawValue
-        let itemDict = item as? [String:Any]
+        let itemDict = item as? [String: Any]
         let isCategory = itemDict != nil
 
         switch identifier {
@@ -264,7 +264,7 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
                 let name = source.inputStreamSourceName()!
                 let externalDeviceNames =  source.inputStreamSourceExternalDeviceNames() as! [String]
                 if externalDeviceNames.count > 0 {
-                    return "\(name)—\(externalDeviceNames.joined(separator:", "))"
+                    return "\(name)—\(externalDeviceNames.joined(separator: ", "))"
                 }
                 else {
                     return name
@@ -294,7 +294,7 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
             newState = NSCell.StateValue.on
         }
 
-        let itemDict = item as? [String:Any]
+        let itemDict = item as? [String: Any]
         let isCategory = itemDict != nil
 
         let sources: [SMInputStreamSource]
@@ -464,15 +464,15 @@ extension SMMMonitorWindowController: NSTableViewDataSource {
             return
         }
 
-        let ti = nextMessagesRefreshDate?.timeIntervalSinceNow ?? 0
-        if ti <= 0 {
+        let timeUntilNextRefresh = nextMessagesRefreshDate?.timeIntervalSinceNow ?? 0
+        if timeUntilNextRefresh <= 0 {
             // Refresh right away, since we haven't recently.
             refreshMessagesTableView()
         }
         else {
             // We have refreshed recently.
             // Schedule an event to make us refresh when we are next allowed to do so.
-            nextMessagesRefreshTimer = Timer.scheduledTimer(timeInterval: ti, target: self, selector: #selector(self.refreshMessagesTableViewFromTimer(_:)), userInfo: nil, repeats: false)
+            nextMessagesRefreshTimer = Timer.scheduledTimer(timeInterval: timeUntilNextRefresh, target: self, selector: #selector(self.refreshMessagesTableViewFromTimer(_:)), userInfo: nil, repeats: false)
         }
     }
 
@@ -608,8 +608,8 @@ extension SMMMonitorWindowController {
         return [sourcesShownKey, filterShownKey, windowFrameKey, messagesScrollPointX, messagesScrollPointY]
     }
 
-    @objc var windowSettings: [String:AnyObject] {
-        var windowSettings: [String:AnyObject] = [:]
+    @objc var windowSettings: [String: AnyObject] {
+        var windowSettings: [String: AnyObject] = [:]
 
         // Remember whether our sections are shown or hidden
         if sourcesDisclosableView.shown {
@@ -628,14 +628,14 @@ extension SMMMonitorWindowController {
         if let clipView = messagesTableView.enclosingScrollView?.contentView {
             let clipBounds = clipView.bounds
             let scrollPoint = messagesTableView.convert(clipBounds.origin, from: clipView)
-            windowSettings[Self.messagesScrollPointX] = NSNumber(value:Double(scrollPoint.x))
-            windowSettings[Self.messagesScrollPointY] = NSNumber(value:Double(scrollPoint.y))
+            windowSettings[Self.messagesScrollPointX] = NSNumber(value: Double(scrollPoint.x))
+            windowSettings[Self.messagesScrollPointY] = NSNumber(value: Double(scrollPoint.y))
         }
 
         return windowSettings
     }
 
-    private func restoreWindowSettings(_ windowSettings: [String:AnyObject]) {
+    private func restoreWindowSettings(_ windowSettings: [String: AnyObject]) {
         // Restore visibility of disclosable sections
         let sourcesShown = (windowSettings[Self.sourcesShownKey] as? NSNumber)?.boolValue ?? false
         sourcesDisclosureButton.intValue = sourcesShown ? 1 : 0

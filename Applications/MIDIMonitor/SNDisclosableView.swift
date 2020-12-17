@@ -45,8 +45,8 @@ class SNDisclosableView: NSView {
 
     private var originalHeight: CGFloat = 0
     private var hiddenSubviews: [NSView] = []
-    private weak var originalNextKeyView: NSView? = nil
-    private weak var lastChildKeyView: NSView? = nil
+    private weak var originalNextKeyView: NSView?
+    private weak var lastChildKeyView: NSView?
     private var sizeBeforeHidden: CGSize = .zero
 
     override init(frame frameRect: NSRect) {
@@ -204,13 +204,15 @@ class SNDisclosableView: NSView {
                 mask.insert(.height)
                 mask.remove(.maxYMargin)
                 mask.remove(.minYMargin)
-            } else if windowSubview.frame.maxY < frame.maxY {
+            }
+            else if windowSubview.frame.maxY < frame.maxY {
                 // This subview is below us. Make it stick to the bottom of the window.
                 // It should not change height.
                 mask.remove(.height)
                 mask.insert(.maxYMargin)
                 mask.remove(.minYMargin)
-            } else {
+            }
+            else {
                 // This subview is above us. Make it stick to the top of the window.
                 // It should not change height.
                 mask.remove(.height)
@@ -240,7 +242,8 @@ class SNDisclosableView: NSView {
             window.preservesContentDuringLiveResize = false
             window.setFrame(newWindowFrame, display: true, animate: true)
             window.preservesContentDuringLiveResize = didPreserve
-        } else {
+        }
+        else {
             window.setFrame(newWindowFrame, display: false, animate: false)
         }
 

@@ -37,7 +37,7 @@ class SMMSysExWindowController: SMMDetailsWindowController {
 
         // TODO manufacturerName should be a property in objc thus no parens
         if let manufacturerName = sysExMessage.manufacturerName() {
-            manufacturerNameField.stringValue = manufacturerName 
+            manufacturerNameField.stringValue = manufacturerName
         }
     }
 
@@ -51,7 +51,7 @@ class SMMSysExWindowController: SMMDetailsWindowController {
         let savePanel = NSSavePanel()
         savePanel.allowedFileTypes = ["syx"]
         savePanel.allowsOtherFileTypes = true
-        savePanel.beginSheetModal(for: window) { result in
+        savePanel.beginSheetModal(for: window) { _ in
             savePanel.orderOut(nil)
 
             let saveWithEOXAlways = UserDefaults.standard.bool(forKey: SMMPreferenceKeys.saveSysExWithEOXAlways)

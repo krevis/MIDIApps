@@ -221,6 +221,7 @@
 		1692D72C2589E91D0092D6E7 /* SMMMonitorWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMMonitorWindowController.swift; sourceTree = "<group>"; };
 		1692D72E258B31370092D6E7 /* SMMAppController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMAppController.swift; sourceTree = "<group>"; };
 		1692D731258BDC6A0092D6E7 /* SMMAppController+SMMAppController_SUUpdaterDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "SMMAppController+SMMAppController_SUUpdaterDelegate.m"; sourceTree = "<group>"; };
+		1692D744258C01FA0092D6E7 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		16980516258874BF00059CB4 /* SMMDetailsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMDetailsWindowController.swift; sourceTree = "<group>"; };
 		169E7114097B2021001AFB58 /* Snoize-Project-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Debug.xcconfig"; path = "../../Configurations/Snoize-Project-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		169E7115097B2021001AFB58 /* Snoize-Project-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Global.xcconfig"; path = "../../Configurations/Snoize-Project-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
@@ -335,6 +336,7 @@
 				169E7170097B2203001AFB58 /* Snoize-Application-Global.xcconfig */,
 				169E716F097B2203001AFB58 /* Snoize-Application-Debug.xcconfig */,
 				169E7171097B2203001AFB58 /* Snoize-Application-Release.xcconfig */,
+				1692D744258C01FA0092D6E7 /* .swiftlint.yml */,
 			);
 			name = Configurations;
 			sourceTree = "<group>";
@@ -487,6 +489,7 @@
 				167B881806ED4D650053D305 /* Resources */,
 				162972AD097B413E00158D7B /* CopyFiles */,
 				167B882606ED4D650053D305 /* Sources */,
+				1692D743258BFE730092D6E7 /* Run Script (SwiftLint) */,
 				167B883806ED4D650053D305 /* Frameworks */,
 				162972B4097B415900158D7B /* Run Script (Remove Headers from Frameworks) */,
 			);
@@ -713,6 +716,24 @@
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "find \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH\" \\( -type d -or -type l \\) -name Headers -exec rm -rf {} \\; -prune\n";
+		};
+		1692D743258BFE730092D6E7 /* Run Script (SwiftLint) */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script (SwiftLint)";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

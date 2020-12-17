@@ -27,7 +27,7 @@ class SMMAppController: NSObject {
     }
 
     private var shouldOpenUntitledDocument = false
-    private var newlyAppearedSources: Set<SMSourceEndpoint>? = nil
+    private var newlyAppearedSources: Set<SMSourceEndpoint>?
 
     override init() {
         super.init()
@@ -99,7 +99,7 @@ extension SMMAppController {
     }
 
     @IBAction func showAboutBox(_ sender: AnyObject?) {
-        var options: [NSApplication.AboutPanelOptionKey : Any] = [:]
+        var options: [NSApplication.AboutPanelOptionKey: Any] = [:]
 
         if #available(macOS 10.13, *) {
             options[NSApplication.AboutPanelOptionKey.version] = ""
@@ -127,7 +127,7 @@ extension SMMAppController {
     }
 
     @IBAction func showHelp(_ sender: AnyObject?) {
-        var message: String? = nil
+        var message: String?
 
         if var url = SMBundleForObject(self).url(forResource: "docs", withExtension: "htmld") {
             url.appendPathComponent("index.html")
@@ -163,7 +163,7 @@ extension SMMAppController {
             success = NSWorkspace.shared.open(mailToURL)
         }
 
-        if (!success) {
+        if !success {
             let message = NSLocalizedString("MIDI Monitor could not ask your email application to create a new message.\nPlease send email to:\n%@", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "message of alert when can't send feedback email")
 
             let title = NSLocalizedString("Error", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "title of error alert")
@@ -187,7 +187,6 @@ extension SMMAppController {
             alert.runModal()
         }
     }
-
 
 }
 
@@ -218,7 +217,7 @@ extension SMMAppController {
         let bundle = SMBundleForObject(self)!
         let installError = error as NSError
 
-        var presentedErrorUserInfo: [String : Any] = installError.userInfo
+        var presentedErrorUserInfo: [String: Any] = installError.userInfo
         presentedErrorUserInfo[NSLocalizedDescriptionKey] = NSLocalizedString("MIDI Monitor could not install its driver.", tableName: "MIDIMonitor", bundle: bundle, comment: "error message if spy driver install fails")
 
         if installError.domain == MIDISpyDriverInstallationErrorDomain {
@@ -308,7 +307,7 @@ extension SMMAppController {
         alert.informativeText = NSLocalizedString("If you continue, MIDI Monitor will not be able to see the output of other MIDI applications, but all other features will still work.\n\nTo fix the problem:\n1. Remove any old 32-bit-only drivers from /Library/Audio/MIDI Drivers.\n2. Restart your computer.", tableName: "MIDIMonitor", bundle: bundle, comment: "second line of warning when MIDI spy is unavailable")
         alert.addButton(withTitle: NSLocalizedString("Continue", tableName: "MIDIMonitor", bundle: bundle, comment: "Continue button after MIDI spy client creation fails"))
         alert.addButton(withTitle: NSLocalizedString("Restart", tableName: "MIDIMonitor", bundle: bundle, comment: "Restart button after MIDI spy client creation fails"))
-        alert.addButton(withTitle: NSLocalizedString("Show MIDI Drivers",  tableName: "MIDIMonitor", bundle: bundle, comment: "Show MIDI Drivers button after MIDI spy client creation fails"))
+        alert.addButton(withTitle: NSLocalizedString("Show MIDI Drivers", tableName: "MIDIMonitor", bundle: bundle, comment: "Show MIDI Drivers button after MIDI spy client creation fails"))
 
         let response = alert.runModal()
         if response == .alertSecondButtonReturn {

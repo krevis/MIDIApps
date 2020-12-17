@@ -26,4 +26,3 @@ import Foundation
 
     @objc static let autoConnectNewSources = "SMMAutoConnectNewSources"
 }
-

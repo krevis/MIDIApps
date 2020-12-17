@@ -110,7 +110,7 @@ class SMMPreferencesWindowController: SMMWindowController, NSWindowRestoration {
     }
 
     @IBAction func changeExpertMode(_ sender: NSControl!) {
-        UserDefaults.standard.set(sender.intValue, forKey:SMExpertModePreferenceKey)
+        UserDefaults.standard.set(sender.intValue, forKey: SMExpertModePreferenceKey)
         updateExpertModeTextField()
         sendDisplayPreferenceChangedNotification()
     }

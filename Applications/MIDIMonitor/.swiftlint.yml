@@ -1,0 +1,10 @@
+# Custom SwiftLint configuration
+
+disabled_rules:
+  - line_length
+
+statement_position:
+  statement_mode: uncuddled_else
+
+force_cast:
+  severity: warning

@@ -16,7 +16,7 @@ import Cocoa
 autoreleasepool {
     if let defaultDefaultsURL = Bundle.main.url(forResource: "Defaults", withExtension: "plist"),
        let defaultDefaults = NSDictionary(contentsOf: defaultDefaultsURL) {
-        UserDefaults.standard.register(defaults: defaultDefaults as! [String : Any])
+        UserDefaults.standard.register(defaults: defaultDefaults as! [String: Any])
     }
 }
 
