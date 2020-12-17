@@ -422,7 +422,7 @@ fail:
     else {
         NSMutableData* fullData = [statusByteData mutableCopy];
         [fullData appendData:otherData];
-        return fullData;
+        return [fullData autorelease];
     }
 }
 
