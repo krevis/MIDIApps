@@ -12,7 +12,7 @@
 
 import Cocoa
 
-class SMMMonitorWindowController: NSWindowController, NSUserInterfaceValidations {
+class SMMMonitorWindowController: NSWindowController {
 
     @objc init() {
         super.init(window: nil)
@@ -155,7 +155,7 @@ extension SMMMonitorWindowController {
 
 }
 
-extension SMMMonitorWindowController {
+extension SMMMonitorWindowController: NSUserInterfaceValidations {
 
     // MARK: General UI
 
@@ -190,18 +190,20 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
         // Then expand the outline view to show this source, and scroll it to be visible.
         guard groupedInputSources != nil else { return }
         for group in groupedInputSources! {
-            if let itemDict = group as? [String:Any],
-               let itemNotExpandableNumber = itemDict["isNotExpandable"] as? NSNumber,
-               !itemNotExpandableNumber.boolValue {
-                let groupSources = itemDict["sources"] as! [SMInputStreamSource]
-                for source in groupSources {
-                    if sources.contains(source) {
-                        // Found one!
-                        sourcesOutlineView.expandItem(group)
-                        sourcesOutlineView.scrollRowToVisible(sourcesOutlineView.row(forItem: source))
+            if let itemDict = group as? [String:Any] {
+                let itemNotExpandableNumber = itemDict["isNotExpandable"] as? NSNumber
+                let notExpandable = (itemNotExpandableNumber?.boolValue) ?? false
+                if !notExpandable {
+                    let groupSources = itemDict["sources"] as! [SMInputStreamSource]
+                    for source in groupSources {
+                        if sources.contains(source) {
+                            // Found one!
+                            sourcesOutlineView.expandItem(group)
+                            sourcesOutlineView.scrollRowToVisible(sourcesOutlineView.row(forItem: source))
 
-                        // And now we're done
-                        break
+                            // And now we're done
+                            break
+                        }
                     }
                 }
             }
@@ -237,9 +239,10 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
     }
 
     func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
-        if let itemDict = item as? [String:Any],
-           let itemNotExpandableNumber = itemDict["isNotExpandable"] as? NSNumber {
-            return !itemNotExpandableNumber.boolValue
+        if let itemDict = item as? [String:Any] {
+            let itemNotExpandableNumber = itemDict["isNotExpandable"] as? NSNumber
+            let notExpandable = (itemNotExpandableNumber?.boolValue) ?? false
+            return !notExpandable
         }
         else {
             return false
