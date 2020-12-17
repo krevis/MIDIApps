@@ -223,17 +223,13 @@ extension SMMAppController {
         if installError.domain == MIDISpyDriverInstallationErrorDomain {
             // Errors with this domain should be very rare and indicate a problem with the app itself.
 
-            var fullSuggestion = ""
             if let reason = installError.localizedFailureReason, reason != "" {
-                fullSuggestion += reason
-                fullSuggestion += "\n\n"
-                fullSuggestion += NSLocalizedString("This shouldn't happen. Try downloading MIDI Monitor again.", tableName: "MIDIMonitor", bundle: bundle, comment: "suggestion if spy driver install fails due to our own error")
-                fullSuggestion += "\n\n"
-                fullSuggestion += NSLocalizedString("MIDI Monitor will not be able to see the output of other MIDI applications, but all other features will still work.", tableName: "MIDIMonitor", bundle: bundle, comment: "more suggestion if spy driver install fails")
-            }
-
-            if fullSuggestion != "" {
-                presentedErrorUserInfo[NSLocalizedRecoverySuggestionErrorKey] = fullSuggestion
+                presentedErrorUserInfo[NSLocalizedRecoverySuggestionErrorKey] =
+                    reason
+                    + "\n\n"
+                    + NSLocalizedString("This shouldn't happen. Try downloading MIDI Monitor again.", tableName: "MIDIMonitor", bundle: bundle, comment: "suggestion if spy driver install fails due to our own error")
+                    + "\n\n"
+                    + NSLocalizedString("MIDI Monitor will not be able to see the output of other MIDI applications, but all other features will still work.", tableName: "MIDIMonitor", bundle: bundle, comment: "more suggestion if spy driver install fails")
             }
         }
         else {
@@ -251,9 +247,10 @@ extension SMMAppController {
             }
 
             if fullSuggestion != "" {
-                fullSuggestion += "\n\n"
-                fullSuggestion += NSLocalizedString("MIDI Monitor will not be able to see the output of other MIDI applications, but all other features will still work.", tableName: "MIDIMonitor", bundle: bundle, comment: "more suggestion if spy driver install fails")
-                presentedErrorUserInfo[NSLocalizedRecoverySuggestionErrorKey] = fullSuggestion
+                presentedErrorUserInfo[NSLocalizedRecoverySuggestionErrorKey] =
+                    fullSuggestion
+                    + "\n\n"
+                    + NSLocalizedString("MIDI Monitor will not be able to see the output of other MIDI applications, but all other features will still work.", tableName: "MIDIMonitor", bundle: bundle, comment: "more suggestion if spy driver install fails")
             }
 
             // To find the path involved, look for NSDestinationFilePath first (it's set for failures to copy, and is better than the source path),

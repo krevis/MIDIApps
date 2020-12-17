@@ -194,7 +194,35 @@ class SNDisclosableView: NSView {
         // Now that we're in a configuration where we can change the window's size how we want, start with our current frame.
 
         // Adjust the autoresize masks of the window's subviews, remembering the original masks.
-        let windowSubviews = window.contentView?.subviews ?? []
+        let windowSubviewsAndMasks = temporarilyAdjustWindowSubviewMasks(window.contentView?.subviews ?? [])
+
+        // Adjust the autoresize masks of our subviews, remembering the original masks.
+        let ourSubviewsAndMasks = temporarilyAdjustOurSubviewMasks()
+
+        // Finally we can resize the window.
+        if window.isVisible {
+            let didPreserve = window.preservesContentDuringLiveResize
+            window.preservesContentDuringLiveResize = false
+            window.setFrame(newWindowFrame, display: true, animate: true)
+            window.preservesContentDuringLiveResize = didPreserve
+        }
+        else {
+            window.setFrame(newWindowFrame, display: false, animate: false)
+        }
+
+        // Adjust the window's min and max sizes to make sense.
+        window.minSize = CGSize(width: window.minSize.width, height: window.minSize.height + amount)
+        // If there is no max size set (height of 0), don't change it.
+        if window.maxSize.height > 0 {
+            window.maxSize = CGSize(width: window.maxSize.width, height: window.maxSize.height + amount)
+        }
+
+        // Restore the saved autoresize masks.
+        restoreViewMasks(windowSubviewsAndMasks)
+        restoreViewMasks(ourSubviewsAndMasks)
+    }
+
+    func temporarilyAdjustWindowSubviewMasks(_ windowSubviews: [NSView]) -> [(NSView, NSView.AutoresizingMask)] {
         let windowSubviewsAndMasks = windowSubviews.map { ($0, $0.autoresizingMask) }
         for (windowSubview, originalMask) in windowSubviewsAndMasks {
             var mask = originalMask
@@ -223,7 +251,10 @@ class SNDisclosableView: NSView {
             windowSubview.autoresizingMask = mask
         }
 
-        // Adjust the autoresize masks of our subviews, remembering the original masks.
+        return windowSubviewsAndMasks
+    }
+
+    func temporarilyAdjustOurSubviewMasks() -> [(NSView, NSView.AutoresizingMask)] {
         let ourSubviewsAndMasks = subviews.map { ($0, $0.autoresizingMask) }
         for (ourSubview, originalMask) in ourSubviewsAndMasks {
             var mask = originalMask
@@ -236,34 +267,11 @@ class SNDisclosableView: NSView {
             ourSubview.autoresizingMask = mask
         }
 
-        // Finally we can resize the window.
-        if window.isVisible {
-            let didPreserve = window.preservesContentDuringLiveResize
-            window.preservesContentDuringLiveResize = false
-            window.setFrame(newWindowFrame, display: true, animate: true)
-            window.preservesContentDuringLiveResize = didPreserve
-        }
-        else {
-            window.setFrame(newWindowFrame, display: false, animate: false)
-        }
+        return ourSubviewsAndMasks
+    }
 
-        // Adjust the window's min and max sizes to make sense.
-        var newWindowMinSize = window.minSize
-        newWindowMinSize.height += amount
-        window.minSize = newWindowMinSize
-
-        var newWindowMaxSize = window.maxSize
-        // If there is no max size set (height of 0), don't change it.
-        if newWindowMaxSize.height > 0 {
-            newWindowMaxSize.height += amount
-            window.maxSize = newWindowMaxSize
-        }
-
-        // Restore the saved autoresize masks.
-        for (view, mask) in windowSubviewsAndMasks {
-            view.autoresizingMask = mask
-        }
-        for (view, mask) in ourSubviewsAndMasks {
+    func restoreViewMasks(_ viewsAndMasks: [(NSView, NSView.AutoresizingMask)]) {
+        for (view, mask) in viewsAndMasks {
             view.autoresizingMask = mask
         }
     }
