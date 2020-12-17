@@ -28,7 +28,6 @@
 		167B882406ED4D650053D305 /* Details.nib in Resources */ = {isa = PBXBuildFile; fileRef = 1691E0DC04CA26F300ACFC9D /* Details.nib */; };
 		167B882506ED4D650053D305 /* Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 16F20F4906EAA14A00D9C507 /* Defaults.plist */; };
 		167B882706ED4D650053D305 /* SMMDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4ACFDCFA73011CA2CEA /* SMMDocument.m */; settings = {ATTRIBUTES = (); }; };
-		167B882A06ED4D650053D305 /* SMMAppController.m in Sources */ = {isa = PBXBuildFile; fileRef = F53D4ABA015AAB7E01000164 /* SMMAppController.m */; };
 		167B882D06ED4D650053D305 /* SMMSpyingInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = F562148E02408B2D01000164 /* SMMSpyingInputStream.m */; };
 		167B882E06ED4D650053D305 /* SMMCombinationInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = F55C9C150244CE3701000164 /* SMMCombinationInputStream.m */; };
 		167B883906ED4D650053D305 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
@@ -36,6 +35,8 @@
 		1692D71225899A8C0092D6E7 /* SMMPreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D71125899A8C0092D6E7 /* SMMPreferencesWindowController.swift */; };
 		1692D7192589E83D0092D6E7 /* SMMWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D7182589E83D0092D6E7 /* SMMWindowController.swift */; };
 		1692D72D2589E91D0092D6E7 /* SMMMonitorWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D72C2589E91D0092D6E7 /* SMMMonitorWindowController.swift */; };
+		1692D72F258B31370092D6E7 /* SMMAppController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D72E258B31370092D6E7 /* SMMAppController.swift */; };
+		1692D732258BDC6A0092D6E7 /* SMMAppController+SMMAppController_SUUpdaterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1692D731258BDC6A0092D6E7 /* SMMAppController+SMMAppController_SUUpdaterDelegate.m */; };
 		16980517258874BF00059CB4 /* SMMDetailsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16980516258874BF00059CB4 /* SMMDetailsWindowController.swift */; };
 		16C267D215D836B2009F4BE4 /* SNDisclosureArrowDown.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 16C267D015D836B2009F4BE4 /* SNDisclosureArrowDown.tiff */; };
 		16C267D315D836B2009F4BE4 /* SNDisclosureArrowRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 16C267D115D836B2009F4BE4 /* SNDisclosureArrowRight.tiff */; };
@@ -218,6 +219,8 @@
 		1692D71125899A8C0092D6E7 /* SMMPreferencesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMPreferencesWindowController.swift; sourceTree = "<group>"; };
 		1692D7182589E83D0092D6E7 /* SMMWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMWindowController.swift; sourceTree = "<group>"; };
 		1692D72C2589E91D0092D6E7 /* SMMMonitorWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMMonitorWindowController.swift; sourceTree = "<group>"; };
+		1692D72E258B31370092D6E7 /* SMMAppController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMAppController.swift; sourceTree = "<group>"; };
+		1692D731258BDC6A0092D6E7 /* SMMAppController+SMMAppController_SUUpdaterDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "SMMAppController+SMMAppController_SUUpdaterDelegate.m"; sourceTree = "<group>"; };
 		16980516258874BF00059CB4 /* SMMDetailsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMDetailsWindowController.swift; sourceTree = "<group>"; };
 		169E7114097B2021001AFB58 /* Snoize-Project-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Debug.xcconfig"; path = "../../Configurations/Snoize-Project-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		169E7115097B2021001AFB58 /* Snoize-Project-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Global.xcconfig"; path = "../../Configurations/Snoize-Project-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
@@ -391,6 +394,8 @@
 		2A37F4ABFDCFA73011CA2CEA /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				1692D72E258B31370092D6E7 /* SMMAppController.swift */,
+				1692D731258BDC6A0092D6E7 /* SMMAppController+SMMAppController_SUUpdaterDelegate.m */,
 				F53D4AB9015AAB7E01000164 /* SMMAppController.h */,
 				F53D4ABA015AAB7E01000164 /* SMMAppController.m */,
 				2A37F4AEFDCFA73011CA2CEA /* SMMDocument.h */,
@@ -720,9 +725,9 @@
 				1692D72D2589E91D0092D6E7 /* SMMMonitorWindowController.swift in Sources */,
 				16F9FA572586F0A700169621 /* SMMSourcesOutlineView.swift in Sources */,
 				16F9FA312586EC0800169621 /* SMMFastAnimatingWindow.swift in Sources */,
+				1692D732258BDC6A0092D6E7 /* SMMAppController+SMMAppController_SUUpdaterDelegate.m in Sources */,
 				16F9FA5D2586FD0B00169621 /* SNDisclosableView.swift in Sources */,
 				1692D71225899A8C0092D6E7 /* SMMPreferencesWindowController.swift in Sources */,
-				167B882A06ED4D650053D305 /* SMMAppController.m in Sources */,
 				167B882D06ED4D650053D305 /* SMMSpyingInputStream.m in Sources */,
 				1692D7192589E83D0092D6E7 /* SMMWindowController.swift in Sources */,
 				16980517258874BF00059CB4 /* SMMDetailsWindowController.swift in Sources */,
@@ -730,6 +735,7 @@
 				16F9FA5B2586F9BB00169621 /* main.swift in Sources */,
 				160A5EA1258825B0008C0CE1 /* SMMPreferenceKeys.swift in Sources */,
 				16F9FA452586EDED00169621 /* SMMNonHighlightingCells.swift in Sources */,
+				1692D72F258B31370092D6E7 /* SMMAppController.swift in Sources */,
 				160A5E8D258822CB008C0CE1 /* SMMSysExWindowController.swift in Sources */,
 				16F9FA592586F51400169621 /* SNDisclosureButton.swift in Sources */,
 			);

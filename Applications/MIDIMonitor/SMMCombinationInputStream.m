@@ -14,7 +14,7 @@
 
 #import "SMMCombinationInputStream.h"
 
-#import "SMMAppController.h"
+#import "MIDI_Monitor-Swift.h"
 #import "SMMSpyingInputStream.h"
 
 @interface SMMCombinationInputStream ()
@@ -54,7 +54,8 @@
         [self observeNotificationsFromObject:_virtualInputStream];
     }
 
-    MIDISpyClientRef spyClient = [(SMMAppController *)[NSApp delegate] midiSpyClient];
+    // TODO Work this out
+    MIDISpyClientRef spyClient = nil; // [(SMMAppController *)[NSApp delegate] midiSpyClient];
     if (spyClient) {
         _spyingInputStream = [[SMMSpyingInputStream alloc] initWithMIDISpyClient:spyClient];
         if (_spyingInputStream) {

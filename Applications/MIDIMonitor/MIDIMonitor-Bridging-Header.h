@@ -5,4 +5,5 @@
 // TODO Remove all of these eventually, when done migrating
 
 #import <SnoizeMIDI/SnoizeMIDI.h>
+#import <SnoizeMIDISpy/SnoizeMIDISpy.h>
 #import "SMMDocument.h"
