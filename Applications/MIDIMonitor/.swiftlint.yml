@@ -8,3 +8,7 @@ statement_position:
 
 force_cast:
   severity: warning
+
+file_length:
+  warning: 700
+  ignore_comment_only_lines: true

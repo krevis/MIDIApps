@@ -15,7 +15,7 @@ import CoreMIDI
 
 class SMMAppController: NSObject {
 
-    // TODO
+    // TODO Implement spy client
     // @property (nonatomic, readonly) MIDISpyClientRef midiSpyClient;
 
     private let SMMOpenWindowsForNewSourcesPreferenceKey = "SMMOpenWindowsForNewSources"  // Obsolete

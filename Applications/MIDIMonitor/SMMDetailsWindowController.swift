@@ -14,11 +14,10 @@ import Cocoa
 
 class SMMDetailsWindowController: SMMWindowController, NSWindowDelegate {
 
-    // TODO Get rid of the @objc's here
-
+    // TODO Get rid of the @objc here
     @objc let message: SMMessage
 
-    @objc init(message myMessage: SMMessage) {
+    init(message myMessage: SMMessage) {
         message = myMessage
         super.init(window: nil)
         shouldCascadeWindows = true

@@ -145,8 +145,3 @@ class SMMPreferencesWindowController: SMMWindowController, NSWindowRestoration {
 extension Notification.Name {
     static let displayPreferenceChanged = Notification.Name("SMMDisplayPreferenceChangedNotification")
 }
-
-// TODO Get rid of this when objc is fully removed
-@objc extension NSNotification {
-    static let displayPreferenceChangedNotification = Notification.Name.displayPreferenceChanged
-}
