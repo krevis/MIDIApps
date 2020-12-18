@@ -30,7 +30,7 @@
 
     // Remove our connections to the MIDIServer first:
     [SMClient disposeSharedClient];
-    // MIDISpyClientDispose(_midiSpyClient); // TODO Work this out
+    MIDISpyClientDispose(self.midiSpyClient);
     MIDISpyClientDisposeSharedMIDIClient();
 
     // Wait a few seconds for the MIDIServer to hopefully shut down,

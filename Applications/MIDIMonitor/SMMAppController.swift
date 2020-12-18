@@ -15,9 +15,6 @@ import CoreMIDI
 
 class SMMAppController: NSObject {
 
-    // TODO Implement spy client
-    // @property (nonatomic, readonly) MIDISpyClientRef midiSpyClient;
-
     private let SMMOpenWindowsForNewSourcesPreferenceKey = "SMMOpenWindowsForNewSources"  // Obsolete
 
     enum AutoConnectOption: Int {
@@ -25,6 +22,8 @@ class SMMAppController: NSObject {
         case addInCurrentWindow
         case openNewWindow
     }
+
+    @objc internal var midiSpyClient: MIDISpyClientRef?
 
     private var shouldOpenUntitledDocument = false
     private var newlyAppearedSources: Set<SMSourceEndpoint>?
@@ -71,7 +70,7 @@ extension SMMAppController: NSApplicationDelegate {
         }
         else {
             // Create our client for spying on MIDI output.
-            let status = noErr // TODO MIDISpyClientCreate(&_midiSpyClient)
+            let status = MIDISpyClientCreate(&midiSpyClient)
             if status != noErr {
                 failedToConnectToSpyClient()
             }
