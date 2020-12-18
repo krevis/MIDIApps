@@ -16,14 +16,14 @@ import Foundation
 
     static let saveSysExWithEOXAlways = "SMMSaveSysExWithEOXAlways"
 
-    // TODO Migrate more keys here
-    // TODO Remove @objc when possible
+    static let openWindowsForNewSources = "SMMOpenWindowsForNewSources"  // Obsolete
 
+    // TODO Remove @objc when possible
     @objc static let selectOrdinarySourcesInNewDocument = "SMMAutoSelectOrdinarySources"
     @objc static let selectVirtualDestinationInNewDocument = "SMMAutoSelectVirtualDestination"
     @objc static let selectSpyingDestinationsInNewDocument = "SMMAutoSelectSpyingDestinations"
 
     @objc static let askBeforeClosingModifiedWindow = "SMMAskBeforeClosingModifiedWindow"
 
-    @objc static let autoConnectNewSources = "SMMAutoConnectNewSources"
+    static let autoConnectNewSources = "SMMAutoConnectNewSources"
 }

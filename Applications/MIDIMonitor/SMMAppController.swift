@@ -15,8 +15,6 @@ import CoreMIDI
 
 class SMMAppController: NSObject {
 
-    private let SMMOpenWindowsForNewSourcesPreferenceKey = "SMMOpenWindowsForNewSources"  // Obsolete
-
     enum AutoConnectOption: Int {
         case disabled
         case addInCurrentWindow
@@ -34,14 +32,14 @@ class SMMAppController: NSObject {
 
     override func awakeFromNib() {
         // Migrate autoconnect preference, before we show any windows.
-        // Old: SMMOpenWindowsForNewSourcesPreferenceKey = BOOL (default: false)
+        // Old: SMMPreferenceKeys.openWindowsForNewSources = BOOL (default: false)
         // New: SMMPreferenceKeys.autoConnectNewSources = int (default: 1 = AutoConnectOption.addInCurrentWindow)
 
         let defaults = UserDefaults.standard
-        if defaults.object(forKey: SMMOpenWindowsForNewSourcesPreferenceKey) != nil {
-            let option: AutoConnectOption = defaults.bool(forKey: SMMOpenWindowsForNewSourcesPreferenceKey) ? .openNewWindow : .disabled
+        if defaults.object(forKey: SMMPreferenceKeys.openWindowsForNewSources) != nil {
+            let option: AutoConnectOption = defaults.bool(forKey: SMMPreferenceKeys.openWindowsForNewSources) ? .openNewWindow : .disabled
             defaults.set(option.rawValue, forKey: SMMPreferenceKeys.autoConnectNewSources)
-            defaults.removeObject(forKey: SMMOpenWindowsForNewSourcesPreferenceKey)
+            defaults.removeObject(forKey: SMMPreferenceKeys.openWindowsForNewSources)
         }
     }
 
