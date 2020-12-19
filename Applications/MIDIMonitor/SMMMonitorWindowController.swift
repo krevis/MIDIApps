@@ -283,10 +283,10 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
         guard let item = item else { fatalError() }
 
         let number = object as! NSNumber
-        var newState = NSCell.StateValue(rawValue: number.intValue)
+        var newState = NSControl.StateValue(rawValue: number.intValue)
         // It doesn't make sense to switch from off to mixed, so go directly to on
-        if newState == NSCell.StateValue.mixed {
-            newState = NSCell.StateValue.on
+        if newState == .mixed {
+            newState = .on
         }
 
         let sources: [SMInputStreamSource]
@@ -320,7 +320,7 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
         (cell as! NSCell).backgroundStyle = .light
     }
 
-    private func buttonStateForInputSources(_ sources: [SMInputStreamSource]) -> NSCell.StateValue {
+    private func buttonStateForInputSources(_ sources: [SMInputStreamSource]) -> NSControl.StateValue {
         let selectedSources = midiDocument.selectedInputSources
 
         var areAnySelected = false
@@ -336,7 +336,7 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
             }
 
             if areAnySelected && areAnyNotSelected {
-                return .mixed
+                return .mixed   // TODO This doesn't seem to actually work for the sources group?
             }
         }
 
