@@ -401,39 +401,47 @@ extension SMMMonitorWindowController {
         trivialWindowSettingsDidChange()
     }
 
-    @IBAction func changeFilter(_ sender: AnyObject?) {
-        let button = sender as! NSButton
-
+    private func changeFilter(tag: Int, state: NSControl.StateValue) {
         let turnBitsOn: Bool
-        switch button.state {
+        switch state {
         case .on, .mixed:
             turnBitsOn = true
         default:
             turnBitsOn = false
         }
 
-        midiDocument.changeFilterMask(SMMessageType(UInt32(button.tag)), turnBitsOn: turnBitsOn)
+        midiDocument.changeFilterMask(SMMessageType(UInt32(tag)), turnBitsOn: turnBitsOn)
+    }
+
+    @IBAction func changeFilter(_ sender: AnyObject?) {
+        if let button = sender as? NSButton {
+            changeFilter(tag: button.tag, state: button.state)
+        }
     }
 
     @IBAction func changeFilterFromMatrix(_ sender: AnyObject?) {
-        let matrix = sender as! NSMatrix
-        changeFilter(matrix.selectedCell())
+        if let matrix = sender as? NSMatrix,
+           let buttonCell = matrix.selectedCell() as? NSButtonCell {
+            changeFilter(tag: buttonCell.tag, state: buttonCell.state)
+        }
     }
 
     @IBAction func setChannelRadioButton(_ sender: AnyObject?) {
-        let matrix = sender as! NSMatrix
-        if matrix.selectedCell()?.tag == 0 {
-            midiDocument.showAllChannels()
-        }
-        else {
-            midiDocument.showOnlyOneChannel(oneChannel)
+        if let matrix = sender as? NSMatrix {
+            if matrix.selectedCell()?.tag == 0 {
+                midiDocument.showAllChannels()
+            }
+            else {
+                midiDocument.showOnlyOneChannel(oneChannel)
+            }
         }
     }
 
     @IBAction func setChannel(_ sender: AnyObject?) {
-        let control = sender as! NSControl
-        let channel = (control.objectValue as? NSNumber)?.uintValue ?? 0
-        midiDocument.showOnlyOneChannel(channel)
+        if let control = sender as? NSControl {
+            let channel = (control.objectValue as? NSNumber)?.uintValue ?? 0
+            midiDocument.showOnlyOneChannel(channel)
+        }
     }
 
 }
