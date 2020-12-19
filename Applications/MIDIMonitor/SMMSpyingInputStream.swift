@@ -16,7 +16,7 @@ class SMMSpyingInputStream: SMInputStream {
 
     private let spyClient: MIDISpyClientRef
     private var spyPort: MIDISpyPortRef?
-    private var internalEndpoints: Set<SMDestinationEndpoint> = []
+    private var endpoints: Set<SMDestinationEndpoint> = []
     private var parsersForEndpoints = NSMapTable<SMDestinationEndpoint, SMMessageParser>.weakToStrongObjects()
 
     init?(midiSpyClient: MIDISpyClientRef) {
@@ -26,6 +26,7 @@ class SMMSpyingInputStream: SMInputStream {
 
         let status = MIDISpyPortCreate(spyClient, midiReadProc(), UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque()), &spyPort)
         if status != noErr {
+            NSLog("Error from MIDISpyPortCreate: \(status)")
             return nil
         }
 
@@ -40,64 +41,6 @@ class SMMSpyingInputStream: SMInputStream {
         }
 
         // Don't tear down the spy client, since others may be using it
-    }
-
-    func addEndpoint(_ endpoint: SMDestinationEndpoint) {
-        guard !internalEndpoints.contains(endpoint) else { return }
-
-        let parser = createParser(withOriginatingEndpoint: endpoint)
-        parsersForEndpoints.setObject(parser, forKey: endpoint)
-
-        let center = NotificationCenter.default
-        center.addObserver(self, selector: #selector(self.endpointDisappeared(_:)), name: .SMMIDIObjectDisappeared, object: endpoint)
-        center.addObserver(self, selector: #selector(self.endpointWasReplaced(_:)), name: .SMMIDIObjectWasReplaced, object: endpoint)
-
-        _ = internalEndpoints.insert(endpoint)
-
-        let status = MIDISpyPortConnectDestination(spyPort, endpoint.endpointRef(), Unmanaged.passUnretained(endpoint).toOpaque())
-        if status != noErr {
-            NSLog("Error from MIDISpyPortConnectDestination: \(status)")
-        }
-    }
-
-    func removeEndpoint(_ endpoint: SMDestinationEndpoint) {
-        guard internalEndpoints.contains(endpoint) else { return }
-
-        let status = MIDISpyPortDisconnectDestination(spyPort, endpoint.endpointRef())
-        if status != noErr {
-            NSLog("Error from MIDISpyPortDisconnectDestination: \(status)")
-            // An error can happen in normal circumstances (if the endpoint has disappeared), so ignore it.
-        }
-
-        parsersForEndpoints.removeObject(forKey: endpoint)
-
-        let center = NotificationCenter.default
-        center.removeObserver(self, name: .SMMIDIObjectDisappeared, object: endpoint)
-        center.removeObserver(self, name: .SMMIDIObjectWasReplaced, object: endpoint)
-
-        internalEndpoints.remove(endpoint)
-    }
-
-    var endpoints: Set<AnyHashable> /* TODO Really SMDestinationEndpoint */ {
-        get {
-            return internalEndpoints
-        }
-        set {
-            let endpointsToAdd = newValue.subtracting(internalEndpoints)
-            let endpointsToRemove = (internalEndpoints as Set<AnyHashable>).subtracting(newValue)
-
-            for endpoint in endpointsToRemove {
-                if let destinationEndpoint = endpoint as? SMDestinationEndpoint {
-                    removeEndpoint(destinationEndpoint)
-                }
-            }
-
-            for endpoint in endpointsToAdd {
-                if let destinationEndpoint = endpoint as? SMDestinationEndpoint {
-                    addEndpoint(destinationEndpoint)
-                }
-            }
-        }
     }
 
     // MARK: SMInputStream subclass
@@ -144,11 +87,60 @@ class SMMSpyingInputStream: SMInputStream {
             return endpoints
         }
         set {
-            endpoints = newValue
+            let endpointsToAdd = newValue.subtracting(endpoints)
+            let endpointsToRemove = (endpoints as Set<AnyHashable>).subtracting(newValue)
+
+            for endpoint in endpointsToRemove {
+                if let destinationEndpoint = endpoint as? SMDestinationEndpoint {
+                    removeEndpoint(destinationEndpoint)
+                }
+            }
+
+            for endpoint in endpointsToAdd {
+                if let destinationEndpoint = endpoint as? SMDestinationEndpoint {
+                    addEndpoint(destinationEndpoint)
+                }
+            }
         }
     }
 
     // MARK: Internal
+
+    private func addEndpoint(_ endpoint: SMDestinationEndpoint) {
+        guard !endpoints.contains(endpoint) else { return }
+
+        let parser = createParser(withOriginatingEndpoint: endpoint)
+        parsersForEndpoints.setObject(parser, forKey: endpoint)
+
+        let center = NotificationCenter.default
+        center.addObserver(self, selector: #selector(self.endpointDisappeared(_:)), name: .SMMIDIObjectDisappeared, object: endpoint)
+        center.addObserver(self, selector: #selector(self.endpointWasReplaced(_:)), name: .SMMIDIObjectWasReplaced, object: endpoint)
+
+        _ = endpoints.insert(endpoint)
+
+        let status = MIDISpyPortConnectDestination(spyPort, endpoint.endpointRef(), Unmanaged.passUnretained(endpoint).toOpaque())
+        if status != noErr {
+            NSLog("Error from MIDISpyPortConnectDestination: \(status)")
+        }
+    }
+
+    private func removeEndpoint(_ endpoint: SMDestinationEndpoint) {
+        guard endpoints.contains(endpoint) else { return }
+
+        let status = MIDISpyPortDisconnectDestination(spyPort, endpoint.endpointRef())
+        if status != noErr {
+            NSLog("Error from MIDISpyPortDisconnectDestination: \(status)")
+            // An error can happen in normal circumstances (if the endpoint has disappeared), so ignore it.
+        }
+
+        parsersForEndpoints.removeObject(forKey: endpoint)
+
+        let center = NotificationCenter.default
+        center.removeObserver(self, name: .SMMIDIObjectDisappeared, object: endpoint)
+        center.removeObserver(self, name: .SMMIDIObjectWasReplaced, object: endpoint)
+
+        endpoints.remove(endpoint)
+    }
 
     @objc private func endpointListChanged(_ notification: Notification) {
         self.postSourceListChangedNotification()
@@ -156,7 +148,7 @@ class SMMSpyingInputStream: SMInputStream {
 
     @objc private func endpointDisappeared(_ notification: Notification) {
         guard let endpoint = notification.object as? SMDestinationEndpoint,
-              internalEndpoints.contains(endpoint) else { return }
+              endpoints.contains(endpoint) else { return }
 
         removeEndpoint(endpoint)
         postSelectedInputStreamSourceDisappearedNotification(endpoint)
@@ -164,7 +156,7 @@ class SMMSpyingInputStream: SMInputStream {
 
     @objc private func endpointWasReplaced(_ notification: Notification) {
         guard let endpoint = notification.object as? SMDestinationEndpoint,
-              internalEndpoints.contains(endpoint) else { return }
+              endpoints.contains(endpoint) else { return }
 
         removeEndpoint(endpoint)
         if let newEndpoint = notification.userInfo?[SMMIDIObjectReplacement] as? SMDestinationEndpoint {
