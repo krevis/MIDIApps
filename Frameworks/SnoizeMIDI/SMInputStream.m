@@ -27,7 +27,7 @@ static void midiReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, vo
 
 + (void)takePendingPacketList:(NSData *)pendingPacketListData;
 
-- (id <SMInputStreamSource>)findInputSourceWithName:(NSString *)desiredName uniqueID:(NSNumber *)desiredUniqueID;
+- (id<SMInputStreamSource>)findInputSourceWithName:(NSString *)desiredName uniqueID:(NSNumber *)desiredUniqueID;
 
 @end
 
@@ -119,7 +119,7 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
     NSSet *selectedInputSources;
     NSUInteger sourcesCount;
     NSEnumerator *sourceEnumerator;
-    id <SMInputStreamSource> source;
+    id<SMInputStreamSource> source;
     NSMutableArray *persistentSettings;
 
     selectedInputSources = [self selectedInputSources];
@@ -146,7 +146,7 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
     return persistentSettings;
 }
 
-- (NSArray *)takePersistentSettings:(id)settings;
+- (NSArray<NSString *> *)takePersistentSettings:(id)settings;
 {
     // If any endpoints couldn't be found, their names are returned
     NSArray *settingsArray = (NSArray *)settings;
@@ -160,7 +160,7 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
         NSDictionary *dict;
         NSString *name;
         NSNumber *uniqueID;
-        id <SMInputStreamSource> source;
+        id<SMInputStreamSource> source;
 
         dict = [settingsArray objectAtIndex:settingsIndex];
         name = [dict objectForKey:@"name"];
@@ -255,19 +255,19 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
     return nil;
 }
 
-- (NSArray *)inputSources;
+- (NSArray<id<SMInputStreamSource>> *)inputSources;
 {
     SMRequestConcreteImplementation(self, _cmd);
     return nil;
 }
 
-- (NSSet *)selectedInputSources;
+- (NSSet<NSObject<SMInputStreamSource> *> *)selectedInputSources;
 {
     SMRequestConcreteImplementation(self, _cmd);
     return nil;
 }
 
-- (void)setSelectedInputSources:(NSSet *)sources;
+- (void)setSelectedInputSources:(NSSet<NSObject<SMInputStreamSource> *> *)sources;
 {
     SMRequestConcreteImplementation(self, _cmd);
     return;
@@ -392,19 +392,19 @@ static void midiReadProc(const MIDIPacketList *packetList, void *readProcRefCon,
     }
 }
 
-- (id <SMInputStreamSource>)findInputSourceWithName:(NSString *)desiredName uniqueID:(NSNumber *)desiredUniqueID;
+- (id<SMInputStreamSource>)findInputSourceWithName:(NSString *)desiredName uniqueID:(NSNumber *)desiredUniqueID;
 {
     // Find the input source with the desired unique ID. If there are no matches by uniqueID, return the first source whose name matches.
     // Otherwise, return nil.
 
     NSArray *inputSources;
     NSUInteger inputSourceCount, inputSourceIndex;
-    id <SMInputStreamSource> sourceWithMatchingName = nil;
+    id<SMInputStreamSource> sourceWithMatchingName = nil;
 
     inputSources = [self inputSources];
     inputSourceCount = [inputSources count];
     for (inputSourceIndex = 0; inputSourceIndex < inputSourceCount; inputSourceIndex++) {
-        id <SMInputStreamSource> source;
+        id<SMInputStreamSource> source;
 
         source = [inputSources objectAtIndex:inputSourceIndex];
         if ([[source inputStreamSourceUniqueID] isEqual:desiredUniqueID])

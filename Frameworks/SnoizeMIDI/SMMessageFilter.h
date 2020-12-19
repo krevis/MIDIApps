@@ -17,19 +17,10 @@
 
 
 @interface SMMessageFilter : NSObject <SMMessageDestination>
-{
-    SMMessageType filterMask;
-    SMChannelMask channelMask;
-    id<SMMessageDestination> nonretainedMessageDestination;
-}
 
-- (id<SMMessageDestination>)messageDestination;
-- (void)setMessageDestination:(id<SMMessageDestination>)aMessageDestination;
+@property (nonatomic, weak) id<SMMessageDestination> messageDestination;
 
-- (SMMessageType)filterMask;
-- (void)setFilterMask:(SMMessageType)newFilterMask;
-
-- (SMChannelMask)channelMask;
-- (void)setChannelMask:(SMChannelMask)newChannelMask;
+@property (nonatomic, assign) SMMessageType filterMask;     // default: SMMessageTypeNothingMask
+@property (nonatomic, assign) SMChannelMask channelMask;    // default: SMChannelMaskAll
 
 @end

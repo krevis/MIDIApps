@@ -178,7 +178,7 @@
     [super releaseForIncomingMIDIWithSourceConnectionRefCon:refCon];    
 }
 
-- (NSArray *)inputSources
+- (NSArray<id<SMInputStreamSource>> *)inputSources
 {
     NSMutableArray *inputSources = [NSMutableArray arrayWithArray:[SMDestinationEndpoint destinationEndpoints]];
     NSUInteger inputSourceIndex = [inputSources count];
@@ -190,12 +190,12 @@
     return inputSources;
 }
 
-- (NSSet *)selectedInputSources
+- (NSSet<NSObject<SMInputStreamSource> *> *)selectedInputSources
 {
     return self.endpoints;
 }
 
-- (void)setSelectedInputSources:(NSSet *)sources
+- (void)setSelectedInputSources:(NSSet<NSObject<SMInputStreamSource> *> *)sources
 {
     self.endpoints = sources;
 }

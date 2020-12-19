@@ -124,12 +124,12 @@
     return inputStreamSource;
 }
 
-- (NSArray *)inputSources;
+- (NSArray<NSObject<SMInputStreamSource> *> *)inputSources
 {
     return [NSArray arrayWithObject:inputStreamSource];
 }
 
-- (NSSet *)selectedInputSources;
+- (NSSet<NSObject<SMInputStreamSource> *> *)selectedInputSources
 {
     if ([self isActive])
         return [NSSet setWithObject:inputStreamSource];
@@ -137,7 +137,7 @@
         return [NSSet set];
 }
 
-- (void)setSelectedInputSources:(NSSet *)sources;
+- (void)setSelectedInputSources:(NSSet<NSObject<SMInputStreamSource> *> *)sources
 {
     [self setIsActive:(sources && [sources containsObject:inputStreamSource])];
 }
@@ -154,7 +154,7 @@
         return nil;
 }
 
-- (NSArray *)takePersistentSettings:(id)settings;
+- (NSArray<NSString *> *)takePersistentSettings:(id)settings;
 {
     if (settings) {
         [self setUniqueID:[[settings objectForKey:@"uniqueID"] intValue]];

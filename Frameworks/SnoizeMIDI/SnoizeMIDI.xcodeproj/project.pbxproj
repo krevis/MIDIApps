@@ -35,7 +35,7 @@
 		16B11BAB0971D40100DB1DB5 /* SMMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B6E0971D40100DB1DB5 /* SMMessage.m */; };
 		16B11BAC0971D40100DB1DB5 /* SMMessageDestinationProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B6F0971D40100DB1DB5 /* SMMessageDestinationProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		16B11BAD0971D40100DB1DB5 /* SMMessageFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B700971D40100DB1DB5 /* SMMessageFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		16B11BAE0971D40100DB1DB5 /* SMMessageFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B710971D40100DB1DB5 /* SMMessageFilter.m */; };
+		16B11BAE0971D40100DB1DB5 /* SMMessageFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B710971D40100DB1DB5 /* SMMessageFilter.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		16B11BAF0971D40100DB1DB5 /* SMMessageHistory.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B720971D40100DB1DB5 /* SMMessageHistory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		16B11BB00971D40100DB1DB5 /* SMMessageHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B730971D40100DB1DB5 /* SMMessageHistory.m */; };
 		16B11BB10971D40100DB1DB5 /* SMMessageMult.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B740971D40100DB1DB5 /* SMMessageMult.h */; settings = {ATTRIBUTES = (Public, ); }; };

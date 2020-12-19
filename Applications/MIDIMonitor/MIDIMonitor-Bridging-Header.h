@@ -6,4 +6,4 @@
 
 #import <SnoizeMIDI/SnoizeMIDI.h>
 #import <SnoizeMIDISpy/SnoizeMIDISpy.h>
-#import "SMMDocument.h"
+#import "SMMSpyingInputStream.h"

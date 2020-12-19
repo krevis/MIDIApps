@@ -39,7 +39,7 @@
 - (void)cancelReceivingSysExMessage;
 
 - (id)persistentSettings;
-- (NSArray *)takePersistentSettings:(id)settings;
+- (NSArray<NSString *> *)takePersistentSettings:(id)settings;
     // If any endpoints couldn't be found, their names are returned
 
 // For subclasses only
@@ -55,9 +55,8 @@
 - (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;
 - (id<SMInputStreamSource>)streamSourceForParser:(SMMessageParser *)parser;
 
-- (NSArray *)inputSources;
-- (NSSet *)selectedInputSources;
-- (void)setSelectedInputSources:(NSSet *)sources;
+@property (nonatomic, readonly, strong) NSArray<id<SMInputStreamSource>> *inputSources;
+@property (nonatomic, strong) NSSet<NSObject<SMInputStreamSource> *> *selectedInputSources;
 
 @end
 

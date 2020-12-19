@@ -18,12 +18,13 @@ import Foundation
 
     static let openWindowsForNewSources = "SMMOpenWindowsForNewSources"  // Obsolete
 
-    // TODO Remove @objc when possible
-    @objc static let selectOrdinarySourcesInNewDocument = "SMMAutoSelectOrdinarySources"
-    @objc static let selectVirtualDestinationInNewDocument = "SMMAutoSelectVirtualDestination"
-    @objc static let selectSpyingDestinationsInNewDocument = "SMMAutoSelectSpyingDestinations"
+    static let selectOrdinarySourcesInNewDocument = "SMMAutoSelectOrdinarySources"
+    static let selectVirtualDestinationInNewDocument = "SMMAutoSelectVirtualDestination"
+    static let selectSpyingDestinationsInNewDocument = "SMMAutoSelectSpyingDestinations"
 
-    @objc static let askBeforeClosingModifiedWindow = "SMMAskBeforeClosingModifiedWindow"
+    static let selectFirstSourceInNewDocument = "SMMAutoSelectFirstSource"  // Obsolete
+
+    static let askBeforeClosingModifiedWindow = "SMMAskBeforeClosingModifiedWindow"
 
     static let autoConnectNewSources = "SMMAutoConnectNewSources"
 }

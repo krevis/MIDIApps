@@ -356,10 +356,10 @@ extension SMMAppController {
         if let sources = newlyAppearedSources,
            sources.count > 0,
            let document = (NSDocumentController.shared.currentDocument ?? NSApp.orderedDocuments.first) as? SMMDocument {
-            document.selectedInputSources = document.selectedInputSources?.union(sources) ?? (sources as Set<AnyHashable>)
+            document.selectedInputSources = document.selectedInputSources.union(sources)
 
             if let windowController = document.windowControllers.first as? SMMMonitorWindowController {
-                windowController.revealInputSources(sources as NSSet)
+                windowController.revealInputSources(sources)
                 document.updateChangeCount(.changeCleared)
             }
         }
@@ -376,7 +376,7 @@ extension SMMAppController {
             document.showWindows()
 
             if let windowController = document.windowControllers.first as? SMMMonitorWindowController {
-                windowController.revealInputSources(sources as NSSet)
+                windowController.revealInputSources(sources)
                 document.updateChangeCount(.changeCleared)
             }
         }

@@ -213,17 +213,17 @@
     [super releaseForIncomingMIDIWithSourceConnectionRefCon:refCon];    
 }
 
-- (NSArray *)inputSources;
+- (NSArray<id<SMInputStreamSource>> *)inputSources;
 {
     return [SMSourceEndpoint sourceEndpoints];
 }
 
-- (NSSet *)selectedInputSources;
+- (NSSet<NSObject<SMInputStreamSource> *> *)selectedInputSources;
 {
     return [self endpoints];
 }
 
-- (void)setSelectedInputSources:(NSSet *)sources;
+- (void)setSelectedInputSources:(NSSet<NSObject<SMInputStreamSource> *> *)sources;
 {
     [self setEndpoints:sources];
 }

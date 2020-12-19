@@ -15,14 +15,22 @@
 @class SMMSpyingInputStream;
 
 
+@interface SMMCombinationInputStreamSourceGroup : NSObject
+
+@property (nonatomic, readonly, strong) NSString *name;
+@property (nonatomic, readonly, strong) NSArray<id<SMInputStreamSource>> *sources;
+@property (nonatomic, readonly, assign) BOOL expandable;
+
+@end
+
+
 @interface SMMCombinationInputStream : NSObject <SMMessageDestination>
 
 @property (nonatomic, assign) id<SMMessageDestination> messageDestination;
 
-@property (nonatomic, readonly) NSArray *groupedInputSources;
-    // An array of arrays; each is a list of valid source descriptions for each input stream
+@property (nonatomic, readonly) NSArray<SMMCombinationInputStreamSourceGroup *> *sourceGroups;
 
-@property (nonatomic, copy) NSSet *selectedInputSources;
+@property (nonatomic, copy) NSSet<NSObject<SMInputStreamSource> *> *selectedInputSources;
 
 - (NSDictionary *)persistentSettings;
 - (NSArray *)takePersistentSettings:(NSDictionary *)settings;

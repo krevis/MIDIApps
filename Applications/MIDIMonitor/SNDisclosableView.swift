@@ -18,9 +18,7 @@ class SNDisclosableView: NSView {
     // API
     //
 
-    // TODO Remove @objc when possible
-
-    @objc var shown = true {
+    var shown = true {
         willSet {
             if newValue != shown {
                 if newValue {
@@ -33,7 +31,7 @@ class SNDisclosableView: NSView {
         }
     }
 
-    @objc var hiddenHeight: CGFloat = 0
+    var hiddenHeight: CGFloat = 0
 
     @IBAction func toggleDisclosure(_ sender: AnyObject?) {
         shown = !shown

@@ -14,61 +14,17 @@
 #import "SMMessageFilter.h"
 
 
-@interface SMMessageFilter (Private)
-
-- (NSArray *)filterMessages:(NSArray *)messages;
-
-@end
-
-
 @implementation SMMessageFilter
 
-- (id)init;
+- (id)init
 {
     if (!(self = [super init]))
         return nil;
 
-    filterMask = SMMessageTypeNothingMask;
-    channelMask = SMChannelMaskAll;
+    _filterMask = SMMessageTypeNothingMask;
+    _channelMask = SMChannelMaskAll;
 
     return self;
-}
-
-- (void)dealloc;
-{
-    nonretainedMessageDestination = nil;
-
-    [super dealloc];
-}
-
-- (id<SMMessageDestination>)messageDestination;
-{
-    return nonretainedMessageDestination;
-}
-
-- (void)setMessageDestination:(id<SMMessageDestination>)aMessageDestination;
-{
-    nonretainedMessageDestination = aMessageDestination;
-}
-
-- (SMMessageType)filterMask;
-{
-    return filterMask;
-}
-
-- (void)setFilterMask:(SMMessageType)newFilterMask;
-{
-    filterMask = newFilterMask;
-}
-
-- (SMChannelMask)channelMask;
-{
-    return channelMask;
-}
-
-- (void)setChannelMask:(SMChannelMask)newChannelMask;
-{
-    channelMask = newChannelMask;
 }
 
 //
@@ -78,16 +34,16 @@
 - (void)takeMIDIMessages:(NSArray *)messages
 {
     NSArray *filteredMessages = [self filterMessages:messages];
-    if ([filteredMessages count])
-        [nonretainedMessageDestination takeMIDIMessages:filteredMessages];
+    if ([filteredMessages count]) {
+        [self.messageDestination takeMIDIMessages:filteredMessages];
+    }
 }
 
-@end
+//
+// Private
+//
 
-
-@implementation SMMessageFilter (Private)
-
-- (NSArray *)filterMessages:(NSArray *)messages;
+- (NSArray *)filterMessages:(NSArray *)messages
 {
     NSUInteger messageIndex, messageCount;
     NSMutableArray *filteredMessages;
@@ -99,11 +55,11 @@
         SMMessage *message;
 
         message = [messages objectAtIndex:messageIndex];
-        if ([message matchesMessageTypeMask:filterMask]) {
+        if ([message matchesMessageTypeMask:_filterMask]) {
             // NOTE: This type checking kind of smells, but I can't think of a better way to do it.
             // We could implement -matchesChannelMask on all SMMessages, but I don't know if the default should be YES or NO...
             // I could see it going either way, in different contexts.
-            if ([message isKindOfClass:[SMVoiceMessage class]] && ![(SMVoiceMessage *)message matchesChannelMask:channelMask]) {
+            if ([message isKindOfClass:[SMVoiceMessage class]] && ![(SMVoiceMessage *)message matchesChannelMask:_channelMask]) {
                 // drop this message
             } else {
                 [filteredMessages addObject:message];

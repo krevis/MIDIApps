@@ -14,8 +14,7 @@ import Cocoa
 
 class SMMDetailsWindowController: SMMWindowController, NSWindowDelegate {
 
-    // TODO Get rid of the @objc here
-    @objc let message: SMMessage
+    let message: SMMessage
 
     init(message myMessage: SMMessage) {
         message = myMessage

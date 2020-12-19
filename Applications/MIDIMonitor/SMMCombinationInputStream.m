@@ -17,10 +17,21 @@
 #import "MIDI_Monitor-Swift.h"
 #import "SMMSpyingInputStream.h"
 
+
+@interface SMMCombinationInputStreamSourceGroup ()
+
+// Redeclare readwrite
+@property (nonatomic, readwrite, strong) NSString *name;
+@property (nonatomic, readwrite, strong) NSArray<id<SMInputStreamSource>> *sources;
+@property (nonatomic, readwrite, assign) BOOL expandable;
+
+@end
+
+@implementation SMMCombinationInputStreamSourceGroup
+@end
+
+
 @interface SMMCombinationInputStream ()
-{
-    NSArray *_groupedInputSources;
-}
 
 @property (nonatomic, retain) SMPortInputStream *portInputStream;
 @property (nonatomic, retain) SMVirtualInputStream *virtualInputStream;
@@ -31,6 +42,9 @@
 @end
 
 @implementation SMMCombinationInputStream
+{
+    NSArray<SMMCombinationInputStreamSourceGroup *> *_sourceGroups;
+}
 
 - (instancetype)init
 {
@@ -70,22 +84,9 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
-    [_groupedInputSources release];
-    _groupedInputSources = nil;
-    
     _portInputStream.messageDestination = nil;
-    [_portInputStream release];
-    _portInputStream = nil;
-
     _virtualInputStream.messageDestination = nil;
-    [_virtualInputStream release];
-    _virtualInputStream = nil;
-
     _spyingInputStream.messageDestination = nil;
-    [_spyingInputStream release];
-    _spyingInputStream = nil;
-    
-    [super dealloc];
 }
 
 // SMMessageDestination protocol implementation
@@ -97,36 +98,36 @@
 
 // Other methods
 
-- (NSArray *)groupedInputSources
+- (NSArray<SMMCombinationInputStreamSourceGroup *> *)sourceGroups
 {
-    if (!_groupedInputSources) {
-        NSString *groupName = NSLocalizedStringFromTableInBundle(@"MIDI sources", @"MIDIMonitor", SMBundleForObject(self), "name of group for ordinary sources");
-        NSDictionary *portGroup = [NSMutableDictionary dictionaryWithObjectsAndKeys:groupName, @"name", nil];
+    if (!_sourceGroups) {
+        SMMCombinationInputStreamSourceGroup *portGroup = [[SMMCombinationInputStreamSourceGroup alloc] init];
+        portGroup.name = NSLocalizedStringFromTableInBundle(@"MIDI sources", @"MIDIMonitor", SMBundleForObject(self), "name of group for ordinary sources");
+        portGroup.expandable = YES;
 
-        groupName = NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"MIDIMonitor", SMBundleForObject(self), "name of source item for virtual destination");
-        NSDictionary *virtualGroup = [NSMutableDictionary dictionaryWithObjectsAndKeys:groupName, @"name", @(YES), @"isNotExpandable", nil];
+        SMMCombinationInputStreamSourceGroup *virtualGroup = [[SMMCombinationInputStreamSourceGroup alloc] init];
+        virtualGroup.name = NSLocalizedStringFromTableInBundle(@"Act as a destination for other programs", @"MIDIMonitor", SMBundleForObject(self), "name of source item for virtual destination");
+        virtualGroup.expandable = NO;
 
-        NSDictionary *spyingGroup = nil;
-        if (self.spyingInputStream) {
-            groupName = NSLocalizedStringFromTableInBundle(@"Spy on output to destinations", @"MIDIMonitor", SMBundleForObject(self), "name of group for spying on destinations");
-            spyingGroup = [NSMutableDictionary dictionaryWithObjectsAndKeys:groupName, @"name", nil];
-        }
+        SMMCombinationInputStreamSourceGroup *spyingGroup = [[SMMCombinationInputStreamSourceGroup alloc] init];
+        spyingGroup.name = NSLocalizedStringFromTableInBundle(@"Spy on output to destinations", @"MIDIMonitor", SMBundleForObject(self), "name of group for spying on destinations");
+        spyingGroup.expandable = YES;
 
-        _groupedInputSources = [[NSArray alloc] initWithObjects:portGroup, virtualGroup, spyingGroup, nil];
+        _sourceGroups = @[portGroup, virtualGroup, spyingGroup];
     }
 
     if (self.portInputStream) {
-        _groupedInputSources[0][@"sources"] = self.portInputStream.inputSources;
+        _sourceGroups[0].sources = self.portInputStream.inputSources;
     }
-    _groupedInputSources[1][@"sources"] = self.virtualInputStream.inputSources;
+    _sourceGroups[1].sources = self.virtualInputStream.inputSources;
     if (self.spyingInputStream) {
-        _groupedInputSources[2][@"sources"] = self.spyingInputStream.inputSources;
+        _sourceGroups[2].sources = self.spyingInputStream.inputSources;
     }
 
-    return _groupedInputSources;
+    return _sourceGroups;
 }
 
-- (NSSet *)selectedInputSources
+- (NSSet<NSObject<SMInputStreamSource> *> *)selectedInputSources
 {
     NSMutableSet *inputSources = [NSMutableSet set];
 
@@ -141,7 +142,7 @@
     return inputSources;
 }
 
-- (void)setSelectedInputSources:(NSSet *)inputSources
+- (void)setSelectedInputSources:(NSSet<NSObject<SMInputStreamSource> *> *)inputSources
 {
     if (!inputSources) {
         inputSources = [NSSet set];
@@ -252,12 +253,10 @@
 
     if (!self.willPostSourceListChangedNotification) {
         self.willPostSourceListChangedNotification = YES;
-        [self retain];
 
         dispatch_async(dispatch_get_main_queue(), ^{
             self.willPostSourceListChangedNotification = NO;
             [[NSNotificationCenter defaultCenter] postNotificationName:notification.name object:self];
-            [self autorelease];
         });
     }
 }

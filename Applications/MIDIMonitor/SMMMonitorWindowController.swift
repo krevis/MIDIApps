@@ -72,7 +72,7 @@ class SMMMonitorWindowController: NSWindowController {
 
     // Transient data
     var oneChannel: UInt = 1
-    var groupedInputSources: [Any]? // TODO do better
+    var inputSourceGroups: [SMMCombinationInputStreamSourceGroup] = []
     var displayedMessages: [SMMessage] = []
     var messagesNeedScrollToBottom: Bool = false
     var nextMessagesRefreshDate: NSDate?
@@ -131,7 +131,7 @@ extension SMMMonitorWindowController {
             updateMaxMessageCount()
             updateFilterControls()
 
-            if let windowSettings = smmDocument.windowSettings as? [String: AnyObject] {
+            if let windowSettings = smmDocument.windowSettings {
                 restoreWindowSettings(windowSettings)
             }
         }
@@ -177,34 +177,27 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
     // MARK: Input Sources Outline View
 
     @objc func updateSources() {
-        groupedInputSources = midiDocument.groupedInputSources()
+        inputSourceGroups = midiDocument.inputSourceGroups
         sourcesOutlineView.reloadData()
     }
 
-    @objc func revealInputSources(_ sources: NSSet) {
+    @objc func revealInputSources(_ sources: Set<AnyHashable>) {
         // Show the sources first
         sourcesDisclosableView.shown = true
         sourcesDisclosureButton.intValue = 1
 
         // Of all of the input sources, find the first one which is in the given set.
         // Then expand the outline view to show this source, and scroll it to be visible.
-        guard groupedInputSources != nil else { return }
-        for group in groupedInputSources! {
-            if let itemDict = group as? [String: Any] {
-                let itemNotExpandableNumber = itemDict["isNotExpandable"] as? NSNumber
-                let notExpandable = (itemNotExpandableNumber?.boolValue) ?? false
-                if !notExpandable {
-                    let groupSources = itemDict["sources"] as! [SMInputStreamSource]
-                    for source in groupSources {
-                        if sources.contains(source) {
-                            // Found one!
-                            sourcesOutlineView.expandItem(group)
-                            sourcesOutlineView.scrollRowToVisible(sourcesOutlineView.row(forItem: source))
+        for group in inputSourceGroups where group.expandable {
+            for source in group.sources {
+                if let hashableSource = source as? AnyHashable,
+                   sources.contains(hashableSource) {
+                    // Found one!
+                    sourcesOutlineView.expandItem(group)
+                    sourcesOutlineView.scrollRowToVisible(sourcesOutlineView.row(forItem: source))
 
-                            // And now we're done
-                            break
-                        }
-                    }
+                    // And now we're done
+                    break
                 }
             }
         }
@@ -217,11 +210,10 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
 
     func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
         if item == nil {
-            return groupedInputSources?.count ?? 0
+            return inputSourceGroups.count
         }
-        else if let itemDict = item as? [String: Any] {
-            let itemSources = itemDict["sources"] as! [Any]
-            return itemSources.count
+        else if let group = item as? SMMCombinationInputStreamSourceGroup {
+            return group.sources.count
         }
         else {
             return 0
@@ -229,20 +221,19 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
     }
     func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
         if item == nil {
-            return groupedInputSources![index]
+            return inputSourceGroups[index]
+        }
+        else if let group = item as? SMMCombinationInputStreamSourceGroup {
+            return group.sources[index]
         }
         else {
-            let itemDict = item as! [String: Any]
-            let itemSources = itemDict["sources"] as! [Any]
-            return itemSources[index]
+            fatalError()
         }
     }
 
     func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
-        if let itemDict = item as? [String: Any] {
-            let itemNotExpandableNumber = itemDict["isNotExpandable"] as? NSNumber
-            let notExpandable = (itemNotExpandableNumber?.boolValue) ?? false
-            return !notExpandable
+        if let group = item as? SMMCombinationInputStreamSourceGroup {
+            return group.expandable
         }
         else {
             return false
@@ -250,17 +241,15 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
     }
 
     func outlineView(_ outlineView: NSOutlineView, objectValueFor tableColumn: NSTableColumn?, byItem item: Any?) -> Any? {
-        let identifier = tableColumn?.identifier.rawValue
-        let itemDict = item as? [String: Any]
-        let isCategory = itemDict != nil
+        guard let item = item else { fatalError() }
 
+        let identifier = tableColumn?.identifier.rawValue
         switch identifier {
         case "name":
-            if isCategory {
-                return itemDict!["name"]
+            if let group = item as? SMMCombinationInputStreamSourceGroup {
+                return group.name
             }
-            else {
-                let source: SMInputStreamSource = item as! SMInputStreamSource
+            else if let source = item as? SMInputStreamSource {
                 let name = source.inputStreamSourceName()!
                 let externalDeviceNames =  source.inputStreamSourceExternalDeviceNames() as! [String]
                 if externalDeviceNames.count > 0 {
@@ -270,16 +259,20 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
                     return name
                 }
             }
+            else {
+                return nil
+            }
 
         case "enabled":
-            let sources: [SMInputStreamSource]
-            if isCategory {
-                sources = itemDict!["sources"] as! [SMInputStreamSource]
+            if let group = item as? SMMCombinationInputStreamSourceGroup {
+                return buttonStateForInputSources(group.sources)
+            }
+            else if let source = item as? SMInputStreamSource {
+                return buttonStateForInputSources([source])
             }
             else {
-                sources = [item] as! [SMInputStreamSource]
+                return nil
             }
-            return buttonStateForInputSources(sources)
 
         default:
             return nil
@@ -287,6 +280,8 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
     }
 
     func outlineView(_ outlineView: NSOutlineView, setObjectValue object: Any?, for tableColumn: NSTableColumn?, byItem item: Any?) {
+        guard let item = item else { fatalError() }
+
         let number = object as! NSNumber
         var newState = NSCell.StateValue(rawValue: number.intValue)
         // It doesn't make sense to switch from off to mixed, so go directly to on
@@ -294,27 +289,26 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
             newState = NSCell.StateValue.on
         }
 
-        let itemDict = item as? [String: Any]
-        let isCategory = itemDict != nil
-
         let sources: [SMInputStreamSource]
-        if isCategory {
-            sources = itemDict!["sources"] as! [SMInputStreamSource]
+        if let group = item as? SMMCombinationInputStreamSourceGroup {
+            sources = group.sources
+        }
+        else if let source = item as? SMInputStreamSource {
+            sources = [source]
         }
         else {
-            sources = [item] as! [SMInputStreamSource]
+            sources = []
         }
 
         var newSelectedSources = midiDocument.selectedInputSources
-        // TODO this should be a set and we should do union or remove
-        if newState == .on {
-            for source in sources {
-                newSelectedSources?.insert(source as! AnyHashable)
-            }
-        }
-        else {
-            for source in sources {
-                newSelectedSources?.remove(source as! AnyHashable)
+        for source in sources {
+            if let hashableSource = source as? AnyHashable {
+                if newState == .on {
+                    newSelectedSources.insert(hashableSource)
+                }
+                else {
+                    newSelectedSources.remove(hashableSource)
+                }
             }
         }
 
@@ -327,13 +321,14 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
     }
 
     private func buttonStateForInputSources(_ sources: [SMInputStreamSource]) -> NSCell.StateValue {
-        guard let selectedSources = midiDocument.selectedInputSources else { return .off }
+        let selectedSources = midiDocument.selectedInputSources
 
         var areAnySelected = false
         var areAnyNotSelected = false
 
         for source in sources {
-            if selectedSources.contains(source as! AnyHashable) {
+            if let hashableSource = source as? AnyHashable,
+               selectedSources.contains(hashableSource) {
                 areAnySelected = true
             }
             else {
@@ -356,7 +351,7 @@ extension SMMMonitorWindowController {
 
     @objc func updateFilterControls() {
         // TODO this is clumsy
-        let currentMask = midiDocument.filterMask().rawValue
+        let currentMask = midiDocument.filterMask.rawValue
 
         for checkbox in filterCheckboxes {
             let buttonMask = UInt32(checkbox.tag)
@@ -389,14 +384,14 @@ extension SMMMonitorWindowController {
             checkbox.state = newState
         }
 
-        if midiDocument.isShowingAllChannels() {
+        if midiDocument.isShowingAllChannels {
             channelRadioButtons.selectCell(withTag: 0)
             oneChannelField.isEnabled = false
         }
         else {
             channelRadioButtons.selectCell(withTag: 1)
             oneChannelField.isEnabled = true
-            oneChannel = midiDocument.oneChannelToShow()
+            oneChannel = midiDocument.oneChannelToShow
         }
         oneChannelField.objectValue = NSNumber(value: oneChannel)
     }
@@ -536,7 +531,7 @@ extension SMMMonitorWindowController: NSTableViewDataSource {
 
     @IBAction func showDetailsOfSelectedMessages(_ sender: AnyObject?) {
         for message in selectedMessages {
-            midiDocument.detailsWindowController(for: message)?.showWindow(nil)
+            midiDocument.detailsWindowController(for: message).showWindow(nil)
         }
     }
 
@@ -549,7 +544,7 @@ extension SMMMonitorWindowController: NSTableViewDataSource {
     }
 
     private func refreshMessagesTableView() {
-        displayedMessages = midiDocument.savedMessages() as! [SMMessage]
+        displayedMessages = midiDocument.savedMessages
 
         // Scroll to the botton, iff the table view is already scrolled to the bottom.
         let isAtBottom = messagesTableView.bounds.maxY - messagesTableView.visibleRect.maxY < messagesTableView.rowHeight
@@ -574,11 +569,11 @@ extension SMMMonitorWindowController: NSTableViewDataSource {
         refreshMessagesTableView()
     }
 
-    @objc func updateSysExReadIndicator(bytesRead: Int) {
+    @objc func updateSysExReadIndicator() {
         showSysExProgressIndicator()
     }
 
-    @objc func stopSysExReadIndicator(bytesRead: Int) {
+    @objc func stopSysExReadIndicator() {
         hideSysExProgressIndicator()
     }
 
@@ -608,8 +603,8 @@ extension SMMMonitorWindowController {
         return [sourcesShownKey, filterShownKey, windowFrameKey, messagesScrollPointX, messagesScrollPointY]
     }
 
-    @objc var windowSettings: [String: AnyObject] {
-        var windowSettings: [String: AnyObject] = [:]
+    @objc var windowSettings: [String: Any] {
+        var windowSettings: [String: Any] = [:]
 
         // Remember whether our sections are shown or hidden
         if sourcesDisclosableView.shown {
@@ -635,7 +630,7 @@ extension SMMMonitorWindowController {
         return windowSettings
     }
 
-    private func restoreWindowSettings(_ windowSettings: [String: AnyObject]) {
+    private func restoreWindowSettings(_ windowSettings: [String: Any]) {
         // Restore visibility of disclosable sections
         let sourcesShown = (windowSettings[Self.sourcesShownKey] as? NSNumber)?.boolValue ?? false
         sourcesDisclosureButton.intValue = sourcesShown ? 1 : 0
