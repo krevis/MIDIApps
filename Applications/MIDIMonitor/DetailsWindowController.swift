@@ -12,7 +12,7 @@
 
 import Cocoa
 
-class SMMDetailsWindowController: SMMWindowController, NSWindowDelegate {
+class DetailsWindowController: UtilityWindowController, NSWindowDelegate {
 
     let message: SMMessage
 
@@ -66,7 +66,7 @@ class SMMDetailsWindowController: SMMWindowController, NSWindowDelegate {
     }
 
     func window(_ window: NSWindow, willEncodeRestorableState state: NSCoder) {
-        guard let midiDocument = document as? SMMDocument else { return }
+        guard let midiDocument = document as? Document else { return }
         midiDocument.encodeRestorableState(state, for: self)
     }
 

@@ -12,9 +12,9 @@
 
 import Cocoa
 
-class SMMPreferencesWindowController: SMMWindowController, NSWindowRestoration {
+class PreferencesWindowController: UtilityWindowController, NSWindowRestoration {
 
-    static let sharedInstance = SMMPreferencesWindowController(windowNibName: "Preferences")
+    static let sharedInstance = PreferencesWindowController(windowNibName: "Preferences")
 
     //
     // Internal
@@ -60,13 +60,13 @@ class SMMPreferencesWindowController: SMMWindowController, NSWindowRestoration {
         expertModeCheckbox.intValue = defaults.bool(forKey: SMExpertModePreferenceKey) ? 1 : 0
         updateExpertModeTextField()
 
-        autoSelectOrdinarySourcesCheckbox.intValue = defaults.bool(forKey: SMMPreferenceKeys.selectOrdinarySourcesInNewDocument) ? 1 : 0
-        autoSelectVirtualDestinationCheckbox.intValue = defaults.bool(forKey: SMMPreferenceKeys.selectVirtualDestinationInNewDocument) ? 1 : 0
-        autoSelectSpyingDestinationsCheckbox.intValue = defaults.bool(forKey: SMMPreferenceKeys.selectSpyingDestinationsInNewDocument) ? 1 : 0
-        autoConnectRadioButtons.selectCell(withTag: defaults.integer(forKey: SMMPreferenceKeys.autoConnectNewSources))
+        autoSelectOrdinarySourcesCheckbox.intValue = defaults.bool(forKey: PreferenceKeys.selectOrdinarySourcesInNewDocument) ? 1 : 0
+        autoSelectVirtualDestinationCheckbox.intValue = defaults.bool(forKey: PreferenceKeys.selectVirtualDestinationInNewDocument) ? 1 : 0
+        autoSelectSpyingDestinationsCheckbox.intValue = defaults.bool(forKey: PreferenceKeys.selectSpyingDestinationsInNewDocument) ? 1 : 0
+        autoConnectRadioButtons.selectCell(withTag: defaults.integer(forKey: PreferenceKeys.autoConnectNewSources))
 
-        askBeforeClosingModifiedWindowCheckbox.intValue = defaults.bool(forKey: SMMPreferenceKeys.askBeforeClosingModifiedWindow) ? 1 : 0
-        alwaysSaveSysExWithEOXMatrix.selectCell(withTag: defaults.bool(forKey: SMMPreferenceKeys.saveSysExWithEOXAlways) ? 1 : 0)
+        askBeforeClosingModifiedWindowCheckbox.intValue = defaults.bool(forKey: PreferenceKeys.askBeforeClosingModifiedWindow) ? 1 : 0
+        alwaysSaveSysExWithEOXMatrix.selectCell(withTag: defaults.bool(forKey: PreferenceKeys.saveSysExWithEOXAlways) ? 1 : 0)
     }
 
     @IBAction func changeTimeFormat(_ sender: NSControl!) {
@@ -90,23 +90,23 @@ class SMMPreferencesWindowController: SMMWindowController, NSWindowRestoration {
     }
 
     @IBAction func changeAutoSelectOrdinarySources(_ sender: NSControl!) {
-        UserDefaults.standard.set(sender.intValue, forKey: SMMPreferenceKeys.selectOrdinarySourcesInNewDocument)
+        UserDefaults.standard.set(sender.intValue, forKey: PreferenceKeys.selectOrdinarySourcesInNewDocument)
     }
 
     @IBAction func changeAutoSelectVirtualDestination(_ sender: NSControl!) {
-        UserDefaults.standard.set(sender.intValue, forKey: SMMPreferenceKeys.selectVirtualDestinationInNewDocument)
+        UserDefaults.standard.set(sender.intValue, forKey: PreferenceKeys.selectVirtualDestinationInNewDocument)
     }
 
     @IBAction func changeAutoSelectSpyingDestinations(_ sender: NSControl!) {
-        UserDefaults.standard.set(sender.intValue, forKey: SMMPreferenceKeys.selectSpyingDestinationsInNewDocument)
+        UserDefaults.standard.set(sender.intValue, forKey: PreferenceKeys.selectSpyingDestinationsInNewDocument)
     }
 
     @IBAction func changeAskBeforeClosingModifiedWindow(_ sender: NSControl!) {
-        UserDefaults.standard.set(sender.intValue, forKey: SMMPreferenceKeys.askBeforeClosingModifiedWindow)
+        UserDefaults.standard.set(sender.intValue, forKey: PreferenceKeys.askBeforeClosingModifiedWindow)
     }
 
     @IBAction func changeAlwaysSaveSysExWithEOX(_ sender: NSControl!) {
-        UserDefaults.standard.set(sender.intValue, forKey: SMMPreferenceKeys.saveSysExWithEOXAlways)
+        UserDefaults.standard.set(sender.intValue, forKey: PreferenceKeys.saveSysExWithEOXAlways)
     }
 
     @IBAction func changeExpertMode(_ sender: NSControl!) {
@@ -116,7 +116,7 @@ class SMMPreferencesWindowController: SMMWindowController, NSWindowRestoration {
     }
 
     @IBAction func changeNewSourcesRadio(_ sender: NSControl!) {
-        UserDefaults.standard.set(sender.selectedTag(), forKey: SMMPreferenceKeys.autoConnectNewSources)
+        UserDefaults.standard.set(sender.selectedTag(), forKey: PreferenceKeys.autoConnectNewSources)
     }
 
     @IBAction func changeProgramChangeBaseIndex(_ sender: NSControl!) {

@@ -12,7 +12,7 @@
 
 import Cocoa
 
-class SMMDocument: NSDocument {
+class Document: NSDocument {
 
     // TODO Reorganize, make things private, etc.
 
@@ -22,7 +22,7 @@ class SMMDocument: NSDocument {
     private(set) var windowSettings: [String: Any]?
 
     // MIDI processing
-    private let stream = SMMCombinationInputStream()
+    private let stream = CombinationInputStream()
     private let messageFilter = SMMessageFilter()
     private let history = SMMessageHistory()
 
@@ -53,9 +53,9 @@ class SMMDocument: NSDocument {
         // If the user changed the value of this old obsolete preference, bring its value forward to our new preference
         // (the default value was YES)
         let defaults = UserDefaults.standard
-        if !defaults.bool(forKey: SMMPreferenceKeys.selectFirstSourceInNewDocument) {
-            defaults.setValue(false, forKey: SMMPreferenceKeys.selectOrdinarySourcesInNewDocument)
-            defaults.setValue(true, forKey: SMMPreferenceKeys.selectFirstSourceInNewDocument)
+        if !defaults.bool(forKey: PreferenceKeys.selectFirstSourceInNewDocument) {
+            defaults.setValue(false, forKey: PreferenceKeys.selectOrdinarySourcesInNewDocument)
+            defaults.setValue(true, forKey: PreferenceKeys.selectFirstSourceInNewDocument)
         }
 
         autoselectSources()
@@ -68,7 +68,7 @@ class SMMDocument: NSDocument {
     }
 
     override func makeWindowControllers() {
-        addWindowController(SMMMonitorWindowController())
+        addWindowController(MonitorWindowController())
     }
 
     override func data(ofType typeName: String) throws -> Data {
@@ -168,7 +168,7 @@ class SMMDocument: NSDocument {
         }
 
         var readWindowSettings: [String: Any] = [:]
-        for key in SMMMonitorWindowController.windowSettingsKeys {
+        for key in MonitorWindowController.windowSettingsKeys {
             if let obj = dict[key] {
                 readWindowSettings[key] = obj
             }
@@ -216,7 +216,7 @@ class SMMDocument: NSDocument {
             }
         }
 
-        if mayCloseWithoutSaving && !defaults.bool(forKey: SMMPreferenceKeys.askBeforeClosingModifiedWindow) {
+        if mayCloseWithoutSaving && !defaults.bool(forKey: PreferenceKeys.askBeforeClosingModifiedWindow) {
             // Tell the delegate to close now, regardless of what the document's dirty flag may be.
             // Unfortunately this is not easy in Objective-C:
             // void (*objc_msgSendTyped)(id self, SEL _cmd, NSDocument *document, BOOL shouldClose, void *contextInfo) = (void*)objc_msgSend;
@@ -234,7 +234,7 @@ class SMMDocument: NSDocument {
         }
     }
 
-    var inputSourceGroups: [SMMCombinationInputStreamSourceGroup] {
+    var inputSourceGroups: [CombinationInputStreamSourceGroup] {
         return stream.sourceGroups
     }
 
@@ -380,31 +380,31 @@ class SMMDocument: NSDocument {
         return history.savedMessages() as? [SMMessage] ?? []  // TODO History type should match
     }
 
-    var monitorWindowController: SMMMonitorWindowController? {
-        return windowControllers.first { $0 is SMMMonitorWindowController } as? SMMMonitorWindowController
+    var monitorWindowController: MonitorWindowController? {
+        return windowControllers.first { $0 is MonitorWindowController } as? MonitorWindowController
     }
 
-    var detailsWindowsControllers: [SMMDetailsWindowController] {
-        return windowControllers.filter { $0 is SMMDetailsWindowController } as? [SMMDetailsWindowController] ?? []
+    var detailsWindowsControllers: [DetailsWindowController] {
+        return windowControllers.filter { $0 is DetailsWindowController } as? [DetailsWindowController] ?? []
     }
 
-    func detailsWindowController(for message: SMMessage) -> SMMDetailsWindowController {
+    func detailsWindowController(for message: SMMessage) -> DetailsWindowController {
         if let match = detailsWindowsControllers.first(where: { $0.message == message}) {
             return match
         }
 
-        let detailsWindowController: SMMDetailsWindowController
+        let detailsWindowController: DetailsWindowController
         if message is SMSystemExclusiveMessage {
-            detailsWindowController = SMMSysExWindowController(message: message)
+            detailsWindowController = SysExWindowController(message: message)
         }
         else {
-            detailsWindowController = SMMDetailsWindowController(message: message)
+            detailsWindowController = DetailsWindowController(message: message)
         }
         addWindowController(detailsWindowController)
         return detailsWindowController
     }
 
-    func encodeRestorableState(_ state: NSCoder, for detailsWindowController: SMMDetailsWindowController) {
+    func encodeRestorableState(_ state: NSCoder, for detailsWindowController: DetailsWindowController) {
         if let messageIndex = savedMessages.firstIndex(of: detailsWindowController.message) {
             state.encode(messageIndex, forKey: "messageIndex")
         }
@@ -461,21 +461,21 @@ class SMMDocument: NSDocument {
 
         let defaults = UserDefaults.standard
 
-        if defaults.bool(forKey: SMMPreferenceKeys.selectOrdinarySourcesInNewDocument) {
+        if defaults.bool(forKey: PreferenceKeys.selectOrdinarySourcesInNewDocument) {
             if groups.count > 0,
                let sources = groups[0].sources as? [AnyHashable] {
                 sourcesSet.formUnion(sources)
             }
         }
 
-        if defaults.bool(forKey: SMMPreferenceKeys.selectVirtualDestinationInNewDocument) {
+        if defaults.bool(forKey: PreferenceKeys.selectVirtualDestinationInNewDocument) {
             if groups.count > 1,
                let sources = groups[1].sources as? [AnyHashable] {
                 sourcesSet.formUnion(sources)
             }
         }
 
-        if defaults.bool(forKey: SMMPreferenceKeys.selectSpyingDestinationsInNewDocument) {
+        if defaults.bool(forKey: PreferenceKeys.selectSpyingDestinationsInNewDocument) {
             if groups.count > 2,
                let sources = groups[2].sources as? [AnyHashable] {
                 sourcesSet.formUnion(sources)

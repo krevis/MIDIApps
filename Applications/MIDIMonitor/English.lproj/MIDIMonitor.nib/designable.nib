@@ -6,7 +6,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="SMMMonitorWindowController" customModule="MIDI_Monitor" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="MonitorWindowController" customModule="MIDI_Monitor" customModuleProvider="target">
             <connections>
                 <outlet property="channelRadioButtons" destination="400" id="427"/>
                 <outlet property="clearButton" destination="57" id="65"/>
@@ -33,7 +33,7 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <window identifier="monitor" title="MIDI Monitor" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="MIDIMonitor" animationBehavior="default" id="34" userLabel="Window" customClass="SMMFastAnimatingWindow" customModule="MIDI_Monitor" customModuleProvider="target">
+        <window identifier="monitor" title="MIDI Monitor" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="MIDIMonitor" animationBehavior="default" id="34" userLabel="Window" customClass="FastAnimatingWindow" customModule="MIDI_Monitor" customModuleProvider="target">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="69" y="243" width="517" height="575"/>
@@ -43,7 +43,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="517" height="575"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="383" customClass="SNDisclosableView" customModule="MIDI_Monitor" customModuleProvider="target">
+                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="383" customClass="DisclosableView" customModule="MIDI_Monitor" customModuleProvider="target">
                         <rect key="frame" x="20" y="211" width="477" height="193"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <subviews>
@@ -272,7 +272,7 @@
                             <outlet property="nextKeyView" destination="390" id="485"/>
                         </connections>
                     </customView>
-                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="369" customClass="SNDisclosableView" customModule="MIDI_Monitor" customModuleProvider="target">
+                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="369" customClass="DisclosableView" customModule="MIDI_Monitor" customModuleProvider="target">
                         <rect key="frame" x="20" y="427" width="477" height="107"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <subviews>
@@ -283,7 +283,7 @@
                                     <rect key="frame" x="1" y="1" width="444" height="95"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="372" id="375" customClass="SMMSourcesOutlineView" customModule="MIDI_Monitor" customModuleProvider="target">
+                                        <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="372" id="375" customClass="SourcesOutlineView" customModule="MIDI_Monitor" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="444" height="95"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -516,7 +516,7 @@
                         </view>
                         <font key="titleFont" metaFont="system"/>
                     </box>
-                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="384" customClass="SNDisclosureButton" customModule="MIDI_Monitor" customModuleProvider="target">
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="384" customClass="DisclosureButton" customModule="MIDI_Monitor" customModuleProvider="target">
                         <rect key="frame" x="20" y="407" width="80" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="square" title="Filter" bezelStyle="shadowlessSquare" image="buttonCell:504:image" imagePosition="left" alignment="left" alternateImage="buttonCell:504:alternateImage" state="on" inset="2" id="504">
@@ -528,7 +528,7 @@
                             <outlet property="nextKeyView" destination="383" id="484"/>
                         </connections>
                     </button>
-                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="447" customClass="SNDisclosureButton" customModule="MIDI_Monitor" customModuleProvider="target">
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="447" customClass="DisclosureButton" customModule="MIDI_Monitor" customModuleProvider="target">
                         <rect key="frame" x="20" y="537" width="80" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="square" title="Sources" bezelStyle="shadowlessSquare" image="buttonCell:505:image" imagePosition="left" alignment="left" alternateImage="buttonCell:505:alternateImage" state="on" inset="2" id="505">

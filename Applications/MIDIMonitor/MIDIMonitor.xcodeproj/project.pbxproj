@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		160A5E8D258822CB008C0CE1 /* SMMSysExWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160A5E8C258822CB008C0CE1 /* SMMSysExWindowController.swift */; };
-		160A5EA1258825B0008C0CE1 /* SMMPreferenceKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160A5EA0258825B0008C0CE1 /* SMMPreferenceKeys.swift */; };
+		160A5E8D258822CB008C0CE1 /* SysExWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160A5E8C258822CB008C0CE1 /* SysExWindowController.swift */; };
+		160A5EA1258825B0008C0CE1 /* PreferenceKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160A5EA0258825B0008C0CE1 /* PreferenceKeys.swift */; };
 		16133B7415F5C75C00533536 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 161B71EF15D8D76B006E21D4 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		161B71F815D8D79E006E21D4 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 161B71EF15D8D76B006E21D4 /* Sparkle.framework */; };
 		161B71FA15D8DD83006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B71F915D8DD83006E21D4 /* dsa_pub.pem */; };
@@ -29,25 +29,25 @@
 		167B882506ED4D650053D305 /* Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 16F20F4906EAA14A00D9C507 /* Defaults.plist */; };
 		167B883906ED4D650053D305 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		167B883B06ED4D650053D305 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B4281801A360AD01000164 /* CoreMIDI.framework */; };
-		1692D71225899A8C0092D6E7 /* SMMPreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D71125899A8C0092D6E7 /* SMMPreferencesWindowController.swift */; };
-		1692D7192589E83D0092D6E7 /* SMMWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D7182589E83D0092D6E7 /* SMMWindowController.swift */; };
-		1692D72D2589E91D0092D6E7 /* SMMMonitorWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D72C2589E91D0092D6E7 /* SMMMonitorWindowController.swift */; };
-		1692D72F258B31370092D6E7 /* SMMAppController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D72E258B31370092D6E7 /* SMMAppController.swift */; };
-		1692D732258BDC6A0092D6E7 /* SMMAppController+SUUpdaterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1692D731258BDC6A0092D6E7 /* SMMAppController+SUUpdaterDelegate.m */; };
-		1692D74D258C3EC10092D6E7 /* SMMDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D74C258C3EC10092D6E7 /* SMMDocument.swift */; };
-		1692D764258D75EE0092D6E7 /* SMMCombinationInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D763258D75EE0092D6E7 /* SMMCombinationInputStream.swift */; };
-		1692D766258DC8410092D6E7 /* SMMSpyingInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D765258DC8410092D6E7 /* SMMSpyingInputStream.swift */; };
-		16980517258874BF00059CB4 /* SMMDetailsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16980516258874BF00059CB4 /* SMMDetailsWindowController.swift */; };
+		1692D71225899A8C0092D6E7 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D71125899A8C0092D6E7 /* PreferencesWindowController.swift */; };
+		1692D7192589E83D0092D6E7 /* UtilityWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D7182589E83D0092D6E7 /* UtilityWindowController.swift */; };
+		1692D72D2589E91D0092D6E7 /* MonitorWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D72C2589E91D0092D6E7 /* MonitorWindowController.swift */; };
+		1692D72F258B31370092D6E7 /* AppController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D72E258B31370092D6E7 /* AppController.swift */; };
+		1692D732258BDC6A0092D6E7 /* AppController+SUUpdaterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1692D731258BDC6A0092D6E7 /* AppController+SUUpdaterDelegate.m */; };
+		1692D74D258C3EC10092D6E7 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D74C258C3EC10092D6E7 /* Document.swift */; };
+		1692D764258D75EE0092D6E7 /* CombinationInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D763258D75EE0092D6E7 /* CombinationInputStream.swift */; };
+		1692D766258DC8410092D6E7 /* SpyingInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D765258DC8410092D6E7 /* SpyingInputStream.swift */; };
+		16980517258874BF00059CB4 /* DetailsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16980516258874BF00059CB4 /* DetailsWindowController.swift */; };
 		16C267D215D836B2009F4BE4 /* SNDisclosureArrowDown.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 16C267D015D836B2009F4BE4 /* SNDisclosureArrowDown.tiff */; };
 		16C267D315D836B2009F4BE4 /* SNDisclosureArrowRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 16C267D115D836B2009F4BE4 /* SNDisclosureArrowRight.tiff */; };
 		16E8F01A097B2E5200B52193 /* SnoizeMIDISpy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169E71B1097B242A001AFB58 /* SnoizeMIDISpy.framework */; };
 		16E8F01D097B2E8B00B52193 /* SnoizeMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */; };
-		16F9FA312586EC0800169621 /* SMMFastAnimatingWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F9FA302586EC0800169621 /* SMMFastAnimatingWindow.swift */; };
-		16F9FA452586EDED00169621 /* SMMNonHighlightingCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F9FA442586EDED00169621 /* SMMNonHighlightingCells.swift */; };
-		16F9FA572586F0A700169621 /* SMMSourcesOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F9FA562586F0A700169621 /* SMMSourcesOutlineView.swift */; };
-		16F9FA592586F51400169621 /* SNDisclosureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F9FA582586F51400169621 /* SNDisclosureButton.swift */; };
+		16F9FA312586EC0800169621 /* FastAnimatingWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F9FA302586EC0800169621 /* FastAnimatingWindow.swift */; };
+		16F9FA452586EDED00169621 /* NonHighlightingCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F9FA442586EDED00169621 /* NonHighlightingCells.swift */; };
+		16F9FA572586F0A700169621 /* SourcesOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F9FA562586F0A700169621 /* SourcesOutlineView.swift */; };
+		16F9FA592586F51400169621 /* DisclosureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F9FA582586F51400169621 /* DisclosureButton.swift */; };
 		16F9FA5B2586F9BB00169621 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F9FA5A2586F9BB00169621 /* main.swift */; };
-		16F9FA5D2586FD0B00169621 /* SNDisclosableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F9FA5C2586FD0B00169621 /* SNDisclosableView.swift */; };
+		16F9FA5D2586FD0B00169621 /* DisclosableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F9FA5C2586FD0B00169621 /* DisclosableView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -203,8 +203,8 @@
 
 /* Begin PBXFileReference section */
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
-		160A5E8C258822CB008C0CE1 /* SMMSysExWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMSysExWindowController.swift; sourceTree = "<group>"; };
-		160A5EA0258825B0008C0CE1 /* SMMPreferenceKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMPreferenceKeys.swift; sourceTree = "<group>"; };
+		160A5E8C258822CB008C0CE1 /* SysExWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SysExWindowController.swift; sourceTree = "<group>"; };
+		160A5EA0258825B0008C0CE1 /* PreferenceKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceKeys.swift; sourceTree = "<group>"; };
 		161B71E015D8D76A006E21D4 /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = ../../ThirdParty/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		161B71F915D8DD83006E21D4 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dsa_pub.pem; path = ../../Updates/dsa_pub.pem; sourceTree = "<group>"; };
 		161B71FC15D8DFA5006E21D4 /* MIDIMonitor.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = MIDIMonitor.xml; path = ../../Updates/MIDIMonitor.xml; sourceTree = "<group>"; };
@@ -216,16 +216,16 @@
 		167B884206ED4D650053D305 /* Info-MIDIMonitor.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-MIDIMonitor.plist"; sourceTree = "<group>"; };
 		167B884306ED4D650053D305 /* MIDI Monitor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MIDI Monitor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1691E0DD04CA26F300ACFC9D /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Details.nib; sourceTree = "<group>"; };
-		1692D71125899A8C0092D6E7 /* SMMPreferencesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMPreferencesWindowController.swift; sourceTree = "<group>"; };
-		1692D7182589E83D0092D6E7 /* SMMWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMWindowController.swift; sourceTree = "<group>"; };
-		1692D72C2589E91D0092D6E7 /* SMMMonitorWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMMonitorWindowController.swift; sourceTree = "<group>"; };
-		1692D72E258B31370092D6E7 /* SMMAppController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMAppController.swift; sourceTree = "<group>"; };
-		1692D731258BDC6A0092D6E7 /* SMMAppController+SUUpdaterDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "SMMAppController+SUUpdaterDelegate.m"; sourceTree = "<group>"; };
+		1692D71125899A8C0092D6E7 /* PreferencesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesWindowController.swift; sourceTree = "<group>"; };
+		1692D7182589E83D0092D6E7 /* UtilityWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityWindowController.swift; sourceTree = "<group>"; };
+		1692D72C2589E91D0092D6E7 /* MonitorWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorWindowController.swift; sourceTree = "<group>"; };
+		1692D72E258B31370092D6E7 /* AppController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppController.swift; sourceTree = "<group>"; };
+		1692D731258BDC6A0092D6E7 /* AppController+SUUpdaterDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AppController+SUUpdaterDelegate.m"; sourceTree = "<group>"; };
 		1692D744258C01FA0092D6E7 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
-		1692D74C258C3EC10092D6E7 /* SMMDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMDocument.swift; sourceTree = "<group>"; };
-		1692D763258D75EE0092D6E7 /* SMMCombinationInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMCombinationInputStream.swift; sourceTree = "<group>"; };
-		1692D765258DC8410092D6E7 /* SMMSpyingInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMSpyingInputStream.swift; sourceTree = "<group>"; };
-		16980516258874BF00059CB4 /* SMMDetailsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMDetailsWindowController.swift; sourceTree = "<group>"; };
+		1692D74C258C3EC10092D6E7 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
+		1692D763258D75EE0092D6E7 /* CombinationInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinationInputStream.swift; sourceTree = "<group>"; };
+		1692D765258DC8410092D6E7 /* SpyingInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpyingInputStream.swift; sourceTree = "<group>"; };
+		16980516258874BF00059CB4 /* DetailsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsWindowController.swift; sourceTree = "<group>"; };
 		169E7114097B2021001AFB58 /* Snoize-Project-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Debug.xcconfig"; path = "../../Configurations/Snoize-Project-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		169E7115097B2021001AFB58 /* Snoize-Project-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Global.xcconfig"; path = "../../Configurations/Snoize-Project-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
 		169E7116097B2021001AFB58 /* Snoize-Project-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Release.xcconfig"; path = "../../Configurations/Snoize-Project-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
@@ -238,12 +238,12 @@
 		16C267D115D836B2009F4BE4 /* SNDisclosureArrowRight.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SNDisclosureArrowRight.tiff; sourceTree = "<group>"; };
 		16F20F4906EAA14A00D9C507 /* Defaults.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = Defaults.plist; sourceTree = "<group>"; };
 		16F9FA2A2586DFE300169621 /* MIDIMonitor-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MIDIMonitor-Bridging-Header.h"; sourceTree = "<group>"; };
-		16F9FA302586EC0800169621 /* SMMFastAnimatingWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMFastAnimatingWindow.swift; sourceTree = "<group>"; };
-		16F9FA442586EDED00169621 /* SMMNonHighlightingCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMNonHighlightingCells.swift; sourceTree = "<group>"; };
-		16F9FA562586F0A700169621 /* SMMSourcesOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMSourcesOutlineView.swift; sourceTree = "<group>"; };
-		16F9FA582586F51400169621 /* SNDisclosureButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNDisclosureButton.swift; sourceTree = "<group>"; };
+		16F9FA302586EC0800169621 /* FastAnimatingWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FastAnimatingWindow.swift; sourceTree = "<group>"; };
+		16F9FA442586EDED00169621 /* NonHighlightingCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonHighlightingCells.swift; sourceTree = "<group>"; };
+		16F9FA562586F0A700169621 /* SourcesOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourcesOutlineView.swift; sourceTree = "<group>"; };
+		16F9FA582586F51400169621 /* DisclosureButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosureButton.swift; sourceTree = "<group>"; };
 		16F9FA5A2586F9BB00169621 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		16F9FA5C2586FD0B00169621 /* SNDisclosableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNDisclosableView.swift; sourceTree = "<group>"; };
+		16F9FA5C2586FD0B00169621 /* DisclosableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosableView.swift; sourceTree = "<group>"; };
 		2A37F4B5FDCFA73011CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MIDIMonitor.nib; sourceTree = "<group>"; };
 		2A37F4B7FDCFA73011CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		2A37F4BAFDCFA73011CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = English; path = English.lproj/Credits.rtf; sourceTree = "<group>"; };
@@ -313,12 +313,24 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		161B71FB15D8DF8E006E21D4 /* Updates */ = {
+		161B71FB15D8DF8E006E21D4 /* Sparkle Updates (for reference only, not shipped in app) */ = {
 			isa = PBXGroup;
 			children = (
 				161B71FC15D8DFA5006E21D4 /* MIDIMonitor.xml */,
 			);
-			name = Updates;
+			name = "Sparkle Updates (for reference only, not shipped in app)";
+			sourceTree = "<group>";
+		};
+		1692D777258DE9740092D6E7 /* Window Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				1692D72C2589E91D0092D6E7 /* MonitorWindowController.swift */,
+				1692D7182589E83D0092D6E7 /* UtilityWindowController.swift */,
+				1692D71125899A8C0092D6E7 /* PreferencesWindowController.swift */,
+				16980516258874BF00059CB4 /* DetailsWindowController.swift */,
+				160A5E8C258822CB008C0CE1 /* SysExWindowController.swift */,
+			);
+			name = "Window Controllers";
 			sourceTree = "<group>";
 		};
 		169E7113097B200A001AFB58 /* Configurations */ = {
@@ -379,11 +391,11 @@
 				2A37F4ABFDCFA73011CA2CEA /* Classes */,
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
-				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
 				169E7113097B200A001AFB58 /* Configurations */,
 				169E71A0097B23FF001AFB58 /* Other Projects */,
+				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
-				161B71FB15D8DF8E006E21D4 /* Updates */,
+				161B71FB15D8DF8E006E21D4 /* Sparkle Updates (for reference only, not shipped in app) */,
 			);
 			name = MIDIMonitor;
 			sourceTree = "<group>";
@@ -391,18 +403,13 @@
 		2A37F4ABFDCFA73011CA2CEA /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				1692D72E258B31370092D6E7 /* SMMAppController.swift */,
-				1692D731258BDC6A0092D6E7 /* SMMAppController+SUUpdaterDelegate.m */,
-				1692D74C258C3EC10092D6E7 /* SMMDocument.swift */,
-				160A5EA0258825B0008C0CE1 /* SMMPreferenceKeys.swift */,
-				1692D72C2589E91D0092D6E7 /* SMMMonitorWindowController.swift */,
-				1692D71125899A8C0092D6E7 /* SMMPreferencesWindowController.swift */,
-				16980516258874BF00059CB4 /* SMMDetailsWindowController.swift */,
-				160A5E8C258822CB008C0CE1 /* SMMSysExWindowController.swift */,
-				16F9FA5C2586FD0B00169621 /* SNDisclosableView.swift */,
-				16F9FA582586F51400169621 /* SNDisclosureButton.swift */,
-				F571C56C01903F3301000164 /* Cocoa Extensions */,
+				1692D72E258B31370092D6E7 /* AppController.swift */,
+				1692D731258BDC6A0092D6E7 /* AppController+SUUpdaterDelegate.m */,
+				1692D74C258C3EC10092D6E7 /* Document.swift */,
+				160A5EA0258825B0008C0CE1 /* PreferenceKeys.swift */,
+				1692D777258DE9740092D6E7 /* Window Controllers */,
 				F57F62950261E14501000164 /* SnoizeMIDI Extensions */,
+				F571C56C01903F3301000164 /* Views */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -449,22 +456,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		F571C56C01903F3301000164 /* Cocoa Extensions */ = {
+		F571C56C01903F3301000164 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				16F9FA562586F0A700169621 /* SMMSourcesOutlineView.swift */,
-				16F9FA442586EDED00169621 /* SMMNonHighlightingCells.swift */,
-				16F9FA302586EC0800169621 /* SMMFastAnimatingWindow.swift */,
-				1692D7182589E83D0092D6E7 /* SMMWindowController.swift */,
+				16F9FA5C2586FD0B00169621 /* DisclosableView.swift */,
+				16F9FA582586F51400169621 /* DisclosureButton.swift */,
+				16F9FA562586F0A700169621 /* SourcesOutlineView.swift */,
+				16F9FA442586EDED00169621 /* NonHighlightingCells.swift */,
+				16F9FA302586EC0800169621 /* FastAnimatingWindow.swift */,
 			);
-			name = "Cocoa Extensions";
+			name = Views;
 			sourceTree = "<group>";
 		};
 		F57F62950261E14501000164 /* SnoizeMIDI Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				1692D765258DC8410092D6E7 /* SMMSpyingInputStream.swift */,
-				1692D763258D75EE0092D6E7 /* SMMCombinationInputStream.swift */,
+				1692D763258D75EE0092D6E7 /* CombinationInputStream.swift */,
+				1692D765258DC8410092D6E7 /* SpyingInputStream.swift */,
 			);
 			name = "SnoizeMIDI Extensions";
 			sourceTree = "<group>";
@@ -732,23 +740,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1692D764258D75EE0092D6E7 /* SMMCombinationInputStream.swift in Sources */,
-				1692D72D2589E91D0092D6E7 /* SMMMonitorWindowController.swift in Sources */,
-				1692D74D258C3EC10092D6E7 /* SMMDocument.swift in Sources */,
-				16F9FA572586F0A700169621 /* SMMSourcesOutlineView.swift in Sources */,
-				16F9FA312586EC0800169621 /* SMMFastAnimatingWindow.swift in Sources */,
-				1692D732258BDC6A0092D6E7 /* SMMAppController+SUUpdaterDelegate.m in Sources */,
-				16F9FA5D2586FD0B00169621 /* SNDisclosableView.swift in Sources */,
-				1692D71225899A8C0092D6E7 /* SMMPreferencesWindowController.swift in Sources */,
-				1692D7192589E83D0092D6E7 /* SMMWindowController.swift in Sources */,
-				16980517258874BF00059CB4 /* SMMDetailsWindowController.swift in Sources */,
+				1692D764258D75EE0092D6E7 /* CombinationInputStream.swift in Sources */,
+				1692D72D2589E91D0092D6E7 /* MonitorWindowController.swift in Sources */,
+				1692D74D258C3EC10092D6E7 /* Document.swift in Sources */,
+				16F9FA572586F0A700169621 /* SourcesOutlineView.swift in Sources */,
+				16F9FA312586EC0800169621 /* FastAnimatingWindow.swift in Sources */,
+				1692D732258BDC6A0092D6E7 /* AppController+SUUpdaterDelegate.m in Sources */,
+				16F9FA5D2586FD0B00169621 /* DisclosableView.swift in Sources */,
+				1692D71225899A8C0092D6E7 /* PreferencesWindowController.swift in Sources */,
+				1692D7192589E83D0092D6E7 /* UtilityWindowController.swift in Sources */,
+				16980517258874BF00059CB4 /* DetailsWindowController.swift in Sources */,
 				16F9FA5B2586F9BB00169621 /* main.swift in Sources */,
-				160A5EA1258825B0008C0CE1 /* SMMPreferenceKeys.swift in Sources */,
-				16F9FA452586EDED00169621 /* SMMNonHighlightingCells.swift in Sources */,
-				1692D766258DC8410092D6E7 /* SMMSpyingInputStream.swift in Sources */,
-				1692D72F258B31370092D6E7 /* SMMAppController.swift in Sources */,
-				160A5E8D258822CB008C0CE1 /* SMMSysExWindowController.swift in Sources */,
-				16F9FA592586F51400169621 /* SNDisclosureButton.swift in Sources */,
+				160A5EA1258825B0008C0CE1 /* PreferenceKeys.swift in Sources */,
+				16F9FA452586EDED00169621 /* NonHighlightingCells.swift in Sources */,
+				1692D766258DC8410092D6E7 /* SpyingInputStream.swift in Sources */,
+				1692D72F258B31370092D6E7 /* AppController.swift in Sources */,
+				160A5E8D258822CB008C0CE1 /* SysExWindowController.swift in Sources */,
+				16F9FA592586F51400169621 /* DisclosureButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

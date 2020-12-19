@@ -12,7 +12,7 @@
 
 import Cocoa
 
-class SMMSpyingInputStream: SMInputStream {
+class SpyingInputStream: SMInputStream {
 
     private let spyClient: MIDISpyClientRef
     private var spyPort: MIDISpyPortRef?

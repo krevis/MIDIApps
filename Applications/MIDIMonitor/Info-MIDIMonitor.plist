@@ -22,7 +22,7 @@
 			<key>LSTypeIsPackage</key>
 			<integer>0</integer>
 			<key>NSDocumentClass</key>
-			<string>$(PRODUCT_MODULE_NAME).SMMDocument</string>
+			<string>$(PRODUCT_MODULE_NAME).Document</string>
 			<key>NSExportableTypes</key>
 			<array>
 				<string>com.snoize.midimonitor</string>

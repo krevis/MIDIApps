@@ -6,7 +6,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="SMMPreferencesWindowController" customModule="MIDI_Monitor" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="PreferencesWindowController" customModule="MIDI_Monitor" customModuleProvider="target">
             <connections>
                 <outlet property="alwaysSaveSysExWithEOXMatrix" destination="241" id="245"/>
                 <outlet property="askBeforeClosingModifiedWindowCheckbox" destination="267" id="269"/>

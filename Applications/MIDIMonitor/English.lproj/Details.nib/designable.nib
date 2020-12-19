@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="SMMDetailsWindowController" customModule="MIDI_Monitor" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="DetailsWindowController" customModule="MIDI_Monitor" customModuleProvider="target">
             <connections>
                 <outlet property="sizeField" destination="15" id="21"/>
                 <outlet property="textView" destination="8" id="12"/>
@@ -31,7 +30,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="DHy-N0-X2f">
                             <rect key="frame" x="1" y="1" width="477" height="298"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="8">
                                     <rect key="frame" x="0.0" y="0.0" width="492" height="298"/>
@@ -39,7 +38,7 @@
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <size key="minSize" width="477" height="298"/>
-                                    <size key="maxSize" width="494" height="10000000"/>
+                                    <size key="maxSize" width="509" height="10000000"/>
                                     <attributedString key="textStorage">
                                         <fragment>
                                             <mutableString key="content">000000  42 30 28 50 00 00 00 00  00 00 01 00 07 00 00 00  |B0(P            |

@@ -13,7 +13,7 @@
 import Cocoa
 import CoreMIDI
 
-class SMMAppController: NSObject {
+class AppController: NSObject {
 
     enum AutoConnectOption: Int {
         case disabled
@@ -32,20 +32,20 @@ class SMMAppController: NSObject {
 
     override func awakeFromNib() {
         // Migrate autoconnect preference, before we show any windows.
-        // Old: SMMPreferenceKeys.openWindowsForNewSources = BOOL (default: false)
-        // New: SMMPreferenceKeys.autoConnectNewSources = int (default: 1 = AutoConnectOption.addInCurrentWindow)
+        // Old: PreferenceKeys.openWindowsForNewSources = BOOL (default: false)
+        // New: PreferenceKeys.autoConnectNewSources = int (default: 1 = AutoConnectOption.addInCurrentWindow)
 
         let defaults = UserDefaults.standard
-        if defaults.object(forKey: SMMPreferenceKeys.openWindowsForNewSources) != nil {
-            let option: AutoConnectOption = defaults.bool(forKey: SMMPreferenceKeys.openWindowsForNewSources) ? .openNewWindow : .disabled
-            defaults.set(option.rawValue, forKey: SMMPreferenceKeys.autoConnectNewSources)
-            defaults.removeObject(forKey: SMMPreferenceKeys.openWindowsForNewSources)
+        if defaults.object(forKey: PreferenceKeys.openWindowsForNewSources) != nil {
+            let option: AutoConnectOption = defaults.bool(forKey: PreferenceKeys.openWindowsForNewSources) ? .openNewWindow : .disabled
+            defaults.set(option.rawValue, forKey: PreferenceKeys.autoConnectNewSources)
+            defaults.removeObject(forKey: PreferenceKeys.openWindowsForNewSources)
         }
     }
 
 }
 
-extension SMMAppController: NSApplicationDelegate {
+extension AppController: NSApplicationDelegate {
 
     // MARK: NSApplicationDelegate
 
@@ -87,12 +87,12 @@ extension SMMAppController: NSApplicationDelegate {
 
 }
 
-extension SMMAppController {
+extension AppController {
 
     // MARK: Menus and actions
 
     @IBAction func showPreferences(_ sender: AnyObject?) {
-        SMMPreferencesWindowController.sharedInstance.showWindow(nil)
+        PreferencesWindowController.sharedInstance.showWindow(nil)
     }
 
     @IBAction func showAboutBox(_ sender: AnyObject?) {
@@ -187,7 +187,7 @@ extension SMMAppController {
 
 }
 
-extension SMMAppController {
+extension AppController {
 
     // MARK: Startup failure handling
 
@@ -323,7 +323,7 @@ extension SMMAppController {
 
 }
 
-extension SMMAppController {
+extension AppController {
 
     // MARK: When sources appear
 
@@ -333,7 +333,7 @@ extension SMMAppController {
         if newlyAppearedSources == nil {
             newlyAppearedSources = Set<SMSourceEndpoint>()
 
-            let autoConnectOption = AutoConnectOption(rawValue: UserDefaults.standard.integer(forKey: SMMPreferenceKeys.autoConnectNewSources))
+            let autoConnectOption = AutoConnectOption(rawValue: UserDefaults.standard.integer(forKey: PreferenceKeys.autoConnectNewSources))
 
             switch autoConnectOption {
             case .addInCurrentWindow:
@@ -355,10 +355,10 @@ extension SMMAppController {
     private func autoConnectToNewlyAppearedSources() {
         if let sources = newlyAppearedSources,
            sources.count > 0,
-           let document = (NSDocumentController.shared.currentDocument ?? NSApp.orderedDocuments.first) as? SMMDocument {
+           let document = (NSDocumentController.shared.currentDocument ?? NSApp.orderedDocuments.first) as? Document {
             document.selectedInputSources = document.selectedInputSources.union(sources)
 
-            if let windowController = document.windowControllers.first as? SMMMonitorWindowController {
+            if let windowController = document.windowControllers.first as? MonitorWindowController {
                 windowController.revealInputSources(sources)
                 document.updateChangeCount(.changeCleared)
             }
@@ -370,12 +370,12 @@ extension SMMAppController {
     private func openWindowForNewlyAppearedSources() {
         if let sources = newlyAppearedSources,
            sources.count > 0,
-           let document = try? NSDocumentController.shared.openUntitledDocumentAndDisplay(false) as? SMMDocument {
+           let document = try? NSDocumentController.shared.openUntitledDocumentAndDisplay(false) as? Document {
             document.makeWindowControllers()
             document.selectedInputSources = sources as Set<AnyHashable>
             document.showWindows()
 
-            if let windowController = document.windowControllers.first as? SMMMonitorWindowController {
+            if let windowController = document.windowControllers.first as? MonitorWindowController {
                 windowController.revealInputSources(sources)
                 document.updateChangeCount(.changeCleared)
             }

@@ -12,7 +12,7 @@
 
 import Cocoa
 
-class SMMMonitorWindowController: NSWindowController {
+class MonitorWindowController: NSWindowController {
 
     init() {
         super.init(window: nil)
@@ -39,13 +39,13 @@ class SMMMonitorWindowController: NSWindowController {
     // MARK: Internal
 
     // Sources controls
-    @IBOutlet var sourcesDisclosureButton: SNDisclosureButton!
-    @IBOutlet var sourcesDisclosableView: SNDisclosableView!
-    @IBOutlet var sourcesOutlineView: SMMSourcesOutlineView!
+    @IBOutlet var sourcesDisclosureButton: DisclosureButton!
+    @IBOutlet var sourcesDisclosableView: DisclosableView!
+    @IBOutlet var sourcesOutlineView: SourcesOutlineView!
 
     // Filter controls
-    @IBOutlet var filterDisclosureButton: SNDisclosureButton!
-    @IBOutlet var filterDisclosableView: SNDisclosableView!
+    @IBOutlet var filterDisclosureButton: DisclosureButton!
+    @IBOutlet var filterDisclosableView: DisclosableView!
     @IBOutlet var voiceMessagesCheckBox: NSButton!
     @IBOutlet var voiceMessagesMatrix: NSMatrix!
     @IBOutlet var systemCommonCheckBox: NSButton!
@@ -72,7 +72,7 @@ class SMMMonitorWindowController: NSWindowController {
 
     // Transient data
     var oneChannel: UInt = 1
-    var inputSourceGroups: [SMMCombinationInputStreamSourceGroup] = []
+    var inputSourceGroups: [CombinationInputStreamSourceGroup] = []
     var displayedMessages: [SMMessage] = []
     var messagesNeedScrollToBottom: Bool = false
     var nextMessagesRefreshDate: NSDate?
@@ -83,7 +83,7 @@ class SMMMonitorWindowController: NSWindowController {
 
 }
 
-extension SMMMonitorWindowController {
+extension MonitorWindowController {
 
     // MARK: Window and document
 
@@ -93,14 +93,14 @@ extension SMMMonitorWindowController {
         sourcesOutlineView.outlineTableColumn = sourcesOutlineView.tableColumn(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "name"))
         sourcesOutlineView.autoresizesOutlineColumn = false
 
-        let checkboxCell = SMMNonHighlightingButtonCell(textCell: "")
+        let checkboxCell = NonHighlightingButtonCell(textCell: "")
         checkboxCell.setButtonType(.switch)
         checkboxCell.controlSize = .small
         checkboxCell.font = NSFont.systemFont(ofSize: NSFont.smallSystemFontSize)
         checkboxCell.allowsMixedState = false
         sourcesOutlineView.tableColumn(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "enabled"))?.dataCell = checkboxCell
 
-        let textFieldCell = SMMNonHighlightingTextFieldCell(textCell: "")
+        let textFieldCell = NonHighlightingTextFieldCell(textCell: "")
         textFieldCell.font = NSFont.systemFont(ofSize: NSFont.smallSystemFontSize)
         sourcesOutlineView.tableColumn(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "name"))?.dataCell = textFieldCell
 
@@ -122,7 +122,7 @@ extension SMMMonitorWindowController {
     override var document: AnyObject? {
         didSet {
             guard let document = document else { return }
-            guard let smmDocument = document as? SMMDocument else { fatalError() }
+            guard let smmDocument = document as? Document else { fatalError() }
 
             _ = window // Make sure the window and all views are loaded first
 
@@ -137,8 +137,8 @@ extension SMMMonitorWindowController {
         }
     }
 
-    private var midiDocument: SMMDocument {
-        return document as! SMMDocument
+    private var midiDocument: Document {
+        return document as! Document
     }
 
     private func trivialWindowSettingsDidChange() {
@@ -155,7 +155,7 @@ extension SMMMonitorWindowController {
 
 }
 
-extension SMMMonitorWindowController: NSUserInterfaceValidations {
+extension MonitorWindowController: NSUserInterfaceValidations {
 
     // MARK: General UI
 
@@ -172,7 +172,7 @@ extension SMMMonitorWindowController: NSUserInterfaceValidations {
 
 }
 
-extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegate {
+extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegate {
 
     // MARK: Input Sources Outline View
 
@@ -212,7 +212,7 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
         if item == nil {
             return inputSourceGroups.count
         }
-        else if let group = item as? SMMCombinationInputStreamSourceGroup {
+        else if let group = item as? CombinationInputStreamSourceGroup {
             return group.sources.count
         }
         else {
@@ -223,7 +223,7 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
         if item == nil {
             return inputSourceGroups[index]
         }
-        else if let group = item as? SMMCombinationInputStreamSourceGroup {
+        else if let group = item as? CombinationInputStreamSourceGroup {
             return group.sources[index]
         }
         else {
@@ -232,7 +232,7 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
     }
 
     func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
-        if let group = item as? SMMCombinationInputStreamSourceGroup {
+        if let group = item as? CombinationInputStreamSourceGroup {
             return group.expandable
         }
         else {
@@ -246,7 +246,7 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
         let identifier = tableColumn?.identifier.rawValue
         switch identifier {
         case "name":
-            if let group = item as? SMMCombinationInputStreamSourceGroup {
+            if let group = item as? CombinationInputStreamSourceGroup {
                 return group.name
             }
             else if let source = item as? SMInputStreamSource {
@@ -264,7 +264,7 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
             }
 
         case "enabled":
-            if let group = item as? SMMCombinationInputStreamSourceGroup {
+            if let group = item as? CombinationInputStreamSourceGroup {
                 return buttonStateForInputSources(group.sources)
             }
             else if let source = item as? SMInputStreamSource {
@@ -290,7 +290,7 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
         }
 
         let sources: [SMInputStreamSource]
-        if let group = item as? SMMCombinationInputStreamSourceGroup {
+        if let group = item as? CombinationInputStreamSourceGroup {
             sources = group.sources
         }
         else if let source = item as? SMInputStreamSource {
@@ -345,7 +345,7 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
 
 }
 
-extension SMMMonitorWindowController {
+extension MonitorWindowController {
 
     // MARK: Filter
 
@@ -446,7 +446,7 @@ extension SMMMonitorWindowController {
 
 }
 
-extension SMMMonitorWindowController: NSTableViewDataSource {
+extension MonitorWindowController: NSTableViewDataSource {
 
     // MARK: Messages Table View
 
@@ -597,7 +597,7 @@ extension SMMMonitorWindowController: NSTableViewDataSource {
 
 }
 
-extension SMMMonitorWindowController {
+extension MonitorWindowController {
 
     // MARK: Window settings
 

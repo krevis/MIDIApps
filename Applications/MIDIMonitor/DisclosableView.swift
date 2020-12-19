@@ -12,7 +12,7 @@
 
 import Cocoa
 
-class SNDisclosableView: NSView {
+class DisclosableView: NSView {
 
     //
     // API
@@ -61,7 +61,7 @@ class SNDisclosableView: NSView {
         super.awakeFromNib()
 
         if autoresizingMask.contains(.height) {
-            NSLog("Warning: SNDisclosableView: You probably don't want this view to be resizeable vertically. I suggest turning that off in the inspector in IB.")
+            NSLog("Warning: DisclosableView: You probably don't want this view to be resizeable vertically. I suggest turning that off in the inspector in IB.")
         }
     }
 

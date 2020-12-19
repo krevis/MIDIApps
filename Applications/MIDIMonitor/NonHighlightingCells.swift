@@ -5,26 +5,32 @@
 
  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
- * Neither the name of Snoize nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+ * Neither the name of Kurt Revis, nor Snoize, nor the names of other contributors may be used to endorse or promote products derived from this software without specific prior written permission.
 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Foundation
+import Cocoa
 
-class SMMPreferenceKeys: NSObject {
+class NonHighlightingButtonCell: NSButtonCell {
 
-    static let saveSysExWithEOXAlways = "SMMSaveSysExWithEOXAlways"
+    override func highlightColor(withFrame cellFrame: NSRect, in controlView: NSView) -> NSColor? {
+        guard let tableView = controlView as? NSTableView else { return super.highlightColor(withFrame: cellFrame, in: controlView) }
+        return tableView.backgroundColor
+    }
 
-    static let openWindowsForNewSources = "SMMOpenWindowsForNewSources"  // Obsolete
+}
 
-    static let selectOrdinarySourcesInNewDocument = "SMMAutoSelectOrdinarySources"
-    static let selectVirtualDestinationInNewDocument = "SMMAutoSelectVirtualDestination"
-    static let selectSpyingDestinationsInNewDocument = "SMMAutoSelectSpyingDestinations"
+class NonHighlightingTextFieldCell: NSTextFieldCell {
 
-    static let selectFirstSourceInNewDocument = "SMMAutoSelectFirstSource"  // Obsolete
+    override func highlightColor(withFrame cellFrame: NSRect, in controlView: NSView) -> NSColor? {
+        guard let tableView = controlView as? NSTableView else { return super.highlightColor(withFrame: cellFrame, in: controlView) }
+        return tableView.backgroundColor
+    }
 
-    static let askBeforeClosingModifiedWindow = "SMMAskBeforeClosingModifiedWindow"
+    override var interiorBackgroundStyle: NSView.BackgroundStyle {
+        return .light
+        // == the background is a light color, and content drawn over it (the text) should be dark
+    }
 
-    static let autoConnectNewSources = "SMMAutoConnectNewSources"
 }

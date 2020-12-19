@@ -8,7 +8,7 @@ This is the source code for the two applications. You do *not* need any of this 
 
 The source code is Open Source under the BSD license. See LICENSE for the legal details.
 
-The project is currently intended to be used with an up-to-date Xcode version, like Xcode 11.1 (with the MacOS 10.15 SDK). However, it has been reported to work with earlier releases, as old as Xcode 9.2.  (If you need to run it on an earlier Xcode, try checking out older revisions.)
+The project is currently intended to be used with an up-to-date Xcode version, like Xcode 12.3 (with the MacOS 11.1 SDK).  If you need to run it on an earlier Xcode, try checking out older revisions.
 
 ## How to build ##
 
@@ -37,7 +37,7 @@ Your source tree should look like this:
 
 The source for the two apps. The project files are MIDIMonitor.xcodeproj and SysExLibrarian.xcodeproj; open them with Xcode.
 
-Both apps are Cocoa and are written in Objective-C.
+Both apps are Cocoa, and are written in Swift and Objective-C.
 
 The apps rely on the other frameworks, described below.
 

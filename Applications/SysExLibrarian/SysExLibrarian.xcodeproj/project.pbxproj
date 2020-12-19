@@ -358,12 +358,12 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		161B721415D8EA71006E21D4 /* Updates */ = {
+		161B721415D8EA71006E21D4 /* Sparkle Updates (for reference only, not shipped in app) */ = {
 			isa = PBXGroup;
 			children = (
 				161B721515D8EA7F006E21D4 /* SysExLibrarian.xml */,
 			);
-			name = Updates;
+			name = "Sparkle Updates (for reference only, not shipped in app)";
 			sourceTree = "<group>";
 		};
 		16F032D20984B6F3006C8A44 /* Configurations */ = {
@@ -412,11 +412,11 @@
 				2A37F4ABFDCFA73011CA2CEA /* Classes */,
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
-				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
 				16F032D20984B6F3006C8A44 /* Configurations */,
 				16F032D50984B6FB006C8A44 /* Other Projects */,
+				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
-				161B721415D8EA71006E21D4 /* Updates */,
+				161B721415D8EA71006E21D4 /* Sparkle Updates (for reference only, not shipped in app) */,
 			);
 			name = SysExLibrarian;
 			sourceTree = "<group>";

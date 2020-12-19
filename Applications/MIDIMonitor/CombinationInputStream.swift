@@ -12,7 +12,7 @@
 
 import Cocoa
 
-class SMMCombinationInputStreamSourceGroup: NSObject {
+class CombinationInputStreamSourceGroup: NSObject {
     let name: String
     let expandable: Bool
     fileprivate(set) var sources: [SMInputStreamSource]
@@ -25,7 +25,7 @@ class SMMCombinationInputStreamSourceGroup: NSObject {
     }
 }
 
-class SMMCombinationInputStream: NSObject, SMMessageDestination {
+class CombinationInputStream: NSObject, SMMessageDestination {
 
     // TODO Reorganize, make things private, etc.
 
@@ -33,13 +33,13 @@ class SMMCombinationInputStream: NSObject, SMMessageDestination {
 
     private let portInputStream = SMPortInputStream()
     private let virtualInputStream = SMVirtualInputStream()
-    private let spyingInputStream: SMMSpyingInputStream?
+    private let spyingInputStream: SpyingInputStream?
 
     private var willPostSourceListChangedNotification = false
 
     override init() {
-        if let spyClient = (NSApp.delegate as? SMMAppController)?.midiSpyClient {
-            spyingInputStream = SMMSpyingInputStream(midiSpyClient: spyClient)
+        if let spyClient = (NSApp.delegate as? AppController)?.midiSpyClient {
+            spyingInputStream = SpyingInputStream(midiSpyClient: spyClient)
         }
         else {
             spyingInputStream = nil
@@ -81,11 +81,11 @@ class SMMCombinationInputStream: NSObject, SMMessageDestination {
         messageDestination?.takeMIDIMessages(messages)
     }
 
-    private lazy var portGroup = SMMCombinationInputStreamSourceGroup(name: NSLocalizedString("MIDI sources", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "name of group for ordinary sources"), expandable: true)
-    private lazy var virtualGroup = SMMCombinationInputStreamSourceGroup(name: NSLocalizedString("Act as a destination for other programs", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "name of source item for virtual destination"), expandable: false)
-    private var spyingGroup: SMMCombinationInputStreamSourceGroup?
+    private lazy var portGroup = CombinationInputStreamSourceGroup(name: NSLocalizedString("MIDI sources", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "name of group for ordinary sources"), expandable: true)
+    private lazy var virtualGroup = CombinationInputStreamSourceGroup(name: NSLocalizedString("Act as a destination for other programs", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "name of source item for virtual destination"), expandable: false)
+    private var spyingGroup: CombinationInputStreamSourceGroup?
 
-    var sourceGroups: [SMMCombinationInputStreamSourceGroup] {
+    var sourceGroups: [CombinationInputStreamSourceGroup] {
         var groups = [portGroup, virtualGroup]
 
         portGroup.sources = portInputStream.inputSources
@@ -93,7 +93,7 @@ class SMMCombinationInputStream: NSObject, SMMessageDestination {
 
         if let stream = spyingInputStream {
             if spyingGroup == nil {
-                spyingGroup = SMMCombinationInputStreamSourceGroup(name: NSLocalizedString("Spy on output to destinations", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "name of group for spying on destinations"), expandable: true)
+                spyingGroup = CombinationInputStreamSourceGroup(name: NSLocalizedString("Spy on output to destinations", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "name of group for spying on destinations"), expandable: true)
             }
 
             if let group = spyingGroup {
