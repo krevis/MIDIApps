@@ -27,7 +27,7 @@ class SMMCombinationInputStreamSourceGroup: NSObject {
 
 class SMMCombinationInputStream: NSObject, SMMessageDestination {
 
-    // TODO Cleanup, reorganize, privatize
+    // TODO Reorganize, make things private, etc.
 
     var messageDestination: SMMessageDestination?
 
