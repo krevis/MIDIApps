@@ -2,6 +2,7 @@
 
 // Debug builds with no optimization
 GCC_OPTIMIZATION_LEVEL = 0
+SWIFT_OPTIMIZATION_LEVEL = -Onone
 
 // Debug builds with DEBUG set
 GCC_PREPROCESSOR_DEFINITIONS = DEBUG

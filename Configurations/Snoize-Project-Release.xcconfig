@@ -2,3 +2,5 @@
 
 // Generate .dsym debug symbol files
 DEBUG_INFORMATION_FORMAT = dwarf-with-dsym
+
+SWIFT_COMPILATION_MODE = wholemodule
