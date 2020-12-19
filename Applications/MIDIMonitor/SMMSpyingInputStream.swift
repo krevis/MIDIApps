@@ -1,0 +1,175 @@
+/*
+ Copyright (c) 2001-2020, Kurt Revis.  All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+ * Neither the name of Kurt Revis, nor Snoize, nor the names of other contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+import Cocoa
+
+class SMMSpyingInputStream: SMInputStream {
+
+    private let spyClient: MIDISpyClientRef
+    private var spyPort: MIDISpyPortRef?
+    private var internalEndpoints: Set<SMDestinationEndpoint> = []
+    private var parsersForEndpoints = NSMapTable<SMDestinationEndpoint, SMMessageParser>.weakToStrongObjects()
+
+    init?(midiSpyClient: MIDISpyClientRef) {
+        spyClient = midiSpyClient
+
+        super.init()
+
+        let status = MIDISpyPortCreate(spyClient, midiReadProc(), UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque()), &spyPort)
+        if status != noErr {
+            return nil
+        }
+
+        NotificationCenter.default.addObserver(self, selector: #selector(self.endpointListChanged(_:)), name: .SMMIDIObjectListChanged, object: SMDestinationEndpoint.self)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+
+        if let spyPort = spyPort {
+            MIDISpyPortDispose(spyPort)
+        }
+
+        // Don't tear down the spy client, since others may be using it
+    }
+
+    func addEndpoint(_ endpoint: SMDestinationEndpoint) {
+        guard !internalEndpoints.contains(endpoint) else { return }
+
+        let parser = createParser(withOriginatingEndpoint: endpoint)
+        parsersForEndpoints.setObject(parser, forKey: endpoint)
+
+        let center = NotificationCenter.default
+        center.addObserver(self, selector: #selector(self.endpointDisappeared(_:)), name: .SMMIDIObjectDisappeared, object: endpoint)
+        center.addObserver(self, selector: #selector(self.endpointWasReplaced(_:)), name: .SMMIDIObjectWasReplaced, object: endpoint)
+
+        _ = internalEndpoints.insert(endpoint)
+
+        let status = MIDISpyPortConnectDestination(spyPort, endpoint.endpointRef(), Unmanaged.passUnretained(endpoint).toOpaque())
+        if status != noErr {
+            NSLog("Error from MIDISpyPortConnectDestination: \(status)")
+        }
+    }
+
+    func removeEndpoint(_ endpoint: SMDestinationEndpoint) {
+        guard internalEndpoints.contains(endpoint) else { return }
+
+        let status = MIDISpyPortDisconnectDestination(spyPort, endpoint.endpointRef())
+        if status != noErr {
+            NSLog("Error from MIDISpyPortDisconnectDestination: \(status)")
+            // An error can happen in normal circumstances (if the endpoint has disappeared), so ignore it.
+        }
+
+        parsersForEndpoints.removeObject(forKey: endpoint)
+
+        let center = NotificationCenter.default
+        center.removeObserver(self, name: .SMMIDIObjectDisappeared, object: endpoint)
+        center.removeObserver(self, name: .SMMIDIObjectWasReplaced, object: endpoint)
+
+        internalEndpoints.remove(endpoint)
+    }
+
+    var endpoints: Set<AnyHashable> /* TODO Really SMDestinationEndpoint */ {
+        get {
+            return internalEndpoints
+        }
+        set {
+            let endpointsToAdd = newValue.subtracting(internalEndpoints)
+            let endpointsToRemove = (internalEndpoints as Set<AnyHashable>).subtracting(newValue)
+
+            for endpoint in endpointsToRemove {
+                if let destinationEndpoint = endpoint as? SMDestinationEndpoint {
+                    removeEndpoint(destinationEndpoint)
+                }
+            }
+
+            for endpoint in endpointsToAdd {
+                if let destinationEndpoint = endpoint as? SMDestinationEndpoint {
+                    addEndpoint(destinationEndpoint)
+                }
+            }
+        }
+    }
+
+    // MARK: SMInputStream subclass
+
+    override func parsers() -> [Any]! {
+        return parsersForEndpoints.objectEnumerator()?.allObjects
+    }
+
+    override func parser(forSourceConnectionRefCon refCon: UnsafeMutableRawPointer!) -> SMMessageParser! {
+        // note: refCon is an SMDestinationEndpoint*.
+        // We are allowed to return nil if we are no longer listening to this source endpoint.
+        let endpoint = Unmanaged<SMDestinationEndpoint>.fromOpaque(refCon).takeUnretainedValue()
+        let parser = parsersForEndpoints.object(forKey: endpoint)
+        return parser
+    }
+
+    override func streamSource(for parser: SMMessageParser!) -> SMInputStreamSource! {
+        return parser.originatingEndpoint()
+    }
+
+    override func retainForIncomingMIDI(withSourceConnectionRefCon refCon: UnsafeMutableRawPointer!) {
+        // retain self
+        super.retainForIncomingMIDI(withSourceConnectionRefCon: refCon)
+
+        // and retain the endpoint too, since we use it as a key in -parserForSourceConnectionRefCon:
+        _ = Unmanaged<SMDestinationEndpoint>.fromOpaque(refCon).retain()
+    }
+
+    override func releaseForIncomingMIDI(withSourceConnectionRefCon refCon: UnsafeMutableRawPointer!) {
+        // release the endpoint that we retained earlier
+        Unmanaged<SMDestinationEndpoint>.fromOpaque(refCon).release()
+
+        // and release self, LAST
+        super.releaseForIncomingMIDI(withSourceConnectionRefCon: refCon)
+    }
+
+    override var inputSources: [SMInputStreamSource]! {
+        let destinationEndpoints = SMDestinationEndpoint.destinationEndpoints() ?? []
+        return destinationEndpoints.filter { !$0.isOwnedByThisProcess() }
+    }
+
+    override var selectedInputSources: Set<AnyHashable>! {
+        get {
+            return endpoints
+        }
+        set {
+            endpoints = newValue
+        }
+    }
+
+    // MARK: Internal
+
+    @objc private func endpointListChanged(_ notification: Notification) {
+        self.postSourceListChangedNotification()
+    }
+
+    @objc private func endpointDisappeared(_ notification: Notification) {
+        guard let endpoint = notification.object as? SMDestinationEndpoint,
+              internalEndpoints.contains(endpoint) else { return }
+
+        removeEndpoint(endpoint)
+        postSelectedInputStreamSourceDisappearedNotification(endpoint)
+    }
+
+    @objc private func endpointWasReplaced(_ notification: Notification) {
+        guard let endpoint = notification.object as? SMDestinationEndpoint,
+              internalEndpoints.contains(endpoint) else { return }
+
+        removeEndpoint(endpoint)
+        if let newEndpoint = notification.userInfo?[SMMIDIObjectReplacement] as? SMDestinationEndpoint {
+            addEndpoint(newEndpoint)
+        }
+    }
+
+}

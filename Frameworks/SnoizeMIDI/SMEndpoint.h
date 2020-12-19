@@ -87,7 +87,7 @@
 {
 }
 
-+ (NSArray *)sourceEndpoints;
++ (NSArray<SMSourceEndpoint *> *)sourceEndpoints;
 + (SMSourceEndpoint *)sourceEndpointWithUniqueID:(MIDIUniqueID)uniqueID;
 + (SMSourceEndpoint *)sourceEndpointWithName:(NSString *)name;
 + (SMSourceEndpoint *)sourceEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
@@ -102,7 +102,7 @@
 {
 }
 
-+ (NSArray *)destinationEndpoints;
++ (NSArray<SMDestinationEndpoint *> *)destinationEndpoints;
 + (SMDestinationEndpoint *)destinationEndpointWithUniqueID:(MIDIUniqueID)uniqueID;
 + (SMDestinationEndpoint *)destinationEndpointWithName:(NSString *)aName;
 + (SMDestinationEndpoint *)destinationEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;

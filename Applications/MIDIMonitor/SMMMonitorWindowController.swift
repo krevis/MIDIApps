@@ -543,7 +543,7 @@ extension SMMMonitorWindowController: NSTableViewDataSource {
         }
     }
 
-    @objc private func displayPreferencesDidChange(_ notification: NSNotification) {
+    @objc private func displayPreferencesDidChange(_ notification: Notification) {
         messagesTableView.reloadData()
     }
 

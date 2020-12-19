@@ -70,7 +70,7 @@ class SMMDetailsWindowController: SMMWindowController, NSWindowDelegate {
         midiDocument.encodeRestorableState(state, for: self)
     }
 
-    @objc func displayPreferencesDidChange(_ notification: NSNotification) {
+    @objc func displayPreferencesDidChange(_ notification: Notification) {
         updateDescriptionFields()
     }
 

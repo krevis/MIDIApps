@@ -327,7 +327,7 @@ extension SMMAppController {
 
     // MARK: When sources appear
 
-    @objc func sourceEndpointsAppeared(_ notification: NSNotification) {
+    @objc func sourceEndpointsAppeared(_ notification: Notification) {
         guard let endpoints = notification.userInfo?[SMMIDIObjectsThatAppeared] as? [SMSourceEndpoint], endpoints.count > 0 else { return }
 
         if newlyAppearedSources == nil {

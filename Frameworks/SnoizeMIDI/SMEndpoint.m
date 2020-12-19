@@ -595,7 +595,7 @@ static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
 // New methods
 //
 
-+ (NSArray *)sourceEndpoints;
++ (NSArray<SMSourceEndpoint *> *)sourceEndpoints;
 {
     return [self allObjectsInOrder];
 }
@@ -715,7 +715,7 @@ static BOOL sCreatingSysExSpeedWorkaroundEndpoint = NO;
 // New methods
 //
 
-+ (NSArray *)destinationEndpoints;
++ (NSArray<SMDestinationEndpoint *> *)destinationEndpoints;
 {
     NSArray* destinationEndpoints = [self allObjectsInOrder];
     
