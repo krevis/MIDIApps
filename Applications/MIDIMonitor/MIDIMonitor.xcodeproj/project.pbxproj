@@ -243,8 +243,6 @@
 		16F9FA582586F51400169621 /* SNDisclosureButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNDisclosureButton.swift; sourceTree = "<group>"; };
 		16F9FA5A2586F9BB00169621 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		16F9FA5C2586FD0B00169621 /* SNDisclosableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNDisclosableView.swift; sourceTree = "<group>"; };
-		2A37F4ACFDCFA73011CA2CEA /* SMMDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMDocument.m; sourceTree = "<group>"; };
-		2A37F4AEFDCFA73011CA2CEA /* SMMDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMDocument.h; sourceTree = "<group>"; };
 		2A37F4B5FDCFA73011CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MIDIMonitor.nib; sourceTree = "<group>"; };
 		2A37F4B7FDCFA73011CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		2A37F4BAFDCFA73011CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = English; path = English.lproj/Credits.rtf; sourceTree = "<group>"; };
@@ -252,8 +250,6 @@
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		F53A1C0B015EC0FB01000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Preferences.nib; sourceTree = "<group>"; };
 		F53BB4AF015D96A501000164 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/MIDIMonitor.strings; sourceTree = "<group>"; };
-		F55C9C140244CE3701000164 /* SMMCombinationInputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMCombinationInputStream.h; sourceTree = "<group>"; };
-		F55C9C150244CE3701000164 /* SMMCombinationInputStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMCombinationInputStream.m; sourceTree = "<group>"; };
 		F562148D02408B2D01000164 /* SMMSpyingInputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMSpyingInputStream.h; sourceTree = "<group>"; };
 		F562148E02408B2D01000164 /* SMMSpyingInputStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMSpyingInputStream.m; sourceTree = "<group>"; };
 		F56D31A40195A90E01000164 /* English */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = text.html; name = English; path = English.lproj/docs.htmld; sourceTree = "<group>"; };
@@ -399,8 +395,6 @@
 				1692D72E258B31370092D6E7 /* SMMAppController.swift */,
 				1692D731258BDC6A0092D6E7 /* SMMAppController+SUUpdaterDelegate.m */,
 				1692D74C258C3EC10092D6E7 /* SMMDocument.swift */,
-				2A37F4AEFDCFA73011CA2CEA /* SMMDocument.h */,
-				2A37F4ACFDCFA73011CA2CEA /* SMMDocument.m */,
 				160A5EA0258825B0008C0CE1 /* SMMPreferenceKeys.swift */,
 				1692D72C2589E91D0092D6E7 /* SMMMonitorWindowController.swift */,
 				1692D71125899A8C0092D6E7 /* SMMPreferencesWindowController.swift */,
@@ -473,8 +467,6 @@
 				F562148D02408B2D01000164 /* SMMSpyingInputStream.h */,
 				F562148E02408B2D01000164 /* SMMSpyingInputStream.m */,
 				1692D763258D75EE0092D6E7 /* SMMCombinationInputStream.swift */,
-				F55C9C140244CE3701000164 /* SMMCombinationInputStream.h */,
-				F55C9C150244CE3701000164 /* SMMCombinationInputStream.m */,
 			);
 			name = "SnoizeMIDI Extensions";
 			sourceTree = "<group>";

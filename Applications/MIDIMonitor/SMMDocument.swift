@@ -12,7 +12,7 @@
 
 import Cocoa
 
-@objc class SMMDocument: NSDocument {
+class SMMDocument: NSDocument {
 
     // TODO Reorganize, make things private, etc.
 

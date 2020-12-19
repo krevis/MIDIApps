@@ -14,7 +14,7 @@ import Cocoa
 
 class SMMMonitorWindowController: NSWindowController {
 
-    @objc init() {
+    init() {
         super.init(window: nil)
         shouldCascadeWindows = true
         shouldCloseDocument = true
@@ -176,12 +176,12 @@ extension SMMMonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDele
 
     // MARK: Input Sources Outline View
 
-    @objc func updateSources() {
+    func updateSources() {
         inputSourceGroups = midiDocument.inputSourceGroups
         sourcesOutlineView.reloadData()
     }
 
-    @objc func revealInputSources(_ sources: Set<AnyHashable>) {
+    func revealInputSources(_ sources: Set<AnyHashable>) {
         // Show the sources first
         sourcesDisclosableView.shown = true
         sourcesDisclosureButton.intValue = 1
@@ -349,7 +349,7 @@ extension SMMMonitorWindowController {
 
     // MARK: Filter
 
-    @objc func updateFilterControls() {
+    func updateFilterControls() {
         // TODO this is clumsy
         let currentMask = midiDocument.filterMask.rawValue
 
@@ -442,11 +442,11 @@ extension SMMMonitorWindowController: NSTableViewDataSource {
 
     // MARK: Messages Table View
 
-    @objc func updateMaxMessageCount() {
+    func updateMaxMessageCount() {
         maxMessageCountField.objectValue = NSNumber(value: midiDocument.maxMessageCount)
     }
 
-    @objc func updateMessages(scrollingToBottom: Bool) {
+    func updateMessages(scrollingToBottom: Bool) {
         // Reloading the NSTableView can be excruciatingly slow, and if messages are coming in quickly,
         // we will hog a lot of CPU. So we make sure that we don't do it too often.
 
@@ -569,11 +569,11 @@ extension SMMMonitorWindowController: NSTableViewDataSource {
         refreshMessagesTableView()
     }
 
-    @objc func updateSysExReadIndicator() {
+    func updateSysExReadIndicator() {
         showSysExProgressIndicator()
     }
 
-    @objc func stopSysExReadIndicator() {
+    func stopSysExReadIndicator() {
         hideSysExProgressIndicator()
     }
 
@@ -599,11 +599,11 @@ extension SMMMonitorWindowController {
     private static let messagesScrollPointX = "messagesScrollPointX"
     private static let messagesScrollPointY = "messagesScrollPointY"
 
-    @objc static var windowSettingsKeys: [String] {
+    static var windowSettingsKeys: [String] {
         return [sourcesShownKey, filterShownKey, windowFrameKey, messagesScrollPointX, messagesScrollPointY]
     }
 
-    @objc var windowSettings: [String: Any] {
+    var windowSettings: [String: Any] {
         var windowSettings: [String: Any] = [:]
 
         // Remember whether our sections are shown or hidden

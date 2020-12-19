@@ -14,7 +14,7 @@ import Cocoa
 
 class SMMPreferencesWindowController: SMMWindowController, NSWindowRestoration {
 
-    @objc static let sharedInstance = SMMPreferencesWindowController(windowNibName: "Preferences")
+    static let sharedInstance = SMMPreferencesWindowController(windowNibName: "Preferences")
 
     //
     // Internal

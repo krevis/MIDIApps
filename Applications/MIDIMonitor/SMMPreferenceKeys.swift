@@ -12,7 +12,7 @@
 
 import Foundation
 
-@objc class SMMPreferenceKeys: NSObject {
+class SMMPreferenceKeys: NSObject {
 
     static let saveSysExWithEOXAlways = "SMMSaveSysExWithEOXAlways"
 

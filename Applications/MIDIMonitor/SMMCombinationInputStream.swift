@@ -27,6 +27,8 @@ class SMMCombinationInputStreamSourceGroup: NSObject {
 
 class SMMCombinationInputStream: NSObject, SMMessageDestination {
 
+    // TODO Cleanup, reorganize, privatize
+
     var messageDestination: SMMessageDestination?
 
     private let portInputStream = SMPortInputStream()

@@ -16,7 +16,7 @@ class SMMSysExWindowController: SMMDetailsWindowController {
 
     private let sysExMessage: SMSystemExclusiveMessage
 
-    @objc override init(message myMessage: SMMessage) {
+    override init(message myMessage: SMMessage) {
         guard let mySysExMessage = myMessage as? SMSystemExclusiveMessage else { fatalError() }
         sysExMessage = mySysExMessage
         super.init(message: myMessage)
