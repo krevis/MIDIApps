@@ -97,7 +97,7 @@ extension MonitorWindowController {
         checkboxCell.setButtonType(.switch)
         checkboxCell.controlSize = .small
         checkboxCell.font = NSFont.systemFont(ofSize: NSFont.smallSystemFontSize)
-        checkboxCell.allowsMixedState = false
+        checkboxCell.allowsMixedState = true
         sourcesOutlineView.tableColumn(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "enabled"))?.dataCell = checkboxCell
 
         let textFieldCell = NonHighlightingTextFieldCell(textCell: "")
@@ -338,7 +338,7 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
             }
 
             if areAnySelected && areAnyNotSelected {
-                return .mixed   // TODO This doesn't seem to actually work for the sources group?
+                return .mixed
             }
         }
 
