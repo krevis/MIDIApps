@@ -12,30 +12,7 @@
 
 import Cocoa
 
-class CombinationInputStreamSourceGroup: NSObject {
-    let name: String
-    let expandable: Bool
-    fileprivate(set) var sources: [SMInputStreamSource]
-
-    init(name myName: String, expandable myExpandable: Bool) {
-        name = myName
-        expandable = myExpandable
-        sources = []
-        super.init()
-    }
-}
-
-class CombinationInputStream: NSObject, SMMessageDestination {
-
-    // TODO Reorganize, make things private, etc.
-
-    var messageDestination: SMMessageDestination?
-
-    private let portInputStream = SMPortInputStream()
-    private let virtualInputStream = SMVirtualInputStream()
-    private let spyingInputStream: SpyingInputStream?
-
-    private var willPostSourceListChangedNotification = false
+class CombinationInputStream: NSObject {
 
     override init() {
         if let spyClient = (NSApp.delegate as? AppController)?.midiSpyClient {
@@ -77,13 +54,7 @@ class CombinationInputStream: NSObject, SMMessageDestination {
         }
     }
 
-    @objc func takeMIDIMessages(_ messages: [SMMessage]!) {
-        messageDestination?.takeMIDIMessages(messages)
-    }
-
-    private lazy var portGroup = CombinationInputStreamSourceGroup(name: NSLocalizedString("MIDI sources", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "name of group for ordinary sources"), expandable: true)
-    private lazy var virtualGroup = CombinationInputStreamSourceGroup(name: NSLocalizedString("Act as a destination for other programs", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "name of source item for virtual destination"), expandable: false)
-    private var spyingGroup: CombinationInputStreamSourceGroup?
+    var messageDestination: SMMessageDestination?
 
     var sourceGroups: [CombinationInputStreamSourceGroup] {
         var groups = [portGroup, virtualGroup]
@@ -204,6 +175,40 @@ class CombinationInputStream: NSObject, SMMessageDestination {
         }
     }
 
+    // MARK: Internal
+
+    private let portInputStream = SMPortInputStream()
+    private let virtualInputStream = SMVirtualInputStream()
+    private let spyingInputStream: SpyingInputStream?
+
+    private var willPostSourceListChangedNotification = false
+
+    private lazy var portGroup = CombinationInputStreamSourceGroup(name: NSLocalizedString("MIDI sources", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "name of group for ordinary sources"), expandable: true)
+    private lazy var virtualGroup = CombinationInputStreamSourceGroup(name: NSLocalizedString("Act as a destination for other programs", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "name of source item for virtual destination"), expandable: false)
+    private var spyingGroup: CombinationInputStreamSourceGroup?
+
+}
+
+extension CombinationInputStream: SMMessageDestination {
+
+    @objc func takeMIDIMessages(_ messages: [SMMessage]!) {
+        messageDestination?.takeMIDIMessages(messages)
+    }
+
+}
+
+extension CombinationInputStream {
+
+    // MARK: Notifications
+    //
+    // This class reposts these notifications from its streams (with self as object):
+    //    SMInputStreamReadingSysExNotification
+    //    SMInputStreamDoneReadingSysExNotification
+    //    SMInputStreamSelectedInputSourceDisappearedNotification
+    //
+    // It also listens to SMInputStreamSourceListChangedNotification from its streams,
+    // and coalesces them into a single notification (with the same name) from this object.
+
     @objc func repostNotification(_ notification: Notification) {
         NotificationCenter.default.post(name: notification.name, object: self, userInfo: notification.userInfo)
     }
@@ -223,12 +228,17 @@ class CombinationInputStream: NSObject, SMMessageDestination {
 
 }
 
-// Notifications
-//
-// This class will repost these notifications from its streams (with self as object):
-//    SMInputStreamReadingSysExNotification
-//    SMInputStreamDoneReadingSysExNotification
-//    SMInputStreamSelectedInputSourceDisappearedNotification
-//
-// It will also listen to SMInputStreamSourceListChangedNotification from its streams,
-// and coalesce them into a single notification (with the same name) from this object.
+class CombinationInputStreamSourceGroup: NSObject {
+
+    let name: String
+    let expandable: Bool
+    fileprivate(set) var sources: [SMInputStreamSource]
+
+    init(name myName: String, expandable myExpandable: Bool) {
+        name = myName
+        expandable = myExpandable
+        sources = []
+        super.init()
+    }
+
+}
