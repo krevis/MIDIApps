@@ -77,7 +77,7 @@ class CombinationInputStream: NSObject {
         return groups
     }
 
-    var selectedInputSources: Set<AnyHashable> /* TODO Should be SMInputStreamSource */ {
+    var selectedInputSources: Set<AnyHashable> /* TODO Should become Set<SMInputStreamSource> */ {
         get {
             var inputSources: Set<AnyHashable> = []
             inputSources.formUnion(portInputStream.selectedInputSources)
