@@ -76,9 +76,9 @@
     // may return nil if this endpoint is virtual
 
 // SMInputStreamSource protocol
-- (NSString *)inputStreamSourceName;
-- (NSNumber *)inputStreamSourceUniqueID;
-- (NSArray *)inputStreamSourceExternalDeviceNames;
+@property (nonatomic, readonly, strong) NSString *inputStreamSourceName;
+@property (nonatomic, readonly, strong) NSNumber *inputStreamSourceUniqueID;
+@property (nonatomic, readonly, strong) NSArray<NSString *> *inputStreamSourceExternalDeviceNames;
 
 @end
 

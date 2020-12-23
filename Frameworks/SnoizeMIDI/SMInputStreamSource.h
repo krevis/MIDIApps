@@ -16,9 +16,9 @@
 
 @protocol SMInputStreamSource <NSObject>
 
-- (NSString *)inputStreamSourceName;
-- (NSNumber *)inputStreamSourceUniqueID;
-- (NSArray *)inputStreamSourceExternalDeviceNames;
+@property (nonatomic, readonly, strong) NSString *inputStreamSourceName;
+@property (nonatomic, readonly, strong) NSNumber *inputStreamSourceUniqueID;
+@property (nonatomic, readonly, strong) NSArray<NSString *> *inputStreamSourceExternalDeviceNames;
 
 @end
 
@@ -30,12 +30,10 @@
 
 - (id)initWithName:(NSString *)aName;
 
-- (NSString *)inputStreamSourceName;
-- (NSNumber *)inputStreamSourceUniqueID;
-    // just returns nil
-- (NSArray *)inputStreamSourceExternalDeviceNames;
-    // returns an empty array
-
 - (void)setName:(NSString *)value;
+
+// inputStreamSourceName is the name above
+// inputStreamSourceUniqueID just returns nil
+// inputStreamSourceExternalDeviceNames returns an empty array
 
 @end

@@ -501,7 +501,7 @@ extension Document {
     }
 
     private func updateVirtualEndpointName() {
-        let applicationName = Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as! String
+        let applicationName = Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String ?? "MIDI Monitor"
         var virtualEndpointName = applicationName
         if let documentName = displayName { // should always be non-nil, but just in case
             virtualEndpointName += " (\(documentName))"

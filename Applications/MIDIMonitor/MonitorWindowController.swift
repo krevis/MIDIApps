@@ -108,8 +108,8 @@ extension MonitorWindowController {
         systemCommonCheckBox.allowsMixedState = true
         realTimeCheckBox.allowsMixedState = true
 
-        (maxMessageCountField.formatter as! NumberFormatter).allowsFloats = false
-        (oneChannelField.formatter as! NumberFormatter).allowsFloats = false
+        (maxMessageCountField.formatter as? NumberFormatter)?.allowsFloats = false
+        (oneChannelField.formatter as? NumberFormatter)?.allowsFloats = false
 
         messagesTableView.autosaveName = "MessagesTableView2"
         messagesTableView.autosaveTableColumns = true
@@ -137,8 +137,8 @@ extension MonitorWindowController {
         }
     }
 
-    private var midiDocument: Document {
-        return document as! Document
+    private var midiDocument: Document! {
+        return document as? Document
     }
 
     private func trivialWindowSettingsDidChange() {
@@ -250,9 +250,9 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
                 return group.name
             }
             else if let source = item as? SMInputStreamSource {
-                let name = source.inputStreamSourceName()!
-                let externalDeviceNames =  source.inputStreamSourceExternalDeviceNames() as! [String]
-                if externalDeviceNames.count > 0 {
+                let name = source.inputStreamSourceName ?? ""
+                if let externalDeviceNames = source.inputStreamSourceExternalDeviceNames,
+                   externalDeviceNames.count > 0 {
                     return "\(name)—\(externalDeviceNames.joined(separator: ", "))"
                 }
                 else {
@@ -280,9 +280,9 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
     }
 
     func outlineView(_ outlineView: NSOutlineView, setObjectValue object: Any?, for tableColumn: NSTableColumn?, byItem item: Any?) {
-        guard let item = item else { fatalError() }
+        guard let item = item,
+              let number = object as? NSNumber else { fatalError() }
 
-        let number = object as! NSNumber
         var newState = NSControl.StateValue(rawValue: number.intValue)
         // It doesn't make sense to switch from off to mixed, so go directly to on
         if newState == .mixed {
@@ -317,7 +317,9 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
 
     func outlineView(_ outlineView: NSOutlineView, willDisplayOutlineCell cell: Any, for tableColumn: NSTableColumn?, item: Any) {
         // cause the button cell to always use a "dark" triangle
-        (cell as! NSCell).backgroundStyle = .light
+        if let cell = cell as? NSCell {
+            cell.backgroundStyle = .light
+        }
     }
 
     private func buttonStateForInputSources(_ sources: [SMInputStreamSource]) -> NSControl.StateValue {
@@ -512,7 +514,7 @@ extension MonitorWindowController: NSTableViewDataSource {
     }
 
     @IBAction func setMaximumMessageCount(_ sender: AnyObject?) {
-        let control = sender as! NSControl
+        guard let control = sender as? NSControl else { fatalError() }
         if let number = control.objectValue as? NSNumber {
             midiDocument.maxMessageCount = number.uintValue
         }
@@ -526,9 +528,11 @@ extension MonitorWindowController: NSTableViewDataSource {
 
         let columns = messagesTableView.tableColumns
         let rowStrings = messagesTableView.selectedRowIndexes.map { (row) -> String in
-            let columnStrings = columns.map { (column) -> String in tableView(messagesTableView, objectValueFor: column, row: row) as! String
+            let columnStrings = columns.map { (column) -> String in
+                tableView(messagesTableView, objectValueFor: column, row: row) as? String ?? ""
             }
-            return columnStrings.joined(separator: "\t")
+            let rowString = columnStrings.joined(separator: "\t")
+            return rowString
         }
         let totalString = rowStrings.joined(separator: "\n")
 

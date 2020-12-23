@@ -373,7 +373,7 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
     return [NSNumber numberWithInt:[self uniqueID]];
 }
 
-- (NSArray *)inputStreamSourceExternalDeviceNames;
+- (NSArray<NSString *> *)inputStreamSourceExternalDeviceNames;
 {
     return [[self connectedExternalDevices] SnoizeMIDI_arrayByMakingObjectsPerformSelector:@selector(name)];
 }

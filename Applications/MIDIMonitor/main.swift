@@ -14,10 +14,10 @@ import Cocoa
 
 // Register defaults early
 autoreleasepool {
-    if let defaultDefaultsURL = Bundle.main.url(forResource: "Defaults", withExtension: "plist"),
-       let defaultDefaults = NSDictionary(contentsOf: defaultDefaultsURL) {
-        UserDefaults.standard.register(defaults: defaultDefaults as! [String: Any])
-    }
+    guard let defaultDefaultsURL = Bundle.main.url(forResource: "Defaults", withExtension: "plist"),
+          let defaultDefaults = NSDictionary(contentsOf: defaultDefaultsURL) as? [String: Any] else { fatalError() }
+
+    UserDefaults.standard.register(defaults: defaultDefaults)
 }
 
 _ = NSApplicationMain(CommandLine.argc, CommandLine.unsafeArgv)
