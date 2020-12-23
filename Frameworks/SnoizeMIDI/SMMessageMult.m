@@ -57,7 +57,7 @@
     [destinations removeObject:destination];
 }
 
-- (void)takeMIDIMessages:(NSArray *)messages;
+- (void)takeMIDIMessages:(NSArray<SMMessage *> *)messages
 {
     [destinations makeObjectsPerformSelector:@selector(takeMIDIMessages:) withObject:messages];
 }

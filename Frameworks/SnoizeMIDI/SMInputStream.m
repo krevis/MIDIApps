@@ -277,7 +277,7 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
 // Parser delegate
 //
 
-- (void)parser:(SMMessageParser *)parser didReadMessages:(NSArray *)messages;
+- (void)parser:(SMMessageParser *)parser didReadMessages:(NSArray<SMMessage *> *)messages;
 {
     [nonretainedMessageDestination takeMIDIMessages:messages];
 }

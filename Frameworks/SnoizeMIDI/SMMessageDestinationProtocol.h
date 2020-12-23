@@ -13,9 +13,10 @@
 
 #import <Foundation/Foundation.h>
 
+@class SMMessage;
 
 @protocol SMMessageDestination <NSObject>
 
-- (void)takeMIDIMessages:(NSArray *)messages;
+- (void)takeMIDIMessages:(NSArray<SMMessage *> *)messages;
 
 @end

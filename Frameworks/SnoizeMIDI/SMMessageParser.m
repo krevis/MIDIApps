@@ -97,7 +97,7 @@
 
 - (void)takePacketList:(const MIDIPacketList *)packetList;
 {
-    NSMutableArray *messages = nil;
+    NSMutableArray<SMMessage *> *messages = nil;
     UInt32 packetCount;
     const MIDIPacket *packet;
     

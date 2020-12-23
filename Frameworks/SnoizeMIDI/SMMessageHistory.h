@@ -14,24 +14,16 @@
 #import <Foundation/Foundation.h>
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 
-
 @interface SMMessageHistory : NSObject <SMMessageDestination>
-{
-    NSMutableArray *savedMessages;
-    NSUInteger historySize;
-}
 
 + (NSUInteger)defaultHistorySize;
 
-- (NSArray *)savedMessages;
-    // Returns a snapshot of the current history.
-
-- (void)setSavedMessages:(NSArray*)messages;
+@property (nonatomic, strong) NSArray<SMMessage *> *savedMessages;
+    // A snapshot of the current history.
 
 - (void)clearSavedMessages;
 
-- (NSUInteger)historySize;
-- (void)setHistorySize:(NSUInteger)newHistorySize;
+@property (nonatomic, assign) NSUInteger historySize;
 
 @end
 

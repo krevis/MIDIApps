@@ -77,7 +77,7 @@ class CombinationInputStream: NSObject, SMMessageDestination {
         }
     }
 
-    @objc func takeMIDIMessages(_ messages: [Any]!) {
+    @objc func takeMIDIMessages(_ messages: [SMMessage]!) {
         messageDestination?.takeMIDIMessages(messages)
     }
 

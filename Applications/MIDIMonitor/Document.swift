@@ -81,7 +81,7 @@ class Document: NSDocument {
             dict["streamSettings"] = streamSettings
         }
 
-        let historySize = history.historySize()
+        let historySize = history.historySize
         if historySize != SMMessageHistory.defaultHistorySize() {
             dict["maxMessageCount"] = historySize
         }
@@ -96,7 +96,7 @@ class Document: NSDocument {
             dict["channelMask"] = channelMask.rawValue
         }
 
-        if let savedMessages = history.savedMessages(),
+        if let savedMessages = history.savedMessages,
            savedMessages.count > 0 {
             dict["messageData"] = NSKeyedArchiver.archivedData(withRootObject: savedMessages)
         }
@@ -140,8 +140,8 @@ class Document: NSDocument {
         }
 
         if let messageData = dict["messageData"] as? Data,
-           let messages = NSKeyedUnarchiver.unarchiveObject(with: messageData) as? [Any] {
-            history.setSavedMessages(messages)
+           let messages = NSKeyedUnarchiver.unarchiveObject(with: messageData) as? [SMMessage] {
+            history.savedMessages = messages
         }
 
         var readWindowSettings: [String: Any] = [:]
@@ -266,7 +266,7 @@ class Document: NSDocument {
 
     @objc var maxMessageCount: UInt {
         get {
-            return history.historySize()
+            return history.historySize
         }
         set {
             guard newValue != maxMessageCount else { return }
@@ -281,7 +281,7 @@ class Document: NSDocument {
             }
  */
 
-            history.setHistorySize(newValue)
+            history.historySize = newValue
 
             monitorWindowController?.updateMaxMessageCount()
         }
@@ -374,13 +374,13 @@ class Document: NSDocument {
     }
 
     func clearSavedMessages() {
-        if history.savedMessages().count > 0 {
+        if history.savedMessages.count > 0 {
             history.clearSavedMessages()
         }
     }
 
     var savedMessages: [SMMessage] {
-        return history.savedMessages() as? [SMMessage] ?? []  // TODO History type should match
+        return history.savedMessages
     }
 
     var monitorWindowController: MonitorWindowController? {

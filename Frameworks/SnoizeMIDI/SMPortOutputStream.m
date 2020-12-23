@@ -142,7 +142,7 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
 // SMOutputStream overrides
 //
 
-- (void)takeMIDIMessages:(NSArray *)messages;
+- (void)takeMIDIMessages:(NSArray<SMMessage *> *)messages;
 {
     if ([self sendsSysExAsynchronously]) {
         NSArray *sysExMessages, *normalMessages;

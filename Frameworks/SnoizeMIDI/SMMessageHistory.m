@@ -16,27 +16,22 @@
 #import "SMMessage.h"
 
 
-@interface SMMessageHistory (Private)
-
-- (void)limitSavedMessages;
-- (void)historyHasChangedWithNewMessages:(BOOL)wereNewMessages;
-
-@end
-
-
 @implementation SMMessageHistory
+{
+    NSMutableArray<SMMessage *> *savedMessages;
+    NSUInteger historySize;
+}
 
 NSString *SMMessageHistoryChangedNotification = @"SMMessageHistoryChangedNotification";
 NSString *SMMessageHistoryWereMessagesAdded = @"SMMessageHistoryWereMessagesAdded";
 
 
-+ (NSUInteger)defaultHistorySize;
++ (NSUInteger)defaultHistorySize
 {
     return 1000;
 }
 
-
-- (id)init;
+- (id)init
 {
     if (!(self = [super init]))
         return nil;
@@ -55,12 +50,12 @@ NSString *SMMessageHistoryWereMessagesAdded = @"SMMessageHistoryWereMessagesAdde
     [super dealloc];
 }
 
-- (NSArray *)savedMessages;
+- (NSArray<SMMessage *> *)savedMessages;
 {
     return [NSArray arrayWithArray:savedMessages];
 }
 
-- (void)setSavedMessages:(NSArray*)messages
+- (void)setSavedMessages:(NSArray<SMMessage *> *)messages
 {
     // ensure all objects are actually SMMessages
     Class messageClass = [SMMessage class];
@@ -76,7 +71,7 @@ NSString *SMMessageHistoryWereMessagesAdded = @"SMMessageHistoryWereMessagesAdde
     }
 }
 
-- (void)clearSavedMessages;
+- (void)clearSavedMessages
 {
     if ([savedMessages count] > 0) {
         [savedMessages removeAllObjects];
@@ -84,12 +79,12 @@ NSString *SMMessageHistoryWereMessagesAdded = @"SMMessageHistoryWereMessagesAdde
     }
 }
 
-- (NSUInteger)historySize;
+- (NSUInteger)historySize
 {
     return historySize;
 }
 
-- (void)setHistorySize:(NSUInteger)newHistorySize;
+- (void)setHistorySize:(NSUInteger)newHistorySize
 {
     NSUInteger oldMessageCount, newMessageCount;
 
@@ -103,7 +98,9 @@ NSString *SMMessageHistoryWereMessagesAdded = @"SMMessageHistoryWereMessagesAdde
         [self historyHasChangedWithNewMessages:NO];
 }
 
-- (void)takeMIDIMessages:(NSArray *)messages;
+#pragma mark <SMMessageDestination>
+
+- (void)takeMIDIMessages:(NSArray<SMMessage *> *)messages
 {
     [savedMessages addObjectsFromArray:messages];
     [self limitSavedMessages];
@@ -111,12 +108,9 @@ NSString *SMMessageHistoryWereMessagesAdded = @"SMMessageHistoryWereMessagesAdde
     [self historyHasChangedWithNewMessages:YES];
 }
 
-@end
+#pragma mark Private
 
-
-@implementation SMMessageHistory (Private)
-
-- (void)limitSavedMessages;
+- (void)limitSavedMessages
 {
     NSUInteger messageCount;
 
@@ -129,7 +123,7 @@ NSString *SMMessageHistoryWereMessagesAdded = @"SMMessageHistoryWereMessagesAdde
     }
 }
 
-- (void)historyHasChangedWithNewMessages:(BOOL)wereNewMessages;
+- (void)historyHasChangedWithNewMessages:(BOOL)wereNewMessages
 {
     NSDictionary *userInfo;
 

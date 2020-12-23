@@ -15,6 +15,7 @@
 #import <Foundation/Foundation.h>
 
 @class SMEndpoint;
+@class SMMessage;
 @class SMSystemExclusiveMessage;
 
 
@@ -53,7 +54,7 @@
 
 @interface NSObject (SMMessageParserDelegate)
 
-- (void)parser:(SMMessageParser *)parser didReadMessages:(NSArray *)messages;
+- (void)parser:(SMMessageParser *)parser didReadMessages:(NSArray<SMMessage *> *)messages;
 - (void)parser:(SMMessageParser *)parser isReadingSysExWithLength:(NSUInteger)length;
 - (void)parser:(SMMessageParser *)parser finishedReadingSysExMessage:(SMSystemExclusiveMessage *)message;
 

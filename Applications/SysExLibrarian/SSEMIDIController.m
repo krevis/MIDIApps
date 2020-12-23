@@ -336,7 +336,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
 // SMMessageDestination protocol
 //
 
-- (void)takeMIDIMessages:(NSArray *)messagesToTake;
+- (void)takeMIDIMessages:(NSArray<SMMessage *> *)messagesToTake
 {
     NSUInteger messageCount, messageIndex;
         

@@ -69,7 +69,7 @@
 // SMMessageDestination protocol
 //
 
-- (void)takeMIDIMessages:(NSArray *)messages;
+- (void)takeMIDIMessages:(NSArray<SMMessage *> *)messages;
 {
 #if LIMITED_PACKET_LIST_SIZE
 

@@ -31,7 +31,7 @@
 // SMMessageDestination protocol
 //
 
-- (void)takeMIDIMessages:(NSArray *)messages
+- (void)takeMIDIMessages:(NSArray<SMMessage *> *)messages
 {
     NSArray *filteredMessages = [self filterMessages:messages];
     if ([filteredMessages count]) {
