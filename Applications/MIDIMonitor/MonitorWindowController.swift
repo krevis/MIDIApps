@@ -352,38 +352,31 @@ extension MonitorWindowController {
     // MARK: Filter
 
     func updateFilterControls() {
-        // TODO this is clumsy
         let currentMask = midiDocument.filterMask.rawValue
 
+        // Each filter checkbox has a tag with the mask of filters that it is based on.
+        // Top-level filter checkboxes are standalone NSButtons. They include the state of second-level checkboxes, so their tags may have multiple bits set, and they may be mixed state.
+        // Second-level filter checkboxes are NSCells in an NSMatrix. Their tags have only a single bit set, and they are either on or off, never mixed state.
         for checkbox in filterCheckboxes {
-            let buttonMask = UInt32(checkbox.tag)
-
-            let newState: NSControl.StateValue
-            if (currentMask & buttonMask) == buttonMask {
-                newState = .on
-            }
-            else if (currentMask & buttonMask) == 0 {
-                newState = .off
-            }
-            else {
-                newState = .mixed
-            }
-
-            checkbox.state = newState
+            let buttonMask = UInt32(checkbox.tag)   // multiple bits
+            checkbox.state = {
+                switch currentMask & buttonMask {
+                case buttonMask: return .on     // all on
+                case 0:          return .off    // all off
+                default:         return .mixed  // some but not all on
+                }
+            }()
         }
 
         for checkbox in filterMatrixCells {
-            let buttonMask = UInt32(checkbox.tag)
-
-            let newState: NSControl.StateValue
-            if (currentMask & buttonMask) == buttonMask {
-                newState = .on
-            }
-            else {
-                newState = .off
-            }
-
-            checkbox.state = newState
+            let buttonMask = UInt32(checkbox.tag)   // only a single bit
+            checkbox.state = {
+                switch currentMask & buttonMask {
+                case buttonMask: return .on     // on
+                case 0:          return .off    // off
+                default:         fatalError()   // shouldn't happen, something is wrong with the tag
+                }
+            }()
         }
 
         if midiDocument.isShowingAllChannels {
