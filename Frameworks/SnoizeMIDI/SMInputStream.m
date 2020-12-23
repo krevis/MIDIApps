@@ -261,6 +261,11 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
     return nil;
 }
 
+- (NSSet<NSObject<SMInputStreamSource> *> *)inputSourcesSet
+{
+    return [NSSet setWithArray:self.inputSources];
+}
+
 - (NSSet<NSObject<SMInputStreamSource> *> *)selectedInputSources;
 {
     SMRequestConcreteImplementation(self, _cmd);

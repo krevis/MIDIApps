@@ -56,6 +56,7 @@
 - (id<SMInputStreamSource>)streamSourceForParser:(SMMessageParser *)parser;
 
 @property (nonatomic, readonly, strong) NSArray<id<SMInputStreamSource>> *inputSources;
+@property (nonatomic, readonly, strong) NSSet<NSObject<SMInputStreamSource> *> *inputSourcesSet;    // for convenience going to Swift and dealing with selectedInputSources
 @property (nonatomic, strong) NSSet<NSObject<SMInputStreamSource> *> *selectedInputSources;
 
 @end

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2002-2014, Kurt Revis.  All rights reserved.
+ Copyright (c) 2002-2020, Kurt Revis.  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
@@ -88,10 +88,10 @@ class CombinationInputStream: NSObject {
             return inputSources
         }
         set {
-            portInputStream.selectedInputSources = newValue.intersection(portInputStream.inputSources as! [AnyHashable])
-            virtualInputStream.selectedInputSources = newValue.intersection(virtualInputStream.inputSources as! [AnyHashable])
+            portInputStream.selectedInputSources = newValue.intersection(portInputStream.inputSourcesSet)
+            virtualInputStream.selectedInputSources = newValue.intersection(virtualInputStream.inputSourcesSet)
             if let stream = spyingInputStream {
-                stream.selectedInputSources = newValue.intersection(stream.inputSources as! [AnyHashable])
+                stream.selectedInputSources = newValue.intersection(stream.inputSourcesSet)
             }
         }
     }
@@ -144,7 +144,7 @@ class CombinationInputStream: NSObject {
         else if let oldStyleUniqueID = settings["virtualEndpointUniqueID"] as? NSNumber {
             // This is an old-style document, specifying to use a virtual input stream.
             virtualInputStream.setUniqueID(oldStyleUniqueID.int32Value)
-            virtualInputStream.selectedInputSources = Set(virtualInputStream.inputSources as! [AnyHashable])
+            virtualInputStream.selectedInputSources = virtualInputStream.inputSourcesSet
         }
         else {
             // This is a current-style document
