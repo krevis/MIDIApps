@@ -115,30 +115,7 @@ class Document: NSDocument {
 
         guard let dict = propertyList as? [String: Any] else { throw badFileContentsError }
 
-        var streamSettings: [String: Any]?
-
-        let version = dict["version"] as? Int ?? 0
-        switch version {
-        case 1:
-            if let number = dict["sourceEndpointUniqueID"] as? NSNumber {
-                var settings: [String: Any] = ["portEndpointUniqueID": number]
-                if let endpointName = dict["sourceEndpointName"] {
-                    settings["portEndpointName"] = endpointName
-                }
-                streamSettings = settings
-            }
-            else if let number = dict["virtualDestinationEndpointUniqueID"] as? NSNumber {
-                streamSettings = ["virtualEndpointUniqueID": number]
-            }
-
-        case 2:
-            streamSettings = dict["streamSettings"] as? [String: Any]
-
-        default:
-            throw badFileContentsError
-        }
-
-        if let settings = streamSettings {
+        if let settings = try readStreamSettings(dict) {
             _ = stream.takePersistentSettings(settings)
             monitorWindowController?.updateSources()
         }
@@ -177,6 +154,32 @@ class Document: NSDocument {
 
         // Doing the above caused undo actions to be remembered, but we don't want the user to see them
         updateChangeCount(.changeCleared)
+    }
+
+    private func readStreamSettings(_ dict: [String: Any]) throws -> [String: Any]? {
+        var streamSettings: [String: Any]?
+        let version = dict["version"] as? Int ?? 0
+        switch version {
+        case 1:
+            if let number = dict["sourceEndpointUniqueID"] as? NSNumber {
+                var settings: [String: Any] = ["portEndpointUniqueID": number]
+                if let endpointName = dict["sourceEndpointName"] {
+                    settings["portEndpointName"] = endpointName
+                }
+                streamSettings = settings
+            }
+            else if let number = dict["virtualDestinationEndpointUniqueID"] as? NSNumber {
+                streamSettings = ["virtualEndpointUniqueID": number]
+            }
+
+        case 2:
+            streamSettings = dict["streamSettings"] as? [String: Any]
+
+        default:
+            throw badFileContentsError
+        }
+
+        return streamSettings
     }
 
     override func updateChangeCount(_ change: NSDocument.ChangeType) {
