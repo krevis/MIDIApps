@@ -35,14 +35,13 @@ class SysExWindowController: DetailsWindowController {
     override func windowDidLoad() {
         super.windowDidLoad()
 
-        // TODO manufacturerName should be a property in objc thus no parens
-        if let manufacturerName = sysExMessage.manufacturerName() {
+        if let manufacturerName = sysExMessage.manufacturerName {
             manufacturerNameField.stringValue = manufacturerName
         }
     }
 
     override var dataForDisplay: Data {
-        return sysExMessage.receivedDataWithStartByte() ?? Data()    // TODO should be a property
+        return sysExMessage.receivedDataWithStartByte ?? Data()
     }
 
     @IBAction func save(_ sender: AnyObject) {
@@ -55,8 +54,7 @@ class SysExWindowController: DetailsWindowController {
             savePanel.orderOut(nil)
 
             let saveWithEOXAlways = UserDefaults.standard.bool(forKey: PreferenceKeys.saveSysExWithEOXAlways)
-            // TODO fullMessageData and receivedDataWithStartByte should be properties in objc thus no parens
-            if let dataToWrite = saveWithEOXAlways ? self.sysExMessage.fullMessageData() : self.sysExMessage.receivedDataWithStartByte(),
+            if let dataToWrite = saveWithEOXAlways ? self.sysExMessage.fullMessageData : self.sysExMessage.receivedDataWithStartByte,
                let url = savePanel.url {
                 do {
                     try dataToWrite.write(to: url, options: .atomic)

@@ -122,17 +122,16 @@ extern NSString *SMProgramChangeBaseIndexPreferenceKey;
 - (id)initWithTimeStamp:(MIDITimeStamp)aTimeStamp statusByte:(Byte)aStatusByte;
     // Designated initializer
 
-- (MIDITimeStamp)timeStamp;
-- (void)setTimeStamp:(MIDITimeStamp)value;
+@property (nonatomic, assign) MIDITimeStamp timeStamp;
 
-- (Byte)statusByte;
+@property (nonatomic, readonly, assign) Byte statusByte;
     // First MIDI byte
     
-- (SMMessageType)messageType;
+@property (nonatomic, readonly, assign) SMMessageType messageType;
     // Enumerated message type, which doesn't correspond to MIDI value
 - (BOOL)matchesMessageTypeMask:(SMMessageType)mask;
 
-- (NSUInteger)otherDataLength;
+@property (nonatomic, readonly, assign) NSUInteger otherDataLength;
     // Length of data after the status byte
 - (const Byte *)otherDataBuffer;
     // May return NULL, indicating no additional data
@@ -142,16 +141,15 @@ extern NSString *SMProgramChangeBaseIndexPreferenceKey;
 @property (nonatomic, readonly, strong) NSData *fullData;
     // All data including status byte and otherData
 
-- (SMEndpoint *)originatingEndpoint;
-- (void)setOriginatingEndpoint:(SMEndpoint *)value;
+@property (nonatomic, strong) SMEndpoint *originatingEndpoint;
 
 // Display methods
 
-- (NSString *)timeStampForDisplay;
-- (NSString *)channelForDisplay;
-- (NSString *)typeForDisplay;
-- (NSString *)dataForDisplay;
-- (NSString *)expertDataForDisplay;
-- (NSString *)originatingEndpointForDisplay;
+@property (nonatomic, readonly, strong) NSString *timeStampForDisplay;
+@property (nonatomic, readonly, strong) NSString *channelForDisplay;
+@property (nonatomic, readonly, strong) NSString *typeForDisplay;
+@property (nonatomic, readonly, strong) NSString *dataForDisplay;
+@property (nonatomic, readonly, strong) NSString *expertDataForDisplay;
+@property (nonatomic, readonly, strong) NSString *originatingEndpointForDisplay;
 
 @end

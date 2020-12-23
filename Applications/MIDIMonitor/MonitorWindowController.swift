@@ -488,19 +488,19 @@ extension MonitorWindowController: NSTableViewDataSource {
 
         switch tableColumn?.identifier.rawValue {
         case "timeStamp":
-            return message.timeStampForDisplay()
+            return message.timeStampForDisplay
         case "source":
-            return message.originatingEndpointForDisplay()
+            return message.originatingEndpointForDisplay
         case "type":
-            return message.typeForDisplay()
+            return message.typeForDisplay
         case "channel":
-            return message.channelForDisplay()
+            return message.channelForDisplay
         case "data":
             if UserDefaults.standard.bool(forKey: SMExpertModePreferenceKey) {
-                return message.expertDataForDisplay()
+                return message.expertDataForDisplay
             }
             else {
-                return message.dataForDisplay()
+                return message.dataForDisplay
             }
         default:
             return nil

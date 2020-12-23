@@ -33,7 +33,17 @@ static void writeVariableLengthFieldIntoSMF(Byte **pPtr, const UInt32 value);
 @end
 
 
-@implementation SMSystemExclusiveMessage : SMMessage
+@implementation SMSystemExclusiveMessage
+{
+    NSData *data;
+    // data does not include the starting 0xF0 or the ending 0xF7 (EOX)
+
+    struct {
+        unsigned int wasReceivedWithEOX:1;
+    } flags;
+
+    NSMutableData *cachedDataWithEOX;
+}
 
 + (SMSystemExclusiveMessage *)systemExclusiveMessageWithTimeStamp:(MIDITimeStamp)aTimeStamp data:(NSData *)aData
 {

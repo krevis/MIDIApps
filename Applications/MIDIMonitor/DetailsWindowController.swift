@@ -80,7 +80,7 @@ class DetailsWindowController: UtilityWindowController, NSWindowDelegate {
         let sizeString = String.localizedStringWithFormat(format, formattedLength)
 
         sizeField.stringValue = sizeString
-        timeField.stringValue = message.timeStampForDisplay() ?? "" // TODO should be a non-nil property
+        timeField.stringValue = message.timeStampForDisplay ?? ""
     }
 
     private func formattedData(_ data: Data) -> String {

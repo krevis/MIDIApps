@@ -18,16 +18,6 @@
 
 @interface SMSystemExclusiveMessage : SMMessage
     // TODO Should this be a SMSystemCommonMessage too? Would we gain anything from that?
-{
-    NSData *data;
-    // data does not include the starting 0xF0 or the ending 0xF7 (EOX)
-    
-    struct {
-        unsigned int wasReceivedWithEOX:1;
-    } flags;
-
-    NSMutableData *cachedDataWithEOX;
-}
 
 + (SMSystemExclusiveMessage *)systemExclusiveMessageWithTimeStamp:(MIDITimeStamp)aTimeStamp data:(NSData *)aData;
     // data should NOT include the starting 0xF0 or the ending 0xF7 (EOX)
@@ -38,35 +28,32 @@
 + (NSArray *)systemExclusiveMessagesInStandardMIDIFile:(NSString *)path;
 + (BOOL)writeSystemExclusiveMessages:(NSArray *)messages toStandardMIDIFile:(NSString *)path;
 
-
     // Data without the starting 0xF0 or the ending 0xF7 (if any)
-- (NSData *)data;
-- (void)setData:(NSData *)newData;
+@property (nonatomic, strong) NSData *data;
 
-- (BOOL)wasReceivedWithEOX;
-- (void)setWasReceivedWithEOX:(BOOL)value;
+@property (nonatomic, assign) BOOL wasReceivedWithEOX;
 
     // Data without the starting 0xF0, always with ending 0xF7
-- (NSData *)otherData;
-- (NSUInteger)otherDataLength;
+@property (nonatomic, readonly, strong) NSData *otherData;
+@property (nonatomic, readonly, assign) NSUInteger otherDataLength;
 
     // Data as received, without starting 0xF0 -- may or may not include 0xF7
-- (NSData *)receivedData;
-- (NSUInteger)receivedDataLength;
+@property (nonatomic, readonly, strong) NSData *receivedData;
+@property (nonatomic, readonly, assign) NSUInteger receivedDataLength;
 
     // Data as received, with 0xF0 at start -- may or may not include 0xF7
-- (NSData *)receivedDataWithStartByte;
-- (NSUInteger)receivedDataWithStartByteLength;
+@property (nonatomic, readonly, strong) NSData *receivedDataWithStartByte;
+@property (nonatomic, readonly, assign) NSUInteger receivedDataWithStartByteLength;
 
     // Data with leading 0xF0 and ending 0xF7
-- (NSData *)fullMessageData;
-- (NSUInteger)fullMessageDataLength;
+@property (nonatomic, readonly, strong) NSData *fullMessageData;
+@property (nonatomic, readonly, assign) NSUInteger fullMessageDataLength;
 
-- (NSData *)manufacturerIdentifier;
+@property (nonatomic, readonly, strong) NSData *manufacturerIdentifier;
     // May be 1 to 3 bytes in length, or nil if a value can't be determined
-- (NSString *)manufacturerName;
+@property (nonatomic, readonly, strong) NSString *manufacturerName;
 
-- (NSString *)sizeForDisplay;
+@property (nonatomic, readonly, strong) NSString *sizeForDisplay;
     // "<receivedDataWithStartByteLength> bytes"
 
 @end
