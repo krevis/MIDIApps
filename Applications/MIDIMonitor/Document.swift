@@ -241,71 +241,69 @@ class Document: NSDocument {
         return stream.sourceGroups
     }
 
-    @objc var selectedInputSources: Set<AnyHashable> /* TODO Should become Set<SMInputStreamSource> */ {
+    // NOTE ON UNDOABLE DOCUMENT PROPERTIES:
+    // After migrating to Swift, we can no longer easily use NSUndoManager's prepareWithInvocationTarget mechanism.
+    // It would be nicer to use block-based undo registration, but that requires macOS 10.11. So, for now, register using selectors,
+    // and use a separate @objc-exposed method to do the work.
+
+    var selectedInputSources: Set<AnyHashable> /* TODO Should become Set<SMInputStreamSource> */ {
         get {
             return stream.selectedInputSources
         }
         set {
             guard selectedInputSources != newValue else { return }
-
-            // let oldValue = selectedInputSources
-            stream.selectedInputSources = newValue
-
-            /* TODO Work this out
-            if let undoManager = undoManager {
-                // TODO: Safer to use block-based undo registration, but it requires newer macOS. When we do that, remove @objc on this variable.
-                let proxy: AnyObject = undoManager.prepare(withInvocationTarget: self) as AnyObject
-                proxy.setSelectedInputSources(oldValue)
-                undoManager.setActionName(NSLocalizedString("Change Selected Sources", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change source undo action"))
-            }
- */
-
-            monitorWindowController?.updateSources()
+            undoableSetSelectedInputSources(newValue)
         }
     }
 
-    @objc var maxMessageCount: UInt {
+    @objc private func undoableSetSelectedInputSources(_ newValue: Set<AnyHashable>) {
+        if let undoManager = undoManager {
+            undoManager.registerUndo(withTarget: self, selector: #selector(self.undoableSetSelectedInputSources(_:)), object: selectedInputSources)
+            undoManager.setActionName(NSLocalizedString("Change Selected Sources", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change source undo action"))
+        }
+
+        stream.selectedInputSources = newValue
+        monitorWindowController?.updateSources()
+    }
+
+    var maxMessageCount: UInt {
         get {
             return history.historySize
         }
         set {
             guard newValue != maxMessageCount else { return }
-
-            /* TODO Work this out
-            if let undoManager = undoManager {
-                // TODO: Safer to use block-based undo registration, but it requires newer macOS. When we do that, remove @objc on this variable.
-                var proxy: AnyObject = undoManager.prepare(withInvocationTarget: self) as AnyObject
-//                proxy.maxMessageCount = newValue
-//                proxy.setMaxMessageCount(newValue)
-                undoManager.setActionName(NSLocalizedString("Change Selected Sources", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change source undo action"))
-            }
- */
-
-            history.historySize = newValue
-
-            monitorWindowController?.updateMaxMessageCount()
+            undoableSetMaxMessageCountNumber(NSNumber(value: newValue))
         }
     }
 
-    @objc var filterMask: SMMessageType {
+    @objc private func undoableSetMaxMessageCountNumber(_ number: NSNumber) {
+        if let undoManager = undoManager {
+            undoManager.registerUndo(withTarget: self, selector: #selector(self.undoableSetMaxMessageCountNumber(_:)), object: NSNumber(value: maxMessageCount))
+            undoManager.setActionName(NSLocalizedString("Change Remembered Events", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change history limit undo action"))
+        }
+
+        history.historySize = number.uintValue
+        monitorWindowController?.updateMaxMessageCount()
+    }
+
+    var filterMask: SMMessageType {
         get {
             return messageFilter.filterMask
         }
         set {
-            let oldValue = filterMask
-            guard newValue != oldValue else { return }
-
-            /* TODO Work this out
-            if let undoManager = undoManager {
-                let proxy: AnyObject = undoManager.prepare(withInvocationTarget: self) as AnyObject
-                proxy.setFilterMask(oldValue)
-                undoManager.setActionName(NSLocalizedString("Change Filter", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change filter undo action"))
-            }
- */
-
-            messageFilter.filterMask = newValue
-            monitorWindowController?.updateFilterControls()
+            guard newValue != filterMask else { return }
+            undoableSetFilterMaskNumber(NSNumber(value: newValue.rawValue))
         }
+    }
+
+    @objc private func undoableSetFilterMaskNumber(_ number: NSNumber) {
+        if let undoManager = undoManager {
+            undoManager.registerUndo(withTarget: self, selector: #selector(self.undoableSetFilterMaskNumber(_:)), object: NSNumber(value: filterMask.rawValue))
+            undoManager.setActionName(NSLocalizedString("Change Filter", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change filter undo action"))
+        }
+
+        messageFilter.filterMask = SMMessageType(rawValue: number.uint32Value)
+        monitorWindowController?.updateFilterControls()
     }
 
     func changeFilterMask(_ maskToChange: SMMessageType, turnBitsOn: Bool) {
@@ -320,25 +318,24 @@ class Document: NSDocument {
         filterMask = SMMessageType(rawValue: newMask)
     }
 
-    @objc var channelMask: SMChannelMask {
+    var channelMask: SMChannelMask {
         get {
             return messageFilter.channelMask
         }
         set {
-            let oldValue = channelMask
-            guard newValue != oldValue else { return }
-
-            /* TODO Work this out
-            if let undoManager = undoManager {
-                let proxy: AnyObject = undoManager.prepare(withInvocationTarget: self) as AnyObject
-                proxy.setChannelMask(oldValue)
-                undoManager.setActionName(NSLocalizedString("Change Channel", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change channel undo action"))
-            }
- */
-
-            messageFilter.channelMask = newValue
-            monitorWindowController?.updateFilterControls()
+            guard newValue != channelMask else { return }
+            undoableSetChannelMaskNumber(NSNumber(value: newValue.rawValue))
         }
+    }
+
+    @objc private func undoableSetChannelMaskNumber(_ number: NSNumber) {
+        if let undoManager = undoManager {
+            undoManager.registerUndo(withTarget: self, selector: #selector(self.undoableSetChannelMaskNumber(_:)), object: NSNumber(value: channelMask.rawValue))
+            undoManager.setActionName(NSLocalizedString("Change Channel", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change channel undo action"))
+        }
+
+        messageFilter.channelMask = SMChannelMask(rawValue: number.uint32Value)
+        monitorWindowController?.updateFilterControls()
     }
 
     var isShowingAllChannels: Bool {
