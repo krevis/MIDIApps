@@ -14,25 +14,6 @@ import Cocoa
 
 class Document: NSDocument {
 
-    // TODO Reorganize, make things private, etc.
-
-    private let midiMonitorFileType = "com.snoize.midimonitor"
-    private let midiMonitorErrorDomain = "com.snoize.midimonitor"
-
-    private(set) var windowSettings: [String: Any]?
-
-    // MIDI processing
-    private let stream = CombinationInputStream()
-    private let messageFilter = SMMessageFilter()
-    private let history = SMMessageHistory()
-
-    // Transient data
-    private var isSysExUpdateQueued = false
-
-    override class var autosavesInPlace: Bool {
-        return true
-    }
-
     override init() {
         super.init()
 
@@ -67,8 +48,29 @@ class Document: NSDocument {
         NotificationCenter.default.removeObserver(self)
     }
 
-    override func makeWindowControllers() {
-        addWindowController(MonitorWindowController())
+    // MARK: Internal
+
+    private let midiMonitorFileType = "com.snoize.midimonitor"
+    private let midiMonitorErrorDomain = "com.snoize.midimonitor"
+
+    private(set) var windowSettings: [String: Any]?
+
+    // MIDI processing
+    private let stream = CombinationInputStream()
+    private let messageFilter = SMMessageFilter()
+    private let history = SMMessageHistory()
+
+    // Transient data
+    private var isSysExUpdateQueued = false
+
+}
+
+extension Document {
+
+    // MARK: Document data (read and write)
+
+    override class var autosavesInPlace: Bool {
+        return true
     }
 
     override func data(ofType typeName: String) throws -> Data {
@@ -182,6 +184,16 @@ class Document: NSDocument {
         return streamSettings
     }
 
+    private var badFileTypeError: Error {
+        let reason = NSLocalizedString("Unknown file type.", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "error reason for unknown file type read or write")
+        return NSError(domain: midiMonitorErrorDomain, code: 1, userInfo: [NSLocalizedFailureReasonErrorKey: reason])
+    }
+
+    private var badFileContentsError: Error {
+        let reason = NSLocalizedString("Can't read the contents of the file.", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "error reason for unknown file contents")
+        return NSError(domain: midiMonitorErrorDomain, code: 2, userInfo: [NSLocalizedFailureReasonErrorKey: reason])
+    }
+
     override func updateChangeCount(_ change: NSDocument.ChangeType) {
         // Clear the undo stack whenever we load or save.
         super.updateChangeCount(change)
@@ -237,9 +249,11 @@ class Document: NSDocument {
         }
     }
 
-    var inputSourceGroups: [CombinationInputStreamSourceGroup] {
-        return stream.sourceGroups
-    }
+}
+
+extension Document {
+
+    // MARK: Core document properties
 
     // NOTE ON UNDOABLE DOCUMENT PROPERTIES:
     // After migrating to Swift, we can no longer easily use NSUndoManager's prepareWithInvocationTarget mechanism.
@@ -306,18 +320,6 @@ class Document: NSDocument {
         monitorWindowController?.updateFilterControls()
     }
 
-    func changeFilterMask(_ maskToChange: SMMessageType, turnBitsOn: Bool) {
-        var newMask = messageFilter.filterMask.rawValue
-        if turnBitsOn {
-            newMask |= maskToChange.rawValue
-        }
-        else {
-            newMask &= ~maskToChange.rawValue
-        }
-
-        filterMask = SMMessageType(rawValue: newMask)
-    }
-
     var channelMask: SMChannelMask {
         get {
             return messageFilter.channelMask
@@ -336,6 +338,30 @@ class Document: NSDocument {
 
         messageFilter.channelMask = SMChannelMask(rawValue: number.uint32Value)
         monitorWindowController?.updateFilterControls()
+    }
+
+    var savedMessages: [SMMessage] {
+        // Note: The remembered messages are saved with the document, and changes to the messages
+        // do dirty the document, but changes are not undoable -- it wouldn't make much sense.
+        return history.savedMessages
+    }
+
+}
+
+extension Document {
+
+    // MARK: Derived / convenience document functions
+
+    func changeFilterMask(_ maskToChange: SMMessageType, turnBitsOn: Bool) {
+        var newMask = messageFilter.filterMask.rawValue
+        if turnBitsOn {
+            newMask |= maskToChange.rawValue
+        }
+        else {
+            newMask &= ~maskToChange.rawValue
+        }
+
+        filterMask = SMMessageType(rawValue: newMask)
     }
 
     var isShowingAllChannels: Bool {
@@ -376,8 +402,14 @@ class Document: NSDocument {
         }
     }
 
-    var savedMessages: [SMMessage] {
-        return history.savedMessages
+}
+
+extension Document {
+
+    // MARK: Window controllers
+
+    override func makeWindowControllers() {
+        addWindowController(MonitorWindowController())
     }
 
     var monitorWindowController: MonitorWindowController? {
@@ -428,31 +460,14 @@ class Document: NSDocument {
         }
     }
 
-    private var badFileTypeError: Error {
-        let reason = NSLocalizedString("Unknown file type.", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "error reason for unknown file type read or write")
-        return NSError(domain: midiMonitorErrorDomain, code: 1, userInfo: [NSLocalizedFailureReasonErrorKey: reason])
-    }
+}
 
-    private var badFileContentsError: Error {
-        let reason = NSLocalizedString("Can't read the contents of the file.", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "error reason for unknown file contents")
-        return NSError(domain: midiMonitorErrorDomain, code: 2, userInfo: [NSLocalizedFailureReasonErrorKey: reason])
-    }
+extension Document {
 
-    @objc private func sourceListDidChange(_ notification: Notification?) {
-        monitorWindowController?.updateSources()
+    // MARK: Input sources
 
-        // Also, it's possible that the endpoint names went from being unique to non-unique, so we need
-        // to refresh the messages displayed.
-        updateMessages(scrollingToBottom: false)
-    }
-
-    private func updateVirtualEndpointName() {
-        let applicationName = Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as! String
-        var virtualEndpointName = applicationName
-        if let documentName = displayName { // should always be non-nil, but just in case
-            virtualEndpointName += " (\(documentName))"
-        }
-        stream.virtualEndpointName = virtualEndpointName
+    var inputSourceGroups: [CombinationInputStreamSourceGroup] {
+        return stream.sourceGroups
     }
 
     private func autoselectSources() {
@@ -483,6 +498,29 @@ class Document: NSDocument {
         }
 
         selectedInputSources = sourcesSet
+    }
+
+    private func updateVirtualEndpointName() {
+        let applicationName = Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as! String
+        var virtualEndpointName = applicationName
+        if let documentName = displayName { // should always be non-nil, but just in case
+            virtualEndpointName += " (\(documentName))"
+        }
+        stream.virtualEndpointName = virtualEndpointName
+    }
+
+}
+
+extension Document {
+
+    // MARK: Updates when changes happen
+
+    @objc private func sourceListDidChange(_ notification: Notification?) {
+        monitorWindowController?.updateSources()
+
+        // Also, it's possible that the endpoint names went from being unique to non-unique, so we need
+        // to refresh the messages displayed.
+        updateMessages(scrollingToBottom: false)
     }
 
     @objc private func historyDidChange(_ notification: Notification?) {
