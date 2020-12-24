@@ -31,7 +31,3 @@ extern void SMAssertionFailed(const char *expression, const char *file, unsigned
 #else
 #define SMAssert(expression)
 #endif
-
-extern UInt32 SMPacketListSize(const MIDIPacketList *packetList);
-    // size, in bytes, of the whole packet list
-
