@@ -14,10 +14,6 @@ import Cocoa
 
 class SourcesOutlineView: NSOutlineView {
 
-    override func highlightSelection(inClipRect clipRect: NSRect) {
-        // Do nothing
-    }
-
     override func mouseDown(with event: NSEvent) {
         // Ignore all double-clicks (and triple-clicks and so on) by pretending they are single-clicks.
         var modifiedEvent: NSEvent?

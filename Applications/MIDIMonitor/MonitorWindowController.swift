@@ -322,6 +322,16 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
         }
     }
 
+    func outlineView(_ outlineView: NSOutlineView, shouldTrackCell cell: NSCell, for tableColumn: NSTableColumn?, item: Any) -> Bool {
+        // Allow clicks in the checkbox column to apply to the checkbox, not to attempt to change selection
+        return tableColumn?.identifier.rawValue == "enabled"
+    }
+
+    func outlineView(_ outlineView: NSOutlineView, selectionIndexesForProposedSelection proposedSelectionIndexes: IndexSet) -> IndexSet {
+        // Don't allow any selection
+        return IndexSet()
+    }
+
     private func buttonStateForInputSources(_ sources: [SMInputStreamSource]) -> NSControl.StateValue {
         let selectedSources = midiDocument.selectedInputSources
 
