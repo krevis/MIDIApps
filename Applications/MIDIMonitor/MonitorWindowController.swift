@@ -449,6 +449,15 @@ extension MonitorWindowController: NSTableViewDataSource {
         maxMessageCountField.objectValue = NSNumber(value: midiDocument.maxMessageCount)
     }
 
+    func updateVisibleMessages() {
+        // Traditionally this was just messagesTableView.reloadData(), but as of macOS 10.15 (and perhaps earlier)
+        // that sometimes, the first time after the window is shown, has a side-effect of changing the scroll position
+        // (inappropriately adjusting for the header height). It's better to do a more targeted update, anyway.
+        let visibleRowRange = messagesTableView.rows(in: messagesTableView.visibleRect)
+        let rowIndexes = IndexSet(integersIn: visibleRowRange.lowerBound ..< visibleRowRange.upperBound)
+        messagesTableView.reloadData(forRowIndexes: rowIndexes, columnIndexes: IndexSet(integersIn: 0 ..< messagesTableView.numberOfColumns))
+    }
+
     func updateMessages(scrollingToBottom: Bool) {
         // Reloading the NSTableView can be excruciatingly slow, and if messages are coming in quickly,
         // we will hog a lot of CPU. So we make sure that we don't do it too often.
@@ -541,7 +550,7 @@ extension MonitorWindowController: NSTableViewDataSource {
     }
 
     @objc private func displayPreferencesDidChange(_ notification: Notification) {
-        messagesTableView.reloadData()
+        updateVisibleMessages()
     }
 
     private var selectedMessages: [SMMessage] {
@@ -549,21 +558,34 @@ extension MonitorWindowController: NSTableViewDataSource {
     }
 
     private func refreshMessagesTableView() {
-        displayedMessages = midiDocument.savedMessages
+        let oldMessages = displayedMessages
+        let newMessages = midiDocument.savedMessages
+        displayedMessages = newMessages
 
-        // Scroll to the botton, iff the table view is already scrolled to the bottom.
-        let isAtBottom = messagesTableView.bounds.maxY - messagesTableView.visibleRect.maxY < messagesTableView.rowHeight
+        // Keep the same messages selected, if possible
+        let newRowIndexes = IndexSet(messagesTableView.selectedRowIndexes.compactMap { newMessages.firstIndex(of: oldMessages[$0]) })
 
-        messagesTableView.reloadData()
+        // If the table view was already scrolled to the bottom, remain scrolled to the bottom when new messages come in
+        let wasAtBottom = messagesTableView.bounds.maxY - messagesTableView.visibleRect.maxY < messagesTableView.rowHeight
 
-        if messagesNeedScrollToBottom && isAtBottom {
+        // NSTableView won't detect a change in displayedMessages.count unless we tell it
+        if oldMessages.count != newMessages.count {
+            messagesTableView.noteNumberOfRowsChanged()
+        }
+
+        // Without doing a more complex diff of the message objects in the array, all we know is that the data for
+        // any row and column may have changed, so reload them all.
+        messagesTableView.reloadData(forRowIndexes: IndexSet(integersIn: 0 ..< displayedMessages.count), columnIndexes: IndexSet(integersIn: 0 ..< messagesTableView.numberOfColumns))
+
+        if messagesNeedScrollToBottom && wasAtBottom {
             let messageCount = displayedMessages.count
             if messageCount > 0 {
                 messagesTableView.scrollRowToVisible(messageCount - 1)
             }
         }
-
         messagesNeedScrollToBottom = false
+
+        messagesTableView.selectRowIndexes(newRowIndexes, byExtendingSelection: false)
 
         // Figure out when we should next be allowed to refresh.
         nextMessagesRefreshDate = NSDate(timeIntervalSinceNow: minimumMessagesRefreshDelay)
@@ -650,7 +672,6 @@ extension MonitorWindowController {
             window?.setFrame(from: windowFrame)
         }
 
-        // TODO This scroll location doesn't seem to restore to exactly the right place
         if let scrollX = windowSettings[Self.messagesScrollPointX] as? NSNumber,
            let scrollY = windowSettings[Self.messagesScrollPointY] as? NSNumber {
             let scrollPoint = NSPoint(x: scrollX.doubleValue, y: scrollY.doubleValue)
