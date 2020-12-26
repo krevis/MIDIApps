@@ -57,7 +57,7 @@ class Document: NSDocument {
 
     // MIDI processing
     private let stream = CombinationInputStream()
-    private let messageFilter = SMMessageFilter()
+    private let messageFilter = MessageFilter()
     private let history = SMMessageHistory()
 
     // Transient data
