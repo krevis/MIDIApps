@@ -29,7 +29,7 @@ class Document: NSDocument {
         messageFilter.channelMask = SMChannelMaskAll
 
         messageFilter.messageDestination = history
-        center.addObserver(self, selector: #selector(self.historyDidChange(_:)), name: .SMMessageHistoryChanged, object: history)
+        center.addObserver(self, selector: #selector(self.historyDidChange(_:)), name: .messageHistoryChanged, object: history)
 
         // If the user changed the value of this old obsolete preference, bring its value forward to our new preference
         // (the default value was YES)
@@ -58,7 +58,7 @@ class Document: NSDocument {
     // MIDI processing
     private let stream = CombinationInputStream()
     private let messageFilter = MessageFilter()
-    private let history = SMMessageHistory()
+    private let history = MessageHistory()
 
     // Transient data
     private var isSysExUpdateQueued = false
@@ -84,7 +84,7 @@ extension Document {
         }
 
         let historySize = history.historySize
-        if historySize != SMMessageHistory.defaultHistorySize() {
+        if historySize != MessageHistory.defaultHistorySize {
             dict["maxMessageCount"] = historySize
         }
 
@@ -98,8 +98,8 @@ extension Document {
             dict["channelMask"] = channelMask.rawValue
         }
 
-        if let savedMessages = history.savedMessages,
-           savedMessages.count > 0 {
+        let savedMessages = history.savedMessages
+        if savedMessages.count > 0 {
             dict["messageData"] = NSKeyedArchiver.archivedData(withRootObject: savedMessages)
         }
 
@@ -125,7 +125,7 @@ extension Document {
             selectedInputSources = []
         }
 
-        maxMessageCount = (dict["maxMessageCount"] as? NSNumber)?.uintValue ?? SMMessageHistory.defaultHistorySize()
+        maxMessageCount = (dict["maxMessageCount"] as? NSNumber)?.intValue ?? MessageHistory.defaultHistorySize
 
         if let number = dict["filterMask"] as? NSNumber {
             filterMask = SMMessageType(rawValue: number.uint32Value)
@@ -280,7 +280,7 @@ extension Document {
         monitorWindowController?.updateSources()
     }
 
-    var maxMessageCount: UInt {
+    var maxMessageCount: Int {
         get {
             return history.historySize
         }
@@ -296,7 +296,7 @@ extension Document {
             undoManager.setActionName(NSLocalizedString("Change Remembered Events", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change history limit undo action"))
         }
 
-        history.historySize = number.uintValue
+        history.historySize = number.intValue
         monitorWindowController?.updateMaxMessageCount()
     }
 
@@ -397,9 +397,7 @@ extension Document {
     }
 
     func clearSavedMessages() {
-        if history.savedMessages.count > 0 {
-            history.clearSavedMessages()
-        }
+        history.clearSavedMessages()
     }
 
 }
@@ -526,7 +524,7 @@ extension Document {
     @objc private func historyDidChange(_ notification: Notification?) {
         updateChangeCount(.changeDone)
 
-        if let number = notification?.userInfo?[SMMessageHistoryWereMessagesAdded] as? NSNumber {
+        if let number = notification?.userInfo?[MessageHistory.wereMessagesAdded] as? NSNumber {
             updateMessages(scrollingToBottom: number.boolValue)
         }
     }

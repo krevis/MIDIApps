@@ -528,7 +528,7 @@ extension MonitorWindowController: NSTableViewDataSource {
     @IBAction func setMaximumMessageCount(_ sender: AnyObject?) {
         guard let control = sender as? NSControl else { fatalError() }
         if let number = control.objectValue as? NSNumber {
-            midiDocument.maxMessageCount = number.uintValue
+            midiDocument.maxMessageCount = number.intValue
         }
         else {
             updateMaxMessageCount()
