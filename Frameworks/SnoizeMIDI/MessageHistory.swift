@@ -50,7 +50,7 @@ import Foundation
     // MARK: SMMessageDestination protocol
 
     @objc public func takeMIDIMessages(_ messages: [SMMessage]) {
-        savedMessages = savedMessages + messages
+        savedMessages += messages
         historyChanged(newMessages: true)
     }
 
@@ -67,7 +67,7 @@ import Foundation
     }
 
     private func historyChanged(newMessages: Bool) {
-        let userInfo = ["SMMessageHistoryWereMessagesAdded": NSNumber(value:newMessages)]   // TODO Is NSNumber needed?
+        let userInfo = ["SMMessageHistoryWereMessagesAdded": NSNumber(value: newMessages)]   // TODO Is NSNumber needed?
         NotificationCenter.default.post(name: .messageHistoryChanged, object: self, userInfo: userInfo)
     }
 

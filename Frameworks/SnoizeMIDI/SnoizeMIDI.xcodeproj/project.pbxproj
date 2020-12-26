@@ -206,6 +206,7 @@
 		16992870259707190057715C /* MessageMult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageMult.swift; sourceTree = "<group>"; };
 		1699288325971AFD0057715C /* MessageFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageFilter.swift; sourceTree = "<group>"; };
 		1699289925971F3A0057715C /* MessageHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageHistory.swift; sourceTree = "<group>"; };
+		169928C225972FD40057715C /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		16B11B570971D40100DB1DB5 /* NSArray-SMExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSArray-SMExtensions.h"; sourceTree = "<group>"; };
 		16B11B580971D40100DB1DB5 /* NSArray-SMExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSArray-SMExtensions.m"; sourceTree = "<group>"; };
 		16B11B590971D40100DB1DB5 /* NSData-SMExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSData-SMExtensions.h"; sourceTree = "<group>"; };
@@ -374,6 +375,7 @@
 				16B4A55B0972151400F11AD6 /* Snoize-Framework-Global.xcconfig */,
 				16B4A55E0972152700F11AD6 /* Snoize-Framework-Debug.xcconfig */,
 				16B4A5610972153E00F11AD6 /* Snoize-Framework-Release.xcconfig */,
+				169928C225972FD40057715C /* .swiftlint.yml */,
 			);
 			name = Configurations;
 			sourceTree = "<group>";
@@ -635,6 +637,7 @@
 				8DC2EF500486A6940098B216 /* Headers */,
 				8DC2EF520486A6940098B216 /* Resources */,
 				8DC2EF540486A6940098B216 /* Sources */,
+				169928BE25972F120057715C /* Run Script (SwiftLint) */,
 				8DC2EF560486A6940098B216 /* Frameworks */,
 			);
 			buildRules = (
@@ -741,6 +744,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		169928BE25972F120057715C /* Run Script (SwiftLint) */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script (SwiftLint)";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8DC2EF540486A6940098B216 /* Sources */ = {

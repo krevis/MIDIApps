@@ -12,8 +12,7 @@
 
 import Foundation
 
-@objc public class MessageMult: NSObject, SMMessageDestination
-{
+@objc public class MessageMult: NSObject, SMMessageDestination {
     @objc public var destinations: [SMMessageDestination] = []
 
     @objc public func addDestination(_ destination: SMMessageDestination) {
