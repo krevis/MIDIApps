@@ -22,7 +22,6 @@
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 #import <SnoizeMIDI/SMMessageFilter.h>
 #import <SnoizeMIDI/SMMessageHistory.h>
-#import <SnoizeMIDI/SMMessageMult.h>
 #import <SnoizeMIDI/SMMessageTimeBase.h>
 #import <SnoizeMIDI/SMMIDIObject.h>
 #import <SnoizeMIDI/SMOutputStream.h>
@@ -40,3 +39,5 @@
 #import <SnoizeMIDI/NSArray-SMExtensions.h>
 #import <SnoizeMIDI/NSData-SMExtensions.h>
 #import <SnoizeMIDI/NSString-SMExtensions.h>
+
+#import <SnoizeMIDI/SnoizeMIDI-Swift.h>

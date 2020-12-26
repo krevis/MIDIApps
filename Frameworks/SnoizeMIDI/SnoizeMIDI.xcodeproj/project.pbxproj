@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		164876600E6D2A22002CF387 /* SMMessageTimeBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 1648765E0E6D2A22002CF387 /* SMMessageTimeBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		164876610E6D2A22002CF387 /* SMMessageTimeBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 1648765F0E6D2A22002CF387 /* SMMessageTimeBase.m */; };
+		16992871259707190057715C /* MessageMult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16992870259707190057715C /* MessageMult.swift */; };
+		16992872259707190057715C /* MessageMult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16992870259707190057715C /* MessageMult.swift */; };
+		16992873259707190057715C /* MessageMult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16992870259707190057715C /* MessageMult.swift */; };
 		16B11B940971D40100DB1DB5 /* NSArray-SMExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B570971D40100DB1DB5 /* NSArray-SMExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		16B11B950971D40100DB1DB5 /* NSArray-SMExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B580971D40100DB1DB5 /* NSArray-SMExtensions.m */; };
 		16B11B960971D40100DB1DB5 /* NSData-SMExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B590971D40100DB1DB5 /* NSData-SMExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -38,8 +41,6 @@
 		16B11BAE0971D40100DB1DB5 /* SMMessageFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B710971D40100DB1DB5 /* SMMessageFilter.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		16B11BAF0971D40100DB1DB5 /* SMMessageHistory.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B720971D40100DB1DB5 /* SMMessageHistory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		16B11BB00971D40100DB1DB5 /* SMMessageHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B730971D40100DB1DB5 /* SMMessageHistory.m */; };
-		16B11BB10971D40100DB1DB5 /* SMMessageMult.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B740971D40100DB1DB5 /* SMMessageMult.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		16B11BB20971D40100DB1DB5 /* SMMessageMult.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B750971D40100DB1DB5 /* SMMessageMult.m */; };
 		16B11BB30971D40100DB1DB5 /* SMMessageParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B760971D40100DB1DB5 /* SMMessageParser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		16B11BB40971D40100DB1DB5 /* SMMessageParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B770971D40100DB1DB5 /* SMMessageParser.m */; };
 		16B11BB50971D40100DB1DB5 /* SMMIDIObject-Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B780971D40100DB1DB5 /* SMMIDIObject-Private.h */; settings = {ATTRIBUTES = (); }; };
@@ -103,7 +104,6 @@
 		A53DDBF8148F439C006D2FFD /* SMSysExSendRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B820971D40100DB1DB5 /* SMSysExSendRequest.m */; };
 		A53DDBF9148F43A0006D2FFD /* SMMessageFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B710971D40100DB1DB5 /* SMMessageFilter.m */; };
 		A53DDBFA148F43A3006D2FFD /* SMMessageHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B730971D40100DB1DB5 /* SMMessageHistory.m */; };
-		A53DDBFB148F43A6006D2FFD /* SMMessageMult.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B750971D40100DB1DB5 /* SMMessageMult.m */; };
 		A53DDC16148F4C5D006D2FFD /* SnoizeMIDI.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B910971D40100DB1DB5 /* SnoizeMIDI.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A53DDC19148F4C70006D2FFD /* SMClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B5D0971D40100DB1DB5 /* SMClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A53DDC1A148F4C70006D2FFD /* SMHostTime.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B650971D40100DB1DB5 /* SMHostTime.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -135,7 +135,6 @@
 		A53DDC34148F4CB6006D2FFD /* SMSysExSendRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B810971D40100DB1DB5 /* SMSysExSendRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A53DDC35148F4CBC006D2FFD /* SMMessageFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B700971D40100DB1DB5 /* SMMessageFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A53DDC36148F4CBC006D2FFD /* SMMessageHistory.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B720971D40100DB1DB5 /* SMMessageHistory.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A53DDC37148F4CBC006D2FFD /* SMMessageMult.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B740971D40100DB1DB5 /* SMMessageMult.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A581992F16AF687400325CF3 /* SMClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B5E0971D40100DB1DB5 /* SMClient.m */; };
 		A581993016AF687400325CF3 /* SMHostTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B660971D40100DB1DB5 /* SMHostTime.m */; };
 		A581993116AF687400325CF3 /* SMUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B8A0971D40100DB1DB5 /* SMUtilities.m */; };
@@ -164,7 +163,6 @@
 		A581994816AF687400325CF3 /* SMSysExSendRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B820971D40100DB1DB5 /* SMSysExSendRequest.m */; };
 		A581994916AF687400325CF3 /* SMMessageFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B710971D40100DB1DB5 /* SMMessageFilter.m */; };
 		A581994A16AF687400325CF3 /* SMMessageHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B730971D40100DB1DB5 /* SMMessageHistory.m */; };
-		A581994B16AF687400325CF3 /* SMMessageMult.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B750971D40100DB1DB5 /* SMMessageMult.m */; };
 		A581994D16AF687400325CF3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A53DDB99148F4219006D2FFD /* Foundation.framework */; };
 		A581994F16AF687400325CF3 /* SnoizeMIDI.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B910971D40100DB1DB5 /* SnoizeMIDI.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A581995016AF687400325CF3 /* SMClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B5D0971D40100DB1DB5 /* SMClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -197,7 +195,6 @@
 		A581996B16AF687400325CF3 /* SMSysExSendRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B810971D40100DB1DB5 /* SMSysExSendRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A581996C16AF687400325CF3 /* SMMessageFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B700971D40100DB1DB5 /* SMMessageFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A581996D16AF687400325CF3 /* SMMessageHistory.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B720971D40100DB1DB5 /* SMMessageHistory.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A581996E16AF687400325CF3 /* SMMessageMult.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B740971D40100DB1DB5 /* SMMessageMult.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A581999816AF699100325CF3 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A581999716AF699100325CF3 /* CoreMIDI.framework */; };
 /* End PBXBuildFile section */
 
@@ -210,6 +207,9 @@
 		162A31F1254E9595008E1F38 /* Snoize-Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Snoize-Signing.xcconfig"; path = "../../Configurations/Snoize-Signing.xcconfig"; sourceTree = "<group>"; };
 		1648765E0E6D2A22002CF387 /* SMMessageTimeBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMessageTimeBase.h; sourceTree = "<group>"; };
 		1648765F0E6D2A22002CF387 /* SMMessageTimeBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMessageTimeBase.m; sourceTree = "<group>"; };
+		1699286E259707190057715C /* SnoizeMIDIiOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SnoizeMIDIiOS-Bridging-Header.h"; sourceTree = "<group>"; };
+		1699286F259707190057715C /* SnoizeMIDIOSX-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SnoizeMIDIOSX-Bridging-Header.h"; sourceTree = "<group>"; };
+		16992870259707190057715C /* MessageMult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageMult.swift; sourceTree = "<group>"; };
 		16B11B570971D40100DB1DB5 /* NSArray-SMExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSArray-SMExtensions.h"; sourceTree = "<group>"; };
 		16B11B580971D40100DB1DB5 /* NSArray-SMExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSArray-SMExtensions.m"; sourceTree = "<group>"; };
 		16B11B590971D40100DB1DB5 /* NSData-SMExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSData-SMExtensions.h"; sourceTree = "<group>"; };
@@ -239,8 +239,6 @@
 		16B11B710971D40100DB1DB5 /* SMMessageFilter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMMessageFilter.m; sourceTree = "<group>"; };
 		16B11B720971D40100DB1DB5 /* SMMessageHistory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMMessageHistory.h; sourceTree = "<group>"; };
 		16B11B730971D40100DB1DB5 /* SMMessageHistory.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMMessageHistory.m; sourceTree = "<group>"; };
-		16B11B740971D40100DB1DB5 /* SMMessageMult.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMMessageMult.h; sourceTree = "<group>"; };
-		16B11B750971D40100DB1DB5 /* SMMessageMult.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMMessageMult.m; sourceTree = "<group>"; };
 		16B11B760971D40100DB1DB5 /* SMMessageParser.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMMessageParser.h; sourceTree = "<group>"; };
 		16B11B770971D40100DB1DB5 /* SMMessageParser.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMMessageParser.m; sourceTree = "<group>"; };
 		16B11B780971D40100DB1DB5 /* SMMIDIObject-Private.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "SMMIDIObject-Private.h"; sourceTree = "<group>"; };
@@ -407,6 +405,8 @@
 				16B11B910971D40100DB1DB5 /* SnoizeMIDI.h */,
 				32DBCF5E0370ADEE00C91783 /* SnoizeMIDI_Prefix.pch */,
 				A53DDB9D148F4219006D2FFD /* SnoizeMIDIiOS-Prefix.pch */,
+				1699286E259707190057715C /* SnoizeMIDIiOS-Bridging-Header.h */,
+				1699286F259707190057715C /* SnoizeMIDIOSX-Bridging-Header.h */,
 			);
 			name = "Framework Headers";
 			sourceTree = "<group>";
@@ -510,8 +510,7 @@
 				16B11B710971D40100DB1DB5 /* SMMessageFilter.m */,
 				16B11B720971D40100DB1DB5 /* SMMessageHistory.h */,
 				16B11B730971D40100DB1DB5 /* SMMessageHistory.m */,
-				16B11B740971D40100DB1DB5 /* SMMessageMult.h */,
-				16B11B750971D40100DB1DB5 /* SMMessageMult.m */,
+				16992870259707190057715C /* MessageMult.swift */,
 			);
 			name = Processors;
 			sourceTree = "<group>";
@@ -547,7 +546,6 @@
 				16B11BAC0971D40100DB1DB5 /* SMMessageDestinationProtocol.h in Headers */,
 				16B11BAD0971D40100DB1DB5 /* SMMessageFilter.h in Headers */,
 				16B11BAF0971D40100DB1DB5 /* SMMessageHistory.h in Headers */,
-				16B11BB10971D40100DB1DB5 /* SMMessageMult.h in Headers */,
 				16B11BB30971D40100DB1DB5 /* SMMessageParser.h in Headers */,
 				16B11BB50971D40100DB1DB5 /* SMMIDIObject-Private.h in Headers */,
 				16B11BB60971D40100DB1DB5 /* SMMIDIObject.h in Headers */,
@@ -602,7 +600,6 @@
 				A53DDC34148F4CB6006D2FFD /* SMSysExSendRequest.h in Headers */,
 				A53DDC35148F4CBC006D2FFD /* SMMessageFilter.h in Headers */,
 				A53DDC36148F4CBC006D2FFD /* SMMessageHistory.h in Headers */,
-				A53DDC37148F4CBC006D2FFD /* SMMessageMult.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -641,7 +638,6 @@
 				A581996B16AF687400325CF3 /* SMSysExSendRequest.h in Headers */,
 				A581996C16AF687400325CF3 /* SMMessageFilter.h in Headers */,
 				A581996D16AF687400325CF3 /* SMMessageHistory.h in Headers */,
-				A581996E16AF687400325CF3 /* SMMessageMult.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -711,14 +707,17 @@
 				TargetAttributes = {
 					8DC2EF4F0486A6940098B216 = {
 						DevelopmentTeam = YDJAW5GX9U;
+						LastSwiftMigration = 1230;
 						ProvisioningStyle = Automatic;
 					};
 					A53DDB96148F4219006D2FFD = {
 						DevelopmentTeam = YDJAW5GX9U;
+						LastSwiftMigration = 1230;
 						ProvisioningStyle = Automatic;
 					};
 					A581992D16AF687400325CF3 = {
 						DevelopmentTeam = YDJAW5GX9U;
+						LastSwiftMigration = 1230;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -771,6 +770,7 @@
 				16B11B9D0971D40100DB1DB5 /* SMDevice.m in Sources */,
 				16B11B9F0971D40100DB1DB5 /* SMEndpoint.m in Sources */,
 				16B11BA10971D40100DB1DB5 /* SMExternalDevice.m in Sources */,
+				16992871259707190057715C /* MessageMult.swift in Sources */,
 				16B11BA30971D40100DB1DB5 /* SMHostTime.m in Sources */,
 				16B11BA50971D40100DB1DB5 /* SMInputStream.m in Sources */,
 				16B11BA70971D40100DB1DB5 /* SMInputStreamSource.m in Sources */,
@@ -778,7 +778,6 @@
 				16B11BAB0971D40100DB1DB5 /* SMMessage.m in Sources */,
 				16B11BAE0971D40100DB1DB5 /* SMMessageFilter.m in Sources */,
 				16B11BB00971D40100DB1DB5 /* SMMessageHistory.m in Sources */,
-				16B11BB20971D40100DB1DB5 /* SMMessageMult.m in Sources */,
 				16B11BB40971D40100DB1DB5 /* SMMessageParser.m in Sources */,
 				16B11BB70971D40100DB1DB5 /* SMMIDIObject.m in Sources */,
 				16B11BB90971D40100DB1DB5 /* SMOutputStream.m in Sources */,
@@ -807,6 +806,7 @@
 				A53DDBE3148F4356006D2FFD /* NSData-SMExtensions.m in Sources */,
 				A53DDBE4148F4359006D2FFD /* NSString-SMExtensions.m in Sources */,
 				A53DDBE5148F4361006D2FFD /* SMMIDIObject.m in Sources */,
+				16992872259707190057715C /* MessageMult.swift in Sources */,
 				A53DDBE6148F4364006D2FFD /* SMDevice.m in Sources */,
 				A53DDBE7148F4367006D2FFD /* SMEndpoint.m in Sources */,
 				A53DDBE8148F436A006D2FFD /* SMExternalDevice.m in Sources */,
@@ -828,7 +828,6 @@
 				A53DDBF8148F439C006D2FFD /* SMSysExSendRequest.m in Sources */,
 				A53DDBF9148F43A0006D2FFD /* SMMessageFilter.m in Sources */,
 				A53DDBFA148F43A3006D2FFD /* SMMessageHistory.m in Sources */,
-				A53DDBFB148F43A6006D2FFD /* SMMessageMult.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -843,6 +842,7 @@
 				A581993316AF687400325CF3 /* NSData-SMExtensions.m in Sources */,
 				A581993416AF687400325CF3 /* NSString-SMExtensions.m in Sources */,
 				A581993516AF687400325CF3 /* SMMIDIObject.m in Sources */,
+				16992873259707190057715C /* MessageMult.swift in Sources */,
 				A581993616AF687400325CF3 /* SMDevice.m in Sources */,
 				A581993716AF687400325CF3 /* SMEndpoint.m in Sources */,
 				A581993816AF687400325CF3 /* SMExternalDevice.m in Sources */,
@@ -864,7 +864,6 @@
 				A581994816AF687400325CF3 /* SMSysExSendRequest.m in Sources */,
 				A581994916AF687400325CF3 /* SMMessageFilter.m in Sources */,
 				A581994A16AF687400325CF3 /* SMMessageHistory.m in Sources */,
-				A581994B16AF687400325CF3 /* SMMessageMult.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -910,16 +909,20 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 16B4A55E0972152700F11AD6 /* Snoize-Framework-Debug.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SnoizeMIDI_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.SnoizeMIDI;
 				PRODUCT_NAME = SnoizeMIDI;
+				SWIFT_VERSION = 5.0;
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Debug;
@@ -928,16 +931,20 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 16B4A5610972153E00F11AD6 /* Snoize-Framework-Release.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SnoizeMIDI_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.SnoizeMIDI;
 				PRODUCT_NAME = SnoizeMIDI;
+				SWIFT_VERSION = 5.0;
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Release;
@@ -981,6 +988,7 @@
 		A53DDBA1148F4219006D2FFD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
 				DSTROOT = /tmp/SnoizeMIDIiOS.dst;
@@ -1000,18 +1008,23 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = SnoizeMIDI;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "SnoizeMIDIiOS-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
 		A53DDBA2148F4219006D2FFD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DSTROOT = /tmp/SnoizeMIDIiOS.dst;
@@ -1024,11 +1037,14 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = SnoizeMIDI;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "SnoizeMIDIiOS-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1037,6 +1053,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -1056,12 +1073,16 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = SnoizeMIDI;
 				PUBLIC_HEADERS_FOLDER_PATH = SnoizeMIDI;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "SnoizeMIDIOSX-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -1069,6 +1090,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
@@ -1081,11 +1103,14 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = SnoizeMIDI;
 				PUBLIC_HEADERS_FOLDER_PATH = SnoizeMIDI;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "SnoizeMIDIOSX-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
