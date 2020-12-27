@@ -13,7 +13,7 @@
 
 #import "SMSysExSendRequest.h"
 
-#import "SMClient.h"
+#import <SnoizeMIDI/SnoizeMIDI-Swift.h>
 #import "SMEndpoint.h"
 #import "SMSystemExclusiveMessage.h"
 #import "SMUtilities.h"

@@ -12,7 +12,7 @@
 
 
 #import "SMDevice.h"
-#import "SMClient.h"
+#import <SnoizeMIDI/SnoizeMIDI-Swift.h>
 #import "SMEndpoint.h"
 #import "SMMIDIObject-Private.h"
 

@@ -14,7 +14,7 @@
 
 #import <objc/runtime.h>
 
-#import "SMClient.h"
+#import <SnoizeMIDI/SnoizeMIDI-Swift.h>
 #import "SMEndpoint.h"
 #import "SMMIDIObject-Private.h"
 #import "SMUtilities.h"
@@ -467,7 +467,7 @@ static CFMutableDictionaryRef classToObjectsMapTable = NULL;
 
     classToObjectsMapTable = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(midiClientCreated:) name:SMClientCreatedInternalNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(midiClientCreated:) name:NSNotification.clientCreatedInternal object:nil];
 }
 
 + (void)midiClientCreated:(NSNotification *)notification;
@@ -493,12 +493,12 @@ static CFMutableDictionaryRef classToObjectsMapTable = NULL;
 
     // Also subscribe to the object property changed notification.
     // We will receive this notification and then dispatch it to the correct object.
-    [center addObserver:self selector:@selector(midiObjectPropertyChanged:) name:SMClientObjectPropertyChangedNotification object:[SMClient sharedClient]];
+    [center addObserver:self selector:@selector(midiObjectPropertyChanged:) name:NSNotification.clientObjectPropertyChanged object:[SMClient sharedClient]];
 
     // And subscribe to object added/removed notifications.
     // We will dispatch these to the correct subclass.
-    [center addObserver:self selector:@selector(midiObjectWasAdded:) name:SMClientObjectAddedNotification object:client];
-    [center addObserver:self selector:@selector(midiObjectWasRemoved:) name:SMClientObjectRemovedNotification object:client];
+    [center addObserver:self selector:@selector(midiObjectWasAdded:) name:NSNotification.clientObjectAdded object:client];
+    [center addObserver:self selector:@selector(midiObjectWasRemoved:) name:NSNotification.clientObjectRemoved object:client];
 }
 
 + (NSSet *)leafSubclasses;
@@ -608,9 +608,9 @@ static CFMutableDictionaryRef classToObjectsMapTable = NULL;
         
     SMAssert(self == [SMMIDIObject class]);
 
-    ref = (MIDIObjectRef)[[[notification userInfo] objectForKey:SMClientObjectPropertyChangedObject] unsignedIntValue];
-    objectType = [[[notification userInfo] objectForKey:SMClientObjectPropertyChangedType] intValue];
-    propertyName = [[notification userInfo] objectForKey:SMClientObjectPropertyChangedName];
+    ref = (MIDIObjectRef)[[[notification userInfo] objectForKey:SMClient.propertyChangedObject] unsignedIntValue];
+    objectType = [[[notification userInfo] objectForKey:SMClient.propertyChangedType] intValue];
+    propertyName = [[notification userInfo] objectForKey:SMClient.propertyChangedName];
 
     subclass = [self subclassForObjectType:objectType];
     object = [subclass objectWithObjectRef:ref];
@@ -625,9 +625,9 @@ static CFMutableDictionaryRef classToObjectsMapTable = NULL;
 
     SMAssert(self == [SMMIDIObject class]);
 
-    ref = (MIDIObjectRef)[[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChild] unsignedIntValue];
+    ref = (MIDIObjectRef)[[[notification userInfo] objectForKey:SMClient.objectAddedOrRemovedChild] unsignedIntValue];
     SMAssert(ref != (MIDIObjectRef)0);
-    objectType = [[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChildType] intValue];
+    objectType = [[[notification userInfo] objectForKey:SMClient.objectAddedOrRemovedChildType] intValue];
 
     subclass = [self subclassForObjectType:objectType];
     if (subclass) {
@@ -646,9 +646,9 @@ static CFMutableDictionaryRef classToObjectsMapTable = NULL;
 
     SMAssert(self == [SMMIDIObject class]);
 
-    ref = (MIDIObjectRef)[[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChild] unsignedIntValue];
+    ref = (MIDIObjectRef)[[[notification userInfo] objectForKey:SMClient.objectAddedOrRemovedChild] unsignedIntValue];
     SMAssert(ref != (MIDIObjectRef)0);
-    objectType = [[[notification userInfo] objectForKey:SMClientObjectAddedOrRemovedChildType] intValue];
+    objectType = [[[notification userInfo] objectForKey:SMClient.objectAddedOrRemovedChildType] intValue];
 
     subclass = [self subclassForObjectType:objectType];
     if ((object = [subclass objectWithObjectRef:ref]))

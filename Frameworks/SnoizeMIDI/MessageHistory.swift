@@ -44,7 +44,6 @@ import Foundation
     // Posts notification named .messageHistoryChanged when the history changes.
     // In the notification's userInfo, under the key MessageHistory.wereMessagesAdded,
     // is a Bool indicating whether new messages were added to the history or not.
-
     static public let wereMessagesAdded = "SMMessageHistoryWereMessagesAdded"
 
     // MARK: SMMessageDestination protocol
@@ -67,7 +66,7 @@ import Foundation
     }
 
     private func historyChanged(newMessages: Bool) {
-        let userInfo = ["SMMessageHistoryWereMessagesAdded": NSNumber(value: newMessages)]   // TODO Is NSNumber needed?
+        let userInfo = [MessageHistory.wereMessagesAdded: NSNumber(value: newMessages)]   // TODO Is NSNumber needed?
         NotificationCenter.default.post(name: .messageHistoryChanged, object: self, userInfo: userInfo)
     }
 

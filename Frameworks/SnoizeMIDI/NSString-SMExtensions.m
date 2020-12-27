@@ -13,7 +13,7 @@
 
 #import "NSString-SMExtensions.h"
 #import "SMUtilities.h"
-#import "SMClient.h"
+#import <SnoizeMIDI/SnoizeMIDI-Swift.h>
 
 
 @implementation NSString (SMExtensions)

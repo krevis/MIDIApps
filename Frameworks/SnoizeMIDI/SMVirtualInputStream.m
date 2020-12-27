@@ -13,7 +13,7 @@
 
 #import "SMVirtualInputStream.h"
 
-#import "SMClient.h"
+#import <SnoizeMIDI/SnoizeMIDI-Swift.h>
 #import "SMEndpoint.h"
 #import "SMInputStreamSource.h"
 #import "SMMessageParser.h"

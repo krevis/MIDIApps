@@ -17,7 +17,7 @@
 #include <AvailabilityMacros.h>
 #include <unistd.h>
 
-#import "SMClient.h"
+#import <SnoizeMIDI/SnoizeMIDI-Swift.h>
 #import "SMDevice.h"
 #import "SMExternalDevice.h"
 #import "SMMIDIObject-Private.h"
@@ -847,7 +847,7 @@ static void IgnoreMIDIReadProc(const MIDIPacketList *pktlist, void *readProcRefC
         [[SMClient sharedClient] setPostsExternalSetupChangeNotification:wasPostingExternalNotification];
         if(wasPostingExternalNotification)
         {
-            [[NSNotificationCenter defaultCenter] postNotificationName:SMClientSetupChangedNotification object:[SMClient sharedClient]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.clientSetupChanged object:[SMClient sharedClient]];
         }
     }
     

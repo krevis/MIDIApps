@@ -55,7 +55,7 @@ extension AppController: NSApplicationDelegate {
 
         // Initialize CoreMIDI while the app's icon is still bouncing, so we don't have a large pause after it stops bouncing
         // but before the app's window opens.  (CoreMIDI needs to find and possibly start its server process, which can take a while.)
-        guard SMClient.shared() != nil else {
+        guard SMClient.sharedClient != nil else {
             failedToInitCoreMIDI()
             return
         }
