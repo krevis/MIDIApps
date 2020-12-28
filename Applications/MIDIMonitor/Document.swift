@@ -524,8 +524,8 @@ extension Document {
     @objc private func historyDidChange(_ notification: Notification?) {
         updateChangeCount(.changeDone)
 
-        if let number = notification?.userInfo?[MessageHistory.wereMessagesAdded] as? NSNumber {
-            updateMessages(scrollingToBottom: number.boolValue)
+        if let wereMessagesAdded = notification?.userInfo?[MessageHistory.wereMessagesAdded] as? Bool {
+            updateMessages(scrollingToBottom: wereMessagesAdded)
         }
     }
 
