@@ -29,7 +29,7 @@
     // the driver and then trigger the MIDIServer to run again.
 
     // Remove our connections to the MIDIServer first:
-    [SMClient disposeSharedClient];
+    [SMClient.sharedClient disconnectCoreMIDI];
     MIDISpyClientDispose(self.midiSpyClient);
     MIDISpyClientDisposeSharedMIDIClient();
 

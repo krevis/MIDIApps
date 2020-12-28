@@ -27,7 +27,6 @@ static NSInteger midiObjectOrdinalComparator(id object1, id object2, void *conte
 // Methods to be used on SMMIDIObject itself, not subclasses
 
 + (void)privateInitialize;
-+ (void)midiClientCreated:(NSNotification *)notification;
 + (NSSet *)leafSubclasses;
 + (Class)subclassForObjectType:(MIDIObjectType)objectType;
 
@@ -439,6 +438,39 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 
 
 
+@implementation SMMIDIObject (InternalSetup)
+
++ (void)midiClientCreated:(SMClient *)client
+{
+    NSSet *leafSubclasses;
+    NSEnumerator *enumerator;
+    NSValue *aClassValue;
+    NSNotificationCenter *center;
+
+    SMAssert(self == [SMMIDIObject class]);
+
+    // Send +initialMIDISetup to each leaf subclass of this class.
+    leafSubclasses = [self leafSubclasses];
+    enumerator = [leafSubclasses objectEnumerator];
+    while ((aClassValue = [enumerator nextObject])) {
+        Class aClass = [aClassValue pointerValue];
+        [aClass initialMIDISetup];
+    }
+
+    center = [NSNotificationCenter defaultCenter];
+
+    // Also subscribe to the object property changed notification.
+    // We will receive this notification and then dispatch it to the correct object.
+    [center addObserver:self selector:@selector(midiObjectPropertyChanged:) name:NSNotification.clientObjectPropertyChanged object:client];
+
+    // And subscribe to object added/removed notifications.
+    // We will dispatch these to the correct subclass.
+    [center addObserver:self selector:@selector(midiObjectWasAdded:) name:NSNotification.clientObjectAdded object:client];
+    [center addObserver:self selector:@selector(midiObjectWasRemoved:) name:NSNotification.clientObjectRemoved object:client];
+}
+
+@end
+
 @implementation SMMIDIObject (Private)
 
 NSInteger midiObjectOrdinalComparator(id object1, id object2, void *context)
@@ -466,39 +498,6 @@ static CFMutableDictionaryRef classToObjectsMapTable = NULL;
     SMAssert(self == [SMMIDIObject class]);
 
     classToObjectsMapTable = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(midiClientCreated:) name:NSNotification.clientCreatedInternal object:nil];
-}
-
-+ (void)midiClientCreated:(NSNotification *)notification;
-{
-    NSSet *leafSubclasses;
-    NSEnumerator *enumerator;
-    NSValue *aClassValue;
-    NSNotificationCenter *center;
-    SMClient *client;
-
-    SMAssert(self == [SMMIDIObject class]);
-
-    // Send +initialMIDISetup to each leaf subclass of this class.    
-    leafSubclasses = [self leafSubclasses];
-    enumerator = [leafSubclasses objectEnumerator];
-    while ((aClassValue = [enumerator nextObject])) {
-        Class aClass = [aClassValue pointerValue];
-        [aClass initialMIDISetup];
-    }
-
-    client = [SMClient sharedClient];
-    center = [NSNotificationCenter defaultCenter];
-
-    // Also subscribe to the object property changed notification.
-    // We will receive this notification and then dispatch it to the correct object.
-    [center addObserver:self selector:@selector(midiObjectPropertyChanged:) name:NSNotification.clientObjectPropertyChanged object:[SMClient sharedClient]];
-
-    // And subscribe to object added/removed notifications.
-    // We will dispatch these to the correct subclass.
-    [center addObserver:self selector:@selector(midiObjectWasAdded:) name:NSNotification.clientObjectAdded object:client];
-    [center addObserver:self selector:@selector(midiObjectWasRemoved:) name:NSNotification.clientObjectRemoved object:client];
 }
 
 + (NSSet *)leafSubclasses;

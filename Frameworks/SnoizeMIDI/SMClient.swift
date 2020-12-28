@@ -14,12 +14,7 @@ import Foundation
 
 @objc public class SMClient: NSObject {
 
-    @objc static public private(set) var sharedClient: SMClient? = SMClient()
-
-    @objc static public func disposeSharedClient() {
-        Self.sharedClient = nil
-        // TODO After this, will the accessor create it again?
-    }
+    @objc static public let sharedClient = SMClient()
 
     private init?(_ ignore: Bool = false) {
         let status = MIDIClientCreate(name as CFString, nil /* TODO midiNotifyProc() */, nil /* TODO UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque()) */, &midiClient)
@@ -29,10 +24,7 @@ import Foundation
 
         super.init()
 
-        // make sure SMMIDIObject is listening for the notification below
-        _ = SMMIDIObject.self.className()  // provokes +[SMMIDIObject initialize] if necessary
-
-        NotificationCenter.default.post(name: .clientCreatedInternal, object: self)
+        SMMIDIObject.midiClientCreated(self)
     }
 
     @objc public private(set) var midiClient = MIDIClientRef()
@@ -45,15 +37,17 @@ import Foundation
         // TODO
     }
 
-    // MARK: Internal
+    @objc public func disconnectCoreMIDI() {
+        // Disconnect from CoreMIDI. Necessary only for very special circumstances, since CoreMIDI will be unusable afterwards.
+        _ = MIDIClientDispose(midiClient)
+        midiClient = MIDIClientRef()
+    }
 
+    // MARK: Internal
 
 }
 
 extension Notification.Name {
-
-    static let clientCreatedInternal = Notification.Name("SMClientCreatedInternalNotification")
-    // Sent when the client is created. Meant only for use by SnoizeMIDI classes. No userInfo.
 
     // Notifications sent as a result of CoreMIDI notifications
 
@@ -102,7 +96,6 @@ extension Notification.Name {
 // TODO Duplicate stuff while migrating from ObjC to Swift
 @objc extension NSNotification {
 
-    static public let clientCreatedInternal = Notification.Name.clientCreatedInternal
     static public let clientSetupChangedInternal = Notification.Name.clientSetupChangedInternal
     static public let clientSetupChanged = Notification.Name.clientSetupChanged
     static public let clientObjectAdded = Notification.Name.clientObjectAdded

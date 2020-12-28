@@ -126,3 +126,9 @@ extern NSString *SMMIDIObjectPropertyChangedNotification;
 // object is the object whose property changed
 // userInfo contains changed property's name under key SMMIDIObjectChangedPropertyName
 extern NSString *SMMIDIObjectChangedPropertyName;
+
+
+@class SMClient;
+@interface SMMIDIObject (InternalSetup)
++ (void)midiClientCreated:(SMClient *)client;   // TODO Should be framework private
+@end
