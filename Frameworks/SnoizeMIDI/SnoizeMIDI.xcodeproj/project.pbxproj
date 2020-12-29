@@ -211,8 +211,6 @@
 		16B11B5A0971D40100DB1DB5 /* NSData-SMExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSData-SMExtensions.m"; sourceTree = "<group>"; };
 		16B11B5B0971D40100DB1DB5 /* NSString-SMExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSString-SMExtensions.h"; sourceTree = "<group>"; };
 		16B11B5C0971D40100DB1DB5 /* NSString-SMExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSString-SMExtensions.m"; sourceTree = "<group>"; };
-		16B11B5D0971D40100DB1DB5 /* SMClient.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMClient.h; sourceTree = "<group>"; };
-		16B11B5E0971D40100DB1DB5 /* SMClient.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMClient.m; sourceTree = "<group>"; };
 		16B11B5F0971D40100DB1DB5 /* SMDevice.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMDevice.h; sourceTree = "<group>"; };
 		16B11B600971D40100DB1DB5 /* SMDevice.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMDevice.m; sourceTree = "<group>"; };
 		16B11B610971D40100DB1DB5 /* SMEndpoint.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMEndpoint.h; sourceTree = "<group>"; };
@@ -382,8 +380,6 @@
 			isa = PBXGroup;
 			children = (
 				169928C625984FAA0057715C /* SMClient.swift */,
-				16B11B5D0971D40100DB1DB5 /* SMClient.h */,
-				16B11B5E0971D40100DB1DB5 /* SMClient.m */,
 				16B11B650971D40100DB1DB5 /* SMHostTime.h */,
 				16B11B660971D40100DB1DB5 /* SMHostTime.m */,
 				16B11B890971D40100DB1DB5 /* SMUtilities.h */,
