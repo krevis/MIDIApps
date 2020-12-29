@@ -91,7 +91,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
     [self addEndpointsToInputStream:[SMSourceEndpoint sourceEndpoints]];
 
     outputStream = [[SSECombinationOutputStream alloc] init];
-    [center addObserver:self selector:@selector(midiSetupChanged:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
+    [center addObserver:self selector:@selector(midiSetupChanged:) name:NSNotification.clientSetupChanged object:[SMClient sharedClient]];
         // use the general setup changed notification rather than SSECombinationOutputStreamDestinationListChangedNotification,
         // since it's too low-level and fires too early when setting up a virtual destination
     [center addObserver:self selector:@selector(outputStreamSelectedDestinationDisappeared:) name:SSECombinationOutputStreamSelectedDestinationDisappearedNotification object:outputStream];

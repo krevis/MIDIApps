@@ -58,7 +58,7 @@
 
 - (void)willShow
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(midiSetupChanged:) name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(midiSetupChanged:) name:NSNotification.clientSetupChanged object:[SMClient sharedClient]];
 
     [self captureEndpointsAndExternalDevices];
      
@@ -73,7 +73,7 @@
 
 - (void)willHide
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:SMClientSetupChangedNotification object:[SMClient sharedClient]];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSNotification.clientSetupChanged object:[SMClient sharedClient]];
     
     [self releaseEndpointsAndExternalDevices];
     
