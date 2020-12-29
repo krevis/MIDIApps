@@ -34,7 +34,21 @@ import Foundation
     @objc public private(set) var isHandlingSetupChange = false
 
     @objc public func forceCoreMIDIToUseNewSysExSpeed() {
-        // TODO
+        // The CoreMIDI client caches the last device that was given to MIDISendSysex(), along with its max sysex speed.
+        // So when we change the speed, it doesn't notice and continues to use the old speed.
+        // To fix this, we send a tiny sysex message to a different device.  Unfortunately we can't just use a NULL endpoint,
+        // it has to be a real live endpoint.
+
+        // TODO None of this code is marked as actually throwing -- resolve that
+        do {
+            if let endpoint = SMDestinationEndpoint.sysExSpeedWorkaround(),
+               let message = SMSystemExclusiveMessage(timeStamp: 0, data: Data()) {
+                SMSysExSendRequest(message: message, endpoint: endpoint).send()
+            }
+        }
+        catch {
+            // don't care
+        }
     }
 
     @objc public func disconnectCoreMIDI() {
