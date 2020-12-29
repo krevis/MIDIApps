@@ -165,6 +165,8 @@ extension MonitorWindowController: NSUserInterfaceValidations {
             return window?.firstResponder == messagesTableView && messagesTableView.numberOfSelectedRows > 0
         case #selector(self.showDetailsOfSelectedMessages(_:)):
             return selectedMessages.count > 0
+        case #selector(self.clearMessages(_:)):
+            return messagesTableView.numberOfRows > 0
         default:
             return false
         }
