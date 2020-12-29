@@ -20,6 +20,9 @@
 
 // Turn this on to NSLog the actual amount of time we pause between messages
 #define LOG_PAUSE_DURATION 0
+#if LOG_PAUSE_DURATION
+@import CoreAudio;
+#endif
 
 
 @interface SSEMIDIController (Private)
@@ -511,8 +514,8 @@ static MIDITimeStamp pauseStartTimeStamp = 0;
     if (pauseStartTimeStamp > 0) {
         UInt64 realPauseDuration;
 
-        realPauseDuration = SMGetCurrentHostTime() - pauseStartTimeStamp;
-        NSLog(@"pause took %f ms", (double)SMConvertHostTimeToNanos(realPauseDuration) / 1.0e6);
+        realPauseDuration = AudioGetCurrentHostTime() - pauseStartTimeStamp;
+        NSLog(@"pause took %f ms", (double)AudioConvertHostTimeToNanos(realPauseDuration) / 1.0e6);
     }
 #endif
     
@@ -566,7 +569,7 @@ static MIDITimeStamp pauseStartTimeStamp = 0;
         [self finishedSendingMessagesWithSuccess:NO];
     } else if (sendingMessageIndex < sendingMessageCount && [sendRequest wereAllBytesSent]) {
 #if LOG_PAUSE_DURATION
-        pauseStartTimeStamp = SMGetCurrentHostTime();
+        pauseStartTimeStamp = AudioGetCurrentHostTime();
 #endif
         sendStatus = SSEMIDIControllerWillDelayBeforeNext;
         [self sendNextSysExMessageAfterDelay];

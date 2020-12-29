@@ -13,7 +13,6 @@
 #import <SnoizeMIDI/SMDevice.h>
 #import <SnoizeMIDI/SMEndpoint.h>
 #import <SnoizeMIDI/SMExternalDevice.h>
-#import <SnoizeMIDI/SMHostTime.h>
 #import <SnoizeMIDI/SMInputStream.h>
 #import <SnoizeMIDI/SMInputStreamSource.h>
 #import <SnoizeMIDI/SMInvalidMessage.h>

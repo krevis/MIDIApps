@@ -13,9 +13,10 @@
 
 #import "SMMessage.h"
 
+@import CoreAudio;
+
 #import "SMMessageTimeBase.h"
 #import "SMEndpoint.h"
-#import "SMHostTime.h"
 #import "SMUtilities.h"
 #import "NSData-SMExtensions.h"
 
@@ -312,7 +313,7 @@ NSString *SMProgramChangeBaseIndexPreferenceKey = @"SMProgramChangeBaseIndex";
 
 - (void)encodeWithCoder:(NSCoder *)coder
 {
-    UInt64 nanos = SMConvertHostTimeToNanos(timeStamp);
+    UInt64 nanos = AudioConvertHostTimeToNanos(timeStamp);
     [coder encodeInt64:nanos forKey:@"timeStampInNanos"];
     [coder encodeBool:timeStampWasZeroWhenReceived forKey:@"timeStampWasZeroWhenReceived"];
     
@@ -329,7 +330,7 @@ NSString *SMProgramChangeBaseIndexPreferenceKey = @"SMProgramChangeBaseIndex";
     if ((self = [super init])) {
         if ([decoder containsValueForKey:@"timeStampInNanos"]) {
             UInt64 nanos = [decoder decodeInt64ForKey:@"timeStampInNanos"];
-            timeStamp = SMConvertNanosToHostTime(nanos);
+            timeStamp = AudioConvertNanosToHostTime(nanos);
             timeStampWasZeroWhenReceived = [decoder decodeBoolForKey:@"timeStampWasZeroWhenReceived"];
         } else {
             // fall back to old, inaccurate method
@@ -473,12 +474,12 @@ fail:
         {
             char buf[21];
             
-            snprintf(buf, 21, "%llu", SMConvertHostTimeToNanos(displayTimeStamp));
+            snprintf(buf, 21, "%llu", AudioConvertHostTimeToNanos(displayTimeStamp));
             return [NSString stringWithUTF8String:buf];
         }
             
         case SMTimeFormatHostTimeSeconds:
-            return [NSString stringWithFormat:@"%.3lf", SMConvertHostTimeToNanos(displayTimeStamp) / 1.0e9];
+            return [NSString stringWithFormat:@"%.3lf", AudioConvertHostTimeToNanos(displayTimeStamp) / 1.0e9];
             
         case SMTimeFormatClockTime:
         default:
@@ -492,7 +493,7 @@ fail:
                     [timeStampDateFormatter setDateFormat:@"HH:mm:ss.SSS"];
                 }
 
-                UInt64 timeStampInNanos = SMConvertHostTimeToNanos(displayTimeStamp);
+                UInt64 timeStampInNanos = AudioConvertHostTimeToNanos(displayTimeStamp);
                 UInt64 hostTimeBaseInNanos = [timeBase hostTimeInNanos];
                 SInt64 timeDelta = timeStampInNanos - hostTimeBaseInNanos;  // may be negative!
                 NSTimeInterval timeStampInterval = timeDelta / 1.0e9;
@@ -566,7 +567,7 @@ static NSString *formatNoteNumberWithBaseOctave(Byte noteNumber, int octave)
 - (void)_setTimeStamp:(MIDITimeStamp)newTimeStamp
 {
     timeStampWasZeroWhenReceived = (newTimeStamp == 0);
-    timeStamp = timeStampWasZeroWhenReceived ? SMGetCurrentHostTime() : newTimeStamp;
+    timeStamp = timeStampWasZeroWhenReceived ? AudioGetCurrentHostTime() : newTimeStamp;
 }
 
 @end

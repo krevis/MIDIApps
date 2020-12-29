@@ -13,9 +13,10 @@
 
 #import "SMPortOutputStream.h"
 
+@import CoreAudio;
+
 #import <SnoizeMIDI/SnoizeMIDI-Swift.h>
 #import "SMEndpoint.h"
-#import "SMHostTime.h"
 #import "SMMessage.h"
 #import "SMSystemExclusiveMessage.h"
 #import "SMSysExSendRequest.h"
@@ -227,7 +228,7 @@ NSString *SMPortOutputStreamFinishedSysExSendNotification = @"SMPortOutputStream
     NSMutableArray *normalMessages = nil;
     MIDITimeStamp now;
 
-    now = SMGetCurrentHostTime();
+    now = AudioGetCurrentHostTime();
 
     messageCount = [messages count];
     for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {

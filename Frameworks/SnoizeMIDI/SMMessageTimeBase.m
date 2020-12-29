@@ -13,7 +13,7 @@
 
 #import "SMMessageTimeBase.h"
 
-#import "SMHostTime.h"
+@import CoreAudio;
 
 
 @implementation SMMessageTimeBase
@@ -27,7 +27,14 @@
         // TODO We should do this a few times and average the results, and also try to be careful not to get
         // scheduled out during this process. We may need to switch ourself to be a time-constraint thread temporarily
         // in order to do this. See discussion in the CoreAudio-API archives.
-        UInt64 hostTimeInNanos = SMConvertHostTimeToNanos(SMGetCurrentHostTime());
+
+        // TODO This is completely wrong. The host time clock may pause while the system is asleep, but NSDate will not.
+        //      So this single snapshot of a relationship between host time and clock time is only useful until the system sleeps.
+        // See also https://developer.apple.com/library/archive/technotes/tn2169/_index.html
+        //          https://developer.apple.com/forums/thread/84410 which points to clock_gettime() and CLOCK_MONOTONIC which may be the right way to go
+        //          (but it's only available starting on macOS 10.12)
+
+        UInt64 hostTimeInNanos = AudioConvertHostTimeToNanos(AudioGetCurrentHostTime());
         NSTimeInterval timeInterval = [NSDate timeIntervalSinceReferenceDate];
         currentTimeBase = [[SMMessageTimeBase alloc] initWithHostTimeInNanos:hostTimeInNanos forTimeInterval:timeInterval];
     }
@@ -59,7 +66,7 @@
 {
     [coder encodeInt64:baseHostTimeInNanos forKey:@"hostTimeInNanos"];
 
-    [coder encodeInt64:SMConvertNanosToHostTime(baseHostTimeInNanos) forKey:@"hostTime"];
+    [coder encodeInt64:AudioConvertNanosToHostTime(baseHostTimeInNanos) forKey:@"hostTime"];
         // backwards compatibility
 
     [coder encodeDouble:baseTimeInterval forKey:@"timeInterval"];
@@ -73,7 +80,7 @@
         } else {
             // fallback: inaccurate because the HostTime to nanos
             // ratio may have changed from when this was archived
-            baseHostTimeInNanos = SMConvertHostTimeToNanos([decoder decodeInt64ForKey:@"hostTime"]);
+            baseHostTimeInNanos = AudioConvertHostTimeToNanos([decoder decodeInt64ForKey:@"hostTime"]);
         }
 
         baseTimeInterval = [decoder decodeDoubleForKey:@"timeInterval"];
