@@ -15,10 +15,10 @@
 
 @import CoreAudio;
 
+#import <SnoizeMIDI/SnoizeMIDI-Swift.h>
 #import "SMMessageTimeBase.h"
 #import "SMEndpoint.h"
 #import "SMUtilities.h"
-#import "NSData-SMExtensions.h"
 
 
 @interface SMMessage (Private)
@@ -265,7 +265,7 @@ NSString *SMProgramChangeBaseIndexPreferenceKey = @"SMProgramChangeBaseIndex";
         [manufacturerNames retain];
     }
 
-    identifierString = [manufacturerIdentifierData SnoizeMIDI_lowercaseHexString];
+    identifierString = [manufacturerIdentifierData lowercaseHexString];
     if ((name = [manufacturerNames objectForKey:identifierString]))
         return name;
     else
