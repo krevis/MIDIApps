@@ -599,59 +599,41 @@ static CFMutableDictionaryRef classToObjectsMapTable = NULL;
 
 + (void)midiObjectPropertyChanged:(NSNotification *)notification;
 {
-    MIDIObjectRef ref;
-    MIDIObjectType objectType;
-    NSString *propertyName;
-    Class subclass;
-    SMMIDIObject *object;
-        
     SMAssert(self == [SMMIDIObject class]);
 
-    ref = (MIDIObjectRef)[[[notification userInfo] objectForKey:SMClient.propertyChangedObject] unsignedIntValue];
-    objectType = [[[notification userInfo] objectForKey:SMClient.propertyChangedType] intValue];
-    propertyName = [[notification userInfo] objectForKey:SMClient.propertyChangedName];
+    SMClientObjectPropertyChangedNotification *propChange = notification.userInfo[SMClient.notification];
 
-    subclass = [self subclassForObjectType:objectType];
-    object = [subclass objectWithObjectRef:ref];
-    [object propertyDidChange:propertyName];
+    Class subclass = [self subclassForObjectType:propChange.objectType];
+    SMMIDIObject *object = [subclass objectWithObjectRef:propChange.object];
+    [object propertyDidChange:propChange.propertyName];
 }
 
 + (void)midiObjectWasAdded:(NSNotification *)notification;
 {
-    MIDIObjectRef ref;
-    MIDIObjectType objectType;
-    Class subclass;
-
     SMAssert(self == [SMMIDIObject class]);
 
-    ref = (MIDIObjectRef)[[[notification userInfo] objectForKey:SMClient.objectAddedOrRemovedChild] unsignedIntValue];
-    SMAssert(ref != (MIDIObjectRef)0);
-    objectType = [[[notification userInfo] objectForKey:SMClient.objectAddedOrRemovedChildType] intValue];
+    SMClientObjectAddedNotification *added = notification.userInfo[SMClient.notification];
 
-    subclass = [self subclassForObjectType:objectType];
+    Class subclass = [self subclassForObjectType:added.childType];
     if (subclass) {
         // We might already have this object. Check and see.
-        if (![subclass objectWithObjectRef:ref])
-            [subclass immediatelyAddObjectWithObjectRef:ref];            
+        if ([subclass objectWithObjectRef:added.child] == nil) {
+            [subclass immediatelyAddObjectWithObjectRef:added.child];
+        }
     }
 }
 
 + (void)midiObjectWasRemoved:(NSNotification *)notification;
 {
-    MIDIObjectRef ref;
-    MIDIObjectType objectType;
-    Class subclass;
-    SMMIDIObject *object;
-
     SMAssert(self == [SMMIDIObject class]);
 
-    ref = (MIDIObjectRef)[[[notification userInfo] objectForKey:SMClient.objectAddedOrRemovedChild] unsignedIntValue];
-    SMAssert(ref != (MIDIObjectRef)0);
-    objectType = [[[notification userInfo] objectForKey:SMClient.objectAddedOrRemovedChildType] intValue];
+    SMClientObjectRemovedNotification *removed = notification.userInfo[SMClient.notification];
 
-    subclass = [self subclassForObjectType:objectType];
-    if ((object = [subclass objectWithObjectRef:ref]))
+    Class subclass = [self subclassForObjectType:removed.childType];
+    SMMIDIObject *object = [subclass objectWithObjectRef:removed.child];
+    if (object) {
         [subclass immediatelyRemoveObject:object];
+    }
 }
 
 //

@@ -12,26 +12,196 @@
 
 import Foundation
 
+@objc public class SMClientNotification: NSObject {
+    // TODO A Swift struct or enum would be nicer, but then it wouldn't be visible to ObjC
+    // TODO Nest these types in SMClient? But then need API notes to rename them for ObjC?
+    // TODO Does any of these really even need to be exposed as API? Very little.
+
+    fileprivate static func fromCoreMIDINotification(_ unsafeCoreMIDINotification: UnsafePointer<MIDINotification>) -> SMClientNotification {
+        let coreMIDINotification = unsafeCoreMIDINotification.pointee
+        switch coreMIDINotification.messageID {
+        case .msgSetupChanged:
+            return SMClientSetupChangedNotification(unsafeCoreMIDINotification)
+        case .msgObjectAdded:
+            return SMClientObjectAddedNotification(unsafeCoreMIDINotification)
+        case .msgObjectRemoved:
+            return SMClientObjectRemovedNotification(unsafeCoreMIDINotification)
+        case .msgPropertyChanged:
+            return SMClientObjectPropertyChangedNotification(unsafeCoreMIDINotification)
+        case .msgThruConnectionsChanged:
+            return SMClientThruConnectionsChangedNotification(unsafeCoreMIDINotification)
+        case .msgSerialPortOwnerChanged:
+            return SMClientSerialPortOwnerChangedNotification(unsafeCoreMIDINotification)
+        case .msgIOError:
+            return SMClientIOErrorNotification(unsafeCoreMIDINotification)
+        default:
+            return SMClientNotification(unsafeCoreMIDINotification)
+        }
+    }
+
+    fileprivate init(_ unsafeCoreMIDINotification: UnsafePointer<MIDINotification>) {
+        let coreMIDINotification = unsafeCoreMIDINotification.pointee
+        messageSize = Int(coreMIDINotification.messageSize)
+        messageID = coreMIDINotification.messageID
+        super.init()
+
+        // NOTE: It's tempting to copy the whole data buffer of `messageSize`
+        // in order to extract data later. For instance, for unknown notifications,
+        // we could just expose that data to clients, right?
+        // Unfortunately, that only works if all of the types in the notification
+        // are trivial or immortal, and we have no way of knowing that for arbitrary
+        // notifications.
+        // Things like the Unmanaged<CFString> in MIDIObjectPropertyChangeNotification
+        // are a problem; to keep it around indefinitely, we would need to
+        // know that it's there, to retain it initially, and to manage its retain count
+        // when passing out references to it later.
+    }
+
+    @objc public let messageSize: Int
+    @objc public let messageID: MIDINotificationMessageID
+
+    fileprivate func dispatchToClient(_ client: SMClient) {
+        client.unknownMIDINotification(self)
+    }
+}
+
+@objc public class SMClientSetupChangedNotification: SMClientNotification {
+
+    fileprivate override func dispatchToClient(_ client: SMClient) {
+        client.setupChanged(self)
+    }
+
+}
+
+@objc public class SMClientObjectAddedOrRemovedNotification: SMClientNotification {
+
+    fileprivate override init(_ unsafeCoreMIDINotification: UnsafePointer<MIDINotification>) {
+        let addRemoveNotification = UnsafeRawPointer(unsafeCoreMIDINotification).load(as: MIDIObjectAddRemoveNotification.self)
+        parent = addRemoveNotification.parent
+        parentType = addRemoveNotification.parentType
+        child = addRemoveNotification.child
+        childType = addRemoveNotification.childType
+        super.init(unsafeCoreMIDINotification)
+    }
+
+    @objc public let parent: MIDIObjectRef
+    @objc public let parentType: MIDIObjectType
+    @objc public let child: MIDIObjectRef
+    @objc public let childType: MIDIObjectType
+
+    fileprivate override func dispatchToClient(_ client: SMClient) {
+        fatalError()    // must be overridden
+    }
+
+}
+
+@objc public class SMClientObjectAddedNotification: SMClientObjectAddedOrRemovedNotification {
+
+    fileprivate override func dispatchToClient(_ client: SMClient) {
+        client.objectAdded(self)
+    }
+
+}
+
+@objc public class SMClientObjectRemovedNotification: SMClientObjectAddedOrRemovedNotification {
+
+    fileprivate override func dispatchToClient(_ client: SMClient) {
+        client.objectRemoved(self)
+    }
+
+}
+
+@objc public class SMClientObjectPropertyChangedNotification: SMClientNotification {
+
+    fileprivate override init(_ unsafeCoreMIDINotification: UnsafePointer<MIDINotification>) {
+        let propertyChangedNotification = UnsafeRawPointer(unsafeCoreMIDINotification).load(as: MIDIObjectPropertyChangeNotification.self)
+        object = propertyChangedNotification.object
+        objectType = propertyChangedNotification.objectType
+        propertyName = propertyChangedNotification.propertyName.takeUnretainedValue() as String
+        super.init(unsafeCoreMIDINotification)
+    }
+
+    @objc public let object: MIDIObjectRef
+    @objc public let objectType: MIDIObjectType
+    @objc public let propertyName: String
+
+    fileprivate override func dispatchToClient(_ client: SMClient) {
+        client.objectPropertyChanged(self)
+    }
+
+}
+
+@objc public class SMClientThruConnectionsChangedNotification: SMClientNotification {
+
+    fileprivate override func dispatchToClient(_ client: SMClient) {
+        client.thruConnectionsChanged(self)
+    }
+
+}
+
+@objc public class SMClientSerialPortOwnerChangedNotification: SMClientNotification {
+
+    fileprivate override func dispatchToClient(_ client: SMClient) {
+        client.serialPortOwnerChanged(self)
+    }
+
+}
+
+@objc public class SMClientIOErrorNotification: SMClientNotification {
+
+    fileprivate override init(_ unsafeCoreMIDINotification: UnsafePointer<MIDINotification>) {
+        let ioErrorNotification = UnsafeRawPointer(unsafeCoreMIDINotification).load(as: MIDIIOErrorNotification.self)
+        driverDevice = ioErrorNotification.driverDevice
+        errorCode = ioErrorNotification.errorCode
+        super.init(unsafeCoreMIDINotification)
+    }
+
+    @objc public let driverDevice: MIDIDeviceRef
+    @objc public let errorCode: OSStatus
+
+    fileprivate override func dispatchToClient(_ client: SMClient) {
+        client.ioError(self)
+    }
+
+}
+
 @objc public class SMClient: NSObject {
 
     @objc static public let sharedClient = SMClient()
 
     private init?(_ ignore: Bool = false) {
-        if #available(OSX 10.11, *) {
-            let status = MIDIClientCreateWithBlock(name as CFString, &midiClient) { (notification: UnsafePointer<MIDINotification>) in
-                // Note: We can't pass `self` here since we aren't yet fully initialized.
-                Self.sharedClient?.handleMIDINotification(notification)
-            }
+        checkMainQueue()
 
-            if status != noErr {
-                return nil
+        let status: OSStatus
+        if #available(OSX 10.11, *) {
+            status = MIDIClientCreateWithBlock(name as CFString, &midiClient) { (unsafeNotification: UnsafePointer<MIDINotification>) in
+                // Note: We can't capture `self` in here, since we aren't yet fully initialized.
+                // Also note that we are called on an arbitrary queue, so we need to dispatch to the main queue for later handling.
+                // But `unsafeNotification` is only valid during this function call.
+
+                // TODO In practice this sometimes comes in on the main queue,
+                // so perhaps optimize for that?
+                let ourNotification = SMClientNotification.fromCoreMIDINotification(unsafeNotification)
+                DispatchQueue.main.async {
+                    if let client = Self.sharedClient {
+                        ourNotification.dispatchToClient(client)
+                    }
+                }
             }
         }
         else {
-            // TODO For 10.9 and 10.10, implement some kind of wrapper, following the pattern of MIDIClientCreateWithBlock?
-            //      It will almost certainly need to be implemented in ObjC.
-            //        let status = MIDIClientCreate(name as CFString, nil /*  midiNotifyProc() */, nil /*  UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque()) */, &midiClient)
+            status = SMWorkaroundMIDIClientCreateWithBlock(name as CFString, &midiClient) { (unsafeNotification: UnsafePointer<MIDINotification>) in
+                // Note: We can't capture `self` in here, since we aren't yet fully initialized.
+                // We assume CoreMIDI is following its documentation, calling us "on the run loop which
+                // was current when MIDIClientCreate was first called", which must be the main queue's run loop.
+                let ourNotification = SMClientNotification.fromCoreMIDINotification(unsafeNotification)
+                if let client = Self.sharedClient {
+                    ourNotification.dispatchToClient(client)
+                }
+            }
+        }
 
+        if status != noErr {
             return nil
         }
 
@@ -74,126 +244,126 @@ import Foundation
 
     // MARK: Internal
 
-    private func handleMIDINotification(_ unsafeNotification: UnsafePointer<MIDINotification>) {
-        let notification = unsafeNotification.pointee
-        switch notification.messageID {
-        case .msgSetupChanged:
-            midiSetupChanged()
+    // MARK: Notifications
 
-        case .msgObjectAdded:
-            unsafeNotification.withMemoryRebound(to: MIDIObjectAddRemoveNotification.self, capacity: 1) {
-                midiObjectAddedOrRemoved($0.pointee, name: .clientObjectAdded)
-            }
-
-        case .msgObjectRemoved:
-            unsafeNotification.withMemoryRebound(to: MIDIObjectAddRemoveNotification.self, capacity: 1) {
-                midiObjectAddedOrRemoved($0.pointee, name: .clientObjectRemoved)
-            }
-
-        case .msgPropertyChanged:
-            unsafeNotification.withMemoryRebound(to: MIDIObjectPropertyChangeNotification.self, capacity: 1) {
-                midiObjectPropertyChanged($0.pointee)
-            }
-
-        case .msgThruConnectionsChanged:
-            NotificationCenter.default.post(name: .clientThruConnectionsChanged,
-                                            object: self,
-                                            userInfo: [SMClient.midiNotificationStruct: NSValue(pointer: unsafeNotification)])
-
-        case .msgSerialPortOwnerChanged:
-            NotificationCenter.default.post(name: .clientSerialPortOwnerChanged,
-                                            object: self,
-                                            userInfo: [SMClient.midiNotificationStruct: NSValue(pointer: unsafeNotification)])
-
-        case .msgIOError:
-            unsafeNotification.withMemoryRebound(to: MIDIIOErrorNotification.self, capacity: 1) {
-                NotificationCenter.default.post(name: .clientMIDIIOError,
-                                                object: self,
-                                                userInfo: [SMClient.midiNotificationStruct: NSValue(pointer: $0)])
-            }
-
-        default:
-            NotificationCenter.default.post(name: .clientUnknownNotification,
-                                            object: self,
-                                            userInfo: [SMClient.midiNotificationStruct: NSValue(pointer: unsafeNotification)])
-        }
+    private func userInfo(_ notification: SMClientNotification) -> [String: Any] {
+        return [SMClient.notification: notification]
     }
 
-    private func midiSetupChanged() {
+    fileprivate func unknownMIDINotification(_ notification: SMClientNotification) {
+        checkMainQueue()
+        NotificationCenter.default.post(name: .clientUnknownNotification,
+                                        object: self,
+                                        userInfo: userInfo(notification))
+    }
+
+    fileprivate func setupChanged(_ notification: SMClientSetupChangedNotification) {
+        checkMainQueue()
+        // TODO Do we really still need this? The other notifications are more specific.
+        // TODO Timing of this will be different if we are using the block-based notification,
+        // which will mess up the way we fiddle with these flags. Ugh.
         if postsExternalSetupChangeNotification {
             isHandlingSetupChange = true
-            NotificationCenter.default.post(name: .clientSetupChanged, object: self)
+            NotificationCenter.default.post(name: .clientSetupChanged,
+                                            object: self,
+                                            userInfo: userInfo(notification))
             isHandlingSetupChange = false
         }
     }
 
-    private func midiObjectAddedOrRemoved(_ notification: MIDIObjectAddRemoveNotification, name: Notification.Name) {
-        let userInfo: [String: Any] = [
-            SMClient.objectAddedOrRemovedParent: NSNumber(value: notification.parent),
-            SMClient.objectAddedOrRemovedParentType: NSNumber(value: notification.parentType.rawValue),
-            SMClient.objectAddedOrRemovedChild: NSNumber(value: notification.child),
-            SMClient.objectAddedOrRemovedChildType: NSNumber(value: notification.childType.rawValue)
-        ]
-        NotificationCenter.default.post(name: name, object: self, userInfo: userInfo)
+    fileprivate func objectAdded(_ notification: SMClientObjectAddedNotification) {
+        checkMainQueue()
+        NotificationCenter.default.post(name: .clientObjectAdded,
+                                        object: self,
+                                        userInfo: userInfo(notification))
     }
 
-    private func midiObjectPropertyChanged(_ notification: MIDIObjectPropertyChangeNotification) {
-        let userInfo: [String: Any] = [
-            SMClient.propertyChangedObject: NSNumber(value: notification.object),
-            SMClient.propertyChangedType: NSNumber(value: notification.objectType.rawValue),
-            SMClient.propertyChangedName: notification.propertyName.takeUnretainedValue()
-        ]
-        NotificationCenter.default.post(name: .clientObjectPropertyChanged, object: self, userInfo: userInfo)
+    fileprivate func objectRemoved(_ notification: SMClientObjectRemovedNotification) {
+        checkMainQueue()
+        NotificationCenter.default.post(name: .clientObjectRemoved,
+                                        object: self,
+                                        userInfo: userInfo(notification))
+    }
+
+    fileprivate func objectPropertyChanged(_ notification: SMClientObjectPropertyChangedNotification) {
+        checkMainQueue()
+        NotificationCenter.default.post(name: .clientObjectPropertyChanged,
+                                        object: self,
+                                        userInfo: userInfo(notification))
+    }
+
+    fileprivate func thruConnectionsChanged(_ notification: SMClientThruConnectionsChangedNotification) {
+        checkMainQueue()
+        NotificationCenter.default.post(name: .clientThruConnectionsChanged,
+                                        object: self,
+                                        userInfo: userInfo(notification))
+    }
+
+    fileprivate func serialPortOwnerChanged(_ notification: SMClientSerialPortOwnerChangedNotification) {
+        checkMainQueue()
+        NotificationCenter.default.post(name: .clientSerialPortOwnerChanged,
+                                        object: self,
+                                        userInfo: userInfo(notification))
+    }
+
+    fileprivate func ioError(_ notification: SMClientIOErrorNotification) {
+        checkMainQueue()
+        NotificationCenter.default.post(name: .clientIOError,
+                                        object: self,
+                                        userInfo: userInfo(notification))
     }
 
 }
 
+private func checkMainQueue() {
+    if #available(OSX 10.12, *) {
+        dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
+    }
+    else {
+        assert(Thread.isMainThread)
+    }
+}
+
 extension Notification.Name {
 
-    // TODO Re-evaluate all of this. Is it really useful to just repackage the CoreMIDI notification in a dictionary? Doubtful.
+    // TODO Re-evaluate all of this. Is it really useful to just repackage all CoreMIDI notifications as Notifications?
 
-    // Notifications sent as a result of CoreMIDI notifications
+    // Notifications posted as a result of CoreMIDI notifications.
+    // All have userInfo like [SMClient.notification: clientNotification],
+    // where clientNotification is a SMClientNotification or subclass, as described below.
 
     // The default "something changed" kMIDIMsgSetupChanged notification from CoreMIDI.
-    // No userInfo.
     // Posted only if `postsExternalSetupChangeNotification` is true.
+    // userInfo contains an SMClientNotification.
     static public let clientSetupChanged = Notification.Name("SMClientSetupChangedNotification")
 
-    // An object was added or removed:
+    // An object was added.
+    // userInfo contains an SMClientObjectAddedNotification.
     static public let clientObjectAdded = Notification.Name("SMClientObjectAddedNotification")
+
+    // An object was removed.
+    // userInfo contains an SMClientObjectRemovedNotification.
     static public let clientObjectRemoved = Notification.Name("SMClientObjectRemovedNotification")
-    // userInfo contains:
-    //   SMClientObjectAddedOrRemovedParent    NSValue (MIDIObjectRef as pointer)
-    //   SMClientObjectAddedOrRemovedParentType    NSNumber (MIDIObjectType as SInt32)
-    //   SMClientObjectAddedOrRemovedChild        NSValue (MIDIObjectRef as pointer)
-    //   SMClientObjectAddedOrRemovedChildType    NSNumber (MIDIObjectType as SInt32)
 
-    // A property of an object changed:
+    // A property of an object changed.
+    // userInfo contains an SMClientObjectPropertyChangedNotification.
     static public let clientObjectPropertyChanged = Notification.Name("SMClientObjectPropertyChangedNotification")
-    // userInfo contains:
-    //   SMClientObjectPropertyChangedObject        NSValue (MIDIObjectRef as pointer)
-    //   SMClientObjectPropertyChangedType        NSNumber (MIDIObjectType as SInt32)
-    //   SMClientObjectPropertyChangedName        NSString
 
-    // A MIDI Thru connection changed:
+    // A MIDI Thru connection changed.
+    // userInfo contains an SMClientNotification.
     static public let clientThruConnectionsChanged = Notification.Name("SMClientThruConnectionsChangedNotification")
-    // userInfo contains:
-    //    SMClientMIDINotificationStruct    NSValue (a pointer to a struct MIDINotification)
 
-    // An owner of a serial port changed:
+    // An owner of a serial port changed.
+    // userInfo contains an SMClientNotification.
     static public let clientSerialPortOwnerChanged = Notification.Name("SMClientSerialPortOwnerChangedNotification")
-    // userInfo contains:
-    //    SMClientMIDINotificationStruct    NSValue (a pointer to a struct MIDINotification)
 
-    // An MIDI driver experienced an I/O error:
-    static public let clientMIDIIOError = Notification.Name("SMClientMIDIIOErrorNotification")
-    // userInfo contains:
-    //    SMClientMIDINotificationStruct    NSValue (a pointer to a struct MIDIIOErrorNotification)
+    // An MIDI driver experienced an I/O error.
+    // userInfo contains an SMClientIOErrorNotification.
+    static public let clientIOError = Notification.Name("SMClientIOErrorNotification")
 
-    // Sent for unknown notifications from CoreMIDI:
+    // An unknown notification was sent from CoreMIDI.
+    // userInfo contains an SMClientNotification.
     static public let clientUnknownNotification = Notification.Name("SMClientMIDINotification")
-    // userInfo contains:
-    //    SMClientMIDINotificationStruct    NSValue (a pointer to a struct MIDINotification)
 
 }
 
@@ -206,22 +376,15 @@ extension Notification.Name {
     static public let clientObjectPropertyChanged = Notification.Name.clientObjectPropertyChanged
     static public let clientThruConnectionsChanged = Notification.Name.clientThruConnectionsChanged
     static public let clientSerialPortOwnerChanged = Notification.Name.clientSerialPortOwnerChanged
-    static public let clientMIDIIOErrorNotification = Notification.Name.clientMIDIIOError
+    static public let clientIOErrorNotification = Notification.Name.clientIOError
     static public let clientUnknownNotification = Notification.Name.clientUnknownNotification
 
 }
 
 extension SMClient {
 
-    @objc static public let objectAddedOrRemovedParent = "SMClientObjectAddedOrRemovedParent"
-    @objc static public let objectAddedOrRemovedParentType = "SMClientObjectAddedOrRemovedParentType"
-    @objc static public let objectAddedOrRemovedChild = "SMClientObjectAddedOrRemovedChild"
-    @objc static public let objectAddedOrRemovedChildType = "SMClientObjectAddedOrRemovedChildType"
-
-    @objc static public let propertyChangedObject = "SMClientObjectPropertyChangedObject"
-    @objc static public let propertyChangedType = "SMClientObjectPropertyChangedType"
-    @objc static public let propertyChangedName = "SMClientObjectPropertyChangedName"
-
-    @objc static public let midiNotificationStruct = "SMClientMIDINotificationStruct"
+    // Key in Notification's userInfo dictionary.
+    // Value is a SMClientNotification or subclass, as documented above.
+    @objc static public let notification = "SMClientNotification"
 
 }

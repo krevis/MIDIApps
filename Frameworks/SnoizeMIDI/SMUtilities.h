@@ -31,3 +31,8 @@ extern void SMAssertionFailed(const char *expression, const char *file, unsigned
 #else
 #define SMAssert(expression)
 #endif
+
+
+extern OSStatus SMWorkaroundMIDIClientCreateWithBlock(CFStringRef name, MIDIClientRef *outClient, MIDINotifyBlock /* TODO __nullable*/ notifyBlock);
+    // Re-implement MIDIClientCreateWithBlock() in terms of MIDIClientCreate(), for use on macOS 10.9 and 10.10.
+    // This leaks `notifyBlock` forever!

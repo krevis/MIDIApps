@@ -847,6 +847,7 @@ static void IgnoreMIDIReadProc(const MIDIPacketList *pktlist, void *readProcRefC
         [[SMClient sharedClient] setPostsExternalSetupChangeNotification:wasPostingExternalNotification];
         if(wasPostingExternalNotification)
         {
+            // TODO If we still actually need this, clean up to have a userInfo to match
             [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.clientSetupChanged object:[SMClient sharedClient]];
         }
     }

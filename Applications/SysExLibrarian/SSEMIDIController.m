@@ -97,6 +97,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
     [center addObserver:self selector:@selector(midiSetupChanged:) name:NSNotification.clientSetupChanged object:[SMClient sharedClient]];
         // use the general setup changed notification rather than SSECombinationOutputStreamDestinationListChangedNotification,
         // since it's too low-level and fires too early when setting up a virtual destination
+        // TODO Really? Could we be more specific?
     [center addObserver:self selector:@selector(outputStreamSelectedDestinationDisappeared:) name:SSECombinationOutputStreamSelectedDestinationDisappearedNotification object:outputStream];
     [center addObserver:self selector:@selector(willStartSendingSysEx:) name:SMPortOutputStreamWillStartSysExSendNotification object:outputStream];
     [center addObserver:self selector:@selector(doneSendingSysEx:) name:SMPortOutputStreamFinishedSysExSendNotification object:outputStream];

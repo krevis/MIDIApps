@@ -58,6 +58,7 @@
 
 - (void)willShow
 {
+    // TODO Can this be more specific now?
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(midiSetupChanged:) name:NSNotification.clientSetupChanged object:[SMClient sharedClient]];
 
     [self captureEndpointsAndExternalDevices];
