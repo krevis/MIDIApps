@@ -847,7 +847,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 169E7171097B2203001AFB58 /* Snoize-Application-Release.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1.4.1;
 				INFOPLIST_FILE = "Info-MIDIMonitor.plist";
@@ -870,7 +869,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 169E716F097B2203001AFB58 /* Snoize-Application-Debug.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1.4.1;
 				INFOPLIST_FILE = "Info-MIDIMonitor.plist";

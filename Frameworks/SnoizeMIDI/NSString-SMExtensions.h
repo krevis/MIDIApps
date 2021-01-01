@@ -13,6 +13,7 @@
 
 #import <Foundation/Foundation.h>
 
+// TODO Only SEL uses this, so move it to that project
 
 @interface NSString (SMExtensions)
 

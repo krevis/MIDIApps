@@ -1,3 +1,7 @@
 // Set value of @rpath in the binary, so internal frameworks can use it
 
 LD_RUNPATH_SEARCH_PATHS = @executable_path/../Frameworks
+
+// Need to enable modules to use SnoizeMIDI containing Swift
+
+CLANG_ENABLE_MODULES = YES
