@@ -99,8 +99,8 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
         // since it's too low-level and fires too early when setting up a virtual destination
         // TODO Really? Could we be more specific?
     [center addObserver:self selector:@selector(outputStreamSelectedDestinationDisappeared:) name:SSECombinationOutputStreamSelectedDestinationDisappearedNotification object:outputStream];
-    [center addObserver:self selector:@selector(willStartSendingSysEx:) name:SMPortOutputStreamWillStartSysExSendNotification object:outputStream];
-    [center addObserver:self selector:@selector(doneSendingSysEx:) name:SMPortOutputStreamFinishedSysExSendNotification object:outputStream];
+    [center addObserver:self selector:@selector(willStartSendingSysEx:) name:NSNotification.portOutputStreamSysExSendWillBegin object:outputStream];
+    [center addObserver:self selector:@selector(doneSendingSysEx:) name:NSNotification.portOutputStreamSysExSendDidEnd object:outputStream];
     [center addObserver:self selector:@selector(customSysexBufferSizeChanged:) name:SSECustomSysexBufferSizePreferenceChangedNotification object:nil];
     [outputStream setIgnoresTimeStamps:YES];
     [outputStream setSendsSysExAsynchronously:YES];

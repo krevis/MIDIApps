@@ -27,6 +27,9 @@
 		1699290D259FCBA60057715C /* SMVirtualOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699290C259FCBA60057715C /* SMVirtualOutputStream.swift */; };
 		1699290E259FCBA60057715C /* SMVirtualOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699290C259FCBA60057715C /* SMVirtualOutputStream.swift */; };
 		1699290F259FCBA60057715C /* SMVirtualOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699290C259FCBA60057715C /* SMVirtualOutputStream.swift */; };
+		16A3B72725A03DFA00C7F61E /* SMPortOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A3B72625A03DFA00C7F61E /* SMPortOutputStream.swift */; };
+		16A3B72825A03DFA00C7F61E /* SMPortOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A3B72625A03DFA00C7F61E /* SMPortOutputStream.swift */; };
+		16A3B72925A03DFA00C7F61E /* SMPortOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A3B72625A03DFA00C7F61E /* SMPortOutputStream.swift */; };
 		16B11B940971D40100DB1DB5 /* NSArray-SMExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B570971D40100DB1DB5 /* NSArray-SMExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		16B11B950971D40100DB1DB5 /* NSArray-SMExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B580971D40100DB1DB5 /* NSArray-SMExtensions.m */; };
 		16B11B980971D40100DB1DB5 /* NSString-SMExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B5B0971D40100DB1DB5 /* NSString-SMExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -55,8 +58,6 @@
 		16B11BB90971D40100DB1DB5 /* SMOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B7C0971D40100DB1DB5 /* SMOutputStream.m */; };
 		16B11BBA0971D40100DB1DB5 /* SMPortInputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B7D0971D40100DB1DB5 /* SMPortInputStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		16B11BBB0971D40100DB1DB5 /* SMPortInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B7E0971D40100DB1DB5 /* SMPortInputStream.m */; };
-		16B11BBC0971D40100DB1DB5 /* SMPortOutputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B7F0971D40100DB1DB5 /* SMPortOutputStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		16B11BBD0971D40100DB1DB5 /* SMPortOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B800971D40100DB1DB5 /* SMPortOutputStream.m */; };
 		16B11BBE0971D40100DB1DB5 /* SMSysExSendRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B810971D40100DB1DB5 /* SMSysExSendRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		16B11BBF0971D40100DB1DB5 /* SMSysExSendRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B820971D40100DB1DB5 /* SMSysExSendRequest.m */; };
 		16B11BC00971D40100DB1DB5 /* SMSystemCommonMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B830971D40100DB1DB5 /* SMSystemCommonMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -99,7 +100,6 @@
 		A53DDBF3148F438D006D2FFD /* SMPortInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B7E0971D40100DB1DB5 /* SMPortInputStream.m */; };
 		A53DDBF4148F4390006D2FFD /* SMVirtualInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B8C0971D40100DB1DB5 /* SMVirtualInputStream.m */; };
 		A53DDBF5148F4394006D2FFD /* SMOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B7C0971D40100DB1DB5 /* SMOutputStream.m */; };
-		A53DDBF6148F4397006D2FFD /* SMPortOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B800971D40100DB1DB5 /* SMPortOutputStream.m */; };
 		A53DDBF8148F439C006D2FFD /* SMSysExSendRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B820971D40100DB1DB5 /* SMSysExSendRequest.m */; };
 		A53DDC16148F4C5D006D2FFD /* SnoizeMIDI.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B910971D40100DB1DB5 /* SnoizeMIDI.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A53DDC1B148F4C70006D2FFD /* SMUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B890971D40100DB1DB5 /* SMUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -124,7 +124,6 @@
 		A53DDC2F148F4CAE006D2FFD /* SMPortInputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B7D0971D40100DB1DB5 /* SMPortInputStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A53DDC30148F4CAE006D2FFD /* SMVirtualInputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B8B0971D40100DB1DB5 /* SMVirtualInputStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A53DDC31148F4CB6006D2FFD /* SMOutputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B7B0971D40100DB1DB5 /* SMOutputStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A53DDC32148F4CB6006D2FFD /* SMPortOutputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B7F0971D40100DB1DB5 /* SMPortOutputStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A53DDC34148F4CB6006D2FFD /* SMSysExSendRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B810971D40100DB1DB5 /* SMSysExSendRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A581993116AF687400325CF3 /* SMUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B8A0971D40100DB1DB5 /* SMUtilities.m */; };
 		A581993216AF687400325CF3 /* NSArray-SMExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B580971D40100DB1DB5 /* NSArray-SMExtensions.m */; };
@@ -146,7 +145,6 @@
 		A581994316AF687400325CF3 /* SMPortInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B7E0971D40100DB1DB5 /* SMPortInputStream.m */; };
 		A581994416AF687400325CF3 /* SMVirtualInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B8C0971D40100DB1DB5 /* SMVirtualInputStream.m */; };
 		A581994516AF687400325CF3 /* SMOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B7C0971D40100DB1DB5 /* SMOutputStream.m */; };
-		A581994616AF687400325CF3 /* SMPortOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B800971D40100DB1DB5 /* SMPortOutputStream.m */; };
 		A581994816AF687400325CF3 /* SMSysExSendRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B820971D40100DB1DB5 /* SMSysExSendRequest.m */; };
 		A581994D16AF687400325CF3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A53DDB99148F4219006D2FFD /* Foundation.framework */; };
 		A581994F16AF687400325CF3 /* SnoizeMIDI.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B910971D40100DB1DB5 /* SnoizeMIDI.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -172,7 +170,6 @@
 		A581996616AF687400325CF3 /* SMPortInputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B7D0971D40100DB1DB5 /* SMPortInputStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A581996716AF687400325CF3 /* SMVirtualInputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B8B0971D40100DB1DB5 /* SMVirtualInputStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A581996816AF687400325CF3 /* SMOutputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B7B0971D40100DB1DB5 /* SMOutputStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A581996916AF687400325CF3 /* SMPortOutputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B7F0971D40100DB1DB5 /* SMPortOutputStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A581996B16AF687400325CF3 /* SMSysExSendRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B810971D40100DB1DB5 /* SMSysExSendRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A581999816AF699100325CF3 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A581999716AF699100325CF3 /* CoreMIDI.framework */; };
 /* End PBXBuildFile section */
@@ -195,6 +192,7 @@
 		169928C625984FAA0057715C /* SMClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMClient.swift; sourceTree = "<group>"; };
 		169928F0259B16730057715C /* NSData-SMExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSData-SMExtensions.swift"; sourceTree = "<group>"; };
 		1699290C259FCBA60057715C /* SMVirtualOutputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMVirtualOutputStream.swift; sourceTree = "<group>"; };
+		16A3B72625A03DFA00C7F61E /* SMPortOutputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMPortOutputStream.swift; sourceTree = "<group>"; };
 		16B11B570971D40100DB1DB5 /* NSArray-SMExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSArray-SMExtensions.h"; sourceTree = "<group>"; };
 		16B11B580971D40100DB1DB5 /* NSArray-SMExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSArray-SMExtensions.m"; sourceTree = "<group>"; };
 		16B11B5B0971D40100DB1DB5 /* NSString-SMExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSString-SMExtensions.h"; sourceTree = "<group>"; };
@@ -223,8 +221,6 @@
 		16B11B7C0971D40100DB1DB5 /* SMOutputStream.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMOutputStream.m; sourceTree = "<group>"; };
 		16B11B7D0971D40100DB1DB5 /* SMPortInputStream.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMPortInputStream.h; sourceTree = "<group>"; };
 		16B11B7E0971D40100DB1DB5 /* SMPortInputStream.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMPortInputStream.m; sourceTree = "<group>"; };
-		16B11B7F0971D40100DB1DB5 /* SMPortOutputStream.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMPortOutputStream.h; sourceTree = "<group>"; };
-		16B11B800971D40100DB1DB5 /* SMPortOutputStream.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMPortOutputStream.m; sourceTree = "<group>"; };
 		16B11B810971D40100DB1DB5 /* SMSysExSendRequest.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMSysExSendRequest.h; sourceTree = "<group>"; };
 		16B11B820971D40100DB1DB5 /* SMSysExSendRequest.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMSysExSendRequest.m; sourceTree = "<group>"; };
 		16B11B830971D40100DB1DB5 /* SMSystemCommonMessage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMSystemCommonMessage.h; sourceTree = "<group>"; };
@@ -463,8 +459,7 @@
 			children = (
 				16B11B7B0971D40100DB1DB5 /* SMOutputStream.h */,
 				16B11B7C0971D40100DB1DB5 /* SMOutputStream.m */,
-				16B11B7F0971D40100DB1DB5 /* SMPortOutputStream.h */,
-				16B11B800971D40100DB1DB5 /* SMPortOutputStream.m */,
+				16A3B72625A03DFA00C7F61E /* SMPortOutputStream.swift */,
 				1699290C259FCBA60057715C /* SMVirtualOutputStream.swift */,
 				16B11B810971D40100DB1DB5 /* SMSysExSendRequest.h */,
 				16B11B820971D40100DB1DB5 /* SMSysExSendRequest.m */,
@@ -513,7 +508,6 @@
 				16B11BB60971D40100DB1DB5 /* SMMIDIObject.h in Headers */,
 				16B11BB80971D40100DB1DB5 /* SMOutputStream.h in Headers */,
 				16B11BBA0971D40100DB1DB5 /* SMPortInputStream.h in Headers */,
-				16B11BBC0971D40100DB1DB5 /* SMPortOutputStream.h in Headers */,
 				16B11BBE0971D40100DB1DB5 /* SMSysExSendRequest.h in Headers */,
 				16B11BC00971D40100DB1DB5 /* SMSystemCommonMessage.h in Headers */,
 				16B11BC20971D40100DB1DB5 /* SMSystemExclusiveMessage.h in Headers */,
@@ -553,7 +547,6 @@
 				A53DDC2F148F4CAE006D2FFD /* SMPortInputStream.h in Headers */,
 				A53DDC30148F4CAE006D2FFD /* SMVirtualInputStream.h in Headers */,
 				A53DDC31148F4CB6006D2FFD /* SMOutputStream.h in Headers */,
-				A53DDC32148F4CB6006D2FFD /* SMPortOutputStream.h in Headers */,
 				A53DDC34148F4CB6006D2FFD /* SMSysExSendRequest.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -585,7 +578,6 @@
 				A581996616AF687400325CF3 /* SMPortInputStream.h in Headers */,
 				A581996716AF687400325CF3 /* SMVirtualInputStream.h in Headers */,
 				A581996816AF687400325CF3 /* SMOutputStream.h in Headers */,
-				A581996916AF687400325CF3 /* SMPortOutputStream.h in Headers */,
 				A581996B16AF687400325CF3 /* SMSysExSendRequest.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -752,8 +744,8 @@
 				16B11BB70971D40100DB1DB5 /* SMMIDIObject.m in Sources */,
 				16B11BB90971D40100DB1DB5 /* SMOutputStream.m in Sources */,
 				16B11BBB0971D40100DB1DB5 /* SMPortInputStream.m in Sources */,
-				16B11BBD0971D40100DB1DB5 /* SMPortOutputStream.m in Sources */,
 				16B11BBF0971D40100DB1DB5 /* SMSysExSendRequest.m in Sources */,
+				16A3B72725A03DFA00C7F61E /* SMPortOutputStream.swift in Sources */,
 				16B11BC10971D40100DB1DB5 /* SMSystemCommonMessage.m in Sources */,
 				16B11BC30971D40100DB1DB5 /* SMSystemExclusiveMessage.m in Sources */,
 				16B11BC50971D40100DB1DB5 /* SMSystemRealTimeMessage.m in Sources */,
@@ -789,12 +781,12 @@
 				A53DDBEE148F437D006D2FFD /* SMInvalidMessage.m in Sources */,
 				A53DDBEF148F4380006D2FFD /* SMMessageTimeBase.m in Sources */,
 				A53DDBF0148F4385006D2FFD /* SMInputStream.m in Sources */,
+				16A3B72825A03DFA00C7F61E /* SMPortOutputStream.swift in Sources */,
 				A53DDBF1148F4387006D2FFD /* SMInputStreamSource.m in Sources */,
 				A53DDBF2148F438A006D2FFD /* SMMessageParser.m in Sources */,
 				A53DDBF3148F438D006D2FFD /* SMPortInputStream.m in Sources */,
 				A53DDBF4148F4390006D2FFD /* SMVirtualInputStream.m in Sources */,
 				A53DDBF5148F4394006D2FFD /* SMOutputStream.m in Sources */,
-				A53DDBF6148F4397006D2FFD /* SMPortOutputStream.m in Sources */,
 				A53DDBF8148F439C006D2FFD /* SMSysExSendRequest.m in Sources */,
 				1699289B25971F3A0057715C /* MessageHistory.swift in Sources */,
 			);
@@ -824,12 +816,12 @@
 				A581993E16AF687400325CF3 /* SMInvalidMessage.m in Sources */,
 				A581993F16AF687400325CF3 /* SMMessageTimeBase.m in Sources */,
 				A581994016AF687400325CF3 /* SMInputStream.m in Sources */,
+				16A3B72925A03DFA00C7F61E /* SMPortOutputStream.swift in Sources */,
 				A581994116AF687400325CF3 /* SMInputStreamSource.m in Sources */,
 				A581994216AF687400325CF3 /* SMMessageParser.m in Sources */,
 				A581994316AF687400325CF3 /* SMPortInputStream.m in Sources */,
 				A581994416AF687400325CF3 /* SMVirtualInputStream.m in Sources */,
 				A581994516AF687400325CF3 /* SMOutputStream.m in Sources */,
-				A581994616AF687400325CF3 /* SMPortOutputStream.m in Sources */,
 				A581994816AF687400325CF3 /* SMSysExSendRequest.m in Sources */,
 				1699289C25971F3A0057715C /* MessageHistory.swift in Sources */,
 			);

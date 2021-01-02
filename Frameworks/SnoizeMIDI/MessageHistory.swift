@@ -72,8 +72,8 @@ import Foundation
 
 }
 
-extension Notification.Name {
+public extension Notification.Name {
 
-    static public let messageHistoryChanged = Notification.Name("SMMessageHistoryChangedNotification")
+    static let messageHistoryChanged = Notification.Name("SMMessageHistoryChangedNotification")
 
 }

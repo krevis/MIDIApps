@@ -300,25 +300,16 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
 {
     SMAssert(portStream == nil);
 
-    @try {
-        portStream = [[SMPortOutputStream alloc] init];
+    portStream = [SMPortOutputStream newPortOutputStream];
+    if (portStream) {
         [portStream setIgnoresTimeStamps:flags.ignoresTimeStamps];
         [portStream setSendsSysExAsynchronously:flags.sendsSysExAsynchronously];
         [portStream setCustomSysExBufferSize:customSysExBufferSize];
-    }
-    @catch (id ignored) {
-        [portStream release];
-        portStream = nil;
-    }
 
-    if (portStream) {
-        NSNotificationCenter *center;
-
-        center = [NSNotificationCenter defaultCenter];
-        
-        [center addObserver:self selector:@selector(portStreamEndpointDisappeared:) name:SMPortOutputStreamEndpointDisappearedNotification object:portStream];
-        [center addObserver:self selector:@selector(repostNotification:) name:SMPortOutputStreamWillStartSysExSendNotification object:portStream];
-        [center addObserver:self selector:@selector(repostNotification:) name:SMPortOutputStreamFinishedSysExSendNotification object:portStream];
+        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+        [center addObserver:self selector:@selector(portStreamEndpointDisappeared:) name:NSNotification.portOutputStreamEndpointDisappeared object:portStream];
+        [center addObserver:self selector:@selector(repostNotification:) name:NSNotification.portOutputStreamSysExSendWillBegin object:portStream];
+        [center addObserver:self selector:@selector(repostNotification:) name:NSNotification.portOutputStreamSysExSendDidEnd object:portStream];
     }
 }
 

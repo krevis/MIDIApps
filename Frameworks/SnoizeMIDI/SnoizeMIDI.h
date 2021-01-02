@@ -23,7 +23,6 @@
 #import <SnoizeMIDI/SMOutputStream.h>
 #import <SnoizeMIDI/SMMessageParser.h>
 #import <SnoizeMIDI/SMPortInputStream.h>
-#import <SnoizeMIDI/SMPortOutputStream.h>
 #import <SnoizeMIDI/SMSysExSendRequest.h>
 #import <SnoizeMIDI/SMSystemCommonMessage.h>
 #import <SnoizeMIDI/SMSystemRealTimeMessage.h>

@@ -324,7 +324,7 @@ private func checkMainQueue() {
     }
 }
 
-extension Notification.Name {
+public extension Notification.Name {
 
     // TODO Re-evaluate all of this. Is it really useful to just repackage all CoreMIDI notifications as Notifications?
 
@@ -335,35 +335,35 @@ extension Notification.Name {
     // The default "something changed" kMIDIMsgSetupChanged notification from CoreMIDI.
     // Posted only if `postsExternalSetupChangeNotification` is true.
     // userInfo contains an SMClientNotification.
-    static public let clientSetupChanged = Notification.Name("SMClientSetupChangedNotification")
+    static let clientSetupChanged = Notification.Name("SMClientSetupChangedNotification")
 
     // An object was added.
     // userInfo contains an SMClientObjectAddedNotification.
-    static public let clientObjectAdded = Notification.Name("SMClientObjectAddedNotification")
+    static let clientObjectAdded = Notification.Name("SMClientObjectAddedNotification")
 
     // An object was removed.
     // userInfo contains an SMClientObjectRemovedNotification.
-    static public let clientObjectRemoved = Notification.Name("SMClientObjectRemovedNotification")
+    static let clientObjectRemoved = Notification.Name("SMClientObjectRemovedNotification")
 
     // A property of an object changed.
     // userInfo contains an SMClientObjectPropertyChangedNotification.
-    static public let clientObjectPropertyChanged = Notification.Name("SMClientObjectPropertyChangedNotification")
+    static let clientObjectPropertyChanged = Notification.Name("SMClientObjectPropertyChangedNotification")
 
     // A MIDI Thru connection changed.
     // userInfo contains an SMClientNotification.
-    static public let clientThruConnectionsChanged = Notification.Name("SMClientThruConnectionsChangedNotification")
+    static let clientThruConnectionsChanged = Notification.Name("SMClientThruConnectionsChangedNotification")
 
     // An owner of a serial port changed.
     // userInfo contains an SMClientNotification.
-    static public let clientSerialPortOwnerChanged = Notification.Name("SMClientSerialPortOwnerChangedNotification")
+    static let clientSerialPortOwnerChanged = Notification.Name("SMClientSerialPortOwnerChangedNotification")
 
     // An MIDI driver experienced an I/O error.
     // userInfo contains an SMClientIOErrorNotification.
-    static public let clientIOError = Notification.Name("SMClientIOErrorNotification")
+    static let clientIOError = Notification.Name("SMClientIOErrorNotification")
 
     // An unknown notification was sent from CoreMIDI.
     // userInfo contains an SMClientNotification.
-    static public let clientUnknownNotification = Notification.Name("SMClientMIDINotification")
+    static let clientUnknownNotification = Notification.Name("SMClientMIDINotification")
 
 }
 
