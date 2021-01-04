@@ -35,12 +35,12 @@ import CoreAudio
     // but we should be able to split it across multiple packets. The packet
     // count is (almost) unlimited, so we should be able to use a single packet list.
     //
-    // BUT, it's not clear we can actually rely on that.
+    // HOWEVER. It's not clear we can rely on that, in practice.
     // `MIDIPacketListAdd` has this comment:
     // > The maximum size of a packet list is 65536 bytes.
     // > Large sysex messages must be sent in smaller packet lists.
     // That seems dumb, and maybe they just meant "packet" instead of "packet list",
-    // but why risk it? Just send as many packet lists as are needed.
+    // but why risk it? Just send as many packet lists as are necessary.
     //
     // (Back in Mac OS X 10.1, the MIDIServer would crash if you exceeded
     // 1024 bytes in a packet list. So it's not inconceivable that the implementation
@@ -49,93 +49,81 @@ import CoreAudio
     // Switch to newer CoreMIDI API (introduced in 10.15 or 11.0) when we can.
 
     private let maxPacketListSize = 65536
-    private let midiPacketListHeaderSize = MemoryLayout.offset(of: \MIDIPacketList.packet)!
-    private let midiPacketHeaderSize = MemoryLayout.offset(of: \MIDIPacket.data)!
 
     private func sendMessagesWithLimitedPacketListSize(_ messages: [SMMessage]) {
         guard messages.count > 0 else { return }
 
-        let rawPacketListPtr = UnsafeMutableRawPointer.allocate(byteCount: maxPacketListSize, alignment: MemoryLayout<MIDIPacketList>.alignment)
-        let packetListPtr = rawPacketListPtr.initializeMemory(as: MIDIPacketList.self, repeating: MIDIPacketList(), count: 1)
+        var packetListData = Data(count: maxPacketListSize)
+        packetListData.withUnsafeMutableBytes { (packetListRawBufferPtr: UnsafeMutableRawBufferPointer) in
+            let packetListPtr = packetListRawBufferPtr.bindMemory(to: MIDIPacketList.self).baseAddress!
 
-        var curPacketPtr = MIDIPacketListInit(packetListPtr)
-
-        func attemptToAddPacket(_ packetPtr: UnsafeMutablePointer<MIDIPacket>, _ message: SMMessage, _ data: Data) -> UnsafeMutablePointer<MIDIPacket>? {
-            // Try to add a packet to the packet list, for the given message,
-            // with this data (either the message's fullData or a subrange).
-            // If successful, returns a non-nil pointer for the next packet.
-            // If unsuccessful, returns nil.
-            let packetTimeStamp = ignoresTimeStamps ? AudioGetCurrentHostTime() : message.timeStamp
-            return data.withUnsafeBytes {
-                return SMWorkaroundMIDIPacketListAdd(packetListPtr, maxPacketListSize, packetPtr, packetTimeStamp, data.count, $0.bindMemory(to: UInt8.self).baseAddress!)
+            func attemptToAddPacket(_ packetPtr: UnsafeMutablePointer<MIDIPacket>, _ message: SMMessage, _ data: Data) -> UnsafeMutablePointer<MIDIPacket>? {
+                // Try to add a packet to the packet list, for the given message,
+                // with this data (either the message's fullData or a subrange).
+                // If successful, returns a non-nil pointer for the next packet.
+                // If unsuccessful, returns nil.
+                let packetTimeStamp = ignoresTimeStamps ? AudioGetCurrentHostTime() : message.timeStamp
+                return data.withUnsafeBytes {
+                    return SMWorkaroundMIDIPacketListAdd(packetListPtr, maxPacketListSize, packetPtr, packetTimeStamp, data.count, $0.bindMemory(to: UInt8.self).baseAddress!)
+                }
             }
-        }
 
-        func sendPacketList() -> UnsafeMutablePointer<MIDIPacket> {
-            // Send the current packet list, empty it, and return the next packet to fill in
-            send(packetListPtr)
-            return MIDIPacketListInit(packetListPtr)
-        }
-
-        for message in messages {
-            // Get the full data for the message (including first status byte)
-            guard let messageFullData = message.fullData, messageFullData.count > 0 else { continue }
-            var isOverlarge = false
-
-            // Attempt to add a packet with the full data into the current packet list
-            if let nextPacketPtr = attemptToAddPacket(curPacketPtr, message, messageFullData) {
-                // There was enough room in the packet list
-                curPacketPtr = nextPacketPtr
+            func sendPacketList() -> UnsafeMutablePointer<MIDIPacket> {
+                // Send the current packet list, empty it, and return the next packet to fill in
+                send(packetListPtr)
+                return MIDIPacketListInit(packetListPtr)
             }
-            else if packetListPtr.pointee.numPackets > 0 {
-                // There was not enough room in the packet list.
-                // Send the outstanding packet list, clear it, and try again.
-                curPacketPtr = sendPacketList()
 
-                if let nextPacketPtr = attemptToAddPacket(curPacketPtr, message, messageFullData) {
-                    // There was room in the packet list
+            var curPacketPtr = MIDIPacketListInit(packetListPtr)
+
+            for message in messages {
+                // Get the full data for the message (including first status byte)
+                guard let messageData = message.fullData, messageData.count > 0 else { continue }
+                var isOverlarge = false
+
+                // Attempt to add a packet with the full data into the current packet list
+                if let nextPacketPtr = attemptToAddPacket(curPacketPtr, message, messageData) {
+                    // There was enough room in the packet list
                     curPacketPtr = nextPacketPtr
+                }
+                else if packetListPtr.pointee.numPackets > 0 {
+                    // There was not enough room in the packet list.
+                    // Send the outstanding packet list, clear it, and try again.
+                    curPacketPtr = sendPacketList()
+
+                    if let nextPacketPtr = attemptToAddPacket(curPacketPtr, message, messageData) {
+                        // There was enough room in the packet list
+                        curPacketPtr = nextPacketPtr
+                    }
+                    else {
+                        isOverlarge = true  // This message will never fit
+                    }
                 }
                 else {
                     isOverlarge = true  // This message will never fit
                 }
-            }
-            else {
-                isOverlarge = true  // This message will never fit
-            }
 
-            if isOverlarge {
-                // This is a large message (in practice, it's sysex, but we don't assume that here).
-                // We send it by filling in the packet list with one packet with as much data as possible,
-                // sending that packet list, then repeating with the rmaining data.
-                // We can send this much data at a time:
-                let maxPacketDataSize = maxPacketListSize - midiPacketListHeaderSize - midiPacketHeaderSize
-                // (Too bad CoreMIDI doesn't give us a nice way to get that value!)
+                if isOverlarge {
+                    // This is a large message (in practice, it's sysex, but we don't assume that here).
+                    // We send it by filling in the packet list with one packet with as much data as possible,
+                    // sending that packet list, then repeating with the remaining data.
+                    let chunkSize = maxPacketListSize - MemoryLayout.offset(of: \MIDIPacketList.packet.data)!
+                    for chunkStart in stride(from: messageData.startIndex, to: messageData.endIndex, by: chunkSize) {
+                        let chunkData = messageData[chunkStart ..< min(chunkStart + chunkSize, messageData.endIndex)]
 
-                var dataSizeRemaining = messageFullData.count
-                while dataSizeRemaining > 0 {
-                    let partialDataSize = min(dataSizeRemaining, maxPacketDataSize)
-                    let dataRangeStartIndex = messageFullData.count - dataSizeRemaining
-                    dataSizeRemaining -= partialDataSize
-
-                    let messageSubData = messageFullData.subdata(in: dataRangeStartIndex ..< (dataRangeStartIndex + partialDataSize))
-                    if let nextPacketPtr = attemptToAddPacket(curPacketPtr, message, messageSubData) {
-                        curPacketPtr = nextPacketPtr
+                        if attemptToAddPacket(curPacketPtr, message, chunkData) == nil {
+                            fatalError("Couldn't add packet for overlarge message -- logic error")
+                        }
+                        curPacketPtr = sendPacketList()
                     }
-                    else {
-                        fatalError("Couldn't add packet for overlarge message -- logic error")
-                    }
-                    curPacketPtr = sendPacketList()
                 }
             }
-        }
 
-        // All messages have been processed. Send the last remaining packet list.
-        if packetListPtr.pointee.numPackets > 0 {
-            send(packetListPtr)
+            // All messages have been processed. Send the last remaining packet list.
+            if packetListPtr.pointee.numPackets > 0 {
+                send(packetListPtr)
+            }
         }
-
-        rawPacketListPtr.deallocate()
     }
 
 }
