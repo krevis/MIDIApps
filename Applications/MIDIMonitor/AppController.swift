@@ -192,7 +192,7 @@ extension AppController {
     // MARK: Startup failure handling
 
     private func failedToInitCoreMIDI() {
-        let bundle = SMBundleForObject(self)!
+        let bundle = SMBundleForObject(self)
 
         let alert = NSAlert()
         alert.alertStyle = .critical
@@ -211,7 +211,7 @@ extension AppController {
     private func failedToInstallSpyDriver(_ error: Error) {
         // Failure to install. Customize the error before presenting it.
 
-        let bundle = SMBundleForObject(self)!
+        let bundle = SMBundleForObject(self)
         let installError = error as NSError
 
         var presentedErrorUserInfo: [String: Any] = installError.userInfo
@@ -294,7 +294,7 @@ extension AppController {
     }
 
     private func failedToConnectToSpyClient() {
-        let bundle = SMBundleForObject(self)!
+        let bundle = SMBundleForObject(self)
 
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("MIDI Monitor could not make a connection to its MIDI driver.", tableName: "MIDIMonitor", bundle: bundle, comment: "error message if MIDI spy client creation fails")

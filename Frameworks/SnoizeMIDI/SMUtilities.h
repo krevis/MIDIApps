@@ -14,6 +14,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreMIDI/CoreMIDI.h>
 
+NS_ASSUME_NONNULL_BEGIN
 
 static __inline__ NSBundle *SMBundleForObject(id object) {
     return [NSBundle bundleForClass:[object class]];
@@ -33,6 +34,13 @@ extern void SMAssertionFailed(const char *expression, const char *file, unsigned
 #endif
 
 
-extern OSStatus SMWorkaroundMIDIClientCreateWithBlock(CFStringRef name, MIDIClientRef *outClient, MIDINotifyBlock /* TODO __nullable*/ notifyBlock);
+extern OSStatus SMWorkaroundMIDIClientCreateWithBlock(CFStringRef name, MIDIClientRef *outClient, MIDINotifyBlock _Nullable notifyBlock);
     // Re-implement MIDIClientCreateWithBlock() in terms of MIDIClientCreate(), for use on macOS 10.9 and 10.10.
     // This leaks `notifyBlock` forever!
+
+extern MIDIPacket * _Nullable SMWorkaroundMIDIPacketListAdd(MIDIPacketList *pktlist, ByteCount listSize, MIDIPacket *curPacket, MIDITimeStamp time, ByteCount nData, const Byte *data);
+    // Work around a bug in the declaration of MIDIPacketListAdd(). The return value should be _Nullable,
+    // so Swift code can compare it to nil.
+    // This function just calls MIDIPacketListAdd() and does nothing extra.
+
+NS_ASSUME_NONNULL_END
