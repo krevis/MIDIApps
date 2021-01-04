@@ -236,7 +236,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
 
 - (BOOL)canSendSysExAsynchronously;
 {
-    return ([self stream] == portStream);
+    return [self stream] == portStream && portStream.sendsSysExAsynchronously;
 }
 
 - (void)setCustomSysExBufferSize:(NSInteger)value
