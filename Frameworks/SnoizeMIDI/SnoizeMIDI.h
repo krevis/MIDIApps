@@ -20,7 +20,6 @@
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 #import <SnoizeMIDI/SMMessageTimeBase.h>
 #import <SnoizeMIDI/SMMIDIObject.h>
-#import <SnoizeMIDI/SMOutputStream.h>
 #import <SnoizeMIDI/SMMessageParser.h>
 #import <SnoizeMIDI/SMPortInputStream.h>
 #import <SnoizeMIDI/SMSysExSendRequest.h>

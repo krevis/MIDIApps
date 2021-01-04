@@ -60,7 +60,7 @@ import CoreAudio
 
         var port: MIDIPortRef = 0
         let status = MIDIOutputPortCreate(client.midiClient, "Output Port" as CFString, &port)
-        guard status != noErr else { return nil }
+        guard status == noErr else { return nil }
 
         return SMPortOutputStream(port: port)
     }
@@ -92,9 +92,9 @@ import CoreAudio
 
     // MARK: SMOutputStream subclass-implementation methods
 
-    public override func send(_ packetList: UnsafeMutablePointer<MIDIPacketList>!) {
+    override func send(_ packetListPtr: UnsafePointer<MIDIPacketList>) {
         for endpoint in endpoints {
-            _ = MIDISend(outputPort, endpoint.endpointRef(), packetList)
+            _ = MIDISend(outputPort, endpoint.endpointRef(), packetListPtr)
         }
     }
 
@@ -166,6 +166,8 @@ import CoreAudio
     }
 
 }
+
+// TODO These notifications should just be delegate methods.
 
 public extension Notification.Name {
 

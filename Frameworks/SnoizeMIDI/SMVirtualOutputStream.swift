@@ -23,8 +23,8 @@ import Foundation
         super.init()
     }
 
-    public override func send(_ packetList: UnsafeMutablePointer<MIDIPacketList>!) {
-        MIDIReceived(endpoint.endpointRef(), packetList)
+    override func send(_ packetListPtr: UnsafePointer<MIDIPacketList>) {
+        MIDIReceived(endpoint.endpointRef(), packetListPtr)
     }
 
 }
