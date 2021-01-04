@@ -66,13 +66,14 @@
 - (NSString *)md5HexHash
 {
 	unsigned char digest[16];
-	char finaldigest[32];
-	int i;
-	
+    NSMutableString *result = [NSMutableString stringWithCapacity:16 * 2];
+
 	CC_MD5([self bytes], (CC_LONG)[self length], digest);
-	for(i=0;i<16;i++) sprintf(finaldigest+i*2,"%02x",digest[i]);
-	
-	return [[[NSString alloc] initWithBytes:finaldigest length:32 encoding:NSUTF8StringEncoding] autorelease];
+    for (int i=0; i < 16; i++) {
+        [result appendFormat:@"%02x", digest[i]];
+    }
+
+    return result;
 }
 
 - (NSData *)md5Hash
@@ -87,13 +88,14 @@
 - (NSString *)sha1HexHash
 {
 	unsigned char digest[20];
-	char finaldigest[40];
-	int i;
-	
+    NSMutableString *result = [NSMutableString stringWithCapacity:20 * 2];
+
 	CC_SHA1([self bytes], (CC_LONG)[self length], digest);
-	for(i=0;i<20;i++) sprintf(finaldigest+i*2,"%02x",digest[i]);
-	
-	return [[[NSString alloc] initWithBytes:finaldigest length:40 encoding:NSUTF8StringEncoding] autorelease];
+    for (int i=0; i < 20; i++) {
+        [result appendFormat:@"%02x", digest[i]];
+    }
+
+    return result;
 }
 
 - (NSData *)sha1Hash
