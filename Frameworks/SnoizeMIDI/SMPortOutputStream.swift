@@ -38,7 +38,7 @@ import CoreAudio
     @objc public var sendsSysExAsynchronously: Bool = false
 
     @objc public func cancelPendingSysExSendRequests() {
-        sysExSendRequests.forEach { $0.cancel() }
+        sysExSendRequests.forEach { _ = $0.cancel() }
     }
 
     @objc public var pendingSysExSendRequests: [SMSysExSendRequest] {
@@ -146,12 +146,12 @@ import CoreAudio
 
         for message in messages {
             for endpoint in endpoints {
-                if let request = SMSysExSendRequest.init(message: message, endpoint: endpoint, customSysExBufferSize: customSysExBufferSize) {
+                if let request = SMSysExSendRequest(message: message, endpoint: endpoint, customSysExBufferSize: customSysExBufferSize) {
                     sysExSendRequests.insert(request)
 
-                    center.addObserver(forName: .SMSysExSendRequestFinished, object: request, queue: nil) { [weak self] _ in
+                    center.addObserver(forName: .sysExSendRequestFinished, object: request, queue: nil) { [weak self] _ in
                         guard let self = self else { return }
-                        center.removeObserver(self, name: .SMSysExSendRequestFinished, object: request)
+                        center.removeObserver(self, name: .sysExSendRequestFinished, object: request)
                         self.sysExSendRequests.remove(request)
 
                         center.post(name: .portOutputStreamSysExSendDidEnd, object: self, userInfo: ["sendRequest": request])

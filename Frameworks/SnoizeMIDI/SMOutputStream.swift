@@ -13,9 +13,15 @@
 import Foundation
 import CoreAudio
 
-@objc public class SMOutputStream: NSObject {
+@objc public class SMOutputStream: NSObject, SMMessageDestination {
 
     @objc public var ignoresTimeStamps = false
+
+    // MARK: SMMessageDestination
+
+    public func takeMIDIMessages(_ messages: [SMMessage]!) {
+        sendMessagesWithLimitedPacketListSize(messages)
+    }
 
     // MARK: Framework internal
 
@@ -124,14 +130,6 @@ import CoreAudio
                 send(packetListPtr)
             }
         }
-    }
-
-}
-
-@objc extension SMOutputStream: SMMessageDestination {
-
-    public func takeMIDIMessages(_ messages: [SMMessage]!) {
-        sendMessagesWithLimitedPacketListSize(messages)
     }
 
 }
