@@ -215,8 +215,6 @@
 		16B11B780971D40100DB1DB5 /* SMMIDIObject-Private.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "SMMIDIObject-Private.h"; sourceTree = "<group>"; };
 		16B11B790971D40100DB1DB5 /* SMMIDIObject.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMMIDIObject.h; sourceTree = "<group>"; };
 		16B11B7A0971D40100DB1DB5 /* SMMIDIObject.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMMIDIObject.m; sourceTree = "<group>"; };
-		16B11B7B0971D40100DB1DB5 /* SMOutputStream.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMOutputStream.h; sourceTree = "<group>"; };
-		16B11B7C0971D40100DB1DB5 /* SMOutputStream.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMOutputStream.m; sourceTree = "<group>"; };
 		16B11B7D0971D40100DB1DB5 /* SMPortInputStream.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMPortInputStream.h; sourceTree = "<group>"; };
 		16B11B7E0971D40100DB1DB5 /* SMPortInputStream.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMPortInputStream.m; sourceTree = "<group>"; };
 		16B11B810971D40100DB1DB5 /* SMSysExSendRequest.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMSysExSendRequest.h; sourceTree = "<group>"; };
@@ -456,8 +454,6 @@
 			isa = PBXGroup;
 			children = (
 				16A3B73925A156D300C7F61E /* SMOutputStream.swift */,
-				16B11B7B0971D40100DB1DB5 /* SMOutputStream.h */,
-				16B11B7C0971D40100DB1DB5 /* SMOutputStream.m */,
 				16A3B72625A03DFA00C7F61E /* SMPortOutputStream.swift */,
 				1699290C259FCBA60057715C /* SMVirtualOutputStream.swift */,
 				16B11B810971D40100DB1DB5 /* SMSysExSendRequest.h */,
