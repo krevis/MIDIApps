@@ -49,28 +49,6 @@ extern void SMAssertionFailed(const char *expression, const char *file, unsigned
 }
 #endif
 
-
-static void midiNotifyProcWithBlock(const MIDINotification *message, void * __nullable refCon) {
-    MIDINotifyBlock block = (MIDINotifyBlock)refCon;
-    if (block != NULL) {
-        block(message);
-    }
-}
-
-OSStatus SMWorkaroundMIDIClientCreateWithBlock(CFStringRef name, MIDIClientRef *outClient, MIDINotifyBlock _Nullable notifyBlock)
-{
-    // Re-implement MIDIClientCreateWithBlock() in terms of MIDIClientCreate(), for use on macOS 10.9 and 10.10.
-    // This is far easier in ObjC than Swift.
-
-    [notifyBlock retain];   // Note: Retained forever, but that's OK in practice in these apps
-    OSStatus status = MIDIClientCreate(name, midiNotifyProcWithBlock, (void *)notifyBlock, outClient);
-    if (status != noErr) {
-        [notifyBlock release];
-    }
-
-    return status;
-}
-
 MIDIPacket * _Nullable SMWorkaroundMIDIPacketListAdd(MIDIPacketList *pktlist, ByteCount listSize, MIDIPacket *curPacket, MIDITimeStamp time, ByteCount nData, const Byte *data)
 {
     // MIDIPacketListAdd isn't declared as returning a _Nullable pointer, but it should be

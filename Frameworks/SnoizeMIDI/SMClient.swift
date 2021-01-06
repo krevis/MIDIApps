@@ -18,8 +18,7 @@ import Foundation
     // TODO Does any of these really even need to be exposed as API? Very little.
 
     fileprivate static func fromCoreMIDINotification(_ unsafeCoreMIDINotification: UnsafePointer<MIDINotification>) -> SMClientNotification {
-        let coreMIDINotification = unsafeCoreMIDINotification.pointee
-        switch coreMIDINotification.messageID {
+        switch unsafeCoreMIDINotification.pointee.messageID {
         case .msgSetupChanged:
             return SMClientSetupChangedNotification(unsafeCoreMIDINotification)
         case .msgObjectAdded:
@@ -40,9 +39,8 @@ import Foundation
     }
 
     fileprivate init(_ unsafeCoreMIDINotification: UnsafePointer<MIDINotification>) {
-        let coreMIDINotification = unsafeCoreMIDINotification.pointee
-        messageSize = Int(coreMIDINotification.messageSize)
-        messageID = coreMIDINotification.messageID
+        messageSize = Int(unsafeCoreMIDINotification.pointee.messageSize)
+        messageID = unsafeCoreMIDINotification.pointee.messageID
         super.init()
 
         // NOTE: It's tempting to copy the whole data buffer of `messageSize`
@@ -174,7 +172,7 @@ import Foundation
 
         let status: OSStatus
         if #available(OSX 10.11, *) {
-            status = MIDIClientCreateWithBlock(name as CFString, &midiClient) { (unsafeNotification: UnsafePointer<MIDINotification>) in
+            status = MIDIClientCreateWithBlock(name as CFString, &midiClient) { unsafeNotification in
                 // Note: We can't capture `self` in here, since we aren't yet fully initialized.
                 // Also note that we are called on an arbitrary queue, so we need to dispatch to the main queue for later handling.
                 // But `unsafeNotification` is only valid during this function call.
@@ -190,15 +188,16 @@ import Foundation
             }
         }
         else {
-            status = SMWorkaroundMIDIClientCreateWithBlock(name as CFString, &midiClient) { (unsafeNotification: UnsafePointer<MIDINotification>) in
-                // Note: We can't capture `self` in here, since we aren't yet fully initialized.
+            status = MIDIClientCreate(name as CFString, { (unsafeNotification, _) in
+                // As above, we can't use the refCon to stash a pointer to self, because
+                // when we create the client, self isn't done being initialized yet.
                 // We assume CoreMIDI is following its documentation, calling us "on the run loop which
                 // was current when MIDIClientCreate was first called", which must be the main queue's run loop.
                 let ourNotification = SMClientNotification.fromCoreMIDINotification(unsafeNotification)
-                if let client = Self.sharedClient {
+                if let client = SMClient.sharedClient {
                     ourNotification.dispatchToClient(client)
                 }
-            }
+            }, nil, &midiClient)
         }
 
         if status != noErr {
