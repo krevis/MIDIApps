@@ -69,8 +69,29 @@ import Foundation
 
         let status: OSStatus
         if customSysExBufferSize >= 4 {
-            // TODO
-            status = -50
+            // We have a reasonable buffer size value, so use it.
+
+            // First, work around a bug with cheap USB-MIDI interfaces.
+            // If we are sending to a destination that uses a USB-MIDI driver, it packages the bytes of the buffer
+            // into USB-MIDI commands containing exactly 3 bytes of data. If the buffer contains an extra 1 or 2
+            // bytes of data, but the sysex hasn't ended, then the driver has to either (1) hold on to those bytes
+            // and wait for more data to be sent later, or (2) send them immediately as 1-byte "unparsed" USB-MIDI
+            // commands. CoreMIDI's class compliant driver appears to do the latter.
+            // Unfortunately, some interfaces don't understand the 1-byte unparsed MIDI messages, and either
+            // drop them or get confused.
+            // To avoid this issue, round the buffer size down to be a multiple of 3.
+            let actualSysExBufferSize = customSysExBufferSize / 3 * 3
+
+            // Calculate a delay between buffers to get the expected speed:
+            // maxSysExSpeed is in bytes/second (default 3125)
+            // Transmitting B bytes, at speed S, takes a duration of (B/S) sec or (B * 1000 / S) milliseconds.
+            //
+            // Note that MIDI-OX default settings use 256 byte buffers, with 60 ms between buffers,
+            // leading to a speed of 1804 bytes/sec, or 57% of normal speed.
+            let realMaxSysExSpeed = (maxSysExSpeed > 0) ? maxSysExSpeed : 3125
+            let perBufferDelay = Double(actualSysExBufferSize) / Double(realMaxSysExSpeed)  // seconds
+
+            status = customMIDISendSysex(&sysexSendRequest, actualSysExBufferSize, perBufferDelay)
         }
         else {
             // Use CoreMIDI's sender
@@ -144,7 +165,6 @@ import Foundation
 }
 
 // TODO This notification should maybe just be a delegate method.
-
 public extension Notification.Name {
 
     static let sysExSendRequestFinished = Notification.Name("SMSysExSendRequestFinishedNotification")
@@ -156,4 +176,64 @@ public extension Notification.Name {
 
     static let sysExSendRequestFinished = Notification.Name.sysExSendRequestFinished
 
+}
+
+private func customMIDISendSysex(_ request: UnsafeMutablePointer<MIDISysexSendRequest>, _ bufferSize: Int, _ perBufferDelay: Double) -> OSStatus {
+    guard let client = SMClient.sharedClient,
+          bufferSize >= 3 && bufferSize <= 32767 else { return OSStatus(paramErr) }
+
+    if request.pointee.bytesToSend == 0 {
+        request.pointee.complete = true
+    }
+
+    if request.pointee.complete.boolValue {
+        request.pointee.completionProc(request)
+        return OSStatus(noErr)
+    }
+
+    var port = MIDIPortRef()
+    let status = MIDIOutputPortCreate(client.midiClient, "CustomMIDISendSysex" as CFString, &port)
+    if status != noErr {
+        return status
+    }
+
+    let packetListSize = MemoryLayout.offset(of: \MIDIPacketList.packet.data)! + bufferSize
+    let rawPacketListPtr = UnsafeMutableRawPointer.allocate(byteCount: packetListSize, alignment: MemoryLayout<MIDIPacketList>.alignment)
+    let packetListPtr = rawPacketListPtr.initializeMemory(as: MIDIPacketList.self, repeating: MIDIPacketList(), count: 1)
+
+    let queue = DispatchQueue(label: "com.snoize.SnoizeMIDI.CustomMIDISendSysex")
+    queue.setTarget(queue: DispatchQueue.global(priority: .high))
+
+    func sendNextBuffer() {
+        let packetBytes = min(Int(request.pointee.bytesToSend), bufferSize)
+
+        let curPacket = MIDIPacketListInit(packetListPtr)
+        _ = MIDIPacketListAdd(packetListPtr, packetListSize, curPacket, 0, packetBytes, request.pointee.data)
+
+        MIDISend(port, request.pointee.destination, packetListPtr)
+
+        request.pointee.data += packetBytes
+        request.pointee.bytesToSend -= UInt32(packetBytes)
+        if request.pointee.bytesToSend == 0 {
+            request.pointee.complete = true
+        }
+
+        if !request.pointee.complete.boolValue {
+            queue.asyncAfter(deadline: DispatchTime.now() + perBufferDelay) {
+                sendNextBuffer()
+            }
+        }
+        else {
+            request.pointee.completionProc(request)
+
+            MIDIPortDispose(port)
+            rawPacketListPtr.deallocate()
+        }
+    }
+
+    queue.async {
+        sendNextBuffer()
+    }
+
+    return OSStatus(noErr)
 }
