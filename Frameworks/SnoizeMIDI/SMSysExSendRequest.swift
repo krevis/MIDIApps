@@ -178,6 +178,7 @@ public extension Notification.Name {
 
 }
 
+// Like MIDISendSysex, but specify a size for each buffer to send, and a delay in seconds between sending each buffer.
 private func customMIDISendSysex(_ request: UnsafeMutablePointer<MIDISysexSendRequest>, _ bufferSize: Int, _ perBufferDelay: Double) -> OSStatus {
     guard let client = SMClient.sharedClient,
           bufferSize >= 3 && bufferSize <= 32767 else { return OSStatus(paramErr) }
@@ -198,22 +199,25 @@ private func customMIDISendSysex(_ request: UnsafeMutablePointer<MIDISysexSendRe
     }
 
     let packetListSize = MemoryLayout.offset(of: \MIDIPacketList.packet.data)! + bufferSize
-    let rawPacketListPtr = UnsafeMutableRawPointer.allocate(byteCount: packetListSize, alignment: MemoryLayout<MIDIPacketList>.alignment)
-    let packetListPtr = rawPacketListPtr.initializeMemory(as: MIDIPacketList.self, repeating: MIDIPacketList(), count: 1)
+    var packetListData = Data(count: packetListSize)
 
     let queue = DispatchQueue(label: "com.snoize.SnoizeMIDI.CustomMIDISendSysex")
     queue.setTarget(queue: DispatchQueue.global(priority: .high))
 
     func sendNextBuffer() {
-        let packetBytes = min(Int(request.pointee.bytesToSend), bufferSize)
+        let packetDataSize = min(Int(request.pointee.bytesToSend), bufferSize)
 
-        let curPacket = MIDIPacketListInit(packetListPtr)
-        _ = MIDIPacketListAdd(packetListPtr, packetListSize, curPacket, 0, packetBytes, request.pointee.data)
+        packetListData.withUnsafeMutableBytes { (packetListRawBufferPtr: UnsafeMutableRawBufferPointer) in
+            let packetListPtr = packetListRawBufferPtr.bindMemory(to: MIDIPacketList.self).baseAddress!
 
-        MIDISend(port, request.pointee.destination, packetListPtr)
+            let curPacket = MIDIPacketListInit(packetListPtr)
+            _ = MIDIPacketListAdd(packetListPtr, packetListSize, curPacket, 0, packetDataSize, request.pointee.data)
 
-        request.pointee.data += packetBytes
-        request.pointee.bytesToSend -= UInt32(packetBytes)
+            MIDISend(port, request.pointee.destination, packetListPtr)
+        }
+
+        request.pointee.data += packetDataSize
+        request.pointee.bytesToSend -= UInt32(packetDataSize)
         if request.pointee.bytesToSend == 0 {
             request.pointee.complete = true
         }
@@ -225,9 +229,7 @@ private func customMIDISendSysex(_ request: UnsafeMutablePointer<MIDISysexSendRe
         }
         else {
             request.pointee.completionProc(request)
-
             MIDIPortDispose(port)
-            rawPacketListPtr.deallocate()
         }
     }
 
