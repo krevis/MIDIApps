@@ -17,20 +17,16 @@ import CoreAudio
 
     @objc public var endpoints: Set<SMDestinationEndpoint> = Set<SMDestinationEndpoint>() {
         didSet {
+            // The closure-based notification observer API is still awkward to use without creating retain cycles.
+            // Easier to use ObjC selectors.
             let center = NotificationCenter.default
             oldValue.subtracting(endpoints).forEach {
                 center.removeObserver(self, name: .SMMIDIObjectDisappeared, object: $0)
                 center.removeObserver(self, name: .SMMIDIObjectWasReplaced, object: $0)
             }
             endpoints.subtracting(oldValue).forEach { (endpoint: SMDestinationEndpoint) in
-                center.addObserver(forName: .SMMIDIObjectDisappeared, object: endpoint, queue: nil) { [weak self] _ in
-                    self?.endpointDisappeared(endpoint)
-                }
-                center.addObserver(forName: .SMMIDIObjectWasReplaced, object: endpoint, queue: nil) { [weak self] (notification) in
-                    if let replacement = notification.userInfo?[SMMIDIObjectReplacement] as? SMDestinationEndpoint {
-                        self?.endpointWasReplaced(endpoint, replacement)
-                    }
-                }
+                center.addObserver(self, selector: #selector(self.endpointDisappeared(notification:)), name: .SMMIDIObjectDisappeared, object: endpoint)
+                center.addObserver(self, selector: #selector(self.endpointWasReplaced(notification:)), name: .SMMIDIObjectWasReplaced, object: endpoint)
             }
         }
     }
@@ -102,12 +98,25 @@ import CoreAudio
 
     private var outputPort: MIDIPortRef
 
+    @objc private func endpointDisappeared(notification: Notification) {
+        if let endpoint = notification.object as? SMDestinationEndpoint {
+            endpointDisappeared(endpoint)
+        }
+    }
+
     private func endpointDisappeared(_ endpoint: SMDestinationEndpoint) {
         guard endpoints.contains(endpoint) else { return }
         var newEndpoints = endpoints
         newEndpoints.remove(endpoint)
         endpoints = newEndpoints
         NotificationCenter.default.post(name: .portOutputStreamEndpointDisappeared, object: self)
+    }
+
+    @objc private func endpointWasReplaced(notification: Notification) {
+        if let endpoint = notification.object as? SMDestinationEndpoint,
+           let replacement = notification.userInfo?[SMMIDIObjectReplacement] as? SMDestinationEndpoint {
+            endpointWasReplaced(endpoint, replacement)
+        }
     }
 
     private func endpointWasReplaced(_ endpoint: SMDestinationEndpoint, _ replacement: SMDestinationEndpoint) {
@@ -149,9 +158,13 @@ import CoreAudio
                 if let request = SMSysExSendRequest(message: message, endpoint: endpoint, customSysExBufferSize: customSysExBufferSize) {
                     sysExSendRequests.insert(request)
 
-                    center.addObserver(forName: .sysExSendRequestFinished, object: request, queue: nil) { [weak self] _ in
+                    var token: NSObjectProtocol?
+                    token = center.addObserver(forName: .sysExSendRequestFinished, object: request, queue: nil) { [weak self] _ in
                         guard let self = self else { return }
-                        center.removeObserver(self, name: .sysExSendRequestFinished, object: request)
+
+                        center.removeObserver(token!)
+                        token = nil  // Required to break a retain cycle!
+
                         self.sysExSendRequests.remove(request)
 
                         center.post(name: .portOutputStreamSysExSendDidEnd, object: self, userInfo: ["sendRequest": request])

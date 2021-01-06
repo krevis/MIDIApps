@@ -38,9 +38,9 @@ import Foundation
             bytesToSend: UInt32(dataCount),
             complete: false,
             reserved: (0, 0, 0),
-            completionProc: { (request: UnsafeMutablePointer<MIDISysexSendRequest>) in
+            completionProc: { (unsafeRequest: UnsafeMutablePointer<MIDISysexSendRequest>) in
                 // NOTE: This is called on CoreMIDI's sysex sending thread.
-                guard let refCon = request.pointee.completionRefCon else { return }
+                guard let refCon = unsafeRequest.pointee.completionRefCon else { return }
                 let request = Unmanaged<SMSysExSendRequest>.fromOpaque(refCon).takeRetainedValue()
                 DispatchQueue.main.async {
                     request.requestDidComplete()
@@ -59,11 +59,12 @@ import Foundation
     @objc public let customSysExBufferSize: Int
 
     @objc public func send() {
-        // TODO Retain ourself while pending?  Via Unmanaged
+        checkMainQueue()
 
-        guard sysexSendRequest.completionRefCon == nil else { return }
+        guard sysexSendRequest.completionRefCon == nil && !didComplete else { return }
 
-        // https://developer.apple.com/forums/thread/80420?answerId=238250022#238250022
+        // Put a retained reference to self in the refCon in the MIDISysexSendRequest.
+        // This must be balanced later, when the completion closure is called.
         sysexSendRequest.completionRefCon = Unmanaged.passRetained(self).toOpaque()
 
         let status: OSStatus
@@ -77,21 +78,24 @@ import Foundation
         }
 
         if status != noErr {
-            NSLog("MIDISendSysex() returned error \(status)")
-            // TODO release self by manually doing the Unmanaged dance above
+            fatalError("MIDISendSysex() returned error \(status)")
+            // TODO Better error handling? Need to clean up more, release ourself, and pass something up to the caller
         }
     }
 
     @objc public func cancel() -> Bool {
+        checkMainQueue()
+
         if sysexSendRequest.complete.boolValue {
             return false
         }
         else {
+            // Set the flag so CoreMIDI can see the request is done. The completion will get called
+            // and will release us via the refCon. It wil call requestDidComplete() again, but that's OK.
             sysexSendRequest.complete = true
 
-            // Don't wait for the completion to run, it may be waiting for a while.
+            // Tell the world that the request is done, immediately.
             requestDidComplete()
-            // TODO May need to release too, and clear the request's refCon
 
             return true
         }
@@ -122,9 +126,19 @@ import Foundation
     private var didComplete = false // TODO Perhaps have a state: pending, sending, complete
 
     private func requestDidComplete() {
-        guard !didComplete else { return }
+        checkMainQueue()
+        guard !didComplete else { return }  // This function must be idempotent to make cancellation feasible
         didComplete = true
         NotificationCenter.default.post(name: .sysExSendRequestFinished, object: self)
+    }
+
+    private func checkMainQueue() {
+        if #available(OSX 10.12, *) {
+            dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
+        }
+        else {
+            assert(Thread.isMainThread)
+        }
     }
 
 }
