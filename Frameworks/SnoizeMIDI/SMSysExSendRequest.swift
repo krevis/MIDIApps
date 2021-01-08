@@ -201,8 +201,7 @@ private func customMIDISendSysex(_ request: UnsafeMutablePointer<MIDISysexSendRe
     let packetListSize = MemoryLayout.offset(of: \MIDIPacketList.packet.data)! + bufferSize
     var packetListData = Data(count: packetListSize)
 
-    let queue = DispatchQueue(label: "com.snoize.SnoizeMIDI.CustomMIDISendSysex")
-    queue.setTarget(queue: DispatchQueue.global(priority: .high))
+    let queue = DispatchQueue(label: "com.snoize.SnoizeMIDI.CustomMIDISendSysex", target: DispatchQueue.global(priority: .high))
 
     func sendNextBuffer() {
         let packetDataSize = min(Int(request.pointee.bytesToSend), bufferSize)
