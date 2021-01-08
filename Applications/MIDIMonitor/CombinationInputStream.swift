@@ -143,7 +143,7 @@ class CombinationInputStream: NSObject {
         }
         else if let oldStyleUniqueID = settings["virtualEndpointUniqueID"] as? NSNumber {
             // This is an old-style document, specifying to use a virtual input stream.
-            virtualInputStream.setUniqueID(oldStyleUniqueID.int32Value)
+            virtualInputStream.uniqueID = oldStyleUniqueID.int32Value
             virtualInputStream.selectedInputSources = virtualInputStream.inputSourcesSet
         }
         else {
@@ -168,10 +168,10 @@ class CombinationInputStream: NSObject {
 
     var virtualEndpointName: String {
         get {
-            return virtualInputStream.virtualEndpointName()
+            return virtualInputStream.virtualEndpointName
         }
         set {
-            virtualInputStream.setVirtualEndpointName(newValue)
+            virtualInputStream.virtualEndpointName = newValue
         }
     }
 

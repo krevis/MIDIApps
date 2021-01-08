@@ -26,7 +26,6 @@
 #import <SnoizeMIDI/SMSystemRealTimeMessage.h>
 #import <SnoizeMIDI/SMSystemExclusiveMessage.h>
 #import <SnoizeMIDI/SMUtilities.h>
-#import <SnoizeMIDI/SMVirtualInputStream.h>
 #import <SnoizeMIDI/SMVoiceMessage.h>
 #import <SnoizeMIDI/NSArray-SMExtensions.h>
 #import <SnoizeMIDI/NSString-SMExtensions.h>
