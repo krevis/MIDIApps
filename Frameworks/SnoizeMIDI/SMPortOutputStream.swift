@@ -172,7 +172,7 @@ import CoreAudio
 
                     center.post(name: .portOutputStreamSysExSendWillBegin, object: self, userInfo: ["sendRequest": request])
 
-                    request.send()
+                    _ = request.send()
                 }
             }
         }

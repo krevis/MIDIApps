@@ -227,7 +227,7 @@ import Foundation
         do {
             if let endpoint = SMDestinationEndpoint.sysExSpeedWorkaround(),
                let message = SMSystemExclusiveMessage(timeStamp: 0, data: Data()) {
-                SMSysExSendRequest(message: message, endpoint: endpoint)?.send()
+                _ = SMSysExSendRequest(message: message, endpoint: endpoint)?.send()
             }
         }
         catch {

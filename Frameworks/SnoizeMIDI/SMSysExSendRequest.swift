@@ -43,7 +43,7 @@ import Foundation
                 guard let refCon = unsafeRequest.pointee.completionRefCon else { return }
                 let request = Unmanaged<SMSysExSendRequest>.fromOpaque(refCon).takeRetainedValue()
                 DispatchQueue.main.async {
-                    request.requestDidComplete()
+                    request.didComplete(.sent)
                 }
             },
             completionRefCon: nil)
@@ -58,16 +58,17 @@ import Foundation
     @objc public let message: SMSystemExclusiveMessage
     @objc public let customSysExBufferSize: Int
 
-    @objc public func send() {
+    @objc public func send() -> Bool {
         checkMainQueue()
 
-        guard sysexSendRequest.completionRefCon == nil && !didComplete else { return }
+        guard state == .pending else { return false }
 
         // Put a retained reference to self in the refCon in the MIDISysexSendRequest.
         // This must be balanced later, when the completion closure is called.
-        sysexSendRequest.completionRefCon = Unmanaged.passRetained(self).toOpaque()
+        let unmanagedSelf = Unmanaged.passRetained(self)
+        sysexSendRequest.completionRefCon = unmanagedSelf.toOpaque()
 
-        let status: OSStatus
+        let result: OSStatus
         if customSysExBufferSize >= 4 {
             // We have a reasonable buffer size value, so use it.
 
@@ -91,32 +92,42 @@ import Foundation
             let realMaxSysExSpeed = (maxSysExSpeed > 0) ? maxSysExSpeed : 3125
             let perBufferDelay = Double(actualSysExBufferSize) / Double(realMaxSysExSpeed)  // seconds
 
-            status = customMIDISendSysex(&sysexSendRequest, actualSysExBufferSize, perBufferDelay)
+            result = customMIDISendSysex(&sysexSendRequest, actualSysExBufferSize, perBufferDelay)
         }
         else {
             // Use CoreMIDI's sender
-            status = MIDISendSysex(&sysexSendRequest)
+            result = MIDISendSysex(&sysexSendRequest)
         }
 
-        if status != noErr {
-            fatalError("MIDISendSysex() returned error \(status)")
-            // TODO Better error handling? Need to clean up more, release ourself, and pass something up to the caller
+        if result != noErr {
+            sysexSendRequest.completionRefCon = nil
+            unmanagedSelf.release()
+            state = .failed
+            return false
+        }
+        else {
+            state = .sending
+            return true
         }
     }
 
     @objc public func cancel() -> Bool {
         checkMainQueue()
 
+        guard state == .sending else { return false }
+
+        // Even if we are in state .sending, the request might already be complete, we just haven't
+        // gotten didComplete() yet. Wait until we do.
         if sysexSendRequest.complete.boolValue {
             return false
         }
         else {
             // Set the flag so CoreMIDI can see the request is done. The completion will get called
-            // and will release us via the refCon. It wil call requestDidComplete() again, but that's OK.
+            // and will release us via the refCon. It will call didComplete() again, but that's OK.
             sysexSendRequest.complete = true
 
             // Tell the world that the request is done, immediately.
-            requestDidComplete()
+            didComplete(.cancelled)
 
             return true
         }
@@ -144,12 +155,23 @@ import Foundation
     private let dataPointer: UnsafePointer<UInt8>
     private let maxSysExSpeed: Int
     private var sysexSendRequest: MIDISysexSendRequest
-    private var didComplete = false // TODO Perhaps have a state: pending, sending, complete
 
-    private func requestDidComplete() {
+    private enum State {
+        case pending    // initialized, but send() has not been called
+        case sending    // send() called and is progressing
+        case cancelled  // was sending, but cancelled before fully sent
+        case sent       // fully sent
+        case failed     // send() was called but failed
+    }
+    private var state = State.pending
+
+    private func didComplete(_ newState: State) {
         checkMainQueue()
-        guard !didComplete else { return }  // This function must be idempotent to make cancellation feasible
-        didComplete = true
+        // Transitions only from state == .sending.
+        // To make cancellation feasible, this function may be called multiple times,
+        // so ensure it's idempotent and only valid state transitions are possible.
+        guard state == .sending, (newState == .sent || newState == .cancelled) else { return }
+        state = newState
         NotificationCenter.default.post(name: .sysExSendRequestFinished, object: self)
     }
 
