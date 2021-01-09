@@ -18,7 +18,7 @@ import Foundation
         virtualEndpointName = SMClient.sharedClient?.name ?? "Virtual Endpoint"
         uniqueID = 0 // Let CoreMIDI assign a unique ID to the virtual endpoint when it is created
 
-        inputStreamSource = SMSimpleInputStreamSource(name: virtualEndpointName)
+        inputStreamSource = SimpleInputStreamSource(name: virtualEndpointName)
 
         super.init()
 
@@ -52,7 +52,7 @@ import Foundation
     }
 
     @objc public func setInputSourceName(_ name: String) {
-        inputStreamSource.setName(name)
+        inputStreamSource.name = name
     }
 
     @objc public private(set) var endpoint: SMDestinationEndpoint?
@@ -115,7 +115,7 @@ import Foundation
 
     // MARK: Internal
 
-    private let inputStreamSource: SMSimpleInputStreamSource
+    private let inputStreamSource: SimpleInputStreamSource
     private var parser: SMMessageParser!
 
     private var isActive: Bool {

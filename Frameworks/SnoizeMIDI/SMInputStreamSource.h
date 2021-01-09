@@ -21,19 +21,3 @@
 @property (nonatomic, readonly, strong) NSArray<NSString *> *inputStreamSourceExternalDeviceNames;
 
 @end
-
-
-@interface SMSimpleInputStreamSource : NSObject <SMInputStreamSource>
-{
-    NSString *name;
-}
-
-- (id)initWithName:(NSString *)aName;
-
-- (void)setName:(NSString *)value;
-
-// inputStreamSourceName is the name above
-// inputStreamSourceUniqueID just returns nil
-// inputStreamSourceExternalDeviceNames returns an empty array
-
-@end
