@@ -48,7 +48,7 @@ class Document: NSDocument {
         NotificationCenter.default.removeObserver(self)
     }
 
-    // MARK: Internal
+    // MARK: Private
 
     private let midiMonitorFileType = "com.snoize.midimonitor"
     private let midiMonitorErrorDomain = "com.snoize.midimonitor"

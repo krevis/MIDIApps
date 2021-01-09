@@ -104,7 +104,7 @@ class SpyingInputStream: SMInputStream {
         }
     }
 
-    // MARK: Internal
+    // MARK: Private
 
     private func addEndpoint(_ endpoint: SMDestinationEndpoint) {
         guard !endpoints.contains(endpoint) else { return }

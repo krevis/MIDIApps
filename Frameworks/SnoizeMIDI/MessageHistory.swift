@@ -53,7 +53,7 @@ import Foundation
         historyChanged(newMessages: true)
     }
 
-    // MARK: Internal
+    // MARK: Private
 
     private func limitSavedMessages() -> Bool {
         if savedMessages.count > historySize {

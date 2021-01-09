@@ -54,3 +54,8 @@ MIDIPacket * _Nullable SMWorkaroundMIDIPacketListAdd(MIDIPacketList *pktlist, By
     // MIDIPacketListAdd isn't declared as returning a _Nullable pointer, but it should be
     return MIDIPacketListAdd(pktlist, listSize, curPacket, time, nData, data);
 }
+
+const MIDIPacket * _Nonnull SMWorkaroundMIDIPacketNext(const MIDIPacket * _Nonnull pkt)
+{
+    return MIDIPacketNext(pkt);
+}

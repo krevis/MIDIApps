@@ -19,7 +19,7 @@ import Foundation
 
         super.init()
 
-        let status = MIDIInputPortCreate(client.midiClient, "Input port" as CFString, midiReadProc(), Unmanaged.passUnretained(self).toOpaque(), &inputPort)
+        let status = MIDIInputPortCreate(client.midiClient, "Input port" as CFString, midiReadProc, Unmanaged.passUnretained(self).toOpaque(), &inputPort)
         if status != noErr {
             // TODO how to handle?
         }
@@ -52,7 +52,7 @@ import Foundation
                 center.removeObserver(self, name: .SMMIDIObjectWasReplaced, object: endpoint)
             }
             endpoints.subtracting(oldValue).forEach { endpoint in
-                parsersForEndpoints[endpoint] = createParser(withOriginatingEndpoint: endpoint)
+                parsersForEndpoints[endpoint] = createParser(originatingEndpoint: endpoint)
 
                 center.addObserver(self, selector: #selector(self.endpointDisappeared(_:)), name: .SMMIDIObjectDisappeared, object: endpoint)
                 center.addObserver(self, selector: #selector(self.endpointWasReplaced(_:)), name: .SMMIDIObjectWasReplaced, object: endpoint)
@@ -77,26 +77,26 @@ import Foundation
     // MARK: SMInputStream subclass
     // TODO Make this a protocol.
 
-    @objc override public func parsers() -> [SMMessageParser]! {
+    override internal var parsers: [SMMessageParser] {
         return Array(parsersForEndpoints.values)
     }
 
-    @objc override public func parser(forSourceConnectionRefCon refCon: UnsafeMutableRawPointer!) -> SMMessageParser! {
-        // Note: refCon points to a SMSourceEndpoint.
+    override internal func parser(sourceConnectionRefCon: UnsafeMutableRawPointer) -> SMMessageParser? {
+        // Note: sourceConnectionRefCon points to a SMSourceEndpoint.
         // We are allowed to return nil if we are no longer listening to this source endpoint.
-        let endpoint = Unmanaged<SMSourceEndpoint>.fromOpaque(refCon).takeUnretainedValue()
+        let endpoint = Unmanaged<SMSourceEndpoint>.fromOpaque(sourceConnectionRefCon).takeUnretainedValue()
         return parsersForEndpoints[endpoint]
     }
 
-    @objc override public func streamSource(for parser: SMMessageParser!) -> SMInputStreamSource! {
+    override internal func streamSource(parser: SMMessageParser) -> SMInputStreamSource? {
         return parser.originatingEndpoint()
     }
 
-    @objc override public var inputSources: [SMInputStreamSource]! {
+    override public var inputSources: [SMInputStreamSource] {
         SMSourceEndpoint.sourceEndpoints()
     }
 
-    @objc override public var selectedInputSources: Set<AnyHashable>! { // TODO Should be typed better
+    override public var selectedInputSources: Set<AnyHashable> { // TODO Should be typed better
         get {
             endpoints
         }
@@ -107,10 +107,10 @@ import Foundation
         }
     }
 
-    // MARK: Internal
+    // MARK: Private
 
-    var inputPort: MIDIPortRef = 0
-    var parsersForEndpoints: [SMSourceEndpoint: SMMessageParser] = [:]
+    private var inputPort: MIDIPortRef = 0
+    private var parsersForEndpoints: [SMSourceEndpoint: SMMessageParser] = [:]
         // TODO Consider making the key endpoint.endpointRef() = MIDIObjectRef to avoid retain and identity issues? But note SMMessageParser.originatingEndpoint
 
     @objc private func endpointListChanged(_ notification: Notification) {
@@ -121,7 +121,7 @@ import Foundation
         if let endpoint = notification.object as? SMSourceEndpoint,
            endpoints.contains(endpoint) {
             removeEndpoint(endpoint)
-            postSelectedInputStreamSourceDisappearedNotification(endpoint)
+            postSelectedInputStreamSourceDisappearedNotification(source: endpoint)
         }
     }
 

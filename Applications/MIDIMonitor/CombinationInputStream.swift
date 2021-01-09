@@ -175,7 +175,7 @@ class CombinationInputStream: NSObject {
         }
     }
 
-    // MARK: Internal
+    // MARK: Private
 
     private let portInputStream = SMPortInputStream()
     private let virtualInputStream = SMVirtualInputStream()

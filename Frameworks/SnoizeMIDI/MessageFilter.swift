@@ -28,7 +28,7 @@ import Foundation
         }
     }
 
-    // MARK: Internal
+    // MARK: Private
 
     private func filterMessages(_ messages: [SMMessage]) -> [SMMessage] {
         return messages.filter { message -> Bool in

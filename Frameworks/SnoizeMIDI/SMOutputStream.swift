@@ -30,7 +30,7 @@ import CoreAudio
         fatalError()
     }
 
-    // MARK: Internal
+    // MARK: Private
 
     // CoreMIDI's MIDIPacketList struct is variable-size, consisting of a small
     // header followed by one or more variable-size MIDIPacket structs.

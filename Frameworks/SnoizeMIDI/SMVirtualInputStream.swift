@@ -22,7 +22,7 @@ import Foundation
 
         super.init()
 
-        parser = createParser(withOriginatingEndpoint: nil)
+        parser = createParser(originatingEndpoint: nil)
             // TODO We should create the parser up front using a class method
             // then set parser.delegate = self after super init
             // After that, remove ! from parser declaration
@@ -59,40 +59,40 @@ import Foundation
 
     // MARK: SMInputStream subclass
 
-    @objc override public func parsers() -> [SMMessageParser]! {
+    override internal var parsers: [SMMessageParser] {
         if let parser = parser {
             return [parser]
         }
         else {
-            return nil
+            return []
         }
     }
 
-    @objc override public func parser(forSourceConnectionRefCon refCon: UnsafeMutableRawPointer!) -> SMMessageParser! {
+    override internal func parser(sourceConnectionRefCon refCon: UnsafeMutableRawPointer) -> SMMessageParser? {
         // refCon is ignored, since it only applies to connections created with MIDIPortConnectSource()
         return parser
     }
 
-    @objc override public func streamSource(for parser: SMMessageParser!) -> SMInputStreamSource! {
+    override internal func streamSource(parser: SMMessageParser) -> SMInputStreamSource? {
         return inputStreamSource
     }
 
-    @objc override public var inputSources: [SMInputStreamSource]! {
+    override public var inputSources: [SMInputStreamSource] {
         [inputStreamSource]
     }
 
-    @objc override public var selectedInputSources: Set<AnyHashable>! {
+    override public var selectedInputSources: Set<AnyHashable> {
         get {
             isActive ? [inputStreamSource] : []
         }
         set {
-            isActive = newValue?.contains(inputStreamSource) ?? false
+            isActive = newValue.contains(inputStreamSource)
         }
     }
 
     // MARK: SMInputStream overrides
 
-    @objc override public func persistentSettings() -> Any! {
+    @objc override public var persistentSettings: Any? {
         if isActive {
             return ["uniqueID": uniqueID]
         }
@@ -113,7 +113,7 @@ import Foundation
         return nil
     }
 
-    // MARK: Internal
+    // MARK: Private
 
     private let inputStreamSource: SimpleInputStreamSource
     private var parser: SMMessageParser!
@@ -133,7 +133,7 @@ import Foundation
     }
 
     private func createEndpoint() {
-        endpoint = SMDestinationEndpoint.createVirtualDestinationEndpoint(withName: virtualEndpointName, readProc: midiReadProc(), readProcRefCon: Unmanaged.passUnretained(self).toOpaque(), uniqueID: uniqueID)
+        endpoint = SMDestinationEndpoint.createVirtualDestinationEndpoint(withName: virtualEndpointName, readProc: midiReadProc, readProcRefCon: Unmanaged.passUnretained(self).toOpaque(), uniqueID: uniqueID)
         // TODO Should this be passRetained? if so, balance later
         if let endpoint = endpoint {
             parser.setOriginatingEndpoint(endpoint)

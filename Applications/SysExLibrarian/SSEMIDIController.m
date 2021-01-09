@@ -88,8 +88,8 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
     center = [NSNotificationCenter defaultCenter];
 
     inputStream = [[SMPortInputStream alloc] init];
-    [center addObserver:self selector:@selector(readingSysEx:) name:SMInputStreamReadingSysExNotification object:inputStream];
-    [center addObserver:self selector:@selector(readingSysEx:) name:SMInputStreamDoneReadingSysExNotification object:inputStream];
+    [center addObserver:self selector:@selector(readingSysEx:) name:NSNotification.inputStreamReadingSysEx object:inputStream];
+    [center addObserver:self selector:@selector(readingSysEx:) name:NSNotification.inputStreamDoneReadingSysEx object:inputStream];
     [inputStream setMessageDestination:self];
     [self addEndpointsToInputStream:[SMSourceEndpoint sourceEndpoints]];
 

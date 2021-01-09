@@ -94,7 +94,7 @@ import CoreAudio
         }
     }
 
-    // MARK: Internal
+    // MARK: Private
 
     private var outputPort: MIDIPortRef
 

@@ -39,47 +39,47 @@ class MonitorWindowController: NSWindowController {
     // MARK: Internal
 
     // Sources controls
-    @IBOutlet var sourcesDisclosureButton: DisclosureButton!
-    @IBOutlet var sourcesDisclosableView: DisclosableView!
-    @IBOutlet var sourcesOutlineView: SourcesOutlineView!
+    @IBOutlet private var sourcesDisclosureButton: DisclosureButton!
+    @IBOutlet private var sourcesDisclosableView: DisclosableView!
+    @IBOutlet private var sourcesOutlineView: SourcesOutlineView!
 
     // Filter controls
-    @IBOutlet var filterDisclosureButton: DisclosureButton!
-    @IBOutlet var filterDisclosableView: DisclosableView!
-    @IBOutlet var voiceMessagesCheckBox: NSButton!
-    @IBOutlet var voiceMessagesMatrix: NSMatrix!
-    @IBOutlet var systemCommonCheckBox: NSButton!
-    @IBOutlet var systemCommonMatrix: NSMatrix!
-    @IBOutlet var realTimeCheckBox: NSButton!
-    @IBOutlet var realTimeMatrix: NSMatrix!
-    @IBOutlet var systemExclusiveCheckBox: NSButton!
-    @IBOutlet var invalidCheckBox: NSButton!
-    @IBOutlet var channelRadioButtons: NSMatrix!
-    @IBOutlet var oneChannelField: NSTextField!
-    var filterCheckboxes: [NSButton] {
+    @IBOutlet private var filterDisclosureButton: DisclosureButton!
+    @IBOutlet private var filterDisclosableView: DisclosableView!
+    @IBOutlet private var voiceMessagesCheckBox: NSButton!
+    @IBOutlet private var voiceMessagesMatrix: NSMatrix!
+    @IBOutlet private var systemCommonCheckBox: NSButton!
+    @IBOutlet private var systemCommonMatrix: NSMatrix!
+    @IBOutlet private var realTimeCheckBox: NSButton!
+    @IBOutlet private var realTimeMatrix: NSMatrix!
+    @IBOutlet private var systemExclusiveCheckBox: NSButton!
+    @IBOutlet private var invalidCheckBox: NSButton!
+    @IBOutlet private var channelRadioButtons: NSMatrix!
+    @IBOutlet private var oneChannelField: NSTextField!
+    private var filterCheckboxes: [NSButton] {
         return [voiceMessagesCheckBox, systemCommonCheckBox, realTimeCheckBox, systemExclusiveCheckBox, invalidCheckBox]
     }
-    var filterMatrixCells: [NSCell] {
+    private var filterMatrixCells: [NSCell] {
         return voiceMessagesMatrix.cells + systemCommonMatrix.cells + realTimeMatrix.cells
     }
 
     // Event controls
-    @IBOutlet var messagesTableView: NSTableView!
-    @IBOutlet var clearButton: NSButton!
-    @IBOutlet var maxMessageCountField: NSTextField!
-    @IBOutlet var sysExProgressIndicator: NSProgressIndicator!
-    @IBOutlet var sysExProgressField: NSTextField!
+    @IBOutlet private var messagesTableView: NSTableView!
+    @IBOutlet private var clearButton: NSButton!
+    @IBOutlet private var maxMessageCountField: NSTextField!
+    @IBOutlet private var sysExProgressIndicator: NSProgressIndicator!
+    @IBOutlet private var sysExProgressField: NSTextField!
 
     // Transient data
-    var oneChannel: UInt = 1
-    var inputSourceGroups: [CombinationInputStreamSourceGroup] = []
-    var displayedMessages: [SMMessage] = []
-    var messagesNeedScrollToBottom: Bool = false
-    var nextMessagesRefreshDate: NSDate?
-    var nextMessagesRefreshTimer: Timer?
+    private var oneChannel: UInt = 1
+    private var inputSourceGroups: [CombinationInputStreamSourceGroup] = []
+    private var displayedMessages: [SMMessage] = []
+    private var messagesNeedScrollToBottom: Bool = false
+    private var nextMessagesRefreshDate: NSDate?
+    private var nextMessagesRefreshTimer: Timer?
 
     // Constants
-    let minimumMessagesRefreshDelay: TimeInterval = 0.10
+    private let minimumMessagesRefreshDelay: TimeInterval = 0.10
 
 }
 

@@ -241,8 +241,6 @@ import Foundation
         midiClient = MIDIClientRef()
     }
 
-    // MARK: Internal
-
     // MARK: Notifications
 
     private func userInfo(_ notification: SMClientNotification) -> [String: Any] {

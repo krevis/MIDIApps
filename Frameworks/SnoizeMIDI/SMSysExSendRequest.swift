@@ -149,7 +149,7 @@ import Foundation
         return bytesRemaining == 0
     }
 
-    // MARK: Internal
+    // MARK: Private
 
     private let dataCount: Int
     private let dataPointer: UnsafePointer<UInt8>

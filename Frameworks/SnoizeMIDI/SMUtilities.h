@@ -38,4 +38,8 @@ extern MIDIPacket * _Nullable SMWorkaroundMIDIPacketListAdd(MIDIPacketList *pktl
     // so Swift code can compare it to nil.
     // This function just calls MIDIPacketListAdd() and does nothing extra.
 
+extern const MIDIPacket * _Nonnull SMWorkaroundMIDIPacketNext(const MIDIPacket * _Nonnull pkt);
+    // Work around a bug in the declaration of MIDIPacketNext(). The return value should be const,
+    // so Swift code can represent it as a UnsafePointer<MIDIPacket>, just like the argument.
+
 NS_ASSUME_NONNULL_END
