@@ -15,7 +15,7 @@ import CoreAudio
 
 @objc public class SMPortOutputStream: SMOutputStream {
 
-    @objc public var endpoints: Set<SMDestinationEndpoint> = Set<SMDestinationEndpoint>() {
+    @objc public var endpoints: Set<SMDestinationEndpoint> = [] {
         didSet {
             // The closure-based notification observer API is still awkward to use without creating retain cycles.
             // Easier to use ObjC selectors.
@@ -24,9 +24,9 @@ import CoreAudio
                 center.removeObserver(self, name: .SMMIDIObjectDisappeared, object: $0)
                 center.removeObserver(self, name: .SMMIDIObjectWasReplaced, object: $0)
             }
-            endpoints.subtracting(oldValue).forEach { (endpoint: SMDestinationEndpoint) in
-                center.addObserver(self, selector: #selector(self.endpointDisappeared(notification:)), name: .SMMIDIObjectDisappeared, object: endpoint)
-                center.addObserver(self, selector: #selector(self.endpointWasReplaced(notification:)), name: .SMMIDIObjectWasReplaced, object: endpoint)
+            endpoints.subtracting(oldValue).forEach {
+                center.addObserver(self, selector: #selector(self.endpointDisappeared(notification:)), name: .SMMIDIObjectDisappeared, object: $0)
+                center.addObserver(self, selector: #selector(self.endpointWasReplaced(notification:)), name: .SMMIDIObjectWasReplaced, object: $0)
             }
         }
     }

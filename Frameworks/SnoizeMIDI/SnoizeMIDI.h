@@ -21,7 +21,6 @@
 #import <SnoizeMIDI/SMMessageTimeBase.h>
 #import <SnoizeMIDI/SMMIDIObject.h>
 #import <SnoizeMIDI/SMMessageParser.h>
-#import <SnoizeMIDI/SMPortInputStream.h>
 #import <SnoizeMIDI/SMSystemCommonMessage.h>
 #import <SnoizeMIDI/SMSystemRealTimeMessage.h>
 #import <SnoizeMIDI/SMSystemExclusiveMessage.h>

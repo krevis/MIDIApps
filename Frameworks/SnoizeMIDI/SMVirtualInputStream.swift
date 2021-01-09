@@ -59,7 +59,7 @@ import Foundation
 
     // MARK: SMInputStream subclass
 
-    @objc override public func parsers() -> [Any]! {
+    @objc override public func parsers() -> [SMMessageParser]! {
         if let parser = parser {
             return [parser]
         }

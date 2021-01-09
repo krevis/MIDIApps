@@ -51,7 +51,7 @@
 - (void)releaseForIncomingMIDIWithSourceConnectionRefCon:(void *)refCon;
 
 // For subclasses to implement
-- (NSArray *)parsers;
+- (NSArray<SMMessageParser *> *)parsers;
 - (SMMessageParser *)parserForSourceConnectionRefCon:(void *)refCon;
 - (id<SMInputStreamSource>)streamSourceForParser:(SMMessageParser *)parser;
 

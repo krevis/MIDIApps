@@ -237,7 +237,7 @@ NSString *SMInputStreamSourceListChangedNotification = @"SMInputStreamSourceList
 // For subclasses to implement
 //
 
-- (NSArray *)parsers;
+- (NSArray<SMMessageParser *> *)parsers;
 {
     SMRequestConcreteImplementation(self, _cmd);
     return nil;

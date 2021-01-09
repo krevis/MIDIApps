@@ -45,8 +45,8 @@ class SpyingInputStream: SMInputStream {
 
     // MARK: SMInputStream subclass
 
-    override func parsers() -> [Any]! {
-        return parsersForEndpoints.objectEnumerator()?.allObjects
+    override func parsers() -> [SMMessageParser]! {
+        return parsersForEndpoints.objectEnumerator()?.allObjects as? [SMMessageParser]
     }
 
     override func parser(forSourceConnectionRefCon refCon: UnsafeMutableRawPointer!) -> SMMessageParser! {
