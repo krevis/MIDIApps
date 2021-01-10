@@ -424,6 +424,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
 
 - (void)midiSetupChanged:(NSNotification *)notification;
 {
+    // TODO This may now come in too early; try to be more specific
     [nonretainedMainWindowController synchronizeDestinations];
 }
 
