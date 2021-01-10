@@ -344,7 +344,9 @@ extension AppController {
                 DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
                     self.openWindowForNewlyAppearedSources()
                 }
-            default:
+            case .disabled:
+                break   // do nothing
+            @unknown default:
                 break
             }
         }

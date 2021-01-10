@@ -33,7 +33,7 @@ import Foundation
             return SMClientSerialPortOwnerChangedNotification(unsafeCoreMIDINotification)
         case .msgIOError:
             return SMClientIOErrorNotification(unsafeCoreMIDINotification)
-        default:
+        @unknown default:
             return SMClientNotification(unsafeCoreMIDINotification)
         }
     }

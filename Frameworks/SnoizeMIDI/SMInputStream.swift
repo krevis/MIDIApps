@@ -12,7 +12,7 @@
 
 import Foundation
 
-@objc public class SMInputStream: NSObject {
+@objc open class SMInputStream: NSObject {
 
     @objc override public init() {
         // Default to main queue for taking pending read packets
@@ -33,7 +33,7 @@ import Foundation
         parsers.forEach { $0.cancelReceivingSysExMessage() }
     }
 
-    @objc public var persistentSettings: Any? {
+    @objc open var persistentSettings: Any? {
         var persistentSettings: [[String: Any]] = []
         for source in selectedInputSources {
             if let inputSource = source as? SMInputStreamSource {
@@ -52,7 +52,7 @@ import Foundation
         return persistentSettings
     }
 
-    @objc public func takePersistentSettings(_ settings: Any!) -> [String]! {
+    @objc open func takePersistentSettings(_ settings: Any!) -> [String]! {
         // If any endpoints couldn't be found, their names are returned
         // TODO Fix type to be nicer
         guard let dicts = settings as? [[String: Any]] else { return nil }
@@ -79,9 +79,9 @@ import Foundation
     // MARK: For subclass use only
     //       TODO Move to a separate file, or at least extension
 
-    internal let midiReadProc: MIDIReadProc = inputStreamMIDIReadProc
+    public let midiReadProc: MIDIReadProc = inputStreamMIDIReadProc
 
-    internal func createParser(originatingEndpoint: SMEndpoint?) -> SMMessageParser {
+    public func createParser(originatingEndpoint: SMEndpoint?) -> SMMessageParser {
         let parser = SMMessageParser()
         parser.setDelegate(self)
         parser.setSysExTimeOut(sysExTimeOut)
@@ -89,15 +89,18 @@ import Foundation
         return parser
     }
 
-    internal func postSelectedInputStreamSourceDisappearedNotification(source: SMInputStreamSource) {
+    public func postSelectedInputStreamSourceDisappearedNotification(source: SMInputStreamSource) {
         NotificationCenter.default.post(name: .inputStreamSelectedInputSourceDisappeared, object: self, userInfo: ["source": source])
     }
 
-    internal func postSourceListChangedNotification() {
+    public func postSourceListChangedNotification() {
         NotificationCenter.default.post(name: .inputStreamSourceListChanged, object: self)
     }
 
-    internal func retainForIncomingMIDI(sourceConnectionRefCon: UnsafeMutableRawPointer) {
+    // MARK: For subclasses to implement
+    //       TODO Move to a separate file, or at least extension
+
+    open func retainForIncomingMIDI(sourceConnectionRefCon: UnsafeMutableRawPointer?) {
         // NOTE: This is called on the CoreMIDI thread!
         //
         // The input stream (self) is already retained appropriately.
@@ -105,7 +108,7 @@ import Foundation
         // which needs to be retained until the incoming MIDI is processed on the main thread.
     }
 
-    internal func releaseForIncomingMIDI(sourceConnectionRefCon: UnsafeMutableRawPointer) {
+    open func releaseForIncomingMIDI(sourceConnectionRefCon: UnsafeMutableRawPointer?) {
         // Normally called on the main thread, but could be called on other queues if set
         //
         // The input stream (self) is already released appropriately.
@@ -113,32 +116,29 @@ import Foundation
         // which needs to be retained until the incoming MIDI is processed on the main thread.
     }
 
-    // MARK: For subclasses to implement
-    //       TODO Move to a separate file, or at least extension
-
-    internal var parsers: [SMMessageParser] {
+    open var parsers: [SMMessageParser] {
         // TODO Should this be a collection or something?
         fatalError("Must implement in subclass")
     }
 
-    internal func parser(sourceConnectionRefCon: UnsafeMutableRawPointer) -> SMMessageParser? {
+    open func parser(sourceConnectionRefCon: UnsafeMutableRawPointer?) -> SMMessageParser? {
         fatalError("Must implement in subclass")
     }
 
-    internal func streamSource(parser: SMMessageParser) -> SMInputStreamSource? {
+    open func streamSource(parser: SMMessageParser) -> SMInputStreamSource? {
         fatalError("Must implement in subclass")
     }
 
-    @objc public var inputSources: [SMInputStreamSource] {
+    @objc open var inputSources: [SMInputStreamSource] {
         fatalError("Must implement in subclass")
     }
 
     @objc public var inputSourcesSet: Set<AnyHashable> /* TODO Should become Set<SMInputStreamSource> */ {
-        fatalError("Must implement in subclass")
         // for convenience going to Swift and dealing with selectedInputSources... may change
+        return Set(inputSources as? [AnyHashable] ?? [])
     }
 
-    @objc public var selectedInputSources: Set<AnyHashable> /* TODO Should become Set<SMInputStreamSource> */ {
+    @objc open var selectedInputSources: Set<AnyHashable> /* TODO Should become Set<SMInputStreamSource> */ {
         get {
             fatalError("Must implement in subclass")
         }
@@ -233,7 +233,7 @@ private func inputStreamMIDIReadProc(_ packetListPtr: UnsafePointer<MIDIPacketLi
     // need that level of performance. (Probably the best solution is to stuff the packet list
     // into a ring buffer, then consume it in the other queue, but the devil is in the details.)
 
-    guard let readProcRefCon = readProcRefCon, let srcConnRefCon = srcConnRefCon else { return }
+    guard let readProcRefCon = readProcRefCon else { return }
     let numPackets = packetListPtr.pointee.numPackets
     guard numPackets > 0 else { return }
 

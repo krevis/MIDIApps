@@ -26,20 +26,20 @@ class CombinationInputStream: NSObject {
 
         func observeNotificationsFromStream(_ object: AnyObject) {
             let center = NotificationCenter.default
-            center.addObserver(self, selector: #selector(self.repostNotification(_:)), name: .SMInputStreamReadingSysEx, object: object)
-            center.addObserver(self, selector: #selector(self.repostNotification(_:)), name: .SMInputStreamDoneReadingSysEx, object: object)
-            center.addObserver(self, selector: #selector(self.repostNotification(_:)), name: .SMInputStreamSelectedInputSourceDisappeared, object: object)
-            center.addObserver(self, selector: #selector(self.inputSourceListChanged(_:)), name: .SMInputStreamSourceListChanged, object: object)
+            center.addObserver(self, selector: #selector(self.repostNotification(_:)), name: .inputStreamReadingSysEx, object: object)
+            center.addObserver(self, selector: #selector(self.repostNotification(_:)), name: .inputStreamDoneReadingSysEx, object: object)
+            center.addObserver(self, selector: #selector(self.repostNotification(_:)), name: .inputStreamSelectedInputSourceDisappeared, object: object)
+            center.addObserver(self, selector: #selector(self.inputSourceListChanged(_:)), name: .inputStreamSourceListChanged, object: object)
         }
 
-        portInputStream.setMessageDestination(self)
+        portInputStream.messageDestination = self
         observeNotificationsFromStream(portInputStream)
 
-        virtualInputStream.setMessageDestination(self)
+        virtualInputStream.messageDestination = self
         observeNotificationsFromStream(virtualInputStream)
 
         if let stream = spyingInputStream {
-            stream.setMessageDestination(self)
+            stream.messageDestination = self
             observeNotificationsFromStream(stream)
         }
     }
@@ -47,11 +47,9 @@ class CombinationInputStream: NSObject {
     deinit {
         NotificationCenter.default.removeObserver(self)
 
-        portInputStream.setMessageDestination(nil)
-        virtualInputStream.setMessageDestination(nil)
-        if let stream = spyingInputStream {
-            stream.setMessageDestination(nil)
-        }
+        portInputStream.messageDestination = nil
+        virtualInputStream.messageDestination = nil
+        spyingInputStream?.messageDestination = nil
     }
 
     var messageDestination: SMMessageDestination?
@@ -99,16 +97,16 @@ class CombinationInputStream: NSObject {
     var persistentSettings: [String: Any]? {
         var persistentSettings: [String: Any] = [:]
 
-        if let streamSettings = portInputStream.persistentSettings() {
+        if let streamSettings = portInputStream.persistentSettings {
             persistentSettings["portInputStream"] = streamSettings
         }
 
-        if let streamSettings = virtualInputStream.persistentSettings() {
+        if let streamSettings = virtualInputStream.persistentSettings {
             persistentSettings["virtualInputStream"] = streamSettings
         }
 
         if let stream = spyingInputStream,
-           let streamSettings = stream.persistentSettings() {
+           let streamSettings = stream.persistentSettings {
             persistentSettings["spyingInputStream"] = streamSettings
         }
 

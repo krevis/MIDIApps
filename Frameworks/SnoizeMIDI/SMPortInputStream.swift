@@ -43,8 +43,8 @@ import Foundation
                 // An error can happen in normal circumstances (if the endpoint has disappeared), so ignore it.
 
                 // At any time after MIDIPortDisconnectSource(), we can expect that
-                // retainForIncomingMIDIWithSourceConnectionRefCon() will no longer be called.
-                // However, parserForSourceConnectionRefCon() may still be called, on the main thread,
+                // retainForIncomingMIDI() will no longer be called.
+                // However, parser(sourceConnectionRefCon:) may still be called, on the main thread,
                 // later on; it should not crash or fail, but it may return nil.
                 parsersForEndpoints.removeValue(forKey: endpoint)
 
@@ -60,8 +60,7 @@ import Foundation
                 _ = MIDIPortConnectSource(inputPort, endpoint.endpointRef(), Unmanaged.passUnretained(endpoint).toOpaque())
 
                 // At any time after MIDIPortConnectSource(), we can expect
-                // retainForIncomingMIDIWithSourceConnectionRefCon()
-                // and parserForSourceConnectionRefCon() to be called.
+                // retainForIncomingMIDI() and parser(sourceConnectionRefCon:) to be called.
             }
         }
     }
@@ -77,18 +76,19 @@ import Foundation
     // MARK: SMInputStream subclass
     // TODO Make this a protocol.
 
-    override internal var parsers: [SMMessageParser] {
+    override public var parsers: [SMMessageParser] {
         return Array(parsersForEndpoints.values)
     }
 
-    override internal func parser(sourceConnectionRefCon: UnsafeMutableRawPointer) -> SMMessageParser? {
+    override public func parser(sourceConnectionRefCon: UnsafeMutableRawPointer?) -> SMMessageParser? {
         // Note: sourceConnectionRefCon points to a SMSourceEndpoint.
         // We are allowed to return nil if we are no longer listening to this source endpoint.
-        let endpoint = Unmanaged<SMSourceEndpoint>.fromOpaque(sourceConnectionRefCon).takeUnretainedValue()
+        guard let refCon = sourceConnectionRefCon else { return nil }
+        let endpoint = Unmanaged<SMSourceEndpoint>.fromOpaque(refCon).takeUnretainedValue()
         return parsersForEndpoints[endpoint]
     }
 
-    override internal func streamSource(parser: SMMessageParser) -> SMInputStreamSource? {
+    override public func streamSource(parser: SMMessageParser) -> SMInputStreamSource? {
         return parser.originatingEndpoint()
     }
 

@@ -59,7 +59,7 @@ import Foundation
 
     // MARK: SMInputStream subclass
 
-    override internal var parsers: [SMMessageParser] {
+    override public var parsers: [SMMessageParser] {
         if let parser = parser {
             return [parser]
         }
@@ -68,12 +68,12 @@ import Foundation
         }
     }
 
-    override internal func parser(sourceConnectionRefCon refCon: UnsafeMutableRawPointer) -> SMMessageParser? {
+    override public func parser(sourceConnectionRefCon refCon: UnsafeMutableRawPointer?) -> SMMessageParser? {
         // refCon is ignored, since it only applies to connections created with MIDIPortConnectSource()
         return parser
     }
 
-    override internal func streamSource(parser: SMMessageParser) -> SMInputStreamSource? {
+    override public func streamSource(parser: SMMessageParser) -> SMInputStreamSource? {
         return inputStreamSource
     }
 

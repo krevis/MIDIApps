@@ -13,6 +13,7 @@
 import Cocoa
 
 class SpyingInputStream: SMInputStream {
+    // TODO Perhaps this should not inherit from the stream, but use a protocol instead
 
     private let spyClient: MIDISpyClientRef
     private var spyPort: MIDISpyPortRef?
@@ -24,7 +25,7 @@ class SpyingInputStream: SMInputStream {
 
         super.init()
 
-        let status = MIDISpyPortCreate(spyClient, midiReadProc(), UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque()), &spyPort)
+        let status = MIDISpyPortCreate(spyClient, midiReadProc, UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque()), &spyPort)
         if status != noErr {
             NSLog("Error from MIDISpyPortCreate: \(status)")
             return nil
@@ -45,44 +46,46 @@ class SpyingInputStream: SMInputStream {
 
     // MARK: SMInputStream subclass
 
-    override func parsers() -> [SMMessageParser]! {
-        return parsersForEndpoints.objectEnumerator()?.allObjects as? [SMMessageParser]
+    override var parsers: [SMMessageParser] {
+        return parsersForEndpoints.objectEnumerator()?.allObjects as? [SMMessageParser] ?? []
     }
 
-    override func parser(forSourceConnectionRefCon refCon: UnsafeMutableRawPointer!) -> SMMessageParser! {
+    override func parser(sourceConnectionRefCon: UnsafeMutableRawPointer?) -> SMMessageParser? {
         // note: refCon is an SMDestinationEndpoint*.
         // We are allowed to return nil if we are no longer listening to this source endpoint.
+        guard let refCon = sourceConnectionRefCon else { return nil }
         let endpoint = Unmanaged<SMDestinationEndpoint>.fromOpaque(refCon).takeUnretainedValue()
-        let parser = parsersForEndpoints.object(forKey: endpoint)
-        return parser
+        return parsersForEndpoints.object(forKey: endpoint)
     }
 
-    override func streamSource(for parser: SMMessageParser!) -> SMInputStreamSource! {
+    override func streamSource(parser: SMMessageParser) -> SMInputStreamSource? {
         return parser.originatingEndpoint()
     }
 
-    override func retainForIncomingMIDI(withSourceConnectionRefCon refCon: UnsafeMutableRawPointer!) {
-        // retain self
-        super.retainForIncomingMIDI(withSourceConnectionRefCon: refCon)
+    override func retainForIncomingMIDI(sourceConnectionRefCon: UnsafeMutableRawPointer?) {
+        super.retainForIncomingMIDI(sourceConnectionRefCon: sourceConnectionRefCon)
 
-        // and retain the endpoint too, since we use it as a key in -parserForSourceConnectionRefCon:
-        _ = Unmanaged<SMDestinationEndpoint>.fromOpaque(refCon).retain()
+        // Retain the endpoint too, since we use it as a key in parser(sourceConnectionRefCon:)
+        if let refCon = sourceConnectionRefCon {
+            _ = Unmanaged<SMDestinationEndpoint>.fromOpaque(refCon).retain()
+        }
     }
 
-    override func releaseForIncomingMIDI(withSourceConnectionRefCon refCon: UnsafeMutableRawPointer!) {
+    override func releaseForIncomingMIDI(sourceConnectionRefCon: UnsafeMutableRawPointer?) {
         // release the endpoint that we retained earlier
-        Unmanaged<SMDestinationEndpoint>.fromOpaque(refCon).release()
+        if let refCon = sourceConnectionRefCon {
+            Unmanaged<SMDestinationEndpoint>.fromOpaque(refCon).release()
+        }
 
-        // and release self, LAST
-        super.releaseForIncomingMIDI(withSourceConnectionRefCon: refCon)
+        super.releaseForIncomingMIDI(sourceConnectionRefCon: sourceConnectionRefCon)
     }
 
-    override var inputSources: [SMInputStreamSource]! {
+    override var inputSources: [SMInputStreamSource] {
         let destinationEndpoints = SMDestinationEndpoint.destinationEndpoints() ?? []
         return destinationEndpoints.filter { !$0.isOwnedByThisProcess() }
     }
 
-    override var selectedInputSources: Set<AnyHashable>! {
+    override var selectedInputSources: Set<AnyHashable> {
         get {
             return endpoints
         }
@@ -109,7 +112,7 @@ class SpyingInputStream: SMInputStream {
     private func addEndpoint(_ endpoint: SMDestinationEndpoint) {
         guard !endpoints.contains(endpoint) else { return }
 
-        let parser = createParser(withOriginatingEndpoint: endpoint)
+        let parser = createParser(originatingEndpoint: endpoint)
         parsersForEndpoints.setObject(parser, forKey: endpoint)
 
         let center = NotificationCenter.default
@@ -151,7 +154,7 @@ class SpyingInputStream: SMInputStream {
               endpoints.contains(endpoint) else { return }
 
         removeEndpoint(endpoint)
-        postSelectedInputStreamSourceDisappearedNotification(endpoint)
+        postSelectedInputStreamSourceDisappearedNotification(source: endpoint)
     }
 
     @objc private func endpointWasReplaced(_ notification: Notification) {

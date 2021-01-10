@@ -19,9 +19,9 @@ class Document: NSDocument {
 
         let center = NotificationCenter.default
 
-        center.addObserver(self, selector: #selector(self.readingSysEx(_:)), name: .SMInputStreamReadingSysEx, object: stream)
-        center.addObserver(self, selector: #selector(self.doneReadingSysEx(_:)), name: .SMInputStreamDoneReadingSysEx, object: stream)
-        center.addObserver(self, selector: #selector(self.sourceListDidChange(_:)), name: .SMInputStreamSourceListChanged, object: stream)
+        center.addObserver(self, selector: #selector(self.readingSysEx(_:)), name: .inputStreamReadingSysEx, object: stream)
+        center.addObserver(self, selector: #selector(self.doneReadingSysEx(_:)), name: .inputStreamDoneReadingSysEx, object: stream)
+        center.addObserver(self, selector: #selector(self.sourceListDidChange(_:)), name: .inputStreamSourceListChanged, object: stream)
         updateVirtualEndpointName()
 
         stream.messageDestination = messageFilter
