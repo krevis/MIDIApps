@@ -59,7 +59,7 @@ class SpyingInputStream: SMInputStream {
     }
 
     override func streamSource(parser: SMMessageParser) -> SMInputStreamSource? {
-        return parser.originatingEndpoint()
+        return parser.originatingEndpoint
     }
 
     override func retainForIncomingMIDI(sourceConnectionRefCon: UnsafeMutableRawPointer?) {

@@ -15,13 +15,12 @@
 #import <Foundation/Foundation.h>
 #import <CoreMIDI/CoreMIDI.h>
 
-
-typedef enum _SMSystemCommonMessageType {
+typedef NS_ENUM(UInt8, SMSystemCommonMessageType) {
     SMSystemCommonMessageTypeTimeCodeQuarterFrame = 0xF1,
     SMSystemCommonMessageTypeSongPositionPointer = 0xF2,
     SMSystemCommonMessageTypeSongSelect = 0xF3,
     SMSystemCommonMessageTypeTuneRequest = 0xF6
-} SMSystemCommonMessageType;
+};
 
 @interface SMSystemCommonMessage : SMMessage
 {

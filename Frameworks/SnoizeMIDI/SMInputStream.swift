@@ -12,7 +12,7 @@
 
 import Foundation
 
-@objc open class SMInputStream: NSObject {
+@objc open class SMInputStream: NSObject, SMMessageParserDelegate {
 
     @objc override public init() {
         // Default to main queue for taking pending read packets
@@ -25,12 +25,12 @@ import Foundation
     @objc public weak var messageDestination: SMMessageDestination?
     @objc public var sysExTimeOut: TimeInterval = 1.0 {
         didSet {
-            parsers.forEach { $0.setSysExTimeOut(sysExTimeOut) }
+            parsers.forEach { $0.sysExTimeOut = sysExTimeOut }
         }
     }
 
     @objc public func cancelReceivingSysExMessage() {
-        parsers.forEach { $0.cancelReceivingSysExMessage() }
+        parsers.forEach { _ = $0.cancelReceivingSysExMessage() }
     }
 
     @objc open var persistentSettings: Any? {
@@ -83,9 +83,9 @@ import Foundation
 
     public func createParser(originatingEndpoint: SMEndpoint?) -> SMMessageParser {
         let parser = SMMessageParser()
-        parser.setDelegate(self)
-        parser.setSysExTimeOut(sysExTimeOut)
-        parser.setOriginatingEndpoint(originatingEndpoint)
+        parser.delegate = self
+        parser.sysExTimeOut = sysExTimeOut
+        parser.originatingEndpoint = originatingEndpoint
         return parser
     }
 
@@ -149,11 +149,11 @@ import Foundation
 
     // MARK: <SMMessageParserDelegate>
 
-    @objc public override func parser(_ parser: SMMessageParser!, didRead messages: [SMMessage]!) {
+    public func parserDidReadMessages(_ parser: SMMessageParser, messages: [SMMessage]) {
         messageDestination?.takeMIDIMessages(messages)
     }
 
-    @objc public override func parser(_ parser: SMMessageParser!, isReadingSysExWithLength length: UInt) {
+    public func parserIsReadingSysEx(_ parser: SMMessageParser, length: Int) {
         if let streamSource = streamSource(parser: parser) {
             let userInfo = ["length": length,
                             "source": streamSource] as [String: Any]
@@ -161,7 +161,7 @@ import Foundation
         }
     }
 
-    @objc public override func parser(_ parser: SMMessageParser!, finishedReadingSysExMessage message: SMSystemExclusiveMessage!) {
+    public func parserFinishedReadingSysEx(_ parser: SMMessageParser, message: SMSystemExclusiveMessage) {
         if let streamSource = streamSource(parser: parser) {
             let userInfo = ["length": 1 + message.receivedData.count,
                             "valid": message.wasReceivedWithEOX,

@@ -89,7 +89,7 @@ import Foundation
     }
 
     override public func streamSource(parser: SMMessageParser) -> SMInputStreamSource? {
-        return parser.originatingEndpoint()
+        return parser.originatingEndpoint
     }
 
     override public var inputSources: [SMInputStreamSource] {

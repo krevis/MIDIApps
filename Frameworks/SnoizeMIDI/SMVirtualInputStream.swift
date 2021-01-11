@@ -136,7 +136,7 @@ import Foundation
         endpoint = SMDestinationEndpoint.createVirtualDestinationEndpoint(withName: virtualEndpointName, readProc: midiReadProc, readProcRefCon: Unmanaged.passUnretained(self).toOpaque(), uniqueID: uniqueID)
         // TODO Should this be passRetained? if so, balance later
         if let endpoint = endpoint {
-            parser.setOriginatingEndpoint(endpoint)
+            parser.originatingEndpoint = endpoint
 
             // We requested a specific uniqueID earlier, but we might not have gotten it.
             // We have to update our idea of what it is, regardless.
@@ -147,7 +147,7 @@ import Foundation
     private func disposeEndpoint() {
         endpoint?.remove()
         endpoint = nil
-        parser.setOriginatingEndpoint(nil)
+        parser.originatingEndpoint = nil
     }
 
 }

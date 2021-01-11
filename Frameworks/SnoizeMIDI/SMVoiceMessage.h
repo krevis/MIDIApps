@@ -37,7 +37,7 @@ typedef enum _SMChannelMask {
     SMChannelMaskAll = (1 << 16) - 1
 } SMChannelMask;
 
-typedef enum _SMVoiceMessageStatus {
+typedef NS_ENUM(UInt8, SMVoiceMessageStatus) {
     SMVoiceMessageStatusNoteOff = 0x80,
     SMVoiceMessageStatusNoteOn = 0x90,
     SMVoiceMessageStatusAftertouch = 0xA0,
@@ -45,7 +45,7 @@ typedef enum _SMVoiceMessageStatus {
     SMVoiceMessageStatusProgram = 0xC0,
     SMVoiceMessageStatusChannelPressure = 0xD0,
     SMVoiceMessageStatusPitchWheel = 0xE0
-} SMVoiceMessageStatus;
+};
 
 @interface SMVoiceMessage : SMMessage
 {

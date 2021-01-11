@@ -16,14 +16,14 @@
 #import <CoreMIDI/CoreMIDI.h>
 
 
-typedef enum _SMSystemRealTimeMessageType {
+typedef NS_ENUM(UInt8, SMSystemRealTimeMessageType) {
     SMSystemRealTimeMessageTypeClock = 0xF8,
     SMSystemRealTimeMessageTypeStart = 0xFA,
     SMSystemRealTimeMessageTypeContinue = 0xFB,
     SMSystemRealTimeMessageTypeStop = 0xFC,
     SMSystemRealTimeMessageTypeActiveSense = 0xFE,
     SMSystemRealTimeMessageTypeReset = 0xFF
-} SMSystemRealTimeMessageType;
+};
 
 @interface SMSystemRealTimeMessage: SMMessage
 {
