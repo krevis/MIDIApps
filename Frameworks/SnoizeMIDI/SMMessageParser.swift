@@ -129,8 +129,8 @@ import Foundation
                 }
             }
             else if byte < 0x80 {
-                if var data = readingSysExData {
-                    data.append(byte)
+                if let data = readingSysExData {
+                    readingSysExData?.append(byte)
 
                     // Tell the delegate we're still reading, every 256 bytes
                     let sysExMessageDataCount = 1 /* for 0xF0 */ + data.count
@@ -243,9 +243,17 @@ import Foundation
         // NOTE: If we want, we could refuse sysex messages that don't end in 0xF7.
         // The MIDI spec says that messages should end with this byte, but apparently that is not always the case in practice.
         guard let data = readingSysExData else { return nil }
-
         readingSysExData = nil
-        return SMSystemExclusiveMessage(timeStamp: startSysExTimeStamp, data: data)
+
+        let sysExMessage = SMSystemExclusiveMessage(timeStamp: startSysExTimeStamp, data: data)
+        // TODO initializer shouldn't be optional
+        if let message = sysExMessage {
+            message.originatingEndpoint = originatingEndpoint
+            message.wasReceivedWithEOX = validEnd
+            delegate?.parserFinishedReadingSysEx(self, message: message)
+        }
+
+        return sysExMessage
     }
 
     @objc private func sysExTimedOut(_ timer: Timer) {
