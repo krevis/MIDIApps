@@ -39,7 +39,7 @@ import Foundation
     @objc public func takePacketList(_ packetListPtr: UnsafePointer<MIDIPacketList>) {
         var messages: [SMMessage] = []
 
-        if #available(OSX 10.15, *) {
+        if #available(macOS 10.15, iOS 13.0, *) {
             messages = packetListPtr.unsafeSequence().flatMap { messagesForPacket($0) }
         }
         else {

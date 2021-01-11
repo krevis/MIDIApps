@@ -176,7 +176,7 @@ import Foundation
     }
 
     private func checkMainQueue() {
-        if #available(OSX 10.12, *) {
+        if #available(macOS 10.12, iOS 10.0, *) {
             dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
         }
         else {

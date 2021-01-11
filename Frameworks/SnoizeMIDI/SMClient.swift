@@ -171,7 +171,7 @@ import Foundation
         checkMainQueue()
 
         let status: OSStatus
-        if #available(OSX 10.11, *) {
+        if #available(macOS 10.11, iOS 9.0, *) {
             status = MIDIClientCreateWithBlock(name as CFString, &midiClient) { unsafeNotification in
                 // Note: We can't capture `self` in here, since we aren't yet fully initialized.
                 // Also note that we are called on an arbitrary queue, so we need to dispatch to the main queue for later handling.
@@ -313,7 +313,7 @@ import Foundation
 }
 
 private func checkMainQueue() {
-    if #available(OSX 10.12, *) {
+    if #available(macOS 10.12, iOS 10.0, *) {
         dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
     }
     else {

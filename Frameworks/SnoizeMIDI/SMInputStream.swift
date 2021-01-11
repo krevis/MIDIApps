@@ -251,7 +251,7 @@ private func inputStreamMIDIReadProc(_ packetListPtr: UnsafePointer<MIDIPacketLi
     inputStream.retainForIncomingMIDI(sourceConnectionRefCon: srcConnRefCon)
 
     let packetListSize: Int
-    if #available(OSX 10.15, *) {
+    if #available(macOS 10.15, iOS 13.0, *) {
         packetListSize = MIDIPacketList.sizeInBytes(pktList: packetListPtr)
     }
     else {
