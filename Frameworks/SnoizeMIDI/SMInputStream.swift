@@ -142,7 +142,7 @@ import Foundation
         get {
             fatalError("Must implement in subclass")
         }
-        set {
+        set {   // swiftlint:disable:this unused_setter_value
             fatalError("Must implement in subclass")
         }
     }
