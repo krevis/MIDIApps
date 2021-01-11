@@ -36,7 +36,7 @@ import Foundation
     @objc public var sysExTimeOut: TimeInterval = 1.0   // seconds
     @objc public var ignoresInvalidData = false
 
-    @objc public func take(_ packetListPtr: UnsafePointer<MIDIPacketList>) {
+    @objc public func takePacketList(_ packetListPtr: UnsafePointer<MIDIPacketList>) {
         var messages: [SMMessage] = []
 
         if #available(OSX 10.15, *) {
@@ -44,13 +44,8 @@ import Foundation
         }
         else {
             // Fallback on earlier versions
-            // TODO This doesn't work, pointee crashes ASAN
-            withUnsafePointer(to: packetListPtr.pointee.packet) { firstPacketPtr in
-                var packetPtr = firstPacketPtr
-                for _ in 0 ..< packetListPtr.pointee.numPackets {
-                    messages.append(contentsOf: messagesForPacket(packetPtr))
-                    packetPtr = SMWorkaroundMIDIPacketNext(packetPtr)
-                }
+            SMPacketListApply(packetListPtr) {
+                messages.append(contentsOf: messagesForPacket($0))
             }
         }
 

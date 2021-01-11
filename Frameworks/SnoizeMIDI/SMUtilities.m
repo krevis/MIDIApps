@@ -55,7 +55,36 @@ MIDIPacket * _Nullable SMWorkaroundMIDIPacketListAdd(MIDIPacketList *pktlist, By
     return MIDIPacketListAdd(pktlist, listSize, curPacket, time, nData, data);
 }
 
-const MIDIPacket * _Nonnull SMWorkaroundMIDIPacketNext(const MIDIPacket * _Nonnull pkt)
+NSInteger SMPacketListSize(const MIDIPacketList * _Nonnull packetList)
 {
-    return MIDIPacketNext(pkt);
+    // Implemented in C, since trying to do this in Swift is maddening
+    // and pointless -- Swift MIDIPacketList.sizeInBytes() works fine,
+    // when it's available.
+
+    // Find the last packet in the packet list
+    if (packetList->numPackets == 0) {
+        return 0;
+    }
+    const MIDIPacket *packet = &packetList->packet[0];
+    for (UInt32 i = 0; i < packetList->numPackets - 1; i++) {
+        packet = MIDIPacketNext(packet);
+    }
+    NSInteger size = (intptr_t)(&packet->data[packet->length]) - (intptr_t)packetList;
+    return size;    
+}
+
+void SMPacketListApply(const MIDIPacketList *packetList, void (NS_NOESCAPE ^block)(const MIDIPacket *packet))
+{
+    // This is similarly maddening to implement in Swift. If you have an UnsafePointer<MIDIPacketList>
+    // which is based on data that is exactly sized to fit the packet list, calling `pointee`
+    // will crash (at least, under ASAN). Just do it in C.
+
+    if (packetList->numPackets == 0) {
+        return;
+    }
+    const MIDIPacket *packet = &packetList->packet[0];
+    for (UInt32 i = 0; i < packetList->numPackets; i++) {
+        block(packet);
+        packet = MIDIPacketNext(packet);
+    }
 }

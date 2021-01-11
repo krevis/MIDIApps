@@ -23,8 +23,8 @@ static __inline__ NSBundle *SMBundleForObject(id object) {
 extern void SMRequestConcreteImplementation(id self, SEL _cmd);
 extern void SMRejectUnusedImplementation(id self, SEL _cmd);
 
+// Like +[NSObject isSubclassOfClass:], but works correctly for classes which are NOT based on NSObject
 extern BOOL SMClassIsSubclassOfClass(Class aClass, Class potentialSuperclass);
-    // Like +[NSObject isSubclassOfClass:], but works correctly for classes which are NOT based on NSObject
 
 #if DEBUG
 #define SMAssert(expression)	if (!(expression)) SMAssertionFailed(#expression, __FILE__, __LINE__)
@@ -33,13 +33,19 @@ extern void SMAssertionFailed(const char *expression, const char *file, unsigned
 #define SMAssert(expression)
 #endif
 
+// Work around a bug in the declaration of MIDIPacketListAdd(). The return value should be _Nullable,
+// so Swift code can compare it to nil.
+// This function just calls MIDIPacketListAdd() and does nothing extra.
 extern MIDIPacket * _Nullable SMWorkaroundMIDIPacketListAdd(MIDIPacketList *pktlist, ByteCount listSize, MIDIPacket *curPacket, MIDITimeStamp time, ByteCount nData, const Byte *data);
-    // Work around a bug in the declaration of MIDIPacketListAdd(). The return value should be _Nullable,
-    // so Swift code can compare it to nil.
-    // This function just calls MIDIPacketListAdd() and does nothing extra.
 
-extern const MIDIPacket * _Nonnull SMWorkaroundMIDIPacketNext(const MIDIPacket * _Nonnull pkt);
-    // Work around a bug in the declaration of MIDIPacketNext(). The return value should be const,
-    // so Swift code can represent it as a UnsafePointer<MIDIPacket>, just like the argument.
+// Return the size of the packet list. Include only the actual valid data in the packets,
+// ignoring any extra space that may appear to be in the MIDIPacket structure because of its
+// fixed size data array.
+// In Swift, use MIDIPacketList.sizeInBytes() instead, when it's available.
+extern NSInteger SMPacketListSize(const MIDIPacketList *packetList);
+
+// Iterate through the packets in the given packet list, calling the given block for each packet.
+// In Swift, use packetList.unsafeSequence() instead, when it's available.
+extern void SMPacketListApply(const MIDIPacketList *packetList, void (NS_NOESCAPE ^block)(const MIDIPacket *packet));
 
 NS_ASSUME_NONNULL_END

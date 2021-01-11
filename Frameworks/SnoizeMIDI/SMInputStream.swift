@@ -255,17 +255,7 @@ private func inputStreamMIDIReadProc(_ packetListPtr: UnsafePointer<MIDIPacketLi
         packetListSize = MIDIPacketList.sizeInBytes(pktList: packetListPtr)
     }
     else {
-        // Fallback on earlier versions
-        // Jump through hoops just to get a pointer...
-        packetListSize = withUnsafePointer(to: packetListPtr.pointee.packet) { (packetPtr: UnsafePointer<MIDIPacket>) -> Int in
-            // Find the last packet in the packet list, by stepping forward numPackets-1 times
-            var lastPacketPtr = packetPtr
-            for _ in 0 ..< numPackets - 1 {
-                lastPacketPtr = SMWorkaroundMIDIPacketNext(lastPacketPtr)
-            }
-            // Then do the pointer math to determine the whole size of the packet
-            return UnsafeRawPointer(lastPacketPtr) - UnsafeRawPointer(packetListPtr) + Int(lastPacketPtr.pointee.length)
-        }
+        packetListSize = SMPacketListSize(packetListPtr)
     }
 
     // Copy the packet data for later
@@ -281,7 +271,7 @@ private func inputStreamMIDIReadProc(_ packetListPtr: UnsafePointer<MIDIPacketLi
                 // find the parser that is associated with this particular connection
                 // (which may be nil, if the input stream was disconnected from this source)
                 // and give it the packet list.
-                inputStream.parser(sourceConnectionRefCon: srcConnRefCon)?.take(packetListPtr)
+                inputStream.parser(sourceConnectionRefCon: srcConnRefCon)?.takePacketList(packetListPtr)
 
                 // Now that we're done with the input stream and its ref con (whatever that is),
                 // release them.
