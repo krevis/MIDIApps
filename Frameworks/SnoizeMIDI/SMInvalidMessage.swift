@@ -30,13 +30,6 @@ import Foundation
         coder.encode(data, forKey: "data")
     }
 
-    override public func copy(with zone: NSZone? = nil) -> Any {
-        // TODO Do we still need to manually implement this?
-        let copiedMessage = super.copy(with: zone)
-        (copiedMessage as? SMInvalidMessage)?.data = data
-        return copiedMessage
-    }
-
     @objc public var data: Data
 
     @objc public var sizeForDisplay: String {

@@ -37,17 +37,6 @@
 // SMMessage overrides
 //
 
-- (id)copyWithZone:(NSZone *)zone;
-{
-    SMSystemCommonMessage *newMessage;
-    
-    newMessage = [super copyWithZone:zone];
-    newMessage->dataBytes[0] = dataBytes[0];
-    newMessage->dataBytes[1] = dataBytes[1];
-
-    return newMessage;
-}
-
 - (void)encodeWithCoder:(NSCoder *)coder
 {
     [super encodeWithCoder:coder];

@@ -166,17 +166,6 @@ static void writeVariableLengthFieldIntoSMF(Byte **pPtr, const UInt32 value);
 // SMMessage overrides
 //
 
-- (id)copyWithZone:(NSZone *)zone;
-{
-    SMSystemExclusiveMessage *newMessage;
-    
-    newMessage = [super copyWithZone:zone];
-    [newMessage setData:data];
-    [newMessage setWasReceivedWithEOX:[self wasReceivedWithEOX]];
-
-    return newMessage;
-}
-
 - (void)encodeWithCoder:(NSCoder *)coder
 {
     [super encodeWithCoder:coder];

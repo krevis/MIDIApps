@@ -300,17 +300,6 @@ NSString *SMProgramChangeBaseIndexPreferenceKey = @"SMProgramChangeBaseIndex";
     [super dealloc];
 }
 
-- (id)copyWithZone:(NSZone *)zone;
-{
-    SMMessage *newMessage;
-    
-    newMessage = [[[self class] allocWithZone:zone] initWithTimeStamp:timeStamp statusByte:statusByte];
-    [newMessage->timeBase release];
-    newMessage->timeBase = [timeBase retain];
-    newMessage->originatingEndpointOrName = [originatingEndpointOrName retain];
-    return newMessage;
-}
-
 - (void)encodeWithCoder:(NSCoder *)coder
 {
     UInt64 nanos = AudioConvertHostTimeToNanos(timeStamp);

@@ -94,7 +94,7 @@ extern NSString *SMTimeFormatPreferenceKey;
 extern NSString *SMExpertModePreferenceKey;
 extern NSString *SMProgramChangeBaseIndexPreferenceKey;
 
-@interface SMMessage : NSObject <NSCopying, NSCoding>
+@interface SMMessage : NSObject <NSCoding>
 {
     MIDITimeStamp timeStamp;
     SMMessageTimeBase *timeBase;
