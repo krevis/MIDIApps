@@ -133,8 +133,6 @@ extern NSString *SMProgramChangeBaseIndexPreferenceKey;
 
 @property (nonatomic, readonly, assign) NSUInteger otherDataLength;
     // Length of data after the status byte
-- (const Byte *)otherDataBuffer;
-    // May return NULL, indicating no additional data
 @property (nonatomic, readonly, strong) NSData *otherData;
     // May return nil, indicating no additional data
 

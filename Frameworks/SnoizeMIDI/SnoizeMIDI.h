@@ -14,7 +14,6 @@
 #import <SnoizeMIDI/SMEndpoint.h>
 #import <SnoizeMIDI/SMExternalDevice.h>
 #import <SnoizeMIDI/SMInputStreamSource.h>
-#import <SnoizeMIDI/SMInvalidMessage.h>
 #import <SnoizeMIDI/SMMessage.h>
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 #import <SnoizeMIDI/SMMessageTimeBase.h>

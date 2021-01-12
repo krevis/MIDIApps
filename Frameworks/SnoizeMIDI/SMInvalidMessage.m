@@ -84,11 +84,6 @@ fail:
     return [data length];
 }
 
-- (const Byte *)otherDataBuffer;
-{
-    return [[self otherData] bytes];    
-}
-
 - (NSData *)otherData
 {
     return [self data];

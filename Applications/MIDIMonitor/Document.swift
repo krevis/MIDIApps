@@ -100,7 +100,22 @@ extension Document {
 
         let savedMessages = history.savedMessages
         if savedMessages.count > 0 {
-            dict["messageData"] = NSKeyedArchiver.archivedData(withRootObject: savedMessages)
+            // Was: dict["messageData"] = NSKeyedArchiver.archivedData(withRootObject: savedMessages)
+            // Except: After the Swift migration, we now need to map from the Swift classes
+            // to the ObjC class names. So we have to do this the hard way.
+            let mutableData = NSMutableData()
+            let archiver = NSKeyedArchiver(forWritingWith: mutableData)
+
+            archiver.setClassName("SMMessage", for: SMMessage.self)
+            archiver.setClassName("SMVoiceMessage", for: SMVoiceMessage.self)
+            archiver.setClassName("SMSystemCommonMessage", for: SMSystemCommonMessage.self)
+            archiver.setClassName("SMSystemRealTimeMessage", for: SMSystemRealTimeMessage.self)
+            archiver.setClassName("SMSystemExclusiveMessage", for: SMSystemExclusiveMessage.self)
+            archiver.setClassName("SMInvalidMessage", for: SMInvalidMessage.self)
+
+            archiver.encode(savedMessages, forKey: NSKeyedArchiveRootObjectKey)
+            archiver.finishEncoding()
+            dict["messageData"] = mutableData
         }
 
         if let windowSettings = monitorWindowController?.windowSettings {
@@ -141,9 +156,24 @@ extension Document {
             channelMask = SMChannelMaskAll
         }
 
-        if let messageData = dict["messageData"] as? Data,
-           let messages = NSKeyedUnarchiver.unarchiveObject(with: messageData) as? [SMMessage] {
-            history.savedMessages = messages
+        if let messageData = dict["messageData"] as? Data {
+            // Was: messages = NSKeyedUnarchiver.unarchiveObject(with: messageData) as? [SMMessage]
+            // Except: After the Swift migration, we now need to map from the ObjC class names
+            // to the Swift classes. So we have to do this the hard way.
+            let unarchiver = NSKeyedUnarchiver(forReadingWith: messageData)
+
+            unarchiver.setClass(SMMessage.self, forClassName: "SMMessage")
+            unarchiver.setClass(SMVoiceMessage.self, forClassName: "SMVoiceMessage")
+            unarchiver.setClass(SMSystemCommonMessage.self, forClassName: "SMSystemCommonMessage")
+            unarchiver.setClass(SMSystemRealTimeMessage.self, forClassName: "SMSystemRealTimeMessage")
+            unarchiver.setClass(SMSystemExclusiveMessage.self, forClassName: "SMSystemExclusiveMessage")
+            unarchiver.setClass(SMInvalidMessage.self, forClassName: "SMInvalidMessage")
+
+            let decoded = unarchiver.decodeObject(forKey: NSKeyedArchiveRootObjectKey)
+            unarchiver.finishDecoding()
+            if let messages = decoded as? [SMMessage] {
+                history.savedMessages = messages
+            }
         }
 
         var readWindowSettings: [String: Any] = [:]

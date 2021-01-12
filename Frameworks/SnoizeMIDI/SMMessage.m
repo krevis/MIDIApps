@@ -396,20 +396,10 @@ fail:
     return 0;
 }
 
-- (const Byte *)otherDataBuffer
-{
-    // Subclasses must override if they have other data
-    return NULL;
-}
-
 - (NSData *)otherData
 {
-    NSUInteger length;
-
-    if ((length = [self otherDataLength]))
-        return [NSData dataWithBytes:[self otherDataBuffer] length:length];
-    else
-        return nil;
+    // Subclasses must override if they have other data
+    return nil;
 }
 
 - (NSData *)fullData

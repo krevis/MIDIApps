@@ -214,11 +214,6 @@ fail:
     return [data length] + 1;  // Add a byte for the EOX at the end
 }
 
-- (const Byte *)otherDataBuffer;
-{
-    return [[self otherData] bytes];    
-}
-
 - (NSData *)otherData
 {
     if (!cachedDataWithEOX) {
@@ -629,7 +624,7 @@ UInt32 readVariableLengthFieldFromSMF(const Byte **pPtr, const Byte *end)
         writeVariableLengthFieldIntoSMF(&p, messageLength);
         
         // write out sysex, with 0xF7 ending
-        memcpy(p, [message otherDataBuffer], messageLength);
+        memcpy(p, [[message otherData] bytes], messageLength);
         p += messageLength;
     }
 

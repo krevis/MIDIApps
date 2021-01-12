@@ -125,9 +125,15 @@ fail:
     }
 }
 
-- (const Byte *)otherDataBuffer;
+- (NSData *)otherData
 {
-    return dataBytes;
+    NSUInteger length = [self otherDataLength];
+    if (length > 0) {
+        return [NSData dataWithBytes:dataBytes length:length];
+    }
+    else {
+        return [NSData data];
+    }
 }
 
 - (NSString *)typeForDisplay;
