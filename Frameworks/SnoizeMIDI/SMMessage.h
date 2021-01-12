@@ -150,4 +150,7 @@ extern NSString *SMProgramChangeBaseIndexPreferenceKey;
 @property (nonatomic, readonly, strong) NSString *expertDataForDisplay;
 @property (nonatomic, readonly, strong) NSString *originatingEndpointForDisplay;
 
+// TODO Internal methods
+- (void)setStatusByte:(Byte)statusByte;
+
 @end

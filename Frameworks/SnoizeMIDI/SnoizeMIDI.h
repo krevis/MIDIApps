@@ -18,7 +18,6 @@
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
 #import <SnoizeMIDI/SMMessageTimeBase.h>
 #import <SnoizeMIDI/SMMIDIObject.h>
-#import <SnoizeMIDI/SMSystemCommonMessage.h>
 #import <SnoizeMIDI/SMSystemExclusiveMessage.h>
 #import <SnoizeMIDI/SMUtilities.h>
 #import <SnoizeMIDI/SMVoiceMessage.h>

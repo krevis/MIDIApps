@@ -367,6 +367,12 @@ fail:
     return statusByte;
 }
 
+- (void)setStatusByte:(Byte)value
+{
+    // TODO This must be internal only
+    statusByte = value;
+}
+
 - (SMMessageType)messageType;
 {
     // Must be implemented by subclasses

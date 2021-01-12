@@ -140,7 +140,7 @@ import Foundation
                     if pendingDataIndex == pendingDataLength {
                         // This message is now done
                         if pendingMessageStatus >= 0xF0 {
-                            message = SMSystemCommonMessage(timeStamp: timeStamp, type: SMSystemCommonMessageType(rawValue: pendingMessageStatus)!, data: pendingDataBytes, length: UInt16(pendingDataLength))
+                            message = SMSystemCommonMessage(timeStamp: timeStamp, type: SMSystemCommonMessage.MessageType(rawValue: pendingMessageStatus)!, data: Array(pendingDataBytes.prefix(upTo: pendingDataLength)))
                         }
                         else {
                             message = SMVoiceMessage(timeStamp: timeStamp, statusByte: pendingMessageStatus, data: pendingDataBytes, length: UInt16(pendingDataLength))
@@ -189,15 +189,15 @@ import Foundation
                             byteIsInvalid = true
                         }
 
-                    case SMSystemCommonMessageType.timeCodeQuarterFrame.rawValue,
-                         SMSystemCommonMessageType.songSelect.rawValue:
+                    case SMSystemCommonMessage.MessageType.timeCodeQuarterFrame.rawValue,
+                         SMSystemCommonMessage.MessageType.songSelect.rawValue:
                         pendingDataLength = 1
 
-                    case SMSystemCommonMessageType.songPositionPointer.rawValue:
+                    case SMSystemCommonMessage.MessageType.songPositionPointer.rawValue:
                         pendingDataLength = 2
 
-                    case SMSystemCommonMessageType.tuneRequest.rawValue:
-                        message = SMSystemCommonMessage(timeStamp: timeStamp, type: SMSystemCommonMessageType(rawValue: byte)!, data: nil, length: 0)
+                    case SMSystemCommonMessage.MessageType.tuneRequest.rawValue:
+                        message = SMSystemCommonMessage(timeStamp: timeStamp, type: SMSystemCommonMessage.MessageType(rawValue: byte)!, data: [])
 
                     default:
                         // Invalid message

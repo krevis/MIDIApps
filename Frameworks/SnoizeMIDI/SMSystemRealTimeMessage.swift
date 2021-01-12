@@ -32,7 +32,12 @@ import Foundation
     }
 
     public var type: MessageType {
-        MessageType(rawValue: statusByte)!
+        get {
+            MessageType(rawValue: statusByte)!
+        }
+        set {
+            self.setStatusByte(newValue.rawValue)
+        }
     }
 
     // MARK: SMMessage overrides
