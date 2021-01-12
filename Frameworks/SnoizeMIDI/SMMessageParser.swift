@@ -115,15 +115,10 @@ import Foundation
 
             if byte >= 0xF8 {
                 // Real Time message
-                switch byte {
-                case SMSystemRealTimeMessageType.clock.rawValue,
-                     SMSystemRealTimeMessageType.start.rawValue,
-                     SMSystemRealTimeMessageType.continue.rawValue,
-                     SMSystemRealTimeMessageType.stop.rawValue,
-                     SMSystemRealTimeMessageType.activeSense.rawValue,
-                     SMSystemRealTimeMessageType.reset.rawValue:
-                    message = SMSystemRealTimeMessage(timeStamp: timeStamp, type: SMSystemRealTimeMessageType(rawValue: byte)!)
-                default:
+                if let messageType = SMSystemRealTimeMessage.MessageType(rawValue: byte) {
+                    message = SMSystemRealTimeMessage(timeStamp: timeStamp, type: messageType)
+                }
+                else {
                     // Byte is invalid
                     byteIsInvalid = true
                 }
