@@ -175,31 +175,29 @@ import Foundation
 
                 case 0xF0:
                     // System common message
-                    switch byte {
-                    case 0xF0:
+                    if byte == 0xF0 {
                         // System exclusive
                         readingSysExData = Data()
                         startSysExTimeStamp = timeStamp
                         delegate?.parserIsReadingSysEx(self, length: 1)
-
-                    case 0xF7:
+                    }
+                    else if byte == 0xF7 {
                         // System exclusive ends--already handled above.
                         // But if this is showing up outside of sysex, it's invalid.
                         if message == nil {
                             byteIsInvalid = true
                         }
-
-                    case SMSystemCommonMessage.MessageType.timeCodeQuarterFrame.rawValue,
-                         SMSystemCommonMessage.MessageType.songSelect.rawValue:
-                        pendingDataLength = 1
-
-                    case SMSystemCommonMessage.MessageType.songPositionPointer.rawValue:
-                        pendingDataLength = 2
-
-                    case SMSystemCommonMessage.MessageType.tuneRequest.rawValue:
-                        message = SMSystemCommonMessage(timeStamp: timeStamp, type: SMSystemCommonMessage.MessageType(rawValue: byte)!, data: [])
-
-                    default:
+                    }
+                    else if let systemCommonMessageType = SMSystemCommonMessage.MessageType(rawValue: byte) {
+                        let dataLength = systemCommonMessageType.otherDataLength
+                        if dataLength > 0 {
+                            pendingDataLength = dataLength
+                        }
+                        else {
+                            message = SMSystemCommonMessage(timeStamp: timeStamp, type: systemCommonMessageType, data: [])
+                        }
+                    }
+                    else {
                         // Invalid message
                         byteIsInvalid = true
                     }

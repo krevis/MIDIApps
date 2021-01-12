@@ -20,6 +20,15 @@ import Foundation
         case songPositionPointer    = 0xF2
         case songSelect             = 0xF3
         case tuneRequest            = 0xF6
+
+        var otherDataLength: Int {
+            switch self {
+            case .timeCodeQuarterFrame: return 1
+            case .songPositionPointer:  return 2
+            case .songSelect:           return 1
+            case .tuneRequest:          return 0
+            }
+        }
     }
 
     init(timeStamp: MIDITimeStamp, type: MessageType, data: [UInt8]) {
@@ -81,12 +90,7 @@ import Foundation
     }
 
     public override var otherDataLength: UInt {
-        switch type {
-        case .timeCodeQuarterFrame: return 1
-        case .songPositionPointer:  return 2
-        case .songSelect:           return 1
-        case .tuneRequest:          return 0
-        }
+        return UInt(type.otherDataLength)   // TODO Should be Int
     }
 
     public override var otherData: Data! {

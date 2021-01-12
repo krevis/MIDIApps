@@ -193,8 +193,6 @@
 		16B11B780971D40100DB1DB5 /* SMMIDIObject-Private.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "SMMIDIObject-Private.h"; sourceTree = "<group>"; };
 		16B11B790971D40100DB1DB5 /* SMMIDIObject.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMMIDIObject.h; sourceTree = "<group>"; };
 		16B11B7A0971D40100DB1DB5 /* SMMIDIObject.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMMIDIObject.m; sourceTree = "<group>"; };
-		16B11B830971D40100DB1DB5 /* SMSystemCommonMessage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMSystemCommonMessage.h; sourceTree = "<group>"; };
-		16B11B840971D40100DB1DB5 /* SMSystemCommonMessage.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMSystemCommonMessage.m; sourceTree = "<group>"; };
 		16B11B850971D40100DB1DB5 /* SMSystemExclusiveMessage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMSystemExclusiveMessage.h; sourceTree = "<group>"; };
 		16B11B860971D40100DB1DB5 /* SMSystemExclusiveMessage.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMSystemExclusiveMessage.m; sourceTree = "<group>"; };
 		16B11B890971D40100DB1DB5 /* SMUtilities.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMUtilities.h; sourceTree = "<group>"; };
@@ -380,8 +378,6 @@
 				16B11B8F0971D40100DB1DB5 /* SMVoiceMessage.h */,
 				16B11B900971D40100DB1DB5 /* SMVoiceMessage.m */,
 				16966AAD25AD73AB00D5BE2A /* SMSystemCommonMessage.swift */,
-				16B11B830971D40100DB1DB5 /* SMSystemCommonMessage.h */,
-				16B11B840971D40100DB1DB5 /* SMSystemCommonMessage.m */,
 				16966A9D25AD6A8F00D5BE2A /* SMSystemRealTimeMessage.swift */,
 				16B11B850971D40100DB1DB5 /* SMSystemExclusiveMessage.h */,
 				16B11B860971D40100DB1DB5 /* SMSystemExclusiveMessage.m */,
