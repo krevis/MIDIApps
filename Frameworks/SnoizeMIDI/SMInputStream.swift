@@ -14,7 +14,7 @@ import Foundation
 
 @objc open class SMInputStream: NSObject, SMMessageParserDelegate {
 
-    @objc override public init() {
+    @objc public override init() {
         // Default to main queue for taking pending read packets
         readQueue = DispatchQueue.main
 

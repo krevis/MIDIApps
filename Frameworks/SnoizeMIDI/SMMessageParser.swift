@@ -23,10 +23,6 @@ import Foundation
 
 @objc public class SMMessageParser: NSObject {
 
-    @objc override init() {
-        super.init()
-    }
-
     deinit {
         sysExTimeOutTimer?.invalidate()
     }
@@ -238,15 +234,12 @@ import Foundation
         guard let data = readingSysExData else { return nil }
         readingSysExData = nil
 
-        let sysExMessage = SMSystemExclusiveMessage(timeStamp: startSysExTimeStamp, data: data)
-        // TODO initializer shouldn't be optional
-        if let message = sysExMessage {
-            message.originatingEndpoint = originatingEndpoint
-            message.wasReceivedWithEOX = validEnd
-            delegate?.parserFinishedReadingSysEx(self, message: message)
-        }
+        let message = SMSystemExclusiveMessage(timeStamp: startSysExTimeStamp, data: data)
+        message.originatingEndpoint = originatingEndpoint
+        message.wasReceivedWithEOX = validEnd
+        delegate?.parserFinishedReadingSysEx(self, message: message)
 
-        return sysExMessage
+        return message
     }
 
     @objc private func sysExTimedOut(_ timer: Timer) {

@@ -76,9 +76,9 @@
         path = [[sheet URL] path];
         
         if (exportingAsSMF) {
-            success = [SMSystemExclusiveMessage writeSystemExclusiveMessages:messages toStandardMIDIFile:path];
+            success = [SMSystemExclusiveMessage writeMessages:messages toStandardMIDIFile:[NSURL fileURLWithPath:path]];
         } else {
-            success = [[SMSystemExclusiveMessage dataForSystemExclusiveMessages: messages] writeToFile:path atomically:YES];
+            success = [[SMSystemExclusiveMessage dataForMessages: messages] writeToFile:path atomically:YES];
         }
 
         if (!success) {

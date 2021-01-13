@@ -31,6 +31,24 @@ import Foundation
         }
     }
 
+    public var type: MessageType {
+        get {
+            MessageType(rawValue: statusByte)!
+        }
+        set {
+            self.setStatusByte(newValue.rawValue)
+        }
+    }
+
+    public var dataByte1: UInt8 {
+        get { dataBytes.0 }
+        set { dataBytes.0 = newValue }
+    }
+    public var dataByte2: UInt8 {
+        get { dataBytes.1 }
+        set { dataBytes.1 = newValue }
+    }
+
     init(timeStamp: MIDITimeStamp, type: MessageType, data: [UInt8]) {
         if data.count > 0 {
             dataBytes.0 = data[0]
@@ -60,23 +78,9 @@ import Foundation
         coder.encodeBytes(&bytes, length: 2, forKey: "dataBytes")
     }
 
-    public var type: MessageType {
-        get {
-            MessageType(rawValue: statusByte)!
-        }
-        set {
-            self.setStatusByte(newValue.rawValue)
-        }
-    }
+    // MARK: Private
 
-    public var dataByte1: UInt8 {
-        get { dataBytes.0 }
-        set { dataBytes.0 = newValue }
-    }
-    public var dataByte2: UInt8 {
-        get { dataBytes.1 }
-        set { dataBytes.1 = newValue }
-    }
+    private var dataBytes: (UInt8, UInt8) = (0, 0)
 
     // MARK: SMMessage overrides
 
@@ -117,9 +121,5 @@ import Foundation
             return NSLocalizedString("Tune Request", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Tune Request event")
         }
     }
-
-    // MARK: Internal
-
-    var dataBytes: (UInt8, UInt8) = (0, 0)
 
 }

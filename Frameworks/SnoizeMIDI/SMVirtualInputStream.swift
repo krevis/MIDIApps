@@ -14,7 +14,7 @@ import Foundation
 
 @objc public class SMVirtualInputStream: SMInputStream {
 
-    @objc override public init() {
+    @objc public override init() {
         virtualEndpointName = SMClient.sharedClient?.name ?? "Virtual Endpoint"
         uniqueID = 0 // Let CoreMIDI assign a unique ID to the virtual endpoint when it is created
 
@@ -59,7 +59,7 @@ import Foundation
 
     // MARK: SMInputStream subclass
 
-    override public var parsers: [SMMessageParser] {
+    public override var parsers: [SMMessageParser] {
         if let parser = parser {
             return [parser]
         }
@@ -68,20 +68,20 @@ import Foundation
         }
     }
 
-    override public func parser(sourceConnectionRefCon refCon: UnsafeMutableRawPointer?) -> SMMessageParser? {
+    public override func parser(sourceConnectionRefCon refCon: UnsafeMutableRawPointer?) -> SMMessageParser? {
         // refCon is ignored, since it only applies to connections created with MIDIPortConnectSource()
         return parser
     }
 
-    override public func streamSource(parser: SMMessageParser) -> SMInputStreamSource? {
+    public override func streamSource(parser: SMMessageParser) -> SMInputStreamSource? {
         return inputStreamSource
     }
 
-    override public var inputSources: [SMInputStreamSource] {
+    public override var inputSources: [SMInputStreamSource] {
         [inputStreamSource]
     }
 
-    override public var selectedInputSources: Set<AnyHashable> {
+    public override var selectedInputSources: Set<AnyHashable> {
         get {
             isActive ? [inputStreamSource] : []
         }
@@ -92,7 +92,7 @@ import Foundation
 
     // MARK: SMInputStream overrides
 
-    @objc override public var persistentSettings: Any? {
+    @objc public override var persistentSettings: Any? {
         if isActive {
             return ["uniqueID": uniqueID]
         }
@@ -101,7 +101,7 @@ import Foundation
         }
     }
 
-    @objc override public func takePersistentSettings(_ settings: Any!) -> [String]! {
+    @objc public override func takePersistentSettings(_ settings: Any!) -> [String]! {
         if let settings = settings as? [String: Any?],
            let settingsUniqueID = settings["uniqueID"] as? MIDIUniqueID {
             uniqueID = settingsUniqueID

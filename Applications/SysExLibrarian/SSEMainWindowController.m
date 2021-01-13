@@ -438,7 +438,7 @@ static SSEMainWindowController *controller = nil;
     NSData *allSysexData;
     SSELibraryEntry *entry = nil;
 
-    allSysexData = [SMSystemExclusiveMessage dataForSystemExclusiveMessages:[midiController messages]];
+    allSysexData = [SMSystemExclusiveMessage dataForMessages:[midiController messages]];
     if (!allSysexData)
         return;	// No messages, no data, nothing to do
     

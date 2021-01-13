@@ -76,11 +76,11 @@ import Foundation
     // MARK: SMInputStream subclass
     // TODO Make this a protocol.
 
-    override public var parsers: [SMMessageParser] {
+    public override var parsers: [SMMessageParser] {
         return Array(parsersForEndpoints.values)
     }
 
-    override public func parser(sourceConnectionRefCon: UnsafeMutableRawPointer?) -> SMMessageParser? {
+    public override func parser(sourceConnectionRefCon: UnsafeMutableRawPointer?) -> SMMessageParser? {
         // Note: sourceConnectionRefCon points to a SMSourceEndpoint.
         // We are allowed to return nil if we are no longer listening to this source endpoint.
         guard let refCon = sourceConnectionRefCon else { return nil }
@@ -88,15 +88,15 @@ import Foundation
         return parsersForEndpoints[endpoint]
     }
 
-    override public func streamSource(parser: SMMessageParser) -> SMInputStreamSource? {
+    public override func streamSource(parser: SMMessageParser) -> SMInputStreamSource? {
         return parser.originatingEndpoint
     }
 
-    override public var inputSources: [SMInputStreamSource] {
+    public override var inputSources: [SMInputStreamSource] {
         SMSourceEndpoint.sourceEndpoints()
     }
 
-    override public var selectedInputSources: Set<AnyHashable> { // TODO Should be typed better
+    public override var selectedInputSources: Set<AnyHashable> { // TODO Should be typed better
         get {
             endpoints
         }

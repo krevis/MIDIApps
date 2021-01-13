@@ -14,6 +14,8 @@ import Foundation
 
 @objc public class SMInvalidMessage: SMMessage {
 
+    @objc public var data: Data
+
     @objc init(timeStamp: MIDITimeStamp, data: Data) {
         self.data = data
         super.init(timeStamp: timeStamp, statusByte: 0x00)  // statusByte is ignored
@@ -25,12 +27,10 @@ import Foundation
         super.init(coder: coder)
     }
 
-    override public func encode(with coder: NSCoder) {
+    public override func encode(with coder: NSCoder) {
         super.encode(with: coder)
         coder.encode(data, forKey: "data")
     }
-
-    @objc public var data: Data
 
     @objc public var sizeForDisplay: String {
         let format = NSLocalizedString("%@ bytes", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "Invalid message length format string")

@@ -265,12 +265,12 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
     SSELibraryFileType fileType = [self.library typeOfFileAtPath:path];
     NSArray *messages = nil;
     if (fileType == SSELibraryFileTypeStandardMIDI) {
-        messages = [SMSystemExclusiveMessage systemExclusiveMessagesInStandardMIDIFile:path];
+        messages = [SMSystemExclusiveMessage messagesFromStandardMIDIFile:[NSURL fileURLWithPath:path]];
     }
     else if (fileType == SSELibraryFileTypeRaw) {
         NSData *data = [NSData dataWithContentsOfFile:path];
         if (data) {
-            messages = [SMSystemExclusiveMessage systemExclusiveMessagesInData:data];
+            messages = [SMSystemExclusiveMessage messagesFromData:data];
         }
     }
 

@@ -23,14 +23,6 @@ import Foundation
         case reset          = 0xFF
     }
 
-    init(timeStamp: MIDITimeStamp, type: MessageType) {
-        super.init(timeStamp: timeStamp, statusByte: type.rawValue)
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-
     public var type: MessageType {
         get {
             MessageType(rawValue: statusByte)!
@@ -38,6 +30,14 @@ import Foundation
         set {
             self.setStatusByte(newValue.rawValue)
         }
+    }
+
+    init(timeStamp: MIDITimeStamp, type: MessageType) {
+        super.init(timeStamp: timeStamp, statusByte: type.rawValue)
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
     }
 
     // MARK: SMMessage overrides

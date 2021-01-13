@@ -41,7 +41,7 @@ class SysExWindowController: DetailsWindowController {
     }
 
     override var dataForDisplay: Data {
-        return sysExMessage.receivedDataWithStartByte ?? Data()
+        return sysExMessage.receivedDataWithStartByte
     }
 
     @IBAction func save(_ sender: AnyObject) {
@@ -54,8 +54,8 @@ class SysExWindowController: DetailsWindowController {
             savePanel.orderOut(nil)
 
             let saveWithEOXAlways = UserDefaults.standard.bool(forKey: PreferenceKeys.saveSysExWithEOXAlways)
-            if let dataToWrite = saveWithEOXAlways ? self.sysExMessage.fullMessageData : self.sysExMessage.receivedDataWithStartByte,
-               let url = savePanel.url {
+            let dataToWrite = saveWithEOXAlways ? self.sysExMessage.fullMessageData : self.sysExMessage.receivedDataWithStartByte
+            if let url = savePanel.url {
                 do {
                     try dataToWrite.write(to: url, options: .atomic)
                 }
