@@ -155,13 +155,66 @@ extension SMSystemExclusiveMessage {
     // and vice-versa.
 
     @objc public static func messages(fromData data: Data) -> [SMSystemExclusiveMessage] {
+        // Scan through data and make messages out of it.
+        // Messages must start with 0xF0.  Messages may end in any byte >= 0x80.
 
-        return []
+        var messages: [SMSystemExclusiveMessage] = []
+
+        var inMessage = false
+        var messageDataBounds = (lower: data.startIndex, upper: data.startIndex)
+
+        func addMessageIfPossible() {
+            let range = messageDataBounds.lower ..< messageDataBounds.upper
+            if !range.isEmpty {
+                let sysexData = data.subdata(in: range)
+                let message = SMSystemExclusiveMessage(timeStamp: 0, data: sysexData)
+                messages.append(message)
+            }
+        }
+
+        for (index, byte) in data.enumerated() {
+            if inMessage && byte >= 0x80 {
+                // end of the current message
+                messageDataBounds.upper = index
+                addMessageIfPossible()
+                inMessage = false
+            }
+
+            if byte == 0xF0 {
+                // start of the next message
+                inMessage = true
+                messageDataBounds.lower = index + 1
+            }
+        }
+
+        if inMessage {
+            messageDataBounds.upper = data.endIndex
+            addMessageIfPossible()
+        }
+
+        return messages
     }
 
-    @objc public static func data(forMessages messages: [SMSystemExclusiveMessage]) -> Data {
+    @objc public static func data(forMessages messages: [SMSystemExclusiveMessage]) -> Data? {
+        guard messages.count > 0 else { return nil }
 
-        return Data()
+        var resultData = Data()
+
+        // Reserve capacity for all the data up front, before concatenating.
+        // Each message is represented as 0xF0 + message.data + 0xF7
+        var totalCount: Int = 0
+        for message in messages {
+            totalCount += 1 + message.data.count + 1
+        }
+        resultData.reserveCapacity(totalCount)
+
+        for message in messages {
+            resultData.append(0xF0)
+            resultData.append(message.data)
+            resultData.append(0xF7)
+        }
+
+        return resultData
     }
 
 }
