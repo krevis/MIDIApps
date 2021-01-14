@@ -240,7 +240,9 @@ extension SMSystemExclusiveMessage {
             var possibleTrack: MusicTrack?
             if MusicSequenceGetIndTrack(sequence, trackCount - 1, &possibleTrack) == noErr,
                let track = possibleTrack {
-                // Iterate through the events, looking for raw MIDI data events, which may contain sysex data.
+                // Iterate through the events, looking for MIDI "raw data" events, which may contain sysex data.
+                // (The names get confusing, because we use Swift's "raw pointers" to get to the data
+                // from this old C-based API.)
 
                 var possibleIterator: MusicEventIterator?
                 if NewMusicEventIterator(track, &possibleIterator) == noErr,
@@ -248,26 +250,32 @@ extension SMSystemExclusiveMessage {
                     defer { _ = DisposeMusicEventIterator(iterator) }
 
                     var hasCurrentEvent: DarwinBoolean = false
-                    guard MusicEventIteratorHasCurrentEvent(iterator, &hasCurrentEvent) == noErr else { return [] }
+                    MusicEventIteratorHasCurrentEvent(iterator, &hasCurrentEvent)
                     while hasCurrentEvent.boolValue {
                         var timeStamp: MusicTimeStamp = 0   // ignored
                         var eventType: MusicEventType = kMusicEventType_NULL
                         var eventData: UnsafeRawPointer?
                         var eventDataSize: UInt32 = 0
-                        guard MusicEventIteratorGetEventInfo(iterator, &timeStamp, &eventType, &eventData, &eventDataSize) == noErr else { return [] }
 
-                        if eventType == kMusicEventType_MIDIRawData && eventDataSize > 0,
-                           let eventDataRawPtr = eventData {
-                            let eventData = Data(bytes: eventDataRawPtr, count: Int(eventDataSize))
-                            let eventMessages = Self.messages(fromData: eventData)
+                        let status = MusicEventIteratorGetEventInfo(iterator, &timeStamp, &eventType, &eventData, &eventDataSize)
 
-                            // TODO Check that this is sufficient. Can we have sysex messages that are split across multiple MIDIRawData events? I bet we can. Did the old code handle that?
+                        if status == noErr && eventType == kMusicEventType_MIDIRawData && eventDataSize > 0,
+                           let eventData = eventData {
+                            // eventData is a pointer to a MIDIRawData struct. That just contains
+                            // another length field and then the "raw" MIDI data.
+                            let midiRawDataEventPtr = eventData.bindMemory(to: MIDIRawData.self, capacity: Int(eventDataSize))
+                            let midiRawDataLength = Int(midiRawDataEventPtr.pointee.length)
+                            withUnsafePointer(to: midiRawDataEventPtr.pointee.data) { midiRawDataPtr in
+                                let midiRawData = Data(UnsafeBufferPointer(start: midiRawDataPtr, count: midiRawDataLength))
+                                let eventMessages = Self.messages(fromData: midiRawData)
+                                // TODO Check that this is sufficient. Can we have sysex messages that are split across multiple MIDIRawData events? I bet we can, and the old code handled it.
 
-                            messages.append(contentsOf: eventMessages)
+                                messages.append(contentsOf: eventMessages)
+                            }
                         }
 
-                        guard MusicEventIteratorNextEvent(iterator) == noErr else { return [] }
-                        guard MusicEventIteratorHasCurrentEvent(iterator, &hasCurrentEvent) == noErr else { return [] }
+                        _ = MusicEventIteratorNextEvent(iterator)
+                        _ = MusicEventIteratorHasCurrentEvent(iterator, &hasCurrentEvent)
                     }
                 }
             }
