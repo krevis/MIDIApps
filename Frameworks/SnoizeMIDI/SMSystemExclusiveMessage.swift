@@ -287,9 +287,35 @@ extension SMSystemExclusiveMessage {
     @objc public static func standardMIDIFileData(forMessages messages: [SMSystemExclusiveMessage]) -> Data? {
         guard messages.count > 0 else { return nil }
 
-        var resultData = Data()
+        var possibleSequence: MusicSequence?
+        guard NewMusicSequence(&possibleSequence) == noErr, let sequence = possibleSequence else { return nil }
+        defer { _ = DisposeMusicSequence(sequence) }
 
-        return resultData
+        var possibleTrack: MusicTrack?
+        guard MusicSequenceNewTrack(sequence, &possibleTrack) == noErr, let track = possibleTrack else { return nil }
+
+        var timeStamp: MusicTimeStamp = 0
+        for message in messages {
+            let messageData = message.fullMessageData
+
+            // Create a buffer large enough for a MIDIRawData struct containing all messageData
+            let structCount = MemoryLayout.offset(of: \MIDIRawData.data)! + messageData.count
+            let mutableRawPointer = UnsafeMutableRawPointer.allocate(byteCount: structCount, alignment: MemoryLayout<MIDIRawData>.alignment)
+            defer { mutableRawPointer.deallocate() }
+
+            let midiRawDataPtr = mutableRawPointer.bindMemory(to: MIDIRawData.self, capacity: structCount)
+            midiRawDataPtr.pointee.length = UInt32(messageData.count)
+            messageData.copyBytes(to: &midiRawDataPtr.pointee.data, count: messageData.count)
+
+            guard MusicTrackNewMIDIRawDataEvent(track, timeStamp, midiRawDataPtr) == noErr else { return nil }
+
+            timeStamp += 500    // TODO Are we sure?
+            // consider getting a duration with bytes/3125, then MusicSequenceGetBeatsForSeconds()
+        }
+
+        var unmanagedResultData: Unmanaged<CFData>?
+        guard MusicSequenceFileCreateData(sequence, .midiType, MusicSequenceFileFlags(rawValue: 0), 0 /* TODO or 480? */, &unmanagedResultData) == noErr else { return nil }
+        return unmanagedResultData?.takeRetainedValue() as Data?
     }
 
 }
