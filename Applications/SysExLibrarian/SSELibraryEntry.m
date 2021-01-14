@@ -257,24 +257,25 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
 
 - (NSArray *)messages
 {
-    NSString *path = [self path];
-    if (!path) {
-        return nil;
-    }
-
-    SSELibraryFileType fileType = [self.library typeOfFileAtPath:path];
     NSArray *messages = nil;
-    if (fileType == SSELibraryFileTypeStandardMIDI) {
-        messages = [SMSystemExclusiveMessage messagesFromStandardMIDIFile:[NSURL fileURLWithPath:path]];
-    }
-    else if (fileType == SSELibraryFileTypeRaw) {
+
+    NSString *path = [self path];
+    if (path) {
         NSData *data = [NSData dataWithContentsOfFile:path];
         if (data) {
-            messages = [SMSystemExclusiveMessage messagesFromData:data];
+            SSELibraryFileType fileType = [self.library typeOfFileAtPath:path];
+
+            if (fileType == SSELibraryFileTypeStandardMIDI) {
+                messages = [SMSystemExclusiveMessage messagesFromStandardMIDIFileData:data];
+            }
+            else if (fileType == SSELibraryFileTypeRaw) {
+                messages = [SMSystemExclusiveMessage messagesFromData:data];
+            }
         }
     }
 
     // Always update this stuff when we read the messages
+    // TODO But perhaps not, if there was an error reading the file
     [self updateDerivedInformationFromMessages:messages];
     
     return messages;

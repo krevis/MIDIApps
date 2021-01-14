@@ -219,18 +219,69 @@ extension SMSystemExclusiveMessage {
 
 }
 
+import AudioToolbox
+
 extension SMSystemExclusiveMessage {
 
     // Extract sysex messages from a Standard MIDI file, and vice-versa.
 
-    @objc public static func messages(fromStandardMIDIFile url: URL) -> [SMSystemExclusiveMessage] {
+    @objc public static func messages(fromStandardMIDIFileData data: Data) -> [SMSystemExclusiveMessage] {
+        var possibleSequence: MusicSequence?
+        guard NewMusicSequence(&possibleSequence) == noErr, let sequence = possibleSequence else { return [] }
+        defer { _ = DisposeMusicSequence(sequence) }
 
-        return []
+        guard MusicSequenceFileLoadData(sequence, data as CFData, .midiType, .smf_ChannelsToTracks) == noErr else { return [] }
+
+        var messages: [SMSystemExclusiveMessage] = []
+
+        // The last track should contain any sysex data.
+        var trackCount: UInt32 = 0
+        if MusicSequenceGetTrackCount(sequence, &trackCount) == noErr {
+            var possibleTrack: MusicTrack?
+            if MusicSequenceGetIndTrack(sequence, trackCount - 1, &possibleTrack) == noErr,
+               let track = possibleTrack {
+                // Iterate through the events, looking for raw MIDI data events, which may contain sysex data.
+
+                var possibleIterator: MusicEventIterator?
+                if NewMusicEventIterator(track, &possibleIterator) == noErr,
+                   let iterator = possibleIterator {
+                    defer { _ = DisposeMusicEventIterator(iterator) }
+
+                    var hasCurrentEvent: DarwinBoolean = false
+                    guard MusicEventIteratorHasCurrentEvent(iterator, &hasCurrentEvent) == noErr else { return [] }
+                    while hasCurrentEvent.boolValue {
+                        var timeStamp: MusicTimeStamp = 0   // ignored
+                        var eventType: MusicEventType = kMusicEventType_NULL
+                        var eventData: UnsafeRawPointer?
+                        var eventDataSize: UInt32 = 0
+                        guard MusicEventIteratorGetEventInfo(iterator, &timeStamp, &eventType, &eventData, &eventDataSize) == noErr else { return [] }
+
+                        if eventType == kMusicEventType_MIDIRawData && eventDataSize > 0,
+                           let eventDataRawPtr = eventData {
+                            let eventData = Data(bytes: eventDataRawPtr, count: Int(eventDataSize))
+                            let eventMessages = Self.messages(fromData: eventData)
+
+                            // TODO Check that this is sufficient. Can we have sysex messages that are split across multiple MIDIRawData events? I bet we can. Did the old code handle that?
+
+                            messages.append(contentsOf: eventMessages)
+                        }
+
+                        guard MusicEventIteratorNextEvent(iterator) == noErr else { return [] }
+                        guard MusicEventIteratorHasCurrentEvent(iterator, &hasCurrentEvent) == noErr else { return [] }
+                    }
+                }
+            }
+        }
+
+        return messages
     }
 
-    @objc public static func writeMessages(_ messages: [SMSystemExclusiveMessage], toStandardMIDIFile url: URL) -> Bool {
+    @objc public static func standardMIDIFileData(forMessages messages: [SMSystemExclusiveMessage]) -> Data? {
+        guard messages.count > 0 else { return nil }
 
-        return false
+        var resultData = Data()
+
+        return resultData
     }
 
 }

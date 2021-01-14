@@ -70,15 +70,17 @@
     NSArray *messages = (NSArray *)contextInfo;
 
     if (returnCode == NSOKButton) {
-        NSString *path;
-        BOOL success;
-
-        path = [[sheet URL] path];
-        
+        NSData *fileData;
         if (exportingAsSMF) {
-            success = [SMSystemExclusiveMessage writeMessages:messages toStandardMIDIFile:[NSURL fileURLWithPath:path]];
+            fileData = [SMSystemExclusiveMessage standardMIDIFileDataForMessages: messages];
         } else {
-            success = [[SMSystemExclusiveMessage dataForMessages: messages] writeToFile:path atomically:YES];
+            fileData = [SMSystemExclusiveMessage dataForMessages: messages];
+        }
+
+        BOOL success = NO;
+        if (fileData) {
+            NSString *path = [[sheet URL] path];
+            success = [fileData writeToFile:path atomically:YES];
         }
 
         if (!success) {
