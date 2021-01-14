@@ -90,7 +90,8 @@ import Foundation
     private func messagesForPacket(_ packetPtr: UnsafePointer<MIDIPacket>) -> [SMMessage] {
         // Split this packet into separate MIDI messages.
 
-        let packetDataCount = packetPtr.pointee.length
+        let packetDataCount = Int(packetPtr.pointee.length)
+        guard packetDataCount > 0 else { return [] }
         let timeStamp = packetPtr.pointee.timeStamp
 
         var pendingMessageStatus: UInt8 = 0
@@ -100,12 +101,15 @@ import Foundation
 
         var readingInvalidData: Data?
 
+        // Safely getting to the packet data is more difficult than it should be.
+        // Can't use withUnsafePointer(to: packetPtr.pointee.data.0) since that crashes with ASAN on.
+        // (Accessing `pointee` appears to be trying to copy 256 bytes of data, which may be more than
+        // is really accessible.)
         // Can't use withUnsafeBytes(of: packetPtr.pointee.data) since that limits to the 256 bytes
-        // in the tuple in the struct.  Do it the hard way instead.
-        let rawPacketDataPtr = UnsafeRawBufferPointer(start: UnsafeRawPointer(packetPtr) + MemoryLayout.offset(of: \MIDIPacket.data)!, count: Int(packetDataCount))
-        let bufferPtr = rawPacketDataPtr.bindMemory(to: UInt8.self)
-
-        let messages = bufferPtr.enumerated().compactMap { (byteIndex, byte) -> SMMessage? in
+        // in the tuple in the struct. There may be more.
+        // Do it the hard way instead.
+        let rawPacketDataPtr = UnsafeRawBufferPointer(start: UnsafeRawPointer(packetPtr) + MemoryLayout.offset(of: \MIDIPacket.data)!, count: packetDataCount)
+        return rawPacketDataPtr.enumerated().compactMap { (byteIndex, byte) -> SMMessage? in
             var message: SMMessage?
             var byteIsInvalid = false
 
@@ -223,8 +227,6 @@ import Foundation
             message?.originatingEndpoint = originatingEndpoint
             return message
         }
-
-        return messages
     }
     // swiftlint:enable cyclomatic_complexity function_body_length
 
