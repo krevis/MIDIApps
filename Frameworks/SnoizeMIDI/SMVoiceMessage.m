@@ -92,7 +92,7 @@ fail:
     }
 }
 
-- (NSUInteger)otherDataLength;
+- (NSInteger)otherDataLength;
 {
     switch ([self status]) {
         case SMVoiceMessageStatusProgram:
@@ -116,7 +116,7 @@ fail:
 
 - (NSData *)otherData
 {
-    NSUInteger length = [self otherDataLength];
+    NSInteger length = [self otherDataLength];
     if (length > 0) {
         return [NSData dataWithBytes:dataBytes length:length];
     }

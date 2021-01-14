@@ -110,13 +110,13 @@ extern NSString *SMProgramChangeBaseIndexPreferenceKey;
 + (NSString *)nameForControllerNumber:(Byte)controllerNumber;
 + (NSString *)formatProgramNumber:(Byte)programNumber;
 + (NSString *)formatData:(NSData *)data;
-+ (NSString *)formatDataBytes:(const Byte *)bytes length:(NSUInteger)length;
++ (NSString *)formatDataBytes:(const Byte *)bytes length:(NSInteger)length;
 + (NSString *)formatDataByte:(Byte)dataByte;
 + (NSString *)formatDataByte:(Byte)dataByte usingOption:(SMDataFormattingOption)option;
 + (NSString *)formatSignedDataByte1:(Byte)dataByte1 byte2:(Byte)dataByte2;
 + (NSString *)formatSignedDataByte1:(Byte)dataByte1 byte2:(Byte)dataByte2 usingOption:(SMDataFormattingOption)option;
-+ (NSString *)formatLength:(NSUInteger)length;
-+ (NSString *)formatLength:(NSUInteger)length usingOption:(SMDataFormattingOption)option;
++ (NSString *)formatLength:(NSInteger)length;
++ (NSString *)formatLength:(NSInteger)length usingOption:(SMDataFormattingOption)option;
 + (NSString *)nameForManufacturerIdentifier:(NSData *)manufacturerIdentifierData;
 
 - (id)initWithTimeStamp:(MIDITimeStamp)aTimeStamp statusByte:(Byte)aStatusByte;
@@ -131,7 +131,7 @@ extern NSString *SMProgramChangeBaseIndexPreferenceKey;
     // Enumerated message type, which doesn't correspond to MIDI value
 - (BOOL)matchesMessageTypeMask:(SMMessageType)mask;
 
-@property (nonatomic, readonly, assign) NSUInteger otherDataLength;
+@property (nonatomic, readonly, assign) NSInteger otherDataLength;
     // Length of data after the status byte
 @property (nonatomic, readonly, strong) NSData *otherData;
     // May return nil, indicating no additional data

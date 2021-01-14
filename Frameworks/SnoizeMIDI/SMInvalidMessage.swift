@@ -43,8 +43,8 @@ import Foundation
         SMMessageTypeInvalid
     }
 
-    public override var otherDataLength: UInt {
-        UInt(data.count) // TODO Type consistently
+    public override var otherDataLength: Int {
+        data.count
     }
 
     public override var otherData: Data! {

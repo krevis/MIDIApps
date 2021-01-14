@@ -57,9 +57,8 @@ import Foundation
         return cachedDataWithEOX
     }
 
-    public override var otherDataLength: UInt {
-        UInt(data.count) + 1  // Add a byte for the EOX at the end
-        // TODO Fix type
+    public override var otherDataLength: Int {
+        data.count + 1  // Add a byte for the EOX at the end
     }
 
     // Data as received, without starting 0xF0. May or may not include 0xF7.
@@ -68,7 +67,7 @@ import Foundation
     }
 
     @objc public var receivedDataLength: Int {
-        return receivedData.count
+        receivedData.count
     }
 
     // Data as received, with 0xF0 at start. May or may not include 0xF7.
@@ -77,7 +76,7 @@ import Foundation
     }
 
     @objc public var receivedDataWithStartByteLength: Int {
-        return receivedDataLength + 1
+        receivedDataLength + 1
     }
 
     // Data with leading 0xF0 and ending 0xF7.
@@ -86,7 +85,7 @@ import Foundation
     }
 
     @objc public var fullMessageDataLength: Int {
-        return Int(otherDataLength) + 1 // TODO Types
+        otherDataLength + 1
     }
 
     // Manufacturer ID bytes. May be 1 to 3 bytes in length, or nil if it can't be determined.
@@ -106,12 +105,12 @@ import Foundation
     }
 
     @objc public var manufacturerName: String? {
-        guard let id = manufacturerIdentifier else { return nil }
-        return SMMessage.name(forManufacturerIdentifier: id)
+        guard let identifier = manufacturerIdentifier else { return nil }
+        return SMMessage.name(forManufacturerIdentifier: identifier)
     }
 
     @objc public var sizeForDisplay: String {
-        guard let formattedLength = SMMessage.formatLength(UInt(receivedDataWithStartByteLength)) else { return "" }
+        guard let formattedLength = SMMessage.formatLength(receivedDataWithStartByteLength) else { return "" }
         let format = NSLocalizedString("%@ bytes", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "SysEx length format string")
         return String.localizedStringWithFormat(format, formattedLength)
     }

@@ -93,8 +93,8 @@ import Foundation
         }
     }
 
-    public override var otherDataLength: UInt {
-        return UInt(type.otherDataLength)   // TODO Should be Int
+    public override var otherDataLength: Int {
+        type.otherDataLength
     }
 
     public override var otherData: Data! {

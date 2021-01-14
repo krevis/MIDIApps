@@ -145,11 +145,11 @@ NSString *SMProgramChangeBaseIndexPreferenceKey = @"SMProgramChangeBaseIndex";
     return [self formatDataBytes:[data bytes] length:[data length]];
 }
 
-+ (NSString *)formatDataBytes:(const Byte *)bytes length:(NSUInteger)length;
++ (NSString *)formatDataBytes:(const Byte *)bytes length:(NSInteger)length;
 {
     SMDataFormattingOption option;
     NSMutableString *string;
-    NSUInteger pos;
+    NSInteger pos;
 
     option = (SMDataFormattingOption)[[NSUserDefaults standardUserDefaults] integerForKey:SMDataFormatPreferenceKey];
     string = [NSMutableString string];
@@ -201,20 +201,20 @@ NSString *SMProgramChangeBaseIndexPreferenceKey = @"SMProgramChangeBaseIndex";
     }
 }
 
-+ (NSString *)formatLength:(NSUInteger)length;
++ (NSString *)formatLength:(NSInteger)length;
 {
     return [self formatLength:length usingOption:(SMDataFormattingOption)[[NSUserDefaults standardUserDefaults] integerForKey:SMDataFormatPreferenceKey]];
 }
 
-+ (NSString *)formatLength:(NSUInteger)length usingOption:(SMDataFormattingOption)option;
++ (NSString *)formatLength:(NSInteger)length usingOption:(SMDataFormattingOption)option;
 {
     switch (option) {
         case SMDataFormatDecimal:
         default:
-            return [NSString stringWithFormat:@"%lu", (unsigned long)length];
+            return [NSString stringWithFormat:@"%ld", (long)length];
 
         case SMDataFormatHexadecimal:
-            return [NSString stringWithFormat:@"$%lX", (unsigned long)length];
+            return [NSString stringWithFormat:@"$%lX", (long)length];
     }
 }
 
@@ -385,7 +385,7 @@ fail:
     return ([self messageType] & mask) ? YES : NO;
 }
 
-- (NSUInteger)otherDataLength;
+- (NSInteger)otherDataLength;
 {
     // Subclasses must override if they have other data
     return 0;

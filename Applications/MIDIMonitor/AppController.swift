@@ -333,21 +333,19 @@ extension AppController {
         if newlyAppearedSources == nil {
             newlyAppearedSources = Set<SMSourceEndpoint>()
 
-            let autoConnectOption = AutoConnectOption(rawValue: UserDefaults.standard.integer(forKey: PreferenceKeys.autoConnectNewSources))
-
-            switch autoConnectOption {
-            case .addInCurrentWindow:
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
-                    self.autoConnectToNewlyAppearedSources()
+            if let autoConnectOption = AutoConnectOption(rawValue: UserDefaults.standard.integer(forKey: PreferenceKeys.autoConnectNewSources)) {
+                switch autoConnectOption {
+                case .addInCurrentWindow:
+                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+                        self.autoConnectToNewlyAppearedSources()
+                    }
+                case .openNewWindow:
+                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+                        self.openWindowForNewlyAppearedSources()
+                    }
+                case .disabled:
+                    break   // do nothing
                 }
-            case .openNewWindow:
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
-                    self.openWindowForNewlyAppearedSources()
-                }
-            case .disabled:
-                break   // do nothing
-            @unknown default:
-                break
             }
         }
 
