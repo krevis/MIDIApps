@@ -51,9 +51,9 @@ import Foundation
 
     init(timeStamp: MIDITimeStamp, type: MessageType, data: [UInt8]) {
         if data.count > 0 {
-            dataBytes.0 = data[0]
+            dataBytes.0 = data[data.startIndex]
             if data.count > 1 {
-                dataBytes.1 = data[1]
+                dataBytes.1 = data[data.startIndex + 1]
             }
         }
         super.init(timeStamp: timeStamp, statusByte: type.rawValue)

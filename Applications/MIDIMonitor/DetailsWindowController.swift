@@ -106,9 +106,9 @@ class DetailsWindowController: UtilityWindowController, NSWindowDelegate {
         let lineLength = lengthDigitCount + 3 * 8 + 1 + 3 * 8 + 2 + 1 + 16 + 1 + 1
         formattedString.reserveCapacity((dataLength / 16) * lineLength)
 
-        for dataIndex in stride(from: 0, to: dataLength, by: 16) {
-            let hexChars: [Character] = [ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F" ]
+        let hexChars: [Character] = [ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F" ]
 
+        for dataIndex in stride(from: data.startIndex, to: data.endIndex, by: 16) {
             formattedString += String(format: "%.*lX", lengthDigitCount, dataIndex)
 
             for index in dataIndex ..< (dataIndex+16) {
@@ -117,7 +117,7 @@ class DetailsWindowController: UtilityWindowController, NSWindowDelegate {
                     formattedString += " "
                 }
 
-                if index < dataLength {
+                if index < data.endIndex {
                     let byte = data[index]
                     formattedString.append(hexChars[(Int(byte) & 0xF0) >> 4])
                     formattedString.append(hexChars[(Int(byte) & 0x0F)     ])
@@ -129,7 +129,7 @@ class DetailsWindowController: UtilityWindowController, NSWindowDelegate {
 
             formattedString += "  |"
 
-            for index in dataIndex ..< min(dataIndex+16, dataLength) {
+            for index in dataIndex ..< min(dataIndex+16, data.endIndex) {
                 let byte = data[index]
                 if isprint(Int32(byte)) != 0 {
                     formattedString.append(Character(Unicode.Scalar(byte)))

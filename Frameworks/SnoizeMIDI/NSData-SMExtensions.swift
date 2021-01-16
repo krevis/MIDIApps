@@ -21,10 +21,9 @@ import Foundation
         var formattedString = ""
         formattedString.reserveCapacity(dataLength * 2)
 
-        for dataIndex in 0 ..< dataLength {
-            let hexChars: [Character] = [ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f" ]
+        let hexChars: [Character] = [ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f" ]
 
-            let byte = self[dataIndex]
+        for byte in self {
             formattedString.append(hexChars[(Int(byte) & 0xF0) >> 4])
             formattedString.append(hexChars[(Int(byte) & 0x0F)     ])
         }

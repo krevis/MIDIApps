@@ -94,11 +94,11 @@ import Foundation
         guard data.count > 0 else { return nil }
 
         // If the first byte is not 0, the manufacturer ID is one byte long. Otherwise, return a three-byte value (if possible).
-        if data[0] != 0 {
-            return data.subdata(in: 0..<1)
+        if data.first! != 0 {
+            return data.subdata(in: data.startIndex ..< data.startIndex+1)
         }
         else if data.count >= 3 {
-            return data.subdata(in: 0..<3)
+            return data.subdata(in: data.startIndex ..< data.startIndex+3)
         }
         else {
             return nil
@@ -250,6 +250,8 @@ extension SMSystemExclusiveMessage {
                    let iterator = possibleIterator {
                     defer { _ = DisposeMusicEventIterator(iterator) }
 
+                    var accumulatingSysexData: Data?
+
                     var hasCurrentEvent: DarwinBoolean = false
                     MusicEventIteratorHasCurrentEvent(iterator, &hasCurrentEvent)
                     while hasCurrentEvent.boolValue {
@@ -262,21 +264,44 @@ extension SMSystemExclusiveMessage {
 
                         if status == noErr && eventType == kMusicEventType_MIDIRawData && eventDataSize > 0,
                            let eventData = eventData {
-                            // eventData is a pointer to a MIDIRawData struct. That just contains
+                            // eventData is a pointer to a MIDIRawData struct, which contains
                             // another length field and then the "raw" MIDI data.
                             let midiRawDataEventPtr = eventData.bindMemory(to: MIDIRawData.self, capacity: Int(eventDataSize))
                             let midiRawDataLength = Int(midiRawDataEventPtr.pointee.length)
+                            if midiRawDataLength > 0 {
+                                // You might try to do this:
+                                // withUnsafePointer(to: midiRawDataEventPtr.pointee.data) { midiRawDataPtr in
+                                //     let midiRawData = Data(UnsafeBufferPointer(start: midiRawDataPtr, count: midiRawDataLength))
+                                // but ASAN dislikes that, so construct the pointer to the data manually.
+                                let midiRawData = Data(bytes: eventData + MemoryLayout.offset(of: \MIDIRawData.data)!, count: midiRawDataLength)
 
-                            // You might try to do this:
-                            // withUnsafePointer(to: midiRawDataEventPtr.pointee.data) { midiRawDataPtr in
-                            //     let midiRawData = Data(UnsafeBufferPointer(start: midiRawDataPtr, count: midiRawDataLength))
-                            // but ASAN dislikes that, so construct the pointer to the data manually.
-                            let midiRawData = Data(bytes: eventData + MemoryLayout.offset(of: \MIDIRawData.data)!, count: midiRawDataLength)
+                                let firstByte = midiRawData.first!
+                                if firstByte == 0xF0 {
+                                    // Starting a sysex message. Omit the 0xF0.
+                                    accumulatingSysexData = midiRawData.dropFirst()
+                                }
+                                else if accumulatingSysexData != nil {
+                                    // Continuing a sysex message.
+                                    // TODO Test this, find a file that does this in practice. Should always be 0xF7 shouldn't it?
+                                    if firstByte == 0xF7 {
+                                        accumulatingSysexData?.append(midiRawData.dropFirst())
+                                    }
+                                    else {
+                                        accumulatingSysexData?.append(midiRawData)
+                                    }
+                                }
 
-                            let eventMessages = Self.messages(fromData: midiRawData)
-                            // TODO Check that this is sufficient. Can we have sysex messages that are split across multiple MIDIRawData events? I bet we can, and the old code handled it.
+                                if let accumulatedSysexData = accumulatingSysexData,
+                                   accumulatedSysexData.count > 1,
+                                   accumulatedSysexData.last! == 0xF7 {
+                                    // Ending a sysex message.
+                                    // Cut off the ending 0xF7 byte and create a message.
+                                    let sysexMessage = SMSystemExclusiveMessage(timeStamp: 0, data: accumulatedSysexData.dropLast())
+                                    messages.append(sysexMessage)
 
-                            messages.append(contentsOf: eventMessages)
+                                    accumulatingSysexData = nil
+                                }
+                            }
                         }
 
                         _ = MusicEventIteratorNextEvent(iterator)
