@@ -309,12 +309,18 @@ extension SMSystemExclusiveMessage {
 
             guard MusicTrackNewMIDIRawDataEvent(track, timeStamp, midiRawDataPtr) == noErr else { return nil }
 
-            timeStamp += 500    // TODO Are we sure?
-            // consider getting a duration with bytes/3125, then MusicSequenceGetBeatsForSeconds()
+            // Advance timeStamp by the duration required to send this message,
+            // plus a gap between messages
+            let midiSpeed = 3125.0  // bytes / sec
+            let midiDuration = Double(messageData.count) / midiSpeed
+            let gapDuration = 0.150 // seconds
+            var durationTimeStamp: MusicTimeStamp = 0
+            MusicSequenceGetBeatsForSeconds(sequence, Float64(midiDuration + gapDuration), &durationTimeStamp)
+            timeStamp += durationTimeStamp
         }
 
         var unmanagedResultData: Unmanaged<CFData>?
-        guard MusicSequenceFileCreateData(sequence, .midiType, MusicSequenceFileFlags(rawValue: 0), 0 /* TODO or 480? */, &unmanagedResultData) == noErr else { return nil }
+        guard MusicSequenceFileCreateData(sequence, .midiType, MusicSequenceFileFlags(rawValue: 0), 0, &unmanagedResultData) == noErr else { return nil }
         return unmanagedResultData?.takeRetainedValue() as Data?
     }
 
