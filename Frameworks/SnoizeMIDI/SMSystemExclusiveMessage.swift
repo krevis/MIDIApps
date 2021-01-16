@@ -241,7 +241,7 @@ extension SMSystemExclusiveMessage {
             if MusicSequenceGetIndTrack(sequence, trackCount - 1, &possibleTrack) == noErr,
                let track = possibleTrack {
                 // Iterate through the events, looking for MIDI "raw data" events, which may contain sysex data.
-                // (The names get confusing, because we use Swift's "raw pointers" to get to the data
+                // (The names get confusing, because we also use Swift's "raw pointers" to get to the data
                 // from this old C-based API.)
 
                 var possibleIterator: MusicEventIterator?
@@ -265,13 +265,17 @@ extension SMSystemExclusiveMessage {
                             // another length field and then the "raw" MIDI data.
                             let midiRawDataEventPtr = eventData.bindMemory(to: MIDIRawData.self, capacity: Int(eventDataSize))
                             let midiRawDataLength = Int(midiRawDataEventPtr.pointee.length)
-                            withUnsafePointer(to: midiRawDataEventPtr.pointee.data) { midiRawDataPtr in
-                                let midiRawData = Data(UnsafeBufferPointer(start: midiRawDataPtr, count: midiRawDataLength))
-                                let eventMessages = Self.messages(fromData: midiRawData)
-                                // TODO Check that this is sufficient. Can we have sysex messages that are split across multiple MIDIRawData events? I bet we can, and the old code handled it.
 
-                                messages.append(contentsOf: eventMessages)
-                            }
+                            // You might try to do this:
+                            // withUnsafePointer(to: midiRawDataEventPtr.pointee.data) { midiRawDataPtr in
+                            //     let midiRawData = Data(UnsafeBufferPointer(start: midiRawDataPtr, count: midiRawDataLength))
+                            // but ASAN dislikes that, so construct the pointer to the data manually.
+                            let midiRawData = Data(bytes: eventData + MemoryLayout.offset(of: \MIDIRawData.data)!, count: midiRawDataLength)
+
+                            let eventMessages = Self.messages(fromData: midiRawData)
+                            // TODO Check that this is sufficient. Can we have sysex messages that are split across multiple MIDIRawData events? I bet we can, and the old code handled it.
+
+                            messages.append(contentsOf: eventMessages)
                         }
 
                         _ = MusicEventIteratorNextEvent(iterator)
