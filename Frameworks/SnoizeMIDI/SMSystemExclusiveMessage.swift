@@ -14,6 +14,7 @@ import Foundation
 
 @objc public class SMSystemExclusiveMessage: SMMessage {
 
+    // Init with data that does *not* include the starting 0xF0 or ending 0xF7.
     public init(timeStamp: MIDITimeStamp, data: Data) {
         self.data = data
         super.init(timeStamp: timeStamp, statusByte: 0xF0)
@@ -46,7 +47,7 @@ import Foundation
     }
 
     // Whether the message was received with an ending 0xF7 (EOX) or not.
-    @objc public var wasReceivedWithEOX = false
+    @objc public var wasReceivedWithEOX = true
 
     // Data without the starting 0xF0, always with ending 0xF7.
     public override var otherData: Data! {
@@ -72,7 +73,7 @@ import Foundation
 
     // Data as received, with 0xF0 at start. May or may not include 0xF7.
     @objc public var receivedDataWithStartByte: Data {
-        dataByAddingStartByte(data)
+        dataByAddingStartByte(receivedData)
     }
 
     @objc public var receivedDataWithStartByteLength: Int {
