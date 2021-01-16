@@ -191,8 +191,6 @@
 		16B11B780971D40100DB1DB5 /* SMMIDIObject-Private.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "SMMIDIObject-Private.h"; sourceTree = "<group>"; };
 		16B11B790971D40100DB1DB5 /* SMMIDIObject.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMMIDIObject.h; sourceTree = "<group>"; };
 		16B11B7A0971D40100DB1DB5 /* SMMIDIObject.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMMIDIObject.m; sourceTree = "<group>"; };
-		16B11B850971D40100DB1DB5 /* SMSystemExclusiveMessage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMSystemExclusiveMessage.h; sourceTree = "<group>"; };
-		16B11B860971D40100DB1DB5 /* SMSystemExclusiveMessage.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMSystemExclusiveMessage.m; sourceTree = "<group>"; };
 		16B11B890971D40100DB1DB5 /* SMUtilities.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMUtilities.h; sourceTree = "<group>"; };
 		16B11B8A0971D40100DB1DB5 /* SMUtilities.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMUtilities.m; sourceTree = "<group>"; };
 		16B11B8F0971D40100DB1DB5 /* SMVoiceMessage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMVoiceMessage.h; sourceTree = "<group>"; };
@@ -378,8 +376,6 @@
 				16966AAD25AD73AB00D5BE2A /* SMSystemCommonMessage.swift */,
 				16966A9D25AD6A8F00D5BE2A /* SMSystemRealTimeMessage.swift */,
 				16966AC025AECFB100D5BE2A /* SMSystemExclusiveMessage.swift */,
-				16B11B850971D40100DB1DB5 /* SMSystemExclusiveMessage.h */,
-				16B11B860971D40100DB1DB5 /* SMSystemExclusiveMessage.m */,
 				16966A8A25AD0F8500D5BE2A /* SMInvalidMessage.swift */,
 				1648765E0E6D2A22002CF387 /* SMMessageTimeBase.h */,
 				1648765F0E6D2A22002CF387 /* SMMessageTimeBase.m */,
