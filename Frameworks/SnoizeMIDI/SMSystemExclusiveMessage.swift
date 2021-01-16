@@ -122,7 +122,7 @@ import Foundation
 
     private func dataByAddingStartByte(_ someData: Data) -> Data {
         var result = someData
-        result.insert(0xF0, at: 0)
+        result.insert(0xF0, at: result.startIndex)
         return result
     }
 
