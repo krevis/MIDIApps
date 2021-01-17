@@ -282,7 +282,10 @@ extension SMSystemExclusiveMessage {
                                 }
                                 else if accumulatingSysexData != nil {
                                     // Continuing a sysex message.
-                                    // TODO Test this, find a file that does this in practice. Should always be 0xF7 shouldn't it?
+                                    // (This can happen in theory according to the SMF spec, but I'm not seeing it in practice;
+                                    //  it's possible that MusicSequence abstracts this away by concatenating sysex events together
+                                    //  before we see them. If this does happen, I'm not sure whether we will see the event data
+                                    //  starting with 0xF7 or not, so handle both ways.)
                                     if firstByte == 0xF7 {
                                         accumulatingSysexData?.append(midiRawData.dropFirst())
                                     }
