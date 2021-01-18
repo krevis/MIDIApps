@@ -19,6 +19,5 @@
 #import <SnoizeMIDI/SMMessageTimeBase.h>
 #import <SnoizeMIDI/SMMIDIObject.h>
 #import <SnoizeMIDI/SMUtilities.h>
-#import <SnoizeMIDI/SMVoiceMessage.h>
 #import <SnoizeMIDI/NSArray-SMExtensions.h>
 #import <SnoizeMIDI/NSString-SMExtensions.h>

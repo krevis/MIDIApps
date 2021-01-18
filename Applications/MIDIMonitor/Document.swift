@@ -26,7 +26,7 @@ class Document: NSDocument {
 
         stream.messageDestination = messageFilter
         messageFilter.filterMask = SMMessageTypeAllMask
-        messageFilter.channelMask = SMChannelMaskAll
+        messageFilter.channelMask = SMVoiceMessage.ChannelMask.all
 
         messageFilter.messageDestination = history
         center.addObserver(self, selector: #selector(self.historyDidChange(_:)), name: .messageHistoryChanged, object: history)
@@ -94,7 +94,7 @@ extension Document {
         }
 
         let channelMask = messageFilter.channelMask
-        if channelMask != SMChannelMaskAll {
+        if channelMask != SMVoiceMessage.ChannelMask.all {
             dict["channelMask"] = channelMask.rawValue
         }
 
@@ -150,10 +150,10 @@ extension Document {
         }
 
         if let number = dict["channelMask"] as? NSNumber {
-            channelMask = SMChannelMask(rawValue: number.uint32Value)
+            channelMask = SMVoiceMessage.ChannelMask(rawValue: number.intValue)
         }
         else {
-            channelMask = SMChannelMaskAll
+            channelMask = SMVoiceMessage.ChannelMask.all
         }
 
         if let messageData = dict["messageData"] as? Data {
@@ -350,7 +350,7 @@ extension Document {
         monitorWindowController?.updateFilterControls()
     }
 
-    var channelMask: SMChannelMask {
+    var channelMask: SMVoiceMessage.ChannelMask {
         get {
             return messageFilter.channelMask
         }
@@ -366,7 +366,7 @@ extension Document {
             undoManager.setActionName(NSLocalizedString("Change Channel", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change channel undo action"))
         }
 
-        messageFilter.channelMask = SMChannelMask(rawValue: number.uint32Value)
+        messageFilter.channelMask = SMVoiceMessage.ChannelMask(rawValue: number.intValue)
         monitorWindowController?.updateFilterControls()
     }
 
@@ -395,22 +395,19 @@ extension Document {
     }
 
     var isShowingAllChannels: Bool {
-        return messageFilter.channelMask == SMChannelMaskAll
+        return messageFilter.channelMask == SMVoiceMessage.ChannelMask.all
     }
 
-    var oneChannelToShow: UInt {
+    var oneChannelToShow: Int {
         // It is possible that something else could have set the mask to show more than one, or zero, channels.
         // We'll just return the lowest enabled channel (1-16), or 0 if no channel is enabled.
 
         guard !isShowingAllChannels else { fatalError() }
 
-        var mask = messageFilter.channelMask.rawValue
-        for channel: UInt in 0..<16 {
-            if mask & 1 == 1 {
-                return channel + 1
-            }
-            else {
-                mask >>= 1
+        let mask = messageFilter.channelMask
+        for channel in 1...16 {
+            if mask.contains(SMVoiceMessage.ChannelMask(channel: channel)) {
+                return channel
             }
         }
 
@@ -418,12 +415,12 @@ extension Document {
     }
 
     func showAllChannels() {
-        channelMask = SMChannelMaskAll
+        channelMask = SMVoiceMessage.ChannelMask.all
     }
 
-    func showOnlyOneChannel(_ channel: UInt) {
+    func showOnlyOneChannel(_ channel: Int) {
         guard (1...16).contains(channel) else { fatalError() }
-        channelMask = SMChannelMask(rawValue: UInt32(1) << (channel - 1))
+        channelMask = SMVoiceMessage.ChannelMask(channel: Int(channel))
     }
 
     func clearSavedMessages() {

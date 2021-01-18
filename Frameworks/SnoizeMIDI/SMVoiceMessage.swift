@@ -1,0 +1,231 @@
+/*
+ Copyright (c) 2001-2004, Kurt Revis.  All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+ * Neither the name of Kurt Revis, nor Snoize, nor the names of other contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+import Foundation
+import CoreMIDI
+
+@objc public class SMVoiceMessage: SMMessage {
+
+    @objc public enum Status: UInt8 {
+        case noteOff = 0x80
+        case noteOn = 0x90
+        case aftertouch = 0xA0
+        case control = 0xB0
+        case program = 0xC0
+        case channelPressure = 0xD0
+        case pitchWheel = 0xE0
+
+        var otherDataLength: Int {
+            switch self {
+            case .program, .channelPressure:
+                return 1
+            case .noteOff, .noteOn, .aftertouch, .control, .pitchWheel:
+                return 2
+            }
+        }
+    }
+
+    @objc public var status: Status {
+        get { Status(rawValue: statusByte & 0xF0)! }
+        set { setStatusByte(newValue.rawValue | (UInt8(channel) - 1)) /* TODO Should be a property that's settable */ }
+    }
+
+    // NOTE Channel is 1-16, not 0-15
+    public var channel: Int {
+        get { Int(statusByte & 0x0F) + 1 }
+        set {
+            guard (1...16).contains(newValue) else { fatalError() }
+            setStatusByte(status.rawValue | UInt8(newValue - 1))
+        }
+    }
+
+    @objc public var dataByte1: UInt8 {
+        get { dataBytes.0 }
+        set {
+            guard (0..<128).contains(newValue) else { fatalError() }
+            dataBytes.0 = newValue
+        }
+    }
+
+    public var dataByte2: UInt8 {
+        get { dataBytes.1 }
+        set {
+            guard (0..<128).contains(newValue) else { fatalError() }
+            dataBytes.1 = newValue
+        }
+    }
+
+    init(timeStamp: MIDITimeStamp, statusByte: UInt8, data: [UInt8]) {
+        if data.count > 0 {
+            let byte0 = data[data.startIndex]
+            guard (0..<128).contains(byte0) else { fatalError() }
+            dataBytes.0 = byte0
+            if data.count > 1 {
+                let byte1 = data[data.startIndex + 1]
+                guard (0..<128).contains(byte1) else { fatalError() }
+                dataBytes.1 = byte1
+            }
+        }
+        super.init(timeStamp: timeStamp, statusByte: statusByte)
+    }
+
+    required init?(coder: NSCoder) {
+        var length = 0
+        if let decodedBytes = coder.decodeBytes(forKey: "dataBytes", returnedLength: &length),
+           length == 2 {
+            guard (0..<128).contains(decodedBytes[0]) else { fatalError() }
+            guard (0..<128).contains(decodedBytes[1]) else { fatalError() }
+            dataBytes.0 = decodedBytes[0]
+            dataBytes.1 = decodedBytes[1]
+        }
+        else {
+            return nil
+        }
+        super.init(coder: coder)
+    }
+
+    public override func encode(with coder: NSCoder) {
+        super.encode(with: coder)
+        var bytes = [dataBytes.0, dataBytes.1]
+        coder.encodeBytes(&bytes, length: 2, forKey: "dataBytes")
+    }
+
+    public struct ChannelMask: OptionSet {
+        public let rawValue: Int
+        public typealias RawValue = Int // swiftlint:disable:this nesting
+
+        public init(rawValue: Self.RawValue) {
+            self.rawValue = rawValue
+        }
+
+        // Note: Channel must be in range 1-16
+        public init(channel: Int) {
+            guard (1...16).contains(channel) else { fatalError() }
+            self.rawValue = 1 << (channel - 1)
+        }
+
+        public static let channel1 = ChannelMask(rawValue: 1 << 0)
+        public static let channel2 = ChannelMask(rawValue: 1 << 1)
+        public static let channel3 = ChannelMask(rawValue: 1 << 2)
+        public static let channel4 = ChannelMask(rawValue: 1 << 3)
+        public static let channel5 = ChannelMask(rawValue: 1 << 4)
+        public static let channel6 = ChannelMask(rawValue: 1 << 5)
+        public static let channel7 = ChannelMask(rawValue: 1 << 6)
+        public static let channel8 = ChannelMask(rawValue: 1 << 7)
+        public static let channel9 = ChannelMask(rawValue: 1 << 8)
+        public static let channel10 = ChannelMask(rawValue: 1 << 9)
+        public static let channel11 = ChannelMask(rawValue: 1 << 10)
+        public static let channel12 = ChannelMask(rawValue: 1 << 11)
+        public static let channel13 = ChannelMask(rawValue: 1 << 12)
+        public static let channel14 = ChannelMask(rawValue: 1 << 13)
+        public static let channel15 = ChannelMask(rawValue: 1 << 14)
+        public static let channel16 = ChannelMask(rawValue: 1 << 15)
+
+        public static let all = ChannelMask(rawValue: (1 << 16) - 1)
+    }
+
+    public func matchesChannelMask(_ mask: ChannelMask) -> Bool {
+        return mask.contains(ChannelMask(channel: channel))
+    }
+
+    // MARK: Private
+
+    private var dataBytes: (UInt8, UInt8) = (0, 0)
+
+    // MARK: SMMessage overrides
+
+    public override var messageType: SMMessageType {
+        switch status {
+        case .noteOff:          return SMMessageTypeNoteOff
+        case .noteOn:           return SMMessageTypeNoteOn
+        case .aftertouch:       return SMMessageTypeAftertouch
+        case .control:          return SMMessageTypeControl
+        case .program:          return SMMessageTypeProgram
+        case .channelPressure:  return SMMessageTypeChannelPressure
+        case .pitchWheel:       return SMMessageTypePitchWheel
+        }
+    }
+
+    public override var otherDataLength: Int {
+        status.otherDataLength
+    }
+
+    public override var otherData: Data! {
+        if otherDataLength == 2 {
+            return Data([dataBytes.0, dataBytes.1])
+        }
+        else if otherDataLength == 1 {
+            return Data([dataBytes.0])
+        }
+        else {
+            return Data()
+        }
+    }
+
+    public override var typeForDisplay: String! {
+        switch status {
+        case .noteOn:
+            // In the MIDI specification, Note On with 0 velocity is defined to have
+            // the exact same meaning as Note Off (with 0 velocity).
+            // In non-expert mode, show these events as Note Offs.
+            // In expert mode, show them as Note Ons.
+            if dataBytes.1 != 0 || UserDefaults.standard.bool(forKey: SMExpertModePreferenceKey) {
+                return NSLocalizedString("Note On", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Note On event")
+            }
+            else {
+                fallthrough // display as note off
+            }
+
+        case .noteOff:
+            return NSLocalizedString("Note Off", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Note Off event")
+
+        case .aftertouch:
+            return NSLocalizedString("Aftertouch", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Aftertouch (poly pressure) event")
+
+        case .control:
+            return NSLocalizedString("Control", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Control event")
+
+        case .program:
+            return NSLocalizedString("Program", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Program event")
+
+        case .channelPressure:
+            return NSLocalizedString("Channel Pressure", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Channel Pressure (aftertouch) event")
+
+        case .pitchWheel:
+            return NSLocalizedString("Pitch Wheel", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Pitch Wheel event")
+        }
+    }
+
+    public override var channelForDisplay: String! {
+        "\(channel)"
+    }
+
+    public override var dataForDisplay: String! {
+        switch status {
+        case .noteOff, .noteOn, .aftertouch:
+            return SMMessage.formatNoteNumber(dataBytes.0) + "\t" + SMMessage.formatDataByte(dataBytes.1)
+
+        case .control:
+            return SMMessage.formatControllerNumber(dataBytes.0) + "\t" + SMMessage.formatDataByte(dataBytes.1)
+
+        case .program:
+            return SMMessage.formatProgramNumber(dataBytes.0)
+
+        case .channelPressure:
+            return super.dataForDisplay
+
+        case .pitchWheel:
+            return SMMessage.formatSignedDataByte1(dataBytes.0, byte2: dataBytes.1)
+        }
+    }
+
+}

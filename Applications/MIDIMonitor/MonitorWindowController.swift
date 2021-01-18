@@ -71,7 +71,7 @@ class MonitorWindowController: NSWindowController {
     @IBOutlet private var sysExProgressField: NSTextField!
 
     // Transient data
-    private var oneChannel: UInt = 1
+    private var oneChannel: Int = 1
     private var inputSourceGroups: [CombinationInputStreamSourceGroup] = []
     private var displayedMessages: [SMMessage] = []
     private var messagesNeedScrollToBottom: Bool = false
@@ -446,7 +446,7 @@ extension MonitorWindowController {
 
     @IBAction func setChannel(_ sender: AnyObject?) {
         if let control = sender as? NSControl {
-            let channel = (control.objectValue as? NSNumber)?.uintValue ?? 0
+            let channel = (control.objectValue as? NSNumber)?.intValue ?? 0
             midiDocument.showOnlyOneChannel(channel)
         }
     }

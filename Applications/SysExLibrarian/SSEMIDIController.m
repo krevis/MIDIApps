@@ -364,7 +364,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
         else if (listeningToProgramChangeMessages && 
                  [message originatingEndpoint] == [virtualInputStream endpoint] &&
                  [message isKindOfClass:[SMVoiceMessage class]] &&
-                 [(SMVoiceMessage*)message status] == SMVoiceMessageStatusProgram) {
+                 [(SMVoiceMessage*)message status] == 0xC0 /* TODO SMVoiceMessage.Status.program*/) {
             Byte program = [(SMVoiceMessage*)message dataByte1];
             [nonretainedMainWindowController playEntryWithProgramNumber:program];
         }

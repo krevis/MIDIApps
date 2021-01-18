@@ -42,18 +42,29 @@ import Foundation
 
     public var dataByte1: UInt8 {
         get { dataBytes.0 }
-        set { dataBytes.0 = newValue }
+        set {
+            guard (0..<128).contains(newValue) else { fatalError() }
+            dataBytes.0 = newValue
+        }
     }
+
     public var dataByte2: UInt8 {
         get { dataBytes.1 }
-        set { dataBytes.1 = newValue }
+        set {
+            guard (0..<128).contains(newValue) else { fatalError() }
+            dataBytes.1 = newValue
+        }
     }
 
     init(timeStamp: MIDITimeStamp, type: MessageType, data: [UInt8]) {
         if data.count > 0 {
-            dataBytes.0 = data[data.startIndex]
+            let byte0 = data[data.startIndex]
+            guard (0..<128).contains(byte0) else { fatalError() }
+            dataBytes.0 = byte0
             if data.count > 1 {
-                dataBytes.1 = data[data.startIndex + 1]
+                let byte1 = data[data.startIndex + 1]
+                guard (0..<128).contains(byte1) else { fatalError() }
+                dataBytes.1 = byte1
             }
         }
         super.init(timeStamp: timeStamp, statusByte: type.rawValue)
@@ -63,6 +74,8 @@ import Foundation
         var length = 0
         if let decodedBytes = coder.decodeBytes(forKey: "dataBytes", returnedLength: &length),
            length == 2 {
+            guard (0..<128).contains(decodedBytes[0]) else { fatalError() }
+            guard (0..<128).contains(decodedBytes[1]) else { fatalError() }
             dataBytes.0 = decodedBytes[0]
             dataBytes.1 = decodedBytes[1]
         }

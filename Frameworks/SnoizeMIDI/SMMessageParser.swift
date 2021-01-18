@@ -143,7 +143,7 @@ import Foundation
                             message = SMSystemCommonMessage(timeStamp: timeStamp, type: SMSystemCommonMessage.MessageType(rawValue: pendingMessageStatus)!, data: Array(pendingDataBytes.prefix(upTo: pendingDataLength)))
                         }
                         else {
-                            message = SMVoiceMessage(timeStamp: timeStamp, statusByte: pendingMessageStatus, data: pendingDataBytes, length: UInt16(pendingDataLength))
+                            message = SMVoiceMessage(timeStamp: timeStamp, statusByte: pendingMessageStatus, data: pendingDataBytes)
                         }
                     }
                 }
