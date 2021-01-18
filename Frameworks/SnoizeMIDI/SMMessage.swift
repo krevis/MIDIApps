@@ -55,10 +55,6 @@ import CoreAudio
 
         // Groups
         public static let all                   = Self(rawValue: (1 << 19) - 1)
-        public static let voice = [ noteOn, noteOff, aftertouch, control, program, channelPressure, pitchWheel ]
-        public static let noteOnAndOff = [ noteOn, noteOff ]
-        public static let systemCommon = [ timeCode, songPositionPointer, songSelect, tuneRequest ]
-        public static let realTime = [ clock, start, stop, `continue`, activeSense, reset ]
     }
 
     @objc public init(timeStamp: MIDITimeStamp, statusByte: UInt8) {
@@ -70,12 +66,44 @@ import CoreAudio
     }
 
     @objc public required init?(coder: NSCoder) {
-        // TODO
-        return nil
+        if coder.containsValue(forKey: "timeStampInNanos") {
+            let nanos = coder.decodeInt64(forKey: "timeStampInNanos")
+            self.timeStamp = AudioConvertNanosToHostTime(UInt64(nanos))
+            timeStampWasZeroWhenReceived = coder.decodeBool(forKey: "timeStampWasZeroWhenReceived")
+        }
+        else {
+            // fall back to old, inaccurate method
+            // (we stored HostTime but not the ratio to convert it to nanoseconds)
+            self.timeStamp = MIDITimeStamp(coder.decodeInt64(forKey: "timeStamp"))
+            self.timeStampWasZeroWhenReceived = self.timeStamp == 0
+        }
+
+        guard let timeBase = coder.decodeObject(forKey: "timeBase") as? SMMessageTimeBase else { return nil }
+        self.timeBase = timeBase
+
+        let status = coder.decodeInteger(forKey: "statusByte")
+        guard (0x80...0xFF).contains(status) else { return nil }
+        self.statusByte = UInt8(status)
+
+        if let endpointName = coder.decodeObject(forKey: "originatingEndpoint") as? String {
+            self.originatingEndpointName = endpointName
+        }
+
+        super.init()
     }
 
     public func encode(with coder: NSCoder) {
-        // TODO
+        let nanos = AudioConvertHostTimeToNanos(timeStamp)
+        coder.encode(nanos, forKey: "timeStampInNanos")
+        coder.encode(timeStampWasZeroWhenReceived, forKey: "timeStampWasZeroWhenReceived")
+
+        let time = timeStampWasZeroWhenReceived ? 0 : timeStamp
+        coder.encode(time, forKey: "timeStamp")
+            // for backwards compatibility
+
+        coder.encode(timeBase, forKey: "timeBase")
+        coder.encode(statusByte, forKey: "statusByte")
+        coder.encode(originatingEndpointForDisplay, forKey: "originatingEndpoint")
     }
 
     public let timeStamp: MIDITimeStamp
@@ -83,65 +111,126 @@ import CoreAudio
 
     // Type of this message (mask containing at most one value)
     public var messageType: TypeMask {
-        // TODO
-        return []
+        fatalError("Must be implemented by subclass")   // TODO Maybe this should be a protocol, then
     }
 
     public func matchesMessageTypeMask(_ mask: TypeMask) -> Bool {
-        // TODO
-        return false
+        mask.contains(messageType)
     }
 
     // Length of data after the status byte
     public var otherDataLength: Int {
-        // TODO
-        return 0
+        // Subclasses must override if they have other data
+        0
     }
 
     public var otherData: Data? {
-        return nil
+        // Subclasses must override if they have other data
+        nil
     }
 
     // All data including status byte and otherData
     public var fullData: Data {
-        // TODO
-        return Data([statusByte])
+        let statusByteData = Data([statusByte])
+        if let otherData = otherData {
+            return statusByteData + otherData
+        }
+        else {
+            return statusByteData
+        }
     }
 
-    @objc public var originatingEndpoint: SMEndpoint?
-    // TODO
+    @objc public var originatingEndpoint: SMEndpoint? {
+        didSet {
+            if oldValue != originatingEndpoint {
+                originatingEndpointName = nil
+            }
+        }
+    }
 
     // Display methods
 
     public var timeStampForDisplay: String {
-        return "TODO"
-    }
+        let displayZero = timeStampWasZeroWhenReceived && UserDefaults.standard.bool(forKey: Self.expertModePreferenceKey)
+        let displayTimeStamp = displayZero ? 0 : timeStamp
 
-    public var channelForDisplay: String {
-        return "TODO"
+        let option = TimeFormattingOption(rawValue: UserDefaults.standard.integer(forKey: Self.timeFormatPreferenceKey)) ?? TimeFormattingOption.hostTimeInteger
+        switch option {
+        case .hostTimeInteger:
+            return String(format: "%llu", displayTimeStamp)
+
+        case .hostTimeHexInteger:
+            return String(format: "%016llX", displayTimeStamp)
+
+        case .hostTimeNanoseconds:
+            return String(format: "%llu", AudioConvertHostTimeToNanos(displayTimeStamp))
+
+        case .hostTimeSeconds:
+            return String(format: "%.3lf", Double(AudioConvertHostTimeToNanos(displayTimeStamp)) / 1.0e9)
+
+        case .clockTime:
+            if displayZero {
+                return "0"
+            }
+            else {
+                let timeStampInNanos = AudioConvertHostTimeToNanos(displayTimeStamp)
+                let hostTimeBaseInNanos = timeBase.hostTimeInNanos()
+                let timeDelta = timeStampInNanos - hostTimeBaseInNanos // may be negative!
+                let timeStampInterval = Double(timeDelta) / 1.0e9
+                let date = Date(timeIntervalSinceReferenceDate: timeBase.timeInterval() + timeStampInterval)
+                return Self.timeStampDateFormatter.string(from: date)
+            }
+        }
+
     }
 
     public var typeForDisplay: String {
-        return "TODO"
+        // Subclasses may override
+        let typeName = NSLocalizedString("Unknown", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of unknown MIDI status byte")
+        let status = String(format: "%02X", statusByte)
+        return "\(typeName) ($\(status))"
+    }
+
+    public var channelForDisplay: String {
+        // Subclasses may override
+        return ""
     }
 
     public var dataForDisplay: String {
-        return "TODO"
+        return SMMessage.formatData(otherData)
     }
 
     public var expertDataForDisplay: String {
-        return "TODO"
+        return SMMessage.formatExpertStatusByte(statusByte, otherData: otherData)
     }
 
     public var originatingEndpointForDisplay: String {
-        return "TODO"
+        if let endpoint = originatingEndpoint {
+            let fromOrTo = endpoint is SMSourceEndpoint ? SMMessage.fromString : SMMessage.toString
+            return "\(fromOrTo) \(endpoint.alwaysUniqueName() ?? "")"
+        }
+        else if let endpointName = originatingEndpointName {
+            return endpointName
+        }
+        else {
+            return ""
+        }
     }
 
     // MARK: Private
 
     private var timeBase: SMMessageTimeBase
-    private var originatingEndpointOrName: Any? // either SMEndpoint or NSString; TODO that's silly
+    private var originatingEndpointName: String?
     private var timeStampWasZeroWhenReceived: Bool
+
+    private static let fromString = NSLocalizedString("From", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "Prefix for endpoint name when it's a source")
+    private static let toString = NSLocalizedString("To", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "Prefix for endpoint name when it's a destination")
+
+    private static var timeStampDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm:ss.SSS"
+        return formatter
+    }()
 
 }
 
@@ -183,73 +272,158 @@ import CoreAudio
     public static let programChangeBaseIndexPreferenceKey = "SMProgramChangeBaseIndex"
 
     public static func formatNoteNumber(_ noteNumber: UInt8) -> String {
-        // TODO
-        return ""
+        let option = NoteFormattingOption(rawValue: UserDefaults.standard.integer(forKey: Self.noteFormatPreferenceKey)) ?? NoteFormattingOption.decimal
+        return formatNoteNumber(noteNumber, usingOption: option)
     }
 
     public static func formatNoteNumber(_ noteNumber: UInt8, usingOption option: NoteFormattingOption) -> String {
-        // TODO
-        return ""
+        switch option {
+        case .decimal:
+            return "\(noteNumber)"
+        case .hexadecimal:
+            return String(format: "$%02X", Int(noteNumber))
+        case .nameMiddleC3:
+            // Middle C ==  60 == "C3", so base == 0 == "C-2"
+            return formatNoteNumber(noteNumber, baseOctave: -2)
+        case .nameMiddleC4:
+            // Middle C == 60 == "C2", so base == 0 == "C-1"
+            return formatNoteNumber(noteNumber, baseOctave: -1)
+        }
     }
 
     public static func formatControllerNumber(_ controllerNumber: UInt8) -> String {
-        // TODO
-        return ""
+        let option = ControllerFormattingOption(rawValue: UserDefaults.standard.integer(forKey: Self.controllerFormatPreferenceKey)) ?? ControllerFormattingOption.decimal
+        return formatControllerNumber(controllerNumber, usingOption: option)
     }
 
     public static func formatControllerNumber(_ controllerNumber: UInt8, usingOption option: ControllerFormattingOption) -> String {
-        // TODO
-        return ""
-    }
-
-    public static func nameForControllerNumber(_ controllerNumber: UInt8) -> String? {
-        // TODO
-        return nil
+        switch option {
+        case .decimal:
+            return "\(controllerNumber)"
+        case .hexadecimal:
+            return String(format: "$%02X", Int(controllerNumber))
+        case .name:
+            return Self.controllerNames[Int(controllerNumber)]
+        }
     }
 
     public static func formatProgramNumber(_ programNumber: UInt8) -> String {
-        // TODO
-        return ""
+        let option = DataFormattingOption(rawValue: UserDefaults.standard.integer(forKey: Self.controllerFormatPreferenceKey)) ?? DataFormattingOption.decimal
+        switch option {
+        case .decimal:
+            let baseIndex = UserDefaults.standard.integer(forKey: Self.programChangeBaseIndexPreferenceKey)
+            return "\(baseIndex + Int(programNumber))"
+        case .hexadecimal:
+            return String(format: "$%02X", Int(programNumber))
+        }
     }
 
-    public static func formatData(_ data: Data) -> String {
-        // TODO
-        return ""
+    public static func formatData(_ data: Data?) -> String {
+        guard let data = data else { return "" }
+        let option = DataFormattingOption(rawValue: UserDefaults.standard.integer(forKey: Self.controllerFormatPreferenceKey)) ?? DataFormattingOption.decimal
+        return data.map({ formatDataByte($0, usingOption: option) }).joined(separator: " ")
     }
 
     public static func formatDataByte(_ dataByte: UInt8) -> String {
-        // TODO
-        return ""
+        let option = DataFormattingOption(rawValue: UserDefaults.standard.integer(forKey: Self.controllerFormatPreferenceKey)) ?? DataFormattingOption.decimal
+        return formatDataByte(dataByte, usingOption: option)
     }
 
     public static func formatDataByte(_ dataByte: UInt8, usingOption option: DataFormattingOption) -> String {
-        // TODO
-        return ""
+        switch option {
+        case .decimal:
+            return "\(dataByte)"
+        case .hexadecimal:
+            return String(format: "$%02X", dataByte)
+        }
     }
 
     public static func formatSignedDataBytes(_ byte0: UInt8, _ byte1: UInt8) -> String {
-        // TODO
-        return ""
+        let option = DataFormattingOption(rawValue: UserDefaults.standard.integer(forKey: Self.controllerFormatPreferenceKey)) ?? DataFormattingOption.decimal
+        return formatSignedDataBytes(byte0, byte1, usingOption: option)
     }
 
     public static func formatSignedDataBytes(_ byte0: UInt8, _ byte1: UInt8, usingOption option: DataFormattingOption) -> String {
-        // TODO
-        return ""
+        // Combine two 7-bit values into one 14-bit value. Treat the result as signed, if displaying as decimal; 0x2000 is the center.
+        let value: Int = Int(byte0) + (Int(byte1) << 7)
+
+        switch option {
+        case .decimal:
+            return "\(value - 0x2000)"
+        case .hexadecimal:
+            return String(format: "$%04X", value)
+        }
     }
 
     public static func formatLength(_ length: Int) -> String {
-        // TODO
-        return ""
+        let option = DataFormattingOption(rawValue: UserDefaults.standard.integer(forKey: Self.controllerFormatPreferenceKey)) ?? DataFormattingOption.decimal
+        return formatLength(length, usingOption: option)
     }
 
     public static func formatLength(_ length: Int, usingOption option: DataFormattingOption) -> String {
-        // TODO
-        return ""
+        switch option {
+        case .decimal:
+            return "\(length)"
+        case .hexadecimal:
+            return String(format: "$%lX", length)
+        }
     }
 
     public static func nameForManufacturerIdentifier(_ manufacturerIdentifierData: Data) -> String {
-        // TODO or perhaps [UInt8]
-        return ""
+        return manufacturerNamesByHexIdentifier[manufacturerIdentifierData.lowercaseHexString]
+            ?? NSLocalizedString("Unknown Manufacturer", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "unknown manufacturer name")
     }
+
+    // MARK: Private
+
+    private static func formatExpertStatusByte(_ statusByte: UInt8, otherData: Data?) -> String {
+        var result = String(format: "%02X", statusByte)
+
+        if let data = otherData, !data.isEmpty {
+            for byte in data[data.startIndex ..< min(data.startIndex + 31, data.endIndex)] {
+                result += String(format: " %02X", byte)
+            }
+            if data.count > 31 {
+                result += "…"
+            }
+        }
+
+        return result
+    }
+
+    private static func formatNoteNumber(_ noteNumber: UInt8, baseOctave: Int) -> String {
+        // noteNumber 0 is note C in octave provided (should be -2 or -1)
+
+        let noteNames = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"]
+        let noteName = noteNames[Int(noteNumber) % 12]
+        return "\(noteName)\(baseOctave + Int(noteNumber) / 12)"
+    }
+
+    private static var controllerNames: [String] = {
+        // It's lame that property lists must have keys which are strings. We would prefer an integer, in this case.
+        // We could create a new string for the controllerNumber and look that up in the dictionary, but that gets expensive to do all the time.
+        // Instead, we just scan through the dictionary once, and build an array, which is quicker to index into.
+
+        var controllerNamesByNumberString: NSDictionary?
+        if let url = SMBundleForObject(self).url(forResource: "ControllerNames", withExtension: "plist") {
+            controllerNamesByNumberString = NSDictionary(contentsOf: url)
+        }
+
+        let unknownNameFormat = NSLocalizedString("Controller %u", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "format of unknown controller")
+
+        return (0 ..< 128).map { controllerIndex in
+            controllerNamesByNumberString?.object(forKey: "\(controllerIndex)") as? String
+                ?? String(format: unknownNameFormat, controllerIndex)
+        }
+    }()
+
+    private static var manufacturerNamesByHexIdentifier: [String: String] = {
+        var manufacturerNames: [String: String] = [:]
+        if let url = SMBundleForObject(self).url(forResource: "ManufacturerNames", withExtension: "plist"),
+           let plist = NSDictionary(contentsOf: url) as? [String: String] {
+            manufacturerNames = plist
+        }
+        return manufacturerNames
+    }()
 
 }
