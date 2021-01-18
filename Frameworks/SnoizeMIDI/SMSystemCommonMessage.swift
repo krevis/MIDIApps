@@ -15,7 +15,7 @@ import Foundation
 @objc public class SMSystemCommonMessage: SMMessage {
 
     // TODO There should be associated data on the type to store the bytes, probably
-    public enum MessageType: UInt8 {
+    public enum CommonMessageType: UInt8 {
         case timeCodeQuarterFrame   = 0xF1
         case songPositionPointer    = 0xF2
         case songSelect             = 0xF3
@@ -31,12 +31,12 @@ import Foundation
         }
     }
 
-    public var type: MessageType {
+    public var commonMessageType: CommonMessageType {
         get {
-            MessageType(rawValue: statusByte)!
+            CommonMessageType(rawValue: statusByte)!
         }
         set {
-            self.setStatusByte(newValue.rawValue)
+            self.statusByte = newValue.rawValue
         }
     }
 
@@ -56,7 +56,7 @@ import Foundation
         }
     }
 
-    init(timeStamp: MIDITimeStamp, type: MessageType, data: [UInt8]) {
+    init(timeStamp: MIDITimeStamp, type: CommonMessageType, data: [UInt8]) {
         if data.count > 0 {
             let byte0 = data[data.startIndex]
             guard (0..<128).contains(byte0) else { fatalError() }
@@ -97,20 +97,20 @@ import Foundation
 
     // MARK: SMMessage overrides
 
-    public override var messageType: SMMessageType {
-        switch type {
-        case .timeCodeQuarterFrame: return SMMessageTypeTimeCode
-        case .songPositionPointer:  return SMMessageTypeSongPositionPointer
-        case .songSelect:           return SMMessageTypeSongSelect
-        case .tuneRequest:          return SMMessageTypeTuneRequest
+    public override var messageType: TypeMask {
+        switch commonMessageType {
+        case .timeCodeQuarterFrame: return .timeCode
+        case .songPositionPointer:  return .songPositionPointer
+        case .songSelect:           return .songSelect
+        case .tuneRequest:          return .tuneRequest
         }
     }
 
     public override var otherDataLength: Int {
-        type.otherDataLength
+        commonMessageType.otherDataLength
     }
 
-    public override var otherData: Data! {
+    public override var otherData: Data? {
         if otherDataLength == 2 {
             return Data([dataBytes.0, dataBytes.1])
         }
@@ -122,8 +122,8 @@ import Foundation
         }
     }
 
-    public override var typeForDisplay: String! {
-        switch type {
+    public override var typeForDisplay: String {
+        switch commonMessageType {
         case .timeCodeQuarterFrame:
             return NSLocalizedString("MTC Quarter Frame", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of MTC Quarter Frame event")
         case .songPositionPointer:

@@ -51,13 +51,13 @@ class PreferencesWindowController: UtilityWindowController, NSWindowRestoration 
 
         let defaults = UserDefaults.standard
 
-        timeFormatMatrix.selectCell(withTag: defaults.integer(forKey: SMTimeFormatPreferenceKey))
-        noteFormatMatrix.selectCell(withTag: defaults.integer(forKey: SMNoteFormatPreferenceKey))
-        controllerFormatMatrix.selectCell(withTag: defaults.integer(forKey: SMControllerFormatPreferenceKey))
-        dataFormatMatrix.selectCell(withTag: defaults.integer(forKey: SMDataFormatPreferenceKey))
-        programChangeBaseIndexMatrix.selectCell(withTag: defaults.integer(forKey: SMProgramChangeBaseIndexPreferenceKey))
+        timeFormatMatrix.selectCell(withTag: defaults.integer(forKey: SMMessage.timeFormatPreferenceKey))
+        noteFormatMatrix.selectCell(withTag: defaults.integer(forKey: SMMessage.noteFormatPreferenceKey))
+        controllerFormatMatrix.selectCell(withTag: defaults.integer(forKey: SMMessage.controllerFormatPreferenceKey))
+        dataFormatMatrix.selectCell(withTag: defaults.integer(forKey: SMMessage.dataFormatPreferenceKey))
+        programChangeBaseIndexMatrix.selectCell(withTag: defaults.integer(forKey: SMMessage.programChangeBaseIndexPreferenceKey))
 
-        expertModeCheckbox.intValue = defaults.bool(forKey: SMExpertModePreferenceKey) ? 1 : 0
+        expertModeCheckbox.intValue = defaults.bool(forKey: SMMessage.expertModePreferenceKey) ? 1 : 0
         updateExpertModeTextField()
 
         autoSelectOrdinarySourcesCheckbox.intValue = defaults.bool(forKey: PreferenceKeys.selectOrdinarySourcesInNewDocument) ? 1 : 0
@@ -70,22 +70,22 @@ class PreferencesWindowController: UtilityWindowController, NSWindowRestoration 
     }
 
     @IBAction func changeTimeFormat(_ sender: NSControl!) {
-        UserDefaults.standard.set(sender.selectedTag(), forKey: SMTimeFormatPreferenceKey)
+        UserDefaults.standard.set(sender.selectedTag(), forKey: SMMessage.timeFormatPreferenceKey)
         sendDisplayPreferenceChangedNotification()
     }
 
     @IBAction func changeNoteFormat(_ sender: NSControl!) {
-        UserDefaults.standard.set(sender.selectedTag(), forKey: SMNoteFormatPreferenceKey)
+        UserDefaults.standard.set(sender.selectedTag(), forKey: SMMessage.noteFormatPreferenceKey)
         sendDisplayPreferenceChangedNotification()
     }
 
     @IBAction func changeControllerFormat(_ sender: NSControl!) {
-        UserDefaults.standard.set(sender.selectedTag(), forKey: SMControllerFormatPreferenceKey)
+        UserDefaults.standard.set(sender.selectedTag(), forKey: SMMessage.controllerFormatPreferenceKey)
         sendDisplayPreferenceChangedNotification()
     }
 
     @IBAction func changeDataFormat(_ sender: NSControl!) {
-        UserDefaults.standard.set(sender.selectedTag(), forKey: SMDataFormatPreferenceKey)
+        UserDefaults.standard.set(sender.selectedTag(), forKey: SMMessage.dataFormatPreferenceKey)
         sendDisplayPreferenceChangedNotification()
     }
 
@@ -110,7 +110,7 @@ class PreferencesWindowController: UtilityWindowController, NSWindowRestoration 
     }
 
     @IBAction func changeExpertMode(_ sender: NSControl!) {
-        UserDefaults.standard.set(sender.intValue, forKey: SMExpertModePreferenceKey)
+        UserDefaults.standard.set(sender.intValue, forKey: SMMessage.expertModePreferenceKey)
         updateExpertModeTextField()
         sendDisplayPreferenceChangedNotification()
     }
@@ -120,7 +120,7 @@ class PreferencesWindowController: UtilityWindowController, NSWindowRestoration 
     }
 
     @IBAction func changeProgramChangeBaseIndex(_ sender: NSControl!) {
-        UserDefaults.standard.set(sender.selectedTag(), forKey: SMProgramChangeBaseIndexPreferenceKey)
+        UserDefaults.standard.set(sender.selectedTag(), forKey: SMMessage.programChangeBaseIndexPreferenceKey)
         sendDisplayPreferenceChangedNotification()
     }
 
@@ -130,7 +130,7 @@ class PreferencesWindowController: UtilityWindowController, NSWindowRestoration 
 
     private func updateExpertModeTextField() {
         let text: String
-        if UserDefaults.standard.bool(forKey: SMExpertModePreferenceKey) {
+        if UserDefaults.standard.bool(forKey: SMMessage.expertModePreferenceKey) {
             text = NSLocalizedString("EXPERT_ON", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), value: "• Data formatted as raw hexadecimal\n• Note On with velocity 0 shows as Note On\n• Zero timestamp shows 0", comment: "Explanation when expert mode is on")
         }
         else {

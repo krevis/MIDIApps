@@ -25,7 +25,7 @@ class Document: NSDocument {
         updateVirtualEndpointName()
 
         stream.messageDestination = messageFilter
-        messageFilter.filterMask = SMMessageTypeAllMask
+        messageFilter.filterMask = SMMessage.TypeMask.all
         messageFilter.channelMask = SMVoiceMessage.ChannelMask.all
 
         messageFilter.messageDestination = history
@@ -89,7 +89,7 @@ extension Document {
         }
 
         let filterMask = messageFilter.filterMask
-        if filterMask != SMMessageTypeAllMask {
+        if filterMask != SMMessage.TypeMask.all {
             dict["filterMask"] = filterMask.rawValue
         }
 
@@ -143,10 +143,10 @@ extension Document {
         maxMessageCount = (dict["maxMessageCount"] as? NSNumber)?.intValue ?? MessageHistory.defaultHistorySize
 
         if let number = dict["filterMask"] as? NSNumber {
-            filterMask = SMMessageType(rawValue: number.uint32Value)
+            filterMask = SMMessage.TypeMask(rawValue: number.intValue)
         }
         else {
-            filterMask = SMMessageTypeAllMask
+            filterMask = SMMessage.TypeMask.all
         }
 
         if let number = dict["channelMask"] as? NSNumber {
@@ -330,7 +330,7 @@ extension Document {
         monitorWindowController?.updateMaxMessageCount()
     }
 
-    var filterMask: SMMessageType {
+    var filterMask: SMMessage.TypeMask {
         get {
             return messageFilter.filterMask
         }
@@ -346,7 +346,7 @@ extension Document {
             undoManager.setActionName(NSLocalizedString("Change Filter", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change filter undo action"))
         }
 
-        messageFilter.filterMask = SMMessageType(rawValue: number.uint32Value)
+        messageFilter.filterMask = SMMessage.TypeMask(rawValue: number.intValue)
         monitorWindowController?.updateFilterControls()
     }
 
@@ -382,7 +382,7 @@ extension Document {
 
     // MARK: Derived / convenience document functions
 
-    func changeFilterMask(_ maskToChange: SMMessageType, turnBitsOn: Bool) {
+    func changeFilterMask(_ maskToChange: SMMessage.TypeMask, turnBitsOn: Bool) {
         var newMask = messageFilter.filterMask.rawValue
         if turnBitsOn {
             newMask |= maskToChange.rawValue
@@ -391,7 +391,7 @@ extension Document {
             newMask &= ~maskToChange.rawValue
         }
 
-        filterMask = SMMessageType(rawValue: newMask)
+        filterMask = SMMessage.TypeMask(rawValue: newMask)
     }
 
     var isShowingAllChannels: Bool {

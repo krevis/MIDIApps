@@ -39,23 +39,23 @@ import Foundation
 
     // MARK: SMMessage overrides
 
-    public override var messageType: SMMessageType {
-        SMMessageTypeInvalid
+    public override var messageType: TypeMask {
+        .invalid
     }
 
     public override var otherDataLength: Int {
         data.count
     }
 
-    public override var otherData: Data! {
+    public override var otherData: Data? {
         data
     }
 
-    public override var typeForDisplay: String! {
+    public override var typeForDisplay: String {
         NSLocalizedString("Invalid", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Invalid event")
     }
 
-    public override var dataForDisplay: String! {
+    public override var dataForDisplay: String {
         sizeForDisplay
     }
 

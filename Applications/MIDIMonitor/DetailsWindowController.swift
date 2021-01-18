@@ -37,11 +37,11 @@ class DetailsWindowController: UtilityWindowController, NSWindowDelegate {
     //
 
     override var windowNibName: NSNib.Name? {
-        return "Details"
+        "Details"
     }
 
     var dataForDisplay: Data {
-        return message.fullData ?? Data()
+        message.fullData
     }
 
     //
@@ -76,11 +76,11 @@ class DetailsWindowController: UtilityWindowController, NSWindowDelegate {
 
     private func updateDescriptionFields() {
         let format = NSLocalizedString("%@ bytes", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "Details size format string")
-        let formattedLength = SMMessage.formatLength(dataForDisplay.count)!
+        let formattedLength = SMMessage.formatLength(dataForDisplay.count)
         let sizeString = String.localizedStringWithFormat(format, formattedLength)
 
         sizeField.stringValue = sizeString
-        timeField.stringValue = message.timeStampForDisplay ?? ""
+        timeField.stringValue = message.timeStampForDisplay
     }
 
     private func formattedData(_ data: Data) -> String {

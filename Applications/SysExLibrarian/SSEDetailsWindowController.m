@@ -159,9 +159,9 @@ static NSMutableArray *controllers = nil;
     } else if ([identifier isEqualToString:@"manufacturer"]) {
         return [message manufacturerName];
     } else if ([identifier isEqualToString:@"sizeDecimal"]) {
-        return [SMMessage formatLength:[message receivedDataWithStartByteLength] usingOption:SMDataFormatDecimal];
+        return [SMMessage formatLength:[message receivedDataWithStartByteLength] usingOption:1 /* TODO .decimal*/];
     } else if ([identifier isEqualToString:@"sizeHex"]) {
-        return [SMMessage formatLength:[message receivedDataWithStartByteLength] usingOption:SMDataFormatHexadecimal];
+        return [SMMessage formatLength:[message receivedDataWithStartByteLength] usingOption:2 /* TODO .hexadecimal*/];
     } else if ([identifier isEqualToString:@"sizeAbbreviated"]) {
         return [NSString SnoizeMIDI_abbreviatedStringForByteCount:[message receivedDataWithStartByteLength]];
     } else {

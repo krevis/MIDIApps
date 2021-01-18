@@ -370,7 +370,7 @@ extension MonitorWindowController {
         // Top-level filter checkboxes are standalone NSButtons. They include the state of second-level checkboxes, so their tags may have multiple bits set, and they may be mixed state.
         // Second-level filter checkboxes are NSCells in an NSMatrix. Their tags have only a single bit set, and they are either on or off, never mixed state.
         for checkbox in filterCheckboxes {
-            let buttonMask = UInt32(checkbox.tag)   // multiple bits
+            let buttonMask = checkbox.tag   // multiple bits
             checkbox.state = {
                 switch currentMask & buttonMask {
                 case buttonMask: return .on     // all on
@@ -381,7 +381,7 @@ extension MonitorWindowController {
         }
 
         for checkbox in filterMatrixCells {
-            let buttonMask = UInt32(checkbox.tag)   // only a single bit
+            let buttonMask = checkbox.tag   // only a single bit
             checkbox.state = {
                 switch currentMask & buttonMask {
                 case buttonMask: return .on     // on
@@ -417,7 +417,7 @@ extension MonitorWindowController {
             turnBitsOn = false
         }
 
-        midiDocument.changeFilterMask(SMMessageType(UInt32(tag)), turnBitsOn: turnBitsOn)
+        midiDocument.changeFilterMask(SMMessage.TypeMask(rawValue: tag), turnBitsOn: turnBitsOn)
     }
 
     @IBAction func changeFilter(_ sender: AnyObject?) {
@@ -512,7 +512,7 @@ extension MonitorWindowController: NSTableViewDataSource {
         case "channel":
             return message.channelForDisplay
         case "data":
-            if UserDefaults.standard.bool(forKey: SMExpertModePreferenceKey) {
+            if UserDefaults.standard.bool(forKey: SMMessage.expertModePreferenceKey) {
                 return message.expertDataForDisplay
             }
             else {

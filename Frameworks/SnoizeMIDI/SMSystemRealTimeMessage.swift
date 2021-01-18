@@ -28,7 +28,7 @@ import Foundation
             MessageType(rawValue: statusByte)!
         }
         set {
-            self.setStatusByte(newValue.rawValue)
+            statusByte = newValue.rawValue
         }
     }
 
@@ -42,18 +42,18 @@ import Foundation
 
     // MARK: SMMessage overrides
 
-    public override var messageType: SMMessageType {
+    public override var messageType: TypeMask {
         switch type {
-        case .clock:        return SMMessageTypeClock
-        case .start:        return SMMessageTypeStart
-        case .continue:     return SMMessageTypeContinue
-        case .stop:         return SMMessageTypeStop
-        case .activeSense:  return SMMessageTypeActiveSense
-        case .reset:        return SMMessageTypeReset
+        case .clock:        return .clock
+        case .start:        return .start
+        case .continue:     return .continue
+        case .stop:         return .stop
+        case .activeSense:  return .activeSense
+        case .reset:        return .reset
         }
     }
 
-    public override var typeForDisplay: String! {
+    public override var typeForDisplay: String {
         switch type {
         case .clock:
             return NSLocalizedString("Clock", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Clock event")

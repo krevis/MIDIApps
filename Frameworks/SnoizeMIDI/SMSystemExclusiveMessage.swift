@@ -50,7 +50,7 @@ import Foundation
     @objc public var wasReceivedWithEOX = true
 
     // Data without the starting 0xF0, always with ending 0xF7.
-    public override var otherData: Data! {
+    public override var otherData: Data? {
         if cachedDataWithEOX == nil {
             cachedDataWithEOX = data
             cachedDataWithEOX?.append(0xF7)
@@ -64,7 +64,7 @@ import Foundation
 
     // Data as received, without starting 0xF0. May or may not include 0xF7.
     @objc public var receivedData: Data {
-        wasReceivedWithEOX ? otherData : data
+        wasReceivedWithEOX ? otherData! : data
     }
 
     @objc public var receivedDataLength: Int {
@@ -82,7 +82,7 @@ import Foundation
 
     // Data with leading 0xF0 and ending 0xF7.
     @objc public var fullMessageData: Data {
-        dataByAddingStartByte(otherData)
+        dataByAddingStartByte(otherData!)
     }
 
     @objc public var fullMessageDataLength: Int {
@@ -107,11 +107,11 @@ import Foundation
 
     @objc public var manufacturerName: String? {
         guard let identifier = manufacturerIdentifier else { return nil }
-        return SMMessage.name(forManufacturerIdentifier: identifier)
+        return SMMessage.nameForManufacturerIdentifier(identifier)
     }
 
     @objc public var sizeForDisplay: String {
-        guard let formattedLength = SMMessage.formatLength(receivedDataWithStartByteLength) else { return "" }
+        let formattedLength = SMMessage.formatLength(receivedDataWithStartByteLength)
         let format = NSLocalizedString("%@ bytes", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "SysEx length format string")
         return String.localizedStringWithFormat(format, formattedLength)
     }
@@ -128,23 +128,22 @@ import Foundation
 
     // MARK: SMMessage overrides
 
-    public override var messageType: SMMessageType {
-        SMMessageTypeSystemExclusive
+    public override var messageType: TypeMask {
+        .systemExclusive
     }
 
-    public override var typeForDisplay: String! {
+    public override var typeForDisplay: String {
         NSLocalizedString("SysEx", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of System Exclusive event")
     }
 
-    public override var dataForDisplay: String! {
+    public override var dataForDisplay: String {
         var result = ""
         if let name = manufacturerName {
             result += name + " "
         }
         result += sizeForDisplay
-        if let dataString = expertDataForDisplay {
-            result += "\t" + dataString
-        }
+        result += "\t"
+        result += expertDataForDisplay
         return result
     }
 

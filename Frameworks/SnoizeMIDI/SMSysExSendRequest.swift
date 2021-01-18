@@ -18,7 +18,7 @@ import Foundation
         self.message = message
         self.customSysExBufferSize = customSysExBufferSize
 
-        guard let fullMessageData = message.fullData else { return nil }
+        let fullMessageData = message.fullData
         // MIDISysexSendRequest length is "only" a UInt32
         guard fullMessageData.count < UInt32.max else { return nil }
 

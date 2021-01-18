@@ -84,7 +84,8 @@ import CoreAudio
 
             for message in messages {
                 // Get the full data for the message (including first status byte)
-                guard let messageData = message.fullData, messageData.count > 0 else { continue }
+                let messageData = message.fullData
+                guard messageData.count > 0 else { continue }
                 var isOverlarge = false
 
                 // Attempt to add a packet with the full data into the current packet list

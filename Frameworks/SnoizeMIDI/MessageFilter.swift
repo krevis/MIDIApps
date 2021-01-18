@@ -16,7 +16,7 @@ import Foundation
 
     @objc public weak var messageDestination: SMMessageDestination?
 
-    @objc public var filterMask: SMMessageType = SMMessageTypeNothingMask
+    public var filterMask: SMMessage.TypeMask = []
     public var channelMask: SMVoiceMessage.ChannelMask = SMVoiceMessage.ChannelMask.all
 
     // MARK: SMMessageDestination protocol

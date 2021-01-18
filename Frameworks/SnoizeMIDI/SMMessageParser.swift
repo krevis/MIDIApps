@@ -140,7 +140,7 @@ import Foundation
                     if pendingDataIndex == pendingDataLength {
                         // This message is now done
                         if pendingMessageStatus >= 0xF0 {
-                            message = SMSystemCommonMessage(timeStamp: timeStamp, type: SMSystemCommonMessage.MessageType(rawValue: pendingMessageStatus)!, data: Array(pendingDataBytes.prefix(upTo: pendingDataLength)))
+                            message = SMSystemCommonMessage(timeStamp: timeStamp, type: SMSystemCommonMessage.CommonMessageType(rawValue: pendingMessageStatus)!, data: Array(pendingDataBytes.prefix(upTo: pendingDataLength)))
                         }
                         else {
                             message = SMVoiceMessage(timeStamp: timeStamp, statusByte: pendingMessageStatus, data: pendingDataBytes)
@@ -188,7 +188,7 @@ import Foundation
                             byteIsInvalid = true
                         }
                     }
-                    else if let systemCommonMessageType = SMSystemCommonMessage.MessageType(rawValue: byte) {
+                    else if let systemCommonMessageType = SMSystemCommonMessage.CommonMessageType(rawValue: byte) {
                         let dataLength = systemCommonMessageType.otherDataLength
                         if dataLength > 0 {
                             pendingDataLength = dataLength
