@@ -60,7 +60,7 @@ import CoreAudio
     @objc public init(timeStamp: MIDITimeStamp, statusByte: UInt8) {
         self.timeStampWasZeroWhenReceived = timeStamp == 0
         self.timeStamp = timeStampWasZeroWhenReceived ? AudioGetCurrentHostTime() : timeStamp
-        self.timeBase = SMMessageTimeBase.current()
+        self.timeBase = SMMessageTimeBase.current
         self.statusByte = statusByte
         super.init()
     }
@@ -173,10 +173,10 @@ import CoreAudio
             }
             else {
                 let timeStampInNanos = AudioConvertHostTimeToNanos(displayTimeStamp)
-                let hostTimeBaseInNanos = timeBase.hostTimeInNanos()
+                let hostTimeBaseInNanos = timeBase.hostTimeInNanos
                 let timeDeltaInNanos = Double(timeStampInNanos) - Double(hostTimeBaseInNanos) // may be negative!
                 let timeStampInterval = timeDeltaInNanos / 1.0e9
-                let date = Date(timeIntervalSinceReferenceDate: timeBase.timeInterval() + timeStampInterval)
+                let date = Date(timeIntervalSinceReferenceDate: timeBase.timeInterval + timeStampInterval)
                 return Self.timeStampDateFormatter.string(from: date)
             }
         }
@@ -214,6 +214,26 @@ import CoreAudio
         else {
             return ""
         }
+    }
+
+    public static func prepareToEncodeWithObjCCompatibility(archiver: NSKeyedArchiver) {
+        archiver.setClassName("SMMessage", for: SMMessage.self)
+        archiver.setClassName("SMVoiceMessage", for: SMVoiceMessage.self)
+        archiver.setClassName("SMSystemCommonMessage", for: SMSystemCommonMessage.self)
+        archiver.setClassName("SMSystemRealTimeMessage", for: SMSystemRealTimeMessage.self)
+        archiver.setClassName("SMSystemExclusiveMessage", for: SMSystemExclusiveMessage.self)
+        archiver.setClassName("SMInvalidMessage", for: SMInvalidMessage.self)
+        archiver.setClassName("SMMessageTimeBase", for: SMMessageTimeBase.self)
+    }
+
+    public static func prepareToDecodeWithObjCCompatibility(unarchiver: NSKeyedUnarchiver) {
+        unarchiver.setClass(SMMessage.self, forClassName: "SMMessage")
+        unarchiver.setClass(SMVoiceMessage.self, forClassName: "SMVoiceMessage")
+        unarchiver.setClass(SMSystemCommonMessage.self, forClassName: "SMSystemCommonMessage")
+        unarchiver.setClass(SMSystemRealTimeMessage.self, forClassName: "SMSystemRealTimeMessage")
+        unarchiver.setClass(SMSystemExclusiveMessage.self, forClassName: "SMSystemExclusiveMessage")
+        unarchiver.setClass(SMInvalidMessage.self, forClassName: "SMInvalidMessage")
+        unarchiver.setClass(SMMessageTimeBase.self, forClassName: "SMMessageTimeBase")
     }
 
     // MARK: Private

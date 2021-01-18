@@ -20,6 +20,8 @@ static __inline__ NSBundle *SMBundleForObject(id object) {
     return [NSBundle bundleForClass:[object class]];
 }
 
+// TODO Make an internal SMBundle() that returns the SnoizeMIDI bundle (and looks it up only once)
+
 extern void SMRequestConcreteImplementation(id self, SEL _cmd);
 extern void SMRejectUnusedImplementation(id self, SEL _cmd);
 

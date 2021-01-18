@@ -15,7 +15,6 @@
 #import <SnoizeMIDI/SMExternalDevice.h>
 #import <SnoizeMIDI/SMInputStreamSource.h>
 #import <SnoizeMIDI/SMMessageDestinationProtocol.h>
-#import <SnoizeMIDI/SMMessageTimeBase.h>
 #import <SnoizeMIDI/SMMIDIObject.h>
 #import <SnoizeMIDI/SMUtilities.h>
 #import <SnoizeMIDI/NSArray-SMExtensions.h>
