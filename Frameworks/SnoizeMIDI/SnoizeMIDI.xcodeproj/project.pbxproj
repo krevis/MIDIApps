@@ -181,8 +181,6 @@
 		16B11B630971D40100DB1DB5 /* SMExternalDevice.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMExternalDevice.h; sourceTree = "<group>"; };
 		16B11B640971D40100DB1DB5 /* SMExternalDevice.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMExternalDevice.m; sourceTree = "<group>"; };
 		16B11B690971D40100DB1DB5 /* SMInputStreamSource.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMInputStreamSource.h; sourceTree = "<group>"; };
-		16B11B6D0971D40100DB1DB5 /* SMMessage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMMessage.h; sourceTree = "<group>"; };
-		16B11B6E0971D40100DB1DB5 /* SMMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMessage.m; sourceTree = "<group>"; };
 		16B11B6F0971D40100DB1DB5 /* SMMessageDestinationProtocol.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMMessageDestinationProtocol.h; sourceTree = "<group>"; };
 		16B11B780971D40100DB1DB5 /* SMMIDIObject-Private.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "SMMIDIObject-Private.h"; sourceTree = "<group>"; };
 		16B11B790971D40100DB1DB5 /* SMMIDIObject.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMMIDIObject.h; sourceTree = "<group>"; };
@@ -364,8 +362,6 @@
 			isa = PBXGroup;
 			children = (
 				16966AF325B5222600D5BE2A /* SMMessage.swift */,
-				16B11B6D0971D40100DB1DB5 /* SMMessage.h */,
-				16B11B6E0971D40100DB1DB5 /* SMMessage.m */,
 				16966AD325B4F90800D5BE2A /* SMVoiceMessage.swift */,
 				16966AAD25AD73AB00D5BE2A /* SMSystemCommonMessage.swift */,
 				16966A9D25AD6A8F00D5BE2A /* SMSystemRealTimeMessage.swift */,
