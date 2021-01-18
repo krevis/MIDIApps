@@ -94,15 +94,15 @@ import CoreAudio
 
     public func encode(with coder: NSCoder) {
         let nanos = AudioConvertHostTimeToNanos(timeStamp)
-        coder.encode(nanos, forKey: "timeStampInNanos")
+        coder.encode(Int64(nanos), forKey: "timeStampInNanos")
         coder.encode(timeStampWasZeroWhenReceived, forKey: "timeStampWasZeroWhenReceived")
 
         let time = timeStampWasZeroWhenReceived ? 0 : timeStamp
-        coder.encode(time, forKey: "timeStamp")
+        coder.encode(Int64(time), forKey: "timeStamp")
             // for backwards compatibility
 
         coder.encode(timeBase, forKey: "timeBase")
-        coder.encode(statusByte, forKey: "statusByte")
+        coder.encode(Int(statusByte), forKey: "statusByte")
         coder.encode(originatingEndpointForDisplay, forKey: "originatingEndpoint")
     }
 
@@ -154,8 +154,7 @@ import CoreAudio
         let displayZero = timeStampWasZeroWhenReceived && UserDefaults.standard.bool(forKey: Self.expertModePreferenceKey)
         let displayTimeStamp = displayZero ? 0 : timeStamp
 
-        let option = TimeFormattingOption(rawValue: UserDefaults.standard.integer(forKey: Self.timeFormatPreferenceKey)) ?? TimeFormattingOption.hostTimeInteger
-        switch option {
+        switch TimeFormattingOption.default {
         case .hostTimeInteger:
             return String(format: "%llu", displayTimeStamp)
 
@@ -175,8 +174,8 @@ import CoreAudio
             else {
                 let timeStampInNanos = AudioConvertHostTimeToNanos(displayTimeStamp)
                 let hostTimeBaseInNanos = timeBase.hostTimeInNanos()
-                let timeDelta = timeStampInNanos - hostTimeBaseInNanos // may be negative!
-                let timeStampInterval = Double(timeDelta) / 1.0e9
+                let timeDeltaInNanos = Double(timeStampInNanos) - Double(hostTimeBaseInNanos) // may be negative!
+                let timeStampInterval = timeDeltaInNanos / 1.0e9
                 let date = Date(timeIntervalSinceReferenceDate: timeBase.timeInterval() + timeStampInterval)
                 return Self.timeStampDateFormatter.string(from: date)
             }
@@ -223,8 +222,8 @@ import CoreAudio
     private var originatingEndpointName: String?
     private var timeStampWasZeroWhenReceived: Bool
 
-    private static let fromString = NSLocalizedString("From", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "Prefix for endpoint name when it's a source")
-    private static let toString = NSLocalizedString("To", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "Prefix for endpoint name when it's a destination")
+    private static let fromString = NSLocalizedString("From", tableName: "SnoizeMIDI", bundle: SMBundleForObject(SMMessage.self), comment: "Prefix for endpoint name when it's a source")
+    private static let toString = NSLocalizedString("To", tableName: "SnoizeMIDI", bundle: SMBundleForObject(SMMessage.self), comment: "Prefix for endpoint name when it's a destination")
 
     private static var timeStampDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -242,17 +241,29 @@ import CoreAudio
         case hexadecimal
         case nameMiddleC3    // Middle C = 60 decimal = C3, aka "Yamaha"
         case nameMiddleC4    // Middle C = 60 decimal = C4, aka "Roland"
+
+        static var `default`: Self {
+            return Self(rawValue: UserDefaults.standard.integer(forKey: SMMessage.noteFormatPreferenceKey)) ?? .decimal
+        }
     }
 
     @objc public enum ControllerFormattingOption: Int {
         case decimal
         case hexadecimal
         case name
+
+        static var `default`: Self {
+            return Self(rawValue: UserDefaults.standard.integer(forKey: SMMessage.controllerFormatPreferenceKey)) ?? .decimal
+        }
     }
 
     @objc public enum DataFormattingOption: Int {
         case decimal
         case hexadecimal
+
+        static var `default`: Self {
+            return Self(rawValue: UserDefaults.standard.integer(forKey: SMMessage.dataFormatPreferenceKey)) ?? .decimal
+        }
     }
 
     @objc public enum TimeFormattingOption: Int {
@@ -261,6 +272,10 @@ import CoreAudio
         case hostTimeSeconds
         case clockTime
         case hostTimeHexInteger
+
+        static var `default`: Self {
+            return Self(rawValue: UserDefaults.standard.integer(forKey: SMMessage.timeFormatPreferenceKey)) ?? .hostTimeInteger
+        }
     }
 
     // Preferences keys
@@ -272,8 +287,7 @@ import CoreAudio
     public static let programChangeBaseIndexPreferenceKey = "SMProgramChangeBaseIndex"
 
     public static func formatNoteNumber(_ noteNumber: UInt8) -> String {
-        let option = NoteFormattingOption(rawValue: UserDefaults.standard.integer(forKey: Self.noteFormatPreferenceKey)) ?? NoteFormattingOption.decimal
-        return formatNoteNumber(noteNumber, usingOption: option)
+        return formatNoteNumber(noteNumber, usingOption: NoteFormattingOption.default)
     }
 
     public static func formatNoteNumber(_ noteNumber: UInt8, usingOption option: NoteFormattingOption) -> String {
@@ -292,8 +306,7 @@ import CoreAudio
     }
 
     public static func formatControllerNumber(_ controllerNumber: UInt8) -> String {
-        let option = ControllerFormattingOption(rawValue: UserDefaults.standard.integer(forKey: Self.controllerFormatPreferenceKey)) ?? ControllerFormattingOption.decimal
-        return formatControllerNumber(controllerNumber, usingOption: option)
+        return formatControllerNumber(controllerNumber, usingOption: ControllerFormattingOption.default)
     }
 
     public static func formatControllerNumber(_ controllerNumber: UInt8, usingOption option: ControllerFormattingOption) -> String {
@@ -308,8 +321,7 @@ import CoreAudio
     }
 
     public static func formatProgramNumber(_ programNumber: UInt8) -> String {
-        let option = DataFormattingOption(rawValue: UserDefaults.standard.integer(forKey: Self.controllerFormatPreferenceKey)) ?? DataFormattingOption.decimal
-        switch option {
+        switch DataFormattingOption.default {
         case .decimal:
             let baseIndex = UserDefaults.standard.integer(forKey: Self.programChangeBaseIndexPreferenceKey)
             return "\(baseIndex + Int(programNumber))"
@@ -320,13 +332,11 @@ import CoreAudio
 
     public static func formatData(_ data: Data?) -> String {
         guard let data = data else { return "" }
-        let option = DataFormattingOption(rawValue: UserDefaults.standard.integer(forKey: Self.controllerFormatPreferenceKey)) ?? DataFormattingOption.decimal
-        return data.map({ formatDataByte($0, usingOption: option) }).joined(separator: " ")
+        return data.map({ formatDataByte($0, usingOption: DataFormattingOption.default) }).joined(separator: " ")
     }
 
     public static func formatDataByte(_ dataByte: UInt8) -> String {
-        let option = DataFormattingOption(rawValue: UserDefaults.standard.integer(forKey: Self.controllerFormatPreferenceKey)) ?? DataFormattingOption.decimal
-        return formatDataByte(dataByte, usingOption: option)
+        return formatDataByte(dataByte, usingOption: DataFormattingOption.default)
     }
 
     public static func formatDataByte(_ dataByte: UInt8, usingOption option: DataFormattingOption) -> String {
@@ -339,8 +349,7 @@ import CoreAudio
     }
 
     public static func formatSignedDataBytes(_ byte0: UInt8, _ byte1: UInt8) -> String {
-        let option = DataFormattingOption(rawValue: UserDefaults.standard.integer(forKey: Self.controllerFormatPreferenceKey)) ?? DataFormattingOption.decimal
-        return formatSignedDataBytes(byte0, byte1, usingOption: option)
+        return formatSignedDataBytes(byte0, byte1, usingOption: DataFormattingOption.default)
     }
 
     public static func formatSignedDataBytes(_ byte0: UInt8, _ byte1: UInt8, usingOption option: DataFormattingOption) -> String {
@@ -356,8 +365,7 @@ import CoreAudio
     }
 
     public static func formatLength(_ length: Int) -> String {
-        let option = DataFormattingOption(rawValue: UserDefaults.standard.integer(forKey: Self.controllerFormatPreferenceKey)) ?? DataFormattingOption.decimal
-        return formatLength(length, usingOption: option)
+        return formatLength(length, usingOption: DataFormattingOption.default)
     }
 
     public static func formatLength(_ length: Int, usingOption option: DataFormattingOption) -> String {
@@ -371,7 +379,7 @@ import CoreAudio
 
     public static func nameForManufacturerIdentifier(_ manufacturerIdentifierData: Data) -> String {
         return manufacturerNamesByHexIdentifier[manufacturerIdentifierData.lowercaseHexString]
-            ?? NSLocalizedString("Unknown Manufacturer", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "unknown manufacturer name")
+            ?? NSLocalizedString("Unknown Manufacturer", tableName: "SnoizeMIDI", bundle: SMBundleForObject(SMMessage.self), comment: "unknown manufacturer name")
     }
 
     // MARK: Private
@@ -393,7 +401,6 @@ import CoreAudio
 
     private static func formatNoteNumber(_ noteNumber: UInt8, baseOctave: Int) -> String {
         // noteNumber 0 is note C in octave provided (should be -2 or -1)
-
         let noteNames = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"]
         let noteName = noteNames[Int(noteNumber) % 12]
         return "\(noteName)\(baseOctave + Int(noteNumber) / 12)"
@@ -404,12 +411,13 @@ import CoreAudio
         // We could create a new string for the controllerNumber and look that up in the dictionary, but that gets expensive to do all the time.
         // Instead, we just scan through the dictionary once, and build an array, which is quicker to index into.
 
+        let bundle = SMBundleForObject(SMMessage.self)  // Note: SMBundleForObject(self) returns the Swift bundle
         var controllerNamesByNumberString: NSDictionary?
-        if let url = SMBundleForObject(self).url(forResource: "ControllerNames", withExtension: "plist") {
+        if let url = bundle.url(forResource: "ControllerNames", withExtension: "plist") {
             controllerNamesByNumberString = NSDictionary(contentsOf: url)
         }
 
-        let unknownNameFormat = NSLocalizedString("Controller %u", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "format of unknown controller")
+        let unknownNameFormat = NSLocalizedString("Controller %u", tableName: "SnoizeMIDI", bundle: bundle, comment: "format of unknown controller")
 
         return (0 ..< 128).map { controllerIndex in
             controllerNamesByNumberString?.object(forKey: "\(controllerIndex)") as? String
@@ -419,7 +427,8 @@ import CoreAudio
 
     private static var manufacturerNamesByHexIdentifier: [String: String] = {
         var manufacturerNames: [String: String] = [:]
-        if let url = SMBundleForObject(self).url(forResource: "ManufacturerNames", withExtension: "plist"),
+        let bundle = SMBundleForObject(SMMessage.self)  // Note: SMBundleForObject(self) returns the Swift bundle
+        if let url = bundle.url(forResource: "ManufacturerNames", withExtension: "plist"),
            let plist = NSDictionary(contentsOf: url) as? [String: String] {
             manufacturerNames = plist
         }
