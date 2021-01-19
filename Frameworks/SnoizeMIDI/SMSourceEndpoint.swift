@@ -36,58 +36,50 @@ import CoreMIDI
 
     public class func createVirtualSourceEndpoint(name: String, uniqueID: MIDIUniqueID) -> SMSourceEndpoint? {
         // If newUniqueID is 0, we'll use the unique ID that CoreMIDI generates for us
-        // TODO
 
-        /*
-         SMClient *client = [SMClient sharedClient];
-         OSStatus status;
-         MIDIEndpointRef newEndpointRef;
-         BOOL wasPostingExternalNotification;
-         SMSourceEndpoint *endpoint;
+        var endpoint: SMSourceEndpoint?
+        let client = SMClient.sharedClient!
 
-         // We are going to be making a lot of changes, so turn off external notifications
-         // for a while (until we're done).  Internal notifications are still necessary and aren't very slow.
-         wasPostingExternalNotification = [client postsExternalSetupChangeNotification];
-         [client setPostsExternalSetupChangeNotification:NO];
+        // We are going to be making a lot of changes, so turn off external notifications
+        // for a while (until we're done).  Internal notifications are still necessary and aren't very slow.
+        do {
+            let wasPostingExternalNotification = client.postsExternalSetupChangeNotification
+            client.postsExternalSetupChangeNotification = false
+            defer { client.postsExternalSetupChangeNotification = wasPostingExternalNotification }
 
-         status = MIDISourceCreate([client midiClient], (CFStringRef)newName, &newEndpointRef);
-         if (status)
-             return nil;
+            var newEndpointRef: MIDIEndpointRef = 0
+            guard MIDISourceCreate(client.midiClient, name as CFString, &newEndpointRef) == noErr else { return nil }
 
-         // We want to get at the SMEndpoint immediately.
-         // CoreMIDI will send us a notification that something was added, and then we will create an SMSourceEndpoint.
-         // However, the notification from CoreMIDI is posted in the run loop's main mode, and we don't want to wait for it to be run.
-         // So we need to manually add the new endpoint, now.
-         endpoint = (SMSourceEndpoint *)[self immediatelyAddObjectWithObjectRef:newEndpointRef];
-         if (!endpoint) {
-             NSLog(@"%@ couldn't find its virtual endpoint after it was created", NSStringFromClass(self));
-             return nil;
-         }
+            // We want to get at the SMEndpoint immediately.
+            // CoreMIDI will send us a notification that something was added, and then we will create an SMSourceEndpoint.
+            // However, the notification from CoreMIDI is posted in the run loop's main mode, and we don't want to wait for it to be run.
+            // So we need to manually add the new endpoint, now.
+            endpoint = immediatelyAddObject(withObjectRef: newEndpointRef) as? SMSourceEndpoint
+            if let endpoint = endpoint {
+                endpoint.setIsOwnedByThisProcess()
 
-         [endpoint setIsOwnedByThisProcess];
+                if uniqueID != 0 {
+                    endpoint.setUniqueID(uniqueID)
+                }
+                if endpoint.uniqueID() == 0 {
+                    // CoreMIDI didn't assign a unique ID to this endpoint, so we should generate one ourself
+                    var success = false
+                    while !success {
+                        success = endpoint.setUniqueID(SMMIDIObject.generateNewUniqueID())
+                    }
+                }
 
-         if (newUniqueID != 0)
-             [endpoint setUniqueID:newUniqueID];
-         if ([endpoint uniqueID] == 0) {
-             // CoreMIDI didn't assign a unique ID to this endpoint, so we should generate one ourself
-             BOOL success = NO;
+                endpoint.setManufacturerName("Snoize")
+            }
 
-             while (!success)
-                 success = [endpoint setUniqueID:[SMMIDIObject generateNewUniqueID]];
-         }
+            // End the scope, restoring postsExternaSetupChangeNotification,
+            // before we do the last endpoint modification, so one setup change
+            // notification will still happen
+        }
 
-         [endpoint setManufacturerName:@"Snoize"];
+        endpoint?.setModelName(client.name)
 
-         // Do this before the last modification, so one setup change notification will still happen
-         [client setPostsExternalSetupChangeNotification:wasPostingExternalNotification];
-
-         [endpoint setModelName:[client name]];
-
-         return endpoint;
-
-         */
-
-        return nil
+        return endpoint
     }
 
     // MARK: SMMIDIObject required overrides
