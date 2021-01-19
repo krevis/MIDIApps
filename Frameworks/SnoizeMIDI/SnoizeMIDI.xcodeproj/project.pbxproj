@@ -43,6 +43,9 @@
 		16966B0425B6481B00D5BE2A /* SMMessageTimeBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B0325B6481B00D5BE2A /* SMMessageTimeBase.swift */; };
 		16966B0525B6481B00D5BE2A /* SMMessageTimeBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B0325B6481B00D5BE2A /* SMMessageTimeBase.swift */; };
 		16966B0625B6481B00D5BE2A /* SMMessageTimeBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B0325B6481B00D5BE2A /* SMMessageTimeBase.swift */; };
+		16966B2725B6560100D5BE2A /* SMExternalDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B2625B6560100D5BE2A /* SMExternalDevice.swift */; };
+		16966B2825B6560100D5BE2A /* SMExternalDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B2625B6560100D5BE2A /* SMExternalDevice.swift */; };
+		16966B2925B6560100D5BE2A /* SMExternalDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B2625B6560100D5BE2A /* SMExternalDevice.swift */; };
 		16992871259707190057715C /* MessageMult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16992870259707190057715C /* MessageMult.swift */; };
 		16992872259707190057715C /* MessageMult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16992870259707190057715C /* MessageMult.swift */; };
 		16992873259707190057715C /* MessageMult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16992870259707190057715C /* MessageMult.swift */; };
@@ -78,8 +81,6 @@
 		16B11B9D0971D40100DB1DB5 /* SMDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B600971D40100DB1DB5 /* SMDevice.m */; };
 		16B11B9E0971D40100DB1DB5 /* SMEndpoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B610971D40100DB1DB5 /* SMEndpoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		16B11B9F0971D40100DB1DB5 /* SMEndpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B620971D40100DB1DB5 /* SMEndpoint.m */; };
-		16B11BA00971D40100DB1DB5 /* SMExternalDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B630971D40100DB1DB5 /* SMExternalDevice.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		16B11BA10971D40100DB1DB5 /* SMExternalDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B640971D40100DB1DB5 /* SMExternalDevice.m */; };
 		16B11BA60971D40100DB1DB5 /* SMInputStreamSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B690971D40100DB1DB5 /* SMInputStreamSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		16B11BAC0971D40100DB1DB5 /* SMMessageDestinationProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B6F0971D40100DB1DB5 /* SMMessageDestinationProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		16B11BB50971D40100DB1DB5 /* SMMIDIObject-Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B780971D40100DB1DB5 /* SMMIDIObject-Private.h */; settings = {ATTRIBUTES = (); }; };
@@ -101,7 +102,6 @@
 		A53DDBE5148F4361006D2FFD /* SMMIDIObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B7A0971D40100DB1DB5 /* SMMIDIObject.m */; };
 		A53DDBE6148F4364006D2FFD /* SMDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B600971D40100DB1DB5 /* SMDevice.m */; };
 		A53DDBE7148F4367006D2FFD /* SMEndpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B620971D40100DB1DB5 /* SMEndpoint.m */; };
-		A53DDBE8148F436A006D2FFD /* SMExternalDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B640971D40100DB1DB5 /* SMExternalDevice.m */; };
 		A53DDC16148F4C5D006D2FFD /* SnoizeMIDI.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B910971D40100DB1DB5 /* SnoizeMIDI.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A53DDC1B148F4C70006D2FFD /* SMUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B890971D40100DB1DB5 /* SMUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A53DDC1C148F4C79006D2FFD /* NSArray-SMExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B570971D40100DB1DB5 /* NSArray-SMExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -110,7 +110,6 @@
 		A53DDC20148F4C89006D2FFD /* SMMIDIObject-Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B780971D40100DB1DB5 /* SMMIDIObject-Private.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A53DDC21148F4C89006D2FFD /* SMDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B5F0971D40100DB1DB5 /* SMDevice.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A53DDC22148F4C89006D2FFD /* SMEndpoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B610971D40100DB1DB5 /* SMEndpoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A53DDC23148F4C89006D2FFD /* SMExternalDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B630971D40100DB1DB5 /* SMExternalDevice.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A53DDC2B148F4CA7006D2FFD /* SMMessageDestinationProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B6F0971D40100DB1DB5 /* SMMessageDestinationProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A53DDC2D148F4CAE006D2FFD /* SMInputStreamSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B690971D40100DB1DB5 /* SMInputStreamSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A581993116AF687400325CF3 /* SMUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B8A0971D40100DB1DB5 /* SMUtilities.m */; };
@@ -119,7 +118,6 @@
 		A581993516AF687400325CF3 /* SMMIDIObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B7A0971D40100DB1DB5 /* SMMIDIObject.m */; };
 		A581993616AF687400325CF3 /* SMDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B600971D40100DB1DB5 /* SMDevice.m */; };
 		A581993716AF687400325CF3 /* SMEndpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B620971D40100DB1DB5 /* SMEndpoint.m */; };
-		A581993816AF687400325CF3 /* SMExternalDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B640971D40100DB1DB5 /* SMExternalDevice.m */; };
 		A581994D16AF687400325CF3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A53DDB99148F4219006D2FFD /* Foundation.framework */; };
 		A581994F16AF687400325CF3 /* SnoizeMIDI.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B910971D40100DB1DB5 /* SnoizeMIDI.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A581995216AF687400325CF3 /* SMUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B890971D40100DB1DB5 /* SMUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -129,7 +127,6 @@
 		A581995716AF687400325CF3 /* SMMIDIObject-Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B780971D40100DB1DB5 /* SMMIDIObject-Private.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A581995816AF687400325CF3 /* SMDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B5F0971D40100DB1DB5 /* SMDevice.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A581995916AF687400325CF3 /* SMEndpoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B610971D40100DB1DB5 /* SMEndpoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A581995A16AF687400325CF3 /* SMExternalDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B630971D40100DB1DB5 /* SMExternalDevice.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A581996216AF687400325CF3 /* SMMessageDestinationProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B6F0971D40100DB1DB5 /* SMMessageDestinationProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A581996416AF687400325CF3 /* SMInputStreamSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B690971D40100DB1DB5 /* SMInputStreamSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A581999816AF699100325CF3 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A581999716AF699100325CF3 /* CoreMIDI.framework */; };
@@ -154,6 +151,7 @@
 		16966AD325B4F90800D5BE2A /* SMVoiceMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMVoiceMessage.swift; sourceTree = "<group>"; };
 		16966AF325B5222600D5BE2A /* SMMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMessage.swift; sourceTree = "<group>"; };
 		16966B0325B6481B00D5BE2A /* SMMessageTimeBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMessageTimeBase.swift; sourceTree = "<group>"; };
+		16966B2625B6560100D5BE2A /* SMExternalDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMExternalDevice.swift; sourceTree = "<group>"; };
 		1699286E259707190057715C /* SnoizeMIDIiOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SnoizeMIDIiOS-Bridging-Header.h"; sourceTree = "<group>"; };
 		1699286F259707190057715C /* SnoizeMIDIOSX-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SnoizeMIDIOSX-Bridging-Header.h"; sourceTree = "<group>"; };
 		16992870259707190057715C /* MessageMult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageMult.swift; sourceTree = "<group>"; };
@@ -174,8 +172,6 @@
 		16B11B600971D40100DB1DB5 /* SMDevice.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMDevice.m; sourceTree = "<group>"; };
 		16B11B610971D40100DB1DB5 /* SMEndpoint.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMEndpoint.h; sourceTree = "<group>"; };
 		16B11B620971D40100DB1DB5 /* SMEndpoint.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMEndpoint.m; sourceTree = "<group>"; };
-		16B11B630971D40100DB1DB5 /* SMExternalDevice.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMExternalDevice.h; sourceTree = "<group>"; };
-		16B11B640971D40100DB1DB5 /* SMExternalDevice.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMExternalDevice.m; sourceTree = "<group>"; };
 		16B11B690971D40100DB1DB5 /* SMInputStreamSource.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMInputStreamSource.h; sourceTree = "<group>"; };
 		16B11B6F0971D40100DB1DB5 /* SMMessageDestinationProtocol.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMMessageDestinationProtocol.h; sourceTree = "<group>"; };
 		16B11B780971D40100DB1DB5 /* SMMIDIObject-Private.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "SMMIDIObject-Private.h"; sourceTree = "<group>"; };
@@ -348,8 +344,7 @@
 				16B11B600971D40100DB1DB5 /* SMDevice.m */,
 				16B11B610971D40100DB1DB5 /* SMEndpoint.h */,
 				16B11B620971D40100DB1DB5 /* SMEndpoint.m */,
-				16B11B630971D40100DB1DB5 /* SMExternalDevice.h */,
-				16B11B640971D40100DB1DB5 /* SMExternalDevice.m */,
+				16966B2625B6560100D5BE2A /* SMExternalDevice.swift */,
 			);
 			name = "CoreMIDI Objects";
 			sourceTree = "<group>";
@@ -432,7 +427,6 @@
 				16B11B980971D40100DB1DB5 /* NSString-SMExtensions.h in Headers */,
 				16B11B9C0971D40100DB1DB5 /* SMDevice.h in Headers */,
 				16B11B9E0971D40100DB1DB5 /* SMEndpoint.h in Headers */,
-				16B11BA00971D40100DB1DB5 /* SMExternalDevice.h in Headers */,
 				16B11BA60971D40100DB1DB5 /* SMInputStreamSource.h in Headers */,
 				16B11BAC0971D40100DB1DB5 /* SMMessageDestinationProtocol.h in Headers */,
 				16B11BB50971D40100DB1DB5 /* SMMIDIObject-Private.h in Headers */,
@@ -454,7 +448,6 @@
 				A53DDC20148F4C89006D2FFD /* SMMIDIObject-Private.h in Headers */,
 				A53DDC21148F4C89006D2FFD /* SMDevice.h in Headers */,
 				A53DDC22148F4C89006D2FFD /* SMEndpoint.h in Headers */,
-				A53DDC23148F4C89006D2FFD /* SMExternalDevice.h in Headers */,
 				A53DDC2B148F4CA7006D2FFD /* SMMessageDestinationProtocol.h in Headers */,
 				A53DDC2D148F4CAE006D2FFD /* SMInputStreamSource.h in Headers */,
 			);
@@ -472,7 +465,6 @@
 				A581995716AF687400325CF3 /* SMMIDIObject-Private.h in Headers */,
 				A581995816AF687400325CF3 /* SMDevice.h in Headers */,
 				A581995916AF687400325CF3 /* SMEndpoint.h in Headers */,
-				A581995A16AF687400325CF3 /* SMExternalDevice.h in Headers */,
 				A581996216AF687400325CF3 /* SMMessageDestinationProtocol.h in Headers */,
 				A581996416AF687400325CF3 /* SMInputStreamSource.h in Headers */,
 			);
@@ -629,9 +621,9 @@
 				16B11B990971D40100DB1DB5 /* NSString-SMExtensions.m in Sources */,
 				16B11B9D0971D40100DB1DB5 /* SMDevice.m in Sources */,
 				16B11B9F0971D40100DB1DB5 /* SMEndpoint.m in Sources */,
-				16B11BA10971D40100DB1DB5 /* SMExternalDevice.m in Sources */,
 				16966A5E25A9417400D5BE2A /* SMInputStream.swift in Sources */,
 				16966A9E25AD6A8F00D5BE2A /* SMSystemRealTimeMessage.swift in Sources */,
+				16966B2725B6560100D5BE2A /* SMExternalDevice.swift in Sources */,
 				16A3B73A25A156D300C7F61E /* SMOutputStream.swift in Sources */,
 				16992871259707190057715C /* MessageMult.swift in Sources */,
 				169928F1259B16730057715C /* NSData-SMExtensions.swift in Sources */,
@@ -667,12 +659,12 @@
 				16992872259707190057715C /* MessageMult.swift in Sources */,
 				16966A5F25A9417400D5BE2A /* SMInputStream.swift in Sources */,
 				16966A9F25AD6A8F00D5BE2A /* SMSystemRealTimeMessage.swift in Sources */,
+				16966B2825B6560100D5BE2A /* SMExternalDevice.swift in Sources */,
 				16A3B73B25A156D300C7F61E /* SMOutputStream.swift in Sources */,
 				A53DDBE6148F4364006D2FFD /* SMDevice.m in Sources */,
 				169928F2259B16730057715C /* NSData-SMExtensions.swift in Sources */,
 				A53DDBE7148F4367006D2FFD /* SMEndpoint.m in Sources */,
 				16966AD525B4F90800D5BE2A /* SMVoiceMessage.swift in Sources */,
-				A53DDBE8148F436A006D2FFD /* SMExternalDevice.m in Sources */,
 				169928C825984FAA0057715C /* SMClient.swift in Sources */,
 				1699290E259FCBA60057715C /* SMVirtualOutputStream.swift in Sources */,
 				16966A8C25AD0F8500D5BE2A /* SMInvalidMessage.swift in Sources */,
@@ -702,12 +694,12 @@
 				16992873259707190057715C /* MessageMult.swift in Sources */,
 				16966A6025A9417400D5BE2A /* SMInputStream.swift in Sources */,
 				16966AA025AD6A8F00D5BE2A /* SMSystemRealTimeMessage.swift in Sources */,
+				16966B2925B6560100D5BE2A /* SMExternalDevice.swift in Sources */,
 				16A3B73C25A156D300C7F61E /* SMOutputStream.swift in Sources */,
 				A581993616AF687400325CF3 /* SMDevice.m in Sources */,
 				169928F3259B16730057715C /* NSData-SMExtensions.swift in Sources */,
 				A581993716AF687400325CF3 /* SMEndpoint.m in Sources */,
 				16966AD625B4F90800D5BE2A /* SMVoiceMessage.swift in Sources */,
-				A581993816AF687400325CF3 /* SMExternalDevice.m in Sources */,
 				169928C925984FAA0057715C /* SMClient.swift in Sources */,
 				1699290F259FCBA60057715C /* SMVirtualOutputStream.swift in Sources */,
 				16966A8D25AD0F8500D5BE2A /* SMInvalidMessage.swift in Sources */,

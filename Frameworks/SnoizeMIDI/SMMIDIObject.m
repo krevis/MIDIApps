@@ -196,6 +196,21 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
         return nil;
 }
 
++ (SMMIDIObject *)findObjectWithUniqueID:(MIDIUniqueID)aUniqueID
+{
+    return [self objectWithUniqueID:aUniqueID];
+}
+
++ (SMMIDIObject *)findObjectWithName:(NSString *)name
+{
+    return [self objectWithName:name];
+}
+
++ (SMMIDIObject *)findObjectWithObjectRef:(MIDIObjectRef)anObjectRef
+{
+    return [self objectWithObjectRef:anObjectRef];
+}
+
 //
 // Generate a new unique ID
 //

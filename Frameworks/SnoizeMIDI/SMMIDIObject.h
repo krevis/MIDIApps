@@ -43,6 +43,11 @@
 + (SMMIDIObject *)objectWithObjectRef:(MIDIObjectRef)anObjectRef;
     // NOTE: All of these methods do nothing in the base class. They work for subclasses of SMMIDIObject only.
 
+  // TODO For Swift; it sees the above methods as initializers but somehow can't call them
++ (SMMIDIObject *)findObjectWithUniqueID:(MIDIUniqueID)aUniqueID;
++ (SMMIDIObject *)findObjectWithName:(NSString *)name;
++ (SMMIDIObject *)findObjectWithObjectRef:(MIDIObjectRef)anObjectRef;
+
 // Generate a new unique ID
 
 + (MIDIUniqueID)generateNewUniqueID;
