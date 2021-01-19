@@ -13,22 +13,22 @@
 import Foundation
 import CoreMIDI
 
-@objc public class SMExternalDevice: SMMIDIObject {
+@objc public class SMDevice: SMMIDIObject {
 
-    @objc public class var externalDevices: [SMExternalDevice] {
-        (allObjectsInOrder() as? [SMExternalDevice]) ?? []
+    @objc public class var devices: [SMDevice] {
+        (allObjectsInOrder() as? [SMDevice]) ?? []
     }
 
-    @objc public class func externalDevice(uniqueID: MIDIUniqueID) -> SMExternalDevice? {
-        find(withUniqueID: uniqueID) as? SMExternalDevice
+    @objc public class func device(uniqueID: MIDIUniqueID) -> SMDevice? {
+        find(withUniqueID: uniqueID) as? SMDevice
         // TODO This is unused, see if we really need it
     }
 
-    @objc public class func externalDevice(deviceRef: MIDIDeviceRef) -> SMExternalDevice? {
-        findObject(withObjectRef: deviceRef) as? SMExternalDevice
+    @objc public class func device(deviceRef: MIDIDeviceRef) -> SMDevice? {
+        findObject(withObjectRef: deviceRef) as? SMDevice
     }
 
-    // MARK: New SMExternalDevice API
+    // MARK: New SMDevice API
 
     public var deviceRef: MIDIDeviceRef {
         objectRef()
@@ -53,31 +53,28 @@ import CoreMIDI
     // MARK: SMMIDIObject subclass
 
     public class override func midiObjectType() -> MIDIObjectType {
-        MIDIObjectType.externalDevice
+        MIDIObjectType.device
     }
 
     public class override func midiObjectCount() -> Int {
-        MIDIGetNumberOfExternalDevices()
+        MIDIGetNumberOfDevices()
     }
 
     public class override func midiObject(at index: Int) -> MIDIObjectRef {
-        MIDIGetExternalDevice(index)
+        MIDIGetDevice(index)
     }
 
-    public override func setMaxSysExSpeed(_ value: Int32) {
-        super.setMaxSysExSpeed(value)
+    public override func propertyDidChange(_ propertyName: String!) {
+        if propertyName == String(kMIDIPropertyOffline) {
+            // This device just went offline or online. We need to refresh its endpoints.
+            // (If it went online, we didn't previously have its endpoints in our list.)
 
-        // Also set the speed on this device's source endpoints (which we get to via its entities).
-        // This is how MIDISendSysex() determines what speed to use, surprisingly.
-
-        for entityIndex in 0 ..< MIDIDeviceGetNumberOfEntities(deviceRef) {
-            let entityRef = MIDIDeviceGetEntity(deviceRef, entityIndex)
-            for sourceIndex in 0 ..< MIDIEntityGetNumberOfSources(entityRef) {
-                let sourceEndpointRef = MIDIEntityGetSource(entityRef, sourceIndex)
-                MIDIObjectSetIntegerProperty(sourceEndpointRef, kMIDIPropertyMaxSysExSpeed, value)
-                // ignore errors, nothing we can do anyway
-            }
+            // TODO This is an overly blunt approach.
+            SMSourceEndpoint.refreshAllObjects()
+            SMDestinationEndpoint.refreshAllObjects()
         }
+
+        super.propertyDidChange(propertyName)
     }
 
 }

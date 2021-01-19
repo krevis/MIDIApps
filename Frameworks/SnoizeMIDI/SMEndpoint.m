@@ -18,7 +18,6 @@
 #include <unistd.h>
 
 #import <SnoizeMIDI/SnoizeMIDI-Swift.h>
-#import "SMDevice.h"
 #import "SMMIDIObject-Private.h"
 #import "SMUtilities.h"
 #import "NSArray-SMExtensions.h"
