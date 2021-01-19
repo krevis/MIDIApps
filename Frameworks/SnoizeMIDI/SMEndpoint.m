@@ -30,10 +30,8 @@ typedef struct EndpointUniqueNamesFlags {
     unsigned int haveNamesAlwaysBeenUnique:1;
 } EndpointUniqueNamesFlags;
 
-+ (EndpointUniqueNamesFlags *)endpointUniqueNamesFlagsPtr;
+//+ (EndpointUniqueNamesFlags *)endpointUniqueNamesFlagsPtr;
 
-+ (BOOL)doEndpointsHaveUniqueNames;
-+ (BOOL)haveEndpointsAlwaysHadUniqueNames;
 + (void)checkForUniqueNames;
 
 - (MIDIDeviceRef)findDevice;
@@ -401,34 +399,35 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
     return object;
 }
 
+//
+// Temporary
+//
+
++ (BOOL)doEndpointsHaveUniqueNames;
+{
+    SMRequestConcreteImplementation(self, _cmd);
+    return NO;
+}
+
++ (BOOL)haveEndpointsAlwaysHadUniqueNames;
+{
+    SMRequestConcreteImplementation(self, _cmd);
+    return NO;
+}
+
++ (void)setAreNamesUnique:(BOOL)areNamesUnique
+{
+    SMRequestConcreteImplementation(self, _cmd);
+}
+
 @end
 
 
 @implementation SMEndpoint (Private)
 
 //
-// Methods to be implemented in subclasses
-//
-
-+ (EndpointUniqueNamesFlags *)endpointUniqueNamesFlagsPtr;
-{
-    SMRequestConcreteImplementation(self, _cmd);
-    return NULL;
-}
-
-//
 // New methods
 //
-
-+ (BOOL)doEndpointsHaveUniqueNames;
-{
-    return [self endpointUniqueNamesFlagsPtr]->areNamesUnique;
-}
-
-+ (BOOL)haveEndpointsAlwaysHadUniqueNames;
-{
-    return [self endpointUniqueNamesFlagsPtr]->haveNamesAlwaysBeenUnique;
-}
 
 + (void)checkForUniqueNames;
 {
@@ -436,7 +435,6 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
     NSArray *nameArray;
     NSSet *nameSet;
     BOOL areNamesUnique;
-    struct EndpointUniqueNamesFlags *flagsPtr;
 
     endpoints = [self allObjects];
     nameArray = [endpoints SnoizeMIDI_arrayByMakingObjectsPerformSelector:@selector(name)];
@@ -444,9 +442,7 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 
     areNamesUnique = ([nameArray count] == [nameSet count]);
 
-    flagsPtr = [self endpointUniqueNamesFlagsPtr];
-    flagsPtr->areNamesUnique = areNamesUnique;
-    flagsPtr->haveNamesAlwaysBeenUnique = flagsPtr->haveNamesAlwaysBeenUnique && areNamesUnique;
+    [self setAreNamesUnique:areNamesUnique];
 }
 
 - (MIDIDeviceRef)findDevice;
@@ -547,124 +543,6 @@ NSString *SMEndpointPropertyOwnerPID = @"SMEndpointPropertyOwnerPID";
 @end
 
 
-@implementation SMSourceEndpoint
-
-static EndpointUniqueNamesFlags sourceEndpointUniqueNamesFlags = { YES, YES };
-
-//
-// SMMIDIObject required overrides
-//
-
-+ (MIDIObjectType)midiObjectType;
-{
-    return kMIDIObjectType_Source;
-}
-
-+ (ItemCount)midiObjectCount;
-{
-    return MIDIGetNumberOfSources();
-}
-
-+ (MIDIObjectRef)midiObjectAtIndex:(ItemCount)index;
-{
-    return MIDIGetSource(index);
-}
-
-//
-// SMEndpoint required overrides
-//
-
-+ (EndpointUniqueNamesFlags *)endpointUniqueNamesFlagsPtr;
-{
-    return &sourceEndpointUniqueNamesFlags;
-}
-
-+ (ItemCount)endpointCountForEntity:(MIDIEntityRef)entity;
-{
-    return MIDIEntityGetNumberOfSources(entity);
-}
-
-+ (MIDIEndpointRef)endpointRefAtIndex:(ItemCount)index forEntity:(MIDIEntityRef)entity;
-{
-    return MIDIEntityGetSource(entity, index);
-}
-
-//
-// New methods
-//
-
-+ (NSArray<SMSourceEndpoint *> *)sourceEndpoints;
-{
-    return [self allObjectsInOrder];
-}
-
-+ (SMSourceEndpoint *)sourceEndpointWithUniqueID:(MIDIUniqueID)aUniqueID;
-{
-    return (SMSourceEndpoint *)[self objectWithUniqueID:aUniqueID];
-}
-
-+ (SMSourceEndpoint *)sourceEndpointWithName:(NSString *)aName;
-{
-    return (SMSourceEndpoint *)[self objectWithName:aName];
-}
-
-+ (SMSourceEndpoint *)sourceEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
-{
-    return (SMSourceEndpoint *)[self objectWithObjectRef:(MIDIObjectRef)anEndpointRef];
-}
-
-+ (SMSourceEndpoint *)createVirtualSourceEndpointWithName:(NSString *)newName uniqueID:(MIDIUniqueID)newUniqueID;
-{
-    SMClient *client = [SMClient sharedClient];
-    OSStatus status;
-    MIDIEndpointRef newEndpointRef;
-    BOOL wasPostingExternalNotification;
-    SMSourceEndpoint *endpoint;
-    
-    // We are going to be making a lot of changes, so turn off external notifications
-    // for a while (until we're done).  Internal notifications are still necessary and aren't very slow.
-    wasPostingExternalNotification = [client postsExternalSetupChangeNotification];
-    [client setPostsExternalSetupChangeNotification:NO];
-
-    status = MIDISourceCreate([client midiClient], (CFStringRef)newName, &newEndpointRef);
-    if (status)
-        return nil;
-
-    // We want to get at the SMEndpoint immediately.
-    // CoreMIDI will send us a notification that something was added, and then we will create an SMSourceEndpoint.
-    // However, the notification from CoreMIDI is posted in the run loop's main mode, and we don't want to wait for it to be run.
-    // So we need to manually add the new endpoint, now.
-    endpoint = (SMSourceEndpoint *)[self immediatelyAddObjectWithObjectRef:newEndpointRef];
-    if (!endpoint) {
-        NSLog(@"%@ couldn't find its virtual endpoint after it was created", NSStringFromClass(self));
-        return nil;
-    }
-
-    [endpoint setIsOwnedByThisProcess];
-
-    if (newUniqueID != 0)
-        [endpoint setUniqueID:newUniqueID];
-    if ([endpoint uniqueID] == 0) {
-        // CoreMIDI didn't assign a unique ID to this endpoint, so we should generate one ourself
-        BOOL success = NO;
-
-        while (!success)
-            success = [endpoint setUniqueID:[SMMIDIObject generateNewUniqueID]];
-    }
-    
-    [endpoint setManufacturerName:@"Snoize"];
-
-    // Do this before the last modification, so one setup change notification will still happen
-    [client setPostsExternalSetupChangeNotification:wasPostingExternalNotification];
-
-    [endpoint setModelName:[client name]];
-
-    return endpoint;
-}
-
-@end
-
-
 @implementation SMDestinationEndpoint
 
 static EndpointUniqueNamesFlags destinationEndpointUniqueNamesFlags = { YES, YES };
@@ -697,6 +575,23 @@ static BOOL sCreatingSysExSpeedWorkaroundEndpoint = NO;
 + (EndpointUniqueNamesFlags *)endpointUniqueNamesFlagsPtr;
 {
     return &destinationEndpointUniqueNamesFlags;
+}
+
++ (BOOL)doEndpointsHaveUniqueNames;
+{
+    return [self endpointUniqueNamesFlagsPtr]->areNamesUnique;
+}
+
++ (BOOL)haveEndpointsAlwaysHadUniqueNames;
+{
+    return [self endpointUniqueNamesFlagsPtr]->haveNamesAlwaysBeenUnique;
+}
+
++ (void)setAreNamesUnique:(BOOL)areNamesUnique
+{
+    struct EndpointUniqueNamesFlags *flagsPtr = [self endpointUniqueNamesFlagsPtr];
+    flagsPtr->areNamesUnique = areNamesUnique;
+    flagsPtr->haveNamesAlwaysBeenUnique = flagsPtr->haveNamesAlwaysBeenUnique && areNamesUnique;
 }
 
 + (ItemCount)endpointCountForEntity:(MIDIEntityRef)entity;

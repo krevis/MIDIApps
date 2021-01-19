@@ -125,9 +125,9 @@ class CombinationInputStream: NSObject {
             // We may have an endpoint name under key "portEndpointName"
             let sourceEndpointName = settings["portEndpointName"] as? String
 
-            var sourceEndpoint = SMSourceEndpoint(uniqueID: oldStyleUniqueID.int32Value)
+            var sourceEndpoint = SMSourceEndpoint.findSourceEndpoint(uniqueID: oldStyleUniqueID.int32Value)
             if sourceEndpoint == nil, let name = sourceEndpointName {
-                sourceEndpoint = SMSourceEndpoint(name: name)
+                sourceEndpoint = SMSourceEndpoint.findSourceEndpoint(name: name)
             }
 
             if let endpoint = sourceEndpoint {

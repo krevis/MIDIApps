@@ -49,6 +49,9 @@
 		16966B3725B6657B00D5BE2A /* SMDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B3625B6657B00D5BE2A /* SMDevice.swift */; };
 		16966B3825B6657B00D5BE2A /* SMDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B3625B6657B00D5BE2A /* SMDevice.swift */; };
 		16966B3925B6657B00D5BE2A /* SMDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B3625B6657B00D5BE2A /* SMDevice.swift */; };
+		16966B6A25B6B6EE00D5BE2A /* SMSourceEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B6925B6B6EE00D5BE2A /* SMSourceEndpoint.swift */; };
+		16966B6B25B6B6EE00D5BE2A /* SMSourceEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B6925B6B6EE00D5BE2A /* SMSourceEndpoint.swift */; };
+		16966B6C25B6B6EE00D5BE2A /* SMSourceEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B6925B6B6EE00D5BE2A /* SMSourceEndpoint.swift */; };
 		16992871259707190057715C /* MessageMult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16992870259707190057715C /* MessageMult.swift */; };
 		16992872259707190057715C /* MessageMult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16992870259707190057715C /* MessageMult.swift */; };
 		16992873259707190057715C /* MessageMult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16992870259707190057715C /* MessageMult.swift */; };
@@ -150,6 +153,7 @@
 		16966B0325B6481B00D5BE2A /* SMMessageTimeBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMessageTimeBase.swift; sourceTree = "<group>"; };
 		16966B2625B6560100D5BE2A /* SMExternalDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMExternalDevice.swift; sourceTree = "<group>"; };
 		16966B3625B6657B00D5BE2A /* SMDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMDevice.swift; sourceTree = "<group>"; };
+		16966B6925B6B6EE00D5BE2A /* SMSourceEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMSourceEndpoint.swift; sourceTree = "<group>"; };
 		1699286E259707190057715C /* SnoizeMIDIiOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SnoizeMIDIiOS-Bridging-Header.h"; sourceTree = "<group>"; };
 		1699286F259707190057715C /* SnoizeMIDIOSX-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SnoizeMIDIOSX-Bridging-Header.h"; sourceTree = "<group>"; };
 		16992870259707190057715C /* MessageMult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageMult.swift; sourceTree = "<group>"; };
@@ -339,6 +343,7 @@
 				16966B3625B6657B00D5BE2A /* SMDevice.swift */,
 				16B11B610971D40100DB1DB5 /* SMEndpoint.h */,
 				16B11B620971D40100DB1DB5 /* SMEndpoint.m */,
+				16966B6925B6B6EE00D5BE2A /* SMSourceEndpoint.swift */,
 				16966B2625B6560100D5BE2A /* SMExternalDevice.swift */,
 			);
 			name = "CoreMIDI Objects";
@@ -634,6 +639,7 @@
 				16B11BC70971D40100DB1DB5 /* SMUtilities.m in Sources */,
 				1699289A25971F3A0057715C /* MessageHistory.swift in Sources */,
 				16966AAE25AD73AB00D5BE2A /* SMSystemCommonMessage.swift in Sources */,
+				16966B6A25B6B6EE00D5BE2A /* SMSourceEndpoint.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -669,6 +675,7 @@
 				16A3B74E25A40A0D00C7F61E /* SMSysExSendRequest.swift in Sources */,
 				16966AAF25AD73AB00D5BE2A /* SMSystemCommonMessage.swift in Sources */,
 				1699289B25971F3A0057715C /* MessageHistory.swift in Sources */,
+				16966B6B25B6B6EE00D5BE2A /* SMSourceEndpoint.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -704,6 +711,7 @@
 				16A3B74F25A40A0D00C7F61E /* SMSysExSendRequest.swift in Sources */,
 				16966AB025AD73AB00D5BE2A /* SMSystemCommonMessage.swift in Sources */,
 				1699289C25971F3A0057715C /* MessageHistory.swift in Sources */,
+				16966B6C25B6B6EE00D5BE2A /* SMSourceEndpoint.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

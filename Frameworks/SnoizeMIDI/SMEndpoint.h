@@ -80,20 +80,10 @@
 @property (nonatomic, readonly, strong) NSNumber *inputStreamSourceUniqueID;
 @property (nonatomic, readonly, strong) NSArray<NSString *> *inputStreamSourceExternalDeviceNames;
 
-@end
-
-
-@interface SMSourceEndpoint : SMEndpoint
-{
-}
-
-+ (NSArray<SMSourceEndpoint *> *)sourceEndpoints;
-+ (SMSourceEndpoint *)sourceEndpointWithUniqueID:(MIDIUniqueID)uniqueID;
-+ (SMSourceEndpoint *)sourceEndpointWithName:(NSString *)name;
-+ (SMSourceEndpoint *)sourceEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
-
-+ (SMSourceEndpoint *)createVirtualSourceEndpointWithName:(NSString *)newName uniqueID:(MIDIUniqueID)newUniqueID;
-    // If newUniqueID is 0, we'll use the unique ID that CoreMIDI generates for us
+// TODO Internal methods to override in subclasses
++ (BOOL)doEndpointsHaveUniqueNames;
++ (BOOL)haveEndpointsAlwaysHadUniqueNames;
++ (void)setAreNamesUnique:(BOOL)areNamesUnique;
 
 @end
 

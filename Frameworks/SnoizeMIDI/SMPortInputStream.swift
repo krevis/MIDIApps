@@ -93,7 +93,7 @@ import Foundation
     }
 
     public override var inputSources: [SMInputStreamSource] {
-        SMSourceEndpoint.sourceEndpoints()
+        SMSourceEndpoint.sourceEndpoints
     }
 
     public override var selectedInputSources: Set<AnyHashable> { // TODO Should be typed better

@@ -17,7 +17,7 @@ import Foundation
     @objc public let endpoint: SMSourceEndpoint
 
     @objc public init?(name: String, uniqueID: MIDIUniqueID) {
-        guard let newEndpoint = SMSourceEndpoint.createVirtualSourceEndpoint(withName: name, uniqueID: uniqueID) else { return nil }
+        guard let newEndpoint = SMSourceEndpoint.createVirtualSourceEndpoint(name: name, uniqueID: uniqueID) else { return nil }
         endpoint = newEndpoint
 
         super.init()
