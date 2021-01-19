@@ -52,6 +52,9 @@
 		16966B6A25B6B6EE00D5BE2A /* SMSourceEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B6925B6B6EE00D5BE2A /* SMSourceEndpoint.swift */; };
 		16966B6B25B6B6EE00D5BE2A /* SMSourceEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B6925B6B6EE00D5BE2A /* SMSourceEndpoint.swift */; };
 		16966B6C25B6B6EE00D5BE2A /* SMSourceEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B6925B6B6EE00D5BE2A /* SMSourceEndpoint.swift */; };
+		16966B7725B6CCDE00D5BE2A /* SMDestinationEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B7625B6CCDE00D5BE2A /* SMDestinationEndpoint.swift */; };
+		16966B7825B6CCDE00D5BE2A /* SMDestinationEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B7625B6CCDE00D5BE2A /* SMDestinationEndpoint.swift */; };
+		16966B7925B6CCDE00D5BE2A /* SMDestinationEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B7625B6CCDE00D5BE2A /* SMDestinationEndpoint.swift */; };
 		16992871259707190057715C /* MessageMult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16992870259707190057715C /* MessageMult.swift */; };
 		16992872259707190057715C /* MessageMult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16992870259707190057715C /* MessageMult.swift */; };
 		16992873259707190057715C /* MessageMult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16992870259707190057715C /* MessageMult.swift */; };
@@ -154,6 +157,7 @@
 		16966B2625B6560100D5BE2A /* SMExternalDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMExternalDevice.swift; sourceTree = "<group>"; };
 		16966B3625B6657B00D5BE2A /* SMDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMDevice.swift; sourceTree = "<group>"; };
 		16966B6925B6B6EE00D5BE2A /* SMSourceEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMSourceEndpoint.swift; sourceTree = "<group>"; };
+		16966B7625B6CCDE00D5BE2A /* SMDestinationEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMDestinationEndpoint.swift; sourceTree = "<group>"; };
 		1699286E259707190057715C /* SnoizeMIDIiOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SnoizeMIDIiOS-Bridging-Header.h"; sourceTree = "<group>"; };
 		1699286F259707190057715C /* SnoizeMIDIOSX-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SnoizeMIDIOSX-Bridging-Header.h"; sourceTree = "<group>"; };
 		16992870259707190057715C /* MessageMult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageMult.swift; sourceTree = "<group>"; };
@@ -344,6 +348,7 @@
 				16B11B610971D40100DB1DB5 /* SMEndpoint.h */,
 				16B11B620971D40100DB1DB5 /* SMEndpoint.m */,
 				16966B6925B6B6EE00D5BE2A /* SMSourceEndpoint.swift */,
+				16966B7625B6CCDE00D5BE2A /* SMDestinationEndpoint.swift */,
 				16966B2625B6560100D5BE2A /* SMExternalDevice.swift */,
 			);
 			name = "CoreMIDI Objects";
@@ -624,6 +629,7 @@
 				16A3B73A25A156D300C7F61E /* SMOutputStream.swift in Sources */,
 				16992871259707190057715C /* MessageMult.swift in Sources */,
 				169928F1259B16730057715C /* NSData-SMExtensions.swift in Sources */,
+				16966B7725B6CCDE00D5BE2A /* SMDestinationEndpoint.swift in Sources */,
 				169928C725984FAA0057715C /* SMClient.swift in Sources */,
 				16966AD425B4F90800D5BE2A /* SMVoiceMessage.swift in Sources */,
 				1699290D259FCBA60057715C /* SMVirtualOutputStream.swift in Sources */,
@@ -660,6 +666,7 @@
 				16966A9F25AD6A8F00D5BE2A /* SMSystemRealTimeMessage.swift in Sources */,
 				16966B2825B6560100D5BE2A /* SMExternalDevice.swift in Sources */,
 				16A3B73B25A156D300C7F61E /* SMOutputStream.swift in Sources */,
+				16966B7825B6CCDE00D5BE2A /* SMDestinationEndpoint.swift in Sources */,
 				169928F2259B16730057715C /* NSData-SMExtensions.swift in Sources */,
 				A53DDBE7148F4367006D2FFD /* SMEndpoint.m in Sources */,
 				16966AD525B4F90800D5BE2A /* SMVoiceMessage.swift in Sources */,
@@ -696,6 +703,7 @@
 				16966AA025AD6A8F00D5BE2A /* SMSystemRealTimeMessage.swift in Sources */,
 				16966B2925B6560100D5BE2A /* SMExternalDevice.swift in Sources */,
 				16A3B73C25A156D300C7F61E /* SMOutputStream.swift in Sources */,
+				16966B7925B6CCDE00D5BE2A /* SMDestinationEndpoint.swift in Sources */,
 				169928F3259B16730057715C /* NSData-SMExtensions.swift in Sources */,
 				A581993716AF687400325CF3 /* SMEndpoint.m in Sources */,
 				16966AD625B4F90800D5BE2A /* SMVoiceMessage.swift in Sources */,

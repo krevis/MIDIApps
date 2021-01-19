@@ -87,27 +87,6 @@
 
 @end
 
-
-@interface SMDestinationEndpoint : SMEndpoint
-{
-}
-
-+ (NSArray<SMDestinationEndpoint *> *)destinationEndpoints;
-+ (SMDestinationEndpoint *)destinationEndpointWithUniqueID:(MIDIUniqueID)uniqueID;
-+ (SMDestinationEndpoint *)destinationEndpointWithName:(NSString *)aName;
-+ (SMDestinationEndpoint *)destinationEndpointWithEndpointRef:(MIDIEndpointRef)anEndpointRef;
-
-+ (SMDestinationEndpoint *)createVirtualDestinationEndpointWithName:(NSString *)endpointName readProc:(MIDIReadProc)readProc readProcRefCon:(void *)readProcRefCon uniqueID:(MIDIUniqueID)newUniqueID;
-    // If newUniqueID is 0, we'll use the unique ID that CoreMIDI generates for us
-
-+ (void)flushOutputForAllDestinationEndpoints;
-- (void)flushOutput;
-
-+ (SMDestinationEndpoint*) sysExSpeedWorkaroundDestinationEndpoint;
-
-@end
-
-
 // MIDI property keys
 
 extern NSString *SMEndpointPropertyOwnerPID;

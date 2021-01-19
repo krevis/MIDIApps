@@ -176,7 +176,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
     if ((number = [settings objectForKey:@"portEndpointUniqueID"])) {
         SMDestinationEndpoint *endpoint;
 
-        endpoint = [SMDestinationEndpoint destinationEndpointWithUniqueID:[number intValue]];
+        endpoint = [SMDestinationEndpoint findDestinationEndpointWithUniqueID:[number intValue]];
         if (endpoint) {
             [self selectEndpoint:endpoint];
         } else {
@@ -185,7 +185,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
             endpointName = [settings objectForKey:@"portEndpointName"];
             if (endpointName) {
                 // Maybe an endpoint with this name still exists, but with a different unique ID.
-                endpoint = [SMDestinationEndpoint destinationEndpointWithName:endpointName];
+                endpoint = [SMDestinationEndpoint findDestinationEndpointWithName:endpointName];
                 if (endpoint)
                     [self selectEndpoint:endpoint];
                 else

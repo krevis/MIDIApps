@@ -81,8 +81,7 @@ class SpyingInputStream: SMInputStream {
     }
 
     override var inputSources: [SMInputStreamSource] {
-        let destinationEndpoints = SMDestinationEndpoint.destinationEndpoints() ?? []
-        return destinationEndpoints.filter { !$0.isOwnedByThisProcess() }
+        SMDestinationEndpoint.destinationEndpoints.filter { !$0.isOwnedByThisProcess() }
     }
 
     override var selectedInputSources: Set<AnyHashable> {

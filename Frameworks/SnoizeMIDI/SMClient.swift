@@ -225,7 +225,7 @@ import Foundation
 
         // TODO None of this code is marked as actually throwing -- resolve that
         do {
-            if let endpoint = SMDestinationEndpoint.sysExSpeedWorkaround() {
+            if let endpoint = SMDestinationEndpoint.sysExSpeedWorkaround {
                let message = SMSystemExclusiveMessage(timeStamp: 0, data: Data())
                 _ = SMSysExSendRequest(message: message, endpoint: endpoint)?.send()
             }

@@ -133,8 +133,9 @@ import Foundation
     }
 
     private func createEndpoint() {
-        endpoint = SMDestinationEndpoint.createVirtualDestinationEndpoint(withName: virtualEndpointName, readProc: midiReadProc, readProcRefCon: Unmanaged.passUnretained(self).toOpaque(), uniqueID: uniqueID)
-        // TODO Should this be passRetained? if so, balance later
+        endpoint = SMDestinationEndpoint.createVirtualDestinationEndpoint(name: virtualEndpointName, uniqueID: uniqueID, readBlock: { (packetList: UnsafePointer<MIDIPacketList>, srcConnRefCon: UnsafeMutableRawPointer?) in
+            // TODO call midiReadProc() or something
+        })
         if let endpoint = endpoint {
             parser.originatingEndpoint = endpoint
 
