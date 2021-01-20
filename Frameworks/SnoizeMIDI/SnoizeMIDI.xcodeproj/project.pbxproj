@@ -173,8 +173,6 @@
 		16B11B580971D40100DB1DB5 /* NSArray-SMExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSArray-SMExtensions.m"; sourceTree = "<group>"; };
 		16B11B5B0971D40100DB1DB5 /* NSString-SMExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSString-SMExtensions.h"; sourceTree = "<group>"; };
 		16B11B5C0971D40100DB1DB5 /* NSString-SMExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSString-SMExtensions.m"; sourceTree = "<group>"; };
-		16B11B610971D40100DB1DB5 /* SMEndpoint.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMEndpoint.h; sourceTree = "<group>"; };
-		16B11B620971D40100DB1DB5 /* SMEndpoint.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMEndpoint.m; sourceTree = "<group>"; };
 		16B11B690971D40100DB1DB5 /* SMInputStreamSource.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMInputStreamSource.h; sourceTree = "<group>"; };
 		16B11B6F0971D40100DB1DB5 /* SMMessageDestinationProtocol.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMMessageDestinationProtocol.h; sourceTree = "<group>"; };
 		16B11B780971D40100DB1DB5 /* SMMIDIObject-Private.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "SMMIDIObject-Private.h"; sourceTree = "<group>"; };
@@ -345,8 +343,6 @@
 				16B11B780971D40100DB1DB5 /* SMMIDIObject-Private.h */,
 				16966B3625B6657B00D5BE2A /* SMDevice.swift */,
 				16966B7D25B7BB5900D5BE2A /* SMEndpoint.swift */,
-				16B11B610971D40100DB1DB5 /* SMEndpoint.h */,
-				16B11B620971D40100DB1DB5 /* SMEndpoint.m */,
 				16966B6925B6B6EE00D5BE2A /* SMSourceEndpoint.swift */,
 				16966B7625B6CCDE00D5BE2A /* SMDestinationEndpoint.swift */,
 				16966B2625B6560100D5BE2A /* SMExternalDevice.swift */,
