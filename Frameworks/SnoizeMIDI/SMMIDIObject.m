@@ -15,7 +15,6 @@
 #import <objc/runtime.h>
 
 #import <SnoizeMIDI/SnoizeMIDI-Swift.h>
-#import "SMEndpoint.h"
 #import "SMMIDIObject-Private.h"
 #import "SMUtilities.h"
 
@@ -268,6 +267,11 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 - (MIDIObjectRef)objectRef;
 {
     return objectRef;
+}
+
+- (void)clearObjectRef
+{
+    objectRef = 0;
 }
 
 - (NSUInteger)ordinal;

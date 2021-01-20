@@ -24,7 +24,7 @@ import Foundation
     }
 
     override func send(_ packetListPtr: UnsafePointer<MIDIPacketList>) {
-        MIDIReceived(endpoint.endpointRef(), packetListPtr)
+        MIDIReceived(endpoint.endpointRef, packetListPtr)
     }
 
 }

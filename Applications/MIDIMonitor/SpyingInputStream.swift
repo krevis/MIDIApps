@@ -81,7 +81,7 @@ class SpyingInputStream: SMInputStream {
     }
 
     override var inputSources: [SMInputStreamSource] {
-        SMDestinationEndpoint.destinationEndpoints.filter { !$0.isOwnedByThisProcess() }
+        SMDestinationEndpoint.destinationEndpoints.filter { !$0.isOwnedByThisProcess }
     }
 
     override var selectedInputSources: Set<AnyHashable> {
@@ -120,7 +120,7 @@ class SpyingInputStream: SMInputStream {
 
         _ = endpoints.insert(endpoint)
 
-        let status = MIDISpyPortConnectDestination(spyPort, endpoint.endpointRef(), Unmanaged.passUnretained(endpoint).toOpaque())
+        let status = MIDISpyPortConnectDestination(spyPort, endpoint.endpointRef, Unmanaged.passUnretained(endpoint).toOpaque())
         if status != noErr {
             NSLog("Error from MIDISpyPortConnectDestination: \(status)")
         }
@@ -129,7 +129,7 @@ class SpyingInputStream: SMInputStream {
     private func removeEndpoint(_ endpoint: SMDestinationEndpoint) {
         guard endpoints.contains(endpoint) else { return }
 
-        let status = MIDISpyPortDisconnectDestination(spyPort, endpoint.endpointRef())
+        let status = MIDISpyPortDisconnectDestination(spyPort, endpoint.endpointRef)
         if status != noErr {
             NSLog("Error from MIDISpyPortDisconnectDestination: \(status)")
             // An error can happen in normal circumstances (if the endpoint has disappeared), so ignore it.

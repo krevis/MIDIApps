@@ -56,6 +56,8 @@
 
 - (id)initWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(NSUInteger)anOrdinal;
 - (MIDIObjectRef)objectRef;
+// TODO For Swift: this should be internal or for subclasses only
+- (void)clearObjectRef;
 
 - (NSUInteger)ordinal;
 - (void)setOrdinal:(NSUInteger)value;

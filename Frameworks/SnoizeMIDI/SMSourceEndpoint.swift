@@ -56,7 +56,7 @@ import CoreMIDI
             // So we need to manually add the new endpoint, now.
             endpoint = immediatelyAddObject(withObjectRef: newEndpointRef) as? SMSourceEndpoint
             if let endpoint = endpoint {
-                endpoint.setIsOwnedByThisProcess()
+                endpoint.setOwnedByThisProcess()
 
                 if uniqueID != 0 {
                     endpoint.setUniqueID(uniqueID)
@@ -69,7 +69,7 @@ import CoreMIDI
                     }
                 }
 
-                endpoint.setManufacturerName("Snoize")
+                endpoint.manufacturerName = "Snoize"
             }
 
             // End the scope, restoring postsExternaSetupChangeNotification,
@@ -77,7 +77,7 @@ import CoreMIDI
             // notification will still happen
         }
 
-        endpoint?.setModelName(client.name)
+        endpoint?.modelName = client.name
 
         return endpoint
     }

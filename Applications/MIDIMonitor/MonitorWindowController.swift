@@ -253,8 +253,8 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
             }
             else if let source = item as? SMInputStreamSource {
                 let name = source.inputStreamSourceName ?? ""
-                if let externalDeviceNames = source.inputStreamSourceExternalDeviceNames,
-                   externalDeviceNames.count > 0 {
+                let externalDeviceNames = source.inputStreamSourceExternalDeviceNames
+                if externalDeviceNames.count > 0 {
                     return "\(name)—\(externalDeviceNames.joined(separator: ", "))"
                 }
                 else {

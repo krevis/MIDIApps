@@ -12,25 +12,26 @@
 
 import Foundation
 
-internal class SimpleInputStreamSource: NSObject, SMInputStreamSource {
+public protocol SMInputStreamSource {
 
-    init(name: String) {
-        self.name = name
-        super.init()
+    var inputStreamSourceName: String? { get }  // TODO should this really be optional?
+    var inputStreamSourceUniqueID: MIDIUniqueID? { get }
+    var inputStreamSourceExternalDeviceNames: [String] { get }
+
+}
+
+extension SMEndpoint: SMInputStreamSource {
+
+    public var inputStreamSourceName: String? {
+        uniqueName
     }
 
-    var name: String
-
-    var inputStreamSourceName: String? {
-        name
+    public var inputStreamSourceUniqueID: MIDIUniqueID? {
+        uniqueID()
     }
 
-    var inputStreamSourceUniqueID: MIDIUniqueID? {
-        nil
-    }
-
-    var inputStreamSourceExternalDeviceNames: [String] {
-        []
+    public var inputStreamSourceExternalDeviceNames: [String] {
+        connectedExternalDevices.map { $0.name() ?? "" }
     }
 
 }

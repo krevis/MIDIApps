@@ -33,7 +33,7 @@ import Foundation
         maxSysExSpeed = Int(endpoint.maxSysExSpeed())
 
         sysexSendRequest = MIDISysexSendRequest(
-            destination: endpoint.endpointRef(),
+            destination: endpoint.endpointRef,
             data: dataPointer,
             bytesToSend: UInt32(dataCount),
             complete: false,

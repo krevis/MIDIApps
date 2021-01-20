@@ -90,7 +90,7 @@ import CoreAudio
 
     override func send(_ packetListPtr: UnsafePointer<MIDIPacketList>) {
         for endpoint in endpoints {
-            _ = MIDISend(outputPort, endpoint.endpointRef(), packetListPtr)
+            _ = MIDISend(outputPort, endpoint.endpointRef, packetListPtr)
         }
     }
 

@@ -397,7 +397,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
         if (!virtualInputStream) {
             virtualInputStream = [[SMVirtualInputStream alloc] init];
             [virtualInputStream setMessageDestination:self];
-            [virtualInputStream setSelectedInputSources:[NSSet setWithArray:[virtualInputStream inputSources]]];
+            [virtualInputStream setSelectedInputSources:[virtualInputStream inputSourcesSet]];
         }
     } else {
         if (virtualInputStream) {

@@ -39,7 +39,7 @@ import Foundation
             // Easier to use ObjC selectors.
             let center = NotificationCenter.default
             oldValue.subtracting(endpoints).forEach { endpoint in
-                _ = MIDIPortDisconnectSource(inputPort, endpoint.endpointRef())
+                _ = MIDIPortDisconnectSource(inputPort, endpoint.endpointRef)
                 // An error can happen in normal circumstances (if the endpoint has disappeared), so ignore it.
 
                 // At any time after MIDIPortDisconnectSource(), we can expect that
@@ -57,7 +57,7 @@ import Foundation
                 center.addObserver(self, selector: #selector(self.endpointDisappeared(_:)), name: .SMMIDIObjectDisappeared, object: endpoint)
                 center.addObserver(self, selector: #selector(self.endpointWasReplaced(_:)), name: .SMMIDIObjectWasReplaced, object: endpoint)
 
-                _ = MIDIPortConnectSource(inputPort, endpoint.endpointRef(), Unmanaged.passUnretained(endpoint).toOpaque())
+                _ = MIDIPortConnectSource(inputPort, endpoint.endpointRef, Unmanaged.passUnretained(endpoint).toOpaque())
 
                 // At any time after MIDIPortConnectSource(), we can expect
                 // retainForIncomingMIDI() and parser(sourceConnectionRefCon:) to be called.

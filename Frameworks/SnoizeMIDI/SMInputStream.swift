@@ -38,8 +38,8 @@ import Foundation
         for source in selectedInputSources {
             if let inputSource = source as? SMInputStreamSource {
                 var dict: [String: Any] = [:]
-                if let number = inputSource.inputStreamSourceUniqueID {
-                    dict["uniqueID"] = number
+                if let uniqueID = inputSource.inputStreamSourceUniqueID {
+                    dict["uniqueID"] = uniqueID
                 }
                 if let name = inputSource.inputStreamSourceName {
                     dict["name"] = name
@@ -129,7 +129,7 @@ import Foundation
         fatalError("Must implement in subclass")
     }
 
-    @objc open var inputSources: [SMInputStreamSource] {
+    open var inputSources: [SMInputStreamSource] {
         fatalError("Must implement in subclass")
     }
 
@@ -176,7 +176,7 @@ import Foundation
         // Find the input source with the desired unique ID. If there are no matches by uniqueID, return the first source whose name matches.
         // Otherwise, return nil.
         if let uniqueID = uniqueID,
-           let match = inputSources.first(where: { $0.inputStreamSourceUniqueID.int32Value == uniqueID }) {
+           let match = inputSources.first(where: { $0.inputStreamSourceUniqueID == uniqueID }) {
             return match
         }
         else if let name = name,
