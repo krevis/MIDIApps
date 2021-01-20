@@ -278,7 +278,7 @@ import CoreMIDI
         if MIDIObjectGetDataProperty(objectRef(), kMIDIPropertyConnectionUniqueID, &unmanagedData) == noErr,
            let data = unmanagedData?.takeUnretainedValue() as Data? {
             // Make sure the data size makes sense
-            guard data.count > 0, data.count % MemoryLayout<Int32>.size != 0 else { return [] }
+            guard data.count > 0, data.count % MemoryLayout<Int32>.size == 0 else { return [] }
             return data.withUnsafeBytes {
                 $0.bindMemory(to: Int32.self).map { MIDIUniqueID(bigEndian: $0) }
             }
