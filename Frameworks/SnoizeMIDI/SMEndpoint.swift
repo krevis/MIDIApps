@@ -93,7 +93,9 @@ import CoreMIDI
     // Returns "<device name> <endpoint name>". If there is no device for this endpoint
     // (that is, if it's virtual) return "<model name> <endpoint name>".
     public var longName: String? {
-        // TODO This should likely use that new property to get the suggested display name
+        // TODO This should likely use kMIDIPropertyDisplayName to get the suggested display name.
+        // If we do that, we can likely get rid of our own determination
+        // of whether names are unique (and have always been unique).
 
         let endpointName = name()
         let modelOrDeviceName = isVirtual ? modelName : device?.name()
@@ -268,93 +270,61 @@ import CoreMIDI
     }
 
     private var uniqueIDsOfConnectedThings: [MIDIUniqueID] {
-        // may be external devices, endpoints, or who knows what
+        // Connected things may be external devices, endpoints, or who knows what.
 
+        // The property for kMIDIPropertyConnectionUniqueID may be an integer or a data object.
+        // Try getting it as data first.  (The data is an array of big-endian MIDIUniqueIDs, aka Int32s.)
+        var unmanagedData: Unmanaged<CFData>?
+        if MIDIObjectGetDataProperty(objectRef(), kMIDIPropertyConnectionUniqueID, &unmanagedData) == noErr,
+           let data = unmanagedData?.takeUnretainedValue() as Data? {
+            // Make sure the data size makes sense
+            guard data.count > 0, data.count % MemoryLayout<Int32>.size != 0 else { return [] }
+            return data.withUnsafeBytes {
+                $0.bindMemory(to: Int32.self).map { MIDIUniqueID(bigEndian: $0) }
+            }
+        }
+
+        // Now try getting the property as an integer. (It is only valid if nonzero.)
+        var oneUniqueID: MIDIUniqueID = 0
+        if MIDIObjectGetIntegerProperty(objectRef(), kMIDIPropertyConnectionUniqueID, &oneUniqueID) == noErr && oneUniqueID != 0 {
+            return [oneUniqueID]
+        }
+
+        // Give up
         return []
-
-        /* TODO
- MIDIUniqueID oneUniqueID;
- NSData *data;
-
- // The property for kMIDIPropertyConnectionUniqueID may be an integer or a data object.
- // Try getting it as data first.  (The data is an array of big-endian MIDIUniqueIDs, aka SInt32s.)
- if (noErr == MIDIObjectGetDataProperty(objectRef, kMIDIPropertyConnectionUniqueID, (CFDataRef *)&data)) {
-     NSUInteger dataLength = [data length];
-     NSUInteger count;
-     const MIDIUniqueID *p, *end;
-     NSMutableArray *array;
-
-     // Make sure the data length makes sense
-     if (dataLength % sizeof(SInt32) != 0)
-         return [NSArray array];
-
-     count = dataLength / sizeof(MIDIUniqueID);
-     array = [NSMutableArray arrayWithCapacity:count];
-     p = [data bytes];
-     for (end = p + count ; p < end; p++) {
-         oneUniqueID = ntohl(*p);
-         if (oneUniqueID != 0)
-             [array addObject:[NSNumber numberWithLong:oneUniqueID]];
-     }
-
-     return array;
- }
-
- // Now try getting the property as an integer. (It is only valid if nonzero.)
- if (noErr == MIDIObjectGetIntegerProperty(objectRef, kMIDIPropertyConnectionUniqueID, &oneUniqueID)) {
-     if (oneUniqueID != 0)
-         return [NSArray arrayWithObject:[NSNumber numberWithLong:oneUniqueID]];
- }
-
- // Give up
- return [NSArray array];
-*/
     }
 
     private func getDeviceRefFromConnectedUniqueID(_ connectedUniqueID: MIDIUniqueID) -> MIDIDeviceRef? {
-        /* TODO*
-         MIDIDeviceRef returnDeviceRef = (MIDIDeviceRef)0;
+        var foundDeviceRef: MIDIDeviceRef?
 
-         MIDIObjectRef connectedObjectRef;
-         MIDIObjectType connectedObjectType;
-         OSStatus err;
-         BOOL done = NO;
+        var connectedObjectRef: MIDIObjectRef = 0
+        var connectedObjectType: MIDIObjectType = .other
+        var status = MIDIObjectFindByUniqueID(connectedUniqueID, &connectedObjectRef, &connectedObjectType)
+        var done = false
+        while status == noErr && !done {
+            switch connectedObjectType {
+            case .device, .externalDevice:
+                // We've got the device
+                foundDeviceRef = connectedObjectRef as MIDIDeviceRef
+                done = true
 
-         err = MIDIObjectFindByUniqueID(connectedUniqueID, &connectedObjectRef, &connectedObjectType);
-         connectedObjectType &= ~kMIDIObjectType_ExternalMask;
+            case .entity, .externalEntity:
+                // Get the entity's device
+                status = MIDIEntityGetDevice(connectedObjectRef as MIDIEntityRef, &connectedObjectRef)
+                connectedObjectType = .device
 
-         while (err == noErr && !done)
-         {
-             switch (connectedObjectType) {
-                 case kMIDIObjectType_Device:
-                     // we've got the device already
-                     returnDeviceRef = (MIDIDeviceRef)connectedObjectRef;
-                     done = YES;
-                     break;
+            case .source, .destination, .externalSource, .externalDestination:
+                // Get the endpoint's entity
+                status = MIDIEndpointGetEntity(connectedObjectRef as MIDIEndpointRef, &connectedObjectRef)
+                connectedObjectType = .entity
 
-                 case kMIDIObjectType_Entity:
-                     // get the entity's device
-                     connectedObjectType = kMIDIObjectType_Device;
-                     err = MIDIEntityGetDevice((MIDIEntityRef)connectedObjectRef, (MIDIDeviceRef*)&connectedObjectRef);
-                     break;
+            default:
+                // Give up
+                done = true
+            }
+        }
 
-                 case kMIDIObjectType_Destination:
-                 case kMIDIObjectType_Source:
-                     // Get the endpoint's entity
-                     connectedObjectType = kMIDIObjectType_Entity;
-                     err = MIDIEndpointGetEntity((MIDIEndpointRef)connectedObjectRef, (MIDIEntityRef*)&connectedObjectRef);
-                     break;
-
-                 default:
-                     // give up
-                     done = YES;
-                     break;
-             }
-         }
-
-         return returnDeviceRef;
- */
-        return nil
+        return foundDeviceRef
     }
 
     private class func checkForUniqueNames() {
