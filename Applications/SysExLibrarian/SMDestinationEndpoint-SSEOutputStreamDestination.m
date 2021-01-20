@@ -17,12 +17,7 @@
 
 - (NSString *)outputStreamDestinationName;
 {
-    return [self uniqueName];
-}
-
-- (NSArray *)outputStreamDestinationExternalDeviceNames;
-{
-    return [[self connectedExternalDevices] SnoizeMIDI_arrayByMakingObjectsPerformSelector:@selector(name)];
+    return [self displayName];
 }
 
 @end

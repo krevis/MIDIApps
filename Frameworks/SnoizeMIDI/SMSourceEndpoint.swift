@@ -98,22 +98,6 @@ import CoreMIDI
 
     // MARK: SMEndpoint required overrides
 
-    private static var areNamesUnique = true
-    private static var haveNamesAlwaysBeenUnique = true
-
-    public override class func doEndpointsHaveUniqueNames() -> Bool {
-        areNamesUnique
-    }
-
-    public override class func haveEndpointsAlwaysHadUniqueNames() -> Bool {
-        haveNamesAlwaysBeenUnique
-    }
-
-    public override class func setAreNamesUnique(_ areUnique: Bool) {
-        areNamesUnique = areUnique
-        haveNamesAlwaysBeenUnique = haveNamesAlwaysBeenUnique && areUnique
-    }
-
     public override class func endpointCount(forEntity entity: MIDIEntityRef) -> Int {
         MIDIEntityGetNumberOfSources(entity)
     }

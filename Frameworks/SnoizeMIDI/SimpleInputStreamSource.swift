@@ -29,8 +29,4 @@ internal class SimpleInputStreamSource: NSObject, SMInputStreamSource {
         nil
     }
 
-    var inputStreamSourceExternalDeviceNames: [String] {
-        []
-    }
-
 }

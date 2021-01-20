@@ -46,9 +46,4 @@
     return name;
 }
 
-- (NSArray *)outputStreamDestinationExternalDeviceNames;
-{
-    return [NSArray array];
-}
-
 @end

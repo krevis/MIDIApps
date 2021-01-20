@@ -78,38 +78,17 @@ import CoreMIDI
         }
     }
 
-    // If all endpoints of the same kind (source or destination) have unique names,
-    // returns name. Otherwise, returns longName.
-    @objc public var uniqueName: String? {
-        Self.doEndpointsHaveUniqueNames() ? name() : longName
-    }
+    @objc public var displayName: String? {
+        // Use kMIDIPropertyDisplayName to get the suggested display name,
+        // which takes uniqueness, external devices, etc. into account.
 
-    // If all endpoints of the same kind (source or destination) have ALWAYS had unique names,
-    // returns name. Otherwise, returns longName.
-    public var alwaysUniqueName: String? {
-        Self.haveEndpointsAlwaysHadUniqueNames() ? name() : longName
-    }
-
-    // Returns "<device name> <endpoint name>". If there is no device for this endpoint
-    // (that is, if it's virtual) return "<model name> <endpoint name>".
-    public var longName: String? {
-        // TODO This should likely use kMIDIPropertyDisplayName to get the suggested display name.
-        // If we do that, we can likely get rid of our own determination
-        // of whether names are unique (and have always been unique).
-
-        let endpointName = name()
-        let modelOrDeviceName = isVirtual ? modelName : device?.name()
-
-        if let modelOrDeviceName = modelOrDeviceName,
-           !modelOrDeviceName.isEmpty,
-           let endpointName = endpointName,
-           !endpointName.isEmpty,
-           endpointName != modelOrDeviceName {
-            return modelOrDeviceName + " " + endpointName
+        var unmanagedDisplayName: Unmanaged<CFString>?
+        if MIDIObjectGetStringProperty(objectRef(), kMIDIPropertyDisplayName, &unmanagedDisplayName) == noErr,
+           let displayName = unmanagedDisplayName?.takeUnretainedValue() as String? {
+            return displayName
         }
-        else {
-            return endpointName
-        }
+
+        return name()
     }
 
     @objc public var connectedExternalDevices: [SMExternalDevice] {
@@ -136,18 +115,6 @@ import CoreMIDI
     }
 
     public class func endpointRef(at index: Int, forEntity entity: MIDIEntityRef) -> MIDIEndpointRef {
-        fatalError()
-    }
-
-    public class func doEndpointsHaveUniqueNames() -> Bool {
-        fatalError()
-    }
-
-    public class func haveEndpointsAlwaysHadUniqueNames() -> Bool {
-        fatalError()
-    }
-
-    public class func setAreNamesUnique(_ areUnique: Bool) {
         fatalError()
     }
 
@@ -223,24 +190,6 @@ import CoreMIDI
         }
 
         super.propertyDidChange(propertyName)
-    }
-
-    // MARK: SMMIDIObject overrides, private
-
-    public override class func initialMIDISetup() {
-        super.initialMIDISetup()
-        checkForUniqueNames()
-    }
-
-    public override class func refreshAllObjects() {
-        super.refreshAllObjects()
-        checkForUniqueNames()
-    }
-
-    public override class func immediatelyAddObject(withObjectRef anObjectRef: MIDIObjectRef) -> SMMIDIObject! {
-        let object = super.immediatelyAddObject(withObjectRef: anObjectRef)
-        checkForUniqueNames()
-        return object
     }
 
     // MARK: Private
@@ -325,13 +274,6 @@ import CoreMIDI
         }
 
         return foundDeviceRef
-    }
-
-    private class func checkForUniqueNames() {
-        guard let allObjects = allObjects() as? [SMMIDIObject] else { return }
-        let names = allObjects.map { $0.name() ?? "" }
-        let areNamesUnique = names.count == Set(names).count
-        setAreNamesUnique(areNamesUnique)   // TODO ugly, do better
     }
 
     // TODO this should again be a property wrapper as above, although we only need a getter

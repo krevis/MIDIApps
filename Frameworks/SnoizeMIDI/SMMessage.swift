@@ -206,7 +206,7 @@ import CoreAudio
     public var originatingEndpointForDisplay: String {
         if let endpoint = originatingEndpoint {
             let fromOrTo = endpoint is SMSourceEndpoint ? SMMessage.fromString : SMMessage.toString
-            return "\(fromOrTo) \(endpoint.alwaysUniqueName ?? "")"
+            return "\(fromOrTo) \(endpoint.displayName ?? "")"
         }
         else if let endpointName = originatingEndpointName {
             return endpointName

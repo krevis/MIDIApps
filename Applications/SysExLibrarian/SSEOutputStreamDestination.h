@@ -17,7 +17,6 @@
 @protocol SSEOutputStreamDestination <NSObject>
 
 - (NSString *)outputStreamDestinationName;
-- (NSArray *)outputStreamDestinationExternalDeviceNames;
 
 @end
 
@@ -29,9 +28,5 @@
 
 - (id)initWithName:(NSString *)aName;
 - (void)setName:(NSString *)value;
-
-- (NSString *)outputStreamDestinationName;
-- (NSArray *)outputStreamDestinationExternalDeviceNames;
-    // returns an empty array
 
 @end

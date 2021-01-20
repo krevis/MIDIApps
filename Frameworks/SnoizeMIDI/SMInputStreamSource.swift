@@ -16,22 +16,17 @@ public protocol SMInputStreamSource {
 
     var inputStreamSourceName: String? { get }  // TODO should this really be optional?
     var inputStreamSourceUniqueID: MIDIUniqueID? { get }
-    var inputStreamSourceExternalDeviceNames: [String] { get }
 
 }
 
 extension SMEndpoint: SMInputStreamSource {
 
     public var inputStreamSourceName: String? {
-        uniqueName
+        displayName
     }
 
     public var inputStreamSourceUniqueID: MIDIUniqueID? {
         uniqueID()
-    }
-
-    public var inputStreamSourceExternalDeviceNames: [String] {
-        connectedExternalDevices.map { $0.name() ?? "" }
     }
 
 }

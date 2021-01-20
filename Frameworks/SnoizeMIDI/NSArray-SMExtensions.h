@@ -16,7 +16,6 @@
 
 @interface NSArray (SMExtensions)
 
-- (NSArray *)SnoizeMIDI_arrayByMakingObjectsPerformSelector:(SEL)selector;
 - (NSArray *)SnoizeMIDI_reversedArray;
 
 @end

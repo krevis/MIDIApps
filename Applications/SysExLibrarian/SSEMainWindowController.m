@@ -868,18 +868,7 @@ static SSEMainWindowController *controller = nil;
 
 - (NSString *)titleForDestination:(id <SSEOutputStreamDestination>)destination;
 {
-    NSString *title;
-    NSArray *externalDeviceNames;
-
-    title = [destination outputStreamDestinationName];
-    externalDeviceNames = [destination outputStreamDestinationExternalDeviceNames];
-    if ([externalDeviceNames count] > 0) {
-        unichar emdashCharacter = 0x2014;
-        NSString *emdashString = [NSString stringWithCharacters: &emdashCharacter length: 1];
-        title = [[title stringByAppendingString:emdashString] stringByAppendingString:[externalDeviceNames componentsJoinedByString:@", "]];
-    }
-
-    return title;
+    return [destination outputStreamDestinationName];
 }
 
 
