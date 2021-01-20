@@ -17,7 +17,7 @@ import CoreMIDI
 
     @objc public class var destinationEndpoints: [SMDestinationEndpoint] {
         let endpoints = (allObjectsInOrder() as? [SMDestinationEndpoint]) ?? []
-        return endpoints.filter { $0 != endpointForSysExSpeedWorkaround }
+        return endpoints.filter { $0 != cachedSysExSpeedWorkaroundEndpoint }
     }
 
     @objc public class func findDestinationEndpoint(uniqueID: MIDIUniqueID) -> SMDestinationEndpoint? {
@@ -35,61 +35,52 @@ import CoreMIDI
         // TODO Better name, is this used?
     }
 
-    public class func createVirtualDestinationEndpoint(name: String, uniqueID: MIDIUniqueID, readBlock: MIDIReadBlock) -> SMDestinationEndpoint? {
+    public class func createVirtualDestinationEndpoint(name: String, uniqueID: MIDIUniqueID, midiReadProc: @escaping(MIDIReadProc), readProcRefCon: UnsafeMutableRawPointer?) -> SMDestinationEndpoint? {
         // If newUniqueID is 0, we'll use the unique ID that CoreMIDI generates for us
 
-        // TODO implement
+        var endpoint: SMDestinationEndpoint?
+        let client = SMClient.sharedClient!
 
-        /*
-         SMClient *client = [SMClient sharedClient];
-         OSStatus status;
-         MIDIEndpointRef newEndpointRef;
-         BOOL wasPostingExternalNotification;
-         SMDestinationEndpoint *endpoint;
+        // We are going to be making a lot of changes, so turn off external notifications
+        // for a while (until we're done).  Internal notifications are still necessary and aren't very slow.
+        do {
+            let wasPostingExternalNotification = client.postsExternalSetupChangeNotification
+            client.postsExternalSetupChangeNotification = false
+            defer { client.postsExternalSetupChangeNotification = wasPostingExternalNotification }
 
-         // We are going to be making a lot of changes, so turn off external notifications
-         // for a while (until we're done).  Internal notifications are still necessary and aren't very slow.
-         wasPostingExternalNotification = [client postsExternalSetupChangeNotification];
-         [client setPostsExternalSetupChangeNotification:NO];
+            var newEndpointRef: MIDIEndpointRef = 0
+            guard MIDIDestinationCreate(client.midiClient, name as CFString, midiReadProc, readProcRefCon, &newEndpointRef) == noErr else { return nil }
 
-         status = MIDIDestinationCreate([client midiClient], (CFStringRef)endpointName, readProc, readProcRefCon, &newEndpointRef);
-         if (status)
-             return nil;
+            // We want to get at the SMEndpoint immediately.
+            // CoreMIDI will send us a notification that something was added, and then we will create an SMDestinationEndpoint.
+            // However, the notification from CoreMIDI is posted in the run loop's main mode, and we don't want to wait for it to be run.
+            // So we need to manually add the new endpoint, now.
+            endpoint = immediatelyAddObject(withObjectRef: newEndpointRef) as? SMDestinationEndpoint
+            if let endpoint = endpoint {
+                endpoint.setOwnedByThisProcess()
 
-         // We want to get at the new SMEndpoint immediately.
-         // CoreMIDI will send us a notification that something was added, and then we will create an SMSourceEndpoint.
-         // However, the notification from CoreMIDI is posted in the run loop's main mode, and we don't want to wait for it to be run.
-         // So we need to manually add the new endpoint, now.
-         endpoint = (SMDestinationEndpoint *)[self immediatelyAddObjectWithObjectRef:newEndpointRef];
-         if (!endpoint) {
-             NSLog(@"%@ couldn't find its virtual endpoint after it was created", NSStringFromClass(self));
-             return nil;
-         }
+                if uniqueID != 0 {
+                    endpoint.setUniqueID(uniqueID)
+                }
+                if endpoint.uniqueID() == 0 {
+                    // CoreMIDI didn't assign a unique ID to this endpoint, so we should generate one ourself
+                    var success = false
+                    while !success {
+                        success = endpoint.setUniqueID(SMMIDIObject.generateNewUniqueID())
+                    }
+                }
 
-         [endpoint setIsOwnedByThisProcess];
+                endpoint.manufacturerName = "Snoize"
+            }
 
-         if (newUniqueID != 0)
-             [endpoint setUniqueID:newUniqueID];
-         if ([endpoint uniqueID] == 0) {
-             // CoreMIDI didn't assign a unique ID to this endpoint, so we should generate one ourself
-             BOOL success = NO;
+            // End the scope, restoring postsExternaSetupChangeNotification,
+            // before we do the last endpoint modification, so one setup change
+            // notification will still happen
+        }
 
-             while (!success)
-                 success = [endpoint setUniqueID:[SMMIDIObject generateNewUniqueID]];
-         }
+        endpoint?.modelName = client.name
 
-         [endpoint setManufacturerName:@"Snoize"];
-
-         // Do this before the last modification, so one setup change notification will still happen
-         [client setPostsExternalSetupChangeNotification:wasPostingExternalNotification];
-
-         [endpoint setModelName:[client name]];
-
-         return endpoint;
-
-         */
-
-        return nil
+        return endpoint
     }
 
     // MARK: SMMIDIObject required overrides
@@ -123,51 +114,46 @@ import CoreMIDI
     // To fix this, we send a tiny sysex message to a different device.  Unfortunately we can't just use a NULL endpoint,
     // it has to be a real live endpoint.
 
-    private static var endpointForSysExSpeedWorkaround: SMDestinationEndpoint?
-    static var sysExSpeedWorkaround: SMDestinationEndpoint? {
-        guard endpointForSysExSpeedWorkaround == nil else { return endpointForSysExSpeedWorkaround }
-        // TODO
-        /*
-            // We're going to make a few changes (making an endpoint, setting our workaroundVirtualDestination ivar,
-            // then making the endpoint private), so turn off external notifications until we're done.
-            BOOL wasPostingExternalNotification = [[SMClient sharedClient] postsExternalSetupChangeNotification];
-            [[SMClient sharedClient] setPostsExternalSetupChangeNotification:NO];
+    private static var cachedSysExSpeedWorkaroundEndpoint: SMDestinationEndpoint?
+    static var creatingSysExSpeedWorkaroundEndpoint = false
 
-            // Also set a flag so we don't post object list notifications until this object has been fully set up
-            // (and, most importantly, that we have assigned to sSysExSpeedWorkaroundWorkaroundEndpoint so
-            // -destinationEndpoints can do the filtering properly).
-            sCreatingSysExSpeedWorkaroundEndpoint = YES;
+    static var sysExSpeedWorkaroundEndpoint: SMDestinationEndpoint? {
+        if cachedSysExSpeedWorkaroundEndpoint == nil {
+            let client = SMClient.sharedClient!
+            let wasPostingExternalNotification = client.postsExternalSetupChangeNotification
 
-            sSysExSpeedWorkaroundWorkaroundEndpoint = [SMDestinationEndpoint createVirtualDestinationEndpointWithName: @"Workaround"
-                                                                                                             readProc: IgnoreMIDIReadProc
-                                                                                                       readProcRefCon: NULL
-                                                                                                             uniqueID: 0];
-            [sSysExSpeedWorkaroundWorkaroundEndpoint retain];
+            // We are going to be making a lot of changes, so turn off external notifications
+            // for a while (until we're done).
+            do {
+                client.postsExternalSetupChangeNotification = false
+                defer { client.postsExternalSetupChangeNotification = wasPostingExternalNotification }
 
-            [sSysExSpeedWorkaroundWorkaroundEndpoint setInteger:1 forProperty:kMIDIPropertyPrivate];
+                // Also set a flag so we don't post object list notifications until this object has been fully set up
+                // (and, most importantly, that we have assigned to cachedSysExSpeedWorkaroundEndpoint so
+                // destinationEndpoints can do the filtering properly).
+                creatingSysExSpeedWorkaroundEndpoint = true
 
-            sCreatingSysExSpeedWorkaroundEndpoint = NO;
-            // post internal notifications that we squelched earlier
-            if (sSysExSpeedWorkaroundWorkaroundEndpoint) {
-                [self postObjectListChangedNotification];
-                [self postObjectsAddedNotificationWithObjects:[NSArray arrayWithObject: sSysExSpeedWorkaroundWorkaroundEndpoint]];
+                cachedSysExSpeedWorkaroundEndpoint = SMDestinationEndpoint.createVirtualDestinationEndpoint(name: "Workaround", uniqueID: 0, midiReadProc: doNothingMIDIReadProc, readProcRefCon: nil)
+
+                cachedSysExSpeedWorkaroundEndpoint?.setInteger(1, forProperty: kMIDIPropertyPrivate)
+
+                creatingSysExSpeedWorkaroundEndpoint = false
+
+                // post internal notifications that we squelched earlier
+                if let endpoint = cachedSysExSpeedWorkaroundEndpoint {
+                    postListChangedNotification()
+                    postObjectsAddedNotification(with: [endpoint])
+                }
             }
 
-            [[SMClient sharedClient] setPostsExternalSetupChangeNotification:wasPostingExternalNotification];
-            if(wasPostingExternalNotification)
-            {
+            if wasPostingExternalNotification {
                 // TODO If we still actually need this, clean up to have a userInfo to match
-                [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.clientSetupChanged object:[SMClient sharedClient]];
+                NotificationCenter.default.post(name: .clientSetupChanged, object: SMClient.sharedClient)
             }
         }
 
-        return sSysExSpeedWorkaroundWorkaroundEndpoint;
- */
-
-        return nil
+        return cachedSysExSpeedWorkaroundEndpoint
     }
-
-    static var creatingSysExSpeedWorkaroundEndpoint = false
 
     public override class func postListChangedNotification() {
         if !creatingSysExSpeedWorkaroundEndpoint {
@@ -181,4 +167,7 @@ import CoreMIDI
         }
     }
 
+}
+
+private func doNothingMIDIReadProc(_ packetListPtr: UnsafePointer<MIDIPacketList>, _ readProcRefCon: UnsafeMutableRawPointer?, _ srcConnRefCon: UnsafeMutableRawPointer?) {
 }
