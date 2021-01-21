@@ -47,33 +47,38 @@ import CoreMIDI
 
     public var manufacturerName: String? {
         get {
-            if !hasCachedManufacturerName {
-                cachedManufacturerName = string(forProperty: kMIDIPropertyManufacturer)
-                hasCachedManufacturerName = true
+            switch cachedManufacturerName {
+            case .none:
+                let value = string(forProperty: kMIDIPropertyManufacturer)
+                cachedManufacturerName = .some(value)
+                return value
+            case .some(let value):
+                return value
             }
-            return cachedManufacturerName
         }
         set {
-            if newValue != manufacturerName {
+            if cachedManufacturerName != .some(newValue) {
                 setString(newValue, forProperty: kMIDIPropertyManufacturer)
-                hasCachedManufacturerName = false
+                cachedManufacturerName = .none
             }
         }
     }
 
-    // TODO This is the same as above, consider a property wrapper
     public var modelName: String? {
         get {
-            if !hasCachedModelName {
-                cachedModelName = string(forProperty: kMIDIPropertyModel)
-                hasCachedModelName = true
+            switch cachedModelName {
+            case .none:
+                let value = string(forProperty: kMIDIPropertyManufacturer)
+                cachedModelName = .some(value)
+                return value
+            case .some(let value):
+                return value
             }
-            return cachedModelName
         }
         set {
-            if newValue != modelName {
+            if cachedModelName != .some(newValue) {
                 setString(newValue, forProperty: kMIDIPropertyModel)
-                hasCachedModelName = false
+                cachedModelName = .none
             }
         }
     }
@@ -171,22 +176,17 @@ import CoreMIDI
     public override func invalidateCachedProperties() {
         super.invalidateCachedProperties()
 
-        hasCachedDeviceRef = false
-        cachedDeviceRef = 0
-        hasCachedManufacturerName = false
-        cachedManufacturerName = nil
-        hasCachedModelName = false
-        cachedModelName = nil
+        cachedManufacturerName = .none
+        cachedModelName = .none
+        cachedDeviceRef = .none
     }
 
     public override func propertyDidChange(_ propertyName: String!) {
         if propertyName == kMIDIPropertyManufacturer as String {
-            hasCachedManufacturerName = false
-            cachedManufacturerName = nil
+            cachedManufacturerName = .none
         }
         else if propertyName == kMIDIPropertyModel as String {
-            hasCachedModelName = false
-            cachedModelName = nil
+            cachedModelName = .none
         }
 
         super.propertyDidChange(propertyName)
@@ -194,10 +194,38 @@ import CoreMIDI
 
     // MARK: Private
 
-    private var hasCachedManufacturerName = false
-    private var cachedManufacturerName: String?
-    private var hasCachedModelName = false
-    private var cachedModelName: String?
+    // We would just use lazy variables to cache these properties, but we need to
+    // be able to reset them back to the original un-loaded state.
+    // Someday, in Swift > 5.3, there may be a reasonable way to use a property wrapper
+    // to cache these values while still calling getter/setter methods on self.
+    // https://forums.swift.org/t/completing-property-wrappers/34990/18
+    // https://forums.swift.org/t/future-directions-of-property-wrappers/27934/7
+    // For now just write the code manually.
+
+    private var cachedManufacturerName: String??
+    private var cachedModelName: String??
+    private var cachedDeviceRef: MIDIDeviceRef?
+
+    private var deviceRef: MIDIDeviceRef {
+        switch cachedDeviceRef {
+        case .none:
+            let value: MIDIDeviceRef = {
+                var entityRef: MIDIEntityRef = 0
+                var deviceRef: MIDIDeviceRef = 0
+                if MIDIEndpointGetEntity(endpointRef, &entityRef) == noErr,
+                   MIDIEntityGetDevice(entityRef, &deviceRef) == noErr {
+                    return deviceRef
+                }
+                else {
+                    return 0
+                }
+            }()
+            cachedDeviceRef = .some(value)
+            return value
+        case .some(let value):
+            return value
+        }
+    }
 
     // We set this property on the virtual endpoints that we create,
     // so we can query them to see if they're ours.
@@ -274,23 +302,6 @@ import CoreMIDI
         }
 
         return foundDeviceRef
-    }
-
-    // TODO this should again be a property wrapper as above, although we only need a getter
-    private var cachedDeviceRef: MIDIDeviceRef = 0
-    private var hasCachedDeviceRef = false
-
-    private var deviceRef: MIDIDeviceRef {
-        if !hasCachedDeviceRef {
-            var entityRef: MIDIEntityRef = 0
-            if MIDIEndpointGetEntity(endpointRef, &entityRef) == noErr {
-                var deviceRef: MIDIEntityRef = 0
-                if MIDIEntityGetDevice(entityRef, &deviceRef) == noErr {
-                    cachedDeviceRef = deviceRef
-                }
-            }
-        }
-        return cachedDeviceRef
     }
 
 }
