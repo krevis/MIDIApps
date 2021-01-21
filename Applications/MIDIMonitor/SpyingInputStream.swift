@@ -84,13 +84,13 @@ class SpyingInputStream: SMInputStream {
         SMDestinationEndpoint.destinationEndpoints.filter { !$0.isOwnedByThisProcess }
     }
 
-    override var selectedInputSources: Set<AnyHashable> {
+    override var selectedInputSources: Set<NSObject> {
         get {
             return endpoints
         }
         set {
             let endpointsToAdd = newValue.subtracting(endpoints)
-            let endpointsToRemove = (endpoints as Set<AnyHashable>).subtracting(newValue)
+            let endpointsToRemove = (endpoints as Set<NSObject>).subtracting(newValue)
 
             for endpoint in endpointsToRemove {
                 if let destinationEndpoint = endpoint as? SMDestinationEndpoint {

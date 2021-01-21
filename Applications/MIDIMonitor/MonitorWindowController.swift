@@ -183,7 +183,7 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
         sourcesOutlineView.reloadData()
     }
 
-    func revealInputSources(_ sources: Set<AnyHashable>) {
+    func revealInputSources(_ sources: Set<NSObject>) {
         // Show the sources first
         sourcesDisclosableView.shown = true
         sourcesDisclosureButton.intValue = 1
@@ -192,8 +192,8 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
         // Then expand the outline view to show this source, and scroll it to be visible.
         for group in inputSourceGroups where group.expandable {
             for source in group.sources {
-                if let hashableSource = source as? AnyHashable,
-                   sources.contains(hashableSource) {
+                if let objectSource = source as? NSObject,
+                   sources.contains(objectSource) {
                     // Found one!
                     sourcesOutlineView.expandItem(group)
                     sourcesOutlineView.scrollRowToVisible(sourcesOutlineView.row(forItem: source))
@@ -297,12 +297,12 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
 
         var newSelectedSources = midiDocument.selectedInputSources
         for source in sources {
-            if let hashableSource = source as? AnyHashable {
+            if let objectSource = source as? NSObject {
                 if newState == .on {
-                    newSelectedSources.insert(hashableSource)
+                    newSelectedSources.insert(objectSource)
                 }
                 else {
-                    newSelectedSources.remove(hashableSource)
+                    newSelectedSources.remove(objectSource)
                 }
             }
         }
@@ -334,8 +334,8 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
         var areAnyNotSelected = false
 
         for source in sources {
-            if let hashableSource = source as? AnyHashable,
-               selectedSources.contains(hashableSource) {
+            if let objectSource = source as? NSObject,
+               selectedSources.contains(objectSource) {
                 areAnySelected = true
             }
             else {

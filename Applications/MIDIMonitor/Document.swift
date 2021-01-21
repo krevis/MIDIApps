@@ -276,7 +276,7 @@ extension Document {
     // It would be nicer to use block-based undo registration, but that requires macOS 10.11. So, for now, register using selectors,
     // and use a separate @objc-exposed method to do the work.
 
-    var selectedInputSources: Set<AnyHashable> /* TODO Should become Set<SMInputStreamSource> */ {
+    var selectedInputSources: Set<NSObject> /* TODO Should become Set<SMInputStreamSource> */ {
         get {
             return stream.selectedInputSources
         }
@@ -286,7 +286,7 @@ extension Document {
         }
     }
 
-    @objc private func undoableSetSelectedInputSources(_ newValue: Set<AnyHashable>) {
+    @objc private func undoableSetSelectedInputSources(_ newValue: Set<NSObject>) {
         if let undoManager = undoManager {
             undoManager.registerUndo(withTarget: self, selector: #selector(self.undoableSetSelectedInputSources(_:)), object: selectedInputSources)
             undoManager.setActionName(NSLocalizedString("Change Selected Sources", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change source undo action"))
@@ -483,27 +483,27 @@ extension Document {
 
     private func autoselectSources() {
         let groups = inputSourceGroups
-        var sourcesSet: Set<AnyHashable> = []  // TODO Should become Set<SMInputStreamSource>
+        var sourcesSet: Set<NSObject> = []  // TODO Should become Set<SMInputStreamSource>
 
         let defaults = UserDefaults.standard
 
         if defaults.bool(forKey: PreferenceKeys.selectOrdinarySourcesInNewDocument) {
             if groups.count > 0,
-               let sources = groups[0].sources as? [AnyHashable] {
+               let sources = groups[0].sources as? [NSObject] {
                 sourcesSet.formUnion(sources)
             }
         }
 
         if defaults.bool(forKey: PreferenceKeys.selectVirtualDestinationInNewDocument) {
             if groups.count > 1,
-               let sources = groups[1].sources as? [AnyHashable] {
+               let sources = groups[1].sources as? [NSObject] {
                 sourcesSet.formUnion(sources)
             }
         }
 
         if defaults.bool(forKey: PreferenceKeys.selectSpyingDestinationsInNewDocument) {
             if groups.count > 2,
-               let sources = groups[2].sources as? [AnyHashable] {
+               let sources = groups[2].sources as? [NSObject] {
                 sourcesSet.formUnion(sources)
             }
         }

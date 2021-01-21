@@ -96,7 +96,7 @@ import Foundation
         SMSourceEndpoint.sourceEndpoints
     }
 
-    public override var selectedInputSources: Set<AnyHashable> { // TODO Should be typed better
+    public override var selectedInputSources: Set<NSObject> { // TODO Should be typed better
         get {
             endpoints
         }

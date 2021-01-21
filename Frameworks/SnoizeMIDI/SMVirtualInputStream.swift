@@ -81,7 +81,7 @@ import Foundation
         [inputStreamSource]
     }
 
-    public override var selectedInputSources: Set<AnyHashable> {
+    public override var selectedInputSources: Set<NSObject> {
         get {
             isActive ? [inputStreamSource] : []
         }

@@ -57,13 +57,13 @@ import Foundation
         // TODO Fix type to be nicer
         guard let dicts = settings as? [[String: Any]] else { return nil }
 
-        var newInputSources: Set<AnyHashable> = []
+        var newInputSources: Set<NSObject> = []
         var missingNames: [String] = []
         for dict in dicts {
             let name = dict["name"] as? String
             let uniqueID = dict["uniqueID"] as? MIDIUniqueID
             if let source = findInputSource(name: name, uniqueID: uniqueID) {
-                newInputSources.insert(source as! AnyHashable)
+                newInputSources.insert(source as! NSObject)
             }
             else {
                 let resolvedName = name ?? NSLocalizedString("Unknown", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "name of missing endpoint if not specified in document")
@@ -133,12 +133,12 @@ import Foundation
         fatalError("Must implement in subclass")
     }
 
-    @objc public var inputSourcesSet: Set<AnyHashable> /* TODO Should become Set<SMInputStreamSource> */ {
+    @objc public var inputSourcesSet: Set<NSObject> /* TODO Should become Set<SMInputStreamSource> */ {
         // for convenience going to Swift and dealing with selectedInputSources... may change
-        return Set(inputSources as? [AnyHashable] ?? [])
+        return Set(inputSources as? [NSObject] ?? [])
     }
 
-    @objc open var selectedInputSources: Set<AnyHashable> /* TODO Should become Set<SMInputStreamSource> */ {
+    @objc open var selectedInputSources: Set<NSObject> /* TODO Should become Set<SMInputStreamSource> */ {
         get {
             fatalError("Must implement in subclass")
         }

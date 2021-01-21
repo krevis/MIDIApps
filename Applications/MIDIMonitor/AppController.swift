@@ -372,7 +372,7 @@ extension AppController {
            sources.count > 0,
            let document = try? NSDocumentController.shared.openUntitledDocumentAndDisplay(false) as? Document {
             document.makeWindowControllers()
-            document.selectedInputSources = sources as Set<AnyHashable>
+            document.selectedInputSources = sources as Set<NSObject>
             document.showWindows()
 
             if let windowController = document.windowControllers.first as? MonitorWindowController {

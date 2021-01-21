@@ -75,9 +75,9 @@ class CombinationInputStream: NSObject {
         return groups
     }
 
-    var selectedInputSources: Set<AnyHashable> /* TODO Should become Set<SMInputStreamSource> */ {
+    var selectedInputSources: Set<NSObject> /* TODO Should become Set<SMInputStreamSource> */ {
         get {
-            var inputSources: Set<AnyHashable> = []
+            var inputSources: Set<NSObject> = []
             inputSources.formUnion(portInputStream.selectedInputSources)
             inputSources.formUnion(virtualInputStream.selectedInputSources)
             if let stream = spyingInputStream {
