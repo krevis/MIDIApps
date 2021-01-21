@@ -19,7 +19,7 @@ import CoreAudio
 
     // MARK: SMMessageDestination
 
-    public func takeMIDIMessages(_ messages: [SMMessage]!) {
+    public func takeMIDIMessages(_ messages: [SMMessage]) {
         sendMessagesWithLimitedPacketListSize(messages)
     }
 

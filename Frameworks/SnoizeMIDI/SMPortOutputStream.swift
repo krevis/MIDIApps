@@ -73,7 +73,7 @@ import CoreAudio
 
     // MARK: SMOutputStream overrides
 
-    @objc public override func takeMIDIMessages(_ messages: [SMMessage]!) {
+    @objc public override func takeMIDIMessages(_ messages: [SMMessage]) {
         if sendsSysExAsynchronously {
             // Find the messages which are sysex and which have timestamps which are <= now,
             // and send them using MIDISendSysex(). Other messages get sent normally.
