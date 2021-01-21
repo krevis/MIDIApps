@@ -397,7 +397,7 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 
     if (!self.isSettingPropertyAllowed) {
         // TODO Complain somehow
-        return
+        return;
     }
 
     status = MIDIObjectSetStringProperty(objectRef, property, (CFStringRef)value);
