@@ -12,7 +12,7 @@
 
 import Foundation
 
-public protocol SMInputStreamSource {
+public protocol SMInputStreamSource: NSObjectProtocol {
 
     var inputStreamSourceName: String? { get }  // TODO should this really be optional?
     var inputStreamSourceUniqueID: MIDIUniqueID? { get }
