@@ -303,7 +303,10 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
     if (value == uniqueID)
         return YES;
 
-    [self checkIfPropertySetIsAllowed];
+    if (!self.isSettingPropertyAllowed) {
+        // TODO Complain somehow
+        return NO;
+    }
 
     MIDIObjectSetIntegerProperty(objectRef, kMIDIPropertyUniqueID, value);
     // Ignore the error code. We're going to check if our change stuck, either way.
@@ -361,7 +364,7 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 - (void)setMaxSysExSpeed:(int)value
 {
     MIDIObjectSetIntegerProperty(objectRef, kMIDIPropertyMaxSysExSpeed, value);
-    // ignore errors, and don't call [self checkIfPropertySetIsAllowed]
+    // ignore errors, and don't self.isSettingPropertyAllowed
 }
 
 //
@@ -392,7 +395,10 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 {
     OSStatus status;
 
-    [self checkIfPropertySetIsAllowed];
+    if (!self.isSettingPropertyAllowed) {
+        // TODO Complain somehow
+        return
+    }
 
     status = MIDIObjectSetStringProperty(objectRef, property, (CFStringRef)value);
     if (status) {
@@ -417,7 +423,10 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 {
     OSStatus status;
 
-    [self checkIfPropertySetIsAllowed];
+    if (!self.isSettingPropertyAllowed) {
+        // TODO Complain somehow
+        return;
+    }
 
     status = MIDIObjectSetIntegerProperty(objectRef, property, value);
     if (status) {
@@ -429,9 +438,9 @@ NSString *SMMIDIObjectChangedPropertyName = @"SMMIDIObjectChangedPropertyName";
 // Other
 //
 
-- (void)checkIfPropertySetIsAllowed;
-{
+- (BOOL)isSettingPropertyAllowed {
     // Do nothing in base class
+    return YES;
 }
 
 - (void)invalidateCachedProperties;

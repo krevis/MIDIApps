@@ -163,14 +163,8 @@ import CoreMIDI
         return name
     }
 
-    public override func checkIfPropertySetIsAllowed() {
-        if !isOwnedByThisProcess {
-            // TODO This used to raise, but that's annoying, do something else
-            /*
-             NSString* reason = NSLocalizedStringFromTableInBundle(@"Can't set a property on an endpoint we don't own", @"SnoizeMIDI", SMBundleForObject(self), "exception if someone tries to set a property on an endpoint we don't own");
-             [[NSException exceptionWithName:NSGenericException reason:reason userInfo:nil] raise];
-             */
-        }
+    public override var isSettingPropertyAllowed: Bool {
+        return isOwnedByThisProcess
     }
 
     public override func invalidateCachedProperties() {

@@ -96,8 +96,9 @@
 
 // Other
 
-- (void)checkIfPropertySetIsAllowed;
-    // Does nothing in base class. May be overridden in subclasses to raise an exception if we shouldn't be setting values for properties of this object.
+@property (nonatomic, readonly) BOOL isSettingPropertyAllowed;
+    // Does nothing in base class, and returns true.
+    // May be overridden in subclasses to return false if we shouldn't be setting values for properties of this object.
 
 - (void)invalidateCachedProperties;
     // Call this to force this object to throw away any properties it may have cached.
