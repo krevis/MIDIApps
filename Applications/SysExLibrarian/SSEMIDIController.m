@@ -107,7 +107,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
     [outputStream setCustomSysExBufferSize:[[NSUserDefaults standardUserDefaults] integerForKey:SSECustomSysexBufferSizePreferenceKey]];
     [outputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a source for other programs", @"SysExLibrarian", SMBundleForObject(self), "display name of virtual source")];
 
-    [center addObserver:self selector:@selector(sourceEndpointsAppeared:) name:SMMIDIObjectsAppearedNotification object:[SMSourceEndpoint class]];
+    [center addObserver:self selector:@selector(sourceEndpointsAppeared:) name:NSNotification.midiObjectsAppeared object:[SMSourceEndpoint class]];
     
     messages = [[NSMutableArray alloc] init];
     messageBytesRead = 0;
@@ -410,7 +410,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
 
 - (void)sourceEndpointsAppeared:(NSNotification *)notification;
 {
-    [self addEndpointsToInputStream:[[notification userInfo] objectForKey:SMMIDIObjectsThatAppeared]];
+    [self addEndpointsToInputStream:[[notification userInfo] objectForKey:SMMIDIObject.midiObjectsThatAppeared]];
 }
 
 - (void)addEndpointsToInputStream:(NSArray *)endpoints;

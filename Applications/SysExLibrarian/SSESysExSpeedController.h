@@ -23,7 +23,7 @@
     NSArray *externalDevices;
     
     SMMIDIObject* trackingMIDIObject;
-    int speedOfTrackingMIDIObject;
+    NSInteger speedOfTrackingMIDIObject;
 }
 
 - (void)willShow;

@@ -18,7 +18,7 @@ import CoreMIDI
     // MARK: New methods
 
     public var endpointRef: MIDIEndpointRef {
-        objectRef()
+        objectRef
     }
 
     public var isVirtual: Bool {
@@ -33,13 +33,13 @@ import CoreMIDI
     public func remove() {
         // only works on virtual endpoints owned by this process
 
-        guard objectRef() != 0 && isOwnedByThisProcess else { return }
+        guard objectRef != 0 && isOwnedByThisProcess else { return }
 
         _ = MIDIEndpointDispose(endpointRef)
 
         // This object still hangs around in the endpoint lists until CoreMIDI gets around to posting a notification.
         // We should remove it immediately.
-        Self.immediatelyRemove(self)
+        Self.immediatelyRemoveObject(self)
 
         // Now we can forget the objectRef (not earlier!)
         clearObjectRef()
@@ -88,12 +88,12 @@ import CoreMIDI
         // which takes uniqueness, external devices, etc. into account.
 
         var unmanagedDisplayName: Unmanaged<CFString>?
-        if MIDIObjectGetStringProperty(objectRef(), kMIDIPropertyDisplayName, &unmanagedDisplayName) == noErr,
+        if MIDIObjectGetStringProperty(objectRef, kMIDIPropertyDisplayName, &unmanagedDisplayName) == noErr,
            let displayName = unmanagedDisplayName?.takeUnretainedValue() as String? {
             return displayName
         }
 
-        return name()
+        return name
     }
 
     @objc public var connectedExternalDevices: [SMExternalDevice] {
@@ -138,29 +138,34 @@ import CoreMIDI
 
     // MARK: SMMIDIObject overrides, public
 
-    public override func name() -> String! {
-        var name = super.name()
+    public override var name: String? {
+        get {
+            var name = super.name
 
-        // Some misguided driver authors don't provide names for their endpoints.
-        // (Seems especially common when the device has only one port.)
-        // If there is no name provided, try some fallbacks.
-        if name == nil || name!.isEmpty {
-            name = device?.name()
+            // Some misguided driver authors don't provide names for their endpoints.
+            // (Seems especially common when the device has only one port.)
+            // If there is no name provided, try some fallbacks.
+            if name == nil || name!.isEmpty {
+                name = device?.name
+            }
+
+            if name == nil || name!.isEmpty {
+                name = modelName
+            }
+
+            if name == nil || name!.isEmpty {
+                name = manufacturerName
+            }
+
+            if name == nil || name!.isEmpty {
+                name = "<Unnamed Port>"
+            }
+
+            return name
         }
-
-        if name == nil || name!.isEmpty {
-            name = modelName
+        set {
+            super.name = newValue
         }
-
-        if name == nil || name!.isEmpty {
-            name = manufacturerName
-        }
-
-        if name == nil || name!.isEmpty {
-            name = "<Unnamed Port>"
-        }
-
-        return name
     }
 
     public override var isSettingPropertyAllowed: Bool {
@@ -175,15 +180,15 @@ import CoreMIDI
         cachedDeviceRef = .none
     }
 
-    public override func propertyDidChange(_ propertyName: String!) {
-        if propertyName == kMIDIPropertyManufacturer as String {
+    public override func propertyDidChange(_ property: CFString) {
+        if property == kMIDIPropertyManufacturer {
             cachedManufacturerName = .none
         }
-        else if propertyName == kMIDIPropertyModel as String {
+        else if property == kMIDIPropertyModel {
             cachedModelName = .none
         }
 
-        super.propertyDidChange(propertyName)
+        super.propertyDidChange(property)
     }
 
     // MARK: Private
@@ -235,7 +240,7 @@ import CoreMIDI
             }
         }
         set {
-            _ = MIDIObjectSetIntegerProperty(objectRef(), SMEndpoint.propertyOwnerPID as CFString, newValue)
+            _ = MIDIObjectSetIntegerProperty(objectRef, SMEndpoint.propertyOwnerPID as CFString, newValue)
             // TODO This used to raise an exception on failure. Get away from that.
         }
     }
@@ -246,7 +251,7 @@ import CoreMIDI
         // The property for kMIDIPropertyConnectionUniqueID may be an integer or a data object.
         // Try getting it as data first.  (The data is an array of big-endian MIDIUniqueIDs, aka Int32s.)
         var unmanagedData: Unmanaged<CFData>?
-        if MIDIObjectGetDataProperty(objectRef(), kMIDIPropertyConnectionUniqueID, &unmanagedData) == noErr,
+        if MIDIObjectGetDataProperty(objectRef, kMIDIPropertyConnectionUniqueID, &unmanagedData) == noErr,
            let data = unmanagedData?.takeUnretainedValue() as Data? {
             // Make sure the data size makes sense
             guard data.count > 0, data.count % MemoryLayout<Int32>.size == 0 else { return [] }
@@ -257,7 +262,7 @@ import CoreMIDI
 
         // Now try getting the property as an integer. (It is only valid if nonzero.)
         var oneUniqueID: MIDIUniqueID = 0
-        if MIDIObjectGetIntegerProperty(objectRef(), kMIDIPropertyConnectionUniqueID, &oneUniqueID) == noErr && oneUniqueID != 0 {
+        if MIDIObjectGetIntegerProperty(objectRef, kMIDIPropertyConnectionUniqueID, &oneUniqueID) == noErr && oneUniqueID != 0 {
             return [oneUniqueID]
         }
 

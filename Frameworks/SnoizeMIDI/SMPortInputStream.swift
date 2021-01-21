@@ -24,11 +24,11 @@ import Foundation
             // TODO how to handle?
         }
 
-        NotificationCenter.default.addObserver(self, selector: #selector(self.endpointListChanged(_:)), name: .SMMIDIObjectListChanged, object: SMSourceEndpoint.self)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.endpointListChanged(_:)), name: .midiObjectListChanged, object: SMSourceEndpoint.self)
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .SMMIDIObjectListChanged, object: SMSourceEndpoint.self)
+        NotificationCenter.default.removeObserver(self, name: .midiObjectListChanged, object: SMSourceEndpoint.self)
 
         MIDIPortDispose(inputPort)
     }
@@ -48,14 +48,14 @@ import Foundation
                 // later on; it should not crash or fail, but it may return nil.
                 parsersForEndpoints.removeValue(forKey: endpoint)
 
-                center.removeObserver(self, name: .SMMIDIObjectDisappeared, object: endpoint)
-                center.removeObserver(self, name: .SMMIDIObjectWasReplaced, object: endpoint)
+                center.removeObserver(self, name: .midiObjectDisappeared, object: endpoint)
+                center.removeObserver(self, name: .midiObjectWasReplaced, object: endpoint)
             }
             endpoints.subtracting(oldValue).forEach { endpoint in
                 parsersForEndpoints[endpoint] = createParser(originatingEndpoint: endpoint)
 
-                center.addObserver(self, selector: #selector(self.endpointDisappeared(_:)), name: .SMMIDIObjectDisappeared, object: endpoint)
-                center.addObserver(self, selector: #selector(self.endpointWasReplaced(_:)), name: .SMMIDIObjectWasReplaced, object: endpoint)
+                center.addObserver(self, selector: #selector(self.endpointDisappeared(_:)), name: .midiObjectDisappeared, object: endpoint)
+                center.addObserver(self, selector: #selector(self.endpointWasReplaced(_:)), name: .midiObjectWasReplaced, object: endpoint)
 
                 _ = MIDIPortConnectSource(inputPort, endpoint.endpointRef, Unmanaged.passUnretained(endpoint).toOpaque())
 
@@ -128,7 +128,7 @@ import Foundation
     @objc private func endpointWasReplaced(_ notification: Notification) {
         if let oldEndpoint = notification.object as? SMSourceEndpoint,
            endpoints.contains(oldEndpoint),
-           let newEndpoint = notification.userInfo?[SMMIDIObjectReplacement] as? SMSourceEndpoint {
+           let newEndpoint = notification.userInfo?[SMMIDIObject.midiObjectReplacement] as? SMSourceEndpoint {
             removeEndpoint(oldEndpoint)
             addEndpoint(newEndpoint)
         }

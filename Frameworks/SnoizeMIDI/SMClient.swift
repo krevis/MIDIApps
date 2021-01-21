@@ -365,16 +365,16 @@ public extension Notification.Name {
 }
 
 // TODO Duplicate stuff while migrating from ObjC to Swift
-@objc extension NSNotification {
+@objc public extension NSNotification {
 
-    static public let clientSetupChanged = Notification.Name.clientSetupChanged
-    static public let clientObjectAdded = Notification.Name.clientObjectAdded
-    static public let clientObjectRemoved = Notification.Name.clientObjectRemoved
-    static public let clientObjectPropertyChanged = Notification.Name.clientObjectPropertyChanged
-    static public let clientThruConnectionsChanged = Notification.Name.clientThruConnectionsChanged
-    static public let clientSerialPortOwnerChanged = Notification.Name.clientSerialPortOwnerChanged
-    static public let clientIOErrorNotification = Notification.Name.clientIOError
-    static public let clientUnknownNotification = Notification.Name.clientUnknownNotification
+    static let clientSetupChanged = Notification.Name.clientSetupChanged
+    static let clientObjectAdded = Notification.Name.clientObjectAdded
+    static let clientObjectRemoved = Notification.Name.clientObjectRemoved
+    static let clientObjectPropertyChanged = Notification.Name.clientObjectPropertyChanged
+    static let clientThruConnectionsChanged = Notification.Name.clientThruConnectionsChanged
+    static let clientSerialPortOwnerChanged = Notification.Name.clientSerialPortOwnerChanged
+    static let clientIOErrorNotification = Notification.Name.clientIOError
+    static let clientUnknownNotification = Notification.Name.clientUnknownNotification
 
 }
 

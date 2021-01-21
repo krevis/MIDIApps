@@ -35,10 +35,10 @@ import Foundation
     @objc public var uniqueID: MIDIUniqueID {
         didSet {
             if uniqueID != oldValue, let endpoint = endpoint {
-                if endpoint.setUniqueID(uniqueID) == false {
-                    // we tried to change the unique ID, but failed
-                    uniqueID = endpoint.uniqueID()
-                }
+                // TODO re-evaluate how to do this
+                endpoint.uniqueID = uniqueID
+                // that may or may not have worked
+                uniqueID = endpoint.uniqueID
             }
         }
     }
@@ -46,7 +46,7 @@ import Foundation
     @objc public var virtualEndpointName: String {
         didSet {
             if virtualEndpointName != oldValue {
-                endpoint?.setName(virtualEndpointName)
+                endpoint?.name = virtualEndpointName
             }
         }
     }
@@ -140,7 +140,7 @@ import Foundation
 
             // We requested a specific uniqueID earlier, but we might not have gotten it.
             // We have to update our idea of what it is, regardless.
-            uniqueID = endpoint.uniqueID()
+            uniqueID = endpoint.uniqueID
         }
     }
 

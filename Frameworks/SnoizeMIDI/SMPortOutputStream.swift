@@ -21,12 +21,12 @@ import CoreAudio
             // Easier to use ObjC selectors.
             let center = NotificationCenter.default
             oldValue.subtracting(endpoints).forEach {
-                center.removeObserver(self, name: .SMMIDIObjectDisappeared, object: $0)
-                center.removeObserver(self, name: .SMMIDIObjectWasReplaced, object: $0)
+                center.removeObserver(self, name: .midiObjectDisappeared, object: $0)
+                center.removeObserver(self, name: .midiObjectWasReplaced, object: $0)
             }
             endpoints.subtracting(oldValue).forEach {
-                center.addObserver(self, selector: #selector(self.endpointDisappeared(notification:)), name: .SMMIDIObjectDisappeared, object: $0)
-                center.addObserver(self, selector: #selector(self.endpointWasReplaced(notification:)), name: .SMMIDIObjectWasReplaced, object: $0)
+                center.addObserver(self, selector: #selector(self.endpointDisappeared(notification:)), name: .midiObjectDisappeared, object: $0)
+                center.addObserver(self, selector: #selector(self.endpointWasReplaced(notification:)), name: .midiObjectWasReplaced, object: $0)
             }
         }
     }
@@ -114,7 +114,7 @@ import CoreAudio
 
     @objc private func endpointWasReplaced(notification: Notification) {
         if let endpoint = notification.object as? SMDestinationEndpoint,
-           let replacement = notification.userInfo?[SMMIDIObjectReplacement] as? SMDestinationEndpoint {
+           let replacement = notification.userInfo?[SMMIDIObject.midiObjectReplacement] as? SMDestinationEndpoint {
             endpointWasReplaced(endpoint, replacement)
         }
     }

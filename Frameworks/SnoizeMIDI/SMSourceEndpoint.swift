@@ -16,21 +16,21 @@ import CoreMIDI
 @objc public class SMSourceEndpoint: SMEndpoint {
 
     @objc public class var sourceEndpoints: [SMSourceEndpoint] {
-        (allObjectsInOrder() as? [SMSourceEndpoint]) ?? []
+        (allObjectsInOrder as? [SMSourceEndpoint]) ?? []
     }
 
     @objc public class func findSourceEndpoint(uniqueID: MIDIUniqueID) -> SMSourceEndpoint? {
-        find(withUniqueID: uniqueID) as? SMSourceEndpoint
+        findObject(uniqueID: uniqueID)
         // TODO Better name
     }
 
     @objc public class func findSourceEndpoint(name: String) -> SMSourceEndpoint? {
-        find(withName: name) as? SMSourceEndpoint
+        findObject(name: name)
         // TODO Better name
     }
 
     @objc public class func findSourceEndpoint(endpointRef: MIDIEndpointRef) -> SMSourceEndpoint? {
-        findObject(withObjectRef: endpointRef) as? SMSourceEndpoint
+        findObject(objectRef: endpointRef)
         // TODO This is unused, see if we really need it
     }
 
@@ -54,19 +54,21 @@ import CoreMIDI
             // CoreMIDI will send us a notification that something was added, and then we will create an SMSourceEndpoint.
             // However, the notification from CoreMIDI is posted in the run loop's main mode, and we don't want to wait for it to be run.
             // So we need to manually add the new endpoint, now.
-            endpoint = immediatelyAddObject(withObjectRef: newEndpointRef) as? SMSourceEndpoint
+            endpoint = immediatelyAddObject(objectRef: newEndpointRef) as? SMSourceEndpoint
             if let endpoint = endpoint {
                 endpoint.setOwnedByThisProcess()
 
                 if uniqueID != 0 {
-                    endpoint.setUniqueID(uniqueID)
+                    endpoint.uniqueID = uniqueID
                 }
-                if endpoint.uniqueID() == 0 {
+                if endpoint.uniqueID == 0 {
                     // CoreMIDI didn't assign a unique ID to this endpoint, so we should generate one ourself
+                    // TODO Figure out how to do this
+                    /*
                     var success = false
                     while !success {
                         success = endpoint.setUniqueID(SMMIDIObject.generateNewUniqueID())
-                    }
+                    }*/
                 }
 
                 endpoint.manufacturerName = "Snoize"
@@ -84,11 +86,11 @@ import CoreMIDI
 
     // MARK: SMMIDIObject required overrides
 
-    public override class func midiObjectType() -> MIDIObjectType {
+    public override class var midiObjectType: MIDIObjectType {
         MIDIObjectType.source
     }
 
-    public override class func midiObjectCount() -> Int {
+    public override class var midiObjectCount: Int {
         MIDIGetNumberOfSources()
     }
 

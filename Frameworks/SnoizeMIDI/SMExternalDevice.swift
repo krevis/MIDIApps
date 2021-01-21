@@ -16,22 +16,22 @@ import CoreMIDI
 @objc public class SMExternalDevice: SMMIDIObject {
 
     @objc public class var externalDevices: [SMExternalDevice] {
-        (allObjectsInOrder() as? [SMExternalDevice]) ?? []
+        (allObjectsInOrder as? [SMExternalDevice]) ?? []
     }
 
     @objc public class func externalDevice(uniqueID: MIDIUniqueID) -> SMExternalDevice? {
-        find(withUniqueID: uniqueID) as? SMExternalDevice
+        findObject(uniqueID: uniqueID)
         // TODO This is unused, see if we really need it
     }
 
     @objc public class func externalDevice(deviceRef: MIDIDeviceRef) -> SMExternalDevice? {
-        findObject(withObjectRef: deviceRef) as? SMExternalDevice
+        findObject(objectRef: deviceRef)
     }
 
     // MARK: New SMExternalDevice API
 
     public var deviceRef: MIDIDeviceRef {
-        objectRef()
+        objectRef
         // TODO This is unused, see if we really need it
     }
 
@@ -52,11 +52,11 @@ import CoreMIDI
 
     // MARK: SMMIDIObject subclass
 
-    public class override func midiObjectType() -> MIDIObjectType {
+    public class override var midiObjectType: MIDIObjectType {
         MIDIObjectType.externalDevice
     }
 
-    public class override func midiObjectCount() -> Int {
+    public class override var midiObjectCount: Int {
         MIDIGetNumberOfExternalDevices()
     }
 
@@ -64,18 +64,18 @@ import CoreMIDI
         MIDIGetExternalDevice(index)
     }
 
-    public override func setMaxSysExSpeed(_ value: Int32) {
-        super.setMaxSysExSpeed(value)
+    public override var maxSysExSpeed: Int {
+        didSet {
+            // Also set the speed on this device's source endpoints (which we get to via its entities).
+            // This is how MIDISendSysex() determines what speed to use, surprisingly.
 
-        // Also set the speed on this device's source endpoints (which we get to via its entities).
-        // This is how MIDISendSysex() determines what speed to use, surprisingly.
-
-        for entityIndex in 0 ..< MIDIDeviceGetNumberOfEntities(deviceRef) {
-            let entityRef = MIDIDeviceGetEntity(deviceRef, entityIndex)
-            for sourceIndex in 0 ..< MIDIEntityGetNumberOfSources(entityRef) {
-                let sourceEndpointRef = MIDIEntityGetSource(entityRef, sourceIndex)
-                MIDIObjectSetIntegerProperty(sourceEndpointRef, kMIDIPropertyMaxSysExSpeed, value)
-                // ignore errors, nothing we can do anyway
+            for entityIndex in 0 ..< MIDIDeviceGetNumberOfEntities(deviceRef) {
+                let entityRef = MIDIDeviceGetEntity(deviceRef, entityIndex)
+                for sourceIndex in 0 ..< MIDIEntityGetNumberOfSources(entityRef) {
+                    let sourceEndpointRef = MIDIEntityGetSource(entityRef, sourceIndex)
+                    MIDIObjectSetIntegerProperty(sourceEndpointRef, kMIDIPropertyMaxSysExSpeed, Int32(maxSysExSpeed))
+                    // ignore errors, nothing we can do anyway
+                }
             }
         }
     }

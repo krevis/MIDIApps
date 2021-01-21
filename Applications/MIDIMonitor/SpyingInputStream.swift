@@ -31,7 +31,7 @@ class SpyingInputStream: SMInputStream {
             return nil
         }
 
-        NotificationCenter.default.addObserver(self, selector: #selector(self.endpointListChanged(_:)), name: .SMMIDIObjectListChanged, object: SMDestinationEndpoint.self)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.endpointListChanged(_:)), name: .midiObjectListChanged, object: SMDestinationEndpoint.self)
     }
 
     deinit {
@@ -115,8 +115,8 @@ class SpyingInputStream: SMInputStream {
         parsersForEndpoints.setObject(parser, forKey: endpoint)
 
         let center = NotificationCenter.default
-        center.addObserver(self, selector: #selector(self.endpointDisappeared(_:)), name: .SMMIDIObjectDisappeared, object: endpoint)
-        center.addObserver(self, selector: #selector(self.endpointWasReplaced(_:)), name: .SMMIDIObjectWasReplaced, object: endpoint)
+        center.addObserver(self, selector: #selector(self.endpointDisappeared(_:)), name: .midiObjectDisappeared, object: endpoint)
+        center.addObserver(self, selector: #selector(self.endpointWasReplaced(_:)), name: .midiObjectWasReplaced, object: endpoint)
 
         _ = endpoints.insert(endpoint)
 
@@ -138,8 +138,8 @@ class SpyingInputStream: SMInputStream {
         parsersForEndpoints.removeObject(forKey: endpoint)
 
         let center = NotificationCenter.default
-        center.removeObserver(self, name: .SMMIDIObjectDisappeared, object: endpoint)
-        center.removeObserver(self, name: .SMMIDIObjectWasReplaced, object: endpoint)
+        center.removeObserver(self, name: .midiObjectDisappeared, object: endpoint)
+        center.removeObserver(self, name: .midiObjectWasReplaced, object: endpoint)
 
         endpoints.remove(endpoint)
     }
@@ -161,7 +161,7 @@ class SpyingInputStream: SMInputStream {
               endpoints.contains(endpoint) else { return }
 
         removeEndpoint(endpoint)
-        if let newEndpoint = notification.userInfo?[SMMIDIObjectReplacement] as? SMDestinationEndpoint {
+        if let newEndpoint = notification.userInfo?[SMMIDIObject.midiObjectReplacement] as? SMDestinationEndpoint {
             addEndpoint(newEndpoint)
         }
     }

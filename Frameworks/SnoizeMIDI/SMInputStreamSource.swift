@@ -26,7 +26,7 @@ extension SMEndpoint: SMInputStreamSource {
     }
 
     public var inputStreamSourceUniqueID: MIDIUniqueID? {
-        uniqueID()
+        uniqueID
     }
 
 }

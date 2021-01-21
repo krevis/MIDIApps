@@ -16,22 +16,22 @@ import CoreMIDI
 @objc public class SMDevice: SMMIDIObject {
 
     @objc public class var devices: [SMDevice] {
-        (allObjectsInOrder() as? [SMDevice]) ?? []
+        (allObjectsInOrder as? [SMDevice]) ?? []
     }
 
     @objc public class func device(uniqueID: MIDIUniqueID) -> SMDevice? {
-        find(withUniqueID: uniqueID) as? SMDevice
+        findObject(uniqueID: uniqueID) as? SMDevice
         // TODO This is unused, see if we really need it
     }
 
     @objc public class func device(deviceRef: MIDIDeviceRef) -> SMDevice? {
-        findObject(withObjectRef: deviceRef) as? SMDevice
+        findObject(objectRef: deviceRef) as? SMDevice
     }
 
     // MARK: New SMDevice API
 
     public var deviceRef: MIDIDeviceRef {
-        objectRef()
+        objectRef
         // TODO This is unused, see if we really need it
     }
 
@@ -52,11 +52,11 @@ import CoreMIDI
 
     // MARK: SMMIDIObject subclass
 
-    public class override func midiObjectType() -> MIDIObjectType {
+    public class override var midiObjectType: MIDIObjectType {
         MIDIObjectType.device
     }
 
-    public class override func midiObjectCount() -> Int {
+    public class override var midiObjectCount: Int {
         MIDIGetNumberOfDevices()
     }
 
@@ -64,8 +64,8 @@ import CoreMIDI
         MIDIGetDevice(index)
     }
 
-    public override func propertyDidChange(_ propertyName: String!) {
-        if propertyName == String(kMIDIPropertyOffline) {
+    public override func propertyDidChange(_ property: CFString) {
+        if property == kMIDIPropertyOffline {
             // This device just went offline or online. We need to refresh its endpoints.
             // (If it went online, we didn't previously have its endpoints in our list.)
 
@@ -74,7 +74,7 @@ import CoreMIDI
             SMDestinationEndpoint.refreshAllObjects()
         }
 
-        super.propertyDidChange(propertyName)
+        super.propertyDidChange(property)
     }
 
 }

@@ -30,7 +30,7 @@ import Foundation
         _ = mutableBufferPtr.initialize(from: fullMessageData)
         dataPointer = UnsafePointer(mutableBufferPtr.baseAddress!)
 
-        maxSysExSpeed = Int(endpoint.maxSysExSpeed())
+        maxSysExSpeed = Int(endpoint.maxSysExSpeed)
 
         sysexSendRequest = MIDISysexSendRequest(
             destination: endpoint.endpointRef,

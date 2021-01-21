@@ -16,22 +16,22 @@ import CoreMIDI
 @objc public class SMDestinationEndpoint: SMEndpoint {
 
     @objc public class var destinationEndpoints: [SMDestinationEndpoint] {
-        let endpoints = (allObjectsInOrder() as? [SMDestinationEndpoint]) ?? []
+        let endpoints = (allObjectsInOrder as? [SMDestinationEndpoint]) ?? []
         return endpoints.filter { $0 != cachedSysExSpeedWorkaroundEndpoint }
     }
 
     @objc public class func findDestinationEndpoint(uniqueID: MIDIUniqueID) -> SMDestinationEndpoint? {
-        find(withUniqueID: uniqueID) as? SMDestinationEndpoint
+        findObject(uniqueID: uniqueID)
         // TODO Better name
     }
 
     @objc public class func findDestinationEndpoint(name: String) -> SMDestinationEndpoint? {
-        find(withName: name) as? SMDestinationEndpoint
+        findObject(name: name)
         // TODO Better name
     }
 
     @objc public class func findDestinationEndpoint(endpointRef: MIDIEndpointRef) -> SMDestinationEndpoint? {
-        findObject(withObjectRef: endpointRef) as? SMDestinationEndpoint
+        findObject(objectRef: endpointRef)
         // TODO Better name, is this used?
     }
 
@@ -55,19 +55,22 @@ import CoreMIDI
             // CoreMIDI will send us a notification that something was added, and then we will create an SMDestinationEndpoint.
             // However, the notification from CoreMIDI is posted in the run loop's main mode, and we don't want to wait for it to be run.
             // So we need to manually add the new endpoint, now.
-            endpoint = immediatelyAddObject(withObjectRef: newEndpointRef) as? SMDestinationEndpoint
+            endpoint = immediatelyAddObject(objectRef: newEndpointRef) as? SMDestinationEndpoint
             if let endpoint = endpoint {
                 endpoint.setOwnedByThisProcess()
 
                 if uniqueID != 0 {
-                    endpoint.setUniqueID(uniqueID)
+                    endpoint.uniqueID = uniqueID
                 }
-                if endpoint.uniqueID() == 0 {
+                if endpoint.uniqueID == 0 {
                     // CoreMIDI didn't assign a unique ID to this endpoint, so we should generate one ourself
+                    // TODO Re-evaluate how this stuff is done
+                    /*
                     var success = false
                     while !success {
                         success = endpoint.setUniqueID(SMMIDIObject.generateNewUniqueID())
                     }
+                     */
                 }
 
                 endpoint.manufacturerName = "Snoize"
@@ -85,11 +88,11 @@ import CoreMIDI
 
     // MARK: SMMIDIObject required overrides
 
-    public override class func midiObjectType() -> MIDIObjectType {
+    public override class var midiObjectType: MIDIObjectType {
         MIDIObjectType.destination
     }
 
-    public override class func midiObjectCount() -> Int {
+    public override class var midiObjectCount: Int {
         MIDIGetNumberOfDestinations()
     }
 
@@ -141,8 +144,8 @@ import CoreMIDI
 
                 // post internal notifications that we squelched earlier
                 if let endpoint = cachedSysExSpeedWorkaroundEndpoint {
-                    postListChangedNotification()
-                    postObjectsAddedNotification(with: [endpoint])
+                    postObjectListChangedNotification()
+                    postObjectsAddedNotification([endpoint])
                 }
             }
 
@@ -155,15 +158,15 @@ import CoreMIDI
         return cachedSysExSpeedWorkaroundEndpoint
     }
 
-    public override class func postListChangedNotification() {
+    public override class func postObjectListChangedNotification() {
         if !creatingSysExSpeedWorkaroundEndpoint {
-            super.postListChangedNotification()
+            super.postObjectListChangedNotification()
         }
     }
 
-    public override class func postObjectsAddedNotification(with objects: [Any]!) {
+    public override class func postObjectsAddedNotification(_ objects: [SMMIDIObject]) {
         if !creatingSysExSpeedWorkaroundEndpoint {
-            super.postObjectsAddedNotification(with: objects)
+            super.postObjectsAddedNotification(objects)
         }
     }
 

@@ -67,7 +67,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
 
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(portStreamEndpointListChanged:) 
-                                                 name:SMMIDIObjectListChangedNotification
+                                                 name:NSNotification.midiObjectListChanged
                                                object:[SMDestinationEndpoint class]];
 
     return self;

@@ -82,7 +82,7 @@ extension AppController: NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Listen for new source endpoints. Don't do this earlier--we only are interested in ones
         // that appear after we've been launched.
-        NotificationCenter.default.addObserver(self, selector: #selector(self.sourceEndpointsAppeared(_:)), name: .SMMIDIObjectsAppeared, object: SMSourceEndpoint.self)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.sourceEndpointsAppeared(_:)), name: .midiObjectsAppeared, object: SMSourceEndpoint.self)
     }
 
 }
@@ -328,7 +328,7 @@ extension AppController {
     // MARK: When sources appear
 
     @objc func sourceEndpointsAppeared(_ notification: Notification) {
-        guard let endpoints = notification.userInfo?[SMMIDIObjectsThatAppeared] as? [SMSourceEndpoint], endpoints.count > 0 else { return }
+        guard let endpoints = notification.userInfo?[SMMIDIObject.midiObjectsThatAppeared] as? [SMSourceEndpoint], endpoints.count > 0 else { return }
 
         if newlyAppearedSources == nil {
             newlyAppearedSources = Set<SMSourceEndpoint>()

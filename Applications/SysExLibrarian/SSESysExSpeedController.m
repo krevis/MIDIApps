@@ -24,7 +24,7 @@
 - (void)midiSetupChanged:(NSNotification *)notification;
 - (void)midiObjectChanged:(NSNotification *)notification;
 
-- (int)effectiveSpeedForItem:(SMMIDIObject*)item;
+- (NSInteger)effectiveSpeedForItem:(SMMIDIObject*)item;
 
 - (void)invalidateRowAndParent:(NSInteger)row;
 
@@ -90,7 +90,7 @@
 {
     // sender is the outline view; get the selected cell to find its new value.    
     NSCell* cell = [outlineView selectedCell];
-    int newValue = [cell intValue];
+    NSInteger newValue = [cell integerValue];
     
     // Don't actually set the value while we're tracking -- no need to update CoreMIDI
     // continuously.  Instead, remember which item is getting tracked and what its value
@@ -102,9 +102,9 @@
     speedOfTrackingMIDIObject = newValue;  
 
     // update the slider value based on the effective speed (which may be different than the tracking value)
-    int effectiveValue = [self effectiveSpeedForItem:item];
+    NSInteger effectiveValue = [self effectiveSpeedForItem:item];
     if (newValue != effectiveValue) {
-        [cell setIntValue:effectiveValue];
+        [cell setIntegerValue:effectiveValue];
     }    
     
     // redisplay
@@ -185,12 +185,10 @@
         if ([identifier isEqualToString:@"name"]) {
             objectValue = [item name];
         } else if ([identifier isEqualToString:@"speed"] || [identifier isEqualToString:@"bytesPerSecond"]) {
-            int speed = [self effectiveSpeedForItem:(SMMIDIObject*)item];
-            objectValue = [NSNumber numberWithInt:speed];
+            objectValue = @([self effectiveSpeedForItem:(SMMIDIObject*)item]);
         } else if ([identifier isEqualToString:@"percent"]) {
-            int speed = [self effectiveSpeedForItem:(SMMIDIObject*)item];
-            float percent = (speed / 3125.0) * 100.0;
-            objectValue = [NSNumber numberWithFloat:percent];
+            NSInteger speed = [self effectiveSpeedForItem:(SMMIDIObject*)item];
+            objectValue = @((speed / 3125.0) * 100.0);
         }
     }
         
@@ -230,12 +228,12 @@
 
     enumerator = [endpoints objectEnumerator];
     while ((midiObject = [enumerator nextObject])) {
-        [center removeObserver:self name:SMMIDIObjectPropertyChangedNotification object:midiObject];
+        [center removeObserver:self name:NSNotification.midiObjectPropertyChanged object:midiObject];
     }
     
     enumerator = [externalDevices objectEnumerator];
     while ((midiObject = [enumerator nextObject])) {
-        [center removeObserver:self name:SMMIDIObjectPropertyChangedNotification object:midiObject];
+        [center removeObserver:self name:NSNotification.midiObjectPropertyChanged object:midiObject];
     }
     
     endpoints = [[SSECombinationOutputStream destinationEndpoints] retain];
@@ -243,12 +241,12 @@
 
     enumerator = [endpoints objectEnumerator];
     while ((midiObject = [enumerator nextObject])) {
-        [center addObserver:self selector:@selector(midiObjectChanged:) name:SMMIDIObjectPropertyChangedNotification object:midiObject];
+        [center addObserver:self selector:@selector(midiObjectChanged:) name:NSNotification.midiObjectPropertyChanged object:midiObject];
     }
 
     enumerator = [externalDevices objectEnumerator];
     while ((midiObject = [enumerator nextObject])) {
-        [center addObserver:self selector:@selector(midiObjectChanged:) name:SMMIDIObjectPropertyChangedNotification object:midiObject];
+        [center addObserver:self selector:@selector(midiObjectChanged:) name:NSNotification.midiObjectPropertyChanged object:midiObject];
     }
 }
 
@@ -271,7 +269,7 @@
 
 - (void)midiObjectChanged:(NSNotification *)notification
 {
-    NSString* propertyName = [[notification userInfo] objectForKey:SMMIDIObjectChangedPropertyName];    
+    NSString* propertyName = [[notification userInfo] objectForKey:SMMIDIObject.midiObjectChangedProperty];
     if ([propertyName isEqualToString:(NSString *)kMIDIPropertyName]) {
         // invalidate only the row for this object
         NSInteger row = [outlineView rowForItem:[notification object]];
@@ -283,16 +281,16 @@
     }
 }
 
-- (int)effectiveSpeedForItem:(SMMIDIObject*)item
+- (NSInteger)effectiveSpeedForItem:(SMMIDIObject*)item
 {
-    int effectiveSpeed = (item == trackingMIDIObject) ? speedOfTrackingMIDIObject : [item maxSysExSpeed];        
+    NSInteger effectiveSpeed = (item == trackingMIDIObject) ? speedOfTrackingMIDIObject : [item maxSysExSpeed];
 
     if ([item isKindOfClass:[SMDestinationEndpoint class]]) {
         // Return the minimum of this endpoint's speed and all of its external devices' speeds
         NSEnumerator* oe = [[(SMDestinationEndpoint*)item connectedExternalDevices] objectEnumerator];
         SMMIDIObject* extDevice;
         while ((extDevice = [oe nextObject])) {
-            int extDeviceSpeed = (extDevice == trackingMIDIObject) ? speedOfTrackingMIDIObject : [extDevice maxSysExSpeed];
+            NSInteger extDeviceSpeed = (extDevice == trackingMIDIObject) ? speedOfTrackingMIDIObject : [extDevice maxSysExSpeed];
             effectiveSpeed = MIN(effectiveSpeed, extDeviceSpeed);
         }
     }
