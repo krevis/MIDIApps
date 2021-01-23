@@ -13,6 +13,9 @@
 		1691F97325B9621100B9CE06 /* SMMIDIObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F97225B9621100B9CE06 /* SMMIDIObject.swift */; };
 		1691F97425B9621100B9CE06 /* SMMIDIObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F97225B9621100B9CE06 /* SMMIDIObject.swift */; };
 		1691F97525B9621100B9CE06 /* SMMIDIObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F97225B9621100B9CE06 /* SMMIDIObject.swift */; };
+		1691F98325BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F98225BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift */; };
+		1691F98425BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F98225BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift */; };
+		1691F98525BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F98225BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift */; };
 		169669F325A8E49300D5BE2A /* SMVirtualInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169669F225A8E49300D5BE2A /* SMVirtualInputStream.swift */; };
 		169669F425A8E49300D5BE2A /* SMVirtualInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169669F225A8E49300D5BE2A /* SMVirtualInputStream.swift */; };
 		169669F525A8E49300D5BE2A /* SMVirtualInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169669F225A8E49300D5BE2A /* SMVirtualInputStream.swift */; };
@@ -135,6 +138,7 @@
 		162A31F1254E9595008E1F38 /* Snoize-Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Snoize-Signing.xcconfig"; path = "../../Configurations/Snoize-Signing.xcconfig"; sourceTree = "<group>"; };
 		1691F95225B90AA500B9CE06 /* SMMessageDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMessageDestination.swift; sourceTree = "<group>"; };
 		1691F97225B9621100B9CE06 /* SMMIDIObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMIDIObject.swift; sourceTree = "<group>"; };
+		1691F98225BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMIDIObjectTypeCollection.swift; sourceTree = "<group>"; };
 		169669F225A8E49300D5BE2A /* SMVirtualInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMVirtualInputStream.swift; sourceTree = "<group>"; };
 		16966A3D25A91B5F00D5BE2A /* SMPortInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMPortInputStream.swift; sourceTree = "<group>"; };
 		16966A4D25A9399600D5BE2A /* SimpleInputStreamSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleInputStreamSource.swift; sourceTree = "<group>"; };
@@ -332,6 +336,7 @@
 		16B11BDC0971D63D00DB1DB5 /* CoreMIDI Objects */ = {
 			isa = PBXGroup;
 			children = (
+				1691F98225BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift */,
 				1691F97225B9621100B9CE06 /* SMMIDIObject.swift */,
 				16B11B790971D40100DB1DB5 /* SMMIDIObject.h */,
 				16B11B7A0971D40100DB1DB5 /* SMMIDIObject.m */,
@@ -624,6 +629,7 @@
 				16966B7E25B7BB5900D5BE2A /* SMEndpoint.swift in Sources */,
 				16966B6A25B6B6EE00D5BE2A /* SMSourceEndpoint.swift in Sources */,
 				1691F97325B9621100B9CE06 /* SMMIDIObject.swift in Sources */,
+				1691F98325BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -663,6 +669,7 @@
 				16966B7F25B7BB5900D5BE2A /* SMEndpoint.swift in Sources */,
 				16966B6B25B6B6EE00D5BE2A /* SMSourceEndpoint.swift in Sources */,
 				1691F97425B9621100B9CE06 /* SMMIDIObject.swift in Sources */,
+				1691F98425BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -702,6 +709,7 @@
 				16966B8025B7BB5900D5BE2A /* SMEndpoint.swift in Sources */,
 				16966B6C25B6B6EE00D5BE2A /* SMSourceEndpoint.swift in Sources */,
 				1691F97525B9621100B9CE06 /* SMMIDIObject.swift in Sources */,
+				1691F98525BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

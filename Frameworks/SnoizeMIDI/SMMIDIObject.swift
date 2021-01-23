@@ -17,6 +17,9 @@ import CoreMIDI
 
     // Subclasses must implement these methods so all instances of their kind of MIDIObject can be found.
     // TODO This should be a protocol on some adapter class or something
+    // static var count: Int { get }
+    // static subscript(i: Int) -> SpecificMIDIObject { get }
+    // (look up Sequence, perhaps conform to it?)
 
     // Returns the CoreMIDI MIDIObjectType corresponding to this subclass
     public class var midiObjectType: MIDIObjectType {
@@ -33,37 +36,34 @@ import CoreMIDI
         fatalError()
     }
 
-    // TODO Maybe that all should be some kind of collection?
-
     // Accessors for all objects of this type
     // NOTE: All of these methods do nothing in the base class. They work for subclasses of SMMIDIObject only.
 
     // TODO Do these (co-variant?) return types really work? Should be static and not class?
     // https://forums.swift.org/t/is-it-just-me-or-did-we-end-up-having-partly-staticself-in-swift/22752/5
     // https://forums.swift.org/t/how-to-return-the-runtime-self-from-a-method-like-createwrapper-wrapper-self/32317/7
+    // Perhaps should return opaque type (some SMMIDIObject)?
 
     public class var allObjects: [SMMIDIObject] {
-        // TODO
+        // TODO map.values
         return []
     }
 
     public class var allObjectsInOrder: [SMMIDIObject] {
-        // TODO
+        // TODO map.values sorted
         return []
     }
 
     public class func findObject(uniqueID: MIDIUniqueID) -> Self? {
-        // TODO
-        return nil
+        allObjects.first { $0.uniqueID == uniqueID } as? Self
     }
 
     public class func findObject(name: String) -> Self? {
-        // TODO
-        return nil
+        allObjects.first { $0.name == name } as? Self
     }
 
     public class func findObject(objectRef: MIDIObjectRef) -> Self? {
-        // TODO
+        // TODO use the map to go from objectRef to our wrapper
         return nil
     }
 
@@ -76,8 +76,15 @@ import CoreMIDI
     // Single object creation and accessors
 
     init(objectRef: MIDIObjectRef, ordinal: Int) {
+        precondition(objectRef != 0)
         self.objectRef = objectRef
         self.ordinal = ordinal
+
+        // Immediately fetch the object's uniqueID, since it could become
+        // inaccessible later (if the object goes away).
+        uniqueID = 0
+        _ = MIDIObjectGetIntegerProperty(objectRef, kMIDIPropertyUniqueID, &uniqueID)
+
         super.init()
     }
 
@@ -87,34 +94,37 @@ import CoreMIDI
 
     // Specific property access
 
-    @objc public var uniqueID: MIDIUniqueID {
-        // TODO
-        get {
-            return 0
-        }
-        set {
-            // TODO Setter should return succeeded/failed if it even has to be public. Only used by Source/DestinationEndpoint next to generateNewUniqueID
-        }
-    }
+    @objc public internal(set) var uniqueID: MIDIUniqueID
+    // TODO Setter should return succeeded/failed if it even has to be public. Used by Source/DestinationEndpoint next to generateNewUniqueID. And SMVirtualInputStream on its endpoint.
 
-    // TODO
     @objc public var name: String? {
         get {
-            fatalError()
+            switch cachedName {
+            case .none:
+                let value = string(forProperty: kMIDIPropertyName)
+                cachedName = .some(value)
+                return value
+            case .some(let value):
+                return value
+            }
         }
         set {
-            fatalError()
+            if cachedName != .some(newValue) {
+                setString(newValue, forProperty: kMIDIPropertyName)
+                cachedName = .none
+            }
         }
     }
 
     // Maximum SysEx speed in bytes/second
     @objc public var maxSysExSpeed: Int {
-        // TODO Implement get/set
         get {
             fatalError()
+            // TODO needs to default to 3125 if there is no value
         }
         set {
-            fatalError()
+            _ = MIDIObjectSetIntegerProperty(objectRef, kMIDIPropertyMaxSysExSpeed, Int32(newValue))
+            // intentionally ignore error, and don't check isSettingPropertyAllowed
         }
     }
 
@@ -154,13 +164,20 @@ import CoreMIDI
     // Call this to force this object to throw away any properties it may have cached.
     // Subclasses may want to override this.
     public func invalidateCachedProperties() {
-        // TODO
+        cachedName = .none
     }
 
     // Called when a property of this object changes. Subclasses may override (be sure to call super's implementation).
     // Posts the notification SMMIDIObjectPropertyChangedNotification.
     public func propertyDidChange(_ property: CFString) {
-        // TODO
+        if property == kMIDIPropertyName {
+            cachedName = .none
+        }
+        else if property == kMIDIPropertyUniqueID {
+            updateUniqueID()
+        }
+
+        NotificationCenter.default.post(name: .midiObjectPropertyChanged, object: self, userInfo: [Self.midiObjectChangedProperty : property])
     }
 
     //
@@ -170,16 +187,21 @@ import CoreMIDI
     //
 
     internal func clearObjectRef() {
-        // TODO
+        objectRef = 0
     }
 
     internal class func midiClientCreated(_ client: SMClient) {
         // TODO
+        // The way we do this is silly. SMClient should be more in charge.
+        // The code to dispatch to each kind of wrapper object should all be in there
+        // instead of SMMIDIObject (which maybe shouldn't even exist).
+        // and instead of watching notifications from SMClient, it should be done directly
     }
 
     // Sent to each subclass when the first MIDI Client is created.
     internal class func initialMIDISetup() {
         // TODO
+        // for each leaf subclass, get count, iterate and make a wrapper for each object, put them in a map table for that subclass only
     }
 
     // Subclasses may use this method to immediately cause a new object to be created from a MIDIObjectRef
@@ -219,7 +241,39 @@ import CoreMIDI
 
     private var cachedName: String??
 
+    private func updateUniqueID() {
+        var id: MIDIUniqueID = 0
+        _ = MIDIObjectGetIntegerProperty(objectRef, kMIDIPropertyUniqueID, &id)
+        uniqueID = id
+    }
 
+    /*
+     // Methods to be used on SMMIDIObject itself, not subclasses
+
+     + (void)privateInitialize;
+     + (NSSet *)leafSubclasses;
+     + (Class)subclassForObjectType:(MIDIObjectType)objectType;
+
+     + (BOOL)isUniqueIDInUse:(MIDIUniqueID)proposedUniqueID;
+
+     + (void)midiObjectPropertyChanged:(NSNotification *)notification;
+     + (void)midiObjectWasAdded:(NSNotification *)notification;
+     + (void)midiObjectWasRemoved:(NSNotification *)notification;
+
+     // Methods to be used on subclasses of SMMIDIObject, not SMMIDIObject itself
+
+     + (CFMutableDictionaryRef)midiObjectMapTable;
+
+     + (SMMIDIObject *)addObjectWithObjectRef:(MIDIObjectRef)anObjectRef ordinal:(NSUInteger)anOrdinal;
+     + (void)removeObjectWithObjectRef:(MIDIObjectRef)anObjectRef;
+
+     + (void)refreshObjectOrdinals;
+
+     - (void)updateUniqueID;
+
+     - (void)postRemovedNotification;
+     - (void)postReplacedNotificationWithReplacement:(SMMIDIObject *)replacement;
+     */
 }
 
 public extension Notification.Name {

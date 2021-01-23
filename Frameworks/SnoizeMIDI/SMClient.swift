@@ -115,13 +115,13 @@ import Foundation
         let propertyChangedNotification = UnsafeRawPointer(unsafeCoreMIDINotification).load(as: MIDIObjectPropertyChangeNotification.self)
         object = propertyChangedNotification.object
         objectType = propertyChangedNotification.objectType
-        propertyName = propertyChangedNotification.propertyName.takeUnretainedValue() as String
+        propertyName = propertyChangedNotification.propertyName.takeUnretainedValue()
         super.init(unsafeCoreMIDINotification)
     }
 
     @objc public let object: MIDIObjectRef
     @objc public let objectType: MIDIObjectType
-    @objc public let propertyName: String
+    @objc public let propertyName: CFString
 
     fileprivate override func dispatchToClient(_ client: SMClient) {
         client.objectPropertyChanged(self)
@@ -209,9 +209,7 @@ import Foundation
         SMMIDIObject.midiClientCreated(self)
     }
 
-    @objc public private(set) var midiClient = MIDIClientRef()
-        // Note: This is actually a typedef to an int, not a pointer like you'd expect,
-        // so this initializer just makes it 0. It's overwritten later.
+    @objc public private(set) var midiClient: MIDIClientRef = 0
     @objc public let name =
         (Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String) ?? ProcessInfo.processInfo.processName
     @objc public var postsExternalSetupChangeNotification = true    // TODO Should this be public? Seems like an internal detail
@@ -273,6 +271,13 @@ import Foundation
         NotificationCenter.default.post(name: .clientObjectAdded,
                                         object: self,
                                         userInfo: userInfo(notification))
+
+        if let collection = midiObjectCollection(type: notification.childType) {
+            collection.objectWasAdded(
+                midiObjectRef: notification.child,
+                parentObjectRef: notification.parent,
+                parentType: notification.parentType)
+        }
     }
 
     fileprivate func objectRemoved(_ notification: SMClientObjectRemovedNotification) {
@@ -280,6 +285,13 @@ import Foundation
         NotificationCenter.default.post(name: .clientObjectRemoved,
                                         object: self,
                                         userInfo: userInfo(notification))
+
+        if let collection = midiObjectCollection(type: notification.childType) {
+            collection.objectWasRemoved(
+                midiObjectRef: notification.child,
+                parentObjectRef: notification.parent,
+                parentType: notification.parentType)
+        }
     }
 
     fileprivate func objectPropertyChanged(_ notification: SMClientObjectPropertyChangedNotification) {
@@ -287,6 +299,12 @@ import Foundation
         NotificationCenter.default.post(name: .clientObjectPropertyChanged,
                                         object: self,
                                         userInfo: userInfo(notification))
+
+        if let wrapperObject = midiObjectCollection(type: notification.objectType)?
+            .object(midiObjectRef: notification.object)
+            as? CoreMIDIPropertyChangeHandling {
+            wrapperObject.midiPropertyChanged(notification.propertyName)
+        }
     }
 
     fileprivate func thruConnectionsChanged(_ notification: SMClientThruConnectionsChangedNotification) {
@@ -308,6 +326,24 @@ import Foundation
         NotificationCenter.default.post(name: .clientIOError,
                                         object: self,
                                         userInfo: userInfo(notification))
+    }
+
+    // MARK: New way of doing things
+
+    private lazy var midiObjectCollections: [MIDIObjectCollection] = [
+        Device.self,
+        ExternalDevice.self,
+        Source.self,
+        Destination.self
+        ].map { MIDIObjectCollection(client: self, collectibleType: $0) }
+
+    internal func midiObjectCollection(type: MIDIObjectType) -> MIDIObjectCollection? {
+        midiObjectCollections.first { $0.collectibleType.midiObjectType == type }
+    }
+
+    internal func midiObjectCollection(collectibleType: CoreMIDIObjectCollectible.Type) -> MIDIObjectCollection? {
+        // TODO Do we need this?
+        midiObjectCollections.first { $0.collectibleType == collectibleType }
     }
 
 }
