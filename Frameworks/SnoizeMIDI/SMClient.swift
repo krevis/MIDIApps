@@ -330,21 +330,22 @@ import Foundation
 
     // MARK: New way of doing things
 
-    private lazy var midiObjectCollections: [MIDIObjectCollection] = [
+    private lazy var midiObjectCollections: [CoreMIDIObjectCollection] = [
         Device.self,
         ExternalDevice.self,
         Source.self,
         Destination.self
         ].map { MIDIObjectCollection(client: self, collectibleType: $0) }
 
-    internal func midiObjectCollection(type: MIDIObjectType) -> MIDIObjectCollection? {
+    internal func midiObjectCollection(type: MIDIObjectType) -> CoreMIDIObjectCollection? {
         midiObjectCollections.first { $0.collectibleType.midiObjectType == type }
     }
 
+    /*
     internal func midiObjectCollection(collectibleType: CoreMIDIObjectCollectible.Type) -> MIDIObjectCollection? {
         // TODO Do we need this?
         midiObjectCollections.first { $0.collectibleType == collectibleType }
-    }
+    }*/
 
 }
 

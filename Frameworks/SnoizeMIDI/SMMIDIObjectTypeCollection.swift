@@ -13,6 +13,8 @@
 import Foundation
 import CoreMIDI
 
+// TODO Wrapper could be Identifiable (with id = midiObjectRef), Equatable
+
 protocol CoreMIDIObjectWrapper {
 
     var midiClient: SMClient? { get }    // TODO This should refer to a protocol too
@@ -121,11 +123,6 @@ class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
         cachedUniqueID = int32(forProperty: kMIDIPropertyUniqueID) ?? 0
     }
 
-    static func == (lhs: MIDIObject, rhs: MIDIObject) -> Bool {
-        lhs.midiClient == rhs.midiClient
-            && lhs.midiObjectRef == rhs.midiObjectRef
-    }
-
     private var cachedUniqueID: MIDIUniqueID?
     public var uniqueID: MIDIUniqueID {
         get {
@@ -179,7 +176,7 @@ class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
 
 }
 
-protocol CoreMIDIObjectCollectible: CoreMIDIObjectWrapper /*, Equatable*/ {
+protocol CoreMIDIObjectCollectible: CoreMIDIObjectWrapper {
 
     static var midiObjectType: MIDIObjectType { get }
     static var midiObjectCountFunction: (() -> Int) { get }
@@ -200,8 +197,24 @@ extension CoreMIDIObjectCollectible {
 
 }
 
-class MIDIObjectCollection {
+protocol CoreMIDIObjectCollection {
+
+    var collectibleType: CoreMIDIObjectCollectible.Type { get }
+
+    func object(midiObjectRef: MIDIObjectRef) -> CoreMIDIObjectCollectible?
+
+    func objectWasAdded(midiObjectRef: MIDIObjectRef, parentObjectRef: MIDIObjectRef, parentType: MIDIObjectType)
+    func objectWasRemoved(midiObjectRef: MIDIObjectRef, parentObjectRef: MIDIObjectRef, parentType: MIDIObjectType)
+
+}
+
+class MIDIObjectCollection: CoreMIDIObjectCollection {
     // TODO Not actually a Collection, should rename
+    // TODO Arguably should be MIDIObjectCollection<T: CoreMIDIObjectCollectible>.
+    //      Then we could make CoreMIDIObjectWrapper conform to Equatable,
+    //      and in removeObject() below, use == on the objects directly.
+    //      However then SMClient needs a heterogeneous array of these things
+    //      and I couldn't work out how to do that. May not be possible.
 
     init(client: SMClient, collectibleType: CoreMIDIObjectCollectible.Type) {
         self.client = client
@@ -264,7 +277,7 @@ class MIDIObjectCollection {
         else { return nil }
 
         objectMap.removeValue(forKey: midiObjectRef)
-        if let index = orderedObjects.firstIndex(where: { $0 == removedObject }) {
+        if let index = orderedObjects.firstIndex(where: { $0.midiObjectRef == midiObjectRef }) {
             orderedObjects.remove(at: index)
         }
 
