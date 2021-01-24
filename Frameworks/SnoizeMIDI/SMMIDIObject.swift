@@ -44,10 +44,10 @@ import CoreMIDI
     // https://forums.swift.org/t/how-to-return-the-runtime-self-from-a-method-like-createwrapper-wrapper-self/32317/7
     // Perhaps should return opaque type (some SMMIDIObject)?
 
-    public class var allObjects: [SMMIDIObject] {
-        // TODO map.values
-        return []
-    }
+//    public class var allObjects: [SMMIDIObject] {
+//        // TODO map.values
+//        return []
+//    }
 
     public class var allObjectsInOrder: [SMMIDIObject] {
         // TODO map.values sorted
@@ -55,11 +55,11 @@ import CoreMIDI
     }
 
     public class func findObject(uniqueID: MIDIUniqueID) -> Self? {
-        allObjects.first { $0.uniqueID == uniqueID } as? Self
+        allObjectsInOrder.first { $0.uniqueID == uniqueID } as? Self
     }
 
     public class func findObject(name: String) -> Self? {
-        allObjects.first { $0.name == name } as? Self
+        allObjectsInOrder.first { $0.name == name } as? Self
     }
 
     public class func findObject(objectRef: MIDIObjectRef) -> Self? {
