@@ -13,6 +13,12 @@
 import Foundation
 import CoreMIDI
 
-// TODO Other stuff:
-// SMClient generate new unique ID (repeat checking until we find one)
-//
+class ExternalDevice: MIDIObject, CoreMIDIObjectListable {
+
+    static let midiObjectType = MIDIObjectType.externalDevice
+    static let midiObjectCountFunction = MIDIGetNumberOfExternalDevices
+    static let midiObjectSubscriptFunction = MIDIGetExternalDevice
+
+    // TODO maxSysExSpeed didSet needs to also set the property on the source endpoints
+
+}

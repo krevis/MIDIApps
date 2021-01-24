@@ -13,6 +13,16 @@
 import Foundation
 import CoreMIDI
 
-// TODO Other stuff:
-// SMClient generate new unique ID (repeat checking until we find one)
-//
+class Endpoint: MIDIObject {
+
+    /* TODO: a lot of stuff
+     maxSysExSpeed defaulting to 3125
+        deviceRef (parent), device
+        isVirtual
+        isOwnedByThisProcess needs ownerPID
+        remove() for virtual endpoints owned by this process, calls MIDIEndpointDispose()
+        manufacturerName, modelName w/cache
+        displayName (which also needs caching)
+         connectedExternalDevices, uniqueIDsOfConnectedThings
+     */
+}

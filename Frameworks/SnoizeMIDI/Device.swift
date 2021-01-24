@@ -13,6 +13,23 @@
 import Foundation
 import CoreMIDI
 
-// TODO Other stuff:
-// SMClient generate new unique ID (repeat checking until we find one)
-//
+class Device: MIDIObject, CoreMIDIObjectListable {
+
+    static let midiObjectType = MIDIObjectType.device
+    static let midiObjectCountFunction = MIDIGetNumberOfDevices
+    static let midiObjectSubscriptFunction = MIDIGetDevice
+
+    override func midiPropertyChanged(_ property: CFString) {
+        super.midiPropertyChanged(property)
+
+        if property == kMIDIPropertyOffline {
+            // This device just went offline or online. We need to refresh its endpoints.
+            // (If it went online, we didn't previously have its endpoints in our list.)
+
+            // TODO This is an overly blunt approach, can we do better?
+            // SMSourceEndpoint.refreshAllObjects()
+            // SMDestinationEndpoint.refreshAllObjects()
+        }
+    }
+
+}

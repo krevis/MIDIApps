@@ -13,6 +13,18 @@
 import Foundation
 import CoreMIDI
 
+class Destination: Endpoint, CoreMIDIObjectListable {
+
+    static let midiObjectType = MIDIObjectType.destination
+    static let midiObjectCountFunction = MIDIGetNumberOfDestinations
+    static let midiObjectSubscriptFunction = MIDIGetDestination
+
+    // TODO createVirtualDestinationEndpoint
+    // TODO endpointCount(forEntity), endpointRef(atIndex: forEntity)
+    // TODO sysExSpeedWorkaroundEndpoint and related
+
+}
+
 // TODO Other stuff:
 // SMClient generate new unique ID (repeat checking until we find one)
 //

@@ -13,6 +13,12 @@
 import Foundation
 import CoreMIDI
 
-// TODO Other stuff:
-// SMClient generate new unique ID (repeat checking until we find one)
-//
+class Source: Endpoint, CoreMIDIObjectListable {
+
+    static let midiObjectType = MIDIObjectType.source
+    static let midiObjectCountFunction = MIDIGetNumberOfSources
+    static let midiObjectSubscriptFunction = MIDIGetSource
+
+    // TODO createVirtualSourceEndpoint
+    // TODO endpointCount(forEntity), endpointRef(atIndex: forEntity)
+}

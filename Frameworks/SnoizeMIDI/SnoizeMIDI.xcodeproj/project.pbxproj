@@ -16,6 +16,33 @@
 		1691F98325BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F98225BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift */; };
 		1691F98425BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F98225BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift */; };
 		1691F98525BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F98225BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift */; };
+		1691F98D25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F98C25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift */; };
+		1691F98E25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F98C25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift */; };
+		1691F98F25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F98C25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift */; };
+		1691F99725BD621A00B9CE06 /* MIDIObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F99625BD621A00B9CE06 /* MIDIObject.swift */; };
+		1691F99825BD621A00B9CE06 /* MIDIObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F99625BD621A00B9CE06 /* MIDIObject.swift */; };
+		1691F99925BD621A00B9CE06 /* MIDIObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F99625BD621A00B9CE06 /* MIDIObject.swift */; };
+		1691F9A125BD625800B9CE06 /* CoreMIDIObjectList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9A025BD625800B9CE06 /* CoreMIDIObjectList.swift */; };
+		1691F9A225BD625800B9CE06 /* CoreMIDIObjectList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9A025BD625800B9CE06 /* CoreMIDIObjectList.swift */; };
+		1691F9A325BD625800B9CE06 /* CoreMIDIObjectList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9A025BD625800B9CE06 /* CoreMIDIObjectList.swift */; };
+		1691F9A825BD628700B9CE06 /* MIDIObjectList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9A725BD628700B9CE06 /* MIDIObjectList.swift */; };
+		1691F9A925BD628700B9CE06 /* MIDIObjectList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9A725BD628700B9CE06 /* MIDIObjectList.swift */; };
+		1691F9AA25BD628700B9CE06 /* MIDIObjectList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9A725BD628700B9CE06 /* MIDIObjectList.swift */; };
+		1691F9AF25BD62B300B9CE06 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9AE25BD62B300B9CE06 /* Device.swift */; };
+		1691F9B025BD62B300B9CE06 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9AE25BD62B300B9CE06 /* Device.swift */; };
+		1691F9B125BD62B300B9CE06 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9AE25BD62B300B9CE06 /* Device.swift */; };
+		1691F9B625BD62C700B9CE06 /* ExternalDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9B525BD62C700B9CE06 /* ExternalDevice.swift */; };
+		1691F9B725BD62C700B9CE06 /* ExternalDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9B525BD62C700B9CE06 /* ExternalDevice.swift */; };
+		1691F9B825BD62C700B9CE06 /* ExternalDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9B525BD62C700B9CE06 /* ExternalDevice.swift */; };
+		1691F9BD25BD62F200B9CE06 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9BC25BD62F200B9CE06 /* Endpoint.swift */; };
+		1691F9BE25BD62F200B9CE06 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9BC25BD62F200B9CE06 /* Endpoint.swift */; };
+		1691F9BF25BD62F200B9CE06 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9BC25BD62F200B9CE06 /* Endpoint.swift */; };
+		1691F9C425BD630900B9CE06 /* Source.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9C325BD630900B9CE06 /* Source.swift */; };
+		1691F9C525BD630900B9CE06 /* Source.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9C325BD630900B9CE06 /* Source.swift */; };
+		1691F9C625BD630900B9CE06 /* Source.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9C325BD630900B9CE06 /* Source.swift */; };
+		1691F9CB25BD632500B9CE06 /* Destination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9CA25BD632500B9CE06 /* Destination.swift */; };
+		1691F9CC25BD632500B9CE06 /* Destination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9CA25BD632500B9CE06 /* Destination.swift */; };
+		1691F9CD25BD632500B9CE06 /* Destination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9CA25BD632500B9CE06 /* Destination.swift */; };
 		169669F325A8E49300D5BE2A /* SMVirtualInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169669F225A8E49300D5BE2A /* SMVirtualInputStream.swift */; };
 		169669F425A8E49300D5BE2A /* SMVirtualInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169669F225A8E49300D5BE2A /* SMVirtualInputStream.swift */; };
 		169669F525A8E49300D5BE2A /* SMVirtualInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169669F225A8E49300D5BE2A /* SMVirtualInputStream.swift */; };
@@ -139,6 +166,15 @@
 		1691F95225B90AA500B9CE06 /* SMMessageDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMessageDestination.swift; sourceTree = "<group>"; };
 		1691F97225B9621100B9CE06 /* SMMIDIObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMIDIObject.swift; sourceTree = "<group>"; };
 		1691F98225BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMIDIObjectTypeCollection.swift; sourceTree = "<group>"; };
+		1691F98C25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMIDIObjectWrapper.swift; sourceTree = "<group>"; };
+		1691F99625BD621A00B9CE06 /* MIDIObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MIDIObject.swift; sourceTree = "<group>"; };
+		1691F9A025BD625800B9CE06 /* CoreMIDIObjectList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMIDIObjectList.swift; sourceTree = "<group>"; };
+		1691F9A725BD628700B9CE06 /* MIDIObjectList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MIDIObjectList.swift; sourceTree = "<group>"; };
+		1691F9AE25BD62B300B9CE06 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
+		1691F9B525BD62C700B9CE06 /* ExternalDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalDevice.swift; sourceTree = "<group>"; };
+		1691F9BC25BD62F200B9CE06 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
+		1691F9C325BD630900B9CE06 /* Source.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Source.swift; sourceTree = "<group>"; };
+		1691F9CA25BD632500B9CE06 /* Destination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Destination.swift; sourceTree = "<group>"; };
 		169669F225A8E49300D5BE2A /* SMVirtualInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMVirtualInputStream.swift; sourceTree = "<group>"; };
 		16966A3D25A91B5F00D5BE2A /* SMPortInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMPortInputStream.swift; sourceTree = "<group>"; };
 		16966A4D25A9399600D5BE2A /* SimpleInputStreamSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleInputStreamSource.swift; sourceTree = "<group>"; };
@@ -336,6 +372,15 @@
 		16B11BDC0971D63D00DB1DB5 /* CoreMIDI Objects */ = {
 			isa = PBXGroup;
 			children = (
+				1691F98C25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift */,
+				1691F99625BD621A00B9CE06 /* MIDIObject.swift */,
+				1691F9A025BD625800B9CE06 /* CoreMIDIObjectList.swift */,
+				1691F9A725BD628700B9CE06 /* MIDIObjectList.swift */,
+				1691F9AE25BD62B300B9CE06 /* Device.swift */,
+				1691F9B525BD62C700B9CE06 /* ExternalDevice.swift */,
+				1691F9BC25BD62F200B9CE06 /* Endpoint.swift */,
+				1691F9C325BD630900B9CE06 /* Source.swift */,
+				1691F9CA25BD632500B9CE06 /* Destination.swift */,
 				1691F98225BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift */,
 				1691F97225B9621100B9CE06 /* SMMIDIObject.swift */,
 				16B11B790971D40100DB1DB5 /* SMMIDIObject.h */,
@@ -599,19 +644,25 @@
 			files = (
 				16966B3725B6657B00D5BE2A /* SMDevice.swift in Sources */,
 				16966AC125AECFB100D5BE2A /* SMSystemExclusiveMessage.swift in Sources */,
+				1691F9A825BD628700B9CE06 /* MIDIObjectList.swift in Sources */,
 				16B11B950971D40100DB1DB5 /* NSArray-SMExtensions.m in Sources */,
 				1699288425971AFD0057715C /* MessageFilter.swift in Sources */,
 				16966A6E25ABCD7A00D5BE2A /* SMMessageParser.swift in Sources */,
 				16B11B990971D40100DB1DB5 /* NSString-SMExtensions.m in Sources */,
 				16966A5E25A9417400D5BE2A /* SMInputStream.swift in Sources */,
+				1691F99725BD621A00B9CE06 /* MIDIObject.swift in Sources */,
 				16966A9E25AD6A8F00D5BE2A /* SMSystemRealTimeMessage.swift in Sources */,
 				16966B2725B6560100D5BE2A /* SMExternalDevice.swift in Sources */,
+				1691F9A125BD625800B9CE06 /* CoreMIDIObjectList.swift in Sources */,
 				16A3B73A25A156D300C7F61E /* SMOutputStream.swift in Sources */,
+				1691F9AF25BD62B300B9CE06 /* Device.swift in Sources */,
 				16992871259707190057715C /* MessageMult.swift in Sources */,
+				1691F9B625BD62C700B9CE06 /* ExternalDevice.swift in Sources */,
 				169928F1259B16730057715C /* NSData-SMExtensions.swift in Sources */,
 				16966B7725B6CCDE00D5BE2A /* SMDestinationEndpoint.swift in Sources */,
 				169928C725984FAA0057715C /* SMClient.swift in Sources */,
 				1691F95325B90AA500B9CE06 /* SMMessageDestination.swift in Sources */,
+				1691F9CB25BD632500B9CE06 /* Destination.swift in Sources */,
 				16966AD425B4F90800D5BE2A /* SMVoiceMessage.swift in Sources */,
 				1699290D259FCBA60057715C /* SMVirtualOutputStream.swift in Sources */,
 				169669F325A8E49300D5BE2A /* SMVirtualInputStream.swift in Sources */,
@@ -619,16 +670,19 @@
 				16966A8B25AD0F8500D5BE2A /* SMInvalidMessage.swift in Sources */,
 				16966B0425B6481B00D5BE2A /* SMMessageTimeBase.swift in Sources */,
 				16966A3E25A91B5F00D5BE2A /* SMPortInputStream.swift in Sources */,
+				1691F98D25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift in Sources */,
 				16966AF425B5222600D5BE2A /* SMMessage.swift in Sources */,
 				16966A4E25A9399600D5BE2A /* SimpleInputStreamSource.swift in Sources */,
 				16A3B74D25A40A0D00C7F61E /* SMSysExSendRequest.swift in Sources */,
 				16B11BC70971D40100DB1DB5 /* SMUtilities.m in Sources */,
 				1699289A25971F3A0057715C /* MessageHistory.swift in Sources */,
 				16966B8B25B7CE1900D5BE2A /* SMInputStreamSource.swift in Sources */,
+				1691F9BD25BD62F200B9CE06 /* Endpoint.swift in Sources */,
 				16966AAE25AD73AB00D5BE2A /* SMSystemCommonMessage.swift in Sources */,
 				16966B7E25B7BB5900D5BE2A /* SMEndpoint.swift in Sources */,
 				16966B6A25B6B6EE00D5BE2A /* SMSourceEndpoint.swift in Sources */,
 				1691F97325B9621100B9CE06 /* SMMIDIObject.swift in Sources */,
+				1691F9C425BD630900B9CE06 /* Source.swift in Sources */,
 				1691F98325BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -639,19 +693,25 @@
 			files = (
 				16966B3825B6657B00D5BE2A /* SMDevice.swift in Sources */,
 				16966AC225AECFB100D5BE2A /* SMSystemExclusiveMessage.swift in Sources */,
+				1691F9A925BD628700B9CE06 /* MIDIObjectList.swift in Sources */,
 				1699288525971AFD0057715C /* MessageFilter.swift in Sources */,
 				A53DDBE1148F434E006D2FFD /* SMUtilities.m in Sources */,
 				16966A6F25ABCD7A00D5BE2A /* SMMessageParser.swift in Sources */,
 				A53DDBE2148F4354006D2FFD /* NSArray-SMExtensions.m in Sources */,
 				A53DDBE4148F4359006D2FFD /* NSString-SMExtensions.m in Sources */,
+				1691F99825BD621A00B9CE06 /* MIDIObject.swift in Sources */,
 				16992872259707190057715C /* MessageMult.swift in Sources */,
 				16966A5F25A9417400D5BE2A /* SMInputStream.swift in Sources */,
+				1691F9A225BD625800B9CE06 /* CoreMIDIObjectList.swift in Sources */,
 				16966A9F25AD6A8F00D5BE2A /* SMSystemRealTimeMessage.swift in Sources */,
+				1691F9B025BD62B300B9CE06 /* Device.swift in Sources */,
 				16966B2825B6560100D5BE2A /* SMExternalDevice.swift in Sources */,
+				1691F9B725BD62C700B9CE06 /* ExternalDevice.swift in Sources */,
 				16A3B73B25A156D300C7F61E /* SMOutputStream.swift in Sources */,
 				16966B7825B6CCDE00D5BE2A /* SMDestinationEndpoint.swift in Sources */,
 				1691F95425B90AA500B9CE06 /* SMMessageDestination.swift in Sources */,
 				169928F2259B16730057715C /* NSData-SMExtensions.swift in Sources */,
+				1691F9CC25BD632500B9CE06 /* Destination.swift in Sources */,
 				16966AD525B4F90800D5BE2A /* SMVoiceMessage.swift in Sources */,
 				169928C825984FAA0057715C /* SMClient.swift in Sources */,
 				1699290E259FCBA60057715C /* SMVirtualOutputStream.swift in Sources */,
@@ -659,16 +719,19 @@
 				169669F425A8E49300D5BE2A /* SMVirtualInputStream.swift in Sources */,
 				16966B0525B6481B00D5BE2A /* SMMessageTimeBase.swift in Sources */,
 				16966A3F25A91B5F00D5BE2A /* SMPortInputStream.swift in Sources */,
+				1691F98E25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift in Sources */,
 				16966AF525B5222600D5BE2A /* SMMessage.swift in Sources */,
 				16966A4F25A9399600D5BE2A /* SimpleInputStreamSource.swift in Sources */,
 				16A3B72825A03DFA00C7F61E /* SMPortOutputStream.swift in Sources */,
 				16A3B74E25A40A0D00C7F61E /* SMSysExSendRequest.swift in Sources */,
 				16966AAF25AD73AB00D5BE2A /* SMSystemCommonMessage.swift in Sources */,
 				16966B8C25B7CE1900D5BE2A /* SMInputStreamSource.swift in Sources */,
+				1691F9BE25BD62F200B9CE06 /* Endpoint.swift in Sources */,
 				1699289B25971F3A0057715C /* MessageHistory.swift in Sources */,
 				16966B7F25B7BB5900D5BE2A /* SMEndpoint.swift in Sources */,
 				16966B6B25B6B6EE00D5BE2A /* SMSourceEndpoint.swift in Sources */,
 				1691F97425B9621100B9CE06 /* SMMIDIObject.swift in Sources */,
+				1691F9C525BD630900B9CE06 /* Source.swift in Sources */,
 				1691F98425BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -679,19 +742,25 @@
 			files = (
 				16966B3925B6657B00D5BE2A /* SMDevice.swift in Sources */,
 				16966AC325AECFB100D5BE2A /* SMSystemExclusiveMessage.swift in Sources */,
+				1691F9AA25BD628700B9CE06 /* MIDIObjectList.swift in Sources */,
 				1699288625971AFD0057715C /* MessageFilter.swift in Sources */,
 				A581993116AF687400325CF3 /* SMUtilities.m in Sources */,
 				16966A7025ABCD7A00D5BE2A /* SMMessageParser.swift in Sources */,
 				A581993216AF687400325CF3 /* NSArray-SMExtensions.m in Sources */,
 				A581993416AF687400325CF3 /* NSString-SMExtensions.m in Sources */,
+				1691F99925BD621A00B9CE06 /* MIDIObject.swift in Sources */,
 				16992873259707190057715C /* MessageMult.swift in Sources */,
 				16966A6025A9417400D5BE2A /* SMInputStream.swift in Sources */,
+				1691F9A325BD625800B9CE06 /* CoreMIDIObjectList.swift in Sources */,
 				16966AA025AD6A8F00D5BE2A /* SMSystemRealTimeMessage.swift in Sources */,
+				1691F9B125BD62B300B9CE06 /* Device.swift in Sources */,
 				16966B2925B6560100D5BE2A /* SMExternalDevice.swift in Sources */,
+				1691F9B825BD62C700B9CE06 /* ExternalDevice.swift in Sources */,
 				16A3B73C25A156D300C7F61E /* SMOutputStream.swift in Sources */,
 				16966B7925B6CCDE00D5BE2A /* SMDestinationEndpoint.swift in Sources */,
 				1691F95525B90AA500B9CE06 /* SMMessageDestination.swift in Sources */,
 				169928F3259B16730057715C /* NSData-SMExtensions.swift in Sources */,
+				1691F9CD25BD632500B9CE06 /* Destination.swift in Sources */,
 				16966AD625B4F90800D5BE2A /* SMVoiceMessage.swift in Sources */,
 				169928C925984FAA0057715C /* SMClient.swift in Sources */,
 				1699290F259FCBA60057715C /* SMVirtualOutputStream.swift in Sources */,
@@ -699,16 +768,19 @@
 				169669F525A8E49300D5BE2A /* SMVirtualInputStream.swift in Sources */,
 				16966B0625B6481B00D5BE2A /* SMMessageTimeBase.swift in Sources */,
 				16966A4025A91B5F00D5BE2A /* SMPortInputStream.swift in Sources */,
+				1691F98F25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift in Sources */,
 				16966AF625B5222600D5BE2A /* SMMessage.swift in Sources */,
 				16966A5025A9399600D5BE2A /* SimpleInputStreamSource.swift in Sources */,
 				16A3B72925A03DFA00C7F61E /* SMPortOutputStream.swift in Sources */,
 				16A3B74F25A40A0D00C7F61E /* SMSysExSendRequest.swift in Sources */,
 				16966AB025AD73AB00D5BE2A /* SMSystemCommonMessage.swift in Sources */,
 				16966B8D25B7CE1900D5BE2A /* SMInputStreamSource.swift in Sources */,
+				1691F9BF25BD62F200B9CE06 /* Endpoint.swift in Sources */,
 				1699289C25971F3A0057715C /* MessageHistory.swift in Sources */,
 				16966B8025B7BB5900D5BE2A /* SMEndpoint.swift in Sources */,
 				16966B6C25B6B6EE00D5BE2A /* SMSourceEndpoint.swift in Sources */,
 				1691F97525B9621100B9CE06 /* SMMIDIObject.swift in Sources */,
+				1691F9C625BD630900B9CE06 /* Source.swift in Sources */,
 				1691F98525BBAA8E00B9CE06 /* SMMIDIObjectTypeCollection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

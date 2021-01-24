@@ -13,6 +13,40 @@
 import Foundation
 import CoreMIDI
 
-// TODO Other stuff:
-// SMClient generate new unique ID (repeat checking until we find one)
-//
+protocol CoreMIDIObjectListable: CoreMIDIObjectWrapper {
+
+    static var midiObjectType: MIDIObjectType { get }
+    static var midiObjectCountFunction: (() -> Int) { get }
+    static var midiObjectSubscriptFunction: ((Int) -> MIDIObjectRef) { get }
+
+    init(client: SMClient, midiObjectRef: MIDIObjectRef)
+
+}
+
+extension CoreMIDIObjectListable {
+
+    static func postObjectListChangedNotification() {
+        NotificationCenter.default.post(name: .midiObjectListChanged, object: self)
+    }
+
+    static func postObjectsAddedNotification(_ objects: [Self]) {
+        NotificationCenter.default.post(name: .midiObjectsAppeared, object: Self.self, userInfo: [SMMIDIObject.midiObjectsThatAppeared: objects])
+    }
+
+    static func postObjectRemovedNotification(_ object: Self) {
+        NotificationCenter.default.post(name: .midiObjectDisappeared, object: object)
+    }
+
+}
+
+// TODO This perhaps belongs in SMClient since it's the interface that it will call on lists, and it's not actually tied to Listable above
+protocol CoreMIDIObjectList {
+
+    var midiObjectType: MIDIObjectType { get }
+
+    func objectPropertyChanged(midiObjectRef: MIDIObjectRef, property: CFString)
+
+    func objectWasAdded(midiObjectRef: MIDIObjectRef, parentObjectRef: MIDIObjectRef, parentType: MIDIObjectType)
+    func objectWasRemoved(midiObjectRef: MIDIObjectRef, parentObjectRef: MIDIObjectRef, parentType: MIDIObjectType)
+
+}
