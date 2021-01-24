@@ -16,15 +16,16 @@ import CoreMIDI
 protocol CoreMIDIObjectListable: CoreMIDIObjectWrapper {
 
     static var midiObjectType: MIDIObjectType { get }
-    static var midiObjectCountFunction: (() -> Int) { get }
-    static var midiObjectSubscriptFunction: ((Int) -> MIDIObjectRef) { get }
+    static func midiObjectCount(_ context: CoreMIDIContext) -> Int
+    static func midiObjectSubscript(_ context: CoreMIDIContext, _ index: Int) -> MIDIObjectRef
 
-    init(client: SMClient, midiObjectRef: MIDIObjectRef)
+    init(context: CoreMIDIContext, objectRef: MIDIObjectRef)
 
 }
 
 extension CoreMIDIObjectListable {
 
+    // TODO These notifications will need to change
     static func postObjectListChangedNotification() {
         NotificationCenter.default.post(name: .midiObjectListChanged, object: self)
     }
@@ -39,7 +40,6 @@ extension CoreMIDIObjectListable {
 
 }
 
-// TODO This perhaps belongs in SMClient since it's the interface that it will call on lists, and it's not actually tied to Listable above
 protocol CoreMIDIObjectList {
 
     var midiObjectType: MIDIObjectType { get }

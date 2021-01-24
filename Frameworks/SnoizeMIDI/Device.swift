@@ -16,8 +16,12 @@ import CoreMIDI
 class Device: MIDIObject, CoreMIDIObjectListable {
 
     static let midiObjectType = MIDIObjectType.device
-    static let midiObjectCountFunction = MIDIGetNumberOfDevices
-    static let midiObjectSubscriptFunction = MIDIGetDevice
+    static func midiObjectCount(_ context: CoreMIDIContext) -> Int {
+        context.interface.getNumberOfDevices()
+    }
+    static func midiObjectSubscript(_ context: CoreMIDIContext, _ index: Int) -> MIDIObjectRef {
+        context.interface.getDevice(index)
+    }
 
     override func midiPropertyChanged(_ property: CFString) {
         super.midiPropertyChanged(property)

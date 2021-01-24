@@ -328,10 +328,10 @@ import Foundation
     // MARK: New way of doing things
 
     private lazy var midiObjectLists: [CoreMIDIObjectList] = [
-        MIDIObjectList<Device>(client: self),
-        MIDIObjectList<ExternalDevice>(client: self),
-        MIDIObjectList<Source>(client: self),
-        MIDIObjectList<Destination>(client: self)
+//        MIDIObjectList<Device>(self),
+//        MIDIObjectList<ExternalDevice>(client: self),
+//        MIDIObjectList<Source>(client: self),
+//        MIDIObjectList<Destination>(client: self)
         ]
 
     internal func midiObjectList(type: MIDIObjectType) -> CoreMIDIObjectList? {

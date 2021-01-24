@@ -16,8 +16,12 @@ import CoreMIDI
 class Source: Endpoint, CoreMIDIObjectListable {
 
     static let midiObjectType = MIDIObjectType.source
-    static let midiObjectCountFunction = MIDIGetNumberOfSources
-    static let midiObjectSubscriptFunction = MIDIGetSource
+    static func midiObjectCount(_ context: CoreMIDIContext) -> Int {
+        context.interface.getNumberOfSources()
+    }
+    static func midiObjectSubscript(_ context: CoreMIDIContext, _ index: Int) -> MIDIObjectRef {
+        context.interface.getSource(index)
+    }
 
     // TODO createVirtualSourceEndpoint
     // TODO endpointCount(forEntity), endpointRef(atIndex: forEntity)

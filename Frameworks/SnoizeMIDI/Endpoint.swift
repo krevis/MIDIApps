@@ -16,7 +16,6 @@ import CoreMIDI
 class Endpoint: MIDIObject {
 
     /* TODO: a lot of stuff
-     maxSysExSpeed defaulting to 3125
         deviceRef (parent), device
         isVirtual
         isOwnedByThisProcess needs ownerPID

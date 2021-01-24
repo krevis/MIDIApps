@@ -15,13 +15,13 @@ import CoreMIDI
 
 class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>: CoreMIDIObjectList {
 
-    init(client: SMClient) {
-        self.client = client
+    init(_ context: CoreMIDIContext) {
+        self.context = context
 
         // Populate our object wrappers
-        let count = T.midiObjectCountFunction()
+        let count = T.midiObjectCount(context)
         for index in 0 ..< count {
-            let objectRef = T.midiObjectSubscriptFunction(index)
+            let objectRef = T.midiObjectSubscript(context, index)
             _ = addObject(objectRef)
         }
     }
@@ -56,17 +56,17 @@ class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>
 
     // MARK: Private
 
-    private weak var client: SMClient?
+    private unowned let context: CoreMIDIContext
+
     private var objectMap: [MIDIObjectRef: T] = [:]
     private var orderedObjects: [T] = []    // TODO This will need to be exposed somehow
 
     private func addObject(_ midiObjectRef: MIDIObjectRef) -> T? {
-        guard let client = client,
-              midiObjectRef != 0,
+        guard midiObjectRef != 0,
               objectMap[midiObjectRef] == nil
         else { return nil }
 
-        let addedObject = T.init(client: client, midiObjectRef: midiObjectRef)
+        let addedObject = T.init(context: context, objectRef: midiObjectRef)
         objectMap[midiObjectRef] = addedObject
         orderedObjects.append(addedObject)
         return addedObject
@@ -90,9 +90,9 @@ class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>
         // be recomputed it the next time somebody asks for it
 
         var newOrdering: [T] = []
-        let count = T.midiObjectCountFunction()
+        let count = T.midiObjectCount(context)
         for index in 0 ..< count {
-            let objectRef = T.midiObjectSubscriptFunction(index)
+            let objectRef = T.midiObjectSubscript(context, index)
             if let object = objectMap[objectRef] {
                 newOrdering.append(object)
             }

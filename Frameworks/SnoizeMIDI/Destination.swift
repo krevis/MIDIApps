@@ -16,8 +16,12 @@ import CoreMIDI
 class Destination: Endpoint, CoreMIDIObjectListable {
 
     static let midiObjectType = MIDIObjectType.destination
-    static let midiObjectCountFunction = MIDIGetNumberOfDestinations
-    static let midiObjectSubscriptFunction = MIDIGetDestination
+    static func midiObjectCount(_ context: CoreMIDIContext) -> Int {
+        context.interface.getNumberOfDestinations()
+    }
+    static func midiObjectSubscript(_ context: CoreMIDIContext, _ index: Int) -> MIDIObjectRef {
+        context.interface.getDestination(index)
+    }
 
     // TODO createVirtualDestinationEndpoint
     // TODO endpointCount(forEntity), endpointRef(atIndex: forEntity)

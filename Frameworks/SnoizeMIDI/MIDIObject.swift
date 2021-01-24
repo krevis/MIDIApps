@@ -15,14 +15,14 @@ import CoreMIDI
 
 class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
 
-    unowned var midiClient: SMClient
+    unowned var midiContext: CoreMIDIContext
     let midiObjectRef: MIDIObjectRef
 
-    required init(client: SMClient, midiObjectRef: MIDIObjectRef) {
-        precondition(midiObjectRef != 0)
+    required init(context: CoreMIDIContext, objectRef: MIDIObjectRef) {
+        precondition(objectRef != 0)
 
-        self.midiClient = client
-        self.midiObjectRef = midiObjectRef
+        self.midiContext = context
+        self.midiObjectRef = objectRef
 
         // Immediately fetch the object's uniqueID, since it could become
         // inaccessible later, if the object is removed from CoreMIDI
@@ -32,13 +32,14 @@ class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
     // MARK: Cached values of properties
 
     private var cachedUniqueID: MIDIUniqueID?
+    private let fallbackUniqueID: MIDIUniqueID = 0
     public var uniqueID: MIDIUniqueID {
         get {
             if let value = cachedUniqueID {
                 return value
             }
             else {
-                let value: MIDIUniqueID = self[kMIDIPropertyUniqueID] ?? 0
+                let value: MIDIUniqueID = self[kMIDIPropertyUniqueID] ?? fallbackUniqueID
                 cachedUniqueID = .some(value)
                 return value
             }
@@ -71,6 +72,27 @@ class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
         }
     }
 
+    private var cachedMaxSysExSpeed: Int32?
+    private let fallbackMaxSysExSpeed: Int32 = 3125 // bytes/sec for MIDI 1.0
+    public var maxSysExSpeed: Int32 {
+        get {
+            if let value = cachedMaxSysExSpeed {
+                return value
+            }
+            else {
+                let value: Int32 = self[kMIDIPropertyMaxSysExSpeed] ?? fallbackMaxSysExSpeed
+                cachedMaxSysExSpeed = .some(value)
+                return value
+            }
+        }
+        set {
+            if cachedMaxSysExSpeed != .some(newValue) {
+                self[kMIDIPropertyMaxSysExSpeed] = newValue
+                cachedMaxSysExSpeed = .none
+            }
+        }
+    }
+
     func midiPropertyChanged(_ property: CFString) {
         switch property {
         case kMIDIPropertyName:
@@ -78,6 +100,8 @@ class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
         case kMIDIPropertyUniqueID:
             cachedUniqueID = .none
             _ = uniqueID    // refetch immediately
+        case kMIDIPropertyMaxSysExSpeed:
+            cachedMaxSysExSpeed = .none
         default:
             break
         }

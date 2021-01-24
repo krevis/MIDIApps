@@ -15,7 +15,7 @@ import CoreMIDI
 
 protocol CoreMIDIObjectWrapper: AnyObject, Equatable, Identifiable {
 
-    var midiClient: SMClient { get }    // TODO This should refer to a protocol too
+    var midiContext: CoreMIDIContext { get }
     var midiObjectRef: MIDIObjectRef { get }
 
 }
@@ -24,7 +24,7 @@ extension CoreMIDIObjectWrapper {
 
     // MARK: Identifiable default implementation
 
-    var id: (SMClient, MIDIObjectRef) { (midiClient, midiObjectRef) } // swiftlint:disable:this identifier_name
+    var id: (CoreMIDIContext, MIDIObjectRef) { (midiContext, midiObjectRef) } // swiftlint:disable:this identifier_name
 
     // MARK: Equatable default implementation
 
@@ -33,12 +33,11 @@ extension CoreMIDIObjectWrapper {
     }
 
     // MARK: MIDI Property Accessors
-    // TODO These should dispatch through midiClient instead of calling CoreMIDI directly
 
     subscript(property: CFString) -> String? {
         get {
             var unmanagedValue: Unmanaged<CFString>?
-            if MIDIObjectGetStringProperty(midiObjectRef, property, &unmanagedValue) == noErr {
+            if midiContext.interface.objectGetStringProperty(midiObjectRef, property, &unmanagedValue) == noErr {
                 return unmanagedValue?.takeUnretainedValue() as String?
             }
             else {
@@ -47,10 +46,10 @@ extension CoreMIDIObjectWrapper {
         }
         set {
             if let value = newValue {
-                _ = MIDIObjectSetStringProperty(midiObjectRef, property, value as CFString)
+                _ = midiContext.interface.objectSetStringProperty(midiObjectRef, property, value as CFString)
             }
             else {
-                _ = MIDIObjectRemoveProperty(midiObjectRef, property)
+                _ = midiContext.interface.objectRemoveProperty(midiObjectRef, property)
             }
         }
     }
@@ -58,7 +57,7 @@ extension CoreMIDIObjectWrapper {
     subscript(property: CFString) -> Int32? {
         get {
             var value: Int32 = 0
-            if MIDIObjectGetIntegerProperty(midiObjectRef, property, &value) == noErr {
+            if midiContext.interface.objectGetIntegerProperty(midiObjectRef, property, &value) == noErr {
                 return value
             }
             else {
@@ -67,10 +66,10 @@ extension CoreMIDIObjectWrapper {
         }
         set {
             if let value = newValue {
-                _ = MIDIObjectSetIntegerProperty(midiObjectRef, property, value)
+                _ = midiContext.interface.objectSetIntegerProperty(midiObjectRef, property, value)
             }
             else {
-                _ = MIDIObjectRemoveProperty(midiObjectRef, property)
+                _ = midiContext.interface.objectRemoveProperty(midiObjectRef, property)
             }
         }
     }
@@ -78,7 +77,7 @@ extension CoreMIDIObjectWrapper {
     subscript(property: CFString) -> Data? {
         get {
             var unmanagedValue: Unmanaged<CFData>?
-            if MIDIObjectGetDataProperty(midiObjectRef, property, &unmanagedValue) == noErr {
+            if midiContext.interface.objectGetDataProperty(midiObjectRef, property, &unmanagedValue) == noErr {
                 return unmanagedValue?.takeUnretainedValue() as Data?
             }
             else {
@@ -87,10 +86,10 @@ extension CoreMIDIObjectWrapper {
         }
         set {
             if let value = newValue {
-                _ = MIDIObjectSetDataProperty(midiObjectRef, property, value as CFData)
+                _ = midiContext.interface.objectSetDataProperty(midiObjectRef, property, value as CFData)
             }
             else {
-                _ = MIDIObjectRemoveProperty(midiObjectRef, property)
+                _ = midiContext.interface.objectRemoveProperty(midiObjectRef, property)
             }
         }
     }
