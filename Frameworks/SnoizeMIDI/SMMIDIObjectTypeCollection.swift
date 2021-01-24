@@ -132,7 +132,9 @@ class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
     private var cachedUniqueID: MIDIUniqueID?
     public var uniqueID: MIDIUniqueID {
         get {
-            if let value = cachedUniqueID { return value }
+            if let value = cachedUniqueID {
+                return value
+            }
             else {
                 let value: MIDIUniqueID = self[kMIDIPropertyUniqueID] ?? 0
                 cachedUniqueID = .some(value)
@@ -150,7 +152,9 @@ class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
     private var cachedName: String??
     public var name: String? {
         get {
-            if let value = cachedName { return value }
+            if let value = cachedName {
+                return value
+            }
             else {
                 let value: String? = self[kMIDIPropertyName]
                 cachedName = .some(value)
@@ -347,6 +351,7 @@ class ExternalDevice: MIDIObject, CoreMIDIObjectListable {
 class Endpoint: MIDIObject {
 
     /* TODO: a lot of stuff
+     maxSysExSpeed defaulting to 3125
         deviceRef (parent), device
         isVirtual
         isOwnedByThisProcess needs ownerPID
