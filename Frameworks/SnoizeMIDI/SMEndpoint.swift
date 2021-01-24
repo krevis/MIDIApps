@@ -86,6 +86,7 @@ import CoreMIDI
     @objc public var displayName: String? {
         // Use kMIDIPropertyDisplayName to get the suggested display name,
         // which takes uniqueness, external devices, etc. into account.
+        // TODO This should be cached
 
         var unmanagedDisplayName: Unmanaged<CFString>?
         if MIDIObjectGetStringProperty(objectRef, kMIDIPropertyDisplayName, &unmanagedDisplayName) == noErr,

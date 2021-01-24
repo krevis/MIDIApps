@@ -24,13 +24,12 @@ extension CoreMIDIObjectWrapper {
 
     // MARK: Identifiable default implementation
 
-    var id: (SMClient, MIDIObjectRef) { (midiClient, midiObjectRef) }
+    var id: (SMClient, MIDIObjectRef) { (midiClient, midiObjectRef) } // swiftlint:disable:this identifier_name
 
     // MARK: Equatable default implementation
 
     static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.midiClient == rhs.midiClient &&
-        lhs.midiObjectRef == rhs.midiObjectRef
+        lhs.id == rhs.id
     }
 
     // MARK: MIDI Property Accessors
@@ -95,18 +94,12 @@ extension CoreMIDIObjectWrapper {
 
     // MARK: Convenience methods
 
-    /* TODO Are these even useful? We cache them in MIDIObject. And I don't think it can get to these implementations.
+    /* TODO Add, if needed, like this:
     public var name: String? {
         get { string(forProperty: kMIDIPropertyName) }
         set { set(string: newValue, forProperty: kMIDIPropertyName) }
     }
-
-    public var uniqueID: MIDIUniqueID? {
-        get { int32(forProperty: kMIDIPropertyUniqueID) }
-        set { set(int32: newValue, forProperty: kMIDIPropertyUniqueID) }
-    }
- */
-    // TODO More?
+     */
 
 }
 
@@ -185,7 +178,7 @@ class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
 
 }
 
-protocol CoreMIDIObjectCollectible: CoreMIDIObjectWrapper {
+protocol CoreMIDIObjectListable: CoreMIDIObjectWrapper {
 
     static var midiObjectType: MIDIObjectType { get }
     static var midiObjectCountFunction: (() -> Int) { get }
@@ -195,7 +188,23 @@ protocol CoreMIDIObjectCollectible: CoreMIDIObjectWrapper {
 
 }
 
-protocol CoreMIDIObjectCollection {
+extension CoreMIDIObjectListable {
+
+    static func postObjectListChangedNotification() {
+        NotificationCenter.default.post(name: .midiObjectListChanged, object: self)
+    }
+
+    static func postObjectsAddedNotification(_ objects: [Self]) {
+        NotificationCenter.default.post(name: .midiObjectsAppeared, object: Self.self, userInfo: [SMMIDIObject.midiObjectsThatAppeared: objects])
+    }
+
+    static func postObjectRemovedNotification(_ object: Self) {
+        NotificationCenter.default.post(name: .midiObjectDisappeared, object: object)
+    }
+
+}
+
+protocol CoreMIDIObjectList {
 
     var midiObjectType: MIDIObjectType { get }
 
@@ -206,9 +215,7 @@ protocol CoreMIDIObjectCollection {
 
 }
 
-class MIDIObjectCollection<T: CoreMIDIObjectCollectible & CoreMIDIPropertyChangeHandling>: CoreMIDIObjectCollection {
-
-    // TODO Not actually a Collection, should rename
+class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>: CoreMIDIObjectList {
 
     init(client: SMClient) {
         self.client = client
@@ -221,7 +228,7 @@ class MIDIObjectCollection<T: CoreMIDIObjectCollectible & CoreMIDIPropertyChange
         }
     }
 
-    // MARK: CoreMIDIObjectCollection implementation
+    // MARK: CoreMIDIObjectList implementation
 
     var midiObjectType: MIDIObjectType { T.midiObjectType }
 
@@ -234,8 +241,9 @@ class MIDIObjectCollection<T: CoreMIDIObjectCollectible & CoreMIDIPropertyChange
             // The objects' ordering may have changed, so refresh it
             refreshOrdering()
 
-            postObjectListChangedNotification()
-            postObjectsAddedNotification([addedObject])
+            T.postObjectListChangedNotification()
+            T.postObjectsAddedNotification([addedObject])
+            // TODO This is *objects* added but we only know one object
         }
     }
 
@@ -243,8 +251,8 @@ class MIDIObjectCollection<T: CoreMIDIObjectCollectible & CoreMIDIPropertyChange
         if let removedObject = removeObject(midiObjectRef) {
             // TODO Does ordering need work?
 
-            postObjectListChangedNotification()
-            postObjectsRemovedNotification([removedObject])
+            T.postObjectListChangedNotification()
+            T.postObjectRemovedNotification(removedObject)
         }
     }
 
@@ -252,7 +260,7 @@ class MIDIObjectCollection<T: CoreMIDIObjectCollectible & CoreMIDIPropertyChange
 
     private weak var client: SMClient?
     private var objectMap: [MIDIObjectRef: T] = [:]
-    private var orderedObjects: [T] = []
+    private var orderedObjects: [T] = []    // TODO This will need to be exposed somehow
 
     private func addObject(_ midiObjectRef: MIDIObjectRef) -> T? {
         guard let client = client,
@@ -280,55 +288,93 @@ class MIDIObjectCollection<T: CoreMIDIObjectCollectible & CoreMIDIPropertyChange
     }
 
     private func refreshOrdering() {
-        // TODO
-    }
+        // TODO This should perhaps just invalidate the ordering, so it can
+        // be recomputed it the next time somebody asks for it
 
-    private func postObjectListChangedNotification() {
-        // TODO
-    }
+        var newOrdering: [T] = []
+        let count = T.midiObjectCountFunction()
+        for index in 0 ..< count {
+            let objectRef = T.midiObjectSubscriptFunction(index)
+            if let object = objectMap[objectRef] {
+                newOrdering.append(object)
+            }
+            else {
+                // We don't have this object yet. Perhaps it's being added and
+                // we'll be notified about it later.
+            }
+        }
 
-    private func postObjectsAddedNotification(_ objects: [T]) {
-        // TODO
-    }
+        // Similarly, it's possible there are objects in objectMap which
+        // are no longer returned by CoreMIDI, but we haven't been notified
+        // that they disappeared, yet. That's fine.
 
-    private func postObjectsRemovedNotification(_ objects: [T]) {
-        // TODO
+        orderedObjects = newOrdering
     }
 
 }
 
-class Device: MIDIObject, CoreMIDIObjectCollectible {
+class Device: MIDIObject, CoreMIDIObjectListable {
 
     static let midiObjectType = MIDIObjectType.device
     static let midiObjectCountFunction = MIDIGetNumberOfDevices
     static let midiObjectSubscriptFunction = MIDIGetDevice
 
+    override func midiPropertyChanged(_ property: CFString) {
+        super.midiPropertyChanged(property)
+
+        if property == kMIDIPropertyOffline {
+            // This device just went offline or online. We need to refresh its endpoints.
+            // (If it went online, we didn't previously have its endpoints in our list.)
+
+            // TODO This is an overly blunt approach, can we do better?
+            // SMSourceEndpoint.refreshAllObjects()
+            // SMDestinationEndpoint.refreshAllObjects()
+        }
+    }
+
 }
 
-class ExternalDevice: MIDIObject, CoreMIDIObjectCollectible {
+class ExternalDevice: MIDIObject, CoreMIDIObjectListable {
 
     static let midiObjectType = MIDIObjectType.externalDevice
     static let midiObjectCountFunction = MIDIGetNumberOfExternalDevices
     static let midiObjectSubscriptFunction = MIDIGetExternalDevice
 
+    // TODO maxSysExSpeed didSet needs to also set the property on the source endpoints
+
 }
 
 class Endpoint: MIDIObject {
 
+    /* TODO: a lot of stuff
+        deviceRef (parent), device
+        isVirtual
+        isOwnedByThisProcess needs ownerPID
+        remove() for virtual endpoints owned by this process, calls MIDIEndpointDispose()
+        manufacturerName, modelName w/cache
+        displayName (which also needs caching)
+         connectedExternalDevices, uniqueIDsOfConnectedThings
+     */
 }
 
-class Source: Endpoint, CoreMIDIObjectCollectible {
+class Source: Endpoint, CoreMIDIObjectListable {
 
     static let midiObjectType = MIDIObjectType.source
     static let midiObjectCountFunction = MIDIGetNumberOfSources
     static let midiObjectSubscriptFunction = MIDIGetSource
 
+    // TODO createVirtualSourceEndpoint
+    // TODO endpointCount(forEntity), endpointRef(atIndex: forEntity)
 }
 
-class Destination: Endpoint, CoreMIDIObjectCollectible {
+class Destination: Endpoint, CoreMIDIObjectListable {
 
     static let midiObjectType = MIDIObjectType.destination
     static let midiObjectCountFunction = MIDIGetNumberOfDestinations
     static let midiObjectSubscriptFunction = MIDIGetDestination
+
+    // TODO createVirtualDestinationEndpoint
+    // TODO endpointCount(forEntity), endpointRef(atIndex: forEntity)
+    // TODO sysExSpeedWorkaroundEndpoint and related
 
 }

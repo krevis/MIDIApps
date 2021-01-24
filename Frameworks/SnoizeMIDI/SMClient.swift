@@ -272,7 +272,7 @@ import Foundation
                                         object: self,
                                         userInfo: userInfo(notification))
 
-        midiObjectCollection(type: notification.childType)?.objectWasAdded(
+        midiObjectList(type: notification.childType)?.objectWasAdded(
             midiObjectRef: notification.child,
             parentObjectRef: notification.parent,
             parentType: notification.parentType
@@ -285,7 +285,7 @@ import Foundation
                                         object: self,
                                         userInfo: userInfo(notification))
 
-        midiObjectCollection(type: notification.childType)?.objectWasRemoved(
+        midiObjectList(type: notification.childType)?.objectWasRemoved(
             midiObjectRef: notification.child,
             parentObjectRef: notification.parent,
             parentType: notification.parentType
@@ -298,7 +298,7 @@ import Foundation
                                         object: self,
                                         userInfo: userInfo(notification))
 
-        midiObjectCollection(type: notification.objectType)?.objectPropertyChanged(
+        midiObjectList(type: notification.objectType)?.objectPropertyChanged(
             midiObjectRef: notification.object,
             property: notification.propertyName
         )
@@ -327,15 +327,15 @@ import Foundation
 
     // MARK: New way of doing things
 
-    private lazy var midiObjectCollections: [CoreMIDIObjectCollection] = [
-        MIDIObjectCollection<Device>(client: self),
-        MIDIObjectCollection<ExternalDevice>(client: self),
-        MIDIObjectCollection<Source>(client: self),
-        MIDIObjectCollection<Destination>(client: self)
+    private lazy var midiObjectLists: [CoreMIDIObjectList] = [
+        MIDIObjectList<Device>(client: self),
+        MIDIObjectList<ExternalDevice>(client: self),
+        MIDIObjectList<Source>(client: self),
+        MIDIObjectList<Destination>(client: self)
         ]
 
-    internal func midiObjectCollection(type: MIDIObjectType) -> CoreMIDIObjectCollection? {
-        midiObjectCollections.first { $0.midiObjectType == type }
+    internal func midiObjectList(type: MIDIObjectType) -> CoreMIDIObjectList? {
+        midiObjectLists.first { $0.midiObjectType == type }
     }
 
 }
