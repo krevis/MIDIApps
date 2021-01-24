@@ -13,16 +13,25 @@
 import Foundation
 import CoreMIDI
 
-// TODO Wrapper could be Identifiable (with id = midiObjectRef), Equatable
+protocol CoreMIDIObjectWrapper: Equatable, Identifiable {
 
-protocol CoreMIDIObjectWrapper {
-
-    var midiClient: SMClient? { get }    // TODO This should refer to a protocol too
+    var midiClient: SMClient { get }    // TODO This should refer to a protocol too
     var midiObjectRef: MIDIObjectRef { get }
 
 }
 
 extension CoreMIDIObjectWrapper {
+
+    // MARK: Identifiable default implementation
+
+    var id: (SMClient, MIDIObjectRef) { (midiClient, midiObjectRef) }
+
+    // MARK: Equatable default implementation
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.midiClient == rhs.midiClient &&
+        lhs.midiObjectRef == rhs.midiObjectRef
+    }
 
     // MARK: MIDI Property Accessors
     // TODO These should dispatch through midiClient instead of calling CoreMIDI directly
@@ -109,7 +118,7 @@ protocol CoreMIDIPropertyChangeHandling {
 
 class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
 
-    weak var midiClient: SMClient?
+    unowned var midiClient: SMClient
     let midiObjectRef: MIDIObjectRef
 
     required init(client: SMClient, midiObjectRef: MIDIObjectRef) {
@@ -186,50 +195,38 @@ protocol CoreMIDIObjectCollectible: CoreMIDIObjectWrapper {
 
 }
 
-extension CoreMIDIObjectCollectible {
-
-    // Default implementation of Equatable
-
-    static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.midiClient == rhs.midiClient &&
-            lhs.midiObjectRef == rhs.midiObjectRef
-    }
-
-}
-
 protocol CoreMIDIObjectCollection {
 
-    var collectibleType: CoreMIDIObjectCollectible.Type { get }
+    var midiObjectType: MIDIObjectType { get }
 
-    func object(midiObjectRef: MIDIObjectRef) -> CoreMIDIObjectCollectible?
+    func objectPropertyChanged(midiObjectRef: MIDIObjectRef, property: CFString)
 
     func objectWasAdded(midiObjectRef: MIDIObjectRef, parentObjectRef: MIDIObjectRef, parentType: MIDIObjectType)
     func objectWasRemoved(midiObjectRef: MIDIObjectRef, parentObjectRef: MIDIObjectRef, parentType: MIDIObjectType)
 
 }
 
-class MIDIObjectCollection: CoreMIDIObjectCollection {
-    // TODO Not actually a Collection, should rename
-    // TODO Arguably should be MIDIObjectCollection<T: CoreMIDIObjectCollectible>.
-    //      Then we could make CoreMIDIObjectWrapper conform to Equatable,
-    //      and in removeObject() below, use == on the objects directly.
-    //      However then SMClient needs a heterogeneous array of these things
-    //      and I couldn't work out how to do that. May not be possible.
+class MIDIObjectCollection<T: CoreMIDIObjectCollectible & CoreMIDIPropertyChangeHandling>: CoreMIDIObjectCollection {
 
-    init(client: SMClient, collectibleType: CoreMIDIObjectCollectible.Type) {
+    // TODO Not actually a Collection, should rename
+
+    init(client: SMClient) {
         self.client = client
-        self.collectibleType = collectibleType
 
         // Populate our object wrappers
-        let count = collectibleType.midiObjectCountFunction()
+        let count = T.midiObjectCountFunction()
         for index in 0 ..< count {
-            let objectRef = collectibleType.midiObjectSubscriptFunction(index)
+            let objectRef = T.midiObjectSubscriptFunction(index)
             _ = addObject(objectRef)
         }
     }
 
-    func object(midiObjectRef: MIDIObjectRef) -> CoreMIDIObjectCollectible? {
-        objectMap[midiObjectRef]
+    // MARK: CoreMIDIObjectCollection implementation
+
+    var midiObjectType: MIDIObjectType { T.midiObjectType }
+
+    func objectPropertyChanged(midiObjectRef: MIDIObjectRef, property: CFString) {
+        objectMap[midiObjectRef]?.midiPropertyChanged(property)
     }
 
     func objectWasAdded(midiObjectRef: MIDIObjectRef, parentObjectRef: MIDIObjectRef, parentType: MIDIObjectType) {
@@ -253,31 +250,29 @@ class MIDIObjectCollection: CoreMIDIObjectCollection {
 
     // MARK: Private
 
-    weak var client: SMClient?
-    let collectibleType: CoreMIDIObjectCollectible.Type
+    private weak var client: SMClient?
+    private var objectMap: [MIDIObjectRef: T] = [:]
+    private var orderedObjects: [T] = []
 
-    var objectMap: [MIDIObjectRef: CoreMIDIObjectCollectible] = [:]
-    var orderedObjects: [CoreMIDIObjectCollectible] = []
-
-    private func addObject(_ midiObjectRef: MIDIObjectRef) -> CoreMIDIObjectCollectible? {
+    private func addObject(_ midiObjectRef: MIDIObjectRef) -> T? {
         guard let client = client,
               midiObjectRef != 0,
               objectMap[midiObjectRef] == nil
         else { return nil }
 
-        let addedObject = collectibleType.init(client: client, midiObjectRef: midiObjectRef)
+        let addedObject = T.init(client: client, midiObjectRef: midiObjectRef)
         objectMap[midiObjectRef] = addedObject
         orderedObjects.append(addedObject)
         return addedObject
     }
 
-    private func removeObject(_ midiObjectRef: MIDIObjectRef) -> CoreMIDIObjectCollectible? {
+    private func removeObject(_ midiObjectRef: MIDIObjectRef) -> T? {
         guard midiObjectRef != 0,
               let removedObject = objectMap[midiObjectRef]
         else { return nil }
 
         objectMap.removeValue(forKey: midiObjectRef)
-        if let index = orderedObjects.firstIndex(where: { $0.midiObjectRef == midiObjectRef }) {
+        if let index = orderedObjects.firstIndex(where: { $0 == removedObject }) {
             orderedObjects.remove(at: index)
         }
 
@@ -292,11 +287,11 @@ class MIDIObjectCollection: CoreMIDIObjectCollection {
         // TODO
     }
 
-    private func postObjectsAddedNotification(_ objects: [CoreMIDIObjectCollectible]) {
+    private func postObjectsAddedNotification(_ objects: [T]) {
         // TODO
     }
 
-    private func postObjectsRemovedNotification(_ objects: [CoreMIDIObjectCollectible]) {
+    private func postObjectsRemovedNotification(_ objects: [T]) {
         // TODO
     }
 

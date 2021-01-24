@@ -272,12 +272,11 @@ import Foundation
                                         object: self,
                                         userInfo: userInfo(notification))
 
-        if let collection = midiObjectCollection(type: notification.childType) {
-            collection.objectWasAdded(
-                midiObjectRef: notification.child,
-                parentObjectRef: notification.parent,
-                parentType: notification.parentType)
-        }
+        midiObjectCollection(type: notification.childType)?.objectWasAdded(
+            midiObjectRef: notification.child,
+            parentObjectRef: notification.parent,
+            parentType: notification.parentType
+        )
     }
 
     fileprivate func objectRemoved(_ notification: SMClientObjectRemovedNotification) {
@@ -286,12 +285,11 @@ import Foundation
                                         object: self,
                                         userInfo: userInfo(notification))
 
-        if let collection = midiObjectCollection(type: notification.childType) {
-            collection.objectWasRemoved(
-                midiObjectRef: notification.child,
-                parentObjectRef: notification.parent,
-                parentType: notification.parentType)
-        }
+        midiObjectCollection(type: notification.childType)?.objectWasRemoved(
+            midiObjectRef: notification.child,
+            parentObjectRef: notification.parent,
+            parentType: notification.parentType
+        )
     }
 
     fileprivate func objectPropertyChanged(_ notification: SMClientObjectPropertyChangedNotification) {
@@ -300,11 +298,10 @@ import Foundation
                                         object: self,
                                         userInfo: userInfo(notification))
 
-        if let wrapperObject = midiObjectCollection(type: notification.objectType)?
-            .object(midiObjectRef: notification.object)
-            as? CoreMIDIPropertyChangeHandling {
-            wrapperObject.midiPropertyChanged(notification.propertyName)
-        }
+        midiObjectCollection(type: notification.objectType)?.objectPropertyChanged(
+            midiObjectRef: notification.object,
+            property: notification.propertyName
+        )
     }
 
     fileprivate func thruConnectionsChanged(_ notification: SMClientThruConnectionsChangedNotification) {
@@ -331,21 +328,15 @@ import Foundation
     // MARK: New way of doing things
 
     private lazy var midiObjectCollections: [CoreMIDIObjectCollection] = [
-        Device.self,
-        ExternalDevice.self,
-        Source.self,
-        Destination.self
-        ].map { MIDIObjectCollection(client: self, collectibleType: $0) }
+        MIDIObjectCollection<Device>(client: self),
+        MIDIObjectCollection<ExternalDevice>(client: self),
+        MIDIObjectCollection<Source>(client: self),
+        MIDIObjectCollection<Destination>(client: self)
+        ]
 
     internal func midiObjectCollection(type: MIDIObjectType) -> CoreMIDIObjectCollection? {
-        midiObjectCollections.first { $0.collectibleType.midiObjectType == type }
+        midiObjectCollections.first { $0.midiObjectType == type }
     }
-
-    /*
-    internal func midiObjectCollection(collectibleType: CoreMIDIObjectCollectible.Type) -> MIDIObjectCollection? {
-        // TODO Do we need this?
-        midiObjectCollections.first { $0.collectibleType == collectibleType }
-    }*/
 
 }
 
