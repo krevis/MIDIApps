@@ -13,7 +13,7 @@
 import Foundation
 import CoreMIDI
 
-protocol CoreMIDIObjectWrapper: Equatable, Identifiable {
+protocol CoreMIDIObjectWrapper: AnyObject, Equatable, Identifiable {
 
     var midiClient: SMClient { get }    // TODO This should refer to a protocol too
     var midiObjectRef: MIDIObjectRef { get }
@@ -35,60 +35,63 @@ extension CoreMIDIObjectWrapper {
     // MARK: MIDI Property Accessors
     // TODO These should dispatch through midiClient instead of calling CoreMIDI directly
 
-    public func string(forProperty property: CFString) -> String? {
-        var unmanagedValue: Unmanaged<CFString>?
-        if MIDIObjectGetStringProperty(midiObjectRef, property, &unmanagedValue) == noErr {
-            return unmanagedValue?.takeUnretainedValue() as String?
+    subscript(property: CFString) -> String? {
+        get {
+            var unmanagedValue: Unmanaged<CFString>?
+            if MIDIObjectGetStringProperty(midiObjectRef, property, &unmanagedValue) == noErr {
+                return unmanagedValue?.takeUnretainedValue() as String?
+            }
+            else {
+                return nil
+            }
         }
-        else {
-            return nil
-        }
-    }
-
-    public func set(string: String?, forProperty property: CFString) {
-        if let value = string {
-            _ = MIDIObjectSetStringProperty(midiObjectRef, property, value as CFString)
-        }
-        else {
-            _ = MIDIObjectRemoveProperty(midiObjectRef, property)
-        }
-    }
-
-    public func int32(forProperty property: CFString) -> Int32? {
-        var value: Int32 = 0
-        if MIDIObjectGetIntegerProperty(midiObjectRef, property, &value) == noErr {
-            return value
-        }
-        else {
-            return nil
+        set {
+            if let value = newValue {
+                _ = MIDIObjectSetStringProperty(midiObjectRef, property, value as CFString)
+            }
+            else {
+                _ = MIDIObjectRemoveProperty(midiObjectRef, property)
+            }
         }
     }
 
-    public func set(int32: Int32?, forProperty property: CFString) {
-        if let value = int32 {
-            _ = MIDIObjectSetIntegerProperty(midiObjectRef, property, value)
+    subscript(property: CFString) -> Int32? {
+        get {
+            var value: Int32 = 0
+            if MIDIObjectGetIntegerProperty(midiObjectRef, property, &value) == noErr {
+                return value
+            }
+            else {
+                return nil
+            }
         }
-        else {
-            _ = MIDIObjectRemoveProperty(midiObjectRef, property)
+        set {
+            if let value = newValue {
+                _ = MIDIObjectSetIntegerProperty(midiObjectRef, property, value)
+            }
+            else {
+                _ = MIDIObjectRemoveProperty(midiObjectRef, property)
+            }
         }
     }
 
-    public func data(forProperty property: CFString) -> Data? {
-        var unmanagedValue: Unmanaged<CFData>?
-        if MIDIObjectGetDataProperty(midiObjectRef, property, &unmanagedValue) == noErr {
-            return unmanagedValue?.takeUnretainedValue() as Data?
+    subscript(property: CFString) -> Data? {
+        get {
+            var unmanagedValue: Unmanaged<CFData>?
+            if MIDIObjectGetDataProperty(midiObjectRef, property, &unmanagedValue) == noErr {
+                return unmanagedValue?.takeUnretainedValue() as Data?
+            }
+            else {
+                return nil
+            }
         }
-        else {
-            return nil
-        }
-    }
-
-    public func set(data: Data?, forProperty property: CFString) {
-        if let value = data {
-            _ = MIDIObjectSetDataProperty(midiObjectRef, property, value as CFData)
-        }
-        else {
-            _ = MIDIObjectRemoveProperty(midiObjectRef, property)
+        set {
+            if let value = newValue {
+                _ = MIDIObjectSetDataProperty(midiObjectRef, property, value as CFData)
+            }
+            else {
+                _ = MIDIObjectRemoveProperty(midiObjectRef, property)
+            }
         }
     }
 
@@ -96,9 +99,10 @@ extension CoreMIDIObjectWrapper {
 
     /* TODO Add, if needed, like this:
     public var name: String? {
-        get { string(forProperty: kMIDIPropertyName) }
-        set { set(string: newValue, forProperty: kMIDIPropertyName) }
+        get { self[kMIDIPropertyName] }
+        set { self[kMIDIPropertyName] = newValue }
     }
+
      */
 
 }
@@ -122,24 +126,22 @@ class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
 
         // Immediately fetch the object's uniqueID, since it could become
         // inaccessible later, if the object is removed from CoreMIDI
-        cachedUniqueID = int32(forProperty: kMIDIPropertyUniqueID) ?? 0
+        cachedUniqueID = self[kMIDIPropertyUniqueID] ?? 0
     }
 
     private var cachedUniqueID: MIDIUniqueID?
     public var uniqueID: MIDIUniqueID {
         get {
-            switch cachedUniqueID {
-            case .none:
-                let value = int32(forProperty: kMIDIPropertyUniqueID) ?? 0
-                cachedUniqueID = value
-                return value
-            case .some(let value):
+            if let value = cachedUniqueID { return value }
+            else {
+                let value: MIDIUniqueID = self[kMIDIPropertyUniqueID] ?? 0
+                cachedUniqueID = .some(value)
                 return value
             }
         }
         set {
             if cachedUniqueID != .some(newValue) {
-                set(int32: newValue, forProperty: kMIDIPropertyUniqueID)
+                self[kMIDIPropertyUniqueID] = newValue
                 cachedUniqueID = .none
             }
         }
@@ -148,18 +150,16 @@ class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
     private var cachedName: String??
     public var name: String? {
         get {
-            switch cachedName {
-            case .none:
-                let value = string(forProperty: kMIDIPropertyName)
+            if let value = cachedName { return value }
+            else {
+                let value: String? = self[kMIDIPropertyName]
                 cachedName = .some(value)
-                return value
-            case .some(let value):
                 return value
             }
         }
         set {
             if cachedName != .some(newValue) {
-                set(string: newValue, forProperty: kMIDIPropertyName)
+                self[kMIDIPropertyName] = newValue
                 cachedName = .none
             }
         }
@@ -378,3 +378,7 @@ class Destination: Endpoint, CoreMIDIObjectListable {
     // TODO sysExSpeedWorkaroundEndpoint and related
 
 }
+
+// TODO Other stuff:
+// SMClient generate new unique ID (repeat checking until we find one)
+//
