@@ -23,7 +23,6 @@ class Destination: Endpoint, CoreMIDIObjectListable {
         context.interface.getDestination(index)
     }
 
-    // TODO endpointCount(forEntity), endpointRef(atIndex: forEntity)
     // TODO sysExSpeedWorkaroundEndpoint and related
 
 }
@@ -45,7 +44,7 @@ extension CoreMIDIContext {
         // CoreMIDI will send us a notification that something was added,
         // but that won't arrive until later. So manually add the new Destination,
         // trusting that we won't add it again later.
-        guard let destination = addVirtualDestination(midiObjectRef: newEndpointRef) else { return nil }
+        guard let destination = addedVirtualDestination(midiObjectRef: newEndpointRef) else { return nil }
 
         destination.setOwnedByThisProcess()
 

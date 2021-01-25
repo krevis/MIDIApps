@@ -60,6 +60,12 @@ protocol CoreMIDIInterface {
 
     func destinationCreate(_ client: MIDIClientRef, _ name: CFString, _ readProc: @escaping MIDIReadProc, _ refCon: UnsafeMutableRawPointer?, _ outDest: UnsafeMutablePointer<MIDIEndpointRef>) -> OSStatus
 
+    func endpointGetEntity(_ inEndpoint: MIDIEndpointRef, _ outEntity: UnsafeMutablePointer<MIDIEntityRef>?) -> OSStatus
+
+    func entityGetDevice(_ inEntity: MIDIEntityRef, _ outDevice: UnsafeMutablePointer<MIDIDeviceRef>?) -> OSStatus
+
+    func endpointDispose(_ endpt: MIDIEndpointRef) -> OSStatus
+
 }
 
 struct RealCoreMIDIInterface: CoreMIDIInterface {
@@ -164,6 +170,18 @@ struct RealCoreMIDIInterface: CoreMIDIInterface {
 
     func destinationCreate(_ client: MIDIClientRef, _ name: CFString, _ readProc: @escaping MIDIReadProc, _ refCon: UnsafeMutableRawPointer?, _ outDest: UnsafeMutablePointer<MIDIEndpointRef>) -> OSStatus {
         MIDIDestinationCreate(client, name, readProc, refCon, outDest)
+    }
+
+    func endpointGetEntity(_ inEndpoint: MIDIEndpointRef, _ outEntity: UnsafeMutablePointer<MIDIEntityRef>?) -> OSStatus {
+        MIDIEndpointGetEntity(inEndpoint, outEntity)
+    }
+
+    func entityGetDevice(_ inEntity: MIDIEntityRef, _ outDevice: UnsafeMutablePointer<MIDIDeviceRef>?) -> OSStatus {
+        MIDIEntityGetDevice(inEntity, outDevice)
+    }
+
+    func endpointDispose(_ endpt: MIDIEndpointRef) -> OSStatus {
+        MIDIEndpointDispose(endpt)
     }
 
 }

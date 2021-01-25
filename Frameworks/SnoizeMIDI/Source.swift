@@ -25,9 +25,6 @@ class Source: Endpoint, CoreMIDIObjectListable {
         context.interface.getSource(index)
     }
 
-    // MARK: New API
-
-    // TODO endpointCount(forEntity), endpointRef(atIndex: forEntity)
 }
 
 extension CoreMIDIContext {
@@ -46,7 +43,7 @@ extension CoreMIDIContext {
         // CoreMIDI will send us a notification that something was added,
         // but that won't arrive until later. So manually add the new Source,
         // trusting that we won't add it again later.
-        guard let source = addVirtualSource(midiObjectRef: newEndpointRef) else { return nil }
+        guard let source = addedVirtualSource(midiObjectRef: newEndpointRef) else { return nil }
 
         source.setOwnedByThisProcess()
 

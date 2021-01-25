@@ -16,7 +16,7 @@ import CoreMIDI
 class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
 
     unowned var midiContext: CoreMIDIContext
-    let midiObjectRef: MIDIObjectRef
+    private(set) var midiObjectRef: MIDIObjectRef
 
     required init(context: CoreMIDIContext, objectRef: MIDIObjectRef) {
         precondition(objectRef != 0)
@@ -75,6 +75,14 @@ class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
         if property == kMIDIPropertyUniqueID {
             _ = uniqueID    // refetch immediately
         }
+    }
+
+    // MARK: Internal functions for rare uses
+
+    func clearMIDIObjectRef() {
+        // Called when this object has been removed from CoreMIDI
+        // and it should no longer be used.
+        midiObjectRef = 0
     }
 
 }

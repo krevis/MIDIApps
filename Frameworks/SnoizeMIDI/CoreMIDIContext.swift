@@ -23,8 +23,13 @@ protocol CoreMIDIContext: AnyObject {
 
     func generateNewUniqueID() -> MIDIUniqueID
 
-    func addVirtualSource(midiObjectRef: MIDIObjectRef) -> Source?
-    func addVirtualDestination(midiObjectRef: MIDIObjectRef) -> Destination?
+    func addedVirtualSource(midiObjectRef: MIDIObjectRef) -> Source?
+    func addedVirtualDestination(midiObjectRef: MIDIObjectRef) -> Destination?
+    func removedVirtualEndpoint(_ endpoint: Endpoint)
+
+    func findObject(midiObjectRef: MIDIObjectRef) -> Device?
+    func findObject(midiObjectRef: MIDIObjectRef) -> ExternalDevice?
+    // TODO Would be nice if that was generic. Keep in mind you can overload on return type
 
 }
 
@@ -103,6 +108,14 @@ class MIDIContext: CoreMIDIContext {
                 return proposed
             }
         }
+    }
+
+    func findObject(midiObjectRef: MIDIObjectRef) -> Device? {
+        deviceList.findObject(objectRef: midiObjectRef)
+    }
+
+    func findObject(midiObjectRef: MIDIObjectRef) -> ExternalDevice? {
+        externalDeviceList.findObject(objectRef: midiObjectRef)
     }
 
     // MARK: Other API
@@ -218,14 +231,24 @@ class MIDIContext: CoreMIDIContext {
         midiObjectListsByType[type]
     }
 
-    func addVirtualSource(midiObjectRef: MIDIObjectRef) -> Source? {
+    func addedVirtualSource(midiObjectRef: MIDIObjectRef) -> Source? {
         sourceList.objectWasAdded(midiObjectRef: midiObjectRef, parentObjectRef: 0, parentType: .other)
         return sourceList.findObject(objectRef: midiObjectRef)
     }
 
-    func addVirtualDestination(midiObjectRef: MIDIObjectRef) -> Destination? {
+    func addedVirtualDestination(midiObjectRef: MIDIObjectRef) -> Destination? {
         destinationList.objectWasAdded(midiObjectRef: midiObjectRef, parentObjectRef: 0, parentType: .other)
         return destinationList.findObject(objectRef: midiObjectRef)
+    }
+
+    func removedVirtualEndpoint(_ endpoint: Endpoint) {
+        // TODO this is ugly...
+        if endpoint is Source {
+            sourceList.objectWasRemoved(midiObjectRef: endpoint.midiObjectRef, parentObjectRef: 0, parentType: .other)
+        }
+        else if endpoint is Destination {
+            destinationList.objectWasRemoved(midiObjectRef: endpoint.midiObjectRef, parentObjectRef: 0, parentType: .other)
+        }
     }
 
 }
