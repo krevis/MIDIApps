@@ -86,7 +86,7 @@ class SpyingInputStream: SMInputStream {
 
     override var selectedInputSources: Set<NSObject> {
         get {
-            return endpoints
+            endpoints
         }
         set {
             let endpointsToAdd = newValue.subtracting(endpoints)
