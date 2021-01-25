@@ -98,14 +98,15 @@ class MIDIContext: CoreMIDIContext {
     }
 
     func generateNewUniqueID() -> MIDIUniqueID {
+        // Return a random MIDIUniqueID which isn't currently in use
         while true {
-            // We could get fancy, but just using the current time is likely to work just fine.
-            // Add a sequence number in case this method is called more than once within a second.
-            let proposed: MIDIUniqueID = Int32(time(nil)) + uniqueIDSequence
-            uniqueIDSequence += 1
-
-            if !isUniqueIDUsed(proposed) {
-                return proposed
+            let proposedUniqueID: MIDIUniqueID = Int32.random(in: .min ... .max)
+            if proposedUniqueID != 0 /* zero is special */ {
+                var objectRef: MIDIObjectRef = 0
+                var objectType: MIDIObjectType = .other
+                if interface.objectFindByUniqueID(proposedUniqueID, &objectRef, &objectType) == kMIDIObjectNotFound {
+                    return proposedUniqueID
+                }
             }
         }
     }
@@ -151,15 +152,6 @@ class MIDIContext: CoreMIDIContext {
 
     private let name =
         (Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String) ?? ProcessInfo.processInfo.processName
-
-    private var uniqueIDSequence: Int32 = 0
-
-    private func isUniqueIDUsed(_ uniqueID: MIDIUniqueID) -> Bool {
-        var objectRef: MIDIObjectRef = 0
-        var objectType: MIDIObjectType = .other
-
-        return interface.objectFindByUniqueID(uniqueID, &objectRef, &objectType) == noErr && objectRef != 0
-    }
 
     // MARK: Notifications
 
