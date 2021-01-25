@@ -24,86 +24,56 @@ class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
         self.midiContext = context
         self.midiObjectRef = objectRef
 
-        // Immediately fetch the object's uniqueID, since it could become
+        // Immediately cache the object's uniqueID, since it could become
         // inaccessible later, if the object is removed from CoreMIDI
-        cachedUniqueID = self[kMIDIPropertyUniqueID] ?? 0
+        _ = uniqueID
     }
 
-    // MARK: Cached values of properties
+    // MARK: Property value cache
 
-    private var cachedUniqueID: MIDIUniqueID?
+    func cachedProperty<T: CoreMIDIPropertyValue>(_ property: CFString) -> CachedProperty<T> {
+        let cachedProperty = CachedProperty<T>(getter: { self[property] }, setter: { self[property] = $0 })
+        cachedProperties[property] = cachedProperty
+        return cachedProperty
+    }
+
+    private var cachedProperties: [CFString: Invalidatable] = [:]
+
+    private func invalidateCachedProperty(_ property: CFString) {
+        cachedProperties[property]?.invalidate()
+    }
+
+    // MARK: Specific properties
+
+    private lazy var cachedUniqueID: CachedProperty<Int32> = cachedProperty(kMIDIPropertyUniqueID)
     private let fallbackUniqueID: MIDIUniqueID = 0
     public var uniqueID: MIDIUniqueID {
-        get {
-            if let value = cachedUniqueID {
-                return value
-            }
-            else {
-                let value: MIDIUniqueID = self[kMIDIPropertyUniqueID] ?? fallbackUniqueID
-                cachedUniqueID = .some(value)
-                return value
-            }
-        }
-        set {
-            if cachedUniqueID != .some(newValue) {
-                self[kMIDIPropertyUniqueID] = newValue
-                cachedUniqueID = .none
-            }
-        }
+        get { cachedUniqueID.value ?? fallbackUniqueID  }
+        set { cachedUniqueID.value = newValue }
     }
 
-    private var cachedName: String??
-    public var name: String? {
-        get {
-            if let value = cachedName {
-                return value
-            }
-            else {
-                let value: String? = self[kMIDIPropertyName]
-                cachedName = .some(value)
-                return value
-            }
-        }
-        set {
-            if cachedName != .some(newValue) {
-                self[kMIDIPropertyName] = newValue
-                cachedName = .none
-            }
-        }
+    private lazy var cachedName: CachedProperty<String> = cachedProperty(kMIDIPropertyName)
+    var name: String? {
+        get { cachedName.value }
+        set { cachedName.value = newValue }
     }
 
-    private var cachedMaxSysExSpeed: Int32?
+    private lazy var cachedMaxSysExSpeed: CachedProperty<Int32> = cachedProperty(kMIDIPropertyMaxSysExSpeed)
     private let fallbackMaxSysExSpeed: Int32 = 3125 // bytes/sec for MIDI 1.0
-    public var maxSysExSpeed: Int32 {
-        get {
-            if let value = cachedMaxSysExSpeed {
-                return value
-            }
-            else {
-                let value: Int32 = self[kMIDIPropertyMaxSysExSpeed] ?? fallbackMaxSysExSpeed
-                cachedMaxSysExSpeed = .some(value)
-                return value
-            }
-        }
-        set {
-            if cachedMaxSysExSpeed != .some(newValue) {
-                self[kMIDIPropertyMaxSysExSpeed] = newValue
-                cachedMaxSysExSpeed = .none
-            }
-        }
+    var maxSysExSpeed: Int32 {
+        get { cachedMaxSysExSpeed.value ?? fallbackMaxSysExSpeed  }
+        set { cachedMaxSysExSpeed.value = newValue }
     }
+
+    // MARK: Property changes
 
     func midiPropertyChanged(_ property: CFString) {
-        switch property {
-        case kMIDIPropertyName:
-            cachedName = .none
-        case kMIDIPropertyUniqueID:
-            cachedUniqueID = .none
+        // General case
+        invalidateCachedProperty(property)
+
+        // Special cases
+        if property == kMIDIPropertyUniqueID {
             _ = uniqueID    // refetch immediately
-        case kMIDIPropertyMaxSysExSpeed:
-            cachedMaxSysExSpeed = .none
-        default:
-            break
         }
     }
 

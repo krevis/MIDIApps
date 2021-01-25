@@ -13,32 +13,47 @@
 import Foundation
 import CoreMIDI
 
-class Endpoint: MIDIObject {
+// A struct that caches a CoreMIDI property value
 
-    /* TODO: a lot of stuff
-        deviceRef (parent), device
-        isVirtual
-        isOwnedByThisProcess needs ownerPID
-        remove() for virtual endpoints owned by this process, calls MIDIEndpointDispose()
-        manufacturerName, modelName w/cache
-        displayName (which also needs caching)
-         connectedExternalDevices, uniqueIDsOfConnectedThings
-     */
+protocol Invalidatable {
 
-    func setOwnedByThisProcess() {
-        // TODO
+    mutating func invalidate()
+
+}
+
+struct CachedProperty<T: CoreMIDIPropertyValue & Equatable>: Invalidatable {
+
+    init(getter: @escaping () -> T?, setter: @escaping (T?) -> Void) {
+        self.getter = getter
+        self.setter = setter
     }
 
-    private lazy var cachedManufacturer: CachedProperty<String> = cachedProperty(kMIDIPropertyManufacturer)
-    var manufacturer: String? {
-        get { cachedManufacturer.value }
-        set { cachedManufacturer.value = newValue }
+    private let getter: () -> T?
+    private let setter: (T?) -> Void
+
+    private var cachedValue: T??
+
+    var value: T? {
+        mutating get {
+            if let value = cachedValue {
+                return value
+            }
+            else {
+                let value = getter()
+                cachedValue = .some(value)
+                return value
+            }
+        }
+        set {
+            if cachedValue != .some(newValue) {
+                setter(newValue)
+                cachedValue = .none
+            }
+        }
     }
 
-    private lazy var cachedModel: CachedProperty<String> = cachedProperty(kMIDIPropertyModel)
-    var model: String? {
-        get { cachedModel.value }
-        set { cachedModel.value = newValue }
+    mutating func invalidate() {
+        cachedValue = .none
     }
 
 }

@@ -21,6 +21,8 @@ protocol CoreMIDIObjectListable: CoreMIDIObjectWrapper {
 
     init(context: CoreMIDIContext, objectRef: MIDIObjectRef)
 
+    var uniqueID: MIDIUniqueID { get } // So list can look up object by uniqueID
+
 }
 
 extension CoreMIDIObjectListable {

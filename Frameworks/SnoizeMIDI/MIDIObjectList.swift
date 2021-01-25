@@ -58,6 +58,16 @@ class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>
         // TODO
     }
 
+    // MARK: Additional API
+
+    func findObject(uniqueID: MIDIUniqueID) -> T? {
+        objectMap.values.first { $0.uniqueID == uniqueID }
+    }
+
+    func findObject(objectRef: MIDIObjectRef) -> T? {
+        objectMap[objectRef]
+    }
+
     // MARK: Private
 
     private unowned let context: CoreMIDIContext

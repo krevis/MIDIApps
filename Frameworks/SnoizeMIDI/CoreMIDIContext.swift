@@ -17,11 +17,13 @@ protocol CoreMIDIContext: AnyObject {
 
     var interface: CoreMIDIInterface { get }
 
-    // TODO What else goes in here?
-    // - generate new unique ID (repeat checking until we find one)
-    //
+    var midiClient: MIDIClientRef { get }
 
     func refreshEndpointsForDevice(_ device: Device)
+
+    func generateNewUniqueID() -> MIDIUniqueID
+
+    func addVirtualSource(midiObjectRef: MIDIObjectRef) -> Source?
 
 }
 
@@ -77,7 +79,11 @@ class MIDIContext: CoreMIDIContext {
         createdSelf = self
     }
 
+    // MARK: CoreMIDIContext
+
     public let interface: CoreMIDIInterface
+
+    var midiClient: MIDIClientRef = 0
 
     func refreshEndpointsForDevice(_ device: Device) {
         // TODO This is an overly blunt approach, can we do better by using the device?
@@ -85,36 +91,60 @@ class MIDIContext: CoreMIDIContext {
         midiObjectList(type: .destination)?.refreshAllObjects()
     }
 
-    private let name =
-        (Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String) ?? ProcessInfo.processInfo.processName
+    func generateNewUniqueID() -> MIDIUniqueID {
+        while true {
+            // We could get fancy, but just using the current time is likely to work just fine.
+            // Add a sequence number in case this method is called more than once within a second.
+            let proposed: MIDIUniqueID = Int32(time(nil)) + uniqueIDSequence
+            uniqueIDSequence += 1
 
-    private var midiClient: MIDIClientRef = 0
+            if !isUniqueIDUsed(proposed) {
+                return proposed
+            }
+        }
+    }
 
-//    @objc public var postsExternalSetupChangeNotification = true    // TODO Should this be public? Seems like an internal detail
-//    @objc public private(set) var isHandlingSetupChange = false
+    // MARK: Other API
 
-//    public func forceCoreMIDIToUseNewSysExSpeed() {
-//        // The CoreMIDI client caches the last device that was given to MIDISendSysex(), along with its max sysex speed.
-//        // So when we change the speed, it doesn't notice and continues to use the old speed.
-//        // To fix this, we send a tiny sysex message to a different device.  Unfortunately we can't just use a NULL endpoint,
-//        // it has to be a real live endpoint.
-//
-//        // TODO None of this code is marked as actually throwing -- resolve that
-//        do {
-//            if let endpoint = SMDestinationEndpoint.sysExSpeedWorkaroundEndpoint {
-//               let message = SMSystemExclusiveMessage(timeStamp: 0, data: Data())
-//                _ = SMSysExSendRequest(message: message, endpoint: endpoint)?.send()
-//            }
-//        }
-//        catch {
-//            // don't care
-//        }
-//    }
+    //    @objc public var postsExternalSetupChangeNotification = true    // TODO Should this be public? Seems like an internal detail
+    //    @objc public private(set) var isHandlingSetupChange = false
+
+    //    public func forceCoreMIDIToUseNewSysExSpeed() {
+    //        // The CoreMIDI client caches the last device that was given to MIDISendSysex(), along with its max sysex speed.
+    //        // So when we change the speed, it doesn't notice and continues to use the old speed.
+    //        // To fix this, we send a tiny sysex message to a different device.  Unfortunately we can't just use a NULL endpoint,
+    //        // it has to be a real live endpoint.
+    //
+    //        // TODO None of this code is marked as actually throwing -- resolve that
+    //        do {
+    //            if let endpoint = SMDestinationEndpoint.sysExSpeedWorkaroundEndpoint {
+    //               let message = SMSystemExclusiveMessage(timeStamp: 0, data: Data())
+    //                _ = SMSysExSendRequest(message: message, endpoint: endpoint)?.send()
+    //            }
+    //        }
+    //        catch {
+    //            // don't care
+    //        }
+    //    }
 
     public func disconnect() {
         // Disconnect from CoreMIDI. Necessary only for very special circumstances, since CoreMIDI will be unusable afterwards.
         _ = interface.clientDispose(midiClient)
         midiClient = 0
+    }
+
+    // MARK: Private
+
+    private let name =
+        (Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String) ?? ProcessInfo.processInfo.processName
+
+    private var uniqueIDSequence: Int32 = 0
+
+    private func isUniqueIDUsed(_ uniqueID: MIDIUniqueID) -> Bool {
+        var objectRef: MIDIObjectRef = 0
+        var objectType: MIDIObjectType = .other
+
+        return interface.objectFindByUniqueID(uniqueID, &objectRef, &objectType) == noErr && objectRef != 0
     }
 
     // MARK: Notifications
@@ -173,15 +203,23 @@ class MIDIContext: CoreMIDIContext {
 
     // MARK: Object lists
 
-    private lazy var midiObjectLists: [CoreMIDIObjectList] = [
-        MIDIObjectList<Device>(self),
-        MIDIObjectList<ExternalDevice>(self),
-        MIDIObjectList<Source>(self),
-        MIDIObjectList<Destination>(self)
-        ]
+    private lazy var deviceList = MIDIObjectList<Device>(self)
+    private lazy var externalDeviceList = MIDIObjectList<ExternalDevice>(self)
+    private lazy var sourceList = MIDIObjectList<Source>(self)
+    private lazy var destinationList = MIDIObjectList<Destination>(self)
 
-    func midiObjectList(type: MIDIObjectType) -> CoreMIDIObjectList? {
-        midiObjectLists.first { $0.midiObjectType == type }
+    private lazy var midiObjectListsByType: [MIDIObjectType: CoreMIDIObjectList] = {
+        let lists: [CoreMIDIObjectList] = [deviceList, externalDeviceList, sourceList, destinationList]
+        return Dictionary(uniqueKeysWithValues: lists.map({ ($0.midiObjectType, $0) }))
+    }()
+
+    private func midiObjectList(type: MIDIObjectType) -> CoreMIDIObjectList? {
+        midiObjectListsByType[type]
+    }
+
+    func addVirtualSource(midiObjectRef: MIDIObjectRef) -> Source? {
+        sourceList.objectWasAdded(midiObjectRef: midiObjectRef, parentObjectRef: 0, parentType: .other)
+        return sourceList.findObject(objectRef: midiObjectRef)
     }
 
 }

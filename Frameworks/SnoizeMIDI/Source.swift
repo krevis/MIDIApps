@@ -15,6 +15,8 @@ import CoreMIDI
 
 class Source: Endpoint, CoreMIDIObjectListable {
 
+    // MARK: CoreMIDIObjectListable
+
     static let midiObjectType = MIDIObjectType.source
     static func midiObjectCount(_ context: CoreMIDIContext) -> Int {
         context.interface.getNumberOfSources()
@@ -23,6 +25,43 @@ class Source: Endpoint, CoreMIDIObjectListable {
         context.interface.getSource(index)
     }
 
-    // TODO createVirtualSourceEndpoint
+    // MARK: New API
+
     // TODO endpointCount(forEntity), endpointRef(atIndex: forEntity)
+}
+
+extension CoreMIDIContext {
+
+    public func createVirtualSource(name: String, uniqueID: MIDIUniqueID) -> Source? {
+        // If newUniqueID is 0, we'll use the unique ID that CoreMIDI generates for us
+
+        // We are going to be making a lot of changes, so turn off external notifications
+        // for a while (until we're done).  Internal notifications are still necessary and aren't very slow.
+        // TODO Do that again, if necessary
+
+        var newEndpointRef: MIDIEndpointRef = 0
+        guard interface.sourceCreate(midiClient, name as CFString, &newEndpointRef) == noErr else { return nil }
+
+        // We want to get at the Source immediately, to configure it.
+        // CoreMIDI will send us a notification that something was added,
+        // but that won't arrive until later. So manually add the new endpoint, now,
+        // trusting that we won't add it again later.
+        guard let source = addVirtualSource(midiObjectRef: newEndpointRef) else { return nil }
+
+        source.setOwnedByThisProcess()
+
+        if uniqueID != 0 {
+            source.uniqueID = uniqueID
+        }
+        while source.uniqueID == 0 {
+            // CoreMIDI didn't assign a unique ID to this endpoint, so we should generate one ourself
+            source.uniqueID = generateNewUniqueID()
+        }
+
+        source.manufacturer = "Snoize"
+        source.model = name
+
+        return source
+    }
+
 }
