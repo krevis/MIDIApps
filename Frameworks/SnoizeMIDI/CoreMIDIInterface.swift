@@ -48,6 +48,12 @@ protocol CoreMIDIInterface {
     func getNumberOfDestinations() -> Int
     func getDestination(_ destIndex0: Int) -> MIDIEndpointRef
 
+    func deviceGetNumberOfEntities(_ device: MIDIDeviceRef) -> Int
+    func deviceGetEntity(_ device: MIDIDeviceRef, _ entityIndex0: Int) -> MIDIEntityRef
+
+    func entityGetNumberOfSources(_ entity: MIDIEntityRef) -> Int
+    func entityGetSource(_ entity: MIDIEntityRef, _ sourceIndex0: Int) -> MIDIEndpointRef
+
 }
 
 struct RealCoreMIDIInterface: CoreMIDIInterface {
@@ -125,5 +131,22 @@ struct RealCoreMIDIInterface: CoreMIDIInterface {
     func getDestination(_ destIndex0: Int) -> MIDIEndpointRef {
         MIDIGetDestination(destIndex0)
     }
+
+    func deviceGetNumberOfEntities(_ device: MIDIDeviceRef) -> Int {
+        MIDIDeviceGetNumberOfEntities(device)
+    }
+
+    func deviceGetEntity(_ device: MIDIDeviceRef, _ entityIndex0: Int) -> MIDIEntityRef {
+        MIDIDeviceGetEntity(device, entityIndex0)
+    }
+
+    func entityGetNumberOfSources(_ entity: MIDIEntityRef) -> Int {
+        MIDIEntityGetNumberOfSources(entity)
+    }
+
+    func entityGetSource(_ entity: MIDIEntityRef, _ sourceIndex0: Int) -> MIDIEndpointRef {
+        MIDIEntityGetSource(entity, sourceIndex0)
+    }
+
 
 }

@@ -28,12 +28,12 @@ class ExternalDevice: MIDIObject, CoreMIDIObjectListable {
             // Also set the speed on this device's source endpoints (which we get to via its entities).
             // This is how MIDISendSysex() determines what speed to use, surprisingly.
 
-            // TODO All of this should go through midiClient, not direct call
-            for entityIndex in 0 ..< MIDIDeviceGetNumberOfEntities(midiObjectRef) {
-                let entityRef = MIDIDeviceGetEntity(midiObjectRef, entityIndex)
-                for sourceIndex in 0 ..< MIDIEntityGetNumberOfSources(entityRef) {
-                    let sourceEndpointRef = MIDIEntityGetSource(entityRef, sourceIndex)
-                    _ = MIDIObjectSetIntegerProperty(sourceEndpointRef, kMIDIPropertyMaxSysExSpeed, Int32(maxSysExSpeed))
+            let interface = midiContext.interface
+            for entityIndex in 0 ..< interface.deviceGetNumberOfEntities(midiObjectRef) {
+                let entityRef = interface.deviceGetEntity(midiObjectRef, entityIndex)
+                for sourceIndex in 0 ..< interface.entityGetNumberOfSources(entityRef) {
+                    let sourceEndpointRef = interface.entityGetSource(entityRef, sourceIndex)
+                    _ = interface.objectSetIntegerProperty(sourceEndpointRef, kMIDIPropertyMaxSysExSpeed, Int32(maxSysExSpeed))
                     // ignore errors, nothing we can do anyway
                 }
             }

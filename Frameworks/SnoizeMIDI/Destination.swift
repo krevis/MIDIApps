@@ -28,7 +28,3 @@ class Destination: Endpoint, CoreMIDIObjectListable {
     // TODO sysExSpeedWorkaroundEndpoint and related
 
 }
-
-// TODO Other stuff:
-// SMClient generate new unique ID (repeat checking until we find one)
-//

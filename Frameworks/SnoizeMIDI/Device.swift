@@ -29,10 +29,7 @@ class Device: MIDIObject, CoreMIDIObjectListable {
         if property == kMIDIPropertyOffline {
             // This device just went offline or online. We need to refresh its endpoints.
             // (If it went online, we didn't previously have its endpoints in our list.)
-
-            // TODO This is an overly blunt approach, can we do better?
-            // SMSourceEndpoint.refreshAllObjects()
-            // SMDestinationEndpoint.refreshAllObjects()
+            midiContext.refreshEndpointsForDevice(self)
         }
     }
 

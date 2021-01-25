@@ -49,4 +49,6 @@ protocol CoreMIDIObjectList {
     func objectWasAdded(midiObjectRef: MIDIObjectRef, parentObjectRef: MIDIObjectRef, parentType: MIDIObjectType)
     func objectWasRemoved(midiObjectRef: MIDIObjectRef, parentObjectRef: MIDIObjectRef, parentType: MIDIObjectType)
 
+    func refreshAllObjects()
+
 }

@@ -54,6 +54,10 @@ class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>
         }
     }
 
+    func refreshAllObjects() {
+        // TODO
+    }
+
     // MARK: Private
 
     private unowned let context: CoreMIDIContext

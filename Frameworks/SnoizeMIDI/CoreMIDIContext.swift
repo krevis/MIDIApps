@@ -18,6 +18,10 @@ protocol CoreMIDIContext: AnyObject {
     var interface: CoreMIDIInterface { get }
 
     // TODO What else goes in here?
+    // - generate new unique ID (repeat checking until we find one)
+    //
+
+    func refreshEndpointsForDevice(_ device: Device)
 
 }
 
@@ -75,10 +79,16 @@ class MIDIContext: CoreMIDIContext {
 
     public let interface: CoreMIDIInterface
 
-    public let name =
+    func refreshEndpointsForDevice(_ device: Device) {
+        // TODO This is an overly blunt approach, can we do better by using the device?
+        midiObjectList(type: .source)?.refreshAllObjects()
+        midiObjectList(type: .destination)?.refreshAllObjects()
+    }
+
+    private let name =
         (Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String) ?? ProcessInfo.processInfo.processName
 
-    public private(set) var midiClient: MIDIClientRef = 0
+    private var midiClient: MIDIClientRef = 0
 
 //    @objc public var postsExternalSetupChangeNotification = true    // TODO Should this be public? Seems like an internal detail
 //    @objc public private(set) var isHandlingSetupChange = false
@@ -101,7 +111,7 @@ class MIDIContext: CoreMIDIContext {
 //        }
 //    }
 
-    public func disconnectCoreMIDI() {
+    public func disconnect() {
         // Disconnect from CoreMIDI. Necessary only for very special circumstances, since CoreMIDI will be unusable afterwards.
         _ = interface.clientDispose(midiClient)
         midiClient = 0
