@@ -24,6 +24,7 @@ protocol CoreMIDIContext: AnyObject {
     func generateNewUniqueID() -> MIDIUniqueID
 
     func addVirtualSource(midiObjectRef: MIDIObjectRef) -> Source?
+    func addVirtualDestination(midiObjectRef: MIDIObjectRef) -> Destination?
 
 }
 
@@ -87,8 +88,8 @@ class MIDIContext: CoreMIDIContext {
 
     func refreshEndpointsForDevice(_ device: Device) {
         // TODO This is an overly blunt approach, can we do better by using the device?
-        midiObjectList(type: .source)?.refreshAllObjects()
-        midiObjectList(type: .destination)?.refreshAllObjects()
+        sourceList.refreshAllObjects()
+        destinationList.refreshAllObjects()
     }
 
     func generateNewUniqueID() -> MIDIUniqueID {
@@ -220,6 +221,11 @@ class MIDIContext: CoreMIDIContext {
     func addVirtualSource(midiObjectRef: MIDIObjectRef) -> Source? {
         sourceList.objectWasAdded(midiObjectRef: midiObjectRef, parentObjectRef: 0, parentType: .other)
         return sourceList.findObject(objectRef: midiObjectRef)
+    }
+
+    func addVirtualDestination(midiObjectRef: MIDIObjectRef) -> Destination? {
+        destinationList.objectWasAdded(midiObjectRef: midiObjectRef, parentObjectRef: 0, parentType: .other)
+        return destinationList.findObject(objectRef: midiObjectRef)
     }
 
 }

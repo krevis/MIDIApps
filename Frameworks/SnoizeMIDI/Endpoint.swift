@@ -20,7 +20,6 @@ class Endpoint: MIDIObject {
         isVirtual
         isOwnedByThisProcess needs ownerPID
         remove() for virtual endpoints owned by this process, calls MIDIEndpointDispose()
-        manufacturerName, modelName w/cache
         displayName (which also needs caching)
          connectedExternalDevices, uniqueIDsOfConnectedThings
      */

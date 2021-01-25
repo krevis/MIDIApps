@@ -23,8 +23,44 @@ class Destination: Endpoint, CoreMIDIObjectListable {
         context.interface.getDestination(index)
     }
 
-    // TODO createVirtualDestinationEndpoint
     // TODO endpointCount(forEntity), endpointRef(atIndex: forEntity)
     // TODO sysExSpeedWorkaroundEndpoint and related
+
+}
+
+extension CoreMIDIContext {
+
+    public func createVirtualDestination(name: String, uniqueID: MIDIUniqueID, midiReadProc: @escaping(MIDIReadProc), readProcRefCon: UnsafeMutableRawPointer?) -> Destination? {
+        // If newUniqueID is 0, we'll use the unique ID that CoreMIDI generates for us
+
+        // We are going to be making a lot of changes, so turn off external notifications
+        // for a while (until we're done).  Internal notifications are still necessary and aren't very slow.
+        // TODO Do that again, if necessary
+
+        var newEndpointRef: MIDIEndpointRef = 0
+
+        guard interface.destinationCreate(midiClient, name as CFString, midiReadProc, readProcRefCon, &newEndpointRef) == noErr else { return nil }
+
+        // We want to get at the Destination immediately, to configure it.
+        // CoreMIDI will send us a notification that something was added,
+        // but that won't arrive until later. So manually add the new Destination,
+        // trusting that we won't add it again later.
+        guard let destination = addVirtualDestination(midiObjectRef: newEndpointRef) else { return nil }
+
+        destination.setOwnedByThisProcess()
+
+        if uniqueID != 0 {
+            destination.uniqueID = uniqueID
+        }
+        while destination.uniqueID == 0 {
+            // CoreMIDI didn't assign a unique ID to this endpoint, so we should generate one ourself
+            destination.uniqueID = generateNewUniqueID()
+        }
+
+        destination.manufacturer = "Snoize"
+        destination.model = name
+
+        return destination
+    }
 
 }

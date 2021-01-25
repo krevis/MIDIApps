@@ -58,6 +58,8 @@ protocol CoreMIDIInterface {
 
     func sourceCreate(_ client: MIDIClientRef, _ name: CFString, _ outSrc: UnsafeMutablePointer<MIDIEndpointRef>) -> OSStatus
 
+    func destinationCreate(_ client: MIDIClientRef, _ name: CFString, _ readProc: @escaping MIDIReadProc, _ refCon: UnsafeMutableRawPointer?, _ outDest: UnsafeMutablePointer<MIDIEndpointRef>) -> OSStatus
+
 }
 
 struct RealCoreMIDIInterface: CoreMIDIInterface {
@@ -158,6 +160,10 @@ struct RealCoreMIDIInterface: CoreMIDIInterface {
 
     func sourceCreate(_ client: MIDIClientRef, _ name: CFString, _ outSrc: UnsafeMutablePointer<MIDIEndpointRef>) -> OSStatus {
         MIDISourceCreate(client, name, outSrc)
+    }
+
+    func destinationCreate(_ client: MIDIClientRef, _ name: CFString, _ readProc: @escaping MIDIReadProc, _ refCon: UnsafeMutableRawPointer?, _ outDest: UnsafeMutablePointer<MIDIEndpointRef>) -> OSStatus {
+        MIDIDestinationCreate(client, name, readProc, refCon, outDest)
     }
 
 }

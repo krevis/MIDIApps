@@ -44,7 +44,7 @@ extension CoreMIDIContext {
 
         // We want to get at the Source immediately, to configure it.
         // CoreMIDI will send us a notification that something was added,
-        // but that won't arrive until later. So manually add the new endpoint, now,
+        // but that won't arrive until later. So manually add the new Source,
         // trusting that we won't add it again later.
         guard let source = addVirtualSource(midiObjectRef: newEndpointRef) else { return nil }
 
