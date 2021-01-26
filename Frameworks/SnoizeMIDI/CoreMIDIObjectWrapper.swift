@@ -26,11 +26,11 @@ extension CoreMIDIObjectWrapper {
 
     // MARK: Identifiable default implementation
 
-    var id: (CoreMIDIContext, MIDIObjectRef) { (midiContext, midiObjectRef) } // swiftlint:disable:this identifier_name
+    public var id: (CoreMIDIContext, MIDIObjectRef) { (midiContext, midiObjectRef) } // swiftlint:disable:this identifier_name
 
     // MARK: Equatable default implementation
 
-    static func == (lhs: Self, rhs: Self) -> Bool {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id
     }
 

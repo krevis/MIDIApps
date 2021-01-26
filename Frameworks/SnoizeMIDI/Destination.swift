@@ -25,7 +25,7 @@ class Destination: Endpoint, CoreMIDIObjectListable {
 
     // MARK: Additional API
 
-    func remove() {
+    public func remove() {
         // Only possible for virtual endpoints owned by this process
         guard midiObjectRef != 0 && isOwnedByThisProcess else { return }
 

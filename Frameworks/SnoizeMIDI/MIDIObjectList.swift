@@ -60,12 +60,16 @@ class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>
 
     // MARK: Additional API
 
-    func findObject(uniqueID: MIDIUniqueID) -> T? {
-        objectMap.values.first { $0.uniqueID == uniqueID }
+    var objects: [T] {
+        orderedObjects
     }
 
     func findObject(objectRef: MIDIObjectRef) -> T? {
         objectMap[objectRef]
+    }
+
+    func findObject(uniqueID: MIDIUniqueID) -> T? {
+        objectMap.values.first { $0.uniqueID == uniqueID }
     }
 
     // MARK: Private
@@ -73,7 +77,7 @@ class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>
     private unowned let context: CoreMIDIContext
 
     private var objectMap: [MIDIObjectRef: T] = [:]
-    private var orderedObjects: [T] = []    // TODO This will need to be exposed somehow
+    private var orderedObjects: [T] = []
 
     private func addObject(_ midiObjectRef: MIDIObjectRef) -> T? {
         guard midiObjectRef != 0,

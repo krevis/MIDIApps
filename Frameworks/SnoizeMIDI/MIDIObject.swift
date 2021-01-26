@@ -13,7 +13,7 @@
 import Foundation
 import CoreMIDI
 
-class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
+public class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
 
     unowned var midiContext: CoreMIDIContext
     private(set) var midiObjectRef: MIDIObjectRef
@@ -53,14 +53,14 @@ class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
     }
 
     private lazy var cachedName: CachedProperty<String> = cachedProperty(kMIDIPropertyName)
-    var name: String? {
+    public var name: String? {
         get { cachedName.value }
         set { cachedName.value = newValue }
     }
 
     private lazy var cachedMaxSysExSpeed: CachedProperty<Int32> = cachedProperty(kMIDIPropertyMaxSysExSpeed)
     private let fallbackMaxSysExSpeed: Int32 = 3125 // bytes/sec for MIDI 1.0
-    var maxSysExSpeed: Int32 {
+    public var maxSysExSpeed: Int32 {
         get { cachedMaxSysExSpeed.value ?? fallbackMaxSysExSpeed  }
         set { cachedMaxSysExSpeed.value = newValue }
     }
