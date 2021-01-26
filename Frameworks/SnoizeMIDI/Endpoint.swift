@@ -13,7 +13,7 @@
 import Foundation
 import CoreMIDI
 
-class Endpoint: MIDIObject {
+public class Endpoint: MIDIObject {
 
     public var manufacturer: String? {
         get { cachedManufacturer.value }

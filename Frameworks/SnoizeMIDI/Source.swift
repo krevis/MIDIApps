@@ -13,7 +13,7 @@
 import Foundation
 import CoreMIDI
 
-class Source: Endpoint, CoreMIDIObjectListable {
+public class Source: Endpoint, CoreMIDIObjectListable {
 
     // MARK: CoreMIDIObjectListable
 

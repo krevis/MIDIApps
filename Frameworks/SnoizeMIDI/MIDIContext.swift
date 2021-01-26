@@ -13,7 +13,7 @@
 import Foundation
 import CoreMIDI
 
-class MIDIContext: CoreMIDIContext {
+public class MIDIContext: CoreMIDIContext {
 
     public convenience init?() {
         self.init(interface: RealCoreMIDIInterface())
