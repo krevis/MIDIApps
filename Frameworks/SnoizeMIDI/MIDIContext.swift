@@ -95,23 +95,19 @@ public class MIDIContext: CoreMIDIContext {
         destinationList.objects.first { $0.name == name }
     }
 
-    //    public func forceCoreMIDIToUseNewSysExSpeed() {
-    //        // The CoreMIDI client caches the last device that was given to MIDISendSysex(), along with its max sysex speed.
-    //        // So when we change the speed, it doesn't notice and continues to use the old speed.
-    //        // To fix this, we send a tiny sysex message to a different device.  Unfortunately we can't just use a NULL endpoint,
-    //        // it has to be a real live endpoint.
-    //
-    //        // TODO None of this code is marked as actually throwing -- resolve that
-    //        do {
-    //            if let endpoint = SMDestinationEndpoint.sysExSpeedWorkaroundEndpoint {
-    //               let message = SMSystemExclusiveMessage(timeStamp: 0, data: Data())
-    //                _ = SMSysExSendRequest(message: message, endpoint: endpoint)?.send()
-    //            }
-    //        }
-    //        catch {
-    //            // don't care
-    //        }
-    //    }
+    public func forceCoreMIDIToUseNewSysExSpeed() {
+        // The CoreMIDI client caches the last device that was given to MIDISendSysex(), along with its max sysex speed.
+        // So when we change the speed, it doesn't notice and continues to use the old speed.
+        // To fix this, we send a tiny sysex message to a different device.  Unfortunately we can't just use a NULL endpoint,
+        // it has to be a real live endpoint.
+
+        // TODO Implement
+        //  if let endpoint = Destination.sysExSpeedWorkaroundEndpoint {
+        //      let message = SMSystemExclusiveMessage(timeStamp: 0, data: Data())
+        //          _ = SMSysExSendRequest(message: message, endpoint: endpoint)?.send()
+        //      }
+        //  }
+    }
 
     public func disconnect() {
         // Disconnect from CoreMIDI. Necessary only for very special circumstances, since CoreMIDI will be unusable afterwards.
@@ -125,10 +121,12 @@ public class MIDIContext: CoreMIDIContext {
 
     var midiClient: MIDIClientRef = 0
 
-    func refreshEndpointsForDevice(_ device: Device) {
-        // TODO This is an overly blunt approach, can we do better by using the device?
-        sourceList.refreshAllObjects()
-        destinationList.refreshAllObjects()
+    func updateEndpointsForDevice(_ device: Device) {
+        // This is a very blunt approach, but reliable. Don't assume
+        // anything about the source and destination lists. Just
+        // refetch all of them and update our wrappers to match.
+        sourceList.updateList()
+        destinationList.updateList()
     }
 
     func generateNewUniqueID() -> MIDIUniqueID {
@@ -255,4 +253,64 @@ private func checkMainQueue() {
     else {
         assert(Thread.isMainThread)
     }
+}
+
+// MARK: Notifications
+
+public extension Notification.Name {
+
+    // notification.object is the class that has new objects (e.g. Source or Destination)
+    // notification.userInfo has an array of the new objects under key MIDIContext.objectsThatAppeared
+    static let midiObjectsAppeared = Notification.Name("SMMIDIObjectsAppearedNotification")
+
+    // notification.object is the object that disappeared
+    static let midiObjectDisappeared = Notification.Name("SMMIDIObjectDisappearedNotification")
+
+    // notification.object is the object that was replaced
+    // notification.userInfo contains new object under key MIDIContext.objectReplacement
+    static let midiObjectWasReplaced = Notification.Name("SMMIDIObjectWasReplacedNotification")
+
+    // notification.object is the class that has either gained new objects or lost old ones
+    // This notification is sent last, after the appeared/disappeared/wasReplaced notifications.
+    static let midiObjectListChanged = Notification.Name("SMMIDIObjectListChangedNotification")
+
+    // notification.object is the object whose property changed
+    // notification.userInfo contains the changed property under key MIDIContext.changedProperty
+    // (the raw CoreMIDI property name, e.g. kMIDIPropertyName, kMIDIPropertyMaxSysExSpeed)
+    static let midiObjectPropertyChanged = Notification.Name("SMMIDIObjectPropertyChangedNotification")
+
+}
+
+public extension MIDIContext {
+
+    // Keys in userInfo dictionary for notifications
+    static let objectsThatAppeared = "SMMIDIObjectsThatAppeared"
+    static let objectReplacement = "SMMIDIObjectReplacement"
+    static let changedProperty = "SMMIDIObjectChangedPropertyName"
+
+}
+
+extension CoreMIDIObjectListable {
+
+    static func postObjectsAddedNotification(_ objects: [Self]) {
+        guard !objects.isEmpty else { return }
+        NotificationCenter.default.post(name: .midiObjectsAppeared, object: self, userInfo: [MIDIContext.objectsThatAppeared: objects])
+    }
+
+    static func postObjectRemovedNotification(_ object: Self) {
+        NotificationCenter.default.post(name: .midiObjectDisappeared, object: object)
+    }
+
+    static func postObjectReplacedNotification(original: Self, replacement: Self) {
+        NotificationCenter.default.post(name: .midiObjectWasReplaced, object: original, userInfo: [MIDIContext.objectReplacement: replacement])
+    }
+
+    static func postObjectListChangedNotification() {
+        NotificationCenter.default.post(name: .midiObjectListChanged, object: self)
+    }
+
+    static func postObjectPropertyChangedNotification(_ object: Self, _ property: CFString) {
+        NotificationCenter.default.post(name: .midiObjectPropertyChanged, object: self, userInfo: [MIDIContext.changedProperty: property])
+    }
+
 }

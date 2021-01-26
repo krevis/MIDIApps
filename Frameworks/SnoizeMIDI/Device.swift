@@ -27,9 +27,12 @@ public class Device: MIDIObject, CoreMIDIObjectListable {
         super.midiPropertyChanged(property)
 
         if property == kMIDIPropertyOffline {
-            // This device just went offline or online. We need to refresh its endpoints.
-            // (If it went online, we didn't previously have its endpoints in our list.)
-            midiContext.refreshEndpointsForDevice(self)
+            // This device just went offline or online. If it went online,
+            // its sources might now appear in MIDIGetNumberOfSources/GetSourceAtIndex,
+            // and this is the only way we'll find out. (Same thing for destinations.)
+            // Similarly, if it went offline, its sources/destinations won't be
+            // in the list anymore.
+            midiContext.updateEndpointsForDevice(self)
         }
     }
 

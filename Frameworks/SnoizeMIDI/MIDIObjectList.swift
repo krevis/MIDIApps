@@ -19,10 +19,8 @@ class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>
         self.context = context
 
         // Populate our object wrappers
-        let count = T.midiObjectCount(context)
-        for index in 0 ..< count {
-            let objectRef = T.midiObjectSubscript(context, index)
-            _ = addObject(objectRef)
+        T.fetchMIDIObjectRefs(context).forEach {
+            _ = addObject($0)
         }
     }
 
@@ -31,31 +29,93 @@ class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>
     var midiObjectType: MIDIObjectType { T.midiObjectType }
 
     func objectPropertyChanged(midiObjectRef: MIDIObjectRef, property: CFString) {
-        objectMap[midiObjectRef]?.midiPropertyChanged(property)
+        if let object = objectMap[midiObjectRef] {
+            object.midiPropertyChanged(property)
+            T.postObjectPropertyChangedNotification(object, property)
+        }
     }
 
     func objectWasAdded(midiObjectRef: MIDIObjectRef, parentObjectRef: MIDIObjectRef, parentType: MIDIObjectType) {
         if let addedObject = addObject(midiObjectRef) {
             // The objects' ordering may have changed, so refresh it
-            refreshOrdering()
+            refreshOrdering(T.fetchMIDIObjectRefs(context))
 
-            T.postObjectListChangedNotification()
             T.postObjectsAddedNotification([addedObject])
-            // TODO This is *objects* added but we only know one object
+            T.postObjectListChangedNotification()
         }
     }
 
     func objectWasRemoved(midiObjectRef: MIDIObjectRef, parentObjectRef: MIDIObjectRef, parentType: MIDIObjectType) {
         if let removedObject = removeObject(midiObjectRef) {
-            // TODO Does ordering need work?
-
-            T.postObjectListChangedNotification()
             T.postObjectRemovedNotification(removedObject)
+            T.postObjectListChangedNotification()
         }
     }
 
-    func refreshAllObjects() {
-        // TODO
+    func updateList() {
+        // We start out assuming all objects have been removed, none have been replaced.
+        // As we find out otherwise, we remove some endpoints from removedObjects,
+        // and add some to addedObjects and replacements.
+
+        var removedObjects: [T] = orderedObjects
+        var addedObjects: [T] = []
+        var replacements: [(original: T, replacement: T)] = []
+
+        func objectWasNotRemoved(_ object: T) {
+            if let index = removedObjects.firstIndex(where: { $0 == object }) {
+                removedObjects.remove(at: index)
+            }
+        }
+
+        var newObjectMap: [MIDIObjectRef: T] = [:]
+
+        let newObjectRefs = T.fetchMIDIObjectRefs(context)
+        for objectRef in newObjectRefs {
+            if let existing = objectMap[objectRef] {
+                // This objectRef has an existing wrapper object.
+                objectWasNotRemoved(existing)
+
+                // It's possible that any of its properties changed, though
+                // (including the uniqueID).
+                existing.invalidateCachedProperties()
+
+                newObjectMap[objectRef] = existing
+            }
+            else {
+                // This objectRef does not have an existing wrapper; make one.
+                if let new = createObject(objectRef) {
+                    // If the new object has the same uniqueID as an old object,
+                    // that's a replacement that needs a special notification.
+                    if let original = findObject(uniqueID: new.uniqueID) {
+                        objectWasNotRemoved(original)
+                        replacements.append((original: original, replacement: new))
+                    }
+                    else {
+                        addedObjects.append(new)
+                    }
+
+                    newObjectMap[objectRef] = new
+                }
+            }
+        }
+
+        objectMap = newObjectMap
+        refreshOrdering(newObjectRefs)
+
+        // Everything is in place, so post notifications depending on what changed.
+
+        if !addedObjects.isEmpty {
+            T.postObjectsAddedNotification(addedObjects)
+        }
+        removedObjects.forEach {
+            T.postObjectRemovedNotification($0)
+        }
+        for (original, replacement) in replacements {
+            T.postObjectReplacedNotification(original: original, replacement: replacement)
+        }
+        if !addedObjects.isEmpty || !removedObjects.isEmpty || !replacements.isEmpty {
+            T.postObjectListChangedNotification()
+        }
     }
 
     // MARK: Additional API
@@ -79,15 +139,23 @@ class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>
     private var objectMap: [MIDIObjectRef: T] = [:]
     private var orderedObjects: [T] = []
 
-    private func addObject(_ midiObjectRef: MIDIObjectRef) -> T? {
+    private func createObject(_ midiObjectRef: MIDIObjectRef) -> T? {
         guard midiObjectRef != 0,
               objectMap[midiObjectRef] == nil
         else { return nil }
 
-        let addedObject = T.init(context: context, objectRef: midiObjectRef)
-        objectMap[midiObjectRef] = addedObject
-        orderedObjects.append(addedObject)
-        return addedObject
+        return T.init(context: context, objectRef: midiObjectRef)
+    }
+
+    private func addObject(_ midiObjectRef: MIDIObjectRef) -> T? {
+        let possibleObject = createObject(midiObjectRef)
+
+        if let addedObject = possibleObject {
+            objectMap[midiObjectRef] = addedObject
+            orderedObjects.append(addedObject)
+        }
+
+        return possibleObject
     }
 
     private func removeObject(_ midiObjectRef: MIDIObjectRef) -> T? {
@@ -103,14 +171,12 @@ class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>
         return removedObject
     }
 
-    private func refreshOrdering() {
+    private func refreshOrdering(_ objectRefs: [MIDIObjectRef]) {
         // TODO This should perhaps just invalidate the ordering, so it can
         // be recomputed it the next time somebody asks for it
 
         var newOrdering: [T] = []
-        let count = T.midiObjectCount(context)
-        for index in 0 ..< count {
-            let objectRef = T.midiObjectSubscript(context, index)
+        for objectRef in objectRefs {
             if let object = objectMap[objectRef] {
                 newOrdering.append(object)
             }

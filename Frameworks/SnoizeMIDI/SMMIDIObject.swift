@@ -276,6 +276,7 @@ import CoreMIDI
      */
 }
 
+/*
 public extension Notification.Name {
 
     // object is the class that has new objects
@@ -298,7 +299,7 @@ public extension Notification.Name {
     static let midiObjectPropertyChanged = Notification.Name("SMMIDIObjectPropertyChangedNotification")
 
 }
-
+*/
 @objc public extension SMMIDIObject {
 
     // Keys in userInfo dictionary for notifications

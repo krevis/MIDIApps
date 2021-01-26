@@ -41,6 +41,14 @@ public class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
 
     private func invalidateCachedProperty(_ property: CFString) {
         cachedProperties[property]?.invalidate()
+        // TODO Does this actually work? Not clear if the value in the map is independent of the stored value
+
+        // Always refetch the uniqueID immediately, since we might need it
+        // in order to do lookups, and I don't trust that we will always
+        // be notified of changes.
+        if property == kMIDIPropertyUniqueID {
+            _ = uniqueID
+        }
     }
 
     // MARK: Specific properties
@@ -68,16 +76,16 @@ public class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
     // MARK: Property changes
 
     func midiPropertyChanged(_ property: CFString) {
-        // General case
         invalidateCachedProperty(property)
-
-        // Special cases
-        if property == kMIDIPropertyUniqueID {
-            _ = uniqueID    // refetch immediately
-        }
     }
 
     // MARK: Internal functions for rare uses
+
+    func invalidateCachedProperties() {
+        for propertyName in cachedProperties.keys {
+            invalidateCachedProperty(propertyName)
+        }
+    }
 
     func clearMIDIObjectRef() {
         // Called when this object has been removed from CoreMIDI

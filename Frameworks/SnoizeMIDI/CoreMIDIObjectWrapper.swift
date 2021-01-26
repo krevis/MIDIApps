@@ -133,4 +133,6 @@ protocol CoreMIDIPropertyChangeHandling {
 
     func midiPropertyChanged(_ property: CFString)
 
+    func invalidateCachedProperties()
+
 }

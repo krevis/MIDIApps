@@ -27,17 +27,18 @@ protocol CoreMIDIObjectListable: CoreMIDIObjectWrapper {
 
 extension CoreMIDIObjectListable {
 
-    // TODO These notifications will need to change
-    static func postObjectListChangedNotification() {
-        NotificationCenter.default.post(name: .midiObjectListChanged, object: self)
-    }
+    static func fetchMIDIObjectRefs(_ context: CoreMIDIContext) -> [MIDIObjectRef] {
+        var objectRefs: [MIDIObjectRef] = []
 
-    static func postObjectsAddedNotification(_ objects: [Self]) {
-        NotificationCenter.default.post(name: .midiObjectsAppeared, object: Self.self, userInfo: [SMMIDIObject.midiObjectsThatAppeared: objects])
-    }
+        let count = midiObjectCount(context)
+        for index in 0 ..< count {
+            let objectRef = midiObjectSubscript(context, index)
+            if objectRef != 0 {
+                objectRefs.append(objectRef)
+            }
+        }
 
-    static func postObjectRemovedNotification(_ object: Self) {
-        NotificationCenter.default.post(name: .midiObjectDisappeared, object: object)
+        return objectRefs
     }
 
 }
@@ -51,6 +52,6 @@ protocol CoreMIDIObjectList {
     func objectWasAdded(midiObjectRef: MIDIObjectRef, parentObjectRef: MIDIObjectRef, parentType: MIDIObjectType)
     func objectWasRemoved(midiObjectRef: MIDIObjectRef, parentObjectRef: MIDIObjectRef, parentType: MIDIObjectType)
 
-    func refreshAllObjects()
+    func updateList()
 
 }

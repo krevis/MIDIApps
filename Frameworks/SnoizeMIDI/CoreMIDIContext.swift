@@ -22,7 +22,7 @@ protocol CoreMIDIContext: AnyObject {
 
     var midiClient: MIDIClientRef { get }
 
-    func refreshEndpointsForDevice(_ device: Device)
+    func updateEndpointsForDevice(_ device: Device)
 
     func generateNewUniqueID() -> MIDIUniqueID
 
