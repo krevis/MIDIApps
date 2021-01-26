@@ -20,7 +20,7 @@
 
 + (NSString *)SnoizeMIDI_abbreviatedStringForByteCount:(NSUInteger)byteCount
 {
-    NSBundle *bundle = [NSBundle bundleForClass: [SMClient class]];
+    NSBundle *bundle = [NSBundle bundleWithIdentifier:@"com.snoize.SnoizeMIDI"];
     NSString *abbreviatedString = nil;
     
     if (byteCount == 1) {

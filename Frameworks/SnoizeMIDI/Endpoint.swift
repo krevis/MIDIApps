@@ -53,11 +53,11 @@ public class Endpoint: MIDIObject {
         }
     }
 
-    // MARK: Internal
-
-    var endpointRef: MIDIEndpointRef {
+    public var endpointRef: MIDIEndpointRef {
         midiObjectRef
     }
+
+    // MARK: Internal
 
     func setOwnedByThisProcess() {
         // We have a chicken-egg problem. When setting values of properties, we want

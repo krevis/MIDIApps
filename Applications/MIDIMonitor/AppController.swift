@@ -21,10 +21,11 @@ class AppController: NSObject {
         case openNewWindow
     }
 
-    @objc internal var midiSpyClient: MIDISpyClientRef?
+    @objc var midiContext: MIDIContext?  // TODO This still isn't visible to objc for some reason
+    @objc var midiSpyClient: MIDISpyClientRef?
 
     private var shouldOpenUntitledDocument = false
-    private var newlyAppearedSources: Set<SMSourceEndpoint>?
+    private var newlyAppearedSources: Set<Source>?
 
     override init() {
         super.init()
@@ -55,10 +56,13 @@ extension AppController: NSApplicationDelegate {
 
         // Initialize CoreMIDI while the app's icon is still bouncing, so we don't have a large pause after it stops bouncing
         // but before the app's window opens.  (CoreMIDI needs to find and possibly start its server process, which can take a while.)
-        guard SMClient.sharedClient != nil else {
-            failedToInitCoreMIDI()
-            return
-        }
+
+        midiContext = MIDIContext()
+        // TODO detect an error
+//        guard SMClient.sharedClient != nil else {
+//            failedToInitCoreMIDI()
+//            return
+//        }
 
         // After this point, we are OK to open documents (untitled or otherwise)
         shouldOpenUntitledDocument = true
@@ -82,7 +86,7 @@ extension AppController: NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Listen for new source endpoints. Don't do this earlier--we only are interested in ones
         // that appear after we've been launched.
-        NotificationCenter.default.addObserver(self, selector: #selector(self.sourceEndpointsAppeared(_:)), name: .midiObjectsAppeared, object: SMSourceEndpoint.self)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.sourceEndpointsAppeared(_:)), name: .midiObjectsAppeared, object: Source.self)
     }
 
 }
@@ -328,10 +332,10 @@ extension AppController {
     // MARK: When sources appear
 
     @objc func sourceEndpointsAppeared(_ notification: Notification) {
-        guard let endpoints = notification.userInfo?[SMMIDIObject.midiObjectsThatAppeared] as? [SMSourceEndpoint], endpoints.count > 0 else { return }
+        guard let endpoints = notification.userInfo?[MIDIContext.objectsThatAppeared] as? [Source], endpoints.count > 0 else { return }
 
         if newlyAppearedSources == nil {
-            newlyAppearedSources = Set<SMSourceEndpoint>()
+            newlyAppearedSources = Set<Source>()
 
             if let autoConnectOption = AutoConnectOption(rawValue: UserDefaults.standard.integer(forKey: PreferenceKeys.autoConnectNewSources)) {
                 switch autoConnectOption {
@@ -356,10 +360,12 @@ extension AppController {
         if let sources = newlyAppearedSources,
            sources.count > 0,
            let document = (NSDocumentController.shared.currentDocument ?? NSApp.orderedDocuments.first) as? Document {
-            document.selectedInputSources = document.selectedInputSources.union(sources)
+            let inputStreamSources = Set(sources.map { $0.asInputStreamSource() })
+
+            document.selectedInputSources = document.selectedInputSources.union(inputStreamSources)
 
             if let windowController = document.windowControllers.first as? MonitorWindowController {
-                windowController.revealInputSources(sources)
+                windowController.revealInputSources(inputStreamSources)
                 document.updateChangeCount(.changeCleared)
             }
         }
@@ -371,12 +377,14 @@ extension AppController {
         if let sources = newlyAppearedSources,
            sources.count > 0,
            let document = try? NSDocumentController.shared.openUntitledDocumentAndDisplay(false) as? Document {
+            let inputStreamSources = Set(sources.map { $0.asInputStreamSource() })
+
             document.makeWindowControllers()
-            document.selectedInputSources = sources as Set<NSObject>
+            document.selectedInputSources = inputStreamSources
             document.showWindows()
 
             if let windowController = document.windowControllers.first as? MonitorWindowController {
-                windowController.revealInputSources(sources)
+                windowController.revealInputSources(inputStreamSources)
                 document.updateChangeCount(.changeCleared)
             }
         }

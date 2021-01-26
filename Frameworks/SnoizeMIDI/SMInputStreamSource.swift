@@ -12,14 +12,65 @@
 
 import Foundation
 
-public protocol SMInputStreamSource {
+// SMInputStreamSource is a type-erasing wrapper struct
+// that represents one of many possible sources that a
+// SMInputStream could listen to.
+//
+// Depending on the stream, these could be wrappers
+// around Source, Destination, or SingleInputStreamSource.
+//
+// We represent the selected input sources as
+// Set<SMInputStreamSource> so SMInputStreamSource needs to
+// be Hashable (and thus Equatable), even if the underlying
+// objects aren't.
+//
+// https://khawerkhaliq.com/blog/swift-protocols-equatable-part-one/
+// https://khawerkhaliq.com/blog/swift-protocols-equatable-part-two/
 
-    var inputStreamSourceName: String? { get }  // TODO should this really be optional?
+public protocol SMInputStreamSourceProviding {
+
+    var inputStreamSourceName: String? { get } // TODO should this really be optional?
     var inputStreamSourceUniqueID: MIDIUniqueID? { get }
+
+    func isEqualTo(_ other: SMInputStreamSourceProviding) -> Bool
+    func inputStreamSourceHash(into hasher: inout Hasher)
+
+    func asInputStreamSource() -> SMInputStreamSource
 
 }
 
-extension SMEndpoint: SMInputStreamSource {
+public struct SMInputStreamSource: Hashable {
+
+    init(provider: SMInputStreamSourceProviding) {
+        self.provider = provider
+    }
+
+    public let provider: SMInputStreamSourceProviding
+        // TODO Can we make the struct generic and thus have this return T instead of the protocol?
+        // if so we could avoid making the protocol public
+
+    public var name: String? {
+        provider.inputStreamSourceName
+    }
+    public var uniqueID: MIDIUniqueID? {
+        provider.inputStreamSourceUniqueID
+    }
+
+    // MARK: Equatable
+
+    public static func == (lhs: SMInputStreamSource, rhs: SMInputStreamSource) -> Bool {
+        lhs.provider.isEqualTo(rhs.provider)
+    }
+
+    // MARK: Hashable
+
+    public func hash(into hasher: inout Hasher) {
+        provider.inputStreamSourceHash(into: &hasher)
+    }
+}
+
+// TODO Move elsewhere
+extension Endpoint: SMInputStreamSourceProviding {
 
     public var inputStreamSourceName: String? {
         displayName
@@ -27,6 +78,25 @@ extension SMEndpoint: SMInputStreamSource {
 
     public var inputStreamSourceUniqueID: MIDIUniqueID? {
         uniqueID
+    }
+
+    public func isEqualTo(_ other: SMInputStreamSourceProviding) -> Bool {
+        guard let otherEndpoint = other as? Endpoint else { return false }
+        // NOTE: Here be dragons. It's possible that succeded
+        // if self is Source and other is Destination,
+        // which isn't sensible.
+        // However, we should never have a Source and a Destination
+        // with the same underlying MIDIEndpointRef,
+        // so we can get away without checking for that.
+        return endpointRef == otherEndpoint.endpointRef
+    }
+
+    public func inputStreamSourceHash(into hasher: inout Hasher) {
+        hasher.combine(endpointRef)
+    }
+
+    public func asInputStreamSource() -> SMInputStreamSource {
+        SMInputStreamSource(provider: self)
     }
 
 }

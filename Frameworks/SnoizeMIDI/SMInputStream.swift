@@ -14,13 +14,16 @@ import Foundation
 
 @objc open class SMInputStream: NSObject, SMMessageParserDelegate {
 
-    @objc public override init() {
+    public init(midiContext: MIDIContext) {
+        self.midiContext = midiContext
+
         // Default to main queue for taking pending read packets
         readQueue = DispatchQueue.main
 
         super.init()
     }
 
+    public let midiContext: MIDIContext
     @objc public var readQueue: DispatchQueue
     @objc public weak var messageDestination: SMMessageDestination?
     @objc public var sysExTimeOut: TimeInterval = 1.0 {
@@ -35,18 +38,16 @@ import Foundation
 
     @objc open var persistentSettings: Any? {
         var persistentSettings: [[String: Any]] = []
-        for source in selectedInputSources {
-            if let inputSource = source as? SMInputStreamSource {
-                var dict: [String: Any] = [:]
-                if let uniqueID = inputSource.inputStreamSourceUniqueID {
-                    dict["uniqueID"] = uniqueID
-                }
-                if let name = inputSource.inputStreamSourceName {
-                    dict["name"] = name
-                }
-                if !dict.isEmpty {
-                    persistentSettings.append(dict)
-                }
+        for inputSource in selectedInputSources {
+            var dict: [String: Any] = [:]
+            if let uniqueID = inputSource.uniqueID {
+                dict["uniqueID"] = uniqueID
+            }
+            if let name = inputSource.name {
+                dict["name"] = name
+            }
+            if !dict.isEmpty {
+                persistentSettings.append(dict)
             }
         }
         return persistentSettings
@@ -57,13 +58,13 @@ import Foundation
         // TODO Fix type to be nicer
         guard let dicts = settings as? [[String: Any]] else { return nil }
 
-        var newInputSources: Set<NSObject> = []
+        var newInputSources: Set<SMInputStreamSource> = []
         var missingNames: [String] = []
         for dict in dicts {
             let name = dict["name"] as? String
             let uniqueID = dict["uniqueID"] as? MIDIUniqueID
             if let source = findInputSource(name: name, uniqueID: uniqueID) {
-                newInputSources.insert(source as! NSObject)
+                newInputSources.insert(source)
             }
             else {
                 let resolvedName = name ?? NSLocalizedString("Unknown", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "name of missing endpoint if not specified in document")
@@ -81,7 +82,7 @@ import Foundation
 
     public let midiReadProc: MIDIReadProc = inputStreamMIDIReadProc
 
-    public func createParser(originatingEndpoint: SMEndpoint?) -> SMMessageParser {
+    public func createParser(originatingEndpoint: Endpoint?) -> SMMessageParser {
         let parser = SMMessageParser()
         parser.delegate = self
         parser.sysExTimeOut = sysExTimeOut
@@ -133,12 +134,12 @@ import Foundation
         fatalError("Must implement in subclass")
     }
 
-    @objc public var inputSourcesSet: Set<NSObject> /* TODO Should become Set<SMInputStreamSource> */ {
-        // for convenience going to Swift and dealing with selectedInputSources... may change
-        return Set(inputSources as? [NSObject] ?? [])
+    public var inputSourcesSet: Set<SMInputStreamSource> {
+        // TODO for convenience going to Swift and dealing with selectedInputSources... may change
+        return Set(inputSources)
     }
 
-    @objc open var selectedInputSources: Set<NSObject> /* TODO Should become Set<SMInputStreamSource> */ {
+    open var selectedInputSources: Set<SMInputStreamSource> {
         get {
             fatalError("Must implement in subclass")
         }
@@ -176,11 +177,11 @@ import Foundation
         // Find the input source with the desired unique ID. If there are no matches by uniqueID, return the first source whose name matches.
         // Otherwise, return nil.
         if let uniqueID = uniqueID,
-           let match = inputSources.first(where: { $0.inputStreamSourceUniqueID == uniqueID }) {
+           let match = inputSources.first(where: { $0.uniqueID == uniqueID }) {
             return match
         }
         else if let name = name,
-                let match = inputSources.first(where: { $0.inputStreamSourceName == name }) {
+                let match = inputSources.first(where: { $0.name == name }) {
             return match
         }
         else {

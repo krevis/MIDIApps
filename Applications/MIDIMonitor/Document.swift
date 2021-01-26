@@ -15,6 +15,10 @@ import Cocoa
 class Document: NSDocument {
 
     override init() {
+        // TODO Ugly, find a better way
+        let delegate = NSApp.delegate as! AppController
+        stream = CombinationInputStream(midiContext: delegate.midiContext!)
+
         super.init()
 
         let center = NotificationCenter.default
@@ -56,7 +60,7 @@ class Document: NSDocument {
     private(set) var windowSettings: [String: Any]?
 
     // MIDI processing
-    private let stream = CombinationInputStream()
+    private let stream: CombinationInputStream
     private let messageFilter = MessageFilter()
     private let history = MessageHistory()
 
@@ -276,7 +280,7 @@ extension Document {
     // It would be nicer to use block-based undo registration, but that requires macOS 10.11. So, for now, register using selectors,
     // and use a separate @objc-exposed method to do the work.
 
-    var selectedInputSources: Set<NSObject> /* TODO Should become Set<SMInputStreamSource> */ {
+    var selectedInputSources: Set<SMInputStreamSource> {
         get {
             return stream.selectedInputSources
         }
@@ -286,11 +290,12 @@ extension Document {
         }
     }
 
-    @objc private func undoableSetSelectedInputSources(_ newValue: Set<NSObject>) {
-        if let undoManager = undoManager {
-            undoManager.registerUndo(withTarget: self, selector: #selector(self.undoableSetSelectedInputSources(_:)), object: selectedInputSources)
-            undoManager.setActionName(NSLocalizedString("Change Selected Sources", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change source undo action"))
-        }
+    // TODO But this can't be ObjC
+    /*@objc*/ private func undoableSetSelectedInputSources(_ newValue: Set<SMInputStreamSource>) {
+//        if let undoManager = undoManager {
+//            undoManager.registerUndo(withTarget: self, selector: #selector(self.undoableSetSelectedInputSources(_:)), object: selectedInputSources)
+//            undoManager.setActionName(NSLocalizedString("Change Selected Sources", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change source undo action"))
+//        }
 
         stream.selectedInputSources = newValue
         monitorWindowController?.updateSources()
@@ -483,28 +488,25 @@ extension Document {
 
     private func autoselectSources() {
         let groups = inputSourceGroups
-        var sourcesSet: Set<NSObject> = []  // TODO Should become Set<SMInputStreamSource>
+        var sourcesSet = Set<SMInputStreamSource>()
 
         let defaults = UserDefaults.standard
 
         if defaults.bool(forKey: PreferenceKeys.selectOrdinarySourcesInNewDocument) {
-            if groups.count > 0,
-               let sources = groups[0].sources as? [NSObject] {
-                sourcesSet.formUnion(sources)
+            if groups.count > 0 {
+                sourcesSet.formUnion(groups[0].sources)
             }
         }
 
         if defaults.bool(forKey: PreferenceKeys.selectVirtualDestinationInNewDocument) {
-            if groups.count > 1,
-               let sources = groups[1].sources as? [NSObject] {
-                sourcesSet.formUnion(sources)
+            if groups.count > 1 {
+                sourcesSet.formUnion(groups[1].sources)
             }
         }
 
         if defaults.bool(forKey: PreferenceKeys.selectSpyingDestinationsInNewDocument) {
-            if groups.count > 2,
-               let sources = groups[2].sources as? [NSObject] {
-                sourcesSet.formUnion(sources)
+            if groups.count > 2 {
+                sourcesSet.formUnion(groups[2].sources)
             }
         }
 

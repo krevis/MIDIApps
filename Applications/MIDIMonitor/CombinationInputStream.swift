@@ -14,9 +14,14 @@ import Cocoa
 
 class CombinationInputStream: NSObject {
 
-    override init() {
+    init(midiContext: MIDIContext) {
+        self.midiContext = midiContext
+
+        portInputStream = SMPortInputStream(midiContext: midiContext)
+        virtualInputStream = SMVirtualInputStream(midiContext: midiContext)
+
         if let spyClient = (NSApp.delegate as? AppController)?.midiSpyClient {
-            spyingInputStream = SpyingInputStream(midiSpyClient: spyClient)
+            spyingInputStream = SpyingInputStream(midiContext: midiContext, midiSpyClient: spyClient)
         }
         else {
             spyingInputStream = nil
@@ -75,9 +80,9 @@ class CombinationInputStream: NSObject {
         return groups
     }
 
-    var selectedInputSources: Set<NSObject> /* TODO Should become Set<SMInputStreamSource> */ {
+    var selectedInputSources: Set<SMInputStreamSource> {
         get {
-            var inputSources: Set<NSObject> = []
+            var inputSources: Set<SMInputStreamSource> = []
             inputSources.formUnion(portInputStream.selectedInputSources)
             inputSources.formUnion(virtualInputStream.selectedInputSources)
             if let stream = spyingInputStream {
@@ -125,9 +130,9 @@ class CombinationInputStream: NSObject {
             // We may have an endpoint name under key "portEndpointName"
             let sourceEndpointName = settings["portEndpointName"] as? String
 
-            var sourceEndpoint = SMSourceEndpoint.findSourceEndpoint(uniqueID: oldStyleUniqueID.int32Value)
+            var sourceEndpoint = midiContext.findSource(uniqueID: oldStyleUniqueID.int32Value)
             if sourceEndpoint == nil, let name = sourceEndpointName {
-                sourceEndpoint = SMSourceEndpoint.findSourceEndpoint(name: name)
+                sourceEndpoint = midiContext.findSource(name: name)
             }
 
             if let endpoint = sourceEndpoint {
@@ -175,8 +180,9 @@ class CombinationInputStream: NSObject {
 
     // MARK: Private
 
-    private let portInputStream = SMPortInputStream()
-    private let virtualInputStream = SMVirtualInputStream()
+    private let midiContext: MIDIContext
+    private let portInputStream: SMPortInputStream
+    private let virtualInputStream: SMVirtualInputStream
     private let spyingInputStream: SpyingInputStream?
 
     private var willPostSourceListChangedNotification = false

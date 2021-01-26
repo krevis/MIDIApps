@@ -12,14 +12,19 @@
 
 import Foundation
 
-internal class SimpleInputStreamSource: NSObject, SMInputStreamSource {
+// TODO Rename file
+
+class SingleInputStreamSource {
 
     init(name: String) {
         self.name = name
-        super.init()
     }
 
     var name: String
+
+}
+
+extension SingleInputStreamSource: SMInputStreamSourceProviding {
 
     var inputStreamSourceName: String? {
         name
@@ -27,6 +32,19 @@ internal class SimpleInputStreamSource: NSObject, SMInputStreamSource {
 
     var inputStreamSourceUniqueID: MIDIUniqueID? {
         nil
+    }
+
+    func isEqualTo(_ other: SMInputStreamSourceProviding) -> Bool {
+        guard let otherSingleSource = other as? SingleInputStreamSource else { return false }
+        return self === otherSingleSource
+    }
+
+    func inputStreamSourceHash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
+    }
+
+    func asInputStreamSource() -> SMInputStreamSource {
+        SMInputStreamSource(provider: self)
     }
 
 }

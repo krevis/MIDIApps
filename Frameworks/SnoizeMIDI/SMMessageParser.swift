@@ -28,7 +28,7 @@ import Foundation
     }
 
     @objc public weak var delegate: SMMessageParserDelegate?
-    @objc public weak var originatingEndpoint: SMEndpoint?
+    public weak var originatingEndpoint: Endpoint?
     @objc public var sysExTimeOut: TimeInterval = 1.0   // seconds
     @objc public var ignoresInvalidData = false
 

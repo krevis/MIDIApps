@@ -140,7 +140,7 @@ import CoreAudio
         }
     }
 
-    @objc public var originatingEndpoint: SMEndpoint? {
+    public var originatingEndpoint: Endpoint? {
         didSet {
             if oldValue != originatingEndpoint {
                 originatingEndpointName = nil
@@ -205,7 +205,7 @@ import CoreAudio
 
     public var originatingEndpointForDisplay: String {
         if let endpoint = originatingEndpoint {
-            let fromOrTo = endpoint is SMSourceEndpoint ? SMMessage.fromString : SMMessage.toString
+            let fromOrTo = endpoint is Source ? SMMessage.fromString : SMMessage.toString
             return "\(fromOrTo) \(endpoint.displayName ?? "")"
         }
         else if let endpointName = originatingEndpointName {

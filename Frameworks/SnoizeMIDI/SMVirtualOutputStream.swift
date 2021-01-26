@@ -14,13 +14,13 @@ import Foundation
 
 @objc public class SMVirtualOutputStream: SMOutputStream {
 
-    @objc public let endpoint: SMSourceEndpoint
+    public let endpoint: Source
 
-    @objc public init?(name: String, uniqueID: MIDIUniqueID) {
-        guard let newEndpoint = SMSourceEndpoint.createVirtualSourceEndpoint(name: name, uniqueID: uniqueID) else { return nil }
+    public init?(midiContext: MIDIContext, name: String, uniqueID: MIDIUniqueID) {
+        guard let newEndpoint = midiContext.createVirtualSource(name: name, uniqueID: uniqueID) else { return nil }
         endpoint = newEndpoint
 
-        super.init()
+        super.init(midiContext: midiContext)
     }
 
     override func send(_ packetListPtr: UnsafePointer<MIDIPacketList>) {

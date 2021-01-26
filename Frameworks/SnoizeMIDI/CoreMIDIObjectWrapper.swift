@@ -15,7 +15,7 @@ import CoreMIDI
 
 // MARK: CoreMIDI Object Wrapper
 
-protocol CoreMIDIObjectWrapper: AnyObject, Equatable, Identifiable {
+protocol CoreMIDIObjectWrapper: AnyObject, Identifiable, Hashable {
 
     var midiContext: CoreMIDIContext { get }
     var midiObjectRef: MIDIObjectRef { get }
@@ -32,6 +32,12 @@ extension CoreMIDIObjectWrapper {
 
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id
+    }
+
+    // MARK: Hashable default implementation
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 
 }

@@ -13,13 +13,13 @@
 import Foundation
 import CoreMIDI
 
-public class MIDIContext: CoreMIDIContext {
+@objc public class MIDIContext: NSObject, CoreMIDIContext {
 
-    public convenience init?() {
+    public convenience override init() {
         self.init(interface: RealCoreMIDIInterface())
     }
 
-    init?(interface: CoreMIDIInterface) {
+    init(interface: CoreMIDIInterface) {
         checkMainQueue()
 
         self.interface = interface
@@ -63,13 +63,19 @@ public class MIDIContext: CoreMIDIContext {
         }
 
         if status != noErr {
-            return nil
+            // TODO How to make this work?
+//            return nil
         }
+
+        super.init()
 
         createdSelf = self
     }
 
     // MARK: Public API
+
+    public let name =
+        (Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String) ?? ProcessInfo.processInfo.processName
 
     public var sources: [Source] {
         sourceList.objects
@@ -109,7 +115,7 @@ public class MIDIContext: CoreMIDIContext {
         //  }
     }
 
-    public func disconnect() {
+    @objc public func disconnect() {
         // Disconnect from CoreMIDI. Necessary only for very special circumstances, since CoreMIDI will be unusable afterwards.
         _ = interface.clientDispose(midiClient)
         midiClient = 0
@@ -168,11 +174,6 @@ public class MIDIContext: CoreMIDIContext {
     func removedVirtualDestination(_ destination: Destination) {
         destinationList.objectWasRemoved(midiObjectRef: destination.midiObjectRef, parentObjectRef: 0, parentType: .other)
     }
-
-    // MARK: Private
-
-    private let name =
-        (Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String) ?? ProcessInfo.processInfo.processName
 
     // MARK: Notifications
 

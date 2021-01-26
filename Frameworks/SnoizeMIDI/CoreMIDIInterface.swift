@@ -66,6 +66,14 @@ protocol CoreMIDIInterface {
 
     func endpointDispose(_ endpt: MIDIEndpointRef) -> OSStatus
 
+    func send(_ port: MIDIPortRef, _ dest: MIDIEndpointRef, _ pktlist: UnsafePointer<MIDIPacketList>) -> OSStatus
+
+    func sendSysex(_ request: UnsafeMutablePointer<MIDISysexSendRequest>) -> OSStatus
+
+    func outputPortCreate(_ client: MIDIClientRef, _ portName: CFString, _ outPort: UnsafeMutablePointer<MIDIPortRef>) -> OSStatus
+
+    func portDispose(_ port: MIDIPortRef) -> OSStatus
+
 }
 
 struct RealCoreMIDIInterface: CoreMIDIInterface {
@@ -182,6 +190,22 @@ struct RealCoreMIDIInterface: CoreMIDIInterface {
 
     func endpointDispose(_ endpt: MIDIEndpointRef) -> OSStatus {
         MIDIEndpointDispose(endpt)
+    }
+
+    func send(_ port: MIDIPortRef, _ dest: MIDIEndpointRef, _ pktlist: UnsafePointer<MIDIPacketList>) -> OSStatus {
+        MIDISend(port, dest, pktlist)
+    }
+
+    func sendSysex(_ request: UnsafeMutablePointer<MIDISysexSendRequest>) -> OSStatus {
+        MIDISendSysex(request)
+    }
+
+    func outputPortCreate(_ client: MIDIClientRef, _ portName: CFString, _ outPort: UnsafeMutablePointer<MIDIPortRef>) -> OSStatus {
+        MIDIOutputPortCreate(client, portName, outPort)
+    }
+
+    public func portDispose(_ port: MIDIPortRef) -> OSStatus {
+        MIDIPortDispose(port)
     }
 
 }

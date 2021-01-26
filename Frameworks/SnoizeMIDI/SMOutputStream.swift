@@ -17,6 +17,13 @@ import CoreAudio
 
     @objc public var ignoresTimeStamps = false
 
+    init(midiContext: MIDIContext) {
+        self.midiContext = midiContext
+        super.init()
+    }
+
+    let midiContext: MIDIContext
+
     // MARK: SMMessageDestination
 
     public func takeMIDIMessages(_ messages: [SMMessage]) {

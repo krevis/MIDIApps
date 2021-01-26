@@ -14,7 +14,8 @@ import Foundation
 
 @objc public class SMSysExSendRequest: NSObject {
 
-    init?(message: SMSystemExclusiveMessage, endpoint: SMDestinationEndpoint, customSysExBufferSize: Int = 0) {
+    init?(message: SMSystemExclusiveMessage, endpoint: Destination, customSysExBufferSize: Int = 0) {
+        self.midiContext = endpoint.midiContext
         self.message = message
         self.customSysExBufferSize = customSysExBufferSize
 
@@ -92,11 +93,11 @@ import Foundation
             let realMaxSysExSpeed = (maxSysExSpeed > 0) ? maxSysExSpeed : 3125
             let perBufferDelay = Double(actualSysExBufferSize) / Double(realMaxSysExSpeed)  // seconds
 
-            result = customMIDISendSysex(&sysexSendRequest, actualSysExBufferSize, perBufferDelay)
+            result = customMIDISendSysex(midiContext, &sysexSendRequest, actualSysExBufferSize, perBufferDelay)
         }
         else {
             // Use CoreMIDI's sender
-            result = MIDISendSysex(&sysexSendRequest)
+            result = midiContext.interface.sendSysex(&sysexSendRequest)
         }
 
         if result != noErr {
@@ -151,6 +152,7 @@ import Foundation
 
     // MARK: Private
 
+    private let midiContext: CoreMIDIContext
     private let dataCount: Int
     private let dataPointer: UnsafePointer<UInt8>
     private let maxSysExSpeed: Int
@@ -201,9 +203,8 @@ public extension Notification.Name {
 }
 
 // Like MIDISendSysex, but specify a size for each buffer to send, and a delay in seconds between sending each buffer.
-private func customMIDISendSysex(_ request: UnsafeMutablePointer<MIDISysexSendRequest>, _ bufferSize: Int, _ perBufferDelay: Double) -> OSStatus {
-    guard let client = SMClient.sharedClient,
-          bufferSize >= 3 && bufferSize <= 32767 else { return OSStatus(paramErr) }
+private func customMIDISendSysex(_ midiContext: CoreMIDIContext, _ request: UnsafeMutablePointer<MIDISysexSendRequest>, _ bufferSize: Int, _ perBufferDelay: Double) -> OSStatus {
+    guard bufferSize >= 3 && bufferSize <= 32767 else { return OSStatus(paramErr) }
 
     if request.pointee.bytesToSend == 0 {
         request.pointee.complete = true
@@ -215,7 +216,7 @@ private func customMIDISendSysex(_ request: UnsafeMutablePointer<MIDISysexSendRe
     }
 
     var port = MIDIPortRef()
-    let status = MIDIOutputPortCreate(client.midiClient, "CustomMIDISendSysex" as CFString, &port)
+    let status = midiContext.interface.outputPortCreate(midiContext.midiClient, "CustomMIDISendSysex" as CFString, &port)
     if status != noErr {
         return status
     }
@@ -234,7 +235,7 @@ private func customMIDISendSysex(_ request: UnsafeMutablePointer<MIDISysexSendRe
             let curPacket = MIDIPacketListInit(packetListPtr)
             _ = MIDIPacketListAdd(packetListPtr, packetListSize, curPacket, 0, packetDataSize, request.pointee.data)
 
-            MIDISend(port, request.pointee.destination, packetListPtr)
+            _ = midiContext.interface.send(port, request.pointee.destination, packetListPtr)
         }
 
         request.pointee.data += packetDataSize
@@ -250,7 +251,7 @@ private func customMIDISendSysex(_ request: UnsafeMutablePointer<MIDISysexSendRe
         }
         else {
             request.pointee.completionProc(request)
-            MIDIPortDispose(port)
+            _ = midiContext.interface.portDispose(port)
         }
     }
 

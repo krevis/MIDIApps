@@ -14,26 +14,24 @@ import Foundation
 
 @objc public class SMPortInputStream: SMInputStream {
 
-    @objc public override init() {
-        guard let client = SMClient.sharedClient else { fatalError() }
+    public override init(midiContext: MIDIContext) {
+        super.init(midiContext: midiContext)
 
-        super.init()
-
-        let status = MIDIInputPortCreate(client.midiClient, "Input port" as CFString, midiReadProc, Unmanaged.passUnretained(self).toOpaque(), &inputPort)
+        let status = MIDIInputPortCreate(midiContext.midiClient, "Input port" as CFString, midiReadProc, Unmanaged.passUnretained(self).toOpaque(), &inputPort)
         if status != noErr {
             // TODO how to handle?
         }
 
-        NotificationCenter.default.addObserver(self, selector: #selector(self.endpointListChanged(_:)), name: .midiObjectListChanged, object: SMSourceEndpoint.self)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.endpointListChanged(_:)), name: .midiObjectListChanged, object: Source.self)
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .midiObjectListChanged, object: SMSourceEndpoint.self)
+        NotificationCenter.default.removeObserver(self, name: .midiObjectListChanged, object: Source.self)
 
         MIDIPortDispose(inputPort)
     }
 
-    @objc public var endpoints: Set<SMSourceEndpoint> = [] {
+    public var endpoints: Set<Source> = [] {
         didSet {
             // The closure-based notification observer API is still awkward to use without creating retain cycles.
             // Easier to use ObjC selectors.
@@ -65,11 +63,11 @@ import Foundation
         }
     }
 
-    @objc public func addEndpoint(_ endpoint: SMSourceEndpoint) {
+    public func addEndpoint(_ endpoint: Source) {
         endpoints = endpoints.union([endpoint])
     }
 
-    @objc public func removeEndpoint(_ endpoint: SMSourceEndpoint) {
+    public func removeEndpoint(_ endpoint: Source) {
         endpoints = endpoints.subtracting([endpoint])
     }
 
@@ -81,36 +79,34 @@ import Foundation
     }
 
     public override func parser(sourceConnectionRefCon: UnsafeMutableRawPointer?) -> SMMessageParser? {
-        // Note: sourceConnectionRefCon points to a SMSourceEndpoint.
+        // Note: sourceConnectionRefCon points to a Source.
         // We are allowed to return nil if we are no longer listening to this source endpoint.
         guard let refCon = sourceConnectionRefCon else { return nil }
-        let endpoint = Unmanaged<SMSourceEndpoint>.fromOpaque(refCon).takeUnretainedValue()
+        let endpoint = Unmanaged<Source>.fromOpaque(refCon).takeUnretainedValue()
         return parsersForEndpoints[endpoint]
     }
 
     public override func streamSource(parser: SMMessageParser) -> SMInputStreamSource? {
-        return parser.originatingEndpoint
+        return parser.originatingEndpoint?.asInputStreamSource()
     }
 
     public override var inputSources: [SMInputStreamSource] {
-        SMSourceEndpoint.sourceEndpoints
+        midiContext.sources.map { $0.asInputStreamSource() }
     }
 
-    public override var selectedInputSources: Set<NSObject> { // TODO Should be typed better
+    public override var selectedInputSources: Set<SMInputStreamSource> {
         get {
-            endpoints
+            return Set(endpoints.map { $0.asInputStreamSource() })
         }
         set {
-            if let newEndpoints = newValue as? Set<SMSourceEndpoint> {
-                endpoints = newEndpoints
-            }
+            endpoints = Set(newValue.compactMap { $0.provider as? Source })
         }
     }
 
     // MARK: Private
 
     private var inputPort: MIDIPortRef = 0
-    private var parsersForEndpoints: [SMSourceEndpoint: SMMessageParser] = [:]
+    private var parsersForEndpoints: [Source: SMMessageParser] = [:]
         // TODO Consider making the key endpoint.endpointRef() = MIDIObjectRef to avoid retain and identity issues? But note SMMessageParser.originatingEndpoint
 
     @objc private func endpointListChanged(_ notification: Notification) {
@@ -118,17 +114,19 @@ import Foundation
     }
 
     @objc private func endpointDisappeared(_ notification: Notification) {
-        if let endpoint = notification.object as? SMSourceEndpoint,
+        if let endpoint = notification.object as? Source,
            endpoints.contains(endpoint) {
             removeEndpoint(endpoint)
-            postSelectedInputStreamSourceDisappearedNotification(source: endpoint)
+
+            // TODO Nobody seems to use this?
+            // postSelectedInputStreamSourceDisappearedNotification(source: endpoint)
         }
     }
 
     @objc private func endpointWasReplaced(_ notification: Notification) {
-        if let oldEndpoint = notification.object as? SMSourceEndpoint,
+        if let oldEndpoint = notification.object as? Source,
            endpoints.contains(oldEndpoint),
-           let newEndpoint = notification.userInfo?[SMMIDIObject.midiObjectReplacement] as? SMSourceEndpoint {
+           let newEndpoint = notification.userInfo?[MIDIContext.objectReplacement] as? Source {
             removeEndpoint(oldEndpoint)
             addEndpoint(newEndpoint)
         }

@@ -14,13 +14,13 @@ import Foundation
 
 @objc public class SMVirtualInputStream: SMInputStream {
 
-    @objc public override init() {
-        virtualEndpointName = SMClient.sharedClient?.name ?? "Virtual Endpoint"
+    public override init(midiContext: MIDIContext) {
+        virtualEndpointName = midiContext.name
         uniqueID = 0 // Let CoreMIDI assign a unique ID to the virtual endpoint when it is created
 
-        inputStreamSource = SimpleInputStreamSource(name: virtualEndpointName)
+        singleSource = SingleInputStreamSource(name: virtualEndpointName)
 
-        super.init()
+        super.init(midiContext: midiContext)
 
         parser = createParser(originatingEndpoint: nil)
             // TODO We should create the parser up front using a class method
@@ -52,10 +52,10 @@ import Foundation
     }
 
     @objc public func setInputSourceName(_ name: String) {
-        inputStreamSource.name = name
+        singleSource.name = name
     }
 
-    @objc public private(set) var endpoint: SMDestinationEndpoint?
+    public private(set) var endpoint: Destination?
 
     // MARK: SMInputStream subclass
 
@@ -74,19 +74,19 @@ import Foundation
     }
 
     public override func streamSource(parser: SMMessageParser) -> SMInputStreamSource? {
-        return inputStreamSource
+        return singleSource.asInputStreamSource()
     }
 
     public override var inputSources: [SMInputStreamSource] {
-        [inputStreamSource]
+        [singleSource.asInputStreamSource()]
     }
 
-    public override var selectedInputSources: Set<NSObject> {
+    public override var selectedInputSources: Set<SMInputStreamSource> {
         get {
-            isActive ? [inputStreamSource] : []
+            isActive ? [singleSource.asInputStreamSource()] : []
         }
         set {
-            isActive = newValue.contains(inputStreamSource)
+            isActive = newValue.contains(singleSource.asInputStreamSource())
         }
     }
 
@@ -115,7 +115,7 @@ import Foundation
 
     // MARK: Private
 
-    private let inputStreamSource: SimpleInputStreamSource
+    private let singleSource: SingleInputStreamSource
     private var parser: SMMessageParser!
 
     private var isActive: Bool {
@@ -133,7 +133,7 @@ import Foundation
     }
 
     private func createEndpoint() {
-        endpoint = SMDestinationEndpoint.createVirtualDestinationEndpoint(name: virtualEndpointName, uniqueID: uniqueID, midiReadProc: midiReadProc, readProcRefCon: Unmanaged.passUnretained(self).toOpaque())
+        endpoint = midiContext.createVirtualDestination(name: virtualEndpointName, uniqueID: uniqueID, midiReadProc: midiReadProc, readProcRefCon: Unmanaged.passUnretained(self).toOpaque())
 
         if let endpoint = endpoint {
             parser.originatingEndpoint = endpoint

@@ -15,7 +15,7 @@ import CoreAudio
 
 @objc public class SMPortOutputStream: SMOutputStream {
 
-    @objc public var endpoints: Set<SMDestinationEndpoint> = [] {
+    public var endpoints: Set<Destination> = [] {
         didSet {
             // The closure-based notification observer API is still awkward to use without creating retain cycles.
             // Easier to use ObjC selectors.
@@ -51,19 +51,17 @@ import CoreAudio
     // Best I can do is to make a new static function that returns a new instance, or nil.
     // Yuck!
 
-    @objc public static func newPortOutputStream() -> SMPortOutputStream? {
-        guard let client = SMClient.sharedClient else { return nil }
-
+    public static func newPortOutputStream(midiContext: MIDIContext) -> SMPortOutputStream? {
         var port: MIDIPortRef = 0
-        let status = MIDIOutputPortCreate(client.midiClient, "Output Port" as CFString, &port)
+        let status = MIDIOutputPortCreate(midiContext.midiClient, "Output Port" as CFString, &port)
         guard status == noErr else { return nil }
 
-        return SMPortOutputStream(port: port)
+        return SMPortOutputStream(midiContext: midiContext, port: port)
     }
 
-    private init(port: MIDIPortRef) {
+    private init(midiContext: MIDIContext, port: MIDIPortRef) {
         outputPort = port
-        super.init()
+        super.init(midiContext: midiContext)
     }
 
     deinit {
@@ -99,12 +97,12 @@ import CoreAudio
     private var outputPort: MIDIPortRef
 
     @objc private func endpointDisappeared(notification: Notification) {
-        if let endpoint = notification.object as? SMDestinationEndpoint {
+        if let endpoint = notification.object as? Destination {
             endpointDisappeared(endpoint)
         }
     }
 
-    private func endpointDisappeared(_ endpoint: SMDestinationEndpoint) {
+    private func endpointDisappeared(_ endpoint: Destination) {
         guard endpoints.contains(endpoint) else { return }
         var newEndpoints = endpoints
         newEndpoints.remove(endpoint)
@@ -113,13 +111,13 @@ import CoreAudio
     }
 
     @objc private func endpointWasReplaced(notification: Notification) {
-        if let endpoint = notification.object as? SMDestinationEndpoint,
-           let replacement = notification.userInfo?[SMMIDIObject.midiObjectReplacement] as? SMDestinationEndpoint {
+        if let endpoint = notification.object as? Destination,
+           let replacement = notification.userInfo?[MIDIContext.objectReplacement] as? Destination {
             endpointWasReplaced(endpoint, replacement)
         }
     }
 
-    private func endpointWasReplaced(_ endpoint: SMDestinationEndpoint, _ replacement: SMDestinationEndpoint) {
+    private func endpointWasReplaced(_ endpoint: Destination, _ replacement: Destination) {
         guard endpoints.contains(endpoint) else { return }
         var newEndpoints = endpoints
         newEndpoints.remove(endpoint)
@@ -195,6 +193,7 @@ public extension Notification.Name {
 }
 
 // TODO Duplicate stuff while migrating from ObjC to Swift
+/*
 @objc public extension NSNotification {
 
     static let portOutputStreamEndpointDisappeared = Notification.Name.clientSetupChanged
@@ -202,3 +201,4 @@ public extension Notification.Name {
     static let portOutputStreamSysExSendDidEnd = Notification.Name.portOutputStreamSysExSendDidEnd
 
 }
+*/
