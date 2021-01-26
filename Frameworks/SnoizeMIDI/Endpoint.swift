@@ -59,21 +59,6 @@ class Endpoint: MIDIObject {
         midiObjectRef
     }
 
-    func remove() {
-        // works only on virtual endpoints owned by this process
-
-        guard midiObjectRef != 0 && isOwnedByThisProcess else { return }
-
-        _ = midiContext.interface.endpointDispose(endpointRef)
-
-        // This object still hangs around in the endpoint lists until CoreMIDI gets around to posting a notification.
-        // We should remove it immediately.
-        midiContext.removedVirtualEndpoint(self)
-
-        // Now we can forget the objectRef (not earlier!)
-        clearMIDIObjectRef()
-    }
-
     func setOwnedByThisProcess() {
         // We have a chicken-egg problem. When setting values of properties, we want
         // to make sure that the endpoint is owned by this process. However, there's

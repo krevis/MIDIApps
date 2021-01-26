@@ -23,13 +23,14 @@ protocol CoreMIDIContext: AnyObject {
 
     func generateNewUniqueID() -> MIDIUniqueID
 
-    func addedVirtualSource(midiObjectRef: MIDIObjectRef) -> Source?
-    func addedVirtualDestination(midiObjectRef: MIDIObjectRef) -> Destination?
-    func removedVirtualEndpoint(_ endpoint: Endpoint)
-
     func findObject(midiObjectRef: MIDIObjectRef) -> Device?
     func findObject(midiObjectRef: MIDIObjectRef) -> ExternalDevice?
     // TODO Would be nice if that was generic. Keep in mind you can overload on return type
+
+    func addedVirtualSource(midiObjectRef: MIDIObjectRef) -> Source?
+    func removedVirtualSource(_ source: Source)
+    func addedVirtualDestination(midiObjectRef: MIDIObjectRef) -> Destination?
+    func removedVirtualDestination(_ destination: Destination)
 
 }
 
@@ -228,19 +229,17 @@ class MIDIContext: CoreMIDIContext {
         return sourceList.findObject(objectRef: midiObjectRef)
     }
 
+    func removedVirtualSource(_ source: Source) {
+        sourceList.objectWasRemoved(midiObjectRef: source.midiObjectRef, parentObjectRef: 0, parentType: .other)
+    }
+
     func addedVirtualDestination(midiObjectRef: MIDIObjectRef) -> Destination? {
         destinationList.objectWasAdded(midiObjectRef: midiObjectRef, parentObjectRef: 0, parentType: .other)
         return destinationList.findObject(objectRef: midiObjectRef)
     }
 
-    func removedVirtualEndpoint(_ endpoint: Endpoint) {
-        // TODO this is ugly...
-        if endpoint is Source {
-            sourceList.objectWasRemoved(midiObjectRef: endpoint.midiObjectRef, parentObjectRef: 0, parentType: .other)
-        }
-        else if endpoint is Destination {
-            destinationList.objectWasRemoved(midiObjectRef: endpoint.midiObjectRef, parentObjectRef: 0, parentType: .other)
-        }
+    func removedVirtualDestination(_ destination: Destination) {
+        destinationList.objectWasRemoved(midiObjectRef: destination.midiObjectRef, parentObjectRef: 0, parentType: .other)
     }
 
 }

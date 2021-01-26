@@ -23,6 +23,22 @@ class Destination: Endpoint, CoreMIDIObjectListable {
         context.interface.getDestination(index)
     }
 
+    // MARK: Additional API
+
+    func remove() {
+        // Only possible for virtual endpoints owned by this process
+        guard midiObjectRef != 0 && isOwnedByThisProcess else { return }
+
+        _ = midiContext.interface.endpointDispose(endpointRef)
+
+        // This object still hangs around in the endpoint lists until CoreMIDI gets around to posting a notification.
+        // We should remove it immediately.
+        midiContext.removedVirtualDestination(self)
+
+        // Now we can forget the objectRef (not earlier!)
+        clearMIDIObjectRef()
+    }
+
     // TODO sysExSpeedWorkaroundEndpoint and related
 
 }
