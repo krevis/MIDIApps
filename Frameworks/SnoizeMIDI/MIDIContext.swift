@@ -157,6 +157,22 @@ import CoreMIDI
         externalDeviceList.findObject(objectRef: midiObjectRef)
     }
 
+    func findObject(midiObjectRef: MIDIObjectRef) -> Source? {
+        sourceList.findObject(objectRef: midiObjectRef)
+    }
+
+    func findObject(midiObjectRef: MIDIObjectRef) -> Destination? {
+        destinationList.findObject(objectRef: midiObjectRef)
+    }
+
+    func findObject(uniqueID: MIDIUniqueID) -> Source? {
+        sourceList.findObject(uniqueID: uniqueID)
+    }
+
+    func findObject(uniqueID: MIDIUniqueID) -> Destination? {
+        destinationList.findObject(uniqueID: uniqueID)
+    }
+
     func addedVirtualSource(midiObjectRef: MIDIObjectRef) -> Source? {
         sourceList.objectWasAdded(midiObjectRef: midiObjectRef, parentObjectRef: 0, parentType: .other)
         return sourceList.findObject(objectRef: midiObjectRef)
@@ -173,6 +189,10 @@ import CoreMIDI
 
     func removedVirtualDestination(_ destination: Destination) {
         destinationList.objectWasRemoved(midiObjectRef: destination.midiObjectRef, parentObjectRef: 0, parentType: .other)
+    }
+
+    func forcePropertyChanged(_ type: MIDIObjectType, _ objectRef: MIDIObjectRef, _ property: CFString) {
+        midiObjectList(type: type)?.objectPropertyChanged(midiObjectRef: objectRef, property: property)
     }
 
     // MARK: Notifications
@@ -292,6 +312,9 @@ public extension MIDIContext {
 }
 
 extension CoreMIDIObjectListable {
+
+    // TODO: All of these static notifications are bad, nobody should be
+    // observing notifications from a class anymore
 
     static func postObjectsAddedNotification(_ objects: [Self]) {
         guard !objects.isEmpty else { return }

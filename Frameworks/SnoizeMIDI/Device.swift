@@ -34,6 +34,24 @@ public class Device: MIDIObject, CoreMIDIObjectListable {
             // in the list anymore.
             midiContext.updateEndpointsForDevice(self)
         }
+
+        if property == kMIDIPropertyName {
+            // This may affect the displayName of associated sources and destinations.
+            let interface = midiContext.interface
+            for entityIndex in 0 ..< interface.deviceGetNumberOfEntities(midiObjectRef) {
+                let entityRef = interface.deviceGetEntity(midiObjectRef, entityIndex)
+
+                for index in 0 ..< interface.entityGetNumberOfSources(entityRef) {
+                    let sourceRef = interface.entityGetSource(entityRef, index)
+                    midiContext.forcePropertyChanged(.source, sourceRef, kMIDIPropertyDisplayName)
+                }
+
+                for index in 0 ..< interface.entityGetNumberOfDestinations(entityRef) {
+                    let destinationRef = interface.entityGetDestination(entityRef, index)
+                    midiContext.forcePropertyChanged(.destination, destinationRef, kMIDIPropertyDisplayName)
+                }
+            }
+        }
     }
 
 }

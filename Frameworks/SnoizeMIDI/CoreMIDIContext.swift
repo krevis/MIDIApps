@@ -28,10 +28,17 @@ protocol CoreMIDIContext: AnyObject {
 
     func findObject(midiObjectRef: MIDIObjectRef) -> Device?
     func findObject(midiObjectRef: MIDIObjectRef) -> ExternalDevice?
+    func findObject(midiObjectRef: MIDIObjectRef) -> Source?
+    func findObject(midiObjectRef: MIDIObjectRef) -> Destination?
+
+    func findObject(uniqueID: MIDIUniqueID) -> Source?
+    func findObject(uniqueID: MIDIUniqueID) -> Destination?
 
     func addedVirtualSource(midiObjectRef: MIDIObjectRef) -> Source?
     func removedVirtualSource(_ source: Source)
     func addedVirtualDestination(midiObjectRef: MIDIObjectRef) -> Destination?
     func removedVirtualDestination(_ destination: Destination)
+
+    func forcePropertyChanged(_ type: MIDIObjectType, _ objectRef: MIDIObjectRef, _ property: CFString)
 
 }

@@ -106,7 +106,7 @@ public class Endpoint: MIDIObject {
         }
     }
 
-    private var uniqueIDsOfConnectedThings: [MIDIUniqueID] {
+    var uniqueIDsOfConnectedThings: [MIDIUniqueID] {
         // Connected things may be external devices, endpoints, or who knows what.
 
         // The property for kMIDIPropertyConnectionUniqueID may be an integer or a data object.

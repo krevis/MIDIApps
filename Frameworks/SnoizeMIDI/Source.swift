@@ -25,6 +25,20 @@ public class Source: Endpoint, CoreMIDIObjectListable {
         context.interface.getSource(index)
     }
 
+    override func midiPropertyChanged(_ property: CFString) {
+        invalidateCachedProperty(property)
+
+        if property == kMIDIPropertyConnectionUniqueID || property == kMIDIPropertyName {
+            // This may affect our displayName
+            midiContext.forcePropertyChanged(Self.midiObjectType, midiObjectRef, kMIDIPropertyDisplayName)
+        }
+
+        if property == kMIDIPropertyDisplayName {
+            // TODO Something more targeted would be nice.
+            Self.postObjectListChangedNotification()
+        }
+    }
+
     // MARK: Additional API
 
     public func remove() {

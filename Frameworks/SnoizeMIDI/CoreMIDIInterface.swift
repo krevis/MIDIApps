@@ -54,6 +54,9 @@ protocol CoreMIDIInterface {
     func entityGetNumberOfSources(_ entity: MIDIEntityRef) -> Int
     func entityGetSource(_ entity: MIDIEntityRef, _ sourceIndex0: Int) -> MIDIEndpointRef
 
+    func entityGetNumberOfDestinations(_ entity: MIDIEntityRef) -> Int
+    func entityGetDestination(_ entity: MIDIEntityRef, _ destIndex0: Int) -> MIDIEndpointRef
+
     func objectFindByUniqueID(_ inUniqueID: MIDIUniqueID, _ outObject: UnsafeMutablePointer<MIDIObjectRef>?, _ outObjectType: UnsafeMutablePointer<MIDIObjectType>?) -> OSStatus
 
     func sourceCreate(_ client: MIDIClientRef, _ name: CFString, _ outSrc: UnsafeMutablePointer<MIDIEndpointRef>) -> OSStatus
@@ -166,6 +169,14 @@ struct RealCoreMIDIInterface: CoreMIDIInterface {
 
     func entityGetSource(_ entity: MIDIEntityRef, _ sourceIndex0: Int) -> MIDIEndpointRef {
         MIDIEntityGetSource(entity, sourceIndex0)
+    }
+
+    func entityGetNumberOfDestinations(_ entity: MIDIEntityRef) -> Int {
+        MIDIEntityGetNumberOfDestinations(entity)
+    }
+
+    func entityGetDestination(_ entity: MIDIEntityRef, _ destIndex0: Int) -> MIDIEndpointRef {
+        MIDIEntityGetDestination(entity, destIndex0)
     }
 
     func objectFindByUniqueID(_ inUniqueID: MIDIUniqueID, _ outObject: UnsafeMutablePointer<MIDIObjectRef>?, _ outObjectType: UnsafeMutablePointer<MIDIObjectType>?) -> OSStatus {
