@@ -24,7 +24,7 @@ public class Destination: Endpoint, CoreMIDIObjectListable {
     }
 
     override func midiPropertyChanged(_ property: CFString) {
-        invalidateCachedProperty(property)
+        super.midiPropertyChanged(property)
 
         if property == kMIDIPropertyConnectionUniqueID || property == kMIDIPropertyName {
             // This may affect our displayName
