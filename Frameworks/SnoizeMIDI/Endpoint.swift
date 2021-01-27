@@ -17,24 +17,24 @@ public class Endpoint: MIDIObject {
 
     required init(context: CoreMIDIContext, objectRef: MIDIObjectRef) {
         super.init(context: context, objectRef: objectRef)
-        cacheStringProperty(kMIDIPropertyManufacturer)
-        cacheStringProperty(kMIDIPropertyModel)
-        cacheStringProperty(kMIDIPropertyDisplayName)
     }
 
+    private lazy var manufacturerCacheKey = cacheProperty(kMIDIPropertyManufacturer, String.self)
     public var manufacturer: String? {
-        get { getCachedProperty(kMIDIPropertyManufacturer) }
-        set { setCachedProperty(kMIDIPropertyManufacturer, newValue) }
+        get { self[manufacturerCacheKey] }
+        set { self[manufacturerCacheKey] = newValue }
     }
 
+    private lazy var modelCacheKey = cacheProperty(kMIDIPropertyModel, String.self)
     public var model: String? {
-        get { getCachedProperty(kMIDIPropertyModel) }
-        set { setCachedProperty(kMIDIPropertyModel, newValue) }
+        get { self[modelCacheKey] }
+        set { self[modelCacheKey] = newValue }
     }
 
+    private lazy var displayNameCacheKey = cacheProperty(kMIDIPropertyDisplayName, String.self)
     public var displayName: String? {
-        get { getCachedProperty(kMIDIPropertyDisplayName) }
-        set { setCachedProperty(kMIDIPropertyDisplayName, newValue) }
+        get { self[displayNameCacheKey] }
+        set { self[displayNameCacheKey] = newValue }
     }
 
     public var device: Device? {

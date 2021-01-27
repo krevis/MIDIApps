@@ -15,7 +15,15 @@ import CoreMIDI
 
 // A struct that caches a CoreMIDI property value
 
-struct CachedProperty<T: CoreMIDIPropertyValue & Equatable> {
+protocol PropertyCache {
+    mutating func invalidate()
+}
+
+struct AnyPropertyCache {
+    var base: PropertyCache
+}
+
+struct TypedPropertyCache<T: Equatable>: PropertyCache {
 
     init(getter: @escaping () -> T?, setter: @escaping (T?) -> Void) {
         self.getter = getter
