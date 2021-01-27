@@ -15,13 +15,7 @@ import CoreMIDI
 
 // A struct that caches a CoreMIDI property value
 
-protocol Invalidatable {
-
-    mutating func invalidate()
-
-}
-
-struct CachedProperty<T: CoreMIDIPropertyValue & Equatable>: Invalidatable {
+struct CachedProperty<T: CoreMIDIPropertyValue & Equatable> {
 
     init(getter: @escaping () -> T?, setter: @escaping (T?) -> Void) {
         self.getter = getter

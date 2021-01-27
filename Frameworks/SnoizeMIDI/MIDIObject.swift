@@ -24,6 +24,10 @@ public class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
         self.midiContext = context
         self.midiObjectRef = objectRef
 
+        cacheInt32Property(kMIDIPropertyUniqueID)
+        cacheStringProperty(kMIDIPropertyName)
+        cacheInt32Property(kMIDIPropertyMaxSysExSpeed)
+
         // Immediately cache the object's uniqueID, since it could become
         // inaccessible later, if the object is removed from CoreMIDI
         _ = uniqueID
@@ -31,17 +35,48 @@ public class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
 
     // MARK: Property value cache
 
-    func cachedProperty<T: CoreMIDIPropertyValue>(_ property: CFString) -> CachedProperty<T> {
-        let cachedProperty = CachedProperty<T>(getter: { self[property] }, setter: { self[property] = $0 })
-        cachedProperties[property] = cachedProperty
-        return cachedProperty
+    private var cachedInt32Properties: [CFString: CachedProperty<Int32>] = [:]
+    func cacheInt32Property(_ property: CFString) {
+        let cachedProperty = CachedProperty<Int32>(getter: { self[property] }, setter: { self[property] = $0 })
+        cachedInt32Properties[property] = cachedProperty
     }
 
-    private var cachedProperties: [CFString: Invalidatable] = [:]
+    private var cachedStringProperties: [CFString: CachedProperty<String>] = [:]
+    func cacheStringProperty(_ property: CFString) {
+        let cachedProperty = CachedProperty<String>(getter: { self[property] }, setter: { self[property] = $0 })
+        cachedStringProperties[property] = cachedProperty
+    }
 
-    private func invalidateCachedProperty(_ property: CFString) {
-        cachedProperties[property]?.invalidate()
-        // TODO Does this actually work? Not clear if the value in the map is independent of the stored value
+    private var cachedDataProperties: [CFString: CachedProperty<Data>] = [:]
+    func cacheDataProperty(_ property: CFString) {
+        let cachedProperty = CachedProperty<Data>(getter: { self[property] }, setter: { self[property] = $0 })
+        cachedDataProperties[property] = cachedProperty
+    }
+
+    func getCachedProperty(_ property: CFString) -> Int32? {
+        cachedInt32Properties[property]?.value
+    }
+    func setCachedProperty(_ property: CFString, _ value: Int32?) {
+        cachedInt32Properties[property]?.value = value
+    }
+    func getCachedProperty(_ property: CFString) -> String? {
+        cachedStringProperties[property]?.value
+    }
+    func setCachedProperty(_ property: CFString, _ value: String?) {
+        cachedStringProperties[property]?.value = value
+    }
+    func getCachedProperty(_ property: CFString) -> Data? {
+        cachedDataProperties[property]?.value
+    }
+    func setCachedProperty(_ property: CFString, _ value: Data?) {
+        cachedDataProperties[property]?.value = value
+    }
+
+    func invalidateCachedProperty(_ property: CFString) {
+        // TODO would be nice to only do one lookup not 3
+        cachedInt32Properties[property]?.invalidate()
+        cachedDataProperties[property]?.invalidate()
+        cachedStringProperties[property]?.invalidate()
 
         // Always refetch the uniqueID immediately, since we might need it
         // in order to do lookups, and I don't trust that we will always
@@ -53,24 +88,21 @@ public class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
 
     // MARK: Specific properties
 
-    private lazy var cachedUniqueID: CachedProperty<Int32> = cachedProperty(kMIDIPropertyUniqueID)
     private let fallbackUniqueID: MIDIUniqueID = 0
     public var uniqueID: MIDIUniqueID {
-        get { cachedUniqueID.value ?? fallbackUniqueID  }
-        set { cachedUniqueID.value = newValue }
+        get { getCachedProperty(kMIDIPropertyUniqueID) ?? fallbackUniqueID  }
+        set { setCachedProperty(kMIDIPropertyUniqueID, newValue) }
     }
 
-    private lazy var cachedName: CachedProperty<String> = cachedProperty(kMIDIPropertyName)
     public var name: String? {
-        get { cachedName.value }
-        set { cachedName.value = newValue }
+        get { getCachedProperty(kMIDIPropertyName) }
+        set { setCachedProperty(kMIDIPropertyName, newValue) }
     }
 
-    private lazy var cachedMaxSysExSpeed: CachedProperty<Int32> = cachedProperty(kMIDIPropertyMaxSysExSpeed)
     private let fallbackMaxSysExSpeed: Int32 = 3125 // bytes/sec for MIDI 1.0
     public var maxSysExSpeed: Int32 {
-        get { cachedMaxSysExSpeed.value ?? fallbackMaxSysExSpeed  }
-        set { cachedMaxSysExSpeed.value = newValue }
+        get { getCachedProperty(kMIDIPropertyMaxSysExSpeed) ?? fallbackUniqueID  }
+        set { setCachedProperty(kMIDIPropertyMaxSysExSpeed, newValue) }
     }
 
     // MARK: Property changes
@@ -82,7 +114,13 @@ public class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
     // MARK: Internal functions for rare uses
 
     func invalidateCachedProperties() {
-        for propertyName in cachedProperties.keys {
+        for propertyName in cachedInt32Properties.keys {
+            invalidateCachedProperty(propertyName)
+        }
+        for propertyName in cachedStringProperties.keys {
+            invalidateCachedProperty(propertyName)
+        }
+        for propertyName in cachedDataProperties.keys {
             invalidateCachedProperty(propertyName)
         }
     }

@@ -15,19 +15,26 @@ import CoreMIDI
 
 public class Endpoint: MIDIObject {
 
+    required init(context: CoreMIDIContext, objectRef: MIDIObjectRef) {
+        super.init(context: context, objectRef: objectRef)
+        cacheStringProperty(kMIDIPropertyManufacturer)
+        cacheStringProperty(kMIDIPropertyModel)
+        cacheStringProperty(kMIDIPropertyDisplayName)
+    }
+
     public var manufacturer: String? {
-        get { cachedManufacturer.value }
-        set { cachedManufacturer.value = newValue }
+        get { getCachedProperty(kMIDIPropertyManufacturer) }
+        set { setCachedProperty(kMIDIPropertyManufacturer, newValue) }
     }
 
     public var model: String? {
-        get { cachedModel.value }
-        set { cachedModel.value = newValue }
+        get { getCachedProperty(kMIDIPropertyModel) }
+        set { setCachedProperty(kMIDIPropertyModel, newValue) }
     }
 
     public var displayName: String? {
-        get { cachedDisplayName.value }
-        set { cachedDisplayName.value = newValue }
+        get { getCachedProperty(kMIDIPropertyDisplayName) }
+        set { setCachedProperty(kMIDIPropertyDisplayName, newValue) }
     }
 
     public var device: Device? {
@@ -71,10 +78,6 @@ public class Endpoint: MIDIObject {
     }
 
     // MARK: Private
-
-    private lazy var cachedManufacturer: CachedProperty<String> = cachedProperty(kMIDIPropertyManufacturer)
-    private lazy var cachedModel: CachedProperty<String> = cachedProperty(kMIDIPropertyModel)
-    private lazy var cachedDisplayName: CachedProperty<String> = cachedProperty(kMIDIPropertyDisplayName)
 
     // We set this property on the virtual endpoints that we create,
     // so we can query them to see if they're ours.
