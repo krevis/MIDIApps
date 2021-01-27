@@ -163,7 +163,7 @@ class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>
               let removedObject = objectMap[midiObjectRef]
         else { return nil }
 
-        objectMap.removeValue(forKey: midiObjectRef)
+        objectMap[midiObjectRef] = nil
         if let index = orderedObjects.firstIndex(where: { $0 == removedObject }) {
             orderedObjects.remove(at: index)
         }

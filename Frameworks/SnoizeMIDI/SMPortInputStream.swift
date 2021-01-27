@@ -44,7 +44,7 @@ import Foundation
                 // retainForIncomingMIDI() will no longer be called.
                 // However, parser(sourceConnectionRefCon:) may still be called, on the main thread,
                 // later on; it should not crash or fail, but it may return nil.
-                parsersForEndpoints.removeValue(forKey: endpoint)
+                parsersForEndpoints[endpoint] = nil
 
                 center.removeObserver(self, name: .midiObjectDisappeared, object: endpoint)
                 center.removeObserver(self, name: .midiObjectWasReplaced, object: endpoint)
