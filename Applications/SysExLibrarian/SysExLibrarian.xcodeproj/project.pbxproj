@@ -221,6 +221,19 @@
 		1658B8A909F36B5E00F42BFB /* SSESysexSpeedOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSESysexSpeedOutlineView.m; sourceTree = "<group>"; };
 		16666D820AB404250084C23B /* CocoaCryptoHashing.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CocoaCryptoHashing.h; sourceTree = "<group>"; };
 		16666D830AB404250084C23B /* CocoaCryptoHashing.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CocoaCryptoHashing.m; sourceTree = "<group>"; };
+		169225E625C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		169225E725C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Preferences.nib; sourceTree = "<group>"; };
+		169225E825C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Details.nib; sourceTree = "<group>"; };
+		169225E925C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MainWindow.nib; sourceTree = "<group>"; };
+		169225EA25C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Play.nib; sourceTree = "<group>"; };
+		169225EB25C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/RecordOne.nib; sourceTree = "<group>"; };
+		169225EC25C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/RecordMany.nib; sourceTree = "<group>"; };
+		169225ED25C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Delete.nib; sourceTree = "<group>"; };
+		169225EE25C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Import.nib; sourceTree = "<group>"; };
+		169225EF25C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		169225F025C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text; name = en; path = en.lproj/MainWindow.toolbar; sourceTree = "<group>"; };
+		169225F125C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SysExLibrarian.strings; sourceTree = "<group>"; };
+		169225F225C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.htmld; name = en; path = en.lproj/docs.htmld; sourceTree = "<group>"; };
 		16DC48480AB3A359002ECBD6 /* SSESysExSpeedController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SSESysExSpeedController.h; sourceTree = "<group>"; };
 		16DC48490AB3A359002ECBD6 /* SSESysExSpeedController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SSESysExSpeedController.m; sourceTree = "<group>"; };
 		16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDI.xcodeproj; path = ../../Frameworks/SnoizeMIDI/SnoizeMIDI.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -234,27 +247,20 @@
 		16F033950984B76F006C8A44 /* SysEx Librarian.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SysEx Librarian.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		16F0384B0984C9D7006C8A44 /* Defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Defaults.plist; sourceTree = "<group>"; };
 		2A37F4B0FDCFA73011CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		2A37F4B7FDCFA73011CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
-		2A37F4BAFDCFA73011CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = English; path = English.lproj/Credits.rtf; sourceTree = "<group>"; };
 		2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		F5308FE40232E1AB01000164 /* SSERecordOneController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSERecordOneController.h; sourceTree = "<group>"; };
 		F5308FE50232E1AB01000164 /* SSERecordOneController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSERecordOneController.m; sourceTree = "<group>"; };
-		F5308FE90232F9D401000164 /* RecordOne.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = RecordOne.nib; path = English.lproj/RecordOne.nib; sourceTree = "<group>"; };
 		F5308FED0233023701000164 /* SSERecordManyController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSERecordManyController.h; sourceTree = "<group>"; };
 		F5308FEE0233023701000164 /* SSERecordManyController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSERecordManyController.m; sourceTree = "<group>"; };
-		F5308FF20233059B01000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/RecordMany.nib; sourceTree = "<group>"; };
 		F5308FF40233075A01000164 /* SSERecordController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSERecordController.h; sourceTree = "<group>"; };
 		F5308FF50233075A01000164 /* SSERecordController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSERecordController.m; sourceTree = "<group>"; };
 		F5308FF902330F2A01000164 /* SSEPlayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEPlayController.h; sourceTree = "<group>"; };
 		F5308FFA02330F2A01000164 /* SSEPlayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEPlayController.m; sourceTree = "<group>"; };
-		F5308FFE023315AD01000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Play.nib; sourceTree = "<group>"; };
 		F5309002023333DF01000164 /* SSEDeleteController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEDeleteController.h; sourceTree = "<group>"; };
 		F5309003023333DF01000164 /* SSEDeleteController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEDeleteController.m; sourceTree = "<group>"; };
-		F53090070233385B01000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Delete.nib; sourceTree = "<group>"; };
 		F530900A02333F8B01000164 /* SSEImportController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEImportController.h; sourceTree = "<group>"; };
 		F530900B02333F8B01000164 /* SSEImportController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEImportController.m; sourceTree = "<group>"; };
-		F530900F023350F901000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Import.nib; sourceTree = "<group>"; };
 		F53090120233540701000164 /* SSEFindMissingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEFindMissingController.h; sourceTree = "<group>"; };
 		F53090130233540701000164 /* SSEFindMissingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEFindMissingController.m; sourceTree = "<group>"; };
 		F539E386020F2C2F01000164 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -266,8 +272,6 @@
 		F559F90301DEC14A01000164 /* SSEAppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEAppController.m; sourceTree = "<group>"; };
 		F559F90601DEC1D801000164 /* SSEPreferencesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEPreferencesWindowController.h; sourceTree = "<group>"; };
 		F559F90701DEC1D801000164 /* SSEPreferencesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEPreferencesWindowController.m; sourceTree = "<group>"; };
-		F559F90B01DEC5E001000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Preferences.nib; sourceTree = "<group>"; };
-		F559F90D01DEF5E001000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainWindow.nib; sourceTree = "<group>"; };
 		F565B6E501E1419001000164 /* SSEMainWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEMainWindowController.h; sourceTree = "<group>"; };
 		F565B6E601E1419001000164 /* SSEMainWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEMainWindowController.m; sourceTree = "<group>"; };
 		F565B6E901E1498301000164 /* SSEMIDIController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEMIDIController.h; sourceTree = "<group>"; };
@@ -292,16 +296,12 @@
 		F58752680214C25201000164 /* SSEWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEWindowController.m; sourceTree = "<group>"; };
 		F587526B0214CA4E01000164 /* NSToolbarItem-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSToolbarItem-Extensions.h"; sourceTree = "<group>"; };
 		F587526C0214CA4E01000164 /* NSToolbarItem-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSToolbarItem-Extensions.m"; sourceTree = "<group>"; };
-		F58752700214CEDD01000164 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = English; path = English.lproj/MainWindow.toolbar; sourceTree = "<group>"; };
 		F58752740214D73401000164 /* SSEValidatingButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEValidatingButton.h; sourceTree = "<group>"; };
 		F58752750214D73401000164 /* SSEValidatingButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEValidatingButton.m; sourceTree = "<group>"; };
-		F5C54B9C030C6F9D01000164 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SysExLibrarian.strings; sourceTree = "<group>"; };
-		F5D90FE5021630C101000164 /* English */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = text.html; name = English; path = English.lproj/docs.htmld; sourceTree = "<group>"; };
 		F5DFAC8302F7715701000164 /* SSEExportController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEExportController.h; sourceTree = "<group>"; };
 		F5DFAC8402F7715701000164 /* SSEExportController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEExportController.m; sourceTree = "<group>"; };
 		F5F52C1102200EBE01000164 /* SSEDetailsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEDetailsWindowController.h; sourceTree = "<group>"; };
 		F5F52C1302200F6601000164 /* SSEDetailsWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEDetailsWindowController.m; sourceTree = "<group>"; };
-		F5F52C16022015AC01000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Details.nib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -687,7 +687,7 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1000;
+				LastUpgradeCheck = 1240;
 				TargetAttributes = {
 					16F033360984B76F006C8A44 = {
 						DevelopmentTeam = YDJAW5GX9U;
@@ -697,13 +697,14 @@
 			};
 			buildConfigurationList = 16F032BA0984B5DD006C8A44 /* Build configuration list for PBXProject "SysExLibrarian" */;
 			compatibilityVersion = "Xcode 12.0";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 1;
 			knownRegions = (
-				English,
-				Japanese,
-				French,
-				German,
+				fr,
+				Base,
+				de,
+				ja,
+				en,
 			);
 			mainGroup = 2A37F4AAFDCFA73011CA2CEA /* SysExLibrarian */;
 			projectDirPath = "";
@@ -936,7 +937,7 @@
 		2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				2A37F4B7FDCFA73011CA2CEA /* English */,
+				169225E625C2B03300771B4F /* Base */,
 			);
 			name = MainMenu.nib;
 			sourceTree = "<group>";
@@ -944,7 +945,7 @@
 		2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */ = {
 			isa = PBXVariantGroup;
 			children = (
-				2A37F4BAFDCFA73011CA2CEA /* English */,
+				169225EF25C2B04800771B4F /* en */,
 			);
 			name = Credits.rtf;
 			sourceTree = "<group>";
@@ -952,7 +953,7 @@
 		F5308FE80232F9D401000164 /* RecordOne.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F5308FE90232F9D401000164 /* RecordOne.nib */,
+				169225EB25C2B03300771B4F /* Base */,
 			);
 			name = RecordOne.nib;
 			sourceTree = "<group>";
@@ -960,7 +961,7 @@
 		F5308FF10233059B01000164 /* RecordMany.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F5308FF20233059B01000164 /* English */,
+				169225EC25C2B03300771B4F /* Base */,
 			);
 			name = RecordMany.nib;
 			sourceTree = "<group>";
@@ -968,7 +969,7 @@
 		F5308FFD023315AD01000164 /* Play.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F5308FFE023315AD01000164 /* English */,
+				169225EA25C2B03300771B4F /* Base */,
 			);
 			name = Play.nib;
 			sourceTree = "<group>";
@@ -976,7 +977,7 @@
 		F53090060233385B01000164 /* Delete.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F53090070233385B01000164 /* English */,
+				169225ED25C2B03300771B4F /* Base */,
 			);
 			name = Delete.nib;
 			sourceTree = "<group>";
@@ -984,7 +985,7 @@
 		F530900E023350F901000164 /* Import.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F530900F023350F901000164 /* English */,
+				169225EE25C2B03300771B4F /* Base */,
 			);
 			name = Import.nib;
 			sourceTree = "<group>";
@@ -992,7 +993,7 @@
 		F559F90A01DEC5E001000164 /* Preferences.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F559F90B01DEC5E001000164 /* English */,
+				169225E725C2B03300771B4F /* Base */,
 			);
 			name = Preferences.nib;
 			sourceTree = "<group>";
@@ -1000,7 +1001,7 @@
 		F559F90F01DEFA9701000164 /* MainWindow.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F559F90D01DEF5E001000164 /* English */,
+				169225E925C2B03300771B4F /* Base */,
 			);
 			name = MainWindow.nib;
 			sourceTree = "<group>";
@@ -1008,7 +1009,7 @@
 		F587526F0214CEDD01000164 /* MainWindow.toolbar */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F58752700214CEDD01000164 /* English */,
+				169225F025C2B04800771B4F /* en */,
 			);
 			name = MainWindow.toolbar;
 			sourceTree = "<group>";
@@ -1016,7 +1017,7 @@
 		F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F5C54B9C030C6F9D01000164 /* English */,
+				169225F125C2B04800771B4F /* en */,
 			);
 			name = SysExLibrarian.strings;
 			sourceTree = "<group>";
@@ -1024,7 +1025,7 @@
 		F5D90FE4021630C101000164 /* docs.htmld */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F5D90FE5021630C101000164 /* English */,
+				169225F225C2B04800771B4F /* en */,
 			);
 			name = docs.htmld;
 			sourceTree = "<group>";
@@ -1032,7 +1033,7 @@
 		F5F52C15022015AC01000164 /* Details.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F5F52C16022015AC01000164 /* English */,
+				169225E825C2B03300771B4F /* Base */,
 			);
 			name = Details.nib;
 			sourceTree = "<group>";
@@ -1087,6 +1088,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1106,6 +1108,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
