@@ -12,8 +12,6 @@
 
 import Foundation
 
-// TODO Rename file
-
 class SingleInputStreamSource {
 
     init(name: String) {

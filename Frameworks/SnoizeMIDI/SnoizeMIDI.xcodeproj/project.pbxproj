@@ -55,9 +55,9 @@
 		16966A3E25A91B5F00D5BE2A /* SMPortInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A3D25A91B5F00D5BE2A /* SMPortInputStream.swift */; };
 		16966A3F25A91B5F00D5BE2A /* SMPortInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A3D25A91B5F00D5BE2A /* SMPortInputStream.swift */; };
 		16966A4025A91B5F00D5BE2A /* SMPortInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A3D25A91B5F00D5BE2A /* SMPortInputStream.swift */; };
-		16966A4E25A9399600D5BE2A /* SimpleInputStreamSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A4D25A9399600D5BE2A /* SimpleInputStreamSource.swift */; };
-		16966A4F25A9399600D5BE2A /* SimpleInputStreamSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A4D25A9399600D5BE2A /* SimpleInputStreamSource.swift */; };
-		16966A5025A9399600D5BE2A /* SimpleInputStreamSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A4D25A9399600D5BE2A /* SimpleInputStreamSource.swift */; };
+		16966A4E25A9399600D5BE2A /* SingleInputStreamSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A4D25A9399600D5BE2A /* SingleInputStreamSource.swift */; };
+		16966A4F25A9399600D5BE2A /* SingleInputStreamSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A4D25A9399600D5BE2A /* SingleInputStreamSource.swift */; };
+		16966A5025A9399600D5BE2A /* SingleInputStreamSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A4D25A9399600D5BE2A /* SingleInputStreamSource.swift */; };
 		16966A5E25A9417400D5BE2A /* SMInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A5D25A9417400D5BE2A /* SMInputStream.swift */; };
 		16966A5F25A9417400D5BE2A /* SMInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A5D25A9417400D5BE2A /* SMInputStream.swift */; };
 		16966A6025A9417400D5BE2A /* SMInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A5D25A9417400D5BE2A /* SMInputStream.swift */; };
@@ -167,7 +167,7 @@
 		1691F9F225BF964D00B9CE06 /* MIDIContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MIDIContext.swift; sourceTree = "<group>"; };
 		169669F225A8E49300D5BE2A /* SMVirtualInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMVirtualInputStream.swift; sourceTree = "<group>"; };
 		16966A3D25A91B5F00D5BE2A /* SMPortInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMPortInputStream.swift; sourceTree = "<group>"; };
-		16966A4D25A9399600D5BE2A /* SimpleInputStreamSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleInputStreamSource.swift; sourceTree = "<group>"; };
+		16966A4D25A9399600D5BE2A /* SingleInputStreamSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleInputStreamSource.swift; sourceTree = "<group>"; };
 		16966A5D25A9417400D5BE2A /* SMInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMInputStream.swift; sourceTree = "<group>"; };
 		16966A6D25ABCD7A00D5BE2A /* SMMessageParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMessageParser.swift; sourceTree = "<group>"; };
 		16966A8A25AD0F8500D5BE2A /* SMInvalidMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMInvalidMessage.swift; sourceTree = "<group>"; };
@@ -398,7 +398,7 @@
 			children = (
 				16966A5D25A9417400D5BE2A /* SMInputStream.swift */,
 				16966B8A25B7CE1900D5BE2A /* SMInputStreamSource.swift */,
-				16966A4D25A9399600D5BE2A /* SimpleInputStreamSource.swift */,
+				16966A4D25A9399600D5BE2A /* SingleInputStreamSource.swift */,
 				16966A6D25ABCD7A00D5BE2A /* SMMessageParser.swift */,
 				16966A3D25A91B5F00D5BE2A /* SMPortInputStream.swift */,
 				169669F225A8E49300D5BE2A /* SMVirtualInputStream.swift */,
@@ -646,7 +646,7 @@
 				1691F98D25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift in Sources */,
 				16966AF425B5222600D5BE2A /* SMMessage.swift in Sources */,
 				1691F9DF25BD7E5100B9CE06 /* CoreMIDIInterface.swift in Sources */,
-				16966A4E25A9399600D5BE2A /* SimpleInputStreamSource.swift in Sources */,
+				16966A4E25A9399600D5BE2A /* SingleInputStreamSource.swift in Sources */,
 				16A3B74D25A40A0D00C7F61E /* SMSysExSendRequest.swift in Sources */,
 				16B11BC70971D40100DB1DB5 /* SMUtilities.m in Sources */,
 				1699289A25971F3A0057715C /* MessageHistory.swift in Sources */,
@@ -691,7 +691,7 @@
 				1691F98E25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift in Sources */,
 				16966AF525B5222600D5BE2A /* SMMessage.swift in Sources */,
 				1691F9E025BD7E5100B9CE06 /* CoreMIDIInterface.swift in Sources */,
-				16966A4F25A9399600D5BE2A /* SimpleInputStreamSource.swift in Sources */,
+				16966A4F25A9399600D5BE2A /* SingleInputStreamSource.swift in Sources */,
 				16A3B72825A03DFA00C7F61E /* SMPortOutputStream.swift in Sources */,
 				16A3B74E25A40A0D00C7F61E /* SMSysExSendRequest.swift in Sources */,
 				16966AAF25AD73AB00D5BE2A /* SMSystemCommonMessage.swift in Sources */,
@@ -736,7 +736,7 @@
 				1691F98F25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift in Sources */,
 				16966AF625B5222600D5BE2A /* SMMessage.swift in Sources */,
 				1691F9E125BD7E5100B9CE06 /* CoreMIDIInterface.swift in Sources */,
-				16966A5025A9399600D5BE2A /* SimpleInputStreamSource.swift in Sources */,
+				16966A5025A9399600D5BE2A /* SingleInputStreamSource.swift in Sources */,
 				16A3B72925A03DFA00C7F61E /* SMPortOutputStream.swift in Sources */,
 				16A3B74F25A40A0D00C7F61E /* SMSysExSendRequest.swift in Sources */,
 				16966AB025AD73AB00D5BE2A /* SMSystemCommonMessage.swift in Sources */,
