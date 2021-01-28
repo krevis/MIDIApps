@@ -152,7 +152,6 @@
 		161D6CA10972127700CA5276 /* Snoize-Project-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Global.xcconfig"; path = "../../Configurations/Snoize-Project-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
 		162A31F1254E9595008E1F38 /* Snoize-Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Snoize-Signing.xcconfig"; path = "../../Configurations/Snoize-Signing.xcconfig"; sourceTree = "<group>"; };
 		1691F95225B90AA500B9CE06 /* SMMessageDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMessageDestination.swift; sourceTree = "<group>"; };
-		1691F97225B9621100B9CE06 /* SMMIDIObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMIDIObject.swift; sourceTree = "<group>"; };
 		1691F98C25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMIDIObjectWrapper.swift; sourceTree = "<group>"; };
 		1691F99625BD621A00B9CE06 /* MIDIObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MIDIObject.swift; sourceTree = "<group>"; };
 		1691F9A025BD625800B9CE06 /* CoreMIDIObjectList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMIDIObjectList.swift; sourceTree = "<group>"; };
@@ -178,11 +177,6 @@
 		16966AD325B4F90800D5BE2A /* SMVoiceMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMVoiceMessage.swift; sourceTree = "<group>"; };
 		16966AF325B5222600D5BE2A /* SMMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMessage.swift; sourceTree = "<group>"; };
 		16966B0325B6481B00D5BE2A /* SMMessageTimeBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMMessageTimeBase.swift; sourceTree = "<group>"; };
-		16966B2625B6560100D5BE2A /* SMExternalDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMExternalDevice.swift; sourceTree = "<group>"; };
-		16966B3625B6657B00D5BE2A /* SMDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMDevice.swift; sourceTree = "<group>"; };
-		16966B6925B6B6EE00D5BE2A /* SMSourceEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMSourceEndpoint.swift; sourceTree = "<group>"; };
-		16966B7625B6CCDE00D5BE2A /* SMDestinationEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMDestinationEndpoint.swift; sourceTree = "<group>"; };
-		16966B7D25B7BB5900D5BE2A /* SMEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMEndpoint.swift; sourceTree = "<group>"; };
 		16966B8A25B7CE1900D5BE2A /* SMInputStreamSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMInputStreamSource.swift; sourceTree = "<group>"; };
 		1699286E259707190057715C /* SnoizeMIDIiOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SnoizeMIDIiOS-Bridging-Header.h"; sourceTree = "<group>"; };
 		1699286F259707190057715C /* SnoizeMIDIOSX-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SnoizeMIDIOSX-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -190,7 +184,6 @@
 		1699288325971AFD0057715C /* MessageFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageFilter.swift; sourceTree = "<group>"; };
 		1699289925971F3A0057715C /* MessageHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageHistory.swift; sourceTree = "<group>"; };
 		169928C225972FD40057715C /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
-		169928C625984FAA0057715C /* SMClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMClient.swift; sourceTree = "<group>"; };
 		169928F0259B16730057715C /* NSData-SMExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSData-SMExtensions.swift"; sourceTree = "<group>"; };
 		1699290C259FCBA60057715C /* SMVirtualOutputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMVirtualOutputStream.swift; sourceTree = "<group>"; };
 		16A3B72625A03DFA00C7F61E /* SMPortOutputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMPortOutputStream.swift; sourceTree = "<group>"; };
@@ -200,9 +193,6 @@
 		16B11B580971D40100DB1DB5 /* NSArray-SMExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSArray-SMExtensions.m"; sourceTree = "<group>"; };
 		16B11B5B0971D40100DB1DB5 /* NSString-SMExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSString-SMExtensions.h"; sourceTree = "<group>"; };
 		16B11B5C0971D40100DB1DB5 /* NSString-SMExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSString-SMExtensions.m"; sourceTree = "<group>"; };
-		16B11B780971D40100DB1DB5 /* SMMIDIObject-Private.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "SMMIDIObject-Private.h"; sourceTree = "<group>"; };
-		16B11B790971D40100DB1DB5 /* SMMIDIObject.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMMIDIObject.h; sourceTree = "<group>"; };
-		16B11B7A0971D40100DB1DB5 /* SMMIDIObject.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMMIDIObject.m; sourceTree = "<group>"; };
 		16B11B890971D40100DB1DB5 /* SMUtilities.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMUtilities.h; sourceTree = "<group>"; };
 		16B11B8A0971D40100DB1DB5 /* SMUtilities.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMUtilities.m; sourceTree = "<group>"; };
 		16B11B910971D40100DB1DB5 /* SnoizeMIDI.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SnoizeMIDI.h; sourceTree = "<group>"; };
@@ -329,7 +319,6 @@
 		16B11BD10971D5C400DB1DB5 /* Global / Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				169928C625984FAA0057715C /* SMClient.swift */,
 				16B11B890971D40100DB1DB5 /* SMUtilities.h */,
 				16B11B8A0971D40100DB1DB5 /* SMUtilities.m */,
 			);
@@ -376,15 +365,6 @@
 				1691F9BC25BD62F200B9CE06 /* Endpoint.swift */,
 				1691F9C325BD630900B9CE06 /* Source.swift */,
 				1691F9CA25BD632500B9CE06 /* Destination.swift */,
-				1691F97225B9621100B9CE06 /* SMMIDIObject.swift */,
-				16B11B790971D40100DB1DB5 /* SMMIDIObject.h */,
-				16B11B7A0971D40100DB1DB5 /* SMMIDIObject.m */,
-				16B11B780971D40100DB1DB5 /* SMMIDIObject-Private.h */,
-				16966B3625B6657B00D5BE2A /* SMDevice.swift */,
-				16966B7D25B7BB5900D5BE2A /* SMEndpoint.swift */,
-				16966B6925B6B6EE00D5BE2A /* SMSourceEndpoint.swift */,
-				16966B7625B6CCDE00D5BE2A /* SMDestinationEndpoint.swift */,
-				16966B2625B6560100D5BE2A /* SMExternalDevice.swift */,
 			);
 			name = "CoreMIDI Objects";
 			sourceTree = "<group>";
