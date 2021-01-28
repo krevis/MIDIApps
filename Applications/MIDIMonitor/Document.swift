@@ -15,9 +15,8 @@ import Cocoa
 class Document: NSDocument {
 
     override init() {
-        // TODO Ugly, find a better way
-        let delegate = NSApp.delegate as! AppController
-        stream = CombinationInputStream(midiContext: delegate.midiContext!)
+        guard let context = (NSApp.delegate as? AppController)?.midiContext else { fatalError() }
+        stream = CombinationInputStream(midiContext: context)
 
         super.init()
 

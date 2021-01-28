@@ -21,7 +21,7 @@ class AppController: NSObject {
         case openNewWindow
     }
 
-    @objc var midiContext: MIDIContext?  // TODO This still isn't visible to objc for some reason
+    var midiContext: MIDIContext?
     @objc var midiSpyClient: MIDISpyClientRef?
 
     private var shouldOpenUntitledDocument = false
@@ -41,6 +41,14 @@ class AppController: NSObject {
             let option: AutoConnectOption = defaults.bool(forKey: PreferenceKeys.openWindowsForNewSources) ? .openNewWindow : .disabled
             defaults.set(option.rawValue, forKey: PreferenceKeys.autoConnectNewSources)
             defaults.removeObject(forKey: PreferenceKeys.openWindowsForNewSources)
+        }
+    }
+
+    @objc func disconnectMIDI() {
+        midiContext?.disconnect()
+        if let spyClient = midiSpyClient {
+            MIDISpyClientDispose(spyClient)
+            MIDISpyClientDisposeSharedMIDIClient()
         }
     }
 

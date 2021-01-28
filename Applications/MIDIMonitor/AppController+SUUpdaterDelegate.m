@@ -29,10 +29,7 @@
     // the driver and then trigger the MIDIServer to run again.
 
     // Remove our connections to the MIDIServer first:
-    // TODO Not visible for some reason??
-    // [[self midiContext] disconnect];
-    MIDISpyClientDispose(self.midiSpyClient);
-    MIDISpyClientDisposeSharedMIDIClient();
+    [self disconnectMIDI];
 
     // Wait a few seconds for the MIDIServer to hopefully shut down,
     // then relaunch for the update:
