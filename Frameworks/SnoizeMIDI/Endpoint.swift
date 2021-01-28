@@ -19,22 +19,22 @@ public class Endpoint: MIDIObject {
         super.init(context: context, objectRef: objectRef)
     }
 
-    private lazy var manufacturerCacheKey = cacheProperty(kMIDIPropertyManufacturer, String.self)
+    private lazy var cachedManufacturer = cacheProperty(kMIDIPropertyManufacturer, String.self)
     public var manufacturer: String? {
-        get { self[manufacturerCacheKey] }
-        set { self[manufacturerCacheKey] = newValue }
+        get { self[cachedManufacturer] }
+        set { self[cachedManufacturer] = newValue }
     }
 
-    private lazy var modelCacheKey = cacheProperty(kMIDIPropertyModel, String.self)
+    private lazy var cachedModel = cacheProperty(kMIDIPropertyModel, String.self)
     public var model: String? {
-        get { self[modelCacheKey] }
-        set { self[modelCacheKey] = newValue }
+        get { self[cachedModel] }
+        set { self[cachedModel] = newValue }
     }
 
-    private lazy var displayNameCacheKey = cacheProperty(kMIDIPropertyDisplayName, String.self)
+    private lazy var cachedDisplayName = cacheProperty(kMIDIPropertyDisplayName, String.self)
     public var displayName: String? {
-        get { self[displayNameCacheKey] }
-        set { self[displayNameCacheKey] = newValue }
+        get { self[cachedDisplayName] }
+        set { self[cachedDisplayName] = newValue }
     }
 
     public var device: Device? {

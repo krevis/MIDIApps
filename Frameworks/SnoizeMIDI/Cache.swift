@@ -13,17 +13,33 @@
 import Foundation
 import CoreMIDI
 
-// A struct that caches a CoreMIDI property value
+// Infrastructure to cache CoreMIDI property values inside MIDIObject.
+//
+// Create a TypedCache<type> with getter and setter closures.
+// Then access the value through cachedProperty.value. It will call the
+// getter only once, returning the same value on subsequent gets,
+// until invalidate() is called or a value is set.
+//
+// (When the value is set, we can't assume anything about what the setter
+// actually did, so we simply invalidate the cache and read it again next time.)
+//
+// MIDIObject uses this to make a cache for several CoreMIDI properties,
+// automatically invalidating them when CoreMIDI says the property has changed.
 
-protocol PropertyCache {
+// A type-erased protocol and struct, so we can add multiple TypedCache structs,
+// parameterized with different types, into the same collection.
+
+protocol Cache {
     mutating func invalidate()
 }
 
-struct AnyPropertyCache {
-    var base: PropertyCache
+struct AnyCache {
+    var base: Cache
 }
 
-struct TypedPropertyCache<T: Equatable>: PropertyCache {
+// The actual cache.  Use asAnyCache to get the type-erased wrapper.
+
+struct TypedCache<T: Equatable>: Cache {
 
     init(getter: @escaping () -> T?, setter: @escaping (T?) -> Void) {
         self.getter = getter
@@ -56,6 +72,28 @@ struct TypedPropertyCache<T: Equatable>: PropertyCache {
 
     mutating func invalidate() {
         cachedValue = .none
+    }
+
+    var asAnyCache: AnyCache {
+        AnyCache(base: self)
+    }
+
+}
+
+// A function to get from a type-erased AnyCache to a TypedCache<T>,
+// potentially modifying both in place.
+
+extension AnyCache {
+
+    mutating func withTypedCache<T: Equatable, Result>(_ perform: ((inout TypedCache<T>) -> Result)) -> Result {
+        guard var typedCache = base as? TypedCache<T> else { fatalError("Cache is wrong type") }
+
+        let result = perform(&typedCache)
+
+        // We may have just modified a copy of the value in base, so write it back
+        base = typedCache
+
+        return result
     }
 
 }

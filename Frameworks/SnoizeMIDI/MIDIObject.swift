@@ -31,51 +31,77 @@ public class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
 
     // MARK: Property value cache
 
-    struct CacheKey: Hashable {
-        let property: CFString
-    }
-
-    private var cachedProperties: [CacheKey: AnyPropertyCache] = [:]
+    // To use the cache:
+    //
+    // 1. Create a CachedProperty with the MIDI property name and the type of its value.
+    //
+    // private lazy var cachedWhatever: CachedProperty =
+    //     cacheProperty(kMIDIPropertyWhatever, String.self)
+    //
+    // 2. Access the cache via self[cachedWhatever]. Typically you would do this
+    //    in the implementation of a computed property:
+    //
+    // public var whatever: String? {
+    //    get { self[cachedWhatever] }
+    //    set { self[cachedWhatever] = newValue }
+    // }
+    //
+    // The cache will automatically be invalidated when CoreMIDI notifies us
+    // that this object's kMIDIPropertyWhatever has changed.
 
     typealias CacheableValue = CoreMIDIPropertyValue & Equatable
 
-    func cacheProperty<T: CacheableValue>(_ property: CFString, _ type: T.Type) -> CacheKey {
-        let cacheKey = CacheKey(property: property)
-        guard cachedProperties[cacheKey] == nil else { fatalError("Trying to cache the same property twice: \(property)") }
-        let typedPropertyCache = TypedPropertyCache<T>(
+    struct CachedProperty: Hashable {
+        let property: CFString  // e.g. kMIDIPropertyUniqueID
+
+        init(_ property: CFString) {
+            self.property = property
+        }
+    }
+
+    private var cachedValues: [CachedProperty: AnyCache] = [:]
+
+    func cacheProperty<T: CacheableValue>(_ property: CFString, _ type: T.Type) -> CachedProperty {
+        let cachedProperty = CachedProperty(property)
+        guard cachedValues[cachedProperty] == nil else { fatalError("Trying to cache the same property twice: \(property)") }
+
+        cachedValues[cachedProperty] = TypedCache<T>(
             getter: { self[property] },
             setter: { self[property] = $0 }
-        )
-        cachedProperties[cacheKey] = AnyPropertyCache(base: typedPropertyCache)
-        return cacheKey
+        ).asAnyCache
+
+        return cachedProperty
     }
 
-    private func withTypedPropertyCache<T: CacheableValue, Result>(_ cacheKey: CacheKey, _ perform: ((inout TypedPropertyCache<T>) -> Result)) -> Result {
-        // Get the property cache, unbox it, do something with it, and box it again.
-        guard let anyPropertyCache = cachedProperties[cacheKey] else { fatalError("Cache is missing for key \(cacheKey.property)") }
-        guard var typedPropertyCache = anyPropertyCache.base as? TypedPropertyCache<T> else { fatalError("Cache is wrong type for key \(cacheKey.property)") }
+    private func withTypedCache<T: CacheableValue, Result>(_ cachedProperty: CachedProperty, _ perform: ((inout TypedCache<T>) -> Result)) -> Result {
+        guard cachedValues[cachedProperty] != nil else { fatalError("Cache is missing for key \(cachedProperty.property)") }
 
-        let result = perform(&typedPropertyCache)
+        return cachedValues[cachedProperty]!.withTypedCache(perform)
 
-        // That may have modified typedPropertyCache, which was a local copy,
-        // so write it back
-        cachedProperties[cacheKey] = AnyPropertyCache(base: typedPropertyCache)
-
-        return result
+        // NOTE: Calling withTypedCache() may cause the AnyCache to be mutated,
+        // but since we're calling it on a value directly from a Dictionary subscript,
+        // we can modify it in place.
+        ///
+        // If you ever introduce an intermediate variable, like
+        // `if var anyCache = cachedValues[cachedProperty]`, it causes a local
+        // copy of the AnyCache to be made. Any mutation only applies to it,
+        // not the AnyCache in the dictionary, so you'd need to write it back
+        // to cachedValues[] afterwards.
     }
 
-    subscript<T: CacheableValue>(cacheKey: CacheKey) -> T? {
+    // Read and write through the cache with self[cachedProperty]
+    subscript<T: CacheableValue>(cachedProperty: CachedProperty) -> T? {
         get {
-            withTypedPropertyCache(cacheKey) { $0.value }
+            withTypedCache(cachedProperty) { $0.value }
         }
         set {
-            withTypedPropertyCache(cacheKey) { $0.value = newValue }
+            withTypedCache(cachedProperty) { $0.value = newValue }
         }
     }
 
-    func invalidateCachedProperty(_ property: CFString) {
-        cachedProperties[CacheKey(property: property)]?.base.invalidate()
-        // Note: That didn't need to manually write back to the cache, it modified the value in place
+    private func invalidateCachedProperty(_ property: CFString) {
+        cachedValues[CachedProperty(property)]?.base.invalidate()
+        // NOTE: That didn't need to manually write back to the cache, it modified the value in place.
 
         // Always refetch the uniqueID immediately, since we might need it
         // in order to do lookups, and I don't trust that we will always
@@ -87,24 +113,24 @@ public class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
 
     // MARK: Specific properties
 
-    private lazy var uniqueIDCacheKey = cacheProperty(kMIDIPropertyUniqueID, MIDIUniqueID.self)
+    private lazy var cachedUniqueID = cacheProperty(kMIDIPropertyUniqueID, MIDIUniqueID.self)
     private let fallbackUniqueID: MIDIUniqueID = 0
     public var uniqueID: MIDIUniqueID {
-        get { self[uniqueIDCacheKey] ?? fallbackUniqueID }
-        set { self[uniqueIDCacheKey] = newValue }
+        get { self[cachedUniqueID] ?? fallbackUniqueID }
+        set { self[cachedUniqueID] = newValue }
     }
 
-    private lazy var nameCacheKey = cacheProperty(kMIDIPropertyName, String.self)
+    private lazy var cachedName = cacheProperty(kMIDIPropertyName, String.self)
     public var name: String? {
-        get { self[nameCacheKey] }
-        set { self[nameCacheKey] = newValue }
+        get { self[cachedName] }
+        set { self[cachedName] = newValue }
     }
 
-    private lazy var maxSysExCacheKey = cacheProperty(kMIDIPropertyMaxSysExSpeed, Int32.self)
+    private lazy var cachedMaxSysExSpeed = cacheProperty(kMIDIPropertyMaxSysExSpeed, Int32.self)
     private let fallbackMaxSysExSpeed: Int32 = 3125 // bytes/sec for MIDI 1.0
     public var maxSysExSpeed: Int32 {
-        get { self[maxSysExCacheKey] ?? fallbackMaxSysExSpeed }
-        set { self[maxSysExCacheKey] = newValue }
+        get { self[cachedMaxSysExSpeed] ?? fallbackMaxSysExSpeed }
+        set { self[cachedMaxSysExSpeed] = newValue }
     }
 
     // MARK: Property changes
@@ -116,8 +142,8 @@ public class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
     // MARK: Internal functions for rare uses
 
     func invalidateCachedProperties() {
-        for cacheKey in cachedProperties.keys {
-            invalidateCachedProperty(cacheKey.property)
+        for cachedProperty in cachedValues.keys {
+            invalidateCachedProperty(cachedProperty.property)
         }
     }
 
