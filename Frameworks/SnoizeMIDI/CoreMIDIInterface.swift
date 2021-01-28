@@ -20,6 +20,8 @@ protocol CoreMIDIInterface {
 
     func clientCreateWithBlock(_ name: CFString, _ outClient: UnsafeMutablePointer<MIDIClientRef>, _ notifyBlock: MIDINotifyBlock?) -> OSStatus
 
+    func clientCreate(_ name: CFString, _ notifyProc: MIDINotifyProc?, _ notifyRefCon: UnsafeMutableRawPointer?, _ outClient: UnsafeMutablePointer<MIDIClientRef>) -> OSStatus
+
     func clientDispose(_ client: MIDIClientRef) -> OSStatus
 
     func objectGetStringProperty(_ obj: MIDIObjectRef, _ propertyID: CFString, _ str: UnsafeMutablePointer<Unmanaged<CFString>?>) -> OSStatus
@@ -82,13 +84,16 @@ protocol CoreMIDIInterface {
 struct RealCoreMIDIInterface: CoreMIDIInterface {
 
     func clientCreateWithBlock(_ name: CFString, _ outClient: UnsafeMutablePointer<MIDIClientRef>, _ notifyBlock: MIDINotifyBlock?) -> OSStatus {
-        if #available(OSX 10.11, *) {
+        if #available(OSX 10.11, iOS 9.0, *) {
             return MIDIClientCreateWithBlock(name, outClient, notifyBlock)
         }
         else {
-            // TODO
             fatalError()
         }
+    }
+
+    func clientCreate(_ name: CFString, _ notifyProc: MIDINotifyProc?, _ notifyRefCon: UnsafeMutableRawPointer?, _ outClient: UnsafeMutablePointer<MIDIClientRef>) -> OSStatus {
+        MIDIClientCreate(name, notifyProc, notifyRefCon, outClient)
     }
 
     func clientDispose(_ client: MIDIClientRef) -> OSStatus {

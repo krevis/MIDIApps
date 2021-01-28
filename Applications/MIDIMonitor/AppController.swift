@@ -58,11 +58,11 @@ extension AppController: NSApplicationDelegate {
         // but before the app's window opens.  (CoreMIDI needs to find and possibly start its server process, which can take a while.)
 
         midiContext = MIDIContext()
-        // TODO detect an error
-//        guard SMClient.sharedClient != nil else {
-//            failedToInitCoreMIDI()
-//            return
-//        }
+        guard let context = midiContext, context.connectedToCoreMIDI else {
+            midiContext = nil
+            failedToInitCoreMIDI()
+            return
+        }
 
         // After this point, we are OK to open documents (untitled or otherwise)
         shouldOpenUntitledDocument = true

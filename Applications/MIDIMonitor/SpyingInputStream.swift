@@ -25,7 +25,7 @@ class SpyingInputStream: SMInputStream {
 
         super.init(midiContext: midiContext)
 
-        let status = MIDISpyPortCreate(spyClient, midiReadProc, UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque()), &spyPort)
+        let status = MIDISpyPortCreate(spyClient, midiReadProc, Unmanaged.passUnretained(self).toOpaque(), &spyPort)
         if status != noErr {
             NSLog("Error from MIDISpyPortCreate: \(status)")
             return nil

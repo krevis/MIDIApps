@@ -22,57 +22,58 @@ import CoreMIDI
     init(interface: CoreMIDIInterface) {
         checkMainQueue()
 
-        self.interface = interface
+        self.privateInterface = interface
 
-        var createdSelf: MIDIContext?
+        super.init()
 
         let status: OSStatus
         if #available(macOS 10.11, iOS 9.0, *) {
             status = interface.clientCreateWithBlock(name as CFString, &midiClient) { unsafeNotification in
-                // Note: We can't capture `self` in here, since we aren't yet fully initialized.
-                // Also note that we are called on an arbitrary queue, so we need to dispatch to the main queue for later handling.
-                // But `unsafeNotification` is only valid during this function call.
-
-                // TODO In practice this sometimes comes in on the main queue,
-                // so perhaps optimize for that?
+                // We are called on an arbitrary queue, so we need to dispatch to the
+                // main queue for later handling.
+                // But `unsafeNotification` is only valid during this function call,
+                // so extract values from it right away.
                 if let ourNotification = ContextNotification.fromCoreMIDI(unsafeNotification) {
                     DispatchQueue.main.async {
-                        if let context = createdSelf {
-                            context.handle(ourNotification)
-                        }
+                        self.handle(ourNotification)
                     }
                 }
             }
         }
         else {
-            // TODO Work out how to fix this w/o being able to pass self.
-            // Need to, I suppose, make a test client then make another one?
-            fatalError()
-            /*
-            status = MIDIClientCreate(name as CFString, { (unsafeNotification, _) in
-                // As above, we can't use the refCon to stash a pointer to self, because
-                // when we create the client, self isn't done being initialized yet.
-                // We assume CoreMIDI is following its documentation, calling us "on the run loop which
-                // was current when MIDIClientCreate was first called", which must be the main queue's run loop.
-                let ourNotification = SMClientNotification.fromCoreMIDINotification(unsafeNotification)
-                if let client = SMClient.sharedClient {
-                    ourNotification.dispatchToClient(client)
+            status = interface.clientCreate(name as CFString, { (unsafeNotification, refCon) in
+                // We assume CoreMIDI is following its documentation, calling us
+                // "on the run loop which was current when MIDIClientCreate was first
+                // called", which must be the main queue's run loop.
+                if let refCon = refCon,
+                   let ourNotification = ContextNotification.fromCoreMIDI(unsafeNotification) {
+                    let context = Unmanaged<MIDIContext>.fromOpaque(refCon).takeUnretainedValue()
+                    context.handle(ourNotification)
                 }
-            }, nil, &midiClient)
-             */
+            }, Unmanaged.passUnretained(self).toOpaque(), &midiClient)
         }
 
         if status != noErr {
-            // TODO How to make this work?
-//            return nil
+            // Cause `connectedToCoreMIDI` to be false, and a fatal error
+            // to happen on subsequent CoreMIDI calls from this context.
+            // We expect our creator to check `connectedToCoreMIDI` after
+            // initializing.
+            // (Or we could make this initializer failable, but
+            // that turns out to be surprisingly tricky, since we need to
+            // pass `self` into the CoreMIDI client notification closures.)
+            self.privateInterface = nil
         }
-
-        super.init()
-
-        createdSelf = self
     }
 
+    // MARK: CoreMIDI connection and interface
+
+    private var privateInterface: CoreMIDIInterface?
+
     // MARK: Public API
+
+    public var connectedToCoreMIDI: Bool {
+        privateInterface != nil
+    }
 
     public let name =
         (Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String) ?? ProcessInfo.processInfo.processName
@@ -119,11 +120,20 @@ import CoreMIDI
         // Disconnect from CoreMIDI. Necessary only for very special circumstances, since CoreMIDI will be unusable afterwards.
         _ = interface.clientDispose(midiClient)
         midiClient = 0
+        privateInterface = nil
     }
 
     // MARK: CoreMIDIContext
 
-    let interface: CoreMIDIInterface
+    var interface: CoreMIDIInterface {
+        // Bottleneck to detect whether we expect CoreMIDI calls to work
+        if let interface = privateInterface {
+            return interface
+        }
+        else {
+            fatalError("CoreMIDI client creation failed earlier, so calls to CoreMIDI cannot succeed. Check `connectedToCoreMIDI` after creating the MIDIContext to see whether it's actually usable.")
+        }
+    }
 
     var midiClient: MIDIClientRef = 0
 
