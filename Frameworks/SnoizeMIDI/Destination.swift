@@ -62,10 +62,6 @@ extension CoreMIDIContext {
     public func createVirtualDestination(name: String, uniqueID: MIDIUniqueID, midiReadProc: @escaping(MIDIReadProc), readProcRefCon: UnsafeMutableRawPointer?) -> Destination? {
         // If newUniqueID is 0, we'll use the unique ID that CoreMIDI generates for us
 
-        // We are going to be making a lot of changes, so turn off external notifications
-        // for a while (until we're done).  Internal notifications are still necessary and aren't very slow.
-        // TODO Do that again, if necessary
-
         var newEndpointRef: MIDIEndpointRef = 0
 
         guard interface.destinationCreate(midiClient, name as CFString, midiReadProc, readProcRefCon, &newEndpointRef) == noErr else { return nil }

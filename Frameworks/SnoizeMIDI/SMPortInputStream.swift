@@ -17,10 +17,7 @@ import Foundation
     public override init(midiContext: MIDIContext) {
         super.init(midiContext: midiContext)
 
-        let status = MIDIInputPortCreate(midiContext.midiClient, "Input port" as CFString, midiReadProc, Unmanaged.passUnretained(self).toOpaque(), &inputPort)
-        if status != noErr {
-            // TODO how to handle?
-        }
+        _ = MIDIInputPortCreate(midiContext.midiClient, "Input port" as CFString, midiReadProc, Unmanaged.passUnretained(self).toOpaque(), &inputPort)
 
         NotificationCenter.default.addObserver(self, selector: #selector(self.endpointListChanged(_:)), name: .midiObjectListChanged, object: Source.self)
     }

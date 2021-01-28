@@ -12,8 +12,7 @@
 
 import Foundation
 
-// TODO This probably doesn't need to be objc or public.
-@objc public protocol SMMessageParserDelegate {
+protocol SMMessageParserDelegate: AnyObject {
 
     func parserDidReadMessages(_ parser: SMMessageParser, messages: [SMMessage])
     func parserIsReadingSysEx(_ parser: SMMessageParser, length: Int)
@@ -27,7 +26,7 @@ import Foundation
         sysExTimeOutTimer?.invalidate()
     }
 
-    @objc public weak var delegate: SMMessageParserDelegate?
+    weak var delegate: SMMessageParserDelegate?
     public weak var originatingEndpoint: Endpoint?
     @objc public var sysExTimeOut: TimeInterval = 1.0   // seconds
     @objc public var ignoresInvalidData = false

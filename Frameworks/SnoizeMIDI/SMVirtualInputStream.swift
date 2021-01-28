@@ -21,11 +21,6 @@ import Foundation
         singleSource = SingleInputStreamSource(name: virtualEndpointName)
 
         super.init(midiContext: midiContext)
-
-        parser = createParser(originatingEndpoint: nil)
-            // TODO We should create the parser up front using a class method
-            // then set parser.delegate = self after super init
-            // After that, remove ! from parser declaration
     }
 
     deinit {
@@ -35,7 +30,6 @@ import Foundation
     @objc public var uniqueID: MIDIUniqueID {
         didSet {
             if uniqueID != oldValue, let endpoint = endpoint {
-                // TODO re-evaluate how to do this
                 endpoint.uniqueID = uniqueID
                 // that may or may not have worked
                 uniqueID = endpoint.uniqueID
@@ -116,7 +110,7 @@ import Foundation
     // MARK: Private
 
     private let singleSource: SingleInputStreamSource
-    private var parser: SMMessageParser!
+    private var parser: SMMessageParser?
 
     private var isActive: Bool {
         get {
@@ -136,10 +130,15 @@ import Foundation
         endpoint = midiContext.createVirtualDestination(name: virtualEndpointName, uniqueID: uniqueID, midiReadProc: midiReadProc, readProcRefCon: Unmanaged.passUnretained(self).toOpaque())
 
         if let endpoint = endpoint {
-            parser.originatingEndpoint = endpoint
+            if parser == nil {
+                parser = createParser(originatingEndpoint: endpoint)
+            }
+            else {
+                parser!.originatingEndpoint = endpoint
+            }
 
-            // We requested a specific uniqueID earlier, but we might not have gotten it.
-            // We have to update our idea of what it is, regardless.
+            // We requested a specific uniqueID, but we might not have gotten it.
+            // Update our copy of it from the actual value in CoreMIDI.
             uniqueID = endpoint.uniqueID
         }
     }
@@ -147,7 +146,7 @@ import Foundation
     private func disposeEndpoint() {
         endpoint?.remove()
         endpoint = nil
-        parser.originatingEndpoint = nil
+        parser?.originatingEndpoint = nil
     }
 
 }

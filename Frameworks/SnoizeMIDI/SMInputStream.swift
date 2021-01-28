@@ -118,7 +118,6 @@ import Foundation
     }
 
     open var parsers: [SMMessageParser] {
-        // TODO Should this be a collection or something?
         fatalError("Must implement in subclass")
     }
 
