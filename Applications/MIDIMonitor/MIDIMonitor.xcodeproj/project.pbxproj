@@ -215,7 +215,14 @@
 		163FB5E9199ED5810017B664 /* SNDisclosureArrowRight@2x.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "SNDisclosureArrowRight@2x.tiff"; sourceTree = "<group>"; };
 		167B884206ED4D650053D305 /* Info-MIDIMonitor.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-MIDIMonitor.plist"; sourceTree = "<group>"; };
 		167B884306ED4D650053D305 /* MIDI Monitor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MIDI Monitor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		1691E0DD04CA26F300ACFC9D /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Details.nib; sourceTree = "<group>"; };
+		169225AF25C2AEC300771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		169225B225C2AEC400771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/MIDIMonitor.strings; sourceTree = "<group>"; };
+		169225B625C2AEC400771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.htmld; name = en; path = en.lproj/docs.htmld; sourceTree = "<group>"; };
+		169225BC25C2AF0100771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		169225BD25C2AF0100771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MIDIMonitor.nib; sourceTree = "<group>"; };
+		169225BE25C2AF0200771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Preferences.nib; sourceTree = "<group>"; };
+		169225BF25C2AF0200771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Details.nib; sourceTree = "<group>"; };
+		169225C025C2AF0200771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/SysEx.nib; sourceTree = "<group>"; };
 		1692D71125899A8C0092D6E7 /* PreferencesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesWindowController.swift; sourceTree = "<group>"; };
 		1692D7182589E83D0092D6E7 /* UtilityWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityWindowController.swift; sourceTree = "<group>"; };
 		1692D72C2589E91D0092D6E7 /* MonitorWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorWindowController.swift; sourceTree = "<group>"; };
@@ -244,15 +251,8 @@
 		16F9FA582586F51400169621 /* DisclosureButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosureButton.swift; sourceTree = "<group>"; };
 		16F9FA5A2586F9BB00169621 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		16F9FA5C2586FD0B00169621 /* DisclosableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosableView.swift; sourceTree = "<group>"; };
-		2A37F4B5FDCFA73011CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MIDIMonitor.nib; sourceTree = "<group>"; };
-		2A37F4B7FDCFA73011CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
-		2A37F4BAFDCFA73011CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = English; path = English.lproj/Credits.rtf; sourceTree = "<group>"; };
 		2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		F53A1C0B015EC0FB01000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Preferences.nib; sourceTree = "<group>"; };
-		F53BB4AF015D96A501000164 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/MIDIMonitor.strings; sourceTree = "<group>"; };
-		F56D31A40195A90E01000164 /* English */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = text.html; name = English; path = English.lproj/docs.htmld; sourceTree = "<group>"; };
-		F56E05CF0206BF0C01000164 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SysEx.nib; sourceTree = "<group>"; };
 		F57053DA018D364A01000164 /* Document.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Document.icns; sourceTree = "<group>"; };
 		F579B5E9018D0F0D01000164 /* MIDIMonitor.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = MIDIMonitor.icns; sourceTree = "<group>"; };
 		F5B4281801A360AD01000164 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
@@ -509,7 +509,7 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1000;
+				LastUpgradeCheck = 1240;
 				TargetAttributes = {
 					167B880506ED4D650053D305 = {
 						DevelopmentTeam = YDJAW5GX9U;
@@ -520,13 +520,14 @@
 			};
 			buildConfigurationList = 16AF264E097B1EFB00BC87DC /* Build configuration list for PBXProject "MIDIMonitor" */;
 			compatibilityVersion = "Xcode 12.0";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 1;
 			knownRegions = (
-				English,
-				Japanese,
-				French,
-				German,
+				en,
+				fr,
+				de,
+				Base,
+				ja,
 			);
 			mainGroup = 2A37F4AAFDCFA73011CA2CEA /* MIDIMonitor */;
 			projectDirPath = "";
@@ -779,7 +780,7 @@
 		1691E0DC04CA26F300ACFC9D /* Details.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				1691E0DD04CA26F300ACFC9D /* English */,
+				169225BF25C2AF0200771B4F /* Base */,
 			);
 			name = Details.nib;
 			sourceTree = "<group>";
@@ -787,7 +788,7 @@
 		2A37F4B4FDCFA73011CA2CEA /* MIDIMonitor.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				2A37F4B5FDCFA73011CA2CEA /* English */,
+				169225BD25C2AF0100771B4F /* Base */,
 			);
 			name = MIDIMonitor.nib;
 			sourceTree = "<group>";
@@ -795,7 +796,7 @@
 		2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				2A37F4B7FDCFA73011CA2CEA /* English */,
+				169225BC25C2AF0100771B4F /* Base */,
 			);
 			name = MainMenu.nib;
 			sourceTree = "<group>";
@@ -803,7 +804,7 @@
 		2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */ = {
 			isa = PBXVariantGroup;
 			children = (
-				2A37F4BAFDCFA73011CA2CEA /* English */,
+				169225AF25C2AEC300771B4F /* en */,
 			);
 			name = Credits.rtf;
 			sourceTree = "<group>";
@@ -811,7 +812,7 @@
 		F53A1C0A015EC0FB01000164 /* Preferences.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F53A1C0B015EC0FB01000164 /* English */,
+				169225BE25C2AF0200771B4F /* Base */,
 			);
 			name = Preferences.nib;
 			sourceTree = "<group>";
@@ -819,7 +820,7 @@
 		F53BB4AE015D96A501000164 /* MIDIMonitor.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F53BB4AF015D96A501000164 /* English */,
+				169225B225C2AEC400771B4F /* en */,
 			);
 			name = MIDIMonitor.strings;
 			sourceTree = "<group>";
@@ -827,7 +828,7 @@
 		F56D31A30195A90E01000164 /* docs.htmld */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F56D31A40195A90E01000164 /* English */,
+				169225B625C2AEC400771B4F /* en */,
 			);
 			name = docs.htmld;
 			sourceTree = "<group>";
@@ -835,7 +836,7 @@
 		F56E05CE0206BF0C01000164 /* SysEx.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F56E05CF0206BF0C01000164 /* English */,
+				169225C025C2AF0200771B4F /* Base */,
 			);
 			name = SysEx.nib;
 			sourceTree = "<group>";
@@ -862,6 +863,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 169E7116097B2021001AFB58 /* Snoize-Project-Release.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 			};
 			name = Release;
 		};
@@ -884,6 +886,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 169E7114097B2021001AFB58 /* Snoize-Project-Debug.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				ENABLE_TESTABILITY = YES;
 			};
 			name = Debug;

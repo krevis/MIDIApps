@@ -52,7 +52,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		08FB77B4FE84181DC02AAC07 /* MIDISpyClient.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = MIDISpyClient.c; sourceTree = "<group>"; };
 		162A31F2254E95A7008E1F38 /* Snoize-Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Snoize-Signing.xcconfig"; path = "../../../Configurations/Snoize-Signing.xcconfig"; sourceTree = "<group>"; };
 		162A7BA6212AA39F008CE4DA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -66,6 +65,7 @@
 		1641044B09736388008DABCC /* Snoize-Project-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Debug.xcconfig"; path = "../../Configurations/Snoize-Project-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		1641044C09736388008DABCC /* Snoize-Project-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Global.xcconfig"; path = "../../Configurations/Snoize-Project-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
 		1641044D09736388008DABCC /* Snoize-Project-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Release.xcconfig"; path = "../../Configurations/Snoize-Project-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
+		169225BB25C2AEC400771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		16CDFB8B2133641E000CCD7B /* MIDI Monitor-i386 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.bundle"; path = "MIDI Monitor-i386"; sourceTree = "<group>"; };
 		16E651A0176EDB370005B53C /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
 		F53956EE0256D06A01000164 /* MIDISpyShared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIDISpyShared.h; sourceTree = SOURCE_ROOT; };
@@ -386,6 +386,7 @@
 				Japanese,
 				French,
 				German,
+				en,
 			);
 			mainGroup = 0867D691FE84028FC02AAC07 /* MIDISpy */;
 			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
@@ -491,7 +492,7 @@
 		089C1666FE841158C02AAC07 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				089C1667FE841158C02AAC07 /* English */,
+				169225BB25C2AEC400771B4F /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";

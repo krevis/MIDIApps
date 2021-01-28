@@ -146,7 +146,6 @@
 
 /* Begin PBXFileReference section */
 		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		161D6C940972111A00CA5276 /* Snoize-Project-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Debug.xcconfig"; path = "../../Configurations/Snoize-Project-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		161D6C9C097211EC00CA5276 /* Snoize-Project-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Release.xcconfig"; path = "../../Configurations/Snoize-Project-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
 		161D6CA10972127700CA5276 /* Snoize-Project-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Global.xcconfig"; path = "../../Configurations/Snoize-Project-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
@@ -165,6 +164,10 @@
 		1691F9DE25BD7E5100B9CE06 /* CoreMIDIInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMIDIInterface.swift; sourceTree = "<group>"; };
 		1691F9E825BEB47500B9CE06 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		1691F9F225BF964D00B9CE06 /* MIDIContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MIDIContext.swift; sourceTree = "<group>"; };
+		169225B725C2AEC400771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/ControllerNames.plist; sourceTree = "<group>"; };
+		169225B825C2AEC400771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		169225B925C2AEC400771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/ManufacturerNames.plist; sourceTree = "<group>"; };
+		169225BA25C2AEC400771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SnoizeMIDI.strings; sourceTree = "<group>"; };
 		169669F225A8E49300D5BE2A /* SMVirtualInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMVirtualInputStream.swift; sourceTree = "<group>"; };
 		16966A3D25A91B5F00D5BE2A /* SMPortInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMPortInputStream.swift; sourceTree = "<group>"; };
 		16966A4D25A9399600D5BE2A /* SingleInputStreamSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleInputStreamSource.swift; sourceTree = "<group>"; };
@@ -196,9 +199,6 @@
 		16B11B890971D40100DB1DB5 /* SMUtilities.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SMUtilities.h; sourceTree = "<group>"; };
 		16B11B8A0971D40100DB1DB5 /* SMUtilities.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SMUtilities.m; sourceTree = "<group>"; };
 		16B11B910971D40100DB1DB5 /* SnoizeMIDI.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SnoizeMIDI.h; sourceTree = "<group>"; };
-		16B11BEF0971D77600DB1DB5 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = English; path = English.lproj/ControllerNames.plist; sourceTree = "<group>"; };
-		16B11BF10971D77600DB1DB5 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = English; path = English.lproj/ManufacturerNames.plist; sourceTree = "<group>"; };
-		16B11BF50971D78500DB1DB5 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SnoizeMIDI.strings; sourceTree = "<group>"; };
 		16B11DF00971D80F00DB1DB5 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
 		16B4A55B0972151400F11AD6 /* Snoize-Framework-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Framework-Global.xcconfig"; path = "../../Configurations/Snoize-Framework-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
 		16B4A55E0972152700F11AD6 /* Snoize-Framework-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Framework-Debug.xcconfig"; path = "../../Configurations/Snoize-Framework-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
@@ -563,6 +563,7 @@
 				Japanese,
 				French,
 				German,
+				en,
 			);
 			mainGroup = 0867D691FE84028FC02AAC07 /* SnoizeMIDI */;
 			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
@@ -753,7 +754,7 @@
 		089C1666FE841158C02AAC07 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				089C1667FE841158C02AAC07 /* English */,
+				169225B825C2AEC400771B4F /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -761,7 +762,7 @@
 		16B11BEE0971D77600DB1DB5 /* ControllerNames.plist */ = {
 			isa = PBXVariantGroup;
 			children = (
-				16B11BEF0971D77600DB1DB5 /* English */,
+				169225B725C2AEC400771B4F /* en */,
 			);
 			name = ControllerNames.plist;
 			sourceTree = "<group>";
@@ -769,7 +770,7 @@
 		16B11BF00971D77600DB1DB5 /* ManufacturerNames.plist */ = {
 			isa = PBXVariantGroup;
 			children = (
-				16B11BF10971D77600DB1DB5 /* English */,
+				169225B925C2AEC400771B4F /* en */,
 			);
 			name = ManufacturerNames.plist;
 			sourceTree = "<group>";
@@ -777,7 +778,7 @@
 		16B11BF40971D78500DB1DB5 /* SnoizeMIDI.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				16B11BF50971D78500DB1DB5 /* English */,
+				169225BA25C2AEC400771B4F /* en */,
 			);
 			name = SnoizeMIDI.strings;
 			sourceTree = "<group>";
