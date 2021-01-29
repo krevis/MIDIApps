@@ -25,9 +25,6 @@ static __inline__ NSBundle *SMBundleForObject(id object) {
 extern void SMRequestConcreteImplementation(id self, SEL _cmd);
 extern void SMRejectUnusedImplementation(id self, SEL _cmd);
 
-// Like +[NSObject isSubclassOfClass:], but works correctly for classes which are NOT based on NSObject
-extern BOOL SMClassIsSubclassOfClass(Class aClass, Class potentialSuperclass);
-
 #if DEBUG
 #define SMAssert(expression)	if (!(expression)) SMAssertionFailed(#expression, __FILE__, __LINE__)
 extern void SMAssertionFailed(const char *expression, const char *file, unsigned int line);
