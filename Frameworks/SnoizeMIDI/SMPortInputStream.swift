@@ -111,20 +111,16 @@ import Foundation
     }
 
     @objc private func endpointDisappeared(_ notification: Notification) {
-        if let endpoint = notification.object as? Source,
-           endpoints.contains(endpoint) {
-            removeEndpoint(endpoint)
-
-            // TODO Nobody seems to use this?
-            // postSelectedInputStreamSourceDisappearedNotification(source: endpoint)
-        }
+        guard let endpoint = notification.object as? Source,
+              endpoints.contains(endpoint) else { return }
+        removeEndpoint(endpoint)
     }
 
     @objc private func endpointWasReplaced(_ notification: Notification) {
-        if let oldEndpoint = notification.object as? Source,
-           endpoints.contains(oldEndpoint),
-           let newEndpoint = notification.userInfo?[MIDIContext.objectReplacement] as? Source {
-            removeEndpoint(oldEndpoint)
+        guard let endpoint = notification.object as? Source,
+              endpoints.contains(endpoint) else { return }
+        removeEndpoint(endpoint)
+        if let newEndpoint = notification.userInfo?[MIDIContext.objectReplacement] as? Source {
             addEndpoint(newEndpoint)
         }
     }

@@ -33,7 +33,6 @@ class CombinationInputStream: NSObject {
             let center = NotificationCenter.default
             center.addObserver(self, selector: #selector(self.repostNotification(_:)), name: .inputStreamReadingSysEx, object: object)
             center.addObserver(self, selector: #selector(self.repostNotification(_:)), name: .inputStreamDoneReadingSysEx, object: object)
-            center.addObserver(self, selector: #selector(self.repostNotification(_:)), name: .inputStreamSelectedInputSourceDisappeared, object: object)
             center.addObserver(self, selector: #selector(self.inputSourceListChanged(_:)), name: .inputStreamSourceListChanged, object: object)
         }
 
@@ -208,7 +207,6 @@ extension CombinationInputStream {
     // This class reposts these notifications from its streams (with self as object):
     //    SMInputStreamReadingSysExNotification
     //    SMInputStreamDoneReadingSysExNotification
-    //    SMInputStreamSelectedInputSourceDisappearedNotification
     //
     // It also listens to SMInputStreamSourceListChangedNotification from its streams,
     // and coalesces them into a single notification (with the same name) from this object.

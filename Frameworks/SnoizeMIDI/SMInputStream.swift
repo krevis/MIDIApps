@@ -90,10 +90,6 @@ import Foundation
         return parser
     }
 
-    public func postSelectedInputStreamSourceDisappearedNotification(source: SMInputStreamSource) {
-        NotificationCenter.default.post(name: .inputStreamSelectedInputSourceDisappeared, object: self, userInfo: ["source": source])
-    }
-
     public func postSourceListChangedNotification() {
         NotificationCenter.default.post(name: .inputStreamSourceListChanged, object: self)
     }
@@ -203,12 +199,9 @@ public extension Notification.Name {
     // contains key @"source" with id<SMInputStreamSource> that this sysex data was read from
     // contains key @"valid" with NSNumber (BOOL) indicating whether sysex ended properly or not
 
-    static let inputStreamSelectedInputSourceDisappeared = Notification.Name("SMInputStreamSelectedInputSourceDisappearedNotification")
-    // contains key @"source" with id<SMInputStreamSource> which disappeared
-
     static let inputStreamSourceListChanged = Notification.Name("SMInputStreamSourceListChangedNotification")
 
-    // TODO Formalize these things, if we have to have them
+    // TODO Formalize these userInfo keys, if we have to have them
 
 }
 
@@ -217,7 +210,6 @@ public extension Notification.Name {
 
     static let inputStreamReadingSysEx = Notification.Name.inputStreamReadingSysEx
     static let inputStreamDoneReadingSysEx = Notification.Name.inputStreamDoneReadingSysEx
-    static let inputStreamSelectedInputSourceDisappeared = Notification.Name.inputStreamSelectedInputSourceDisappeared
     static let inputStreamSourceListChanged = Notification.Name.inputStreamSourceListChanged
 
 }

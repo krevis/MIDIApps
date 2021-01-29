@@ -144,22 +144,18 @@ class SpyingInputStream: SMInputStream {
     }
 
     @objc private func endpointListChanged(_ notification: Notification) {
-        self.postSourceListChangedNotification()
+        postSourceListChangedNotification()
     }
 
     @objc private func endpointDisappeared(_ notification: Notification) {
         guard let endpoint = notification.object as? Destination,
               endpoints.contains(endpoint) else { return }
-
         removeEndpoint(endpoint)
-        // TODO Nobody cares do they?
-        // postSelectedInputStreamSourceDisappearedNotification(source: endpoint)
     }
 
     @objc private func endpointWasReplaced(_ notification: Notification) {
         guard let endpoint = notification.object as? Destination,
               endpoints.contains(endpoint) else { return }
-
         removeEndpoint(endpoint)
         if let newEndpoint = notification.userInfo?[MIDIContext.objectReplacement] as? Destination {
             addEndpoint(newEndpoint)
