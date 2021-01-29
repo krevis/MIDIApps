@@ -26,7 +26,9 @@ extension CoreMIDIObjectWrapper {
 
     // MARK: Identifiable default implementation
 
-    public var id: (CoreMIDIContext, MIDIObjectRef) { (midiContext, midiObjectRef) } // swiftlint:disable:this identifier_name
+    public var id: (CoreMIDIContext, MIDIObjectRef) {  // swiftlint:disable:this identifier_name
+        (midiContext, midiObjectRef)
+    }
 
     // MARK: Equatable default implementation
 

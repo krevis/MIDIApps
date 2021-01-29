@@ -18,13 +18,19 @@ protocol CoreMIDIContext: AnyObject {
     // This protocol is used by CoreMIDIObjectWrappers to interact with
     // the rest of the MIDI system.
 
-    var interface: CoreMIDIInterface { get }
+    // Basic functionality
 
+    var interface: CoreMIDIInterface { get }
     var midiClient: MIDIClientRef { get }
 
-    func updateEndpointsForDevice(_ device: Device)
+    func forcePropertyChanged(_ type: MIDIObjectType, _ objectRef: MIDIObjectRef, _ property: CFString)
 
     func generateNewUniqueID() -> MIDIUniqueID
+
+    // Interaction with other MIDIObject subclasses
+    // TODO These belong in a separate protocol or extension or something
+
+    func updateEndpointsForDevice(_ device: Device)
 
     func findObject(midiObjectRef: MIDIObjectRef) -> Device?
     func findObject(midiObjectRef: MIDIObjectRef) -> ExternalDevice?
@@ -38,7 +44,5 @@ protocol CoreMIDIContext: AnyObject {
     func removedVirtualSource(_ source: Source)
     func addedVirtualDestination(midiObjectRef: MIDIObjectRef) -> Destination?
     func removedVirtualDestination(_ destination: Destination)
-
-    func forcePropertyChanged(_ type: MIDIObjectType, _ objectRef: MIDIObjectRef, _ property: CFString)
 
 }
