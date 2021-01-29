@@ -30,6 +30,10 @@ protocol CoreMIDIContext: AnyObject {
     // Interaction with other MIDIObject subclasses
     // TODO These belong in a separate protocol or extension or something
 
+    func postObjectsAddedNotification<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>(_ objects: [T])
+
+    func postObjectListChangedNotification(_ type: MIDIObjectType)
+
     func updateEndpointsForDevice(_ device: Device)
 
     func findObject(midiObjectRef: MIDIObjectRef) -> Device?

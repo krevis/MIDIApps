@@ -31,7 +31,7 @@ class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>
     func objectPropertyChanged(midiObjectRef: MIDIObjectRef, property: CFString) {
         if let object = objectMap[midiObjectRef] {
             object.midiPropertyChanged(property)
-            T.postObjectPropertyChangedNotification(object, property)
+            object.postPropertyChangedNotification(property)
         }
     }
 
@@ -40,15 +40,15 @@ class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>
             // The objects' ordering may have changed, so refresh it
             refreshOrdering(T.fetchMIDIObjectRefs(context))
 
-            T.postObjectsAddedNotification([addedObject])
-            T.postObjectListChangedNotification()
+            context.postObjectsAddedNotification([addedObject])
+            context.postObjectListChangedNotification(midiObjectType)
         }
     }
 
     func objectWasRemoved(midiObjectRef: MIDIObjectRef, parentObjectRef: MIDIObjectRef, parentType: MIDIObjectType) {
         if let removedObject = removeObject(midiObjectRef) {
-            T.postObjectRemovedNotification(removedObject)
-            T.postObjectListChangedNotification()
+            removedObject.postObjectRemovedNotification()
+            context.postObjectListChangedNotification(midiObjectType)
         }
     }
 
@@ -105,16 +105,16 @@ class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>
         // Everything is in place, so post notifications depending on what changed.
 
         if !addedObjects.isEmpty {
-            T.postObjectsAddedNotification(addedObjects)
+            context.postObjectsAddedNotification(addedObjects)
         }
         removedObjects.forEach {
-            T.postObjectRemovedNotification($0)
+            $0.postObjectRemovedNotification()
         }
         for (original, replacement) in replacements {
-            T.postObjectReplacedNotification(original: original, replacement: replacement)
+            original.postObjectReplacedNotification(replacement: replacement)
         }
         if !addedObjects.isEmpty || !removedObjects.isEmpty || !replacements.isEmpty {
-            T.postObjectListChangedNotification()
+            context.postObjectListChangedNotification(midiObjectType)
         }
     }
 

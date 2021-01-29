@@ -35,7 +35,7 @@ public class Source: Endpoint, CoreMIDIObjectListable {
 
         if property == kMIDIPropertyDisplayName {
             // TODO Something more targeted would be nice.
-            Self.postObjectListChangedNotification()
+            midiContext.postObjectListChangedNotification(Self.midiObjectType)
         }
     }
 

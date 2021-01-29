@@ -145,6 +145,10 @@ import CoreMIDI
         destinationList.updateList()
     }
 
+    func forcePropertyChanged(_ type: MIDIObjectType, _ objectRef: MIDIObjectRef, _ property: CFString) {
+        midiObjectList(type: type)?.objectPropertyChanged(midiObjectRef: objectRef, property: property)
+    }
+
     func generateNewUniqueID() -> MIDIUniqueID {
         // Return a random MIDIUniqueID which isn't currently in use
         while true {
@@ -157,6 +161,15 @@ import CoreMIDI
                 }
             }
         }
+    }
+
+    func postObjectsAddedNotification<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>(_ objects: [T]) {
+        guard !objects.isEmpty else { return }
+        NotificationCenter.default.post(name: .midiObjectsAppeared, object: self, userInfo: [MIDIContext.objectsThatAppeared: objects])
+    }
+
+    func postObjectListChangedNotification(_ type: MIDIObjectType) {
+        NotificationCenter.default.post(name: .midiObjectListChanged, object: self, userInfo: [MIDIContext.objectType: type])
     }
 
     func findObject(midiObjectRef: MIDIObjectRef) -> Device? {
@@ -199,10 +212,6 @@ import CoreMIDI
 
     func removedVirtualDestination(_ destination: Destination) {
         destinationList.objectWasRemoved(midiObjectRef: destination.midiObjectRef, parentObjectRef: 0, parentType: .other)
-    }
-
-    func forcePropertyChanged(_ type: MIDIObjectType, _ objectRef: MIDIObjectRef, _ property: CFString) {
-        midiObjectList(type: type)?.objectPropertyChanged(midiObjectRef: objectRef, property: property)
     }
 
     // MARK: Notifications
@@ -290,7 +299,7 @@ private func checkMainQueue() {
 
 public extension Notification.Name {
 
-    // notification.object is the class that has new objects (e.g. Source or Destination)
+    // notification.object is the MIDIContext
     // notification.userInfo has an array of the new objects under key MIDIContext.objectsThatAppeared
     static let midiObjectsAppeared = Notification.Name("SMMIDIObjectsAppearedNotification")
 
@@ -301,7 +310,9 @@ public extension Notification.Name {
     // notification.userInfo contains new object under key MIDIContext.objectReplacement
     static let midiObjectWasReplaced = Notification.Name("SMMIDIObjectWasReplacedNotification")
 
-    // notification.object is the class that has either gained new objects or lost old ones
+    // notification.object is the MIDIContext
+    // notification.userInfo contains the type of MIDI object that changed (MIDIObjectType)
+    // under key MIDIContext.objectType
     // This notification is sent last, after the appeared/disappeared/wasReplaced notifications.
     static let midiObjectListChanged = Notification.Name("SMMIDIObjectListChangedNotification")
 
@@ -318,32 +329,21 @@ public extension MIDIContext {
     static let objectsThatAppeared = "SMMIDIObjectsThatAppeared"
     static let objectReplacement = "SMMIDIObjectReplacement"
     static let changedProperty = "SMMIDIObjectChangedPropertyName"
+    static let objectType = "SMMIDIObjectType"
 
 }
 
 extension CoreMIDIObjectListable {
 
-    // TODO: All of these static notifications are bad, nobody should be
-    // observing notifications from a class anymore
-
-    static func postObjectsAddedNotification(_ objects: [Self]) {
-        guard !objects.isEmpty else { return }
-        NotificationCenter.default.post(name: .midiObjectsAppeared, object: self, userInfo: [MIDIContext.objectsThatAppeared: objects])
+    func postObjectRemovedNotification() {
+        NotificationCenter.default.post(name: .midiObjectDisappeared, object: self)
     }
 
-    static func postObjectRemovedNotification(_ object: Self) {
-        NotificationCenter.default.post(name: .midiObjectDisappeared, object: object)
+    func postObjectReplacedNotification(replacement: Self) {
+        NotificationCenter.default.post(name: .midiObjectWasReplaced, object: self, userInfo: [MIDIContext.objectReplacement: replacement])
     }
 
-    static func postObjectReplacedNotification(original: Self, replacement: Self) {
-        NotificationCenter.default.post(name: .midiObjectWasReplaced, object: original, userInfo: [MIDIContext.objectReplacement: replacement])
-    }
-
-    static func postObjectListChangedNotification() {
-        NotificationCenter.default.post(name: .midiObjectListChanged, object: self)
-    }
-
-    static func postObjectPropertyChangedNotification(_ object: Self, _ property: CFString) {
+    func postPropertyChangedNotification(_ property: CFString) {
         NotificationCenter.default.post(name: .midiObjectPropertyChanged, object: self, userInfo: [MIDIContext.changedProperty: property])
     }
 

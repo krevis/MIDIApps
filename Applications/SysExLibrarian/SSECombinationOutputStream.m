@@ -65,6 +65,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
     flags.ignoresTimeStamps = NO;
     flags.sendsSysExAsynchronously = NO;
 
+    // TODO Follow pattern of SMPortInputStream and SpyingInputStream, observe the client
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(portStreamEndpointListChanged:) 
                                                  name:NSNotification.midiObjectListChanged

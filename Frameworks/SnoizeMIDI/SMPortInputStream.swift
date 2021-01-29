@@ -19,11 +19,11 @@ import Foundation
 
         _ = MIDIInputPortCreate(midiContext.midiClient, "Input port" as CFString, midiReadProc, Unmanaged.passUnretained(self).toOpaque(), &inputPort)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(self.endpointListChanged(_:)), name: .midiObjectListChanged, object: Source.self)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.midiObjectListChanged(_:)), name: .midiObjectListChanged, object: midiContext)
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .midiObjectListChanged, object: Source.self)
+        NotificationCenter.default.removeObserver(self, name: .midiObjectListChanged, object: midiContext)
 
         MIDIPortDispose(inputPort)
     }
@@ -106,8 +106,11 @@ import Foundation
     private var parsersForEndpoints: [Source: SMMessageParser] = [:]
         // TODO Consider making the key endpoint.endpointRef() = MIDIObjectRef to avoid retain and identity issues? But note SMMessageParser.originatingEndpoint
 
-    @objc private func endpointListChanged(_ notification: Notification) {
-        postSourceListChangedNotification()
+    @objc private func midiObjectListChanged(_ notification: Notification) {
+        if let midiObjectType = notification.userInfo?[MIDIContext.objectType] as? MIDIObjectType,
+           midiObjectType == .source {
+            postSourceListChangedNotification()
+        }
     }
 
     @objc private func endpointDisappeared(_ notification: Notification) {

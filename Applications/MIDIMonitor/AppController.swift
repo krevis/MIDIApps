@@ -94,7 +94,7 @@ extension AppController: NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Listen for new source endpoints. Don't do this earlier--we only are interested in ones
         // that appear after we've been launched.
-        NotificationCenter.default.addObserver(self, selector: #selector(self.sourceEndpointsAppeared(_:)), name: .midiObjectsAppeared, object: Source.self)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.midiObjectsAppeared(_:)), name: .midiObjectsAppeared, object: midiContext)
     }
 
 }
@@ -339,8 +339,10 @@ extension AppController {
 
     // MARK: When sources appear
 
-    @objc func sourceEndpointsAppeared(_ notification: Notification) {
-        guard let endpoints = notification.userInfo?[MIDIContext.objectsThatAppeared] as? [Source], endpoints.count > 0 else { return }
+    @objc func midiObjectsAppeared(_ notification: Notification) {
+        guard let objects = notification.userInfo?[MIDIContext.objectsThatAppeared] as? [MIDIObject] else { return }
+        let sources = objects.compactMap({ $0 as? Source })
+        guard sources.count > 0 else { return }
 
         if newlyAppearedSources == nil {
             newlyAppearedSources = Set<Source>()
@@ -361,7 +363,7 @@ extension AppController {
             }
         }
 
-        newlyAppearedSources?.formUnion(endpoints)
+        newlyAppearedSources?.formUnion(sources)
     }
 
     private func autoConnectToNewlyAppearedSources() {

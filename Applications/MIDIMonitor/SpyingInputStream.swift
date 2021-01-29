@@ -31,7 +31,7 @@ class SpyingInputStream: SMInputStream {
             return nil
         }
 
-        NotificationCenter.default.addObserver(self, selector: #selector(self.endpointListChanged(_:)), name: .midiObjectListChanged, object: Destination.self)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.midiObjectListChanged(_:)), name: .midiObjectListChanged, object: midiContext)
     }
 
     deinit {
@@ -143,8 +143,11 @@ class SpyingInputStream: SMInputStream {
         endpoints.remove(endpoint)
     }
 
-    @objc private func endpointListChanged(_ notification: Notification) {
-        postSourceListChangedNotification()
+    @objc private func midiObjectListChanged(_ notification: Notification) {
+        if let midiObjectType = notification.userInfo?[MIDIContext.objectType] as? MIDIObjectType,
+           midiObjectType == .destination {
+            postSourceListChangedNotification()
+        }
     }
 
     @objc private func endpointDisappeared(_ notification: Notification) {

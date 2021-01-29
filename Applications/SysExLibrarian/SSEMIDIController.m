@@ -31,8 +31,7 @@
 - (void)receivePreferenceDidChange:(NSNotification *)notification;
 - (void)listenForProgramChangesPreferenceDidChange:(NSNotification*)n;
 
-- (void)sourceEndpointsAppeared:(NSNotification *)notification;
-- (void)addEndpointsToInputStream:(NSArray *)endpoints;
+- (void)portInputStreamSourceListChanged:(NSNotification *)notification;
 
 - (void)midiSetupChanged:(NSNotification *)notification;
 - (void)outputStreamSelectedDestinationDisappeared:(NSNotification *)notification;
@@ -91,7 +90,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
     [center addObserver:self selector:@selector(readingSysEx:) name:NSNotification.inputStreamReadingSysEx object:inputStream];
     [center addObserver:self selector:@selector(readingSysEx:) name:NSNotification.inputStreamDoneReadingSysEx object:inputStream];
     [inputStream setMessageDestination:self];
-    [self addEndpointsToInputStream:[SMSourceEndpoint sourceEndpoints]];
+    // TODO inputStream.selectedInputSources = Set(inputStream.inputSources)
 
     outputStream = [[SSECombinationOutputStream alloc] init];
     [center addObserver:self selector:@selector(midiSetupChanged:) name:NSNotification.clientSetupChanged object:[SMClient sharedClient]];
@@ -107,8 +106,8 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
     [outputStream setCustomSysExBufferSize:[[NSUserDefaults standardUserDefaults] integerForKey:SSECustomSysexBufferSizePreferenceKey]];
     [outputStream setVirtualDisplayName:NSLocalizedStringFromTableInBundle(@"Act as a source for other programs", @"SysExLibrarian", SMBundleForObject(self), "display name of virtual source")];
 
-    [center addObserver:self selector:@selector(sourceEndpointsAppeared:) name:NSNotification.midiObjectsAppeared object:[SMSourceEndpoint class]];
-    
+    [center addObserver:self selector:@selector(portInputStreamSourceListChanged:) name:NSNotification.inputStreamSourceListChanged object:inputStream];
+
     messages = [[NSMutableArray alloc] init];
     messageBytesRead = 0;
     totalBytesRead = 0;
@@ -408,18 +407,10 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
     }
 }
 
-- (void)sourceEndpointsAppeared:(NSNotification *)notification;
+- (void)portInputStreamSourceListChanged:(NSNotification *)notification;
 {
-    [self addEndpointsToInputStream:[[notification userInfo] objectForKey:SMMIDIObject.midiObjectsThatAppeared]];
-}
-
-- (void)addEndpointsToInputStream:(NSArray *)endpoints;
-{
-    NSUInteger endpointIndex, endpointCount;
-
-    endpointCount = [endpoints count];
-    for (endpointIndex = 0; endpointIndex < endpointCount; endpointIndex++)
-        [inputStream addEndpoint:[endpoints objectAtIndex:endpointIndex]];    
+    // TODO Like this
+    // inputStream.selectedInputSources = Set(inputStream.inputSources)
 }
 
 - (void)midiSetupChanged:(NSNotification *)notification;
