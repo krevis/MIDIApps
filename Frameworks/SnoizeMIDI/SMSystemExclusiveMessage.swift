@@ -232,84 +232,90 @@ extension SMSystemExclusiveMessage {
 
         guard MusicSequenceFileLoadData(sequence, data as CFData, .midiType, .smf_ChannelsToTracks) == noErr else { return [] }
 
-        var messages: [SMSystemExclusiveMessage] = []
-
         // The last track should contain any sysex data.
         var trackCount: UInt32 = 0
         if MusicSequenceGetTrackCount(sequence, &trackCount) == noErr {
             var possibleTrack: MusicTrack?
             if MusicSequenceGetIndTrack(sequence, trackCount - 1, &possibleTrack) == noErr,
                let track = possibleTrack {
-                // Iterate through the events, looking for MIDI "raw data" events, which may contain sysex data.
-                // (The names get confusing, because we also use Swift's "raw pointers" to get to the data
-                // from this old C-based API.)
+                return messages(fromTrack: track)
+            }
+        }
 
-                var possibleIterator: MusicEventIterator?
-                if NewMusicEventIterator(track, &possibleIterator) == noErr,
-                   let iterator = possibleIterator {
-                    defer { _ = DisposeMusicEventIterator(iterator) }
+        return []
+    }
 
-                    var accumulatingSysexData: Data?
+    static private func messages(fromTrack track: MusicTrack) -> [SMSystemExclusiveMessage] {
+        // Iterate through the events, looking for MIDI "raw data" events, which may contain sysex data.
+        // (The names get confusing, because we also use Swift's "raw pointers" to get to the data
+        // from this old C-based API.)
 
-                    var hasCurrentEvent: DarwinBoolean = false
-                    MusicEventIteratorHasCurrentEvent(iterator, &hasCurrentEvent)
-                    while hasCurrentEvent.boolValue {
-                        var timeStamp: MusicTimeStamp = 0   // ignored
-                        var eventType: MusicEventType = kMusicEventType_NULL
-                        var eventData: UnsafeRawPointer?
-                        var eventDataSize: UInt32 = 0
+        var messages: [SMSystemExclusiveMessage] = []
 
-                        let status = MusicEventIteratorGetEventInfo(iterator, &timeStamp, &eventType, &eventData, &eventDataSize)
+        var possibleIterator: MusicEventIterator?
+        if NewMusicEventIterator(track, &possibleIterator) == noErr,
+           let iterator = possibleIterator {
+            defer { _ = DisposeMusicEventIterator(iterator) }
 
-                        if status == noErr && eventType == kMusicEventType_MIDIRawData && eventDataSize > 0,
-                           let eventData = eventData {
-                            // eventData is a pointer to a MIDIRawData struct, which contains
-                            // another length field and then the "raw" MIDI data.
-                            let midiRawDataEventPtr = eventData.bindMemory(to: MIDIRawData.self, capacity: Int(eventDataSize))
-                            let midiRawDataLength = Int(midiRawDataEventPtr.pointee.length)
-                            if midiRawDataLength > 0 {
-                                // You might try to do this:
-                                // withUnsafePointer(to: midiRawDataEventPtr.pointee.data) { midiRawDataPtr in
-                                //     let midiRawData = Data(UnsafeBufferPointer(start: midiRawDataPtr, count: midiRawDataLength))
-                                // but ASAN dislikes that, so construct the pointer to the data manually.
-                                let midiRawData = Data(bytes: eventData + MemoryLayout.offset(of: \MIDIRawData.data)!, count: midiRawDataLength)
+            var accumulatingSysexData: Data?
 
-                                let firstByte = midiRawData.first!
-                                if firstByte == 0xF0 {
-                                    // Starting a sysex message. Omit the 0xF0.
-                                    accumulatingSysexData = midiRawData.dropFirst()
-                                }
-                                else if accumulatingSysexData != nil {
-                                    // Continuing a sysex message.
-                                    // (This can happen in theory according to the SMF spec, but I'm not seeing it in practice;
-                                    //  it's possible that MusicSequence abstracts this away by concatenating sysex events together
-                                    //  before we see them. If this does happen, I'm not sure whether we will see the event data
-                                    //  starting with 0xF7 or not, so handle both ways.)
-                                    if firstByte == 0xF7 {
-                                        accumulatingSysexData?.append(midiRawData.dropFirst())
-                                    }
-                                    else {
-                                        accumulatingSysexData?.append(midiRawData)
-                                    }
-                                }
+            var hasCurrentEvent: DarwinBoolean = false
+            MusicEventIteratorHasCurrentEvent(iterator, &hasCurrentEvent)
+            while hasCurrentEvent.boolValue {
+                var timeStamp: MusicTimeStamp = 0   // ignored
+                var eventType: MusicEventType = kMusicEventType_NULL
+                var eventData: UnsafeRawPointer?
+                var eventDataSize: UInt32 = 0
 
-                                if let accumulatedSysexData = accumulatingSysexData,
-                                   accumulatedSysexData.count > 1,
-                                   accumulatedSysexData.last! == 0xF7 {
-                                    // Ending a sysex message.
-                                    // Cut off the ending 0xF7 byte and create a message.
-                                    let sysexMessage = SMSystemExclusiveMessage(timeStamp: 0, data: accumulatedSysexData.dropLast())
-                                    messages.append(sysexMessage)
+                let status = MusicEventIteratorGetEventInfo(iterator, &timeStamp, &eventType, &eventData, &eventDataSize)
 
-                                    accumulatingSysexData = nil
-                                }
+                if status == noErr && eventType == kMusicEventType_MIDIRawData && eventDataSize > 0,
+                   let eventData = eventData {
+                    // eventData is a pointer to a MIDIRawData struct, which contains
+                    // another length field and then the "raw" MIDI data.
+                    let midiRawDataEventPtr = eventData.bindMemory(to: MIDIRawData.self, capacity: Int(eventDataSize))
+                    let midiRawDataLength = Int(midiRawDataEventPtr.pointee.length)
+                    if midiRawDataLength > 0 {
+                        // You might try to do this:
+                        // withUnsafePointer(to: midiRawDataEventPtr.pointee.data) { midiRawDataPtr in
+                        //     let midiRawData = Data(UnsafeBufferPointer(start: midiRawDataPtr, count: midiRawDataLength))
+                        // but ASAN dislikes that, so construct the pointer to the data manually.
+                        let midiRawData = Data(bytes: eventData + MemoryLayout.offset(of: \MIDIRawData.data)!, count: midiRawDataLength)
+
+                        let firstByte = midiRawData.first!
+                        if firstByte == 0xF0 {
+                            // Starting a sysex message. Omit the 0xF0.
+                            accumulatingSysexData = midiRawData.dropFirst()
+                        }
+                        else if accumulatingSysexData != nil {
+                            // Continuing a sysex message.
+                            // (This can happen in theory according to the SMF spec, but I'm not seeing it in practice;
+                            //  it's possible that MusicSequence abstracts this away by concatenating sysex events together
+                            //  before we see them. If this does happen, I'm not sure whether we will see the event data
+                            //  starting with 0xF7 or not, so handle both ways.)
+                            if firstByte == 0xF7 {
+                                accumulatingSysexData?.append(midiRawData.dropFirst())
+                            }
+                            else {
+                                accumulatingSysexData?.append(midiRawData)
                             }
                         }
 
-                        _ = MusicEventIteratorNextEvent(iterator)
-                        _ = MusicEventIteratorHasCurrentEvent(iterator, &hasCurrentEvent)
+                        if let accumulatedSysexData = accumulatingSysexData,
+                           accumulatedSysexData.count > 1,
+                           accumulatedSysexData.last! == 0xF7 {
+                            // Ending a sysex message.
+                            // Cut off the ending 0xF7 byte and create a message.
+                            let sysexMessage = SMSystemExclusiveMessage(timeStamp: 0, data: accumulatedSysexData.dropLast())
+                            messages.append(sysexMessage)
+
+                            accumulatingSysexData = nil
+                        }
                     }
                 }
+
+                _ = MusicEventIteratorNextEvent(iterator)
+                _ = MusicEventIteratorHasCurrentEvent(iterator, &hasCurrentEvent)
             }
         }
 

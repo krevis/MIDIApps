@@ -29,7 +29,7 @@ import Foundation
 
 public protocol SMInputStreamSourceProviding {
 
-    var inputStreamSourceName: String? { get } // TODO should this really be optional?
+    var inputStreamSourceName: String? { get }
     var inputStreamSourceUniqueID: MIDIUniqueID? { get }
 
     func isEqualTo(_ other: SMInputStreamSourceProviding) -> Bool

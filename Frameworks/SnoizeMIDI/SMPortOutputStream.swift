@@ -196,7 +196,7 @@ public extension Notification.Name {
 /*
 @objc public extension NSNotification {
 
-    static let portOutputStreamEndpointDisappeared = Notification.Name.clientSetupChanged
+    static let portOutputStreamEndpointDisappeared = Notification.Name.portOutputStreamEndpointDisappeared
     static let portOutputStreamSysExSendWillBegin = Notification.Name.portOutputStreamSysExSendWillBegin
     static let portOutputStreamSysExSendDidEnd = Notification.Name.portOutputStreamSysExSendDidEnd
 
