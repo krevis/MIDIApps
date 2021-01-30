@@ -13,7 +13,7 @@
 import Foundation
 import CoreAudio
 
-@objc public class SMPortOutputStream: SMOutputStream {
+@objc public class PortOutputStream: OutputStream {
 
     public var endpoints: Set<Destination> = [] {
         didSet {
@@ -37,7 +37,7 @@ import CoreAudio
         sysExSendRequests.forEach { _ = $0.cancel() }
     }
 
-    @objc public var pendingSysExSendRequests: [SMSysExSendRequest] {
+    @objc public var pendingSysExSendRequests: [SysExSendRequest] {
         return Array(sysExSendRequests)
     }
 
@@ -51,12 +51,12 @@ import CoreAudio
     // Best I can do is to make a new static function that returns a new instance, or nil.
     // Yuck!
 
-    public static func newPortOutputStream(midiContext: MIDIContext) -> SMPortOutputStream? {
+    public static func newPortOutputStream(midiContext: MIDIContext) -> PortOutputStream? {
         var port: MIDIPortRef = 0
         let status = MIDIOutputPortCreate(midiContext.midiClient, "Output Port" as CFString, &port)
         guard status == noErr else { return nil }
 
-        return SMPortOutputStream(midiContext: midiContext, port: port)
+        return PortOutputStream(midiContext: midiContext, port: port)
     }
 
     private init(midiContext: MIDIContext, port: MIDIPortRef) {
@@ -69,7 +69,7 @@ import CoreAudio
         MIDIPortDispose(outputPort)
     }
 
-    // MARK: SMOutputStream overrides
+    // MARK: OutputStream overrides
 
     @objc public override func takeMIDIMessages(_ messages: [Message]) {
         if sendsSysExAsynchronously {
@@ -84,7 +84,7 @@ import CoreAudio
         }
     }
 
-    // MARK: SMOutputStream subclass-implementation methods
+    // MARK: OutputStream subclass-implementation methods
 
     override func send(_ packetListPtr: UnsafePointer<MIDIPacketList>) {
         for endpoint in endpoints {
@@ -146,14 +146,14 @@ import CoreAudio
         return (asyncSysexMessages, normalMessages)
     }
 
-    private var sysExSendRequests = Set<SMSysExSendRequest>()
+    private var sysExSendRequests = Set<SysExSendRequest>()
 
     private func sendSysExMessagesAsynchronously(_ messages: [SystemExclusiveMessage]) {
         let center = NotificationCenter.default
 
         for message in messages {
             for endpoint in endpoints {
-                if let request = SMSysExSendRequest(message: message, endpoint: endpoint, customSysExBufferSize: customSysExBufferSize) {
+                if let request = SysExSendRequest(message: message, endpoint: endpoint, customSysExBufferSize: customSysExBufferSize) {
                     sysExSendRequests.insert(request)
 
                     var token: NSObjectProtocol?
@@ -187,7 +187,7 @@ public extension Notification.Name {
 
     static let portOutputStreamSysExSendWillBegin = Notification.Name("SMPortOutputStreamWillStartSysExSendNotification")
     static let portOutputStreamSysExSendDidEnd = Notification.Name("SMPortOutputStreamFinishedSysExSendNotification")
-    // userInfo has key "sendRequest", object SMSysExSendRequest
+    // userInfo has key "sendRequest", object SysExSendRequest
     // TODO Formalize that
 
 }

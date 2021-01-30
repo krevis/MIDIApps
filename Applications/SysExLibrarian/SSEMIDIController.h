@@ -27,13 +27,13 @@ typedef enum {
     SSEMIDIControllerFinishing
 }   SSEMIDIControllerSendStatus;
 
-@interface SSEMIDIController : NSObject <SMMessageDestination>
+@interface SSEMIDIController : NSObject <MessageDestination>
 {
     SSEMainWindowController *nonretainedMainWindowController;
 
     // MIDI processing
-    SMPortInputStream *inputStream;
-	SMVirtualInputStream *virtualInputStream;
+    PortInputStream *inputStream;
+	VirtualInputStream *virtualInputStream;
     SSECombinationOutputStream *outputStream;
         
     // Transient data
@@ -47,7 +47,7 @@ typedef enum {
 
     // ... for sending sysex
     NSTimeInterval pauseTimeBetweenMessages;
-    SMSysExSendRequest *nonretainedCurrentSendRequest;
+    SysExSendRequest *nonretainedCurrentSendRequest;
     NSUInteger sendingMessageCount;
     NSUInteger sendingMessageIndex;
     NSUInteger bytesToSend;

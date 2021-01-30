@@ -12,7 +12,7 @@
 
 import Foundation
 
-@objc public class MessageHistory: NSObject, SMMessageDestination {
+@objc public class MessageHistory: NSObject, MessageDestination {
 
     // Remembers the most recent received messages.
 
@@ -46,7 +46,7 @@ import Foundation
     // when new messages were added to the history.
     static public let wereMessagesAdded = "SMMessageHistoryWereMessagesAdded"
 
-    // MARK: SMMessageDestination protocol
+    // MARK: MessageDestination
 
     @objc public func takeMIDIMessages(_ messages: [Message]) {
         savedMessages += messages

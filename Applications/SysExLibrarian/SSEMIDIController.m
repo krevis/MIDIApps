@@ -86,7 +86,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
     
     center = [NSNotificationCenter defaultCenter];
 
-    inputStream = [[SMPortInputStream alloc] init];
+    inputStream = [[PortInputStream alloc] init];
     [center addObserver:self selector:@selector(readingSysEx:) name:NSNotification.inputStreamReadingSysEx object:inputStream];
     [center addObserver:self selector:@selector(readingSysEx:) name:NSNotification.inputStreamDoneReadingSysEx object:inputStream];
     [inputStream setMessageDestination:self];
@@ -336,7 +336,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
 
 
 //
-// SMMessageDestination protocol
+// MessageDestination protocol
 //
 
 - (void)takeMIDIMessages:(NSArray<Message *> *)messagesToTake
@@ -394,7 +394,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
     
     if (listeningToProgramChangeMessages) {
         if (!virtualInputStream) {
-            virtualInputStream = [[SMVirtualInputStream alloc] init];
+            virtualInputStream = [[VirtualInputStream alloc] init];
             [virtualInputStream setMessageDestination:self];
             [virtualInputStream setSelectedInputSources:[virtualInputStream inputSourcesSet]];
         }
@@ -544,7 +544,7 @@ static MIDITimeStamp pauseStartTimeStamp = 0;
 
     SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
 
-    SMSysExSendRequest *sendRequest;
+    SysExSendRequest *sendRequest;
 
     sendRequest = [[notification userInfo] objectForKey:@"sendRequest"];
     SMAssert(sendRequest == nonretainedCurrentSendRequest);

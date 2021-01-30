@@ -22,7 +22,7 @@ class SingleInputStreamSource {
 
 }
 
-extension SingleInputStreamSource: SMInputStreamSourceProviding {
+extension SingleInputStreamSource: InputStreamSourceProviding {
 
     var inputStreamSourceName: String? {
         name
@@ -32,7 +32,7 @@ extension SingleInputStreamSource: SMInputStreamSourceProviding {
         nil
     }
 
-    func isEqualTo(_ other: SMInputStreamSourceProviding) -> Bool {
+    func isEqualTo(_ other: InputStreamSourceProviding) -> Bool {
         guard let otherSingleSource = other as? SingleInputStreamSource else { return false }
         return self === otherSingleSource
     }
@@ -41,8 +41,8 @@ extension SingleInputStreamSource: SMInputStreamSourceProviding {
         hasher.combine(ObjectIdentifier(self))
     }
 
-    func asInputStreamSource() -> SMInputStreamSource {
-        SMInputStreamSource(provider: self)
+    func asInputStreamSource() -> InputStreamSource {
+        InputStreamSource(provider: self)
     }
 
 }

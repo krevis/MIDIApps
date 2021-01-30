@@ -12,21 +12,21 @@
 
 import Foundation
 
-protocol SMMessageParserDelegate: AnyObject {
+protocol MessageParserDelegate: AnyObject {
 
-    func parserDidReadMessages(_ parser: SMMessageParser, messages: [Message])
-    func parserIsReadingSysEx(_ parser: SMMessageParser, length: Int)
-    func parserFinishedReadingSysEx(_ parser: SMMessageParser, message: SystemExclusiveMessage)
+    func parserDidReadMessages(_ parser: MessageParser, messages: [Message])
+    func parserIsReadingSysEx(_ parser: MessageParser, length: Int)
+    func parserFinishedReadingSysEx(_ parser: MessageParser, message: SystemExclusiveMessage)
 
 }
 
-@objc public class SMMessageParser: NSObject {
+@objc public class MessageParser: NSObject {
 
     deinit {
         sysExTimeOutTimer?.invalidate()
     }
 
-    weak var delegate: SMMessageParserDelegate?
+    weak var delegate: MessageParserDelegate?
     public weak var originatingEndpoint: Endpoint?
     @objc public var sysExTimeOut: TimeInterval = 1.0   // seconds
     @objc public var ignoresInvalidData = false

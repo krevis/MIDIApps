@@ -11,14 +11,15 @@
  */
 
 import Cocoa
+import SnoizeMIDI
 
 class CombinationInputStream: NSObject {
 
     init(midiContext: MIDIContext) {
         self.midiContext = midiContext
 
-        portInputStream = SMPortInputStream(midiContext: midiContext)
-        virtualInputStream = SMVirtualInputStream(midiContext: midiContext)
+        portInputStream = PortInputStream(midiContext: midiContext)
+        virtualInputStream = VirtualInputStream(midiContext: midiContext)
 
         if let spyClient = (NSApp.delegate as? AppController)?.midiSpyClient {
             spyingInputStream = SpyingInputStream(midiContext: midiContext, midiSpyClient: spyClient)
@@ -56,7 +57,7 @@ class CombinationInputStream: NSObject {
         spyingInputStream?.messageDestination = nil
     }
 
-    var messageDestination: SMMessageDestination?
+    var messageDestination: MessageDestination?
 
     var sourceGroups: [CombinationInputStreamSourceGroup] {
         var groups = [portGroup, virtualGroup]
@@ -79,9 +80,9 @@ class CombinationInputStream: NSObject {
         return groups
     }
 
-    var selectedInputSources: Set<SMInputStreamSource> {
+    var selectedInputSources: Set<InputStreamSource> {
         get {
-            var inputSources: Set<SMInputStreamSource> = []
+            var inputSources: Set<InputStreamSource> = []
             inputSources.formUnion(portInputStream.selectedInputSources)
             inputSources.formUnion(virtualInputStream.selectedInputSources)
             if let stream = spyingInputStream {
@@ -151,7 +152,7 @@ class CombinationInputStream: NSObject {
         else {
             // This is a current-style document
 
-            func makeInputStreamTakePersistentSettings(_ stream: SMInputStream, _ streamSettings: Any?) {
+            func makeInputStreamTakePersistentSettings(_ stream: SnoizeMIDI.InputStream, _ streamSettings: Any?) {
                 guard let streamSettings = streamSettings else { return }
                 if let streamMissingNames = stream.takePersistentSettings(streamSettings) {
                     missingNames += streamMissingNames
@@ -180,8 +181,8 @@ class CombinationInputStream: NSObject {
     // MARK: Private
 
     private let midiContext: MIDIContext
-    private let portInputStream: SMPortInputStream
-    private let virtualInputStream: SMVirtualInputStream
+    private let portInputStream: PortInputStream
+    private let virtualInputStream: VirtualInputStream
     private let spyingInputStream: SpyingInputStream?
 
     private var willPostSourceListChangedNotification = false
@@ -192,7 +193,7 @@ class CombinationInputStream: NSObject {
 
 }
 
-extension CombinationInputStream: SMMessageDestination {
+extension CombinationInputStream: MessageDestination {
 
     @objc func takeMIDIMessages(_ messages: [Message]) {
         messageDestination?.takeMIDIMessages(messages)
@@ -234,7 +235,7 @@ class CombinationInputStreamSourceGroup: NSObject {
 
     let name: String
     let expandable: Bool
-    fileprivate(set) var sources: [SMInputStreamSource]
+    fileprivate(set) var sources: [InputStreamSource]
 
     init(name myName: String, expandable myExpandable: Bool) {
         name = myName

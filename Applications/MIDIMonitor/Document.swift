@@ -11,6 +11,7 @@
  */
 
 import Cocoa
+import SnoizeMIDI
 
 class Document: NSDocument {
 
@@ -279,7 +280,7 @@ extension Document {
     // It would be nicer to use block-based undo registration, but that requires macOS 10.11. So, for now, register using selectors,
     // and use a separate @objc-exposed method to do the work.
 
-    var selectedInputSources: Set<SMInputStreamSource> {
+    var selectedInputSources: Set<InputStreamSource> {
         get {
             return stream.selectedInputSources
         }
@@ -290,7 +291,7 @@ extension Document {
     }
 
     // TODO But this can't be ObjC
-    /*@objc*/ private func undoableSetSelectedInputSources(_ newValue: Set<SMInputStreamSource>) {
+    /*@objc*/ private func undoableSetSelectedInputSources(_ newValue: Set<InputStreamSource>) {
 //        if let undoManager = undoManager {
 //            undoManager.registerUndo(withTarget: self, selector: #selector(self.undoableSetSelectedInputSources(_:)), object: selectedInputSources)
 //            undoManager.setActionName(NSLocalizedString("Change Selected Sources", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change source undo action"))
@@ -487,7 +488,7 @@ extension Document {
 
     private func autoselectSources() {
         let groups = inputSourceGroups
-        var sourcesSet = Set<SMInputStreamSource>()
+        var sourcesSet = Set<InputStreamSource>()
 
         let defaults = UserDefaults.standard
 

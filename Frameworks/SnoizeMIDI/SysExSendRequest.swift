@@ -12,7 +12,7 @@
 
 import Foundation
 
-@objc public class SMSysExSendRequest: NSObject {
+@objc public class SysExSendRequest: NSObject {
 
     init?(message: SystemExclusiveMessage, endpoint: Destination, customSysExBufferSize: Int = 0) {
         self.midiContext = endpoint.midiContext
@@ -42,7 +42,7 @@ import Foundation
             completionProc: { (unsafeRequest: UnsafeMutablePointer<MIDISysexSendRequest>) in
                 // NOTE: This is called on CoreMIDI's sysex sending thread.
                 guard let refCon = unsafeRequest.pointee.completionRefCon else { return }
-                let request = Unmanaged<SMSysExSendRequest>.fromOpaque(refCon).takeRetainedValue()
+                let request = Unmanaged<SysExSendRequest>.fromOpaque(refCon).takeRetainedValue()
                 DispatchQueue.main.async {
                     request.didComplete(.sent)
                 }

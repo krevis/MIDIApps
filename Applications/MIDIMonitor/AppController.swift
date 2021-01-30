@@ -11,7 +11,7 @@
  */
 
 import Cocoa
-import CoreMIDI
+import SnoizeMIDI
 
 class AppController: NSObject {
 

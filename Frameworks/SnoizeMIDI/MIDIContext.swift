@@ -111,7 +111,7 @@ import CoreMIDI
         // TODO Implement
         //  if let endpoint = Destination.sysExSpeedWorkaroundEndpoint {
         //      let message = SystemExclusiveMessage(timeStamp: 0, data: Data())
-        //          _ = SMSysExSendRequest(message: message, endpoint: endpoint)?.send()
+        //          _ = SysExSendRequest(message: message, endpoint: endpoint)?.send()
         //      }
         //  }
     }

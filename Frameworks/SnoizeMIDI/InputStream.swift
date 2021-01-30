@@ -12,7 +12,7 @@
 
 import Foundation
 
-@objc open class SMInputStream: NSObject, SMMessageParserDelegate {
+@objc open class InputStream: NSObject, MessageParserDelegate {
 
     public init(midiContext: MIDIContext) {
         self.midiContext = midiContext
@@ -25,7 +25,7 @@ import Foundation
 
     public let midiContext: MIDIContext
     @objc public var readQueue: DispatchQueue
-    @objc public weak var messageDestination: SMMessageDestination?
+    @objc public weak var messageDestination: MessageDestination?
     @objc public var sysExTimeOut: TimeInterval = 1.0 {
         didSet {
             parsers.forEach { $0.sysExTimeOut = sysExTimeOut }
@@ -58,7 +58,7 @@ import Foundation
         // TODO Fix type to be nicer
         guard let dicts = settings as? [[String: Any]] else { return nil }
 
-        var newInputSources: Set<SMInputStreamSource> = []
+        var newInputSources: Set<InputStreamSource> = []
         var missingNames: [String] = []
         for dict in dicts {
             let name = dict["name"] as? String
@@ -82,8 +82,8 @@ import Foundation
 
     public let midiReadProc: MIDIReadProc = inputStreamMIDIReadProc
 
-    public func createParser(originatingEndpoint: Endpoint?) -> SMMessageParser {
-        let parser = SMMessageParser()
+    public func createParser(originatingEndpoint: Endpoint?) -> MessageParser {
+        let parser = MessageParser()
         parser.delegate = self
         parser.sysExTimeOut = sysExTimeOut
         parser.originatingEndpoint = originatingEndpoint
@@ -113,28 +113,28 @@ import Foundation
         // which needs to be retained until the incoming MIDI is processed on the main thread.
     }
 
-    open var parsers: [SMMessageParser] {
+    open var parsers: [MessageParser] {
         fatalError("Must implement in subclass")
     }
 
-    open func parser(sourceConnectionRefCon: UnsafeMutableRawPointer?) -> SMMessageParser? {
+    open func parser(sourceConnectionRefCon: UnsafeMutableRawPointer?) -> MessageParser? {
         fatalError("Must implement in subclass")
     }
 
-    open func streamSource(parser: SMMessageParser) -> SMInputStreamSource? {
+    open func streamSource(parser: MessageParser) -> InputStreamSource? {
         fatalError("Must implement in subclass")
     }
 
-    open var inputSources: [SMInputStreamSource] {
+    open var inputSources: [InputStreamSource] {
         fatalError("Must implement in subclass")
     }
 
-    public var inputSourcesSet: Set<SMInputStreamSource> {
+    public var inputSourcesSet: Set<InputStreamSource> {
         // TODO for convenience going to Swift and dealing with selectedInputSources... may change
         return Set(inputSources)
     }
 
-    open var selectedInputSources: Set<SMInputStreamSource> {
+    open var selectedInputSources: Set<InputStreamSource> {
         get {
             fatalError("Must implement in subclass")
         }
@@ -143,13 +143,13 @@ import Foundation
         }
     }
 
-    // MARK: <SMMessageParserDelegate>
+    // MARK: MessageParserDelegate
 
-    public func parserDidReadMessages(_ parser: SMMessageParser, messages: [Message]) {
+    public func parserDidReadMessages(_ parser: MessageParser, messages: [Message]) {
         messageDestination?.takeMIDIMessages(messages)
     }
 
-    public func parserIsReadingSysEx(_ parser: SMMessageParser, length: Int) {
+    public func parserIsReadingSysEx(_ parser: MessageParser, length: Int) {
         if let streamSource = streamSource(parser: parser) {
             let userInfo = ["length": length,
                             "source": streamSource] as [String: Any]
@@ -157,7 +157,7 @@ import Foundation
         }
     }
 
-    public func parserFinishedReadingSysEx(_ parser: SMMessageParser, message: SystemExclusiveMessage) {
+    public func parserFinishedReadingSysEx(_ parser: MessageParser, message: SystemExclusiveMessage) {
         if let streamSource = streamSource(parser: parser) {
             let userInfo = ["length": 1 + message.receivedData.count,
                             "valid": message.wasReceivedWithEOX,
@@ -168,7 +168,7 @@ import Foundation
 
     // MARK: Private
 
-    private func findInputSource(name: String?, uniqueID: MIDIUniqueID?) -> SMInputStreamSource? {
+    private func findInputSource(name: String?, uniqueID: MIDIUniqueID?) -> InputStreamSource? {
         // Find the input source with the desired unique ID. If there are no matches by uniqueID, return the first source whose name matches.
         // Otherwise, return nil.
         if let uniqueID = uniqueID,
@@ -229,7 +229,7 @@ private func inputStreamMIDIReadProc(_ packetListPtr: UnsafePointer<MIDIPacketLi
     let numPackets = packetListPtr.pointee.numPackets
     guard numPackets > 0 else { return }
 
-    let inputStream = Unmanaged<SMInputStream>.fromOpaque(readProcRefCon).takeUnretainedValue()
+    let inputStream = Unmanaged<InputStream>.fromOpaque(readProcRefCon).takeUnretainedValue()
     // NOTE: There is a race condition here.
     // By the time the async block runs, the input stream may be gone or in a different state.
     // Make sure that the input stream retains itself, and anything that depends on the

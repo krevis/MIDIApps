@@ -65,7 +65,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
     flags.ignoresTimeStamps = NO;
     flags.sendsSysExAsynchronously = NO;
 
-    // TODO Follow pattern of SMPortInputStream and SpyingInputStream, observe the client
+    // TODO Follow pattern of PortInputStream and SpyingInputStream, observe the client
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(portStreamEndpointListChanged:) 
                                                  name:NSNotification.midiObjectListChanged
@@ -252,9 +252,9 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
         [[self stream] cancelPendingSysExSendRequests];
 }
 
-- (SMSysExSendRequest *)currentSysExSendRequest;
+- (SysExSendRequest *)currentSysExSendRequest;
 {
-    SMSysExSendRequest *currentSysExSendRequest = nil;
+    SysExSendRequest *currentSysExSendRequest = nil;
     
     if ([[self stream] respondsToSelector:@selector(pendingSysExSendRequests)]) {
         NSArray *pending = [[self stream] pendingSysExSendRequests];
@@ -266,7 +266,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
 }
 
 //
-// SMMessageDestination protocol
+// MessageDestination protocol
 //
 
 - (void)takeMIDIMessages:(NSArray<Message *> *)messages
@@ -301,7 +301,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
 {
     SMAssert(portStream == nil);
 
-    portStream = [SMPortOutputStream newPortOutputStream];
+    portStream = [PortOutputStream newPortOutputStream];
     if (portStream) {
         [portStream setIgnoresTimeStamps:flags.ignoresTimeStamps];
         [portStream setSendsSysExAsynchronously:flags.sendsSysExAsynchronously];
@@ -328,7 +328,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
 {
     SMAssert(virtualStream == nil);
 
-    virtualStream = [[SMVirtualOutputStream alloc] initWithName:virtualEndpointName uniqueID:virtualEndpointUniqueID];
+    virtualStream = [[VirtualOutputStream alloc] initWithName:virtualEndpointName uniqueID:virtualEndpointUniqueID];
     if (virtualStream) {
         [virtualStream setIgnoresTimeStamps:flags.ignoresTimeStamps];
 

@@ -12,14 +12,14 @@
 
 import Foundation
 
-@objc public class MessageFilter: NSObject, SMMessageDestination {
+@objc public class MessageFilter: NSObject, MessageDestination {
 
-    @objc public weak var messageDestination: SMMessageDestination?
+    @objc public weak var messageDestination: MessageDestination?
 
     public var filterMask: Message.TypeMask = []
     public var channelMask: VoiceMessage.ChannelMask = VoiceMessage.ChannelMask.all
 
-    // MARK: SMMessageDestination protocol
+    // MARK: MessageDestination
 
     @objc public func takeMIDIMessages(_ messages: [Message]) {
         let filteredMessages = filterMessages(messages)

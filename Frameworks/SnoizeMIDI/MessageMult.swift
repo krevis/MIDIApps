@@ -12,20 +12,20 @@
 
 import Foundation
 
-@objc public class MessageMult: NSObject, SMMessageDestination {
-    @objc public var destinations: [SMMessageDestination] = []
+@objc public class MessageMult: NSObject, MessageDestination {
+    @objc public var destinations: [MessageDestination] = []
 
-    @objc public func addDestination(_ destination: SMMessageDestination) {
+    @objc public func addDestination(_ destination: MessageDestination) {
         if !destinations.contains(where: { $0 === destination }) {
             destinations.append(destination)
         }
     }
 
-    @objc public func removeDestination(_ destination: SMMessageDestination) {
+    @objc public func removeDestination(_ destination: MessageDestination) {
         destinations.removeAll { $0 === destination }
     }
 
-    // MARK: SMMessageDestination protocol
+    // MARK: MessageDestination
 
     @objc public func takeMIDIMessages(_ messages: [Message]) {
         destinations.forEach { $0.takeMIDIMessages(messages) }

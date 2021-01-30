@@ -16,10 +16,10 @@
 #import "SSEOutputStreamDestination.h"
 
 
-@interface SSECombinationOutputStream : NSObject <SMMessageDestination>
+@interface SSECombinationOutputStream : NSObject <MessageDestination>
 {
-    SMVirtualOutputStream *virtualStream;
-    SMPortOutputStream *portStream;
+    VirtualOutputStream *virtualStream;
+    PortOutputStream *portStream;
 
     SSESimpleOutputStreamDestination *virtualStreamDestination;
     SInt32 virtualEndpointUniqueID;
@@ -67,7 +67,7 @@
 @property (nonatomic) NSInteger customSysExBufferSize;
 
 - (void)cancelPendingSysExSendRequests;
-- (SMSysExSendRequest *)currentSysExSendRequest;
+- (SysExSendRequest *)currentSysExSendRequest;
 
 @end
 
@@ -75,6 +75,6 @@
 extern NSString *SSECombinationOutputStreamSelectedDestinationDisappearedNotification;
 extern NSString *SSECombinationOutputStreamDestinationListChangedNotification;
 
-// This class also reposts the following notifications from its SMPortOutputStream, with 'self' as the object:
+// This class also reposts the following notifications from its PortOutputStream, with 'self' as the object:
 //	SMPortOutputStreamWillStartSysExSendNotification
 // 	SMPortOutputStreamFinishedSysExSendNotification

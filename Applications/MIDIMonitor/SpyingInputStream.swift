@@ -11,14 +11,15 @@
  */
 
 import Cocoa
+import SnoizeMIDI
 
-class SpyingInputStream: SMInputStream {
+class SpyingInputStream: SnoizeMIDI.InputStream {
     // TODO Perhaps this should not inherit from the stream, but use a protocol instead
 
     private let spyClient: MIDISpyClientRef
     private var spyPort: MIDISpyPortRef?
     private var endpoints: Set<Destination> = []
-    private var parsersForEndpoints = NSMapTable<Destination, SMMessageParser>.weakToStrongObjects()
+    private var parsersForEndpoints = NSMapTable<Destination, MessageParser>.weakToStrongObjects()
 
     init?(midiContext: MIDIContext, midiSpyClient: MIDISpyClientRef) {
         spyClient = midiSpyClient
@@ -44,13 +45,13 @@ class SpyingInputStream: SMInputStream {
         // Don't tear down the spy client, since others may be using it
     }
 
-    // MARK: SMInputStream subclass
+    // MARK: InputStream subclass
 
-    override var parsers: [SMMessageParser] {
-        return parsersForEndpoints.objectEnumerator()?.allObjects as? [SMMessageParser] ?? []
+    override var parsers: [MessageParser] {
+        return parsersForEndpoints.objectEnumerator()?.allObjects as? [MessageParser] ?? []
     }
 
-    override func parser(sourceConnectionRefCon: UnsafeMutableRawPointer?) -> SMMessageParser? {
+    override func parser(sourceConnectionRefCon: UnsafeMutableRawPointer?) -> MessageParser? {
         // note: refCon is a Destination*.
         // We are allowed to return nil if we are no longer listening to this source endpoint.
         guard let refCon = sourceConnectionRefCon else { return nil }
@@ -58,7 +59,7 @@ class SpyingInputStream: SMInputStream {
         return parsersForEndpoints.object(forKey: endpoint)
     }
 
-    override func streamSource(parser: SMMessageParser) -> SMInputStreamSource? {
+    override func streamSource(parser: MessageParser) -> InputStreamSource? {
         return parser.originatingEndpoint?.asInputStreamSource()
     }
 
@@ -80,12 +81,12 @@ class SpyingInputStream: SMInputStream {
         super.releaseForIncomingMIDI(sourceConnectionRefCon: sourceConnectionRefCon)
     }
 
-    override var inputSources: [SMInputStreamSource] {
+    override var inputSources: [InputStreamSource] {
         let destinations = midiContext.destinations.filter { !$0.isOwnedByThisProcess }
         return destinations.map { $0.asInputStreamSource() }
     }
 
-    override var selectedInputSources: Set<SMInputStreamSource> {
+    override var selectedInputSources: Set<InputStreamSource> {
         get {
             return Set(endpoints.map { $0.asInputStreamSource() })
         }

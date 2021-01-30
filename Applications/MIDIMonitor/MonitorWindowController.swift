@@ -11,6 +11,7 @@
  */
 
 import Cocoa
+import SnoizeMIDI
 
 class MonitorWindowController: NSWindowController {
 
@@ -183,7 +184,7 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
         sourcesOutlineView.reloadData()
     }
 
-    func revealInputSources(_ sources: Set<SMInputStreamSource>) {
+    func revealInputSources(_ sources: Set<InputStreamSource>) {
         // Show the sources first
         sourcesDisclosableView.shown = true
         sourcesDisclosureButton.intValue = 1
@@ -250,7 +251,7 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
             if let group = item as? CombinationInputStreamSourceGroup {
                 return group.name
             }
-            else if let source = item as? SMInputStreamSource {
+            else if let source = item as? InputStreamSource {
                 return source.name ?? ""
             }
             else {
@@ -261,7 +262,7 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
             if let group = item as? CombinationInputStreamSourceGroup {
                 return buttonStateForInputSources(group.sources)
             }
-            else if let source = item as? SMInputStreamSource {
+            else if let source = item as? InputStreamSource {
                 return buttonStateForInputSources([source])
             }
             else {
@@ -283,11 +284,11 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
             newState = .on
         }
 
-        let sources: [SMInputStreamSource]
+        let sources: [InputStreamSource]
         if let group = item as? CombinationInputStreamSourceGroup {
             sources = group.sources
         }
-        else if let source = item as? SMInputStreamSource {
+        else if let source = item as? InputStreamSource {
             sources = [source]
         }
         else {
@@ -324,7 +325,7 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
         return IndexSet()
     }
 
-    private func buttonStateForInputSources(_ sources: [SMInputStreamSource]) -> NSControl.StateValue {
+    private func buttonStateForInputSources(_ sources: [InputStreamSource]) -> NSControl.StateValue {
         let selectedSources = midiDocument.selectedInputSources
 
         var areAnySelected = false

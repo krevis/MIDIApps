@@ -11,8 +11,6 @@
  */
 
 @import Cocoa;
-#import <SnoizeMIDI/SnoizeMIDI.h>
-#import <SnoizeMIDISpy/SnoizeMIDISpy.h>
 #import <Sparkle/Sparkle.h>
 #import "MIDI_Monitor-Swift.h"
 
