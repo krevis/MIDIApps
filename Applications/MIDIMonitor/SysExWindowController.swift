@@ -17,10 +17,9 @@ class SysExWindowController: DetailsWindowController {
 
     private let sysExMessage: SystemExclusiveMessage
 
-    override init(message myMessage: Message) {
-        guard let mySysExMessage = myMessage as? SystemExclusiveMessage else { fatalError() }
-        sysExMessage = mySysExMessage
-        super.init(message: myMessage)
+    override init(message: Message) {
+        self.sysExMessage = message as! SystemExclusiveMessage // swiftlint:disable:this force_cast
+        super.init(message: message)
     }
 
     required init?(coder: NSCoder) {

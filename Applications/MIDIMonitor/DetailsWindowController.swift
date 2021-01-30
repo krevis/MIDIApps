@@ -17,8 +17,8 @@ class DetailsWindowController: UtilityWindowController, NSWindowDelegate {
 
     let message: Message
 
-    init(message myMessage: Message) {
-        message = myMessage
+    init(message: Message) {
+        self.message = message
         super.init(window: nil)
         shouldCascadeWindows = true
 
