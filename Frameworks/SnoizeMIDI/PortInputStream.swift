@@ -17,7 +17,7 @@ import Foundation
     public override init(midiContext: MIDIContext) {
         super.init(midiContext: midiContext)
 
-        _ = MIDIInputPortCreate(midiContext.midiClient, "Input port" as CFString, midiReadProc, Unmanaged.passUnretained(self).toOpaque(), &inputPort)
+        _ = midiContext.interface.inputPortCreate(midiContext.midiClient, "Input port" as CFString, midiReadProc, Unmanaged.passUnretained(self).toOpaque(), &inputPort)
 
         NotificationCenter.default.addObserver(self, selector: #selector(self.midiObjectListChanged(_:)), name: .midiObjectListChanged, object: midiContext)
     }
@@ -25,7 +25,7 @@ import Foundation
     deinit {
         NotificationCenter.default.removeObserver(self, name: .midiObjectListChanged, object: midiContext)
 
-        MIDIPortDispose(inputPort)
+        _ = midiContext.interface.portDispose(inputPort)
     }
 
     public var endpoints: Set<Source> = [] {

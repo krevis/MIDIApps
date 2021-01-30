@@ -15,9 +15,9 @@
 #import <Cocoa/Cocoa.h>
 #import <SnoizeMIDI/SnoizeMIDI.h>
 
+#import "SysEx_Librarian-Swift.h"
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
-#import "CocoaCryptoHashing.h"
 
 
 @interface SSEDetailsWindowController (Private)
@@ -163,7 +163,9 @@ static NSMutableArray *controllers = nil;
     } else if ([identifier isEqualToString:@"sizeHex"]) {
         return [Message formatLength:[message receivedDataWithStartByteLength] usingOption:2 /* TODO .hexadecimal*/];
     } else if ([identifier isEqualToString:@"sizeAbbreviated"]) {
-        return [NSString SnoizeMIDI_abbreviatedStringForByteCount:[message receivedDataWithStartByteLength]];
+        // TODO This is on String now
+        return @"TODO";
+        // return [NSString SnoizeMIDI_abbreviatedStringForByteCount:[message receivedDataWithStartByteLength]];
     } else {
         return nil;
     }
@@ -336,8 +338,8 @@ const CGFloat kMinTextViewHeight = 32.f;
         [lineString release];
     }
 
-    [formattedString appendFormat: @"\nMD5 checksum:   %@", [data md5HexHash]];
-    [formattedString appendFormat: @"\nSHA-1 checksum: %@", [data sha1HexHash]];        
+    [formattedString appendFormat: @"\nMD5 checksum:   %@", data.md5HexHash];
+    [formattedString appendFormat: @"\nSHA-1 checksum: %@", data.sha1HexHash];
         
     return formattedString;
 }

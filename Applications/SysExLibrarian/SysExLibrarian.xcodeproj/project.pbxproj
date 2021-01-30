@@ -20,8 +20,11 @@
 		163FB60F199EE6810017B664 /* ToolbarRecordOneTemplate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB60D199EE6810017B664 /* ToolbarRecordOneTemplate.tiff */; };
 		163FB610199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB60E199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff */; };
 		1658B8AB09F36B5F00F42BFB /* SSESysexSpeedOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1658B8A909F36B5E00F42BFB /* SSESysexSpeedOutlineView.m */; };
-		16666D850AB404250084C23B /* CocoaCryptoHashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 16666D830AB404250084C23B /* CocoaCryptoHashing.m */; };
 		16C43B9725C4EB00007A3A48 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43B9625C4EB00007A3A48 /* main.swift */; };
+		16C43BBA25C4F637007A3A48 /* Data+Hashing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43BB925C4F637007A3A48 /* Data+Hashing.swift */; };
+		16C43BBC25C52954007A3A48 /* Destination+OutputStreamDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43BBB25C52954007A3A48 /* Destination+OutputStreamDestination.swift */; };
+		16C43BBE25C529BA007A3A48 /* OutputStreamDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43BBD25C529BA007A3A48 /* OutputStreamDestination.swift */; };
+		16C43BC025C52C89007A3A48 /* CombinationOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43BBF25C52C89007A3A48 /* CombinationOutputStream.swift */; };
 		16DC484B0AB3A359002ECBD6 /* SSESysExSpeedController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16DC48490AB3A359002ECBD6 /* SSESysExSpeedController.m */; };
 		16F033540984B76F006C8A44 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
 		16F033560984B76F006C8A44 /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = F559F90A01DEC5E001000164 /* Preferences.nib */; };
@@ -60,9 +63,6 @@
 		16F033820984B76F006C8A44 /* SSEFindMissingController.m in Sources */ = {isa = PBXBuildFile; fileRef = F53090130233540701000164 /* SSEFindMissingController.m */; };
 		16F033830984B76F006C8A44 /* SSEExportController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5DFAC8402F7715701000164 /* SSEExportController.m */; };
 		16F033840984B76F006C8A44 /* SSEAppController.m in Sources */ = {isa = PBXBuildFile; fileRef = F559F90301DEC14A01000164 /* SSEAppController.m */; };
-		16F033850984B76F006C8A44 /* SSECombinationOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = F56B11990324C4A901000164 /* SSECombinationOutputStream.m */; };
-		16F033860984B76F006C8A44 /* SSEOutputStreamDestination.m in Sources */ = {isa = PBXBuildFile; fileRef = F56B119D0324C89D01000164 /* SSEOutputStreamDestination.m */; };
-		16F033870984B76F006C8A44 /* SMDestinationEndpoint-SSEOutputStreamDestination.m in Sources */ = {isa = PBXBuildFile; fileRef = F56B11A30324D5AA01000164 /* SMDestinationEndpoint-SSEOutputStreamDestination.m */; };
 		16F0338A0984B76F006C8A44 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		16F0338B0984B76F006C8A44 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F559F8FA01DEC0C601000164 /* CoreMIDI.framework */; };
 		16F0338D0984B76F006C8A44 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F539E386020F2C2F01000164 /* Carbon.framework */; };
@@ -219,8 +219,6 @@
 		163FB60E199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "ToolbarRecordOneTemplate@2x.tiff"; sourceTree = "<group>"; };
 		1658B8A809F36B5E00F42BFB /* SSESysexSpeedOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSESysexSpeedOutlineView.h; sourceTree = "<group>"; };
 		1658B8A909F36B5E00F42BFB /* SSESysexSpeedOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSESysexSpeedOutlineView.m; sourceTree = "<group>"; };
-		16666D820AB404250084C23B /* CocoaCryptoHashing.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CocoaCryptoHashing.h; sourceTree = "<group>"; };
-		16666D830AB404250084C23B /* CocoaCryptoHashing.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CocoaCryptoHashing.m; sourceTree = "<group>"; };
 		169225E625C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		169225E725C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Preferences.nib; sourceTree = "<group>"; };
 		169225E825C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Details.nib; sourceTree = "<group>"; };
@@ -236,6 +234,10 @@
 		169225F225C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.htmld; name = en; path = en.lproj/docs.htmld; sourceTree = "<group>"; };
 		16C43B9525C4EB00007A3A48 /* SysExLibrarian-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SysExLibrarian-Bridging-Header.h"; sourceTree = "<group>"; };
 		16C43B9625C4EB00007A3A48 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		16C43BB925C4F637007A3A48 /* Data+Hashing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hashing.swift"; sourceTree = "<group>"; };
+		16C43BBB25C52954007A3A48 /* Destination+OutputStreamDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Destination+OutputStreamDestination.swift"; sourceTree = "<group>"; };
+		16C43BBD25C529BA007A3A48 /* OutputStreamDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputStreamDestination.swift; sourceTree = "<group>"; };
+		16C43BBF25C52C89007A3A48 /* CombinationOutputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinationOutputStream.swift; sourceTree = "<group>"; };
 		16DC48480AB3A359002ECBD6 /* SSESysExSpeedController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SSESysExSpeedController.h; sourceTree = "<group>"; };
 		16DC48490AB3A359002ECBD6 /* SSESysExSpeedController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SSESysExSpeedController.m; sourceTree = "<group>"; };
 		16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDI.xcodeproj; path = ../../Frameworks/SnoizeMIDI/SnoizeMIDI.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -278,12 +280,6 @@
 		F565B6EA01E1498301000164 /* SSEMIDIController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEMIDIController.m; sourceTree = "<group>"; };
 		F565B6EE01E1567501000164 /* NSPopUpButton-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPopUpButton-Extensions.h"; sourceTree = "<group>"; };
 		F565B6EF01E1567501000164 /* NSPopUpButton-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSPopUpButton-Extensions.m"; sourceTree = "<group>"; };
-		F56B11980324C4A901000164 /* SSECombinationOutputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSECombinationOutputStream.h; sourceTree = "<group>"; };
-		F56B11990324C4A901000164 /* SSECombinationOutputStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSECombinationOutputStream.m; sourceTree = "<group>"; };
-		F56B119C0324C89D01000164 /* SSEOutputStreamDestination.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEOutputStreamDestination.h; sourceTree = "<group>"; };
-		F56B119D0324C89D01000164 /* SSEOutputStreamDestination.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEOutputStreamDestination.m; sourceTree = "<group>"; };
-		F56B11A20324D5AA01000164 /* SMDestinationEndpoint-SSEOutputStreamDestination.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SMDestinationEndpoint-SSEOutputStreamDestination.h"; sourceTree = "<group>"; };
-		F56B11A30324D5AA01000164 /* SMDestinationEndpoint-SSEOutputStreamDestination.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SMDestinationEndpoint-SSEOutputStreamDestination.m"; sourceTree = "<group>"; };
 		F57D1E5902122FA501000164 /* SysExLibrarian.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = SysExLibrarian.icns; sourceTree = "<group>"; };
 		F57D1E5B02127DF401000164 /* SysExDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = SysExDocument.icns; sourceTree = "<group>"; };
 		F57D1E5C02127DF401000164 /* LibraryDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = LibraryDocument.icns; sourceTree = "<group>"; };
@@ -505,8 +501,7 @@
 			children = (
 				F5F52C1102200EBE01000164 /* SSEDetailsWindowController.h */,
 				F5F52C1302200F6601000164 /* SSEDetailsWindowController.m */,
-				16666D820AB404250084C23B /* CocoaCryptoHashing.h */,
-				16666D830AB404250084C23B /* CocoaCryptoHashing.m */,
+				16C43BB925C4F637007A3A48 /* Data+Hashing.swift */,
 			);
 			name = "Details window";
 			sourceTree = "<group>";
@@ -638,12 +633,9 @@
 		F56B11970324C47201000164 /* SnoizeMIDI Extensions  */ = {
 			isa = PBXGroup;
 			children = (
-				F56B11980324C4A901000164 /* SSECombinationOutputStream.h */,
-				F56B11990324C4A901000164 /* SSECombinationOutputStream.m */,
-				F56B119C0324C89D01000164 /* SSEOutputStreamDestination.h */,
-				F56B119D0324C89D01000164 /* SSEOutputStreamDestination.m */,
-				F56B11A20324D5AA01000164 /* SMDestinationEndpoint-SSEOutputStreamDestination.h */,
-				F56B11A30324D5AA01000164 /* SMDestinationEndpoint-SSEOutputStreamDestination.m */,
+				16C43BBF25C52C89007A3A48 /* CombinationOutputStream.swift */,
+				16C43BBD25C529BA007A3A48 /* OutputStreamDestination.swift */,
+				16C43BBB25C52954007A3A48 /* Destination+OutputStreamDestination.swift */,
 			);
 			name = "SnoizeMIDI Extensions ";
 			sourceTree = "<group>";
@@ -897,6 +889,7 @@
 				163A3FC4213E1B540075F8A0 /* SSEAlias.m in Sources */,
 				16F033720984B76F006C8A44 /* NSPopUpButton-Extensions.m in Sources */,
 				16F033730984B76F006C8A44 /* SSELibrary.m in Sources */,
+				16C43BBA25C4F637007A3A48 /* Data+Hashing.swift in Sources */,
 				16F033740984B76F006C8A44 /* SSELibraryEntry.m in Sources */,
 				16F033760984B76F006C8A44 /* SSETableView.m in Sources */,
 				16F033780984B76F006C8A44 /* SSEWindowController.m in Sources */,
@@ -912,15 +905,14 @@
 				16F033800984B76F006C8A44 /* SSEDeleteController.m in Sources */,
 				16F033810984B76F006C8A44 /* SSEImportController.m in Sources */,
 				16F033820984B76F006C8A44 /* SSEFindMissingController.m in Sources */,
+				16C43BBE25C529BA007A3A48 /* OutputStreamDestination.swift in Sources */,
 				16F033830984B76F006C8A44 /* SSEExportController.m in Sources */,
 				16F033840984B76F006C8A44 /* SSEAppController.m in Sources */,
-				16F033850984B76F006C8A44 /* SSECombinationOutputStream.m in Sources */,
-				16F033860984B76F006C8A44 /* SSEOutputStreamDestination.m in Sources */,
-				16F033870984B76F006C8A44 /* SMDestinationEndpoint-SSEOutputStreamDestination.m in Sources */,
 				163E35AB09E9EFA600138102 /* NSFileManager-Extensions.m in Sources */,
 				1658B8AB09F36B5F00F42BFB /* SSESysexSpeedOutlineView.m in Sources */,
+				16C43BBC25C52954007A3A48 /* Destination+OutputStreamDestination.swift in Sources */,
 				16DC484B0AB3A359002ECBD6 /* SSESysExSpeedController.m in Sources */,
-				16666D850AB404250084C23B /* CocoaCryptoHashing.m in Sources */,
+				16C43BC025C52C89007A3A48 /* CombinationOutputStream.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

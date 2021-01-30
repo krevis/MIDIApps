@@ -50,6 +50,7 @@ import CoreAudio
     // https://stackoverflow.com/questions/38311365/swift-failable-initializer-init-cannot-override-a-non-failable-initializer
     // Best I can do is to make a new static function that returns a new instance, or nil.
     // Yuck!
+    // TODO Just ignore this error, we did it for input stream port create
 
     public static func newPortOutputStream(midiContext: MIDIContext) -> PortOutputStream? {
         var port: MIDIPortRef = 0
