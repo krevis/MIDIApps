@@ -12,4 +12,3 @@
 
 #import <SnoizeMIDI/SMUtilities.h>
 #import <SnoizeMIDI/NSArray-SMExtensions.h>
-#import <SnoizeMIDI/NSString-SMExtensions.h>
