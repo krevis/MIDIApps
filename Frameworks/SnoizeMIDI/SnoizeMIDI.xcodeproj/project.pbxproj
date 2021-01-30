@@ -97,9 +97,9 @@
 		1699289A25971F3A0057715C /* MessageHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699289925971F3A0057715C /* MessageHistory.swift */; };
 		1699289B25971F3A0057715C /* MessageHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699289925971F3A0057715C /* MessageHistory.swift */; };
 		1699289C25971F3A0057715C /* MessageHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699289925971F3A0057715C /* MessageHistory.swift */; };
-		169928F1259B16730057715C /* NSData-SMExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169928F0259B16730057715C /* NSData-SMExtensions.swift */; };
-		169928F2259B16730057715C /* NSData-SMExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169928F0259B16730057715C /* NSData-SMExtensions.swift */; };
-		169928F3259B16730057715C /* NSData-SMExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169928F0259B16730057715C /* NSData-SMExtensions.swift */; };
+		169928F1259B16730057715C /* Data+LowercaseHexString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169928F0259B16730057715C /* Data+LowercaseHexString.swift */; };
+		169928F2259B16730057715C /* Data+LowercaseHexString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169928F0259B16730057715C /* Data+LowercaseHexString.swift */; };
+		169928F3259B16730057715C /* Data+LowercaseHexString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169928F0259B16730057715C /* Data+LowercaseHexString.swift */; };
 		1699290D259FCBA60057715C /* SMVirtualOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699290C259FCBA60057715C /* SMVirtualOutputStream.swift */; };
 		1699290E259FCBA60057715C /* SMVirtualOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699290C259FCBA60057715C /* SMVirtualOutputStream.swift */; };
 		1699290F259FCBA60057715C /* SMVirtualOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699290C259FCBA60057715C /* SMVirtualOutputStream.swift */; };
@@ -184,7 +184,7 @@
 		1699288325971AFD0057715C /* MessageFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageFilter.swift; sourceTree = "<group>"; };
 		1699289925971F3A0057715C /* MessageHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageHistory.swift; sourceTree = "<group>"; };
 		169928C225972FD40057715C /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
-		169928F0259B16730057715C /* NSData-SMExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSData-SMExtensions.swift"; sourceTree = "<group>"; };
+		169928F0259B16730057715C /* Data+LowercaseHexString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+LowercaseHexString.swift"; sourceTree = "<group>"; };
 		1699290C259FCBA60057715C /* SMVirtualOutputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMVirtualOutputStream.swift; sourceTree = "<group>"; };
 		16A3B72625A03DFA00C7F61E /* SMPortOutputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMPortOutputStream.swift; sourceTree = "<group>"; };
 		16A3B73925A156D300C7F61E /* SMOutputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMOutputStream.swift; sourceTree = "<group>"; };
@@ -338,7 +338,7 @@
 			children = (
 				16B11B570971D40100DB1DB5 /* NSArray-SMExtensions.h */,
 				16B11B580971D40100DB1DB5 /* NSArray-SMExtensions.m */,
-				169928F0259B16730057715C /* NSData-SMExtensions.swift */,
+				169928F0259B16730057715C /* Data+LowercaseHexString.swift */,
 				16C43B5525C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift */,
 			);
 			name = "Foundation Extensions";
@@ -625,7 +625,7 @@
 				1691F9AF25BD62B300B9CE06 /* Device.swift in Sources */,
 				16992871259707190057715C /* MessageMult.swift in Sources */,
 				1691F9B625BD62C700B9CE06 /* ExternalDevice.swift in Sources */,
-				169928F1259B16730057715C /* NSData-SMExtensions.swift in Sources */,
+				169928F1259B16730057715C /* Data+LowercaseHexString.swift in Sources */,
 				1691F95325B90AA500B9CE06 /* SMMessageDestination.swift in Sources */,
 				1691F9CB25BD632500B9CE06 /* Destination.swift in Sources */,
 				16966AD425B4F90800D5BE2A /* SMVoiceMessage.swift in Sources */,
@@ -672,7 +672,7 @@
 				1691F9B725BD62C700B9CE06 /* ExternalDevice.swift in Sources */,
 				16A3B73B25A156D300C7F61E /* SMOutputStream.swift in Sources */,
 				1691F95425B90AA500B9CE06 /* SMMessageDestination.swift in Sources */,
-				169928F2259B16730057715C /* NSData-SMExtensions.swift in Sources */,
+				169928F2259B16730057715C /* Data+LowercaseHexString.swift in Sources */,
 				1691F9CC25BD632500B9CE06 /* Destination.swift in Sources */,
 				16966AD525B4F90800D5BE2A /* SMVoiceMessage.swift in Sources */,
 				1699290E259FCBA60057715C /* SMVirtualOutputStream.swift in Sources */,
@@ -717,7 +717,7 @@
 				1691F9B825BD62C700B9CE06 /* ExternalDevice.swift in Sources */,
 				16A3B73C25A156D300C7F61E /* SMOutputStream.swift in Sources */,
 				1691F95525B90AA500B9CE06 /* SMMessageDestination.swift in Sources */,
-				169928F3259B16730057715C /* NSData-SMExtensions.swift in Sources */,
+				169928F3259B16730057715C /* Data+LowercaseHexString.swift in Sources */,
 				1691F9CD25BD632500B9CE06 /* Destination.swift in Sources */,
 				16966AD625B4F90800D5BE2A /* SMVoiceMessage.swift in Sources */,
 				1699290F259FCBA60057715C /* SMVirtualOutputStream.swift in Sources */,
