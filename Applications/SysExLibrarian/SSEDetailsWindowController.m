@@ -149,7 +149,7 @@ static NSMutableArray *controllers = nil;
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row;
 {
     NSString *identifier;
-    SMSystemExclusiveMessage *message;
+    SystemExclusiveMessage *message;
 
     identifier = [tableColumn identifier];
     message = [cachedMessages objectAtIndex:row];
@@ -159,9 +159,9 @@ static NSMutableArray *controllers = nil;
     } else if ([identifier isEqualToString:@"manufacturer"]) {
         return [message manufacturerName];
     } else if ([identifier isEqualToString:@"sizeDecimal"]) {
-        return [SMMessage formatLength:[message receivedDataWithStartByteLength] usingOption:1 /* TODO .decimal*/];
+        return [Message formatLength:[message receivedDataWithStartByteLength] usingOption:1 /* TODO .decimal*/];
     } else if ([identifier isEqualToString:@"sizeHex"]) {
-        return [SMMessage formatLength:[message receivedDataWithStartByteLength] usingOption:2 /* TODO .hexadecimal*/];
+        return [Message formatLength:[message receivedDataWithStartByteLength] usingOption:2 /* TODO .hexadecimal*/];
     } else if ([identifier isEqualToString:@"sizeAbbreviated"]) {
         return [NSString SnoizeMIDI_abbreviatedStringForByteCount:[message receivedDataWithStartByteLength]];
     } else {

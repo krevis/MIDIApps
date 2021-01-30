@@ -16,7 +16,7 @@ import Foundation
 
     // Remembers the most recent received messages.
 
-    @objc public var savedMessages: [SMMessage] = [] {
+    @objc public var savedMessages: [Message] = [] {
         didSet {
             _ = limitSavedMessages()
         }
@@ -48,7 +48,7 @@ import Foundation
 
     // MARK: SMMessageDestination protocol
 
-    @objc public func takeMIDIMessages(_ messages: [SMMessage]) {
+    @objc public func takeMIDIMessages(_ messages: [Message]) {
         savedMessages += messages
         historyChanged(newMessages: true)
     }

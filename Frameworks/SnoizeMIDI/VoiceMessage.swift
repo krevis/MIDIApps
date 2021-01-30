@@ -12,7 +12,7 @@
 
 import Foundation
 
-@objc public class SMVoiceMessage: SMMessage {
+@objc public class VoiceMessage: Message {
 
     @objc public enum Status: UInt8 {
         case noteOff = 0x80
@@ -140,7 +140,7 @@ import Foundation
 
     private var dataBytes: (UInt8, UInt8) = (0, 0)
 
-    // MARK: SMMessage overrides
+    // MARK: Message overrides
 
     public override var messageType: TypeMask {
         switch status {
@@ -177,7 +177,7 @@ import Foundation
             // the exact same meaning as Note Off (with 0 velocity).
             // In non-expert mode, show these events as Note Offs.
             // In expert mode, show them as Note Ons.
-            if dataBytes.1 != 0 || UserDefaults.standard.bool(forKey: SMMessage.expertModePreferenceKey) {
+            if dataBytes.1 != 0 || UserDefaults.standard.bool(forKey: Message.expertModePreferenceKey) {
                 return NSLocalizedString("Note On", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Note On event")
             }
             else {
@@ -211,19 +211,19 @@ import Foundation
     public override var dataForDisplay: String {
         switch status {
         case .noteOff, .noteOn, .aftertouch:
-            return SMMessage.formatNoteNumber(dataBytes.0) + "\t" + SMMessage.formatDataByte(dataBytes.1)
+            return Message.formatNoteNumber(dataBytes.0) + "\t" + Message.formatDataByte(dataBytes.1)
 
         case .control:
-            return SMMessage.formatControllerNumber(dataBytes.0) + "\t" + SMMessage.formatDataByte(dataBytes.1)
+            return Message.formatControllerNumber(dataBytes.0) + "\t" + Message.formatDataByte(dataBytes.1)
 
         case .program:
-            return SMMessage.formatProgramNumber(dataBytes.0)
+            return Message.formatProgramNumber(dataBytes.0)
 
         case .channelPressure:
             return super.dataForDisplay
 
         case .pitchWheel:
-            return SMMessage.formatSignedDataBytes(dataBytes.0, dataBytes.1)
+            return Message.formatSignedDataBytes(dataBytes.0, dataBytes.1)
         }
     }
 

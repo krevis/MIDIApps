@@ -16,12 +16,12 @@ import Foundation
 
     @objc public weak var messageDestination: SMMessageDestination?
 
-    public var filterMask: SMMessage.TypeMask = []
-    public var channelMask: SMVoiceMessage.ChannelMask = SMVoiceMessage.ChannelMask.all
+    public var filterMask: Message.TypeMask = []
+    public var channelMask: VoiceMessage.ChannelMask = VoiceMessage.ChannelMask.all
 
     // MARK: SMMessageDestination protocol
 
-    @objc public func takeMIDIMessages(_ messages: [SMMessage]) {
+    @objc public func takeMIDIMessages(_ messages: [Message]) {
         let filteredMessages = filterMessages(messages)
         if filteredMessages.count > 0 {
             messageDestination?.takeMIDIMessages(filteredMessages)
@@ -30,13 +30,13 @@ import Foundation
 
     // MARK: Private
 
-    private func filterMessages(_ messages: [SMMessage]) -> [SMMessage] {
+    private func filterMessages(_ messages: [Message]) -> [Message] {
         return messages.filter { message -> Bool in
             if message.matchesMessageTypeMask(filterMask) {
                 // NOTE: This type checking kind of smells, but I can't think of a better way to do it.
                 // We could implement matchesChannelMask() on all SMMessages, but I don't know if the default should be YES or NO...
                 // I could see it going either way, in different contexts.
-                if let voiceMessage = message as? SMVoiceMessage {
+                if let voiceMessage = message as? VoiceMessage {
                     return voiceMessage.matchesChannelMask(channelMask)
                 }
                 else {

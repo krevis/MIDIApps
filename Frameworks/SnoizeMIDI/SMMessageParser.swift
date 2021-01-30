@@ -14,9 +14,9 @@ import Foundation
 
 protocol SMMessageParserDelegate: AnyObject {
 
-    func parserDidReadMessages(_ parser: SMMessageParser, messages: [SMMessage])
+    func parserDidReadMessages(_ parser: SMMessageParser, messages: [Message])
     func parserIsReadingSysEx(_ parser: SMMessageParser, length: Int)
-    func parserFinishedReadingSysEx(_ parser: SMMessageParser, message: SMSystemExclusiveMessage)
+    func parserFinishedReadingSysEx(_ parser: SMMessageParser, message: SystemExclusiveMessage)
 
 }
 
@@ -32,7 +32,7 @@ protocol SMMessageParserDelegate: AnyObject {
     @objc public var ignoresInvalidData = false
 
     @objc public func takePacketList(_ packetListPtr: UnsafePointer<MIDIPacketList>) {
-        var messages: [SMMessage] = []
+        var messages: [Message] = []
 
         if #available(macOS 10.15, iOS 13.0, *) {
             messages = packetListPtr.unsafeSequence().flatMap { messagesForPacket($0) }
@@ -86,7 +86,7 @@ protocol SMMessageParserDelegate: AnyObject {
 
     // swiftlint:disable cyclomatic_complexity function_body_length
     // (Sorry! TODO: Fix overly long and complex function)
-    private func messagesForPacket(_ packetPtr: UnsafePointer<MIDIPacket>) -> [SMMessage] {
+    private func messagesForPacket(_ packetPtr: UnsafePointer<MIDIPacket>) -> [Message] {
         // Split this packet into separate MIDI messages.
 
         let packetDataCount = Int(packetPtr.pointee.length)
@@ -108,14 +108,14 @@ protocol SMMessageParserDelegate: AnyObject {
         // in the tuple in the struct. There may be more.
         // Do it the hard way instead.
         let rawPacketDataPtr = UnsafeRawBufferPointer(start: UnsafeRawPointer(packetPtr) + MemoryLayout.offset(of: \MIDIPacket.data)!, count: packetDataCount)
-        return rawPacketDataPtr.enumerated().compactMap { (byteIndex, byte) -> SMMessage? in
-            var message: SMMessage?
+        return rawPacketDataPtr.enumerated().compactMap { (byteIndex, byte) -> Message? in
+            var message: Message?
             var byteIsInvalid = false
 
             if byte >= 0xF8 {
                 // Real Time message
-                if let messageType = SMSystemRealTimeMessage.MessageType(rawValue: byte) {
-                    message = SMSystemRealTimeMessage(timeStamp: timeStamp, type: messageType)
+                if let messageType = SystemRealTimeMessage.MessageType(rawValue: byte) {
+                    message = SystemRealTimeMessage(timeStamp: timeStamp, type: messageType)
                 }
                 else {
                     // Byte is invalid
@@ -139,10 +139,10 @@ protocol SMMessageParserDelegate: AnyObject {
                     if pendingDataIndex == pendingDataLength {
                         // This message is now done
                         if pendingMessageStatus >= 0xF0 {
-                            message = SMSystemCommonMessage(timeStamp: timeStamp, type: SMSystemCommonMessage.CommonMessageType(rawValue: pendingMessageStatus)!, data: Array(pendingDataBytes.prefix(upTo: pendingDataLength)))
+                            message = SystemCommonMessage(timeStamp: timeStamp, type: SystemCommonMessage.CommonMessageType(rawValue: pendingMessageStatus)!, data: Array(pendingDataBytes.prefix(upTo: pendingDataLength)))
                         }
                         else {
-                            message = SMVoiceMessage(timeStamp: timeStamp, statusByte: pendingMessageStatus, data: pendingDataBytes)
+                            message = VoiceMessage(timeStamp: timeStamp, statusByte: pendingMessageStatus, data: pendingDataBytes)
                         }
                     }
                 }
@@ -187,13 +187,13 @@ protocol SMMessageParserDelegate: AnyObject {
                             byteIsInvalid = true
                         }
                     }
-                    else if let systemCommonMessageType = SMSystemCommonMessage.CommonMessageType(rawValue: byte) {
+                    else if let systemCommonMessageType = SystemCommonMessage.CommonMessageType(rawValue: byte) {
                         let dataLength = systemCommonMessageType.otherDataLength
                         if dataLength > 0 {
                             pendingDataLength = dataLength
                         }
                         else {
-                            message = SMSystemCommonMessage(timeStamp: timeStamp, type: systemCommonMessageType, data: [])
+                            message = SystemCommonMessage(timeStamp: timeStamp, type: systemCommonMessageType, data: [])
                         }
                     }
                     else {
@@ -218,7 +218,7 @@ protocol SMMessageParserDelegate: AnyObject {
                 if let invalidData = readingInvalidData,
                    !byteIsInvalid || byteIndex == packetDataCount - 1 {
                     // We hit the end of a stretch of invalid data.
-                    message = SMInvalidMessage(timeStamp: timeStamp, data: invalidData)
+                    message = InvalidMessage(timeStamp: timeStamp, data: invalidData)
                     readingInvalidData = nil
                 }
             }
@@ -229,13 +229,13 @@ protocol SMMessageParserDelegate: AnyObject {
     }
     // swiftlint:enable cyclomatic_complexity function_body_length
 
-    private func finishSysExMessage(validEnd: Bool) -> SMSystemExclusiveMessage? {
+    private func finishSysExMessage(validEnd: Bool) -> SystemExclusiveMessage? {
         // NOTE: If we want, we could refuse sysex messages that don't end in 0xF7.
         // The MIDI spec says that messages should end with this byte, but apparently that is not always the case in practice.
         guard let data = readingSysExData else { return nil }
         readingSysExData = nil
 
-        let message = SMSystemExclusiveMessage(timeStamp: startSysExTimeStamp, data: data)
+        let message = SystemExclusiveMessage(timeStamp: startSysExTimeStamp, data: data)
         message.originatingEndpoint = originatingEndpoint
         message.wasReceivedWithEOX = validEnd
         delegate?.parserFinishedReadingSysEx(self, message: message)

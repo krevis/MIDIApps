@@ -14,7 +14,7 @@ import Foundation
 
 @objc public class SMSysExSendRequest: NSObject {
 
-    init?(message: SMSystemExclusiveMessage, endpoint: Destination, customSysExBufferSize: Int = 0) {
+    init?(message: SystemExclusiveMessage, endpoint: Destination, customSysExBufferSize: Int = 0) {
         self.midiContext = endpoint.midiContext
         self.message = message
         self.customSysExBufferSize = customSysExBufferSize
@@ -56,7 +56,7 @@ import Foundation
         dataPointer.deallocate()
     }
 
-    @objc public let message: SMSystemExclusiveMessage
+    @objc public let message: SystemExclusiveMessage
     @objc public let customSysExBufferSize: Int
 
     @objc public func send() -> Bool {

@@ -13,9 +13,9 @@
 import Foundation
 import CoreAudio
 
-class SMMessageTimeBase: NSObject, NSCoding {
+class MessageTimeBase: NSObject, NSCoding {
 
-    static var current: SMMessageTimeBase = {
+    static var current: MessageTimeBase = {
         // Establish a base of what host time corresponds to what clock time.
         // TODO We should do this a few times and average the results, and also try to be careful not to get
         // scheduled out during this process. We may need to switch ourself to be a time-constraint thread temporarily
@@ -29,7 +29,7 @@ class SMMessageTimeBase: NSObject, NSCoding {
 
         let hostTimeInNanos = AudioConvertHostTimeToNanos(AudioGetCurrentHostTime())
         let timeInterval = Date.timeIntervalSinceReferenceDate
-        return SMMessageTimeBase(hostTimeInNanos: hostTimeInNanos, timeInterval: timeInterval)
+        return MessageTimeBase(hostTimeInNanos: hostTimeInNanos, timeInterval: timeInterval)
     }()
 
     init(hostTimeInNanos: UInt64, timeInterval: TimeInterval) {

@@ -14,6 +14,6 @@ import Foundation
 
 @objc public protocol SMMessageDestination: NSObjectProtocol {
 
-    func takeMIDIMessages(_ messages: [SMMessage])
+    func takeMIDIMessages(_ messages: [Message])
 
 }

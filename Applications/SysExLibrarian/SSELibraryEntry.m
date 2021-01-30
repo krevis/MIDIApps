@@ -266,10 +266,10 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
             SSELibraryFileType fileType = [self.library typeOfFileAtPath:path];
 
             if (fileType == SSELibraryFileTypeStandardMIDI) {
-                messages = [SMSystemExclusiveMessage messagesFromStandardMIDIFileData:data];
+                messages = [SystemExclusiveMessage messagesFromStandardMIDIFileData:data];
             }
             else if (fileType == SSELibraryFileTypeRaw) {
-                messages = [SMSystemExclusiveMessage messagesFromData:data];
+                messages = [SystemExclusiveMessage messagesFromData:data];
             }
         }
     }
@@ -321,7 +321,7 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
 {
     NSString *newManufacturer = nil;
 
-    for (SMSystemExclusiveMessage *message in messages) {
+    for (SystemExclusiveMessage *message in messages) {
         NSString *messageManufacturer = [message manufacturerName];
         if (!messageManufacturer) {
             continue;
@@ -345,7 +345,7 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
 + (NSNumber *)sizeFromMessages:(NSArray *)messages
 {
     NSUInteger size = 0;
-    for (SMSystemExclusiveMessage *message in messages) {
+    for (SystemExclusiveMessage *message in messages) {
         size += [message fullMessageDataLength];
     }
 

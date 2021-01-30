@@ -194,7 +194,7 @@ class CombinationInputStream: NSObject {
 
 extension CombinationInputStream: SMMessageDestination {
 
-    @objc func takeMIDIMessages(_ messages: [SMMessage]) {
+    @objc func takeMIDIMessages(_ messages: [Message]) {
         messageDestination?.takeMIDIMessages(messages)
     }
 

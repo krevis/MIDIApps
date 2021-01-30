@@ -145,7 +145,7 @@ import Foundation
 
     // MARK: <SMMessageParserDelegate>
 
-    public func parserDidReadMessages(_ parser: SMMessageParser, messages: [SMMessage]) {
+    public func parserDidReadMessages(_ parser: SMMessageParser, messages: [Message]) {
         messageDestination?.takeMIDIMessages(messages)
     }
 
@@ -157,7 +157,7 @@ import Foundation
         }
     }
 
-    public func parserFinishedReadingSysEx(_ parser: SMMessageParser, message: SMSystemExclusiveMessage) {
+    public func parserFinishedReadingSysEx(_ parser: SMMessageParser, message: SystemExclusiveMessage) {
         if let streamSource = streamSource(parser: parser) {
             let userInfo = ["length": 1 + message.receivedData.count,
                             "valid": message.wasReceivedWithEOX,

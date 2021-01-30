@@ -339,15 +339,15 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
 // SMMessageDestination protocol
 //
 
-- (void)takeMIDIMessages:(NSArray<SMMessage *> *)messagesToTake
+- (void)takeMIDIMessages:(NSArray<Message *> *)messagesToTake
 {
     NSUInteger messageCount, messageIndex;
         
     messageCount = [messagesToTake count];
     for (messageIndex = 0; messageIndex < messageCount; messageIndex++) {
-        SMMessage *message = [messagesToTake objectAtIndex:messageIndex];
+        Message *message = [messagesToTake objectAtIndex:messageIndex];
         
-        if (listeningToSysexMessages && [message isKindOfClass:[SMSystemExclusiveMessage class]]) {
+        if (listeningToSysexMessages && [message isKindOfClass:[SystemExclusiveMessage class]]) {
             [messages addObject:message];
             totalBytesRead += messageBytesRead;
             messageBytesRead = 0;
@@ -362,9 +362,9 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
         }
         else if (listeningToProgramChangeMessages && 
                  [message originatingEndpoint] == [virtualInputStream endpoint] &&
-                 [message isKindOfClass:[SMVoiceMessage class]] &&
-                 [(SMVoiceMessage*)message status] == 0xC0 /* TODO SMVoiceMessage.Status.program*/) {
-            Byte program = [(SMVoiceMessage*)message dataByte1];
+                 [message isKindOfClass:[VoiceMessage class]] &&
+                 [(VoiceMessage*)message status] == 0xC0 /* TODO VoiceMessage.Status.program*/) {
+            Byte program = [(VoiceMessage*)message dataByte1];
             [nonretainedMainWindowController playEntryWithProgramNumber:program];
         }
     }

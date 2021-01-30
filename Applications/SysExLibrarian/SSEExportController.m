@@ -72,9 +72,9 @@
     if (returnCode == NSOKButton) {
         NSData *fileData;
         if (exportingAsSMF) {
-            fileData = [SMSystemExclusiveMessage standardMIDIFileDataForMessages: messages];
+            fileData = [SystemExclusiveMessage standardMIDIFileDataForMessages: messages];
         } else {
-            fileData = [SMSystemExclusiveMessage dataForMessages: messages];
+            fileData = [SystemExclusiveMessage dataForMessages: messages];
         }
 
         BOOL success = NO;

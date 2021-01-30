@@ -269,7 +269,7 @@ NSString *SSECombinationOutputStreamDestinationListChangedNotification = @"SSECo
 // SMMessageDestination protocol
 //
 
-- (void)takeMIDIMessages:(NSArray<SMMessage *> *)messages
+- (void)takeMIDIMessages:(NSArray<Message *> *)messages
 {
     [[self stream] takeMIDIMessages:messages];
 }

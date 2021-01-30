@@ -14,7 +14,7 @@ import Foundation
 import CoreMIDI
 import CoreAudio
 
-@objc public class SMMessage: NSObject, NSCoding {
+@objc public class Message: NSObject, NSCoding {
 
     public struct TypeMask: OptionSet {
         public let rawValue: Int
@@ -60,7 +60,7 @@ import CoreAudio
     @objc public init(timeStamp: MIDITimeStamp, statusByte: UInt8) {
         self.timeStampWasZeroWhenReceived = timeStamp == 0
         self.timeStamp = timeStampWasZeroWhenReceived ? AudioGetCurrentHostTime() : timeStamp
-        self.timeBase = SMMessageTimeBase.current
+        self.timeBase = MessageTimeBase.current
         self.statusByte = statusByte
         super.init()
     }
@@ -78,7 +78,7 @@ import CoreAudio
             self.timeStampWasZeroWhenReceived = self.timeStamp == 0
         }
 
-        guard let timeBase = coder.decodeObject(forKey: "timeBase") as? SMMessageTimeBase else { return nil }
+        guard let timeBase = coder.decodeObject(forKey: "timeBase") as? MessageTimeBase else { return nil }
         self.timeBase = timeBase
 
         let status = coder.decodeInteger(forKey: "statusByte")
@@ -196,16 +196,16 @@ import CoreAudio
     }
 
     public var dataForDisplay: String {
-        return SMMessage.formatData(otherData)
+        return Message.formatData(otherData)
     }
 
     public var expertDataForDisplay: String {
-        return SMMessage.formatExpertStatusByte(statusByte, otherData: otherData)
+        return Message.formatExpertStatusByte(statusByte, otherData: otherData)
     }
 
     public var originatingEndpointForDisplay: String {
         if let endpoint = originatingEndpoint {
-            let fromOrTo = endpoint is Source ? SMMessage.fromString : SMMessage.toString
+            let fromOrTo = endpoint is Source ? Message.fromString : Message.toString
             return "\(fromOrTo) \(endpoint.displayName ?? "")"
         }
         else if let endpointName = originatingEndpointName {
@@ -217,33 +217,33 @@ import CoreAudio
     }
 
     public static func prepareToEncodeWithObjCCompatibility(archiver: NSKeyedArchiver) {
-        archiver.setClassName("SMMessage", for: SMMessage.self)
-        archiver.setClassName("SMVoiceMessage", for: SMVoiceMessage.self)
-        archiver.setClassName("SMSystemCommonMessage", for: SMSystemCommonMessage.self)
-        archiver.setClassName("SMSystemRealTimeMessage", for: SMSystemRealTimeMessage.self)
-        archiver.setClassName("SMSystemExclusiveMessage", for: SMSystemExclusiveMessage.self)
-        archiver.setClassName("SMInvalidMessage", for: SMInvalidMessage.self)
-        archiver.setClassName("SMMessageTimeBase", for: SMMessageTimeBase.self)
+        archiver.setClassName("SMMessage", for: Message.self)
+        archiver.setClassName("SMVoiceMessage", for: VoiceMessage.self)
+        archiver.setClassName("SMSystemCommonMessage", for: SystemCommonMessage.self)
+        archiver.setClassName("SMSystemRealTimeMessage", for: SystemRealTimeMessage.self)
+        archiver.setClassName("SMSystemExclusiveMessage", for: SystemExclusiveMessage.self)
+        archiver.setClassName("SMInvalidMessage", for: InvalidMessage.self)
+        archiver.setClassName("SMMessageTimeBase", for: MessageTimeBase.self)
     }
 
     public static func prepareToDecodeWithObjCCompatibility(unarchiver: NSKeyedUnarchiver) {
-        unarchiver.setClass(SMMessage.self, forClassName: "SMMessage")
-        unarchiver.setClass(SMVoiceMessage.self, forClassName: "SMVoiceMessage")
-        unarchiver.setClass(SMSystemCommonMessage.self, forClassName: "SMSystemCommonMessage")
-        unarchiver.setClass(SMSystemRealTimeMessage.self, forClassName: "SMSystemRealTimeMessage")
-        unarchiver.setClass(SMSystemExclusiveMessage.self, forClassName: "SMSystemExclusiveMessage")
-        unarchiver.setClass(SMInvalidMessage.self, forClassName: "SMInvalidMessage")
-        unarchiver.setClass(SMMessageTimeBase.self, forClassName: "SMMessageTimeBase")
+        unarchiver.setClass(Message.self, forClassName: "SMMessage")
+        unarchiver.setClass(VoiceMessage.self, forClassName: "SMVoiceMessage")
+        unarchiver.setClass(SystemCommonMessage.self, forClassName: "SMSystemCommonMessage")
+        unarchiver.setClass(SystemRealTimeMessage.self, forClassName: "SMSystemRealTimeMessage")
+        unarchiver.setClass(SystemExclusiveMessage.self, forClassName: "SMSystemExclusiveMessage")
+        unarchiver.setClass(InvalidMessage.self, forClassName: "SMInvalidMessage")
+        unarchiver.setClass(MessageTimeBase.self, forClassName: "SMMessageTimeBase")
     }
 
     // MARK: Private
 
-    private var timeBase: SMMessageTimeBase
+    private var timeBase: MessageTimeBase
     private var originatingEndpointName: String?
     private var timeStampWasZeroWhenReceived: Bool
 
-    private static let fromString = NSLocalizedString("From", tableName: "SnoizeMIDI", bundle: SMBundleForObject(SMMessage.self), comment: "Prefix for endpoint name when it's a source")
-    private static let toString = NSLocalizedString("To", tableName: "SnoizeMIDI", bundle: SMBundleForObject(SMMessage.self), comment: "Prefix for endpoint name when it's a destination")
+    private static let fromString = NSLocalizedString("From", tableName: "SnoizeMIDI", bundle: SMBundleForObject(Message.self), comment: "Prefix for endpoint name when it's a source")
+    private static let toString = NSLocalizedString("To", tableName: "SnoizeMIDI", bundle: SMBundleForObject(Message.self), comment: "Prefix for endpoint name when it's a destination")
 
     private static var timeStampDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -253,7 +253,7 @@ import CoreAudio
 
 }
 
-@objc extension SMMessage /* Formatting */ {
+@objc extension Message /* Formatting */ {
     // TODO Move this all out to somewhere else
 
     @objc public enum NoteFormattingOption: Int {
@@ -263,7 +263,7 @@ import CoreAudio
         case nameMiddleC4    // Middle C = 60 decimal = C4, aka "Roland"
 
         static var `default`: Self {
-            return Self(rawValue: UserDefaults.standard.integer(forKey: SMMessage.noteFormatPreferenceKey)) ?? .decimal
+            return Self(rawValue: UserDefaults.standard.integer(forKey: Message.noteFormatPreferenceKey)) ?? .decimal
         }
     }
 
@@ -273,7 +273,7 @@ import CoreAudio
         case name
 
         static var `default`: Self {
-            return Self(rawValue: UserDefaults.standard.integer(forKey: SMMessage.controllerFormatPreferenceKey)) ?? .decimal
+            return Self(rawValue: UserDefaults.standard.integer(forKey: Message.controllerFormatPreferenceKey)) ?? .decimal
         }
     }
 
@@ -282,7 +282,7 @@ import CoreAudio
         case hexadecimal
 
         static var `default`: Self {
-            return Self(rawValue: UserDefaults.standard.integer(forKey: SMMessage.dataFormatPreferenceKey)) ?? .decimal
+            return Self(rawValue: UserDefaults.standard.integer(forKey: Message.dataFormatPreferenceKey)) ?? .decimal
         }
     }
 
@@ -294,7 +294,7 @@ import CoreAudio
         case hostTimeHexInteger
 
         static var `default`: Self {
-            return Self(rawValue: UserDefaults.standard.integer(forKey: SMMessage.timeFormatPreferenceKey)) ?? .hostTimeInteger
+            return Self(rawValue: UserDefaults.standard.integer(forKey: Message.timeFormatPreferenceKey)) ?? .hostTimeInteger
         }
     }
 
@@ -399,7 +399,7 @@ import CoreAudio
 
     public static func nameForManufacturerIdentifier(_ manufacturerIdentifierData: Data) -> String {
         return manufacturerNamesByHexIdentifier[manufacturerIdentifierData.lowercaseHexString]
-            ?? NSLocalizedString("Unknown Manufacturer", tableName: "SnoizeMIDI", bundle: SMBundleForObject(SMMessage.self), comment: "unknown manufacturer name")
+            ?? NSLocalizedString("Unknown Manufacturer", tableName: "SnoizeMIDI", bundle: SMBundleForObject(Message.self), comment: "unknown manufacturer name")
     }
 
     // MARK: Private
@@ -431,7 +431,7 @@ import CoreAudio
         // We could create a new string for the controllerNumber and look that up in the dictionary, but that gets expensive to do all the time.
         // Instead, we just scan through the dictionary once, and build an array, which is quicker to index into.
 
-        let bundle = SMBundleForObject(SMMessage.self)  // Note: SMBundleForObject(self) returns the Swift bundle
+        let bundle = SMBundleForObject(Message.self)  // Note: SMBundleForObject(self) returns the Swift bundle
         var controllerNamesByNumberString: NSDictionary?
         if let url = bundle.url(forResource: "ControllerNames", withExtension: "plist") {
             controllerNamesByNumberString = NSDictionary(contentsOf: url)
@@ -447,7 +447,7 @@ import CoreAudio
 
     private static var manufacturerNamesByHexIdentifier: [String: String] = {
         var manufacturerNames: [String: String] = [:]
-        let bundle = SMBundleForObject(SMMessage.self)  // Note: SMBundleForObject(self) returns the Swift bundle
+        let bundle = SMBundleForObject(Message.self)  // Note: SMBundleForObject(self) returns the Swift bundle
         if let url = bundle.url(forResource: "ManufacturerNames", withExtension: "plist"),
            let plist = NSDictionary(contentsOf: url) as? [String: String] {
             manufacturerNames = plist

@@ -71,7 +71,7 @@ import CoreAudio
 
     // MARK: SMOutputStream overrides
 
-    @objc public override func takeMIDIMessages(_ messages: [SMMessage]) {
+    @objc public override func takeMIDIMessages(_ messages: [Message]) {
         if sendsSysExAsynchronously {
             // Find the messages which are sysex and which have timestamps which are <= now,
             // and send them using MIDISendSysex(). Other messages get sent normally.
@@ -125,16 +125,16 @@ import CoreAudio
         endpoints = newEndpoints
     }
 
-    private func splitMessagesByAsyncSysex(_ messages: [SMMessage]) -> ([SMSystemExclusiveMessage], [SMMessage]) {
+    private func splitMessagesByAsyncSysex(_ messages: [Message]) -> ([SystemExclusiveMessage], [Message]) {
         // Note: Someday this should use `stablePartition`, when that gets added
         // to the Swift standard library.
 
-        var asyncSysexMessages: [SMSystemExclusiveMessage] = []
-        var normalMessages: [SMMessage] = []
+        var asyncSysexMessages: [SystemExclusiveMessage] = []
+        var normalMessages: [Message] = []
         let now = AudioGetCurrentHostTime()
 
         for message in messages {
-            if let sysexMessage = message as? SMSystemExclusiveMessage,
+            if let sysexMessage = message as? SystemExclusiveMessage,
                sysexMessage.timeStamp <= now {
                 asyncSysexMessages.append(sysexMessage)
             }
@@ -148,7 +148,7 @@ import CoreAudio
 
     private var sysExSendRequests = Set<SMSysExSendRequest>()
 
-    private func sendSysExMessagesAsynchronously(_ messages: [SMSystemExclusiveMessage]) {
+    private func sendSysExMessagesAsynchronously(_ messages: [SystemExclusiveMessage]) {
         let center = NotificationCenter.default
 
         for message in messages {

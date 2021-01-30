@@ -14,9 +14,9 @@ import Cocoa
 
 class DetailsWindowController: UtilityWindowController, NSWindowDelegate {
 
-    let message: SMMessage
+    let message: Message
 
-    init(message myMessage: SMMessage) {
+    init(message myMessage: Message) {
         message = myMessage
         super.init(window: nil)
         shouldCascadeWindows = true
@@ -76,7 +76,7 @@ class DetailsWindowController: UtilityWindowController, NSWindowDelegate {
 
     private func updateDescriptionFields() {
         let format = NSLocalizedString("%@ bytes", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "Details size format string")
-        let formattedLength = SMMessage.formatLength(dataForDisplay.count)
+        let formattedLength = Message.formatLength(dataForDisplay.count)
         let sizeString = String.localizedStringWithFormat(format, formattedLength)
 
         sizeField.stringValue = sizeString

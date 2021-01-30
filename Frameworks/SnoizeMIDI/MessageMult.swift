@@ -27,7 +27,7 @@ import Foundation
 
     // MARK: SMMessageDestination protocol
 
-    @objc public func takeMIDIMessages(_ messages: [SMMessage]) {
+    @objc public func takeMIDIMessages(_ messages: [Message]) {
         destinations.forEach { $0.takeMIDIMessages(messages) }
     }
 

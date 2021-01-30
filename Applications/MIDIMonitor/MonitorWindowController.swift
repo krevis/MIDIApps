@@ -73,7 +73,7 @@ class MonitorWindowController: NSWindowController {
     // Transient data
     private var oneChannel: Int = 1
     private var inputSourceGroups: [CombinationInputStreamSourceGroup] = []
-    private var displayedMessages: [SMMessage] = []
+    private var displayedMessages: [Message] = []
     private var messagesNeedScrollToBottom: Bool = false
     private var nextMessagesRefreshDate: NSDate?
     private var nextMessagesRefreshTimer: Timer?
@@ -406,7 +406,7 @@ extension MonitorWindowController {
             turnBitsOn = false
         }
 
-        midiDocument.changeFilterMask(SMMessage.TypeMask(rawValue: tag), turnBitsOn: turnBitsOn)
+        midiDocument.changeFilterMask(Message.TypeMask(rawValue: tag), turnBitsOn: turnBitsOn)
     }
 
     @IBAction func changeFilter(_ sender: AnyObject?) {
@@ -501,7 +501,7 @@ extension MonitorWindowController: NSTableViewDataSource {
         case "channel":
             return message.channelForDisplay
         case "data":
-            if UserDefaults.standard.bool(forKey: SMMessage.expertModePreferenceKey) {
+            if UserDefaults.standard.bool(forKey: Message.expertModePreferenceKey) {
                 return message.expertDataForDisplay
             }
             else {
@@ -554,7 +554,7 @@ extension MonitorWindowController: NSTableViewDataSource {
         updateVisibleMessages()
     }
 
-    private var selectedMessages: [SMMessage] {
+    private var selectedMessages: [Message] {
         return messagesTableView.selectedRowIndexes.map { displayedMessages[$0] }
     }
 

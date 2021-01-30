@@ -26,7 +26,7 @@ import CoreAudio
 
     // MARK: SMMessageDestination
 
-    public func takeMIDIMessages(_ messages: [SMMessage]) {
+    public func takeMIDIMessages(_ messages: [Message]) {
         sendMessagesWithLimitedPacketListSize(messages)
     }
 
@@ -63,14 +63,14 @@ import CoreAudio
 
     private let maxPacketListSize = 65536
 
-    private func sendMessagesWithLimitedPacketListSize(_ messages: [SMMessage]) {
+    private func sendMessagesWithLimitedPacketListSize(_ messages: [Message]) {
         guard messages.count > 0 else { return }
 
         var packetListData = Data(count: maxPacketListSize)
         packetListData.withUnsafeMutableBytes { (packetListRawBufferPtr: UnsafeMutableRawBufferPointer) in
             let packetListPtr = packetListRawBufferPtr.bindMemory(to: MIDIPacketList.self).baseAddress!
 
-            func attemptToAddPacket(_ packetPtr: UnsafeMutablePointer<MIDIPacket>, _ message: SMMessage, _ data: Data) -> UnsafeMutablePointer<MIDIPacket>? {
+            func attemptToAddPacket(_ packetPtr: UnsafeMutablePointer<MIDIPacket>, _ message: Message, _ data: Data) -> UnsafeMutablePointer<MIDIPacket>? {
                 // Try to add a packet to the packet list, for the given message,
                 // with this data (either the message's fullData or a subrange).
                 // If successful, returns a non-nil pointer for the next packet.

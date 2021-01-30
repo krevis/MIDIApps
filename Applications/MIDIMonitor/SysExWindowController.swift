@@ -14,10 +14,10 @@ import Cocoa
 
 class SysExWindowController: DetailsWindowController {
 
-    private let sysExMessage: SMSystemExclusiveMessage
+    private let sysExMessage: SystemExclusiveMessage
 
-    override init(message myMessage: SMMessage) {
-        guard let mySysExMessage = myMessage as? SMSystemExclusiveMessage else { fatalError() }
+    override init(message myMessage: Message) {
+        guard let mySysExMessage = myMessage as? SystemExclusiveMessage else { fatalError() }
         sysExMessage = mySysExMessage
         super.init(message: myMessage)
     }

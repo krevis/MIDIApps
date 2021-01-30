@@ -28,8 +28,8 @@ class Document: NSDocument {
         updateVirtualEndpointName()
 
         stream.messageDestination = messageFilter
-        messageFilter.filterMask = SMMessage.TypeMask.all
-        messageFilter.channelMask = SMVoiceMessage.ChannelMask.all
+        messageFilter.filterMask = Message.TypeMask.all
+        messageFilter.channelMask = VoiceMessage.ChannelMask.all
 
         messageFilter.messageDestination = history
         center.addObserver(self, selector: #selector(self.historyDidChange(_:)), name: .messageHistoryChanged, object: history)
@@ -92,12 +92,12 @@ extension Document {
         }
 
         let filterMask = messageFilter.filterMask
-        if filterMask != SMMessage.TypeMask.all {
+        if filterMask != Message.TypeMask.all {
             dict["filterMask"] = filterMask.rawValue
         }
 
         let channelMask = messageFilter.channelMask
-        if channelMask != SMVoiceMessage.ChannelMask.all {
+        if channelMask != VoiceMessage.ChannelMask.all {
             dict["channelMask"] = channelMask.rawValue
         }
 
@@ -108,7 +108,7 @@ extension Document {
             // to the ObjC class names. So we have to do this the hard way.
             let mutableData = NSMutableData()
             let archiver = NSKeyedArchiver(forWritingWith: mutableData)
-            SMMessage.prepareToEncodeWithObjCCompatibility(archiver: archiver)
+            Message.prepareToEncodeWithObjCCompatibility(archiver: archiver)
             archiver.encode(savedMessages, forKey: NSKeyedArchiveRootObjectKey)
             archiver.finishEncoding()
             dict["messageData"] = mutableData
@@ -139,28 +139,28 @@ extension Document {
         maxMessageCount = (dict["maxMessageCount"] as? NSNumber)?.intValue ?? MessageHistory.defaultHistorySize
 
         if let number = dict["filterMask"] as? NSNumber {
-            filterMask = SMMessage.TypeMask(rawValue: number.intValue)
+            filterMask = Message.TypeMask(rawValue: number.intValue)
         }
         else {
-            filterMask = SMMessage.TypeMask.all
+            filterMask = Message.TypeMask.all
         }
 
         if let number = dict["channelMask"] as? NSNumber {
-            channelMask = SMVoiceMessage.ChannelMask(rawValue: number.intValue)
+            channelMask = VoiceMessage.ChannelMask(rawValue: number.intValue)
         }
         else {
-            channelMask = SMVoiceMessage.ChannelMask.all
+            channelMask = VoiceMessage.ChannelMask.all
         }
 
         if let messageData = dict["messageData"] as? Data {
-            // Was: messages = NSKeyedUnarchiver.unarchiveObject(with: messageData) as? [SMMessage]
+            // Was: messages = NSKeyedUnarchiver.unarchiveObject(with: messageData) as? [Message]
             // Except: After the Swift migration, we now need to map from the ObjC class names
             // to the Swift classes. So we have to do this the hard way.
             let unarchiver = NSKeyedUnarchiver(forReadingWith: messageData)
-            SMMessage.prepareToDecodeWithObjCCompatibility(unarchiver: unarchiver)
+            Message.prepareToDecodeWithObjCCompatibility(unarchiver: unarchiver)
             let decoded = unarchiver.decodeObject(forKey: NSKeyedArchiveRootObjectKey)
             unarchiver.finishDecoding()
-            if let messages = decoded as? [SMMessage] {
+            if let messages = decoded as? [Message] {
                 history.savedMessages = messages
             }
         }
@@ -320,7 +320,7 @@ extension Document {
         monitorWindowController?.updateMaxMessageCount()
     }
 
-    var filterMask: SMMessage.TypeMask {
+    var filterMask: Message.TypeMask {
         get {
             return messageFilter.filterMask
         }
@@ -336,11 +336,11 @@ extension Document {
             undoManager.setActionName(NSLocalizedString("Change Filter", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change filter undo action"))
         }
 
-        messageFilter.filterMask = SMMessage.TypeMask(rawValue: number.intValue)
+        messageFilter.filterMask = Message.TypeMask(rawValue: number.intValue)
         monitorWindowController?.updateFilterControls()
     }
 
-    var channelMask: SMVoiceMessage.ChannelMask {
+    var channelMask: VoiceMessage.ChannelMask {
         get {
             return messageFilter.channelMask
         }
@@ -356,11 +356,11 @@ extension Document {
             undoManager.setActionName(NSLocalizedString("Change Channel", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change channel undo action"))
         }
 
-        messageFilter.channelMask = SMVoiceMessage.ChannelMask(rawValue: number.intValue)
+        messageFilter.channelMask = VoiceMessage.ChannelMask(rawValue: number.intValue)
         monitorWindowController?.updateFilterControls()
     }
 
-    var savedMessages: [SMMessage] {
+    var savedMessages: [Message] {
         // Note: The remembered messages are saved with the document, and changes to the messages
         // do dirty the document, but changes are not undoable -- it wouldn't make much sense.
         return history.savedMessages
@@ -372,7 +372,7 @@ extension Document {
 
     // MARK: Derived / convenience document functions
 
-    func changeFilterMask(_ maskToChange: SMMessage.TypeMask, turnBitsOn: Bool) {
+    func changeFilterMask(_ maskToChange: Message.TypeMask, turnBitsOn: Bool) {
         var newMask = messageFilter.filterMask.rawValue
         if turnBitsOn {
             newMask |= maskToChange.rawValue
@@ -381,11 +381,11 @@ extension Document {
             newMask &= ~maskToChange.rawValue
         }
 
-        filterMask = SMMessage.TypeMask(rawValue: newMask)
+        filterMask = Message.TypeMask(rawValue: newMask)
     }
 
     var isShowingAllChannels: Bool {
-        return messageFilter.channelMask == SMVoiceMessage.ChannelMask.all
+        return messageFilter.channelMask == VoiceMessage.ChannelMask.all
     }
 
     var oneChannelToShow: Int {
@@ -396,7 +396,7 @@ extension Document {
 
         let mask = messageFilter.channelMask
         for channel in 1...16 {
-            if mask.contains(SMVoiceMessage.ChannelMask(channel: channel)) {
+            if mask.contains(VoiceMessage.ChannelMask(channel: channel)) {
                 return channel
             }
         }
@@ -405,12 +405,12 @@ extension Document {
     }
 
     func showAllChannels() {
-        channelMask = SMVoiceMessage.ChannelMask.all
+        channelMask = VoiceMessage.ChannelMask.all
     }
 
     func showOnlyOneChannel(_ channel: Int) {
         guard (1...16).contains(channel) else { fatalError() }
-        channelMask = SMVoiceMessage.ChannelMask(channel: Int(channel))
+        channelMask = VoiceMessage.ChannelMask(channel: Int(channel))
     }
 
     func clearSavedMessages() {
@@ -435,13 +435,13 @@ extension Document {
         return windowControllers.filter { $0 is DetailsWindowController } as? [DetailsWindowController] ?? []
     }
 
-    func detailsWindowController(for message: SMMessage) -> DetailsWindowController {
+    func detailsWindowController(for message: Message) -> DetailsWindowController {
         if let match = detailsWindowsControllers.first(where: { $0.message == message}) {
             return match
         }
 
         let detailsWindowController: DetailsWindowController
-        if message is SMSystemExclusiveMessage {
+        if message is SystemExclusiveMessage {
             detailsWindowController = SysExWindowController(message: message)
         }
         else {
