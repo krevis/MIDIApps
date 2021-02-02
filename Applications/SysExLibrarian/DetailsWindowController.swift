@@ -27,7 +27,7 @@ import SnoizeMIDI
 
     init(entry: SSELibraryEntry) {
         self.entry = entry
-        self.cachedMessages = entry.messages
+        self.cachedMessages = entry.messages ?? []
 
         super.init(window: nil)
         shouldCascadeWindows = true

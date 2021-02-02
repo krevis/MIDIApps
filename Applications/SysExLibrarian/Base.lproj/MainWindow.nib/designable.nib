@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.3.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.3.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -20,29 +20,28 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="92" y="489" width="450" height="296"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
             <value key="minSize" type="size" width="400" height="200"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="450" height="296"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <scrollView horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="19">
+                    <scrollView fixedFrame="YES" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="19">
                         <rect key="frame" x="-1" y="55" width="452" height="242"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="Ivx-gw-hP2">
-                            <rect key="frame" x="1" y="0.0" width="450" height="241"/>
+                            <rect key="frame" x="1" y="0.0" width="435" height="241"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="14" headerView="300054" id="21" customClass="SSETableView">
-                                    <rect key="frame" x="0.0" y="0.0" width="450" height="224"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="435" height="224"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
-                                        <tableColumn identifier="name" width="193" minWidth="65.458999633789062" maxWidth="1000" id="20">
+                                        <tableColumn identifier="name" width="178" minWidth="65.458999633789062" maxWidth="1000" id="20">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="SysEx File">
-                                                <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
                                             </tableHeaderCell>
@@ -55,7 +54,6 @@
                                         </tableColumn>
                                         <tableColumn identifier="manufacturer" editable="NO" width="84" minWidth="84" maxWidth="84" id="183">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Manufacturer">
-                                                <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
@@ -67,7 +65,6 @@
                                         </tableColumn>
                                         <tableColumn identifier="messageCount" editable="NO" width="52" minWidth="52" maxWidth="52" id="184">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="right" title="#Msgs">
-                                                <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
@@ -79,7 +76,6 @@
                                         </tableColumn>
                                         <tableColumn identifier="size" editable="NO" width="56" minWidth="25.538000106811523" maxWidth="56" id="191">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="right" title="Size">
-                                                <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
@@ -91,7 +87,6 @@
                                         </tableColumn>
                                         <tableColumn identifier="programNumber" width="50" minWidth="50" maxWidth="50" id="300022">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="right" title="Prog#">
-                                                <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
@@ -123,18 +118,18 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="300055">
-                            <rect key="frame" x="435" y="17" width="16" height="224"/>
+                            <rect key="frame" x="436" y="17" width="15" height="224"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <tableHeaderView key="headerView" id="300054">
-                            <rect key="frame" x="0.0" y="0.0" width="450" height="17"/>
+                            <rect key="frame" x="0.0" y="0.0" width="435" height="17"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
                         <connections>
                             <outlet property="nextKeyView" destination="23" id="358"/>
                         </connections>
                     </scrollView>
-                    <button toolTip="Add a file" verticalHuggingPriority="750" id="23">
+                    <button toolTip="Add a file" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="23">
                         <rect key="frame" x="14" y="7" width="39" height="38"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" image="NSAddTemplate" imagePosition="overlaps" alignment="center" borderStyle="border" inset="2" id="300044">
@@ -146,7 +141,7 @@
                             <outlet property="nextKeyView" destination="24" id="352"/>
                         </connections>
                     </button>
-                    <button toolTip="Remove selected file(s)" verticalHuggingPriority="750" id="24" customClass="SSEValidatingButton">
+                    <button toolTip="Remove selected file(s)" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="24" customClass="ValidatingButton" customModule="SysEx_Librarian" customModuleProvider="target">
                         <rect key="frame" x="56" y="7" width="39" height="38"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <buttonCell key="cell" type="round" bezelStyle="circular" image="NSRemoveTemplate" imagePosition="only" alignment="center" borderStyle="border" inset="2" id="300045">
@@ -158,7 +153,7 @@
                             <outlet property="nextKeyView" destination="356" id="359"/>
                         </connections>
                     </button>
-                    <button toolTip="Show contents of selected file(s)" verticalHuggingPriority="750" id="356" customClass="SSEValidatingButton">
+                    <button toolTip="Show contents of selected file(s)" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="356" customClass="ValidatingButton" customModule="SysEx_Librarian" customModuleProvider="target">
                         <rect key="frame" x="339" y="12" width="97" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                         <buttonCell key="cell" type="push" title="Contents" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="300047">
@@ -175,12 +170,13 @@
                 <outlet property="delegate" destination="-2" id="51"/>
                 <outlet property="initialFirstResponder" destination="21" id="350"/>
             </connections>
+            <point key="canvasLocation" x="-152" y="144"/>
         </window>
         <customView id="333" userLabel="Toolbar Items">
             <rect key="frame" x="0.0" y="0.0" width="202" height="112"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <popUpButton verticalHuggingPriority="750" id="337">
+                <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="337">
                     <rect key="frame" x="12" y="68" width="80" height="26"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                     <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="335" id="300048">
