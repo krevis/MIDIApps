@@ -159,9 +159,9 @@ static NSMutableArray *controllers = nil;
     } else if ([identifier isEqualToString:@"manufacturer"]) {
         return [message manufacturerName];
     } else if ([identifier isEqualToString:@"sizeDecimal"]) {
-        return [Message formatLength:[message receivedDataWithStartByteLength] usingOption:1 /* TODO .decimal*/];
+        return [Message formatLength:[message receivedDataWithStartByteLength] usingOption:0 /* TODO .decimal*/];
     } else if ([identifier isEqualToString:@"sizeHex"]) {
-        return [Message formatLength:[message receivedDataWithStartByteLength] usingOption:2 /* TODO .hexadecimal*/];
+        return [Message formatLength:[message receivedDataWithStartByteLength] usingOption:1 /* TODO .hexadecimal*/];
     } else if ([identifier isEqualToString:@"sizeAbbreviated"]) {
         // TODO This is on String now
         return @"TODO";
