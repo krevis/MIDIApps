@@ -14,7 +14,6 @@
 
 @import SnoizeMIDI;
 #import <objc/objc-runtime.h>
-#import "NSPopUpButton-Extensions.h"
 #import "SSEDeleteController.h"
 #import "SSEExportController.h"
 #import "SSEFindMissingController.h"
@@ -777,7 +776,7 @@ static SSEMainWindowController *controller = nil;
         destCount = [dests count];
 
         if (groupIndex > 0)
-            [destinationPopUpButton SSE_addSeparatorItem];
+            [destinationPopUpButton addSeparatorItem];
         
         for (destIndex = 0; destIndex < destCount; destIndex++) {
             id <OutputStreamDestination> destination;
@@ -785,7 +784,7 @@ static SSEMainWindowController *controller = nil;
     
             destination = [dests objectAtIndex:destIndex];            
             title = [self titleForDestination:destination];
-            [destinationPopUpButton SSE_addItemWithTitle:title representedObject:destination];
+            [destinationPopUpButton addItemWithTitle:title representedObject:destination];
     
             if (!found && (destination == currentDestination)) {
                 [destinationPopUpButton selectItemAtIndex:[destinationPopUpButton numberOfItems] - 1];
