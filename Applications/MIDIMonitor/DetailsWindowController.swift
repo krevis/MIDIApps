@@ -58,7 +58,7 @@ class DetailsWindowController: UtilityWindowController, NSWindowDelegate {
 
         updateDescriptionFields()
 
-        textView.string = formattedData(dataForDisplay)
+        textView.string = dataForDisplay.formattedAsHexDump()
     }
 
     override func windowTitle(forDocumentDisplayName displayName: String) -> String {
@@ -82,68 +82,6 @@ class DetailsWindowController: UtilityWindowController, NSWindowDelegate {
 
         sizeField.stringValue = sizeString
         timeField.stringValue = message.timeStampForDisplay
-    }
-
-    private func formattedData(_ data: Data) -> String {
-        let dataLength = data.count
-        if dataLength <= 0 {
-            return ""
-        }
-
-        // How many hex digits are required to represent data.count?
-        var lengthDigitCount = 0
-        var scratchLength = dataLength
-        while scratchLength > 0 {
-            lengthDigitCount += 2
-            scratchLength >>= 8
-        }
-
-        var formattedString = ""
-
-        // Format the data in 16 byte lines like this:
-        // <variable length index> 00 01 02 03 04 05 06 07  08 09 0A 0B 0C 0D 0E 0F  |0123456789ABCDEF|
-        // and ending in \n
-
-        let lineLength = lengthDigitCount + 3 * 8 + 1 + 3 * 8 + 2 + 1 + 16 + 1 + 1
-        formattedString.reserveCapacity((dataLength / 16) * lineLength)
-
-        let hexChars: [Character] = [ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F" ]
-
-        for dataIndex in stride(from: data.startIndex, to: data.endIndex, by: 16) {
-            formattedString += String(format: "%.*lX", lengthDigitCount, dataIndex)
-
-            for index in dataIndex ..< (dataIndex+16) {
-                formattedString += " "
-                if index % 8 == 0 {
-                    formattedString += " "
-                }
-
-                if index < data.endIndex {
-                    let byte = data[index]
-                    formattedString.append(hexChars[(Int(byte) & 0xF0) >> 4])
-                    formattedString.append(hexChars[(Int(byte) & 0x0F)     ])
-                }
-                else {
-                    formattedString += "  "
-                }
-            }
-
-            formattedString += "  |"
-
-            for index in dataIndex ..< min(dataIndex+16, data.endIndex) {
-                let byte = data[index]
-                if isprint(Int32(byte)) != 0 {
-                    formattedString.append(Character(Unicode.Scalar(byte)))
-                }
-                else {
-                    formattedString += " "
-                }
-            }
-
-            formattedString += "|\n"
-        }
-
-        return formattedString
     }
 
 }

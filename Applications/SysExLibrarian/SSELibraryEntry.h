@@ -14,6 +14,7 @@
 
 @class SSEAlias;
 @class SSELibrary;
+@class SystemExclusiveMessage;
 
 
 @interface SSELibraryEntry : NSObject
@@ -31,7 +32,7 @@
 - (void)setNameFromFile;
 - (BOOL)renameFileTo:(NSString *)newFileName;
 
-@property (nonatomic, readonly) NSArray *messages;
+@property (nonatomic, readonly) NSArray<SystemExclusiveMessage *> *messages;
 
 - (BOOL)isFilePresent;
 - (BOOL)isFilePresentIgnoringCachedValue;
@@ -49,4 +50,4 @@
 @end
 
 // Notifications
-extern NSString *SSELibraryEntryNameDidChangeNotification;
+extern NSNotificationName const SSELibraryEntryNameDidChangeNotification;

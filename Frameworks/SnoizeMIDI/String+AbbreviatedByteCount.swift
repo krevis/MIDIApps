@@ -14,7 +14,7 @@ import Foundation
 
 public extension String {
 
-    func abbreviatedByteCount(_ byteCount: Int) -> String {
+    static func abbreviatedByteCount(_ byteCount: Int) -> String {
         guard let bundle = Bundle(identifier: "com.snoize.SnoizeMIDI") else { fatalError() }
 
         if byteCount == 1 {

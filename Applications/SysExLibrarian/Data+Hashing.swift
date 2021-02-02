@@ -8,18 +8,20 @@
 import Foundation
 import CommonCrypto
 
-// TODO Extend Data not NSData
-@objc extension NSData {
+extension Data {
 
     var md5HexHash: String {
-        var digest = [UInt8](repeating: 0, count: 16)
+        let digestLength = Int(CC_MD5_DIGEST_LENGTH)
+        var digest = [UInt8](repeating: 0, count: digestLength)
 
-        digest.withUnsafeMutableBufferPointer { ( digestBufferPtr: inout UnsafeMutableBufferPointer<UInt8>) -> Void in
-            CC_MD5(self.bytes, CC_LONG(self.length), digestBufferPtr.baseAddress)
+        withUnsafeBytes { (selfBufferPtr: UnsafeRawBufferPointer) -> Void in
+            digest.withUnsafeMutableBufferPointer { ( digestBufferPtr: inout UnsafeMutableBufferPointer<UInt8>) -> Void in
+                CC_MD5(selfBufferPtr.baseAddress, CC_LONG(self.count), digestBufferPtr.baseAddress)
+            }
         }
 
         var result = ""
-        for index in 0 ..< 16 {
+        for index in 0 ..< digestLength {
             result += String(format: "%02x", digest[index])
         }
 
@@ -27,14 +29,17 @@ import CommonCrypto
     }
 
     var sha1HexHash: String {
-        var digest = [UInt8](repeating: 0, count: 16)
+        let digestLength = Int(CC_SHA1_DIGEST_LENGTH)
+        var digest = [UInt8](repeating: 0, count: digestLength)
 
-        digest.withUnsafeMutableBufferPointer { ( digestBufferPtr: inout UnsafeMutableBufferPointer<UInt8>) -> Void in
-            CC_SHA1(self.bytes, CC_LONG(self.length), digestBufferPtr.baseAddress)
+        withUnsafeBytes { (selfBufferPtr: UnsafeRawBufferPointer) -> Void in
+            digest.withUnsafeMutableBufferPointer { ( digestBufferPtr: inout UnsafeMutableBufferPointer<UInt8>) -> Void in
+                CC_SHA1(selfBufferPtr.baseAddress, CC_LONG(self.count), digestBufferPtr.baseAddress)
+            }
         }
 
         var result = ""
-        for index in 0 ..< 16 {
+        for index in 0 ..< digestLength {
             result += String(format: "%02x", digest[index])
         }
 

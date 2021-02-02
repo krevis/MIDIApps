@@ -16,7 +16,6 @@
 #import <objc/objc-runtime.h>
 #import "NSPopUpButton-Extensions.h"
 #import "SSEDeleteController.h"
-#import "SSEDetailsWindowController.h"
 #import "SSEExportController.h"
 #import "SSEFindMissingController.h"
 #import "SSEImportController.h"
@@ -968,7 +967,7 @@ static NSInteger libraryEntryComparator(id object1, id object2, void *context)
         SSELibraryEntry *entry;
 
         entry = [selectedEntries objectAtIndex:entryIndex];
-        [[SSEDetailsWindowController detailsWindowControllerWithEntry:entry] showWindow:nil];
+        [[DetailsWindowController detailsWindowControllerWithEntry:entry] showWindow:nil];
     }
 }
 

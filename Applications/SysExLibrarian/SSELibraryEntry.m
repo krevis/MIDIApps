@@ -45,7 +45,7 @@
     } _flags;
 }
 
-NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidChangeNotification";
+NSNotificationName const SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidChangeNotification";
 
 
 - (id)initWithLibrary:(SSELibrary *)library
@@ -255,7 +255,7 @@ NSString *SSELibraryEntryNameDidChangeNotification = @"SSELibraryEntryNameDidCha
     return success;
 }
 
-- (NSArray *)messages
+- (NSArray<SystemExclusiveMessage *> *)messages
 {
     NSArray *messages = nil;
 
