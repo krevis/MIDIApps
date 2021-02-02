@@ -27,6 +27,7 @@
 		16D0EF1C25C9265300399C74 /* DetailsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D0EF1B25C9265300399C74 /* DetailsWindowController.swift */; };
 		16D0EF2525C947F800399C74 /* SysexSpeedOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D0EF2425C947F800399C74 /* SysexSpeedOutlineView.swift */; };
 		16D0EF2725C94D0400399C74 /* ValidatingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D0EF2625C94D0400399C74 /* ValidatingButton.swift */; };
+		16D0EF2925C9EDD700399C74 /* NSToolbarItem+TakeValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D0EF2825C9EDD700399C74 /* NSToolbarItem+TakeValues.swift */; };
 		16DC484B0AB3A359002ECBD6 /* SSESysExSpeedController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16DC48490AB3A359002ECBD6 /* SSESysExSpeedController.m */; };
 		16F033540984B76F006C8A44 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
 		16F033560984B76F006C8A44 /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = F559F90A01DEC5E001000164 /* Preferences.nib */; };
@@ -53,7 +54,6 @@
 		16F033740984B76F006C8A44 /* SSELibraryEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = F583CEB901EE3E4401000164 /* SSELibraryEntry.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		16F033760984B76F006C8A44 /* SSETableView.m in Sources */ = {isa = PBXBuildFile; fileRef = F551752101F3ACED01000164 /* SSETableView.m */; };
 		16F033780984B76F006C8A44 /* SSEWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F58752680214C25201000164 /* SSEWindowController.m */; };
-		16F033790984B76F006C8A44 /* NSToolbarItem-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = F587526C0214CA4E01000164 /* NSToolbarItem-Extensions.m */; };
 		16F0337C0984B76F006C8A44 /* SSERecordOneController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5308FE50232E1AB01000164 /* SSERecordOneController.m */; };
 		16F0337D0984B76F006C8A44 /* SSERecordManyController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5308FEE0233023701000164 /* SSERecordManyController.m */; };
 		16F0337E0984B76F006C8A44 /* SSERecordController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5308FF50233075A01000164 /* SSERecordController.m */; };
@@ -239,6 +239,7 @@
 		16D0EF1B25C9265300399C74 /* DetailsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsWindowController.swift; sourceTree = "<group>"; };
 		16D0EF2425C947F800399C74 /* SysexSpeedOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SysexSpeedOutlineView.swift; sourceTree = "<group>"; };
 		16D0EF2625C94D0400399C74 /* ValidatingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatingButton.swift; sourceTree = "<group>"; };
+		16D0EF2825C9EDD700399C74 /* NSToolbarItem+TakeValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSToolbarItem+TakeValues.swift"; sourceTree = "<group>"; };
 		16DC48480AB3A359002ECBD6 /* SSESysExSpeedController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SSESysExSpeedController.h; sourceTree = "<group>"; };
 		16DC48490AB3A359002ECBD6 /* SSESysExSpeedController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SSESysExSpeedController.m; sourceTree = "<group>"; };
 		16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDI.xcodeproj; path = ../../Frameworks/SnoizeMIDI/SnoizeMIDI.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -291,8 +292,6 @@
 		F583CEB901EE3E4401000164 /* SSELibraryEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSELibraryEntry.m; sourceTree = "<group>"; };
 		F58752670214C25201000164 /* SSEWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEWindowController.h; sourceTree = "<group>"; };
 		F58752680214C25201000164 /* SSEWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEWindowController.m; sourceTree = "<group>"; };
-		F587526B0214CA4E01000164 /* NSToolbarItem-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSToolbarItem-Extensions.h"; sourceTree = "<group>"; };
-		F587526C0214CA4E01000164 /* NSToolbarItem-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSToolbarItem-Extensions.m"; sourceTree = "<group>"; };
 		F5DFAC8302F7715701000164 /* SSEExportController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEExportController.h; sourceTree = "<group>"; };
 		F5DFAC8402F7715701000164 /* SSEExportController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEExportController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -613,8 +612,7 @@
 				F565B6EF01E1567501000164 /* NSPopUpButton-Extensions.m */,
 				163A3FB2213E09460075F8A0 /* NSString+SymlinksAndAliases.h */,
 				163A3FC0213E09460075F8A0 /* NSString+SymlinksAndAliases.m */,
-				F587526B0214CA4E01000164 /* NSToolbarItem-Extensions.h */,
-				F587526C0214CA4E01000164 /* NSToolbarItem-Extensions.m */,
+				16D0EF2825C9EDD700399C74 /* NSToolbarItem+TakeValues.swift */,
 				F551752001F3ACED01000164 /* SSETableView.h */,
 				F551752101F3ACED01000164 /* SSETableView.m */,
 				16D0EF2625C94D0400399C74 /* ValidatingButton.swift */,
@@ -903,6 +901,7 @@
 				163A3FC4213E1B540075F8A0 /* SSEAlias.m in Sources */,
 				16F033720984B76F006C8A44 /* NSPopUpButton-Extensions.m in Sources */,
 				16F033730984B76F006C8A44 /* SSELibrary.m in Sources */,
+				16D0EF2925C9EDD700399C74 /* NSToolbarItem+TakeValues.swift in Sources */,
 				16C43BBA25C4F637007A3A48 /* Data+Hashing.swift in Sources */,
 				16D0EF1C25C9265300399C74 /* DetailsWindowController.swift in Sources */,
 				16F033740984B76F006C8A44 /* SSELibraryEntry.m in Sources */,
@@ -910,7 +909,6 @@
 				16F033760984B76F006C8A44 /* SSETableView.m in Sources */,
 				16F033780984B76F006C8A44 /* SSEWindowController.m in Sources */,
 				163A3FC1213E09460075F8A0 /* NSString+SymlinksAndAliases.m in Sources */,
-				16F033790984B76F006C8A44 /* NSToolbarItem-Extensions.m in Sources */,
 				16C43B9725C4EB00007A3A48 /* main.swift in Sources */,
 				16F0337C0984B76F006C8A44 /* SSERecordOneController.m in Sources */,
 				16F0337D0984B76F006C8A44 /* SSERecordManyController.m in Sources */,

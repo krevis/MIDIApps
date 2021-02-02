@@ -12,7 +12,7 @@
 
 #import "SSEWindowController.h"
 
-#import "NSToolbarItem-Extensions.h"
+#import "SysEx_Librarian-Swift.h"
 
 
 @interface SSEWindowController (Private)
@@ -210,7 +210,7 @@
     [toolbarItem setLabel:itemIdentifier];
     [toolbarItem setEnabled:YES];
     itemInfoDictionary = [toolbarItemInfo objectForKey:itemIdentifier];
-    [toolbarItem SSE_takeValuesFromDictionary:itemInfoDictionary target:self];
+    [toolbarItem takeValuesWithItemInfo:itemInfoDictionary target:self];
 
     if ([itemInfoDictionary objectForKey:@"needsSpecialInitialization"])
         [self speciallyInitializeToolbarItem:toolbarItem];
