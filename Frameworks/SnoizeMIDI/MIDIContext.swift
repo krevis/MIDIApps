@@ -71,7 +71,7 @@ import CoreMIDI
 
     // MARK: Public API
 
-    public var connectedToCoreMIDI: Bool {
+    @objc public var connectedToCoreMIDI: Bool {
         privateInterface != nil
     }
 
@@ -102,7 +102,11 @@ import CoreMIDI
         destinationList.objects.first { $0.name == name }
     }
 
-    public func forceCoreMIDIToUseNewSysExSpeed() {
+    @objc public var externalDevices: [ExternalDevice] {
+        externalDeviceList.objects
+    }
+
+    @objc public func forceCoreMIDIToUseNewSysExSpeed() {
         // The CoreMIDI client caches the last device that was given to MIDISendSysex(), along with its max sysex speed.
         // So when we change the speed, it doesn't notice and continues to use the old speed.
         // To fix this, we send a tiny sysex message to a different device.  Unfortunately we can't just use a NULL endpoint,
@@ -323,7 +327,18 @@ public extension Notification.Name {
 
 }
 
-public extension MIDIContext {
+// TODO Duplicate stuff while migrating from ObjC to Swift
+@objc public extension NSNotification {
+
+    static let midiObjectsAppeared = Notification.Name.midiObjectsAppeared
+    static let midiObjectDisappeared = Notification.Name.midiObjectDisappeared
+    static let midiObjectWasReplaced = Notification.Name.midiObjectWasReplaced
+    static let midiObjectListChanged = Notification.Name.midiObjectListChanged
+    static let midiObjectPropertyChanged = Notification.Name.midiObjectPropertyChanged
+
+}
+
+@objc public extension MIDIContext {
 
     // Keys in userInfo dictionary for notifications
     static let objectsThatAppeared = "SMMIDIObjectsThatAppeared"

@@ -13,9 +13,9 @@
 import Foundation
 import CoreMIDI
 
-public class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
+public class MIDIObject: NSObject, CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
 
-    unowned var midiContext: CoreMIDIContext
+    unowned var midiContext: CoreMIDIContext    // TODO Should arguably be public but with what type? CoreMIDIContext is internal, should be MIDIContext
     private(set) var midiObjectRef: MIDIObjectRef
 
     required init(context: CoreMIDIContext, objectRef: MIDIObjectRef) {
@@ -23,6 +23,7 @@ public class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
 
         self.midiContext = context
         self.midiObjectRef = objectRef
+        super.init()
 
         // Immediately cache the object's uniqueID, since it could become
         // inaccessible later, if the object is removed from CoreMIDI
@@ -128,7 +129,7 @@ public class MIDIObject: CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
 
     private lazy var cachedMaxSysExSpeed = cacheProperty(kMIDIPropertyMaxSysExSpeed, Int32.self)
     private let fallbackMaxSysExSpeed: Int32 = 3125 // bytes/sec for MIDI 1.0
-    public var maxSysExSpeed: Int32 {
+    @objc public var maxSysExSpeed: Int32 {
         get { self[cachedMaxSysExSpeed] ?? fallbackMaxSysExSpeed }
         set { self[cachedMaxSysExSpeed] = newValue }
     }

@@ -11,12 +11,12 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <SnoizeMIDI/SnoizeMIDI.h>
-#import "SSEOutputStreamDestination.h"
 
+@class CombinationOutputStream;
 @class SSEMainWindowController;
-@class SSECombinationOutputStream;
+@protocol OutputStreamDestination;
 
+@import SnoizeMIDI;
 
 typedef enum {
     SSEMIDIControllerIdle,
@@ -34,7 +34,7 @@ typedef enum {
     // MIDI processing
     PortInputStream *inputStream;
 	VirtualInputStream *virtualInputStream;
-    SSECombinationOutputStream *outputStream;
+    CombinationOutputStream *outputStream;
         
     // Transient data
     NSMutableArray *messages;
@@ -63,8 +63,8 @@ typedef enum {
 
 - (NSArray *)destinations;
 - (NSArray *)groupedDestinations;
-- (id <SSEOutputStreamDestination>)selectedDestination;
-- (void)setSelectedDestination:(id <SSEOutputStreamDestination>)destination;
+- (id <OutputStreamDestination>)selectedDestination;
+- (void)setSelectedDestination:(id <OutputStreamDestination>)destination;
 
 - (NSArray *)messages;
 - (void)setMessages:(NSArray *)value;

@@ -16,7 +16,7 @@
 
 #import "SSELibraryEntry.h"
 
-#import <SnoizeMIDI/SnoizeMIDI.h>
+@import SnoizeMIDI;
 
 #import "SSEAlias.h"
 #import "SSELibrary.h"

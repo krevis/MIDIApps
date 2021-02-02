@@ -12,7 +12,7 @@
 
 #import "SSEWindowController.h"
 
-@class SMMIDIObject;
+@class MIDIObject;
 
 @interface SSESysExSpeedController : NSObject
 {
@@ -22,7 +22,7 @@
     NSArray *endpoints;
     NSArray *externalDevices;
     
-    SMMIDIObject* trackingMIDIObject;
+    MIDIObject* trackingMIDIObject;
     NSInteger speedOfTrackingMIDIObject;
 }
 

@@ -13,7 +13,7 @@
 import Foundation
 import CoreMIDI
 
-public class Destination: Endpoint, CoreMIDIObjectListable {
+@objc public class Destination: Endpoint, CoreMIDIObjectListable {
 
     static let midiObjectType = MIDIObjectType.destination
     static func midiObjectCount(_ context: CoreMIDIContext) -> Int {

@@ -12,6 +12,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class MIDIContext;
 
 @interface SSEAppController : NSObject
 {
@@ -27,5 +28,7 @@
 - (IBAction)showMainWindowAndAddToLibrary:(id)sender;
 
 - (BOOL)inMainThread;
+
+@property (nonatomic, readonly) MIDIContext *midiContext;
 
 @end

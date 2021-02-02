@@ -12,8 +12,9 @@
 
 #import "SSEMIDIController.h"
 
+@import SnoizeMIDI;
+#import "SysEx_Librarian-Swift.h"
 #import "SSEMainWindowController.h"
-#import "SSECombinationOutputStream.h"
 #import "SSEPreferencesWindowController.h"
 #import "SSEAppController.h"
 
@@ -54,7 +55,9 @@
 @end
 
 
-@implementation SSEMIDIController
+@implementation SSEMIDIController {
+    MIDIContext *midiContext;
+}
 
 NSString *SSESelectedDestinationPreferenceKey = @"SSESelectedDestination";
 NSString *SSESysExReadTimeOutPreferenceKey = @"SSESysExReadTimeOut";
@@ -82,22 +85,24 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
     if (!(self = [super init]))
         return nil;
 
+    midiContext = [(SSEAppController *)[NSApp delegate] midiContext];
+
     nonretainedMainWindowController = mainWindowController;
     
     center = [NSNotificationCenter defaultCenter];
 
-    inputStream = [[PortInputStream alloc] init];
+    inputStream = [[PortInputStream alloc] initWithMidiContext:midiContext];
     [center addObserver:self selector:@selector(readingSysEx:) name:NSNotification.inputStreamReadingSysEx object:inputStream];
     [center addObserver:self selector:@selector(readingSysEx:) name:NSNotification.inputStreamDoneReadingSysEx object:inputStream];
     [inputStream setMessageDestination:self];
     // TODO inputStream.selectedInputSources = Set(inputStream.inputSources)
 
-    outputStream = [[SSECombinationOutputStream alloc] init];
-    [center addObserver:self selector:@selector(midiSetupChanged:) name:NSNotification.clientSetupChanged object:[SMClient sharedClient]];
+    outputStream = [[CombinationOutputStream alloc] initWithMidiContext:midiContext];
+//    [center addObserver:self selector:@selector(midiSetupChanged:) name:NSNotification.clientSetupChanged object:[SMClient sharedClient]];
         // use the general setup changed notification rather than SSECombinationOutputStreamDestinationListChangedNotification,
         // since it's too low-level and fires too early when setting up a virtual destination
         // TODO Really? Could we be more specific?
-    [center addObserver:self selector:@selector(outputStreamSelectedDestinationDisappeared:) name:SSECombinationOutputStreamSelectedDestinationDisappearedNotification object:outputStream];
+    [center addObserver:self selector:@selector(outputStreamSelectedDestinationDisappeared:) name:NSNotification.portOutputStreamEndpointDisappeared object:outputStream];
     [center addObserver:self selector:@selector(willStartSendingSysEx:) name:NSNotification.portOutputStreamSysExSendWillBegin object:outputStream];
     [center addObserver:self selector:@selector(doneSendingSysEx:) name:NSNotification.portOutputStreamSysExSendDidEnd object:outputStream];
     [center addObserver:self selector:@selector(customSysexBufferSizeChanged:) name:SSECustomSysexBufferSizePreferenceChangedNotification object:nil];
@@ -174,14 +179,14 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
     return [outputStream groupedDestinations];
 }
 
-- (id <SSEOutputStreamDestination>)selectedDestination;
+- (id <OutputStreamDestination>)selectedDestination;
 {
     return [outputStream selectedDestination];
 }
 
-- (void)setSelectedDestination:(id <SSEOutputStreamDestination>)destination;
+- (void)setSelectedDestination:(id <OutputStreamDestination>)destination;
 {
-    id <SSEOutputStreamDestination> oldDestination;
+    id <OutputStreamDestination> oldDestination;
 
     oldDestination = [self selectedDestination];
     if (oldDestination == destination || [oldDestination isEqual:destination])
@@ -394,9 +399,11 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
     
     if (listeningToProgramChangeMessages) {
         if (!virtualInputStream) {
-            virtualInputStream = [[VirtualInputStream alloc] init];
+            virtualInputStream = [[VirtualInputStream alloc] initWithMidiContext:midiContext];
             [virtualInputStream setMessageDestination:self];
-            [virtualInputStream setSelectedInputSources:[virtualInputStream inputSourcesSet]];
+
+            // TODO Can't do this from ObjC
+            // [virtualInputStream setSelectedInputSources:[virtualInputStream inputSourcesSet]];
         }
     } else {
         if (virtualInputStream) {
@@ -436,13 +443,14 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
     // but a virtual stream can't be created in the middle of handling this notification, so do it later.
     // NOTE This applied to 10.1; the situation is probably less goofy under 10.2.
 
-    if ([[SMClient sharedClient] isHandlingSetupChange]) {
-        [self performSelector:_cmd withObject:nil afterDelay:0.1];
-        // NOTE Delay longer than 0 is a tradeoff; it means there's a brief window when no destination will be selected.
-        // A delay of 0 means that we'll get called many times (about 20 in practice) before the setup change is finished.
-    } else {
+    // TODO Is this really necessary anymore?
+//    if ([[SMClient sharedClient] isHandlingSetupChange]) {
+//        [self performSelector:_cmd withObject:nil afterDelay:0.1];
+//        // NOTE Delay longer than 0 is a tradeoff; it means there's a brief window when no destination will be selected.
+//        // A delay of 0 means that we'll get called many times (about 20 in practice) before the setup change is finished.
+//    } else {
         [self selectFirstAvailableDestination];
-    }
+//    }
 }
 
 - (void)selectFirstAvailableDestination;

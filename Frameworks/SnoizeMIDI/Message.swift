@@ -140,7 +140,7 @@ import CoreAudio
         }
     }
 
-    public var originatingEndpoint: Endpoint? {
+    @objc public var originatingEndpoint: Endpoint? {
         didSet {
             if oldValue != originatingEndpoint {
                 originatingEndpointName = nil

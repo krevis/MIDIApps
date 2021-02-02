@@ -14,7 +14,7 @@ import Foundation
 
 @objc public class VirtualInputStream: InputStream {
 
-    public override init(midiContext: MIDIContext) {
+    @objc public override init(midiContext: MIDIContext) {
         virtualEndpointName = midiContext.name
         uniqueID = 0 // Let CoreMIDI assign a unique ID to the virtual endpoint when it is created
 
@@ -49,7 +49,7 @@ import Foundation
         singleSource.name = name
     }
 
-    public private(set) var endpoint: Destination?
+    @objc public private(set) var endpoint: Destination?
 
     // MARK: InputStream subclass
 

@@ -12,8 +12,8 @@
 
 #import "SSEMainWindowController.h"
 
+@import SnoizeMIDI;
 #import <objc/objc-runtime.h>
-#import <SnoizeMIDI/SnoizeMIDI.h>
 #import "NSPopUpButton-Extensions.h"
 #import "SSEDeleteController.h"
 #import "SSEDetailsWindowController.h"
@@ -28,6 +28,7 @@
 #import "SSERecordOneController.h"
 #import "SSERecordManyController.h"
 #import "SSETableView.h"
+#import "SysEx_Librarian-Swift.h"
 
 
 @interface SSEMainWindowController (Private)
@@ -39,9 +40,9 @@
 
 - (BOOL)finishEditingResultsInError;
 
-- (void)synchronizeDestinationPopUpWithDestinationGroups:(NSArray *)groupedDestinations currentDestination:(id <SSEOutputStreamDestination>)currentDestination;
-- (void)synchronizeDestinationToolbarMenuWithDestinationGroups:(NSArray *)groupedDestinations currentDestination:(id <SSEOutputStreamDestination>)currentDestination;
-- (NSString *)titleForDestination:(id <SSEOutputStreamDestination>)destination;
+- (void)synchronizeDestinationPopUpWithDestinationGroups:(NSArray *)groupedDestinations currentDestination:(id <OutputStreamDestination>)currentDestination;
+- (void)synchronizeDestinationToolbarMenuWithDestinationGroups:(NSArray *)groupedDestinations currentDestination:(id <OutputStreamDestination>)currentDestination;
+- (NSString *)titleForDestination:(id <OutputStreamDestination>)destination;
 
 - (void)libraryDidChange:(NSNotification *)notification;
 - (void)sortLibraryEntries;
@@ -374,7 +375,7 @@ static SSEMainWindowController *controller = nil;
 {
     NSMutableArray *groupedDestinations;
     NSUInteger groupIndex;
-    id <SSEOutputStreamDestination> currentDestination;
+    id <OutputStreamDestination> currentDestination;
 
     // Remove empty groups from groupedDestinations
     groupedDestinations = [NSMutableArray arrayWithArray:[midiController groupedDestinations]];
@@ -544,7 +545,7 @@ static SSEMainWindowController *controller = nil;
 
         entrySize = [entry size];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey])
-            return [NSString SnoizeMIDI_abbreviatedStringForByteCount:[entrySize unsignedIntValue]];
+            return @"TODO" /* TODO [NSString SnoizeMIDI_abbreviatedStringForByteCount:[entrySize unsignedIntValue]] */;
         else
             return [entrySize stringValue];
     } else if ([identifier isEqualToString:@"messageCount"]) {
@@ -756,7 +757,7 @@ static SSEMainWindowController *controller = nil;
 // Destination selections (popup and toolbar menu)
 //
 
-- (void)synchronizeDestinationPopUpWithDestinationGroups:(NSArray *)groupedDestinations currentDestination:(id <SSEOutputStreamDestination>)currentDestination;
+- (void)synchronizeDestinationPopUpWithDestinationGroups:(NSArray *)groupedDestinations currentDestination:(id <OutputStreamDestination>)currentDestination;
 {
     BOOL wasAutodisplay;
     NSUInteger groupCount, groupIndex;
@@ -780,7 +781,7 @@ static SSEMainWindowController *controller = nil;
             [destinationPopUpButton SSE_addSeparatorItem];
         
         for (destIndex = 0; destIndex < destCount; destIndex++) {
-            id <SSEOutputStreamDestination> destination;
+            id <OutputStreamDestination> destination;
             NSString *title;
     
             destination = [dests objectAtIndex:destIndex];            
@@ -803,7 +804,7 @@ static SSEMainWindowController *controller = nil;
     [[self window] setAutodisplay:wasAutodisplay];
 }
 
-- (void)synchronizeDestinationToolbarMenuWithDestinationGroups:(NSArray *)groupedDestinations currentDestination:(id <SSEOutputStreamDestination>)currentDestination;
+- (void)synchronizeDestinationToolbarMenuWithDestinationGroups:(NSArray *)groupedDestinations currentDestination:(id <OutputStreamDestination>)currentDestination;
 {
     // Set the title to "Destination: <Whatever>"
     // Then set up the submenu items
@@ -841,7 +842,7 @@ static SSEMainWindowController *controller = nil;
             [submenu addItem:[NSMenuItem separatorItem]];
 
         for (destIndex = 0; destIndex < destCount; destIndex++) {
-            id <SSEOutputStreamDestination> destination;
+            id <OutputStreamDestination> destination;
             NSString *title;
             NSMenuItem *menuItem;
 
@@ -866,7 +867,7 @@ static SSEMainWindowController *controller = nil;
     [topMenuItem release];
 }
 
-- (NSString *)titleForDestination:(id <SSEOutputStreamDestination>)destination;
+- (NSString *)titleForDestination:(id <OutputStreamDestination>)destination;
 {
     return [destination outputStreamDestinationName];
 }

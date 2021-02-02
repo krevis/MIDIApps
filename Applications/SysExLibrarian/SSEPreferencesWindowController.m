@@ -12,6 +12,7 @@
 
 #import "SSEPreferencesWindowController.h"
 
+@import SnoizeMIDI;
 #import "SSEMainWindowController.h"
 #import "SSELibrary.h"
 #import "SSEMIDIController.h"

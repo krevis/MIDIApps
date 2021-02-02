@@ -12,6 +12,7 @@
 
 #import "SSERecordManyController.h"
 
+@import SnoizeMIDI;
 #import "SSEMainWindowController.h"
 #import "SSEMIDIController.h"
 
@@ -49,7 +50,7 @@
         [progressBytesField setStringValue:@""];
     } else {
         [progressMessageField setStringValue:[self receivingSysexMessage]];
-        [progressBytesField setStringValue:[NSString SnoizeMIDI_abbreviatedStringForByteCount:bytesRead]];
+        [progressBytesField setStringValue: @"TODO" /* TODO [NSString SnoizeMIDI_abbreviatedStringForByteCount:bytesRead]*/];
     }
 
     hasAtLeastOneCompleteMessage = (messageCount > 0);
@@ -57,7 +58,7 @@
         NSString *format;
 
         format = (messageCount > 1)  ? totalProgressPluralFormatString : totalProgressFormatString;
-        totalProgress = [NSString stringWithFormat:format, messageCount, [NSString SnoizeMIDI_abbreviatedStringForByteCount:totalBytesRead]];
+        totalProgress = @"TODO" /* TODO [NSString stringWithFormat:format, messageCount, [NSString SnoizeMIDI_abbreviatedStringForByteCount:totalBytesRead]] */;
     } else {
         totalProgress = @"";
     }

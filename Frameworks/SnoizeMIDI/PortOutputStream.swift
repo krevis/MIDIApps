@@ -194,7 +194,7 @@ public extension Notification.Name {
 }
 
 // TODO Duplicate stuff while migrating from ObjC to Swift
-/*
+
 @objc public extension NSNotification {
 
     static let portOutputStreamEndpointDisappeared = Notification.Name.portOutputStreamEndpointDisappeared
@@ -202,4 +202,3 @@ public extension Notification.Name {
     static let portOutputStreamSysExSendDidEnd = Notification.Name.portOutputStreamSysExSendDidEnd
 
 }
-*/

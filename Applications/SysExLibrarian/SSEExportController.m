@@ -12,7 +12,7 @@
 
 #import "SSEExportController.h"
 #import "SSEMainWindowController.h"
-#import <SnoizeMIDI/SnoizeMIDI.h>
+@import SnoizeMIDI;
 
 
 @interface SSEExportController (Private)

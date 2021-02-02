@@ -12,7 +12,7 @@
 
 #import "SSEAppController.h"
 
-#import <SnoizeMIDI/SnoizeMIDI.h>
+@import SnoizeMIDI;
 
 #import "SSEMainWindowController.h"
 #import "SSEPreferencesWindowController.h"
@@ -30,6 +30,7 @@
 
 static NSThread *sMainThread = nil;
 
+@synthesize midiContext = midiContext;
 
 - (id)init;
 {
@@ -54,7 +55,8 @@ static NSThread *sMainThread = nil;
 {    
     // Initialize CoreMIDI while the app's icon is still bouncing, so we don't have a large pause after it stops bouncing
     // but before the app's window opens.  (CoreMIDI needs to find and possibly start its server process, which can take a while.)
-    if ([SMClient sharedClient] == nil) {
+    midiContext = [[MIDIContext alloc] init];
+    if (!midiContext.connectedToCoreMIDI) {
         NSString *title, *message, *quit;
 
         title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", SMBundleForObject(self), "title of error alert");

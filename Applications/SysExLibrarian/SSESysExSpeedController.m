@@ -10,12 +10,11 @@
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 #import "SSESysExSpeedController.h"
-#import "SSECombinationOutputStream.h"
+@import SnoizeMIDI;
+#import "SysEx_Librarian-Swift.h"
 #import "SSEMIDIController.h"
-
-#import <SnoizeMIDI/SnoizeMIDI.h>
+#import "SSEAppController.h"
 
 @interface  SSESysExSpeedController (Private)
 
@@ -24,7 +23,7 @@
 - (void)midiSetupChanged:(NSNotification *)notification;
 - (void)midiObjectChanged:(NSNotification *)notification;
 
-- (NSInteger)effectiveSpeedForItem:(SMMIDIObject*)item;
+- (NSInteger)effectiveSpeedForItem:(MIDIObject*)item;
 
 - (void)invalidateRowAndParent:(NSInteger)row;
 
@@ -59,7 +58,7 @@
 - (void)willShow
 {
     // TODO Can this be more specific now?
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(midiSetupChanged:) name:NSNotification.clientSetupChanged object:[SMClient sharedClient]];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(midiSetupChanged:) name:NSNotification.clientSetupChanged object:[SMClient sharedClient]];
 
     [self captureEndpointsAndExternalDevices];
      
@@ -74,7 +73,7 @@
 
 - (void)willHide
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSNotification.clientSetupChanged object:[SMClient sharedClient]];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSNotification.clientSetupChanged object:[SMClient sharedClient]]; // TODO
     
     [self releaseEndpointsAndExternalDevices];
     
@@ -97,7 +96,7 @@
     // is "supposed" to be.  When tracking finishes, the new value comes through 
     // -outlineView:setObjectValue:..., and we'll set it for real. 
     NSInteger row = [outlineView clickedRow];
-    SMMIDIObject* item = (SMMIDIObject*)[outlineView itemAtRow:row];
+    MIDIObject* item = (MIDIObject*)[outlineView itemAtRow:row];
     trackingMIDIObject = item;
     speedOfTrackingMIDIObject = newValue;  
 
@@ -137,7 +136,7 @@
             child = [endpoints objectAtIndex:index];
         }
     } else {
-        SMDestinationEndpoint* endpoint = (SMDestinationEndpoint*)item;
+        Destination* endpoint = (Destination*)item;
         NSArray* connectedExternalDevices = [endpoint connectedExternalDevices];
         if (index < [connectedExternalDevices count]) {
             child = [[endpoint connectedExternalDevices] objectAtIndex:index];
@@ -153,8 +152,8 @@
     
     if (item == nil) {
         isItemExpandable = YES;
-    } else if ([item isKindOfClass:[SMDestinationEndpoint class]]) {
-        SMDestinationEndpoint* endpoint = (SMDestinationEndpoint*)item;
+    } else if ([item isKindOfClass:[Destination class]]) {
+        Destination* endpoint = (Destination*)item;
         isItemExpandable = ([[endpoint connectedExternalDevices] count] > 0);
     }
     
@@ -167,8 +166,8 @@
     
     if (item == nil) {
         childCount = [endpoints count];
-    } else if ([item isKindOfClass:[SMDestinationEndpoint class]]) {
-        SMDestinationEndpoint* endpoint = (SMDestinationEndpoint*)item;
+    } else if ([item isKindOfClass:[Destination class]]) {
+        Destination* endpoint = (Destination*)item;
         childCount = [[endpoint connectedExternalDevices] count];
     }
 
@@ -185,9 +184,9 @@
         if ([identifier isEqualToString:@"name"]) {
             objectValue = [item name];
         } else if ([identifier isEqualToString:@"speed"] || [identifier isEqualToString:@"bytesPerSecond"]) {
-            objectValue = @([self effectiveSpeedForItem:(SMMIDIObject*)item]);
+            objectValue = @([self effectiveSpeedForItem:(MIDIObject*)item]);
         } else if ([identifier isEqualToString:@"percent"]) {
-            NSInteger speed = [self effectiveSpeedForItem:(SMMIDIObject*)item];
+            NSInteger speed = [self effectiveSpeedForItem:(MIDIObject*)item];
             objectValue = @((speed / 3125.0) * 100.0);
         }
     }
@@ -202,12 +201,13 @@
         
         if ([identifier isEqualToString:@"speed"]) {
             int newValue = [object intValue];
-            SMMIDIObject* midiObject = (SMMIDIObject*)item;
+            MIDIObject* midiObject = (MIDIObject*)item;
             if (newValue > 0 && newValue != [midiObject maxSysExSpeed]) {
                 [midiObject setMaxSysExSpeed:newValue];
                 
                 // Work around bug where CoreMIDI doesn't pay attention to the new speed
-                [[SMClient sharedClient] forceCoreMIDIToUseNewSysExSpeed];
+                MIDIContext *midiContext = [(SSEAppController *)[NSApp delegate] midiContext];
+                [midiContext forceCoreMIDIToUseNewSysExSpeed];
             }
             
             trackingMIDIObject = nil;
@@ -236,8 +236,9 @@
         [center removeObserver:self name:NSNotification.midiObjectPropertyChanged object:midiObject];
     }
     
-    endpoints = [[SSECombinationOutputStream destinationEndpoints] retain];
-    externalDevices = [[SMExternalDevice externalDevices] retain];
+    MIDIContext *midiContext = [(SSEAppController *)[NSApp delegate] midiContext];
+    endpoints = [[CombinationOutputStream destinationsInContext: midiContext] retain];
+    externalDevices = [[midiContext externalDevices] retain];
 
     enumerator = [endpoints objectEnumerator];
     while ((midiObject = [enumerator nextObject])) {
@@ -269,7 +270,7 @@
 
 - (void)midiObjectChanged:(NSNotification *)notification
 {
-    NSString* propertyName = [[notification userInfo] objectForKey:SMMIDIObject.midiObjectChangedProperty];
+    NSString* propertyName = [[notification userInfo] objectForKey:MIDIContext.changedProperty];
     if ([propertyName isEqualToString:(NSString *)kMIDIPropertyName]) {
         // invalidate only the row for this object
         NSInteger row = [outlineView rowForItem:[notification object]];
@@ -281,14 +282,14 @@
     }
 }
 
-- (NSInteger)effectiveSpeedForItem:(SMMIDIObject*)item
+- (NSInteger)effectiveSpeedForItem:(MIDIObject*)item
 {
     NSInteger effectiveSpeed = (item == trackingMIDIObject) ? speedOfTrackingMIDIObject : [item maxSysExSpeed];
 
-    if ([item isKindOfClass:[SMDestinationEndpoint class]]) {
+    if ([item isKindOfClass:[Destination class]]) {
         // Return the minimum of this endpoint's speed and all of its external devices' speeds
-        NSEnumerator* oe = [[(SMDestinationEndpoint*)item connectedExternalDevices] objectEnumerator];
-        SMMIDIObject* extDevice;
+        NSEnumerator* oe = [[(Destination*)item connectedExternalDevices] objectEnumerator];
+        MIDIObject* extDevice;
         while ((extDevice = [oe nextObject])) {
             NSInteger extDeviceSpeed = (extDevice == trackingMIDIObject) ? speedOfTrackingMIDIObject : [extDevice maxSysExSpeed];
             effectiveSpeed = MIN(effectiveSpeed, extDeviceSpeed);

@@ -13,7 +13,7 @@
 #import "SSEDetailsWindowController.h"
 
 #import <Cocoa/Cocoa.h>
-#import <SnoizeMIDI/SnoizeMIDI.h>
+@import SnoizeMIDI;
 
 #import "SysEx_Librarian-Swift.h"
 #import "SSELibrary.h"

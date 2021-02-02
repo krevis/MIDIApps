@@ -13,9 +13,9 @@
 import Foundation
 import SnoizeMIDI
 
-extension Destination: OutputStreamDestination {
+@objc extension Destination: OutputStreamDestination {
 
-    var outputStreamDestinationName: String? {
+    public var outputStreamDestinationName: String? {
         displayName
     }
 

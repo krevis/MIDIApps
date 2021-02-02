@@ -12,6 +12,7 @@
 
 #import "SSEPlayController.h"
 
+@import SnoizeMIDI;
 #import "SSEMainWindowController.h"
 #import "SSEMIDIController.h"
 #import "SSELibraryEntry.h"
@@ -234,7 +235,7 @@
     // Make sure we don't go backwards somehow
 
     [progressIndicator setDoubleValue:bytesSent];
-    [progressBytesField setStringValue:[NSString SnoizeMIDI_abbreviatedStringForByteCount:bytesSent]];
+    [progressBytesField setStringValue:@"TODO" /* TODO [NSString SnoizeMIDI_abbreviatedStringForByteCount:bytesSent]*/];
     if (bytesSent < bytesToSend) {
         if (messageCount > 1)
             message = [NSString stringWithFormat:sendingFormatString, messageIndex+1, messageCount];

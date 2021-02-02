@@ -46,7 +46,7 @@
         [progressBytesField setStringValue:@""];
     } else {
         [progressMessageField setStringValue:[self receivingSysexMessage]];
-        [progressBytesField setStringValue:[NSString SnoizeMIDI_abbreviatedStringForByteCount:bytesRead + totalBytesRead]];
+        [progressBytesField setStringValue:@"TODO" /* TODO [NSString SnoizeMIDI_abbreviatedStringForByteCount:bytesRead + totalBytesRead]*/ ];
     }
 }
 

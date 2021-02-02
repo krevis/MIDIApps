@@ -12,7 +12,7 @@
 
 import Foundation
 
-@objc protocol OutputStreamDestination: AnyObject {
+@objc protocol OutputStreamDestination: AnyObject, NSObjectProtocol {
 
     var outputStreamDestinationName: String? { get }
 

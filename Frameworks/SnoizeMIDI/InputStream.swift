@@ -14,7 +14,7 @@ import Foundation
 
 @objc open class InputStream: NSObject, MessageParserDelegate {
 
-    public init(midiContext: MIDIContext) {
+    @objc public init(midiContext: MIDIContext) {
         self.midiContext = midiContext
 
         // Default to main queue for taking pending read packets
