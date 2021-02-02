@@ -122,7 +122,7 @@ public class MIDIObject: NSObject, CoreMIDIObjectWrapper, CoreMIDIPropertyChange
     }
 
     private lazy var cachedName = cacheProperty(kMIDIPropertyName, String.self)
-    public var name: String? {
+    @objc public var name: String? {
         get { self[cachedName] }
         set { self[cachedName] = newValue }
     }

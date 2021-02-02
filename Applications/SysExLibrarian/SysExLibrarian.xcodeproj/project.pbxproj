@@ -19,13 +19,13 @@
 		163FB60C199EE3C30017B664 /* ToolbarRecordMultipleTemplate@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB60A199EE3C30017B664 /* ToolbarRecordMultipleTemplate@2x.tiff */; };
 		163FB60F199EE6810017B664 /* ToolbarRecordOneTemplate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB60D199EE6810017B664 /* ToolbarRecordOneTemplate.tiff */; };
 		163FB610199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB60E199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff */; };
-		1658B8AB09F36B5F00F42BFB /* SSESysexSpeedOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1658B8A909F36B5E00F42BFB /* SSESysexSpeedOutlineView.m */; };
 		16C43B9725C4EB00007A3A48 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43B9625C4EB00007A3A48 /* main.swift */; };
 		16C43BBA25C4F637007A3A48 /* Data+Hashing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43BB925C4F637007A3A48 /* Data+Hashing.swift */; };
 		16C43BBC25C52954007A3A48 /* Destination+OutputStreamDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43BBB25C52954007A3A48 /* Destination+OutputStreamDestination.swift */; };
 		16C43BBE25C529BA007A3A48 /* OutputStreamDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43BBD25C529BA007A3A48 /* OutputStreamDestination.swift */; };
 		16C43BC025C52C89007A3A48 /* CombinationOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43BBF25C52C89007A3A48 /* CombinationOutputStream.swift */; };
 		16D0EF1C25C9265300399C74 /* DetailsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D0EF1B25C9265300399C74 /* DetailsWindowController.swift */; };
+		16D0EF2525C947F800399C74 /* SysexSpeedOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D0EF2425C947F800399C74 /* SysexSpeedOutlineView.swift */; };
 		16DC484B0AB3A359002ECBD6 /* SSESysExSpeedController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16DC48490AB3A359002ECBD6 /* SSESysExSpeedController.m */; };
 		16F033540984B76F006C8A44 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
 		16F033560984B76F006C8A44 /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = F559F90A01DEC5E001000164 /* Preferences.nib */; };
@@ -217,8 +217,6 @@
 		163FB60A199EE3C30017B664 /* ToolbarRecordMultipleTemplate@2x.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "ToolbarRecordMultipleTemplate@2x.tiff"; sourceTree = "<group>"; };
 		163FB60D199EE6810017B664 /* ToolbarRecordOneTemplate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarRecordOneTemplate.tiff; sourceTree = "<group>"; };
 		163FB60E199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "ToolbarRecordOneTemplate@2x.tiff"; sourceTree = "<group>"; };
-		1658B8A809F36B5E00F42BFB /* SSESysexSpeedOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSESysexSpeedOutlineView.h; sourceTree = "<group>"; };
-		1658B8A909F36B5E00F42BFB /* SSESysexSpeedOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSESysexSpeedOutlineView.m; sourceTree = "<group>"; };
 		169225E625C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		169225E725C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Preferences.nib; sourceTree = "<group>"; };
 		169225E825C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Details.nib; sourceTree = "<group>"; };
@@ -239,6 +237,7 @@
 		16C43BBD25C529BA007A3A48 /* OutputStreamDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputStreamDestination.swift; sourceTree = "<group>"; };
 		16C43BBF25C52C89007A3A48 /* CombinationOutputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinationOutputStream.swift; sourceTree = "<group>"; };
 		16D0EF1B25C9265300399C74 /* DetailsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsWindowController.swift; sourceTree = "<group>"; };
+		16D0EF2425C947F800399C74 /* SysexSpeedOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SysexSpeedOutlineView.swift; sourceTree = "<group>"; };
 		16DC48480AB3A359002ECBD6 /* SSESysExSpeedController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SSESysExSpeedController.h; sourceTree = "<group>"; };
 		16DC48490AB3A359002ECBD6 /* SSESysExSpeedController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SSESysExSpeedController.m; sourceTree = "<group>"; };
 		16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDI.xcodeproj; path = ../../Frameworks/SnoizeMIDI/SnoizeMIDI.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -489,8 +488,7 @@
 				F559F90701DEC1D801000164 /* SSEPreferencesWindowController.m */,
 				16DC48480AB3A359002ECBD6 /* SSESysExSpeedController.h */,
 				16DC48490AB3A359002ECBD6 /* SSESysExSpeedController.m */,
-				1658B8A809F36B5E00F42BFB /* SSESysexSpeedOutlineView.h */,
-				1658B8A909F36B5E00F42BFB /* SSESysexSpeedOutlineView.m */,
+				16D0EF2425C947F800399C74 /* SysexSpeedOutlineView.swift */,
 			);
 			name = "Preferences window";
 			sourceTree = "<group>";
@@ -909,6 +907,7 @@
 				16C43BBA25C4F637007A3A48 /* Data+Hashing.swift in Sources */,
 				16D0EF1C25C9265300399C74 /* DetailsWindowController.swift in Sources */,
 				16F033740984B76F006C8A44 /* SSELibraryEntry.m in Sources */,
+				16D0EF2525C947F800399C74 /* SysexSpeedOutlineView.swift in Sources */,
 				16F033760984B76F006C8A44 /* SSETableView.m in Sources */,
 				16F033780984B76F006C8A44 /* SSEWindowController.m in Sources */,
 				163A3FC1213E09460075F8A0 /* NSString+SymlinksAndAliases.m in Sources */,
@@ -926,7 +925,6 @@
 				16F033830984B76F006C8A44 /* SSEExportController.m in Sources */,
 				16F033840984B76F006C8A44 /* SSEAppController.m in Sources */,
 				163E35AB09E9EFA600138102 /* NSFileManager-Extensions.m in Sources */,
-				1658B8AB09F36B5F00F42BFB /* SSESysexSpeedOutlineView.m in Sources */,
 				16C43BBC25C52954007A3A48 /* Destination+OutputStreamDestination.swift in Sources */,
 				16DC484B0AB3A359002ECBD6 /* SSESysExSpeedController.m in Sources */,
 				16C43BC025C52C89007A3A48 /* CombinationOutputStream.swift in Sources */,
