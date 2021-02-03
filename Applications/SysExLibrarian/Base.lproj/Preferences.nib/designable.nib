@@ -297,7 +297,7 @@
                                                 <rect key="frame" x="1" y="0.0" width="393" height="302"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" headerView="300439" id="353" customClass="SysexSpeedOutlineView" customModule="SysEx_Librarian" customModuleProvider="target">
+                                                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" headerView="300439" id="353" customClass="SysExSpeedOutlineView" customModule="SysEx_Librarian" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="0.0" width="393" height="285"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <size key="intercellSpacing" width="3" height="2"/>
@@ -569,7 +569,7 @@
             </connections>
             <point key="canvasLocation" x="138.5" y="146.5"/>
         </window>
-        <customObject id="368" userLabel="SSESysExSpeedController" customClass="SSESysExSpeedController">
+        <customObject id="368" userLabel="SSESysExSpeedController" customClass="SysExSpeedController" customModule="SysEx_Librarian" customModuleProvider="target">
             <connections>
                 <outlet property="bufferSizePopUpButton" destination="ucK-tF-u1Y" id="Pxf-1d-teo"/>
                 <outlet property="outlineView" destination="353" id="369"/>

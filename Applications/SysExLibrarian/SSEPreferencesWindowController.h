@@ -12,8 +12,6 @@
 
 #import "SSEWindowController.h"
 
-@class SSESysExSpeedController;
-
 @interface SSEPreferencesWindowController : SSEWindowController
 
 + (SSEPreferencesWindowController *)preferencesWindowController;

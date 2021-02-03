@@ -19,17 +19,17 @@
 		163FB60C199EE3C30017B664 /* ToolbarRecordMultipleTemplate@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB60A199EE3C30017B664 /* ToolbarRecordMultipleTemplate@2x.tiff */; };
 		163FB60F199EE6810017B664 /* ToolbarRecordOneTemplate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB60D199EE6810017B664 /* ToolbarRecordOneTemplate.tiff */; };
 		163FB610199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB60E199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff */; };
+		169B7A2025CA729900C9BB81 /* SysExSpeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169B7A1F25CA729900C9BB81 /* SysExSpeedController.swift */; };
 		16C43B9725C4EB00007A3A48 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43B9625C4EB00007A3A48 /* main.swift */; };
 		16C43BBA25C4F637007A3A48 /* Data+Hashing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43BB925C4F637007A3A48 /* Data+Hashing.swift */; };
 		16C43BBC25C52954007A3A48 /* Destination+OutputStreamDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43BBB25C52954007A3A48 /* Destination+OutputStreamDestination.swift */; };
 		16C43BBE25C529BA007A3A48 /* OutputStreamDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43BBD25C529BA007A3A48 /* OutputStreamDestination.swift */; };
 		16C43BC025C52C89007A3A48 /* CombinationOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43BBF25C52C89007A3A48 /* CombinationOutputStream.swift */; };
 		16D0EF1C25C9265300399C74 /* DetailsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D0EF1B25C9265300399C74 /* DetailsWindowController.swift */; };
-		16D0EF2525C947F800399C74 /* SysexSpeedOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D0EF2425C947F800399C74 /* SysexSpeedOutlineView.swift */; };
+		16D0EF2525C947F800399C74 /* SysExSpeedOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D0EF2425C947F800399C74 /* SysExSpeedOutlineView.swift */; };
 		16D0EF2725C94D0400399C74 /* ValidatingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D0EF2625C94D0400399C74 /* ValidatingButton.swift */; };
 		16D0EF2925C9EDD700399C74 /* NSToolbarItem+TakeValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D0EF2825C9EDD700399C74 /* NSToolbarItem+TakeValues.swift */; };
 		16D0EF2B25CA16DF00399C74 /* NSPopUpButton+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D0EF2A25CA16DF00399C74 /* NSPopUpButton+Extensions.swift */; };
-		16DC484B0AB3A359002ECBD6 /* SSESysExSpeedController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16DC48490AB3A359002ECBD6 /* SSESysExSpeedController.m */; };
 		16F033540984B76F006C8A44 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
 		16F033560984B76F006C8A44 /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = F559F90A01DEC5E001000164 /* Preferences.nib */; };
 		16F033570984B76F006C8A44 /* MainWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = F559F90F01DEFA9701000164 /* MainWindow.nib */; };
@@ -230,6 +230,7 @@
 		169225F025C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text; name = en; path = en.lproj/MainWindow.toolbar; sourceTree = "<group>"; };
 		169225F125C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SysExLibrarian.strings; sourceTree = "<group>"; };
 		169225F225C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.htmld; name = en; path = en.lproj/docs.htmld; sourceTree = "<group>"; };
+		169B7A1F25CA729900C9BB81 /* SysExSpeedController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SysExSpeedController.swift; sourceTree = "<group>"; };
 		16C43B9525C4EB00007A3A48 /* SysExLibrarian-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SysExLibrarian-Bridging-Header.h"; sourceTree = "<group>"; };
 		16C43B9625C4EB00007A3A48 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		16C43BB925C4F637007A3A48 /* Data+Hashing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hashing.swift"; sourceTree = "<group>"; };
@@ -237,12 +238,10 @@
 		16C43BBD25C529BA007A3A48 /* OutputStreamDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputStreamDestination.swift; sourceTree = "<group>"; };
 		16C43BBF25C52C89007A3A48 /* CombinationOutputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinationOutputStream.swift; sourceTree = "<group>"; };
 		16D0EF1B25C9265300399C74 /* DetailsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsWindowController.swift; sourceTree = "<group>"; };
-		16D0EF2425C947F800399C74 /* SysexSpeedOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SysexSpeedOutlineView.swift; sourceTree = "<group>"; };
+		16D0EF2425C947F800399C74 /* SysExSpeedOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SysExSpeedOutlineView.swift; sourceTree = "<group>"; };
 		16D0EF2625C94D0400399C74 /* ValidatingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatingButton.swift; sourceTree = "<group>"; };
 		16D0EF2825C9EDD700399C74 /* NSToolbarItem+TakeValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSToolbarItem+TakeValues.swift"; sourceTree = "<group>"; };
 		16D0EF2A25CA16DF00399C74 /* NSPopUpButton+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPopUpButton+Extensions.swift"; sourceTree = "<group>"; };
-		16DC48480AB3A359002ECBD6 /* SSESysExSpeedController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SSESysExSpeedController.h; sourceTree = "<group>"; };
-		16DC48490AB3A359002ECBD6 /* SSESysExSpeedController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SSESysExSpeedController.m; sourceTree = "<group>"; };
 		16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDI.xcodeproj; path = ../../Frameworks/SnoizeMIDI/SnoizeMIDI.xcodeproj; sourceTree = SOURCE_ROOT; };
 		16F033300984B760006C8A44 /* Snoize-Application-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Application-Debug.xcconfig"; path = "../../Configurations/Snoize-Application-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		16F033310984B760006C8A44 /* Snoize-Application-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Application-Global.xcconfig"; path = "../../Configurations/Snoize-Application-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
@@ -483,9 +482,8 @@
 			children = (
 				F559F90601DEC1D801000164 /* SSEPreferencesWindowController.h */,
 				F559F90701DEC1D801000164 /* SSEPreferencesWindowController.m */,
-				16DC48480AB3A359002ECBD6 /* SSESysExSpeedController.h */,
-				16DC48490AB3A359002ECBD6 /* SSESysExSpeedController.m */,
-				16D0EF2425C947F800399C74 /* SysexSpeedOutlineView.swift */,
+				169B7A1F25CA729900C9BB81 /* SysExSpeedController.swift */,
+				16D0EF2425C947F800399C74 /* SysExSpeedOutlineView.swift */,
 			);
 			name = "Preferences window";
 			sourceTree = "<group>";
@@ -902,7 +900,7 @@
 				16C43BBA25C4F637007A3A48 /* Data+Hashing.swift in Sources */,
 				16D0EF1C25C9265300399C74 /* DetailsWindowController.swift in Sources */,
 				16F033740984B76F006C8A44 /* SSELibraryEntry.m in Sources */,
-				16D0EF2525C947F800399C74 /* SysexSpeedOutlineView.swift in Sources */,
+				16D0EF2525C947F800399C74 /* SysExSpeedOutlineView.swift in Sources */,
 				16F033760984B76F006C8A44 /* SSETableView.m in Sources */,
 				16F033780984B76F006C8A44 /* SSEWindowController.m in Sources */,
 				163A3FC1213E09460075F8A0 /* NSString+SymlinksAndAliases.m in Sources */,
@@ -912,6 +910,7 @@
 				16F0337E0984B76F006C8A44 /* SSERecordController.m in Sources */,
 				16F0337F0984B76F006C8A44 /* SSEPlayController.m in Sources */,
 				16F033800984B76F006C8A44 /* SSEDeleteController.m in Sources */,
+				169B7A2025CA729900C9BB81 /* SysExSpeedController.swift in Sources */,
 				16F033810984B76F006C8A44 /* SSEImportController.m in Sources */,
 				16F033820984B76F006C8A44 /* SSEFindMissingController.m in Sources */,
 				16C43BBE25C529BA007A3A48 /* OutputStreamDestination.swift in Sources */,
@@ -920,7 +919,6 @@
 				16F033840984B76F006C8A44 /* SSEAppController.m in Sources */,
 				163E35AB09E9EFA600138102 /* NSFileManager-Extensions.m in Sources */,
 				16C43BBC25C52954007A3A48 /* Destination+OutputStreamDestination.swift in Sources */,
-				16DC484B0AB3A359002ECBD6 /* SSESysExSpeedController.m in Sources */,
 				16C43BC025C52C89007A3A48 /* CombinationOutputStream.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

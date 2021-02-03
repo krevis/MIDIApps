@@ -16,10 +16,10 @@
 #import "SSEMainWindowController.h"
 #import "SSELibrary.h"
 #import "SSEMIDIController.h"
-#import "SSESysExSpeedController.h"
+#import "SysEx_Librarian-Swift.h"
 
 
-@interface  SSEPreferencesWindowController ()
+@interface SSEPreferencesWindowController ()
 {
     IBOutlet NSMatrix *sizeFormatMatrix;
     IBOutlet NSTextField *sysExFolderPathField;
@@ -31,7 +31,7 @@
 	IBOutlet NSButton *listenForProgramChangesButton;
 	IBOutlet NSButton *interruptOnProgramChangeButton;
     IBOutlet NSMatrix *programChangeBaseIndexMatrix;
-    IBOutlet SSESysExSpeedController *sysExSpeedController;
+    IBOutlet SysExSpeedController *sysExSpeedController;
 
     struct {
         unsigned int willPostReceivePreferenceChangedNotification:1;

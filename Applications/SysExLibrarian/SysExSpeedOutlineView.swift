@@ -12,7 +12,7 @@
 
 import Cocoa
 
-class SysexSpeedOutlineView: NSOutlineView {
+class SysExSpeedOutlineView: NSOutlineView {
 
     override func selectRowIndexes(_ indexes: IndexSet, byExtendingSelection extend: Bool) {
         // Do nothing.  We don't want a selection.
