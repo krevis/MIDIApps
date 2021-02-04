@@ -49,7 +49,7 @@
     NSToolbarItem *nonretainedDestinationToolbarItem;
 }
 
-+ (SSEMainWindowController *)mainWindowController;
++ (SSEMainWindowController *)sharedInstance;
 
 // Actions
 

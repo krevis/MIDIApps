@@ -15,7 +15,6 @@
 @import SnoizeMIDI;
 #import "SysEx_Librarian-Swift.h"
 #import "SSEMainWindowController.h"
-#import "SSEAppController.h"
 
 
 // Turn this on to NSLog the actual amount of time we pause between messages
@@ -84,7 +83,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
     if (!(self = [super init]))
         return nil;
 
-    midiContext = [(SSEAppController *)[NSApp delegate] midiContext];
+    midiContext = [(AppController *)[NSApp delegate] midiContext];
 
     nonretainedMainWindowController = mainWindowController;
     
@@ -259,7 +258,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
 
 - (void)getMessageCount:(NSUInteger *)messageCountPtr bytesRead:(NSUInteger *)bytesReadPtr totalBytesRead:(NSUInteger *)totalBytesReadPtr;
 {
-    SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
+    SMAssert([NSThread isMainThread]);
 
     if (messageCountPtr)
         *messageCountPtr = [messages count];
@@ -275,7 +274,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
 
 - (void)sendMessages;
 {
-    SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
+    SMAssert([NSThread isMainThread]);
 
     if (!messages || [messages count] == 0)
         return;
@@ -303,7 +302,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
 
 - (void)cancelSendingMessages;
 {
-    SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
+    SMAssert([NSThread isMainThread]);
     
     if (sendStatus == SSEMIDIControllerSending) {
         sendStatus = SSEMIDIControllerCancelled;
@@ -323,7 +322,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
 
 - (void)getMessageCount:(NSUInteger *)messageCountPtr messageIndex:(NSUInteger *)messageIndexPtr bytesToSend:(NSUInteger *)bytesToSendPtr bytesSent:(NSUInteger *)bytesSentPtr;
 {
-    SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
+    SMAssert([NSThread isMainThread]);
 
     if (messageCountPtr)
         *messageCountPtr = sendingMessageCount;
@@ -508,7 +507,7 @@ static MIDITimeStamp pauseStartTimeStamp = 0;
 
 - (void)sendNextSysExMessage;
 {
-    SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
+    SMAssert([NSThread isMainThread]);
 
 #if LOG_PAUSE_DURATION
     if (pauseStartTimeStamp > 0) {
@@ -526,7 +525,7 @@ static MIDITimeStamp pauseStartTimeStamp = 0;
 
 - (void)sendNextSysExMessageAfterDelay
 {
-    SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
+    SMAssert([NSThread isMainThread]);
 
     if (sendStatus == SSEMIDIControllerWillDelayBeforeNext) {
         // wait for pauseTimeBetweenMessages, then sendNextSysExMessage
@@ -549,7 +548,7 @@ static MIDITimeStamp pauseStartTimeStamp = 0;
 {
     // NOTE: The request may or may not have finished successfully.
 
-    SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
+    SMAssert([NSThread isMainThread]);
 
     SysExSendRequest *sendRequest;
 
@@ -581,7 +580,7 @@ static MIDITimeStamp pauseStartTimeStamp = 0;
 
 - (void)finishedSendingMessagesWithSuccess:(BOOL)success;
 {
-    SMAssert([(SSEAppController*)[NSApp delegate] inMainThread]);
+    SMAssert([NSThread isMainThread]);
 
     [[NSNotificationCenter defaultCenter] postNotificationName:SSEMIDIControllerSendFinishedNotification object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:success] forKey:@"success"]];
 

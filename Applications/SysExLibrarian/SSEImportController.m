@@ -17,7 +17,6 @@
 #import "SSEMainWindowController.h"
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
-#import "SSEAppController.h"
 
 
 @interface SSEImportController (Private)
@@ -392,7 +391,7 @@ NSString *SSEShowWarningOnImportPreferenceKey = @"SSEShowWarningOnImport";
         filePath = [filePaths objectAtIndex:fileIndex];
 
         // If we're not in the main thread, update progress information and tell the main thread to update its UI.
-        if (![(SSEAppController*)[NSApp delegate] inMainThread]) {
+        if (![NSThread isMainThread]) {
             [importStatusLock lock];
             [importFilePath release];
             importFilePath = [filePath retain];

@@ -119,7 +119,7 @@ import SnoizeMIDI
             center.removeObserver(self, name: .midiObjectPropertyChanged, object: externalDevice)
         }
 
-        guard let midiContext = (NSApp.delegate as? SSEAppController)?.midiContext else { fatalError() }
+        guard let midiContext = (NSApp.delegate as? AppController)?.midiContext else { fatalError() }
         destinations = CombinationOutputStream.destinationsInContext(midiContext)
         externalDevices = midiContext.externalDevices
 
@@ -258,7 +258,7 @@ extension SysExSpeedController: NSOutlineViewDataSource {
                 midiObject.maxSysExSpeed = newValue
 
                 // Work around bug where CoreMIDI doesn't pay attention to the new speed
-                guard let midiContext = (NSApp.delegate as? SSEAppController)?.midiContext else { fatalError() }
+                guard let midiContext = (NSApp.delegate as? AppController)?.midiContext else { fatalError() }
                 midiContext.forceCoreMIDIToUseNewSysExSpeed()
             }
 

@@ -8,5 +8,4 @@
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
 #import "SSEMIDIController.h"
-#import "SSEAppController.h"
 #import "SSEMainWindowController.h"

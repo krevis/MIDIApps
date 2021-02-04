@@ -68,7 +68,7 @@ NSString *SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey = @"SSEAbbreviat
 static SSEMainWindowController *controller = nil;
 
 
-+ (SSEMainWindowController *)mainWindowController;
++ (SSEMainWindowController *)sharedInstance;
 {
     if (!controller)
         controller = [[self alloc] init];
@@ -486,7 +486,9 @@ static SSEMainWindowController *controller = nil;
     NSIndexSet* selectedRowIndexes = [libraryTableView selectedRowIndexes];
     NSUInteger row;
     for (row = [selectedRowIndexes firstIndex]; row != NSNotFound; row = [selectedRowIndexes indexGreaterThanIndex:row]) {
-        [selectedEntries addObject:[sortedLibraryEntries objectAtIndex:row]];
+        if (row < [sortedLibraryEntries count]) {
+            [selectedEntries addObject:[sortedLibraryEntries objectAtIndex:row]];
+        }
     }
     
     return selectedEntries;
