@@ -14,8 +14,8 @@
 
 @import SnoizeMIDI;
 
+#import "SysEx_Librarian-Swift.h"
 #import "SSEMainWindowController.h"
-#import "SSEPreferencesWindowController.h"
 #import "SSELibrary.h"
 
 
@@ -140,7 +140,7 @@ static NSThread *sMainThread = nil;
 
 - (IBAction)showPreferences:(id)sender;
 {
-    [[SSEPreferencesWindowController preferencesWindowController] showWindow:nil];
+    [[PreferencesWindowController sharedInstance] showWindow:nil];
 }
 
 - (IBAction)showAboutBox:(id)sender;

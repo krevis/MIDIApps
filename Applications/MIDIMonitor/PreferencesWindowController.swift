@@ -144,5 +144,7 @@ class PreferencesWindowController: UtilityWindowController, NSWindowRestoration 
 }
 
 extension Notification.Name {
+
     static let displayPreferenceChanged = Notification.Name("SMMDisplayPreferenceChangedNotification")
+
 }

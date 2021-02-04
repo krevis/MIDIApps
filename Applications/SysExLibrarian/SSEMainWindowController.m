@@ -22,7 +22,6 @@
 #import "SSELibraryEntry.h"
 #import "SSEMIDIController.h"
 #import "SSEPlayController.h"
-#import "SSEPreferencesWindowController.h"
 #import "SSERecordOneController.h"
 #import "SSERecordManyController.h"
 #import "SSETableView.h"
@@ -84,8 +83,8 @@ static SSEMainWindowController *controller = nil;
 
     library = [[SSELibrary sharedLibrary] retain];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(libraryDidChange:) name:SSELibraryDidChangeNotification object:library];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayPreferencesDidChange:) name:SSEDisplayPreferenceChangedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(listenForProgramChangesDidChange:) name:SSEListenForProgramChangesPreferenceChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayPreferencesDidChange:) name:NSNotification.displayPreferenceChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(listenForProgramChangesDidChange:) name:NSNotification.listenForProgramChangesPreferenceChanged object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(programChangeBaseIndexDidChange:) name:SSEProgramChangeBaseIndexPreferenceChangedNotification object:nil];
 
     sortColumnIdentifier = @"name";

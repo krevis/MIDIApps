@@ -15,7 +15,6 @@
 @import SnoizeMIDI;
 #import "SysEx_Librarian-Swift.h"
 #import "SSEMainWindowController.h"
-#import "SSEPreferencesWindowController.h"
 #import "SSEAppController.h"
 
 
@@ -121,15 +120,15 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
     listenToMultipleSysexMessages = NO;
 
     [self sendPreferenceDidChange:nil];
-    [center addObserver:self selector:@selector(sendPreferenceDidChange:) name:SSESysExSendPreferenceChangedNotification object:nil];
+    [center addObserver:self selector:@selector(sendPreferenceDidChange:) name:NSNotification.sysExSendPreferenceChanged object:nil];
 
     [self receivePreferenceDidChange:nil];
-    [center addObserver:self selector:@selector(receivePreferenceDidChange:) name:SSESysExReceivePreferenceChangedNotification object:nil];
+    [center addObserver:self selector:@selector(receivePreferenceDidChange:) name:NSNotification.sysExReceivePreferenceChanged object:nil];
     
     listeningToProgramChangeMessages = NO;
     
     [self listenForProgramChangesPreferenceDidChange:nil];
-    [center addObserver:self selector:@selector(listenForProgramChangesPreferenceDidChange:) name:SSEListenForProgramChangesPreferenceChangedNotification object:nil];
+    [center addObserver:self selector:@selector(listenForProgramChangesPreferenceDidChange:) name:NSNotification.listenForProgramChangesPreferenceChanged object:nil];
 
     didSetDestinationFromDefaults = NO;
     destinationSettings = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SSESelectedDestinationPreferenceKey];

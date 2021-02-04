@@ -6,7 +6,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="SSEPreferencesWindowController">
+        <customObject id="-2" userLabel="File's Owner" customClass="PreferencesWindowController" customModule="SysEx_Librarian" customModuleProvider="target">
             <connections>
                 <outlet property="interruptOnProgramChangeButton" destination="300367" id="300409"/>
                 <outlet property="listenForProgramChangesButton" destination="300368" id="300410"/>
