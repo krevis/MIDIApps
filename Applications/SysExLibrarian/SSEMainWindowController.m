@@ -17,7 +17,6 @@
 #import "SSEDeleteController.h"
 #import "SSEExportController.h"
 #import "SSEFindMissingController.h"
-#import "SSEImportController.h"
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
 #import "SSEMIDIController.h"
@@ -419,7 +418,7 @@ static SSEMainWindowController *controller = nil;
 - (void)importFiles:(NSArray *)filePaths showingProgress:(BOOL)showProgress;
 {
     if (!importController)
-        importController = [[SSEImportController alloc] initWithWindowController:self library:library];
+        importController = [[ImportController alloc] initWithWindowController:self library:library];
 
     [importController importFiles:filePaths showingProgress:showProgress];
 }

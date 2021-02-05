@@ -20,6 +20,7 @@
 		163FB60F199EE6810017B664 /* ToolbarRecordOneTemplate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB60D199EE6810017B664 /* ToolbarRecordOneTemplate.tiff */; };
 		163FB610199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB60E199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff */; };
 		1686426E25CB869500A8B292 /* AppController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686426D25CB869500A8B292 /* AppController.swift */; };
+		1686427025CCAF7F00A8B292 /* ImportController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686426F25CCAF7F00A8B292 /* ImportController.swift */; };
 		169B7A2025CA729900C9BB81 /* SysExSpeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169B7A1F25CA729900C9BB81 /* SysExSpeedController.swift */; };
 		16C43B9725C4EB00007A3A48 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43B9625C4EB00007A3A48 /* main.swift */; };
 		16C43BBA25C4F637007A3A48 /* Data+Hashing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43BB925C4F637007A3A48 /* Data+Hashing.swift */; };
@@ -60,7 +61,6 @@
 		16F0337E0984B76F006C8A44 /* SSERecordController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5308FF50233075A01000164 /* SSERecordController.m */; };
 		16F0337F0984B76F006C8A44 /* SSEPlayController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5308FFA02330F2A01000164 /* SSEPlayController.m */; };
 		16F033800984B76F006C8A44 /* SSEDeleteController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5309003023333DF01000164 /* SSEDeleteController.m */; };
-		16F033810984B76F006C8A44 /* SSEImportController.m in Sources */ = {isa = PBXBuildFile; fileRef = F530900B02333F8B01000164 /* SSEImportController.m */; };
 		16F033820984B76F006C8A44 /* SSEFindMissingController.m in Sources */ = {isa = PBXBuildFile; fileRef = F53090130233540701000164 /* SSEFindMissingController.m */; };
 		16F033830984B76F006C8A44 /* SSEExportController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5DFAC8402F7715701000164 /* SSEExportController.m */; };
 		16F0338A0984B76F006C8A44 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
@@ -218,6 +218,7 @@
 		163FB60D199EE6810017B664 /* ToolbarRecordOneTemplate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarRecordOneTemplate.tiff; sourceTree = "<group>"; };
 		163FB60E199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "ToolbarRecordOneTemplate@2x.tiff"; sourceTree = "<group>"; };
 		1686426D25CB869500A8B292 /* AppController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppController.swift; sourceTree = "<group>"; };
+		1686426F25CCAF7F00A8B292 /* ImportController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportController.swift; sourceTree = "<group>"; };
 		169225E625C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		169225E725C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Preferences.nib; sourceTree = "<group>"; };
 		169225E825C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Details.nib; sourceTree = "<group>"; };
@@ -581,6 +582,7 @@
 		F530900902333F8B01000164 /* Importing */ = {
 			isa = PBXGroup;
 			children = (
+				1686426F25CCAF7F00A8B292 /* ImportController.swift */,
 				F530900A02333F8B01000164 /* SSEImportController.h */,
 				F530900B02333F8B01000164 /* SSEImportController.m */,
 			);
@@ -902,12 +904,12 @@
 				163A3FC1213E09460075F8A0 /* NSString+SymlinksAndAliases.m in Sources */,
 				16C43B9725C4EB00007A3A48 /* main.swift in Sources */,
 				16F0337C0984B76F006C8A44 /* SSERecordOneController.m in Sources */,
+				1686427025CCAF7F00A8B292 /* ImportController.swift in Sources */,
 				16F0337D0984B76F006C8A44 /* SSERecordManyController.m in Sources */,
 				16F0337E0984B76F006C8A44 /* SSERecordController.m in Sources */,
 				16F0337F0984B76F006C8A44 /* SSEPlayController.m in Sources */,
 				16F033800984B76F006C8A44 /* SSEDeleteController.m in Sources */,
 				169B7A2025CA729900C9BB81 /* SysExSpeedController.swift in Sources */,
-				16F033810984B76F006C8A44 /* SSEImportController.m in Sources */,
 				16F033820984B76F006C8A44 /* SSEFindMissingController.m in Sources */,
 				16C43BBE25C529BA007A3A48 /* OutputStreamDestination.swift in Sources */,
 				16D0EF2B25CA16DF00399C74 /* NSPopUpButton+Extensions.swift in Sources */,

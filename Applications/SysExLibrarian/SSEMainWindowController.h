@@ -15,13 +15,13 @@
 @class SSEDeleteController;
 @class SSEExportController;
 @class SSEFindMissingController;
-@class SSEImportController;
 @class SSEMIDIController;
 @class SSELibrary;
 @class SSEPlayController;
 @class SSERecordController;
 @class SSETableView;
 @class SSELibraryEntry;
+@class ImportController;
 
 @interface SSEMainWindowController : SSEWindowController
 {
@@ -39,7 +39,7 @@
     SSERecordController *recordOneController;
     SSERecordController *recordManyController;
     SSEDeleteController *deleteController;
-    SSEImportController *importController;
+    ImportController *importController;
     SSEExportController *exportController;
     SSEFindMissingController *findMissingController;
     

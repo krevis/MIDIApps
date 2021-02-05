@@ -20,6 +20,7 @@
     // TODO: Swift conversion note: Keep this in ObjC for now, since the Swift
     // version needs to work with NSURL and/or URL, and the corresponding methods
     // are not available until macOS 10.11.
+    // TODO But we can probably do this by explicitly bridging to NSString which isn't that hard.
 
     NSString* originalPathWithoutExtension = [originalPath stringByDeletingPathExtension];
     NSString* originalPathExtension = [originalPath pathExtension];

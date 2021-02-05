@@ -1,0 +1,376 @@
+/*
+ Copyright (c) 2002-2021, Kurt Revis.  All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+ * Neither the name of Kurt Revis, nor Snoize, nor the names of other contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+import Cocoa
+
+@objc class ImportController: NSObject {
+
+    @objc init(windowController: SSEMainWindowController, library: SSELibrary) {
+        self.mainWindowController = windowController
+        self.library = library
+
+        super.init()
+
+        guard Bundle.main.loadNibNamed("Import", owner: self, topLevelObjects: &topLevelObjects) else { fatalError() }
+    }
+
+    // Main window controller sends this to begin the process
+    @objc func importFiles(_ paths: [String], showingProgress: Bool) {
+        precondition(filePathsToImport.isEmpty)
+        filePathsToImport = paths
+
+        shouldShowProgress = showingProgress && areAnyFilesDirectories(paths)
+
+        showImportWarning()
+    }
+
+    // MARK: Actions
+
+    @IBAction func cancelImporting(_ sender: AnyObject?) {
+        // No need to lock just to set a boolean
+        importCancelled = true
+    }
+
+    @IBAction func endSheetWithReturnCodeFromSenderTag(_ sender: AnyObject?) {
+        if let window = mainWindowController?.window,
+           let sheet = window.attachedSheet,
+           let senderView = sender as? NSView {
+            window.endSheet(sheet, returnCode: NSApplication.ModalResponse(rawValue: senderView.tag))
+        }
+    }
+
+    // MARK: Private
+
+    private var topLevelObjects: NSArray?
+
+    @IBOutlet private var importSheetWindow: NSPanel!
+    @IBOutlet private var progressIndicator: NSProgressIndicator!
+    @IBOutlet private var progressMessageField: NSTextField!
+    @IBOutlet private var progressIndexField: NSTextField!
+
+    @IBOutlet private var importWarningSheetWindow: NSPanel!
+    @IBOutlet private var doNotWarnOnImportAgainCheckbox: NSButton!
+
+    private weak var mainWindowController: SSEMainWindowController?
+    private weak var library: SSELibrary?
+
+    private var workQueue: DispatchQueue?
+
+    // Transient data
+    private var filePathsToImport: [String] = []
+    private var shouldShowProgress = false
+
+    private var importStatusLock = NSLock()
+    private var importFilePath: String?
+    private var importFileIndex = 0
+    private var importFileCount = 0
+
+    private var importCancelled = false
+    private var queuedUpdate = false
+
+}
+
+@objc extension ImportController /* Preferences keys */ {
+
+    static var showWarningOnImportPreferenceKey = "SSEShowWarningOnImport"
+
+}
+
+extension ImportController /* Private */ {
+
+    private func areAnyFilesDirectories(_ paths: [String]) -> Bool {
+        for path in paths {
+            var isDirectory = ObjCBool(false)
+            if FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory) && isDirectory.boolValue {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    private func showImportWarning() {
+        guard let library = library else { return }
+
+        var areAllFilesInLibraryDirectory = true
+        for path in filePathsToImport {
+            if library.isPath(inFileDirectory: path) {
+                areAllFilesInLibraryDirectory = false
+                break
+            }
+        }
+
+        if areAllFilesInLibraryDirectory || UserDefaults.standard.bool(forKey: Self.showWarningOnImportPreferenceKey) == false {
+            importFiles()
+        }
+        else {
+            doNotWarnOnImportAgainCheckbox.intValue = 0
+            mainWindowController?.window?.beginSheet(importWarningSheetWindow, completionHandler: { modalResponse in
+                self.importWarningSheetWindow.orderOut(nil)
+
+                if modalResponse == .OK {
+                    if self.doNotWarnOnImportAgainCheckbox.integerValue == 1 {
+                        UserDefaults.standard.set(false, forKey: Self.showWarningOnImportPreferenceKey)
+                    }
+
+                    self.importFiles()
+                }
+                else {
+                    // Cancelled
+                    self.filePathsToImport = []
+                }
+            })
+        }
+    }
+
+    private func importFiles() {
+        if shouldShowProgress {
+            importFilesShowingProgress()
+        }
+        else {
+            // Add entries immediately
+            let (newEntries, badFiles) = addFilesToLibrary(filePathsToImport)
+            finishImport(newEntries, badFiles)
+        }
+    }
+
+    //
+    // Import with progress display
+    // Main queue: setup, updating progress display, teardown
+    //
+
+    private func importFilesShowingProgress() {
+        guard let mainWindow = mainWindowController?.window else { return }
+
+        mainWindow.beginSheet(importSheetWindow) { _ in
+            // At this point, we don't really care how this sheet ended
+            self.importSheetWindow.orderOut(nil)
+        }
+
+        let paths = self.filePathsToImport
+        if workQueue == nil {
+            if #available(OSX 10.10, iOS 8.0, *) {
+                workQueue = DispatchQueue(label: "Import", qos: .userInitiated)
+            }
+            else {
+                workQueue = DispatchQueue(label: "Import")
+            }
+        }
+        workQueue?.async {
+            self.workQueueImportFiles(paths)
+        }
+    }
+
+    static private var scanningString = NSLocalizedString("Scanning...", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "Scanning...")
+    static private var xOfYFormatString = NSLocalizedString("%u of %u", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "importing sysex: x of y")
+
+    @objc private func updateImportStatusDisplay() {
+        importStatusLock.lock()
+        let filePath = importFilePath ?? ""
+        let fileIndex = importFileIndex
+        let fileCount = importFileCount
+        importStatusLock.unlock()
+
+        if fileCount == 0 {
+            progressIndicator.isIndeterminate = true
+            progressIndicator.usesThreadedAnimation = true
+            progressIndicator.startAnimation(nil)
+            progressMessageField.stringValue = Self.scanningString
+            progressIndexField.stringValue = ""
+        }
+        else {
+            if progressIndicator.isIndeterminate {
+                progressIndicator.isIndeterminate = false
+                progressIndicator.maxValue = Double(fileCount)
+            }
+            progressIndicator.doubleValue = Double(fileIndex + 1)
+            progressMessageField.stringValue = FileManager.default.displayName(atPath: filePath)
+            progressIndexField.stringValue = String.localizedStringWithFormat(Self.xOfYFormatString, fileIndex + 1, fileCount)
+        }
+    }
+
+    //
+    // Import with progress display
+    // Work queue: recurse through directories, filter out inappropriate files, and import
+    //
+
+    private func workQueueImportFiles(_ paths: [String]) {
+        autoreleasepool {
+            let expandedAndFilteredFilePaths = workQueueExpandAndFilterFiles(paths)
+
+            var newEntries = [SSELibraryEntry]()
+            var badFiles = [String]()
+            if expandedAndFilteredFilePaths.count > 0 {
+                (newEntries, badFiles) = addFilesToLibrary(expandedAndFilteredFilePaths)
+            }
+
+            DispatchQueue.main.async {
+                self.doneImportingInWorkQueue(newEntries, badFiles)
+            }
+        }
+    }
+
+    private func workQueueExpandAndFilterFiles(_ paths: [String]) -> [String] {
+        guard let library = library else { return [] }
+        let fileManager = FileManager.default
+
+        var acceptableFilePaths = [String]()
+
+        for path in paths {
+            if importCancelled {
+                acceptableFilePaths.removeAll()
+                break
+            }
+
+            var isDirectory = ObjCBool(false)
+            if !fileManager.fileExists(atPath: path, isDirectory: &isDirectory) {
+                continue
+            }
+
+            autoreleasepool {
+                if isDirectory.boolValue {
+                    // Handle this directory's contents recursively
+                    do {
+                        let childPaths = try fileManager.contentsOfDirectory(atPath: path)
+
+                        var fullChildPaths = [String]()
+                        for childPath in childPaths {
+                            let fullChildPath = NSString(string: path).appendingPathComponent(childPath) as String
+                            fullChildPaths.append(fullChildPath)
+                        }
+
+                        let acceptableChildren = workQueueExpandAndFilterFiles(fullChildPaths)
+                        acceptableFilePaths.append(contentsOf: acceptableChildren)
+                    }
+                    catch {
+                        // ignore
+                    }
+                }
+                else {
+                    if fileManager.isReadableFile(atPath: path) && library.typeOfFile(atPath: path) != .unknown {
+                        acceptableFilePaths.append(path)
+                    }
+                }
+            }
+        }
+
+        return acceptableFilePaths
+    }
+
+    private func doneImportingInWorkQueue(_ newEntries: [SSELibraryEntry], _ badFiles: [String]) {
+        if let window = mainWindowController?.window,
+           let sheet = window.attachedSheet {
+            window.endSheet(sheet)
+        }
+
+        finishImport(newEntries, badFiles)
+    }
+
+    //
+    // Check if each file is already in the library, and then try to add each new one
+    //
+
+    private func addFilesToLibrary(_ paths: [String]) -> ([SSELibraryEntry], [String]) {
+        // Returns successfully created library entries, and paths for files that could not
+        // be successfully imported.
+        // NOTE: This may be happening in the main queue or workQueue.
+
+        guard let library = library else { return ([], []) }
+
+        var addedEntries = [SSELibraryEntry]()
+        var badFilePaths = [String]()
+
+        // Find the files which are already in the library, and pull them out.
+        var newFilePaths: NSArray?
+        let existingEntries = library.findEntries(forFiles: paths, returningNonMatchingFiles: &newFilePaths) ?? []
+        guard let filePaths = newFilePaths as? [String] else { fatalError() }
+
+        // Try to add each file to the library, keeping track of the successful ones.
+        let fileCount = filePaths.count
+        for (fileIndex, filePath) in filePaths.enumerated() {
+            var cancelled = false
+            autoreleasepool {
+                // If we're not in the main thread, update progress information and tell the main thread to update its UI.
+                if !Thread.isMainThread {
+                    importStatusLock.lock()
+                    importFilePath = filePath
+                    importFileIndex = fileIndex
+                    importFileCount = fileCount
+                    importStatusLock.unlock()
+
+                    if importCancelled {
+                        cancelled = true
+                        return  // TODO Check that this works
+                    }
+
+                    if !queuedUpdate {
+                        performSelector(onMainThread: #selector(self.updateImportStatusDisplay), with: nil, waitUntilDone: false)
+                        queuedUpdate = true
+                    }
+                }
+
+                if let addedEntry = library.addEntry(forFile: filePath) {
+                    addedEntries.append(addedEntry)
+                }
+                else {
+                    badFilePaths.append(filePath)
+                }
+            }
+
+            if cancelled {
+                break
+            }
+        }
+
+        addedEntries.append(contentsOf: existingEntries)
+
+        return (addedEntries, badFilePaths)
+    }
+
+    //
+    // Finishing up
+    //
+
+    private func finishImport(_ newEntries: [SSELibraryEntry], _ badFiles: [String]) {
+        mainWindowController?.showNewEntries(newEntries)
+        showErrorMessageForFilesWithNoSysEx(badFiles)
+        filePathsToImport = []
+    }
+
+    private func showErrorMessageForFilesWithNoSysEx(_ badFiles: [String]) {
+        let badFileCount = badFiles.count
+        guard badFileCount > 0 else { return }
+
+        guard let window = mainWindowController?.window,
+              window.attachedSheet == nil
+        else { return }
+
+        var informativeText: String = ""
+
+        if badFileCount == 1 {
+            informativeText = NSLocalizedString("No SysEx data could be found in this file. It has not been added to the library.", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "message when no sysex data found in file")
+        }
+        else {
+            let format = NSLocalizedString("No SysEx data could be found in %u of the files. They have not been added to the library.", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "format of message when no sysex data found in files")
+            informativeText = String.localizedStringWithFormat(format, badFileCount)
+        }
+
+        let messageText = NSLocalizedString("Could not read SysEx", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "title of alert when can't read a sysex file")
+
+        let alert = NSAlert()
+        alert.alertStyle = .informational
+        alert.messageText = messageText
+        alert.informativeText = informativeText
+        alert.beginSheetModal(for: window, completionHandler: nil)
+    }
+
+}
