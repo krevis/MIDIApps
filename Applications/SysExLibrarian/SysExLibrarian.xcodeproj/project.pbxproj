@@ -267,8 +267,6 @@
 		F5308FFA02330F2A01000164 /* SSEPlayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEPlayController.m; sourceTree = "<group>"; };
 		F5309002023333DF01000164 /* SSEDeleteController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEDeleteController.h; sourceTree = "<group>"; };
 		F5309003023333DF01000164 /* SSEDeleteController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEDeleteController.m; sourceTree = "<group>"; };
-		F530900A02333F8B01000164 /* SSEImportController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEImportController.h; sourceTree = "<group>"; };
-		F530900B02333F8B01000164 /* SSEImportController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEImportController.m; sourceTree = "<group>"; };
 		F53090120233540701000164 /* SSEFindMissingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEFindMissingController.h; sourceTree = "<group>"; };
 		F53090130233540701000164 /* SSEFindMissingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEFindMissingController.m; sourceTree = "<group>"; };
 		F539E386020F2C2F01000164 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -583,8 +581,6 @@
 			isa = PBXGroup;
 			children = (
 				1686426F25CCAF7F00A8B292 /* ImportController.swift */,
-				F530900A02333F8B01000164 /* SSEImportController.h */,
-				F530900B02333F8B01000164 /* SSEImportController.m */,
 			);
 			name = Importing;
 			sourceTree = "<group>";

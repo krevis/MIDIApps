@@ -68,14 +68,7 @@ import Cocoa
     // Transient data
     private var filePathsToImport: [String] = []
     private var shouldShowProgress = false
-
-    private var importStatusLock = NSLock()
-    private var importFilePath: String?
-    private var importFileIndex = 0
-    private var importFileCount = 0
-
     private var importCancelled = false
-    private var queuedUpdate = false
 
 }
 
@@ -103,7 +96,7 @@ extension ImportController /* Private */ {
 
         var areAllFilesInLibraryDirectory = true
         for path in filePathsToImport {
-            if library.isPath(inFileDirectory: path) {
+            if !library.isPath(inFileDirectory: path) {
                 areAllFilesInLibraryDirectory = false
                 break
             }
@@ -126,7 +119,7 @@ extension ImportController /* Private */ {
                 }
                 else {
                     // Cancelled
-                    self.filePathsToImport = []
+                    self.finishedImport()
                 }
             })
         }
@@ -151,8 +144,10 @@ extension ImportController /* Private */ {
     private func importFilesShowingProgress() {
         guard let mainWindow = mainWindowController?.window else { return }
 
+        importCancelled = false
+        updateImportStatusDisplay("", 0, 0)
+
         mainWindow.beginSheet(importSheetWindow) { _ in
-            // At this point, we don't really care how this sheet ended
             self.importSheetWindow.orderOut(nil)
         }
 
@@ -173,13 +168,7 @@ extension ImportController /* Private */ {
     static private var scanningString = NSLocalizedString("Scanning...", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "Scanning...")
     static private var xOfYFormatString = NSLocalizedString("%u of %u", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "importing sysex: x of y")
 
-    @objc private func updateImportStatusDisplay() {
-        importStatusLock.lock()
-        let filePath = importFilePath ?? ""
-        let fileIndex = importFileIndex
-        let fileCount = importFileCount
-        importStatusLock.unlock()
-
+    private func updateImportStatusDisplay(_ filePath: String, _ fileIndex: Int, _ fileCount: Int) {
         if fileCount == 0 {
             progressIndicator.isIndeterminate = true
             progressIndicator.usesThreadedAnimation = true
@@ -188,10 +177,8 @@ extension ImportController /* Private */ {
             progressIndexField.stringValue = ""
         }
         else {
-            if progressIndicator.isIndeterminate {
-                progressIndicator.isIndeterminate = false
-                progressIndicator.maxValue = Double(fileCount)
-            }
+            progressIndicator.isIndeterminate = false
+            progressIndicator.maxValue = Double(fileCount)
             progressIndicator.doubleValue = Double(fileIndex + 1)
             progressMessageField.stringValue = FileManager.default.displayName(atPath: filePath)
             progressIndexField.stringValue = String.localizedStringWithFormat(Self.xOfYFormatString, fileIndex + 1, fileCount)
@@ -297,37 +284,24 @@ extension ImportController /* Private */ {
         // Try to add each file to the library, keeping track of the successful ones.
         let fileCount = filePaths.count
         for (fileIndex, filePath) in filePaths.enumerated() {
-            var cancelled = false
-            autoreleasepool {
-                // If we're not in the main thread, update progress information and tell the main thread to update its UI.
-                if !Thread.isMainThread {
-                    importStatusLock.lock()
-                    importFilePath = filePath
-                    importFileIndex = fileIndex
-                    importFileCount = fileCount
-                    importStatusLock.unlock()
-
-                    if importCancelled {
-                        cancelled = true
-                        return  // TODO Check that this works
-                    }
-
-                    if !queuedUpdate {
-                        performSelector(onMainThread: #selector(self.updateImportStatusDisplay), with: nil, waitUntilDone: false)
-                        queuedUpdate = true
-                    }
+            // If we're not in the main thread, update progress information and tell the main thread to update its UI.
+            if !Thread.isMainThread {
+                if importCancelled {
+                    break
                 }
 
+                DispatchQueue.main.async {
+                    self.updateImportStatusDisplay(filePath, fileIndex, fileCount)
+                }
+            }
+
+            autoreleasepool {
                 if let addedEntry = library.addEntry(forFile: filePath) {
                     addedEntries.append(addedEntry)
                 }
                 else {
                     badFilePaths.append(filePath)
                 }
-            }
-
-            if cancelled {
-                break
             }
         }
 
@@ -343,7 +317,12 @@ extension ImportController /* Private */ {
     private func finishImport(_ newEntries: [SSELibraryEntry], _ badFiles: [String]) {
         mainWindowController?.showNewEntries(newEntries)
         showErrorMessageForFilesWithNoSysEx(badFiles)
+        finishedImport()
+    }
+
+    private func finishedImport() {
         filePathsToImport = []
+        importCancelled = false
     }
 
     private func showErrorMessageForFilesWithNoSysEx(_ badFiles: [String]) {
