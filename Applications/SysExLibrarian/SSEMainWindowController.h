@@ -13,7 +13,7 @@
 #import "SSEWindowController.h"
 
 @class SSEDeleteController;
-@class SSEExportController;
+@class ExportController;
 @class SSEFindMissingController;
 @class SSEMIDIController;
 @class SSELibrary;
@@ -40,7 +40,7 @@
     SSERecordController *recordManyController;
     SSEDeleteController *deleteController;
     ImportController *importController;
-    SSEExportController *exportController;
+    ExportController *exportController;
     SSEFindMissingController *findMissingController;
     
     // Transient data

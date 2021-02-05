@@ -15,7 +15,6 @@
 @import SnoizeMIDI;
 #import <objc/objc-runtime.h>
 #import "SSEDeleteController.h"
-#import "SSEExportController.h"
 #import "SSEFindMissingController.h"
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
@@ -113,7 +112,7 @@ static SSEMainWindowController *controller = nil;
     [importController release];
     importController = nil;
     [exportController release];
-    exportController= nil;
+    exportController = nil;
     [sortColumnIdentifier release];
     sortColumnIdentifier = nil;
     [sortedLibraryEntries release];
@@ -998,7 +997,7 @@ static NSInteger libraryEntryComparator(id object1, id object2, void *context)
 
     if ([messages count] > 0) {
         if (!exportController)
-            exportController = [[SSEExportController alloc] initWithWindowController:self];
+            exportController = [[ExportController alloc] initWithWindowController:self];
 
         [exportController exportMessages:messages fromFileName:fileName asSMF: asSMF];
     }
