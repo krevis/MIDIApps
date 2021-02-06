@@ -94,13 +94,7 @@ extension ImportController /* Private */ {
     private func showImportWarning() {
         guard let library = library else { return }
 
-        var areAllFilesInLibraryDirectory = true
-        for path in filePathsToImport {
-            if !library.isPath(inFileDirectory: path) {
-                areAllFilesInLibraryDirectory = false
-                break
-            }
-        }
+        let areAllFilesInLibraryDirectory = filePathsToImport.allSatisfy({ library.isPath(inFileDirectory: $0) })
 
         if areAllFilesInLibraryDirectory || UserDefaults.standard.bool(forKey: Self.showWarningOnImportPreferenceKey) == false {
             importFiles()

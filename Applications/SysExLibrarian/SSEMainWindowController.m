@@ -14,7 +14,6 @@
 
 @import SnoizeMIDI;
 #import <objc/objc-runtime.h>
-#import "SSEDeleteController.h"
 #import "SSEFindMissingController.h"
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
@@ -247,7 +246,7 @@ static SSEMainWindowController *controller = nil;
         return;
 
     if (!deleteController)
-        deleteController = [[SSEDeleteController alloc] initWithWindowController:self];
+        deleteController = [[DeleteController alloc] initWithWindowController:self];
 
     [deleteController deleteEntries:[self selectedEntries]];
 }

@@ -22,6 +22,7 @@
 		1686426E25CB869500A8B292 /* AppController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686426D25CB869500A8B292 /* AppController.swift */; };
 		1686427025CCAF7F00A8B292 /* ImportController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686426F25CCAF7F00A8B292 /* ImportController.swift */; };
 		1686427225CDD96F00A8B292 /* ExportController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686427125CDD96F00A8B292 /* ExportController.swift */; };
+		1686427425CDEFF900A8B292 /* DeleteController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686427325CDEFF900A8B292 /* DeleteController.swift */; };
 		169B7A2025CA729900C9BB81 /* SysExSpeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169B7A1F25CA729900C9BB81 /* SysExSpeedController.swift */; };
 		16C43B9725C4EB00007A3A48 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43B9625C4EB00007A3A48 /* main.swift */; };
 		16C43BBA25C4F637007A3A48 /* Data+Hashing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43BB925C4F637007A3A48 /* Data+Hashing.swift */; };
@@ -61,7 +62,6 @@
 		16F0337D0984B76F006C8A44 /* SSERecordManyController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5308FEE0233023701000164 /* SSERecordManyController.m */; };
 		16F0337E0984B76F006C8A44 /* SSERecordController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5308FF50233075A01000164 /* SSERecordController.m */; };
 		16F0337F0984B76F006C8A44 /* SSEPlayController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5308FFA02330F2A01000164 /* SSEPlayController.m */; };
-		16F033800984B76F006C8A44 /* SSEDeleteController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5309003023333DF01000164 /* SSEDeleteController.m */; };
 		16F033820984B76F006C8A44 /* SSEFindMissingController.m in Sources */ = {isa = PBXBuildFile; fileRef = F53090130233540701000164 /* SSEFindMissingController.m */; };
 		16F0338A0984B76F006C8A44 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		16F0338B0984B76F006C8A44 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F559F8FA01DEC0C601000164 /* CoreMIDI.framework */; };
@@ -220,6 +220,7 @@
 		1686426D25CB869500A8B292 /* AppController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppController.swift; sourceTree = "<group>"; };
 		1686426F25CCAF7F00A8B292 /* ImportController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportController.swift; sourceTree = "<group>"; };
 		1686427125CDD96F00A8B292 /* ExportController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportController.swift; sourceTree = "<group>"; };
+		1686427325CDEFF900A8B292 /* DeleteController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteController.swift; sourceTree = "<group>"; };
 		169225E625C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		169225E725C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Preferences.nib; sourceTree = "<group>"; };
 		169225E825C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Details.nib; sourceTree = "<group>"; };
@@ -266,8 +267,6 @@
 		F5308FF50233075A01000164 /* SSERecordController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSERecordController.m; sourceTree = "<group>"; };
 		F5308FF902330F2A01000164 /* SSEPlayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEPlayController.h; sourceTree = "<group>"; };
 		F5308FFA02330F2A01000164 /* SSEPlayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEPlayController.m; sourceTree = "<group>"; };
-		F5309002023333DF01000164 /* SSEDeleteController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEDeleteController.h; sourceTree = "<group>"; };
-		F5309003023333DF01000164 /* SSEDeleteController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEDeleteController.m; sourceTree = "<group>"; };
 		F53090120233540701000164 /* SSEFindMissingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEFindMissingController.h; sourceTree = "<group>"; };
 		F53090130233540701000164 /* SSEFindMissingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEFindMissingController.m; sourceTree = "<group>"; };
 		F539E386020F2C2F01000164 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -570,8 +569,7 @@
 		F5309001023333DF01000164 /* Deleting */ = {
 			isa = PBXGroup;
 			children = (
-				F5309002023333DF01000164 /* SSEDeleteController.h */,
-				F5309003023333DF01000164 /* SSEDeleteController.m */,
+				1686427325CDEFF900A8B292 /* DeleteController.swift */,
 			);
 			name = Deleting;
 			sourceTree = "<group>";
@@ -884,6 +882,7 @@
 			files = (
 				16F033700984B76F006C8A44 /* SSEMainWindowController.m in Sources */,
 				16D0EF2725C94D0400399C74 /* ValidatingButton.swift in Sources */,
+				1686427425CDEFF900A8B292 /* DeleteController.swift in Sources */,
 				16F033710984B76F006C8A44 /* SSEMIDIController.m in Sources */,
 				163A3FC4213E1B540075F8A0 /* SSEAlias.m in Sources */,
 				1686426E25CB869500A8B292 /* AppController.swift in Sources */,
@@ -903,7 +902,6 @@
 				16F0337E0984B76F006C8A44 /* SSERecordController.m in Sources */,
 				1686427225CDD96F00A8B292 /* ExportController.swift in Sources */,
 				16F0337F0984B76F006C8A44 /* SSEPlayController.m in Sources */,
-				16F033800984B76F006C8A44 /* SSEDeleteController.m in Sources */,
 				169B7A2025CA729900C9BB81 /* SysExSpeedController.swift in Sources */,
 				16F033820984B76F006C8A44 /* SSEFindMissingController.m in Sources */,
 				16C43BBE25C529BA007A3A48 /* OutputStreamDestination.swift in Sources */,

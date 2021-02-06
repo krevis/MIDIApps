@@ -12,7 +12,7 @@
 
 #import "SSEWindowController.h"
 
-@class SSEDeleteController;
+@class DeleteController;
 @class ExportController;
 @class SSEFindMissingController;
 @class SSEMIDIController;
@@ -38,7 +38,7 @@
     SSEPlayController *playController;
     SSERecordController *recordOneController;
     SSERecordController *recordManyController;
-    SSEDeleteController *deleteController;
+    DeleteController *deleteController;
     ImportController *importController;
     ExportController *exportController;
     SSEFindMissingController *findMissingController;
