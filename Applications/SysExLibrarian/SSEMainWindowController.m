@@ -14,7 +14,6 @@
 
 @import SnoizeMIDI;
 #import <objc/objc-runtime.h>
-#import "SSEFindMissingController.h"
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
 #import "SSEMIDIController.h"
@@ -53,7 +52,7 @@
 
 - (BOOL)areAnyFilesAcceptableForImport:(NSArray *)filePaths;
 
-- (void)findMissingFilesAndPerformSelector:(SEL)selector;
+- (void)findMissingFilesAndPerform:(void (^)(void))block;
 
 @end
 
@@ -278,7 +277,9 @@ static SSEMainWindowController *controller = nil;
     if ([self finishEditingResultsInError])
         return;
 
-    [self findMissingFilesAndPerformSelector:@selector(playSelectedEntries)];
+    [self findMissingFilesAndPerform:^{
+        [self playSelectedEntries];
+    }];
 }
 
 - (IBAction)showFileInFinder:(id)sender;
@@ -334,7 +335,9 @@ static SSEMainWindowController *controller = nil;
     if ([self finishEditingResultsInError])
         return;
 
-    [self findMissingFilesAndPerformSelector:@selector(showDetailsOfSelectedEntries)];
+    [self findMissingFilesAndPerform:^{
+        [self showDetailsOfSelectedEntries];
+    }];
 }
 
 - (IBAction)saveAsStandardMIDI:(id)sender;
@@ -342,7 +345,9 @@ static SSEMainWindowController *controller = nil;
     if ([self finishEditingResultsInError])
         return;
 
-    [self findMissingFilesAndPerformSelector:@selector(exportSelectedEntriesAsSMF)];
+    [self findMissingFilesAndPerform:^{
+        [self exportSelectedEntriesAsSMF];
+    }];
 }
 
 - (IBAction)saveAsSysex:(id)sender;
@@ -350,7 +355,9 @@ static SSEMainWindowController *controller = nil;
     if ([self finishEditingResultsInError])
         return;
     
-    [self findMissingFilesAndPerformSelector:@selector(exportSelectedEntriesAsSYX)];
+    [self findMissingFilesAndPerform:^{
+        [self exportSelectedEntriesAsSYX];
+    }];
 }
 
 
@@ -1054,7 +1061,7 @@ static NSInteger libraryEntryComparator(id object1, id object2, void *context)
 // Finding missing files
 //
 
-- (void)findMissingFilesAndPerformSelector:(SEL)selector;
+- (void)findMissingFilesAndPerform:(void (^)(void))block
 {
     NSArray *selectedEntries;
     NSUInteger entryCount, entryIndex;
@@ -1074,12 +1081,12 @@ static NSInteger libraryEntryComparator(id object1, id object2, void *context)
     }
 
     if ([entriesWithMissingFiles count] == 0) {
-        [self performSelector:selector];
+        block();
     } else {
         if (!findMissingController)
-            findMissingController = [[SSEFindMissingController alloc] initWithWindowController:self library:library];
+            findMissingController = [[FindMissingController alloc] initWithWindowController:self library:library];
     
-        [findMissingController findMissingFilesForEntries:entriesWithMissingFiles andPerformSelectorOnWindowController:selector];
+        [findMissingController findMissingFilesForEntries:entriesWithMissingFiles completion:block];
     }
 }
 

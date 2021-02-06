@@ -49,7 +49,7 @@ typedef NS_ENUM(NSInteger, SSELibraryFileType) {
 - (void)autosave;
 - (void)save;
 
-- (NSArray *)allowedFileTypes;
+@property (nonatomic, readonly) NSArray<NSString *> *allowedFileTypes;
 - (SSELibraryFileType)typeOfFileAtPath:(NSString *)filePath;
 
 - (NSArray<SSELibraryEntry *> *)findEntriesForFiles:(NSArray *)filePaths returningNonMatchingFiles:(NSArray **)nonMatchingFilePathsPtr;

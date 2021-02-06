@@ -336,7 +336,7 @@ NSString * const SSESysExFileExtension = @"syx";
     }
 }
 
-- (NSArray *)allowedFileTypes
+- (NSArray<NSString *> *)allowedFileTypes
 {
     return allowedFileTypes;
 }

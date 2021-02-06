@@ -52,14 +52,14 @@ import Cocoa
                 }
                 catch {
                     let alert = NSAlert(error: error)
-                    alert.runModal()
+                    _ = alert.runModal()
                 }
             }
             else {
                 let alert = NSAlert()
                 alert.messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "title of error alert")
                 alert.informativeText = NSLocalizedString("The file could not be saved.", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "message if sysex can't be exported")
-                alert.runModal()
+                _ = alert.runModal()
             }
         }
     }

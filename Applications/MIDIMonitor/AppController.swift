@@ -154,7 +154,7 @@ extension AppController {
             let alert = NSAlert()
             alert.messageText = title
             alert.informativeText = message
-            alert.runModal()
+            _ = alert.runModal()
         }
     }
 
@@ -180,7 +180,7 @@ extension AppController {
             let alert = NSAlert()
             alert.messageText = title
             alert.informativeText = String.localizedStringWithFormat(message, feedbackEmailAddress)
-            alert.runModal()
+            _ = alert.runModal()
         }
     }
 
@@ -193,7 +193,7 @@ extension AppController {
             let alert = NSAlert()
             alert.messageText = title
             alert.informativeText = String.localizedStringWithFormat(message, status)
-            alert.runModal()
+            _ = alert.runModal()
         }
     }
 

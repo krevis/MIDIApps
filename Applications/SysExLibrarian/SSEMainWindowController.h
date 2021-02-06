@@ -14,7 +14,7 @@
 
 @class DeleteController;
 @class ExportController;
-@class SSEFindMissingController;
+@class FindMissingController;
 @class SSEMIDIController;
 @class SSELibrary;
 @class SSEPlayController;
@@ -41,7 +41,7 @@
     DeleteController *deleteController;
     ImportController *importController;
     ExportController *exportController;
-    SSEFindMissingController *findMissingController;
+    FindMissingController *findMissingController;
     
     // Transient data
     NSString *sortColumnIdentifier;
