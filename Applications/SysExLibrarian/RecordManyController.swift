@@ -37,7 +37,7 @@ import Cocoa
         let hasAtLeastOneCompleteMessage = messageCount > 0
         if hasAtLeastOneCompleteMessage {
             let format = messageCount > 1 ? Self.totalProgressPluralFormatString : Self.totalProgressFormatString
-            totalProgressField.stringValue = String(format: format, Int(messageCount), String.abbreviatedByteCount(Int(bytesRead)))
+            totalProgressField.stringValue = String(format: format, Int(messageCount), String.abbreviatedByteCount(Int(totalBytesRead)))
             doneButton.isEnabled = true
         }
         else {
