@@ -263,12 +263,6 @@
 		16F0384B0984C9D7006C8A44 /* Defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Defaults.plist; sourceTree = "<group>"; };
 		2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		F5308FE40232E1AB01000164 /* SSERecordOneController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSERecordOneController.h; sourceTree = "<group>"; };
-		F5308FE50232E1AB01000164 /* SSERecordOneController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSERecordOneController.m; sourceTree = "<group>"; };
-		F5308FED0233023701000164 /* SSERecordManyController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSERecordManyController.h; sourceTree = "<group>"; };
-		F5308FEE0233023701000164 /* SSERecordManyController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSERecordManyController.m; sourceTree = "<group>"; };
-		F5308FF40233075A01000164 /* SSERecordController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSERecordController.h; sourceTree = "<group>"; };
-		F5308FF50233075A01000164 /* SSERecordController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSERecordController.m; sourceTree = "<group>"; };
 		F5308FF902330F2A01000164 /* SSEPlayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEPlayController.h; sourceTree = "<group>"; };
 		F5308FFA02330F2A01000164 /* SSEPlayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEPlayController.m; sourceTree = "<group>"; };
 		F539E386020F2C2F01000164 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -552,12 +546,6 @@
 				1686427B25CFC35A00A8B292 /* RecordController.swift */,
 				1686427925CFBF0700A8B292 /* RecordOneController.swift */,
 				1686427725CE84D400A8B292 /* RecordManyController.swift */,
-				F5308FF40233075A01000164 /* SSERecordController.h */,
-				F5308FF50233075A01000164 /* SSERecordController.m */,
-				F5308FE40232E1AB01000164 /* SSERecordOneController.h */,
-				F5308FE50232E1AB01000164 /* SSERecordOneController.m */,
-				F5308FED0233023701000164 /* SSERecordManyController.h */,
-				F5308FEE0233023701000164 /* SSERecordManyController.m */,
 			);
 			name = Recording;
 			sourceTree = "<group>";
