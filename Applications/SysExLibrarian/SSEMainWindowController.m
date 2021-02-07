@@ -448,16 +448,6 @@ static SSEMainWindowController *controller = nil;
     if (entry) {
         [self showNewEntries:[NSArray arrayWithObject:entry]];
     } else {
-        // We need to get rid of the sheet right away, instead of after the delay (see RecordOneController.readFinished()).
-        NSWindow *attachedSheet =  [[self window] attachedSheet];
-        if (attachedSheet) {
-            [NSObject cancelPreviousPerformRequestsWithTarget:NSApp selector:@selector(endSheet:) object:attachedSheet];
-            [NSApp endSheet:attachedSheet];
-        }
-
-        // Now we can start another sheet.
-        SMAssert([[self window] attachedSheet] == nil);
-        
         NSString *title = NSLocalizedStringFromTableInBundle(@"Error", @"SysExLibrarian", SMBundleForObject(self), "title of error alert");
         NSString *message = NSLocalizedStringFromTableInBundle(@"The file could not be created.\n%@", @"SysExLibrarian", SMBundleForObject(self), "message of alert when recording to a new file fails");
 

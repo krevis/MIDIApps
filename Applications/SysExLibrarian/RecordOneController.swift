@@ -55,12 +55,16 @@ import Cocoa
 
         progressIndicator.stopAnimation(nil)
 
-        // Close the sheet, after a little bit of a delay (makes it look nicer)
-        NSApp.perform(#selector(NSApplication.endSheet(_:)), with: sheetWindow, afterDelay: 0.5)
-
         stopObservingMIDIController()
 
-        mainWindowController?.addReadMessagesToLibrary()
+        // Close the sheet, after a little bit of a delay (makes it look nicer)
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
+            self.mainWindowController?.window?.endSheet(self.sheetWindow)
+
+            // Don't actually add the entry until after we've ended the sheet,
+            // in case it needs to show its own sheet
+            self.mainWindowController?.addReadMessagesToLibrary()
+        }
     }
 
 }

@@ -38,9 +38,7 @@ import Cocoa
 
         updateIndicators(messageCount: 0, bytesRead: 0, totalBytesRead: 0)
 
-        window.beginSheet(sheetWindow) { _ in
-            self.sheetWindow.orderOut(nil)
-        }
+        window.beginSheet(sheetWindow, completionHandler: nil)
 
         observeMIDIController()
         tellMIDIControllerToStartRecording()

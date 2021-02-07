@@ -193,6 +193,7 @@
 		// Even if we have set the progress indicator to its maximum value, it won't get drawn on the screen that way immediately,
 		// probably because it tries to smoothly animate to that state. The only way I have found to show the maximum value is to just
 		// wait a little while for the animation to finish. This looks nice, too.
+        // TODO Use modern API
 		[NSApp performSelector:@selector(endSheet:) withObject:sheetWindow afterDelay:0.5];
 	}
 }

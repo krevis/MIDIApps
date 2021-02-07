@@ -54,7 +54,7 @@ import Cocoa
 
         progressIndicator.stopAnimation(nil)
 
-        NSApp.endSheet(sheetWindow)
+        mainWindowController?.window?.endSheet(sheetWindow)
 
         mainWindowController?.addReadMessagesToLibrary()
     }
