@@ -18,8 +18,6 @@
 #import "SSELibraryEntry.h"
 #import "SSEMIDIController.h"
 #import "SSEPlayController.h"
-#import "SSERecordOneController.h"
-#import "SSERecordManyController.h"
 #import "SSETableView.h"
 #import "SysEx_Librarian-Swift.h"
 
@@ -256,7 +254,7 @@ static SSEMainWindowController *controller = nil;
         return;
 
     if (!recordOneController)
-        recordOneController = [[SSERecordOneController alloc] initWithMainWindowController:self midiController:midiController];
+        recordOneController = [[RecordOneController alloc] initWithMainWindowController:self midiController:midiController];
 
     [recordOneController beginRecording];    
 }
@@ -267,7 +265,7 @@ static SSEMainWindowController *controller = nil;
         return;
 
     if (!recordManyController)
-        recordManyController = [[SSERecordManyController alloc] initWithMainWindowController:self midiController:midiController];
+        recordManyController = [[RecordManyController alloc] initWithMainWindowController:self midiController:midiController];
 
     [recordManyController beginRecording];
 }
@@ -450,7 +448,7 @@ static SSEMainWindowController *controller = nil;
     if (entry) {
         [self showNewEntries:[NSArray arrayWithObject:entry]];
     } else {
-        // We need to get rid of the sheet right away, instead of after the delay (see -[SSERecordOneController readFinished]).
+        // We need to get rid of the sheet right away, instead of after the delay (see RecordOneController.readFinished()).
         NSWindow *attachedSheet =  [[self window] attachedSheet];
         if (attachedSheet) {
             [NSObject cancelPreviousPerformRequestsWithTarget:NSApp selector:@selector(endSheet:) object:attachedSheet];

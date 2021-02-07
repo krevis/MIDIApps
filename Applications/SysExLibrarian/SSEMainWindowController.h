@@ -18,7 +18,7 @@
 @class SSEMIDIController;
 @class SSELibrary;
 @class SSEPlayController;
-@class SSERecordController;
+@class RecordController;
 @class SSETableView;
 @class SSELibraryEntry;
 @class ImportController;
@@ -36,8 +36,8 @@
     // Subcontrollers
     SSEMIDIController *midiController;
     SSEPlayController *playController;
-    SSERecordController *recordOneController;
-    SSERecordController *recordManyController;
+    RecordController *recordOneController;
+    RecordController *recordManyController;
     DeleteController *deleteController;
     ImportController *importController;
     ExportController *exportController;
