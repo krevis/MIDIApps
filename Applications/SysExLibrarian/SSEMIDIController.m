@@ -94,6 +94,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
     [center addObserver:self selector:@selector(readingSysEx:) name:NSNotification.inputStreamDoneReadingSysEx object:inputStream];
     [inputStream setMessageDestination:self];
     // TODO inputStream.selectedInputSources = Set(inputStream.inputSources)
+    [inputStream selectAllInputSources];
 
     outputStream = [[CombinationOutputStream alloc] initWithMidiContext:midiContext];
 //    [center addObserver:self selector:@selector(midiSetupChanged:) name:NSNotification.clientSetupChanged object:[SMClient sharedClient]];
@@ -402,6 +403,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
 
             // TODO Can't do this from ObjC
             // [virtualInputStream setSelectedInputSources:[virtualInputStream inputSourcesSet]];
+            [virtualInputStream selectAllInputSources];
         }
     } else {
         if (virtualInputStream) {
@@ -416,6 +418,7 @@ NSString *SSECustomSysexBufferSizePreferenceChangedNotification = @"SSECustomSys
 {
     // TODO Like this
     // inputStream.selectedInputSources = Set(inputStream.inputSources)
+    [inputStream selectAllInputSources];
 }
 
 - (void)midiSetupChanged:(NSNotification *)notification;
