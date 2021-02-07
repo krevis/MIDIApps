@@ -29,8 +29,6 @@ import Cocoa
         entriesToDelete = entries
         if UserDefaults.standard.bool(forKey: Self.showWarningOnDeletePreferenceKey) {
             window.beginSheet(deleteWarningSheetWindow) { response in
-                self.deleteWarningSheetWindow.orderOut(nil)
-
                 if response == .OK {
                     if self.doNotWarnOnDeleteAgainCheckbox.integerValue == 1 {
                         UserDefaults.standard.setValue(false, forKey: Self.showWarningOnDeletePreferenceKey)
@@ -85,13 +83,11 @@ extension DeleteController /* Private */ {
         let areAnyFilesInLibraryDirectory = entriesToDelete.contains(where: { $0.isFileInLibraryFileDirectory() })
         if areAnyFilesInLibraryDirectory {
             window.beginSheet(deleteLibraryFilesWarningSheetWindow) { response in
-                self.deleteLibraryFilesWarningSheetWindow.orderOut(nil)
-
-                if response == .alertFirstButtonReturn {
+                if response == .OK {
                     // "Yes" button
                     self.deleteEntries(movingLibraryFilesToTrash: true)
                 }
-                else if response == .alertSecondButtonReturn {
+                else if response == .cancel {
                     // "No" button
                     self.deleteEntries(movingLibraryFilesToTrash: false)
                 }
