@@ -17,7 +17,6 @@
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
 #import "SSEMIDIController.h"
-#import "SSEPlayController.h"
 #import "SSETableView.h"
 #import "SysEx_Librarian-Swift.h"
 
@@ -458,7 +457,7 @@ static SSEMainWindowController *controller = nil;
 - (void)playEntryWithProgramNumber:(Byte)desiredProgramNumber
 {
 	if (!playController)
-		playController = [[SSEPlayController alloc] initWithWindowController:self midiController:midiController];
+		playController = [[PlayController alloc] initWithMainWindowController:self midiController:midiController];
 	
     NSEnumerator* oe = [sortedLibraryEntries objectEnumerator];
 	SSELibraryEntry *entry;
@@ -942,7 +941,7 @@ static NSInteger libraryEntryComparator(id object1, id object2, void *context)
 
     if ([messages count] > 0) {
         if (!playController)
-            playController = [[SSEPlayController alloc] initWithWindowController:self midiController:midiController];
+            playController = [[PlayController alloc] initWithMainWindowController:self midiController:midiController];
 
         [playController playMessages:messages];
     }

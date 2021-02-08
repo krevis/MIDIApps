@@ -17,7 +17,7 @@
 @class FindMissingController;
 @class SSEMIDIController;
 @class SSELibrary;
-@class SSEPlayController;
+@class PlayController;
 @class RecordController;
 @class SSETableView;
 @class SSELibraryEntry;
@@ -35,7 +35,7 @@
 
     // Subcontrollers
     SSEMIDIController *midiController;
-    SSEPlayController *playController;
+    PlayController *playController;
     RecordController *recordOneController;
     RecordController *recordManyController;
     DeleteController *deleteController;

@@ -27,6 +27,7 @@
 		1686427825CE84D400A8B292 /* RecordManyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686427725CE84D400A8B292 /* RecordManyController.swift */; };
 		1686427A25CFBF0700A8B292 /* RecordOneController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686427925CFBF0700A8B292 /* RecordOneController.swift */; };
 		1686427C25CFC35A00A8B292 /* RecordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686427B25CFC35A00A8B292 /* RecordController.swift */; };
+		1686427E25D1195600A8B292 /* PlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686427D25D1195600A8B292 /* PlayController.swift */; };
 		169B7A2025CA729900C9BB81 /* SysExSpeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169B7A1F25CA729900C9BB81 /* SysExSpeedController.swift */; };
 		16C43B9725C4EB00007A3A48 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43B9625C4EB00007A3A48 /* main.swift */; };
 		16C43BBA25C4F637007A3A48 /* Data+Hashing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43BB925C4F637007A3A48 /* Data+Hashing.swift */; };
@@ -62,7 +63,6 @@
 		16F033740984B76F006C8A44 /* SSELibraryEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = F583CEB901EE3E4401000164 /* SSELibraryEntry.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		16F033760984B76F006C8A44 /* SSETableView.m in Sources */ = {isa = PBXBuildFile; fileRef = F551752101F3ACED01000164 /* SSETableView.m */; };
 		16F033780984B76F006C8A44 /* SSEWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F58752680214C25201000164 /* SSEWindowController.m */; };
-		16F0337F0984B76F006C8A44 /* SSEPlayController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5308FFA02330F2A01000164 /* SSEPlayController.m */; };
 		16F0338A0984B76F006C8A44 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		16F0338B0984B76F006C8A44 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F559F8FA01DEC0C601000164 /* CoreMIDI.framework */; };
 		16F0338D0984B76F006C8A44 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F539E386020F2C2F01000164 /* Carbon.framework */; };
@@ -225,6 +225,7 @@
 		1686427725CE84D400A8B292 /* RecordManyController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordManyController.swift; sourceTree = "<group>"; };
 		1686427925CFBF0700A8B292 /* RecordOneController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordOneController.swift; sourceTree = "<group>"; };
 		1686427B25CFC35A00A8B292 /* RecordController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordController.swift; sourceTree = "<group>"; };
+		1686427D25D1195600A8B292 /* PlayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayController.swift; sourceTree = "<group>"; };
 		169225E625C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		169225E725C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Preferences.nib; sourceTree = "<group>"; };
 		169225E825C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Details.nib; sourceTree = "<group>"; };
@@ -263,8 +264,6 @@
 		16F0384B0984C9D7006C8A44 /* Defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Defaults.plist; sourceTree = "<group>"; };
 		2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		F5308FF902330F2A01000164 /* SSEPlayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEPlayController.h; sourceTree = "<group>"; };
-		F5308FFA02330F2A01000164 /* SSEPlayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEPlayController.m; sourceTree = "<group>"; };
 		F539E386020F2C2F01000164 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		F551752001F3ACED01000164 /* SSETableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSETableView.h; sourceTree = "<group>"; };
 		F551752101F3ACED01000164 /* SSETableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSETableView.m; sourceTree = "<group>"; };
@@ -553,8 +552,7 @@
 		F5309000023317A701000164 /* Playing */ = {
 			isa = PBXGroup;
 			children = (
-				F5308FF902330F2A01000164 /* SSEPlayController.h */,
-				F5308FFA02330F2A01000164 /* SSEPlayController.m */,
+				1686427D25D1195600A8B292 /* PlayController.swift */,
 			);
 			name = Playing;
 			sourceTree = "<group>";
@@ -872,6 +870,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1686427E25D1195600A8B292 /* PlayController.swift in Sources */,
 				16F033700984B76F006C8A44 /* SSEMainWindowController.m in Sources */,
 				16D0EF2725C94D0400399C74 /* ValidatingButton.swift in Sources */,
 				1686427425CDEFF900A8B292 /* DeleteController.swift in Sources */,
@@ -893,7 +892,6 @@
 				1686427C25CFC35A00A8B292 /* RecordController.swift in Sources */,
 				1686427A25CFBF0700A8B292 /* RecordOneController.swift in Sources */,
 				1686427225CDD96F00A8B292 /* ExportController.swift in Sources */,
-				16F0337F0984B76F006C8A44 /* SSEPlayController.m in Sources */,
 				169B7A2025CA729900C9BB81 /* SysExSpeedController.swift in Sources */,
 				16C43BBE25C529BA007A3A48 /* OutputStreamDestination.swift in Sources */,
 				16D0EF2B25CA16DF00399C74 /* NSPopUpButton+Extensions.swift in Sources */,

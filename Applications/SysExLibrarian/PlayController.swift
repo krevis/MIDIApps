@@ -1,0 +1,222 @@
+/*
+ Copyright (c) 2002-2021, Kurt Revis.  All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+ * Neither the name of Kurt Revis, nor Snoize, nor the names of other contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+import Cocoa
+
+@objc class PlayController: NSObject {
+
+    @objc init(mainWindowController: SSEMainWindowController, midiController: SSEMIDIController) {
+        self.mainWindowController = mainWindowController
+        self.midiController = midiController
+
+        super.init()
+
+        guard Bundle.main.loadNibNamed("Play", owner: self, topLevelObjects: &topLevelObjects) else { fatalError("Couldn't load nib") }
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    // MARK: API for main window controller
+
+    @objc func playMessages(_ messages: [SystemExclusiveMessage]) {
+        guard let midiController = midiController else { return }
+
+        observeMIDIController()
+
+        midiController.setMessages(messages)
+        midiController.sendMessages()
+        // This may send the messages immediately; if it does, it will post a notification and our sendFinishedImmediately() will be called.
+        // Otherwise, we expect a different notification so that sendWillStart() will be called.
+    }
+
+    @objc func playMessages(inEntryForProgramChange entry: SSELibraryEntry) {
+        if !transmitting {
+            // Normal case. Nothing is being transmitted, so just remember the current
+            // entry and play the messages in it.
+            currentEntry = entry
+            playMessages(entry.messages)
+        }
+        else {
+            // something is being transmitted already...
+            if currentEntry != entry {
+                // and the program change is asking to send a different entry than the one currently sending.
+                // Queue up this entry to be sent later.
+                queuedEntry = entry
+
+                // and maybe cancel the current send.
+                if UserDefaults.standard.bool(forKey: SSEInterruptOnProgramChangePreferenceKey) {
+                    midiController?.cancelSendingMessages()
+                }
+            }
+        }
+    }
+
+    // MARK: Actions
+
+    @IBAction func cancelPlaying(_ sender: AnyObject?) {
+        midiController?.cancelSendingMessages()
+        // SSEMIDIControllerSendFinishedNotification will get posted soon;
+        // it will call our sendFinished() and thus end the sheet
+    }
+
+    // MARK: Private
+
+    private weak var mainWindowController: SSEMainWindowController?
+    private weak var midiController: SSEMIDIController?
+
+    private var topLevelObjects: NSArray?
+    @IBOutlet private var sheetWindow: NSPanel!
+    @IBOutlet private var progressIndicator: NSProgressIndicator!
+    @IBOutlet private var progressMessageField: NSTextField!
+    @IBOutlet private var progressBytesField: NSTextField!
+
+    private var currentEntry: SSELibraryEntry? {
+        didSet {
+            if let newCurrentEntry = currentEntry {
+                mainWindowController?.selectEntries([newCurrentEntry])
+            }
+        }
+    }
+
+    private var queuedEntry: SSELibraryEntry?
+
+    private var transmitting = false
+    private var scheduledProgressUpdate = false
+
+}
+
+extension PlayController /* Private */ {
+
+    private func observeMIDIController() {
+        guard let midiController = midiController else { return }
+        let center = NotificationCenter.default
+        center.addObserver(self, selector: #selector(self.sendWillStart(_:)), name: NSNotification.Name.SSEMIDIControllerSendWillStart, object: midiController)
+        center.addObserver(self, selector: #selector(self.sendFinished(_:)), name: .SSEMIDIControllerSendFinished, object: midiController)
+        center.addObserver(self, selector: #selector(self.sendFinishedImmediately(_:)), name: .SSEMIDIControllerSendFinishedImmediately, object: midiController)
+    }
+
+    private func stopObservingMIDIController() {
+        guard let midiController = midiController else { return }
+        let center = NotificationCenter.default
+        center.removeObserver(self, name: .SSEMIDIControllerSendWillStart, object: midiController)
+        center.removeObserver(self, name: .SSEMIDIControllerSendFinished, object: midiController)
+        center.removeObserver(self, name: .SSEMIDIControllerSendFinishedImmediately, object: midiController)
+    }
+
+    @objc private func sendWillStart(_ notification: Notification?) {
+        transmitting = true
+
+        progressIndicator.minValue = 0.0
+        progressIndicator.doubleValue = 0.0
+
+        var bytesToSend: UInt = 0
+        midiController?.getMessageCount(nil, messageIndex: nil, bytesToSend: &bytesToSend, bytesSent: nil)
+        progressIndicator.maxValue = Double(bytesToSend)
+
+        updateProgressAndRepeat()
+
+        if let window = mainWindowController?.window,
+           window.attachedSheet == nil {
+            window.beginSheet(sheetWindow, completionHandler: nil)
+        }
+    }
+
+    @objc private func sendFinished(_ notification: Notification?) {
+        let success = (notification?.userInfo?["success"] as? NSNumber)?.boolValue ?? true
+
+        // If there is a delayed update pending, cancel it and do the update now.
+        if scheduledProgressUpdate {
+            NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(self.updateProgressAndRepeat), object: nil)
+            scheduledProgressUpdate = false
+            updateProgress()
+        }
+
+        if !success {
+            progressMessageField.stringValue = NSLocalizedString("Cancelled.", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "Cancelled.")
+        }
+
+        stopObservingMIDIController()
+
+        transmitting = false
+
+        // Maybe there's a queued entry that needs sending...
+        if let queuedEntry = queuedEntry, currentEntry != queuedEntry {
+            let messages = queuedEntry.messages ?? []
+
+            // yes, move the queued entry to be current
+            self.currentEntry = queuedEntry
+            self.queuedEntry = nil
+
+            // then send it
+            DispatchQueue.main.async {
+                self.playMessages(messages)
+            }
+        }
+        else {
+            self.currentEntry = nil
+            self.queuedEntry = nil
+
+            // Even if we have set the progress indicator to its maximum value, it won't get drawn on the screen that way immediately,
+            // probably because it tries to smoothly animate to that state. The only way I have found to show the maximum value is to just
+            // wait a little while for the animation to finish. This looks nice, too.
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
+                self.mainWindowController?.window?.endSheet(self.sheetWindow)
+            }
+        }
+    }
+
+    @objc private func sendFinishedImmediately(_ notification: Notification) {
+        // Pop up the sheet and immediately dismiss it, so the user knows that something happehed.
+        sendWillStart(nil)
+        sendFinished(nil)
+    }
+
+    @objc private func updateProgressAndRepeat() {
+        updateProgress()
+
+        self.perform(#selector(self.updateProgressAndRepeat), with: nil, afterDelay: 5.0/60.0)
+        scheduledProgressUpdate = true
+    }
+
+    static private var sendingFormatString = NSLocalizedString("Sending message %u of %u…", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format for progress message when sending multiple sysex messages")
+    static private var sendingString = NSLocalizedString("Sending message…", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format for progress message when sending multiple sysex messages")
+    static private var doneString = NSLocalizedString("Done.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "Done.")
+
+    private func updateProgress() {
+        var messageIndex: UInt = 0
+        var messageCount: UInt = 0
+        var bytesToSend: UInt = 0
+        var bytesSent: UInt = 0
+
+        midiController?.getMessageCount(&messageCount, messageIndex: &messageIndex, bytesToSend: &bytesToSend, bytesSent: &bytesSent)
+
+        progressIndicator.doubleValue = Double(bytesSent)
+        progressBytesField.stringValue = String.abbreviatedByteCount(Int(bytesSent))
+
+        let message: String
+        if bytesSent < bytesToSend {
+            if messageCount > 1 {
+                message = String(format: Self.sendingFormatString, messageIndex+1, messageCount)
+            }
+            else {
+                message = Self.sendingString
+            }
+        }
+        else {
+            message = Self.doneString
+        }
+        progressMessageField.stringValue = message
+    }
+
+}
