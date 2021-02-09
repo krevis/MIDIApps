@@ -15,7 +15,7 @@
 @class DeleteController;
 @class ExportController;
 @class FindMissingController;
-@class SSEMIDIController;
+@class MIDIController;
 @class SSELibrary;
 @class PlayController;
 @class RecordController;
@@ -34,7 +34,7 @@
     NSArray *sortedLibraryEntries;
 
     // Subcontrollers
-    SSEMIDIController *midiController;
+    MIDIController *midiController;
     PlayController *playController;
     RecordController *recordOneController;
     RecordController *recordManyController;

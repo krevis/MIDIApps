@@ -16,7 +16,6 @@
 #import <objc/objc-runtime.h>
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
-#import "SSEMIDIController.h"
 #import "SSETableView.h"
 #import "SysEx_Librarian-Swift.h"
 
@@ -78,7 +77,7 @@ static SSEMainWindowController *controller = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(libraryDidChange:) name:SSELibraryDidChangeNotification object:library];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayPreferencesDidChange:) name:NSNotification.displayPreferenceChanged object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(listenForProgramChangesDidChange:) name:NSNotification.listenForProgramChangesPreferenceChanged object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(programChangeBaseIndexDidChange:) name:SSEProgramChangeBaseIndexPreferenceChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(programChangeBaseIndexDidChange:) name:NSNotification.programChangeBaseIndexPreferenceChanged object:nil];
 
     sortColumnIdentifier = @"name";
     isSortAscending = YES;
@@ -136,7 +135,7 @@ static SSEMainWindowController *controller = nil;
     }
 
     // The MIDI controller may cause us to do some things to the UI, so we create it now instead of earlier
-    midiController = [[SSEMIDIController alloc] initWithWindowController:self];
+    midiController = [[MIDIController alloc] initWithMainWindowController:self];
 	
     [programChangeTableColumn retain];  // extra retain in case we remove it from the table view
     [self updateProgramChangeTableColumnFormatter];
@@ -543,7 +542,7 @@ static SSEMainWindowController *controller = nil;
 	} else if ([identifier isEqualToString:@"programNumber"]) {
         NSNumber *programNumber = [entry programNumber];
         if (programNumber) {
-            NSInteger offset = [[NSUserDefaults standardUserDefaults] integerForKey:SSEProgramChangeBaseIndexPreferenceKey];
+            NSInteger offset = [[NSUserDefaults standardUserDefaults] integerForKey:MIDIController.programChangeBaseIndexPreferenceKey];
             return @( [programNumber integerValue] + offset );
         }
         else {
@@ -578,7 +577,7 @@ static SSEMainWindowController *controller = nil;
 		if (object) {
             NSInteger intValue = [object integerValue];
 
-            NSInteger baseIndex = [[NSUserDefaults standardUserDefaults] integerForKey:SSEProgramChangeBaseIndexPreferenceKey];
+            NSInteger baseIndex = [[NSUserDefaults standardUserDefaults] integerForKey:MIDIController.programChangeBaseIndexPreferenceKey];
             intValue -= baseIndex;
 
             if (intValue >= 0 && intValue <= 127) {
@@ -699,7 +698,7 @@ static SSEMainWindowController *controller = nil;
 {
     [self finishEditingInWindow];
 
-    BOOL listening = [[NSUserDefaults standardUserDefaults] boolForKey:SSEListenForProgramChangesPreferenceKey];
+    BOOL listening = [[NSUserDefaults standardUserDefaults] boolForKey:MIDIController.listenForProgramChangesPreferenceKey];
     
     if (listening) {
         if (![programChangeTableColumn tableView]) {
@@ -727,7 +726,7 @@ static SSEMainWindowController *controller = nil;
 - (void)updateProgramChangeTableColumnFormatter
 {
     NSNumberFormatter *formatter = ((NSCell *)programChangeTableColumn.dataCell).formatter;
-    NSInteger baseIndex = [[NSUserDefaults standardUserDefaults] integerForKey:SSEProgramChangeBaseIndexPreferenceKey];
+    NSInteger baseIndex = [[NSUserDefaults standardUserDefaults] integerForKey:MIDIController.programChangeBaseIndexPreferenceKey];
     formatter.minimum = @(baseIndex + 0  );
     formatter.maximum = @(baseIndex + 127);
 }

@@ -134,11 +134,6 @@ import Foundation
         return Set(inputSources)
     }
 
-    // TODO Temporary while doing Swift conversion
-    @objc public func selectAllInputSources() {
-        selectedInputSources = inputSourcesSet
-    }
-
     open var selectedInputSources: Set<InputStreamSource> {
         get {
             fatalError("Must implement in subclass")

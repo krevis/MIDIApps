@@ -19,6 +19,7 @@
 		163FB60C199EE3C30017B664 /* ToolbarRecordMultipleTemplate@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB60A199EE3C30017B664 /* ToolbarRecordMultipleTemplate@2x.tiff */; };
 		163FB60F199EE6810017B664 /* ToolbarRecordOneTemplate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB60D199EE6810017B664 /* ToolbarRecordOneTemplate.tiff */; };
 		163FB610199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB60E199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff */; };
+		1661BD3325D1E8C500C715D5 /* MIDIController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1661BD3225D1E8C500C715D5 /* MIDIController.swift */; };
 		1686426E25CB869500A8B292 /* AppController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686426D25CB869500A8B292 /* AppController.swift */; };
 		1686427025CCAF7F00A8B292 /* ImportController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686426F25CCAF7F00A8B292 /* ImportController.swift */; };
 		1686427225CDD96F00A8B292 /* ExportController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686427125CDD96F00A8B292 /* ExportController.swift */; };
@@ -58,7 +59,6 @@
 		16F0336A0984B76F006C8A44 /* Import.nib in Resources */ = {isa = PBXBuildFile; fileRef = F530900E023350F901000164 /* Import.nib */; };
 		16F0336B0984B76F006C8A44 /* SysExLibrarian.strings in Resources */ = {isa = PBXBuildFile; fileRef = F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */; };
 		16F033700984B76F006C8A44 /* SSEMainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F565B6E601E1419001000164 /* SSEMainWindowController.m */; };
-		16F033710984B76F006C8A44 /* SSEMIDIController.m in Sources */ = {isa = PBXBuildFile; fileRef = F565B6EA01E1498301000164 /* SSEMIDIController.m */; };
 		16F033730984B76F006C8A44 /* SSELibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = F583CEB501EE3D3801000164 /* SSELibrary.m */; };
 		16F033740984B76F006C8A44 /* SSELibraryEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = F583CEB901EE3E4401000164 /* SSELibraryEntry.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		16F033760984B76F006C8A44 /* SSETableView.m in Sources */ = {isa = PBXBuildFile; fileRef = F551752101F3ACED01000164 /* SSETableView.m */; };
@@ -217,6 +217,7 @@
 		163FB60A199EE3C30017B664 /* ToolbarRecordMultipleTemplate@2x.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "ToolbarRecordMultipleTemplate@2x.tiff"; sourceTree = "<group>"; };
 		163FB60D199EE6810017B664 /* ToolbarRecordOneTemplate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarRecordOneTemplate.tiff; sourceTree = "<group>"; };
 		163FB60E199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "ToolbarRecordOneTemplate@2x.tiff"; sourceTree = "<group>"; };
+		1661BD3225D1E8C500C715D5 /* MIDIController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MIDIController.swift; sourceTree = "<group>"; };
 		1686426D25CB869500A8B292 /* AppController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppController.swift; sourceTree = "<group>"; };
 		1686426F25CCAF7F00A8B292 /* ImportController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportController.swift; sourceTree = "<group>"; };
 		1686427125CDD96F00A8B292 /* ExportController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportController.swift; sourceTree = "<group>"; };
@@ -490,6 +491,7 @@
 			children = (
 				F565B6E501E1419001000164 /* SSEMainWindowController.h */,
 				F565B6E601E1419001000164 /* SSEMainWindowController.m */,
+				1661BD3225D1E8C500C715D5 /* MIDIController.swift */,
 				F565B6E901E1498301000164 /* SSEMIDIController.h */,
 				F565B6EA01E1498301000164 /* SSEMIDIController.m */,
 				F5309000023317A701000164 /* Playing */,
@@ -874,7 +876,6 @@
 				16F033700984B76F006C8A44 /* SSEMainWindowController.m in Sources */,
 				16D0EF2725C94D0400399C74 /* ValidatingButton.swift in Sources */,
 				1686427425CDEFF900A8B292 /* DeleteController.swift in Sources */,
-				16F033710984B76F006C8A44 /* SSEMIDIController.m in Sources */,
 				163A3FC4213E1B540075F8A0 /* SSEAlias.m in Sources */,
 				1686426E25CB869500A8B292 /* AppController.swift in Sources */,
 				16F033730984B76F006C8A44 /* SSELibrary.m in Sources */,
@@ -891,6 +892,7 @@
 				1686427025CCAF7F00A8B292 /* ImportController.swift in Sources */,
 				1686427C25CFC35A00A8B292 /* RecordController.swift in Sources */,
 				1686427A25CFBF0700A8B292 /* RecordOneController.swift in Sources */,
+				1661BD3325D1E8C500C715D5 /* MIDIController.swift in Sources */,
 				1686427225CDD96F00A8B292 /* ExportController.swift in Sources */,
 				169B7A2025CA729900C9BB81 /* SysExSpeedController.swift in Sources */,
 				16C43BBE25C529BA007A3A48 /* OutputStreamDestination.swift in Sources */,

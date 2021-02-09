@@ -11,10 +11,11 @@
  */
 
 import Cocoa
+import SnoizeMIDI
 
 @objc class PlayController: NSObject {
 
-    @objc init(mainWindowController: SSEMainWindowController, midiController: SSEMIDIController) {
+    @objc init(mainWindowController: SSEMainWindowController, midiController: MIDIController) {
         self.mainWindowController = mainWindowController
         self.midiController = midiController
 
@@ -34,7 +35,7 @@ import Cocoa
 
         observeMIDIController()
 
-        midiController.setMessages(messages)
+        midiController.messages = messages
         midiController.sendMessages()
         // This may send the messages immediately; if it does, it will post a notification and our sendFinishedImmediately() will be called.
         // Otherwise, we expect a different notification so that sendWillStart() will be called.
@@ -55,7 +56,7 @@ import Cocoa
                 queuedEntry = entry
 
                 // and maybe cancel the current send.
-                if UserDefaults.standard.bool(forKey: SSEInterruptOnProgramChangePreferenceKey) {
+                if UserDefaults.standard.bool(forKey: MIDIController.interruptOnProgramChangePreferenceKey) {
                     midiController?.cancelSendingMessages()
                 }
             }
@@ -66,14 +67,14 @@ import Cocoa
 
     @IBAction func cancelPlaying(_ sender: AnyObject?) {
         midiController?.cancelSendingMessages()
-        // SSEMIDIControllerSendFinishedNotification will get posted soon;
+        // The notification MIDIController.sendFinished will get posted soon;
         // it will call our sendFinished() and thus end the sheet
     }
 
     // MARK: Private
 
     private weak var mainWindowController: SSEMainWindowController?
-    private weak var midiController: SSEMIDIController?
+    private weak var midiController: MIDIController?
 
     private var topLevelObjects: NSArray?
     @IBOutlet private var sheetWindow: NSPanel!
@@ -101,17 +102,17 @@ extension PlayController /* Private */ {
     private func observeMIDIController() {
         guard let midiController = midiController else { return }
         let center = NotificationCenter.default
-        center.addObserver(self, selector: #selector(self.sendWillStart(_:)), name: NSNotification.Name.SSEMIDIControllerSendWillStart, object: midiController)
-        center.addObserver(self, selector: #selector(self.sendFinished(_:)), name: .SSEMIDIControllerSendFinished, object: midiController)
-        center.addObserver(self, selector: #selector(self.sendFinishedImmediately(_:)), name: .SSEMIDIControllerSendFinishedImmediately, object: midiController)
+        center.addObserver(self, selector: #selector(self.sendWillStart(_:)), name: .sendWillStart, object: midiController)
+        center.addObserver(self, selector: #selector(self.sendFinished(_:)), name: .sendFinished, object: midiController)
+        center.addObserver(self, selector: #selector(self.sendFinishedImmediately(_:)), name: .sendFinishedImmediately, object: midiController)
     }
 
     private func stopObservingMIDIController() {
         guard let midiController = midiController else { return }
         let center = NotificationCenter.default
-        center.removeObserver(self, name: .SSEMIDIControllerSendWillStart, object: midiController)
-        center.removeObserver(self, name: .SSEMIDIControllerSendFinished, object: midiController)
-        center.removeObserver(self, name: .SSEMIDIControllerSendFinishedImmediately, object: midiController)
+        center.removeObserver(self, name: .sendWillStart, object: midiController)
+        center.removeObserver(self, name: .sendFinished, object: midiController)
+        center.removeObserver(self, name: .sendFinishedImmediately, object: midiController)
     }
 
     @objc private func sendWillStart(_ notification: Notification?) {
@@ -120,9 +121,9 @@ extension PlayController /* Private */ {
         progressIndicator.minValue = 0.0
         progressIndicator.doubleValue = 0.0
 
-        var bytesToSend: UInt = 0
-        midiController?.getMessageCount(nil, messageIndex: nil, bytesToSend: &bytesToSend, bytesSent: nil)
-        progressIndicator.maxValue = Double(bytesToSend)
+        if let status = midiController?.messageSendStatus {
+            progressIndicator.maxValue = Double(status.bytesToSend)
+        }
 
         updateProgressAndRepeat()
 
@@ -194,20 +195,15 @@ extension PlayController /* Private */ {
     static private var doneString = NSLocalizedString("Done.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "Done.")
 
     private func updateProgress() {
-        var messageIndex: UInt = 0
-        var messageCount: UInt = 0
-        var bytesToSend: UInt = 0
-        var bytesSent: UInt = 0
+        guard let sendStatus = midiController?.messageSendStatus else { return }
 
-        midiController?.getMessageCount(&messageCount, messageIndex: &messageIndex, bytesToSend: &bytesToSend, bytesSent: &bytesSent)
-
-        progressIndicator.doubleValue = Double(bytesSent)
-        progressBytesField.stringValue = String.abbreviatedByteCount(Int(bytesSent))
+        progressIndicator.doubleValue = Double(sendStatus.bytesSent)
+        progressBytesField.stringValue = String.abbreviatedByteCount(sendStatus.bytesSent)
 
         let message: String
-        if bytesSent < bytesToSend {
-            if messageCount > 1 {
-                message = String(format: Self.sendingFormatString, messageIndex+1, messageCount)
+        if sendStatus.bytesSent < sendStatus.bytesToSend {
+            if sendStatus.messageCount > 1 {
+                message = String(format: Self.sendingFormatString, sendStatus.messageIndex + 1, sendStatus.messageCount)
             }
             else {
                 message = Self.sendingString

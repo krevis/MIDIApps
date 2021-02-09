@@ -14,7 +14,7 @@ import Cocoa
 
 @objc class RecordController: NSObject {
 
-    @objc init(mainWindowController: SSEMainWindowController, midiController: SSEMIDIController) {
+    @objc init(mainWindowController: SSEMainWindowController, midiController: MIDIController) {
         self.mainWindowController = mainWindowController
         self.midiController = midiController
 
@@ -36,7 +36,7 @@ import Cocoa
 
         progressIndicator.startAnimation(nil)
 
-        updateIndicators(messageCount: 0, bytesRead: 0, totalBytesRead: 0)
+        updateIndicators(status: MIDIController.MessageListenStatus(messageCount: 0, bytesRead: 0, totalBytesRead: 0))
 
         window.beginSheet(sheetWindow, completionHandler: nil)
 
@@ -65,24 +65,24 @@ import Cocoa
         fatalError("must override in subclass")
     }
 
-    func updateIndicators(messageCount: Int, bytesRead: Int, totalBytesRead: Int) {
+    func updateIndicators(status: MIDIController.MessageListenStatus) {
         fatalError("must override in subclass")
     }
 
     // MARK: May be overridden in subclasses
 
     func observeMIDIController() {
-        NotificationCenter.default.addObserver(self, selector: #selector(readStatusChanged(_:)), name: .SSEMIDIControllerReadStatusChanged, object: midiController)
+        NotificationCenter.default.addObserver(self, selector: #selector(readStatusChanged(_:)), name: .readStatusChanged, object: midiController)
     }
 
     func stopObservingMIDIController() {
-        NotificationCenter.default.removeObserver(self, name: .SSEMIDIControllerReadStatusChanged, object: midiController)
+        NotificationCenter.default.removeObserver(self, name: .readStatusChanged, object: midiController)
     }
 
     // MARK: To be used by subclasses
 
     weak var mainWindowController: SSEMainWindowController?
-    weak var midiController: SSEMIDIController?
+    weak var midiController: MIDIController?
 
     @IBOutlet var sheetWindow: NSPanel!
     @IBOutlet var progressIndicator: NSProgressIndicator!
@@ -106,13 +106,8 @@ import Cocoa
     private var scheduledProgressUpdate = false
 
     @objc private func privateUpdateIndicators() {
-        var messageCount: UInt = 0
-        var bytesRead: UInt = 0
-        var totalBytesRead: UInt = 0
-
-        midiController?.getMessageCount(&messageCount, bytesRead: &bytesRead, totalBytesRead: &totalBytesRead)
-
-        updateIndicators(messageCount: Int(messageCount), bytesRead: Int(bytesRead), totalBytesRead: Int(totalBytesRead))
+        guard let status = midiController?.messageListenStatus else { return }
+        updateIndicators(status: status)
 
         scheduledProgressUpdate = false
     }

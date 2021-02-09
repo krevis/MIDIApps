@@ -45,7 +45,7 @@ import SnoizeMIDI
 
         outlineView.reloadData()
 
-        let customBufferSize = UserDefaults.standard.integer(forKey: SSECustomSysexBufferSizePreferenceKey)
+        let customBufferSize = UserDefaults.standard.integer(forKey: MIDIController.customSysexBufferSizePreferenceKey)
 
         bufferSizePopUpButton.selectItem(withTag: customBufferSize)
         if bufferSizePopUpButton.selectedTag() != customBufferSize {
@@ -91,12 +91,12 @@ import SnoizeMIDI
     @IBAction func changeBufferSize(_ sender: AnyObject?) {
         let customBufferSize = bufferSizePopUpButton.selectedTag()
         if customBufferSize == 0 {
-            UserDefaults.standard.removeObject(forKey: SSECustomSysexBufferSizePreferenceKey)
+            UserDefaults.standard.removeObject(forKey: MIDIController.customSysexBufferSizePreferenceKey)
         }
         else {
-            UserDefaults.standard.set(customBufferSize, forKey: SSECustomSysexBufferSizePreferenceKey)
+            UserDefaults.standard.set(customBufferSize, forKey: MIDIController.customSysexBufferSizePreferenceKey)
         }
-        NotificationCenter.default.post(name: .SSECustomSysexBufferSizePreferenceChanged, object: nil)
+        NotificationCenter.default.post(name: .customSysexBufferSizePreferenceChanged, object: nil)
     }
 
     // MARK: Private

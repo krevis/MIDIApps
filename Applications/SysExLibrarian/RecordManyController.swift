@@ -24,20 +24,20 @@ import Cocoa
         midiController?.listenForMultipleMessages()
     }
 
-    override func updateIndicators(messageCount: Int, bytesRead: Int, totalBytesRead: Int) {
-        if bytesRead == 0 {
+    override func updateIndicators(status: MIDIController.MessageListenStatus) {
+        if status.bytesRead == 0 {
             progressMessageField.stringValue = waitingForSysexMessage
             progressBytesField.stringValue = ""
         }
         else {
             progressMessageField.stringValue = receivingSysexMessage
-            progressBytesField.stringValue = String.abbreviatedByteCount(bytesRead)
+            progressBytesField.stringValue = String.abbreviatedByteCount(status.bytesRead)
         }
 
-        let hasAtLeastOneCompleteMessage = messageCount > 0
+        let hasAtLeastOneCompleteMessage = status.messageCount > 0
         if hasAtLeastOneCompleteMessage {
-            let format = messageCount > 1 ? Self.totalProgressPluralFormatString : Self.totalProgressFormatString
-            totalProgressField.stringValue = String(format: format, Int(messageCount), String.abbreviatedByteCount(Int(totalBytesRead)))
+            let format = status.messageCount > 1 ? Self.totalProgressPluralFormatString : Self.totalProgressFormatString
+            totalProgressField.stringValue = String(format: format, status.messageCount, String.abbreviatedByteCount(status.totalBytesRead))
             doneButton.isEnabled = true
         }
         else {

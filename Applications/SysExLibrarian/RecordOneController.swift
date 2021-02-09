@@ -24,27 +24,27 @@ import Cocoa
         midiController?.listenForOneMessage()
     }
 
-    override func updateIndicators(messageCount: Int, bytesRead: Int, totalBytesRead: Int) {
-        if bytesRead == 0 && messageCount == 0 {
+    override func updateIndicators(status: MIDIController.MessageListenStatus) {
+        if status.bytesRead == 0 && status.messageCount == 0 {
             progressMessageField.stringValue = waitingForSysexMessage
             progressBytesField.stringValue = ""
         }
         else {
             progressMessageField.stringValue = receivingSysexMessage
-            progressBytesField.stringValue = String.abbreviatedByteCount(bytesRead + totalBytesRead)
+            progressBytesField.stringValue = String.abbreviatedByteCount(status.bytesRead + status.totalBytesRead)
         }
     }
 
     override func observeMIDIController() {
         super.observeMIDIController()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(self.readFinished(_:)), name: .SSEMIDIControllerReadFinished, object: midiController)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.readFinished(_:)), name: .readFinished, object: midiController)
     }
 
     override func stopObservingMIDIController() {
         super.stopObservingMIDIController()
 
-        NotificationCenter.default.removeObserver(self, name: .SSEMIDIControllerReadFinished, object: midiController)
+        NotificationCenter.default.removeObserver(self, name: .readFinished, object: midiController)
     }
 
     // MARK: Private

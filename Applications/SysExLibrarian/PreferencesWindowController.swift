@@ -81,14 +81,14 @@ import Cocoa
 
     @IBAction func changeReadTimeOut(_ sender: AnyObject?) {
         guard let control = sender as? NSControl else { return }
-        UserDefaults.standard.set(control.integerValue, forKey: SSESysExReadTimeOutPreferenceKey)
+        UserDefaults.standard.set(control.integerValue, forKey: MIDIController.sysExReadTimeOutPreferenceKey)
         synchronizeReadTimeOutField()
         NotificationCenter.default.post(name: .sysExReceivePreferenceChanged, object: nil)
     }
 
     @IBAction func changeIntervalBetweenSentMessages(_ sender: AnyObject?) {
         guard let control = sender as? NSControl else { return }
-        UserDefaults.standard.set(control.integerValue, forKey: SSESysExIntervalBetweenSentMessagesPreferenceKey)
+        UserDefaults.standard.set(control.integerValue, forKey: MIDIController.sysExIntervalBetweenSentMessagesPreferenceKey)
         synchronizeIntervalBetweenSentMessagesField()
         NotificationCenter.default.post(name: .sysExSendPreferenceChanged, object: nil)
     }
@@ -96,21 +96,21 @@ import Cocoa
     @IBAction func listenForProgramChanges(_ sender: AnyObject?) {
         guard let control = sender as? NSControl else { return }
         let boolValue = control.integerValue > 0
-        UserDefaults.standard.set(boolValue, forKey: SSEListenForProgramChangesPreferenceKey)
+        UserDefaults.standard.set(boolValue, forKey: MIDIController.listenForProgramChangesPreferenceKey)
         NotificationCenter.default.post(name: .listenForProgramChangesPreferenceChanged, object: nil)
     }
 
     @IBAction func interruptOnProgramChange(_ sender: AnyObject?) {
         guard let control = sender as? NSControl else { return }
         let boolValue = control.integerValue > 0
-        UserDefaults.standard.set(boolValue, forKey: SSEInterruptOnProgramChangePreferenceKey)
+        UserDefaults.standard.set(boolValue, forKey: MIDIController.interruptOnProgramChangePreferenceKey)
         // no need for a notification to be posted; relevant code looks up this value each time
     }
 
     @IBAction func programChangeBaseIndex(_ sender: AnyObject?) {
         guard let control = sender as? NSControl, let cell = control.selectedCell() else { return }
-        UserDefaults.standard.set(cell.tag, forKey: SSEProgramChangeBaseIndexPreferenceKey)
-        NotificationCenter.default.post(name: .SSEProgramChangeBaseIndexPreferenceChanged, object: nil)
+        UserDefaults.standard.set(cell.tag, forKey: MIDIController.programChangeBaseIndexPreferenceKey)
+        NotificationCenter.default.post(name: .programChangeBaseIndexPreferenceChanged, object: nil)
     }
 
     // MARK: Private
@@ -154,21 +154,21 @@ extension PreferencesWindowController /* Private */ {
 
         sizeFormatMatrix.selectCell(withTag: defaults.bool(forKey: SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey) ? 1 : 0)
         sysExFolderPathField.stringValue = SSELibrary.shared()!.fileDirectoryPath()
-        sysExReadTimeOutSlider.integerValue = defaults.integer(forKey: SSESysExReadTimeOutPreferenceKey)
-        listenForProgramChangesButton.integerValue = defaults.bool(forKey: SSEListenForProgramChangesPreferenceKey) ? 1 : 0
-        interruptOnProgramChangeButton.integerValue = defaults.bool(forKey: SSEInterruptOnProgramChangePreferenceKey) ? 1 : 0
-        programChangeBaseIndexMatrix.selectCell(withTag: defaults.integer(forKey: SSEProgramChangeBaseIndexPreferenceKey))
+        sysExReadTimeOutSlider.integerValue = defaults.integer(forKey: MIDIController.sysExReadTimeOutPreferenceKey)
+        listenForProgramChangesButton.integerValue = defaults.bool(forKey: MIDIController.listenForProgramChangesPreferenceKey) ? 1 : 0
+        interruptOnProgramChangeButton.integerValue = defaults.bool(forKey: MIDIController.interruptOnProgramChangePreferenceKey) ? 1 : 0
+        programChangeBaseIndexMatrix.selectCell(withTag: defaults.integer(forKey: MIDIController.programChangeBaseIndexPreferenceKey))
         synchronizeReadTimeOutField()
-        sysExIntervalBetweenSentMessagesSlider.integerValue = defaults.integer(forKey: SSESysExIntervalBetweenSentMessagesPreferenceKey)
+        sysExIntervalBetweenSentMessagesSlider.integerValue = defaults.integer(forKey: MIDIController.sysExIntervalBetweenSentMessagesPreferenceKey)
         synchronizeIntervalBetweenSentMessagesField()
     }
 
     private func synchronizeReadTimeOutField() {
-        sysExReadTimeOutField.stringValue = formatMilliseconds(UserDefaults.standard.integer(forKey: SSESysExReadTimeOutPreferenceKey))
+        sysExReadTimeOutField.stringValue = formatMilliseconds(UserDefaults.standard.integer(forKey: MIDIController.sysExReadTimeOutPreferenceKey))
     }
 
     private func synchronizeIntervalBetweenSentMessagesField() {
-        sysExIntervalBetweenSentMessagesField.stringValue = formatMilliseconds(UserDefaults.standard.integer(forKey: SSESysExIntervalBetweenSentMessagesPreferenceKey))
+        sysExIntervalBetweenSentMessagesField.stringValue = formatMilliseconds(UserDefaults.standard.integer(forKey: MIDIController.sysExIntervalBetweenSentMessagesPreferenceKey))
     }
 
     private static var millisecondsFormat = NSLocalizedString("%ld milliseconds", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format for milliseconds")

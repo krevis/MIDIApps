@@ -11,6 +11,7 @@
  */
 
 import Cocoa
+import SnoizeMIDI
 
 @objc class ExportController: NSObject {
 
