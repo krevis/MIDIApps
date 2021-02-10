@@ -328,12 +328,18 @@ extension MIDIController /* Private */ {
                 let stream = VirtualInputStream(midiContext: midiContext)
                 stream.messageDestination = self
                 stream.selectedInputSources = Set(stream.inputSources)
+                let center = NotificationCenter.default
+                center.addObserver(self, selector: #selector(readingSysEx(_:)), name: .inputStreamReadingSysEx, object: stream)
+                center.addObserver(self, selector: #selector(readingSysEx(_:)), name: .inputStreamDoneReadingSysEx, object: stream)
                 virtualInputStream = stream
             }
         }
         else {
             if let stream = virtualInputStream {
                 stream.messageDestination = nil
+                let center = NotificationCenter.default
+                center.removeObserver(self, name: .inputStreamReadingSysEx, object: stream)
+                center.removeObserver(self, name: .inputStreamDoneReadingSysEx, object: stream)
                 virtualInputStream = nil
             }
         }
