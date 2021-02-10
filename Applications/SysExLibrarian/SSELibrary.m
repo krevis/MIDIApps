@@ -17,7 +17,7 @@
 #import "SSEAlias.h"
 #import "SSELibraryEntry.h"
 #import "NSString+SymlinksAndAliases.h"
-#import "NSFileManager-Extensions.h"
+#import "SysEx_Librarian-Swift.h"
 
 
 @implementation SSELibrary
@@ -223,7 +223,7 @@ NSString * const SSESysExFileExtension = @"syx";
     if (createdOrExists) {
         NSString *newFileName = NSLocalizedStringFromTableInBundle(@"Untitled", @"SysExLibrarian", SMBundleForObject(self), "name of new sysex file");
         NSString *newFilePath = [[fileDirectoryPath stringByAppendingPathComponent:newFileName] stringByAppendingPathExtension:SSESysExFileExtension];
-        newFilePath = [fileManager SSE_uniqueFilenameFromName:newFilePath];
+        newFilePath = [fileManager uniqueFilenameFrom:newFilePath];
 
         BOOL wrote = [sysexData writeToFile:newFilePath options:NSDataWritingAtomic error:&error];
         if (wrote) {

@@ -12,13 +12,13 @@
 		161B721315D8EA13006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B721215D8EA13006E21D4 /* dsa_pub.pem */; };
 		163A3FC1213E09460075F8A0 /* NSString+SymlinksAndAliases.m in Sources */ = {isa = PBXBuildFile; fileRef = 163A3FC0213E09460075F8A0 /* NSString+SymlinksAndAliases.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		163A3FC4213E1B540075F8A0 /* SSEAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = 163A3FC3213E1B540075F8A0 /* SSEAlias.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
-		163E35AB09E9EFA600138102 /* NSFileManager-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 163E35A909E9EFA600138102 /* NSFileManager-Extensions.m */; };
 		163FB607199EE2530017B664 /* ToolbarPlayTemplate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB605199EE2530017B664 /* ToolbarPlayTemplate.tiff */; };
 		163FB608199EE2530017B664 /* ToolbarPlayTemplate@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB606199EE2530017B664 /* ToolbarPlayTemplate@2x.tiff */; };
 		163FB60B199EE3C30017B664 /* ToolbarRecordMultipleTemplate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB609199EE3C30017B664 /* ToolbarRecordMultipleTemplate.tiff */; };
 		163FB60C199EE3C30017B664 /* ToolbarRecordMultipleTemplate@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB60A199EE3C30017B664 /* ToolbarRecordMultipleTemplate@2x.tiff */; };
 		163FB60F199EE6810017B664 /* ToolbarRecordOneTemplate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB60D199EE6810017B664 /* ToolbarRecordOneTemplate.tiff */; };
 		163FB610199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB60E199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff */; };
+		16517B9325D4A2E900D0CAC4 /* NSFileManager+UniqueName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16517B9225D4A2E900D0CAC4 /* NSFileManager+UniqueName.swift */; };
 		1661BD3325D1E8C500C715D5 /* MIDIController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1661BD3225D1E8C500C715D5 /* MIDIController.swift */; };
 		1686426E25CB869500A8B292 /* AppController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686426D25CB869500A8B292 /* AppController.swift */; };
 		1686427025CCAF7F00A8B292 /* ImportController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686426F25CCAF7F00A8B292 /* ImportController.swift */; };
@@ -209,14 +209,13 @@
 		163A3FC0213E09460075F8A0 /* NSString+SymlinksAndAliases.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+SymlinksAndAliases.m"; sourceTree = "<group>"; };
 		163A3FC2213E1B540075F8A0 /* SSEAlias.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SSEAlias.h; sourceTree = "<group>"; };
 		163A3FC3213E1B540075F8A0 /* SSEAlias.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SSEAlias.m; sourceTree = "<group>"; };
-		163E35A809E9EFA600138102 /* NSFileManager-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSFileManager-Extensions.h"; sourceTree = "<group>"; };
-		163E35A909E9EFA600138102 /* NSFileManager-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager-Extensions.m"; sourceTree = "<group>"; };
 		163FB605199EE2530017B664 /* ToolbarPlayTemplate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarPlayTemplate.tiff; sourceTree = "<group>"; };
 		163FB606199EE2530017B664 /* ToolbarPlayTemplate@2x.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "ToolbarPlayTemplate@2x.tiff"; sourceTree = "<group>"; };
 		163FB609199EE3C30017B664 /* ToolbarRecordMultipleTemplate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarRecordMultipleTemplate.tiff; sourceTree = "<group>"; };
 		163FB60A199EE3C30017B664 /* ToolbarRecordMultipleTemplate@2x.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "ToolbarRecordMultipleTemplate@2x.tiff"; sourceTree = "<group>"; };
 		163FB60D199EE6810017B664 /* ToolbarRecordOneTemplate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarRecordOneTemplate.tiff; sourceTree = "<group>"; };
 		163FB60E199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "ToolbarRecordOneTemplate@2x.tiff"; sourceTree = "<group>"; };
+		16517B9225D4A2E900D0CAC4 /* NSFileManager+UniqueName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSFileManager+UniqueName.swift"; sourceTree = "<group>"; };
 		1661BD3225D1E8C500C715D5 /* MIDIController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MIDIController.swift; sourceTree = "<group>"; };
 		1686426D25CB869500A8B292 /* AppController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppController.swift; sourceTree = "<group>"; };
 		1686426F25CCAF7F00A8B292 /* ImportController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportController.swift; sourceTree = "<group>"; };
@@ -542,8 +541,7 @@
 		F565B6ED01E1567501000164 /* Cocoa Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				163E35A809E9EFA600138102 /* NSFileManager-Extensions.h */,
-				163E35A909E9EFA600138102 /* NSFileManager-Extensions.m */,
+				16517B9225D4A2E900D0CAC4 /* NSFileManager+UniqueName.swift */,
 				16D0EF2A25CA16DF00399C74 /* NSPopUpButton+Extensions.swift */,
 				163A3FB2213E09460075F8A0 /* NSString+SymlinksAndAliases.h */,
 				163A3FC0213E09460075F8A0 /* NSString+SymlinksAndAliases.m */,
@@ -841,12 +839,12 @@
 				1686427C25CFC35A00A8B292 /* RecordController.swift in Sources */,
 				1686427A25CFBF0700A8B292 /* RecordOneController.swift in Sources */,
 				1661BD3325D1E8C500C715D5 /* MIDIController.swift in Sources */,
+				16517B9325D4A2E900D0CAC4 /* NSFileManager+UniqueName.swift in Sources */,
 				1686427225CDD96F00A8B292 /* ExportController.swift in Sources */,
 				169B7A2025CA729900C9BB81 /* SysExSpeedController.swift in Sources */,
 				16C43BBE25C529BA007A3A48 /* OutputStreamDestination.swift in Sources */,
 				16D0EF2B25CA16DF00399C74 /* NSPopUpButton+Extensions.swift in Sources */,
 				16DE09DD25CB4934004F62F7 /* PreferencesWindowController.swift in Sources */,
-				163E35AB09E9EFA600138102 /* NSFileManager-Extensions.m in Sources */,
 				1686427825CE84D400A8B292 /* RecordManyController.swift in Sources */,
 				16C43BBC25C52954007A3A48 /* Destination+OutputStreamDestination.swift in Sources */,
 				16C43BC025C52C89007A3A48 /* CombinationOutputStream.swift in Sources */,
