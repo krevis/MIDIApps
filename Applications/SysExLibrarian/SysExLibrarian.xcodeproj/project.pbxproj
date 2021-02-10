@@ -490,12 +490,14 @@
 				F565B6E501E1419001000164 /* SSEMainWindowController.h */,
 				F565B6E601E1419001000164 /* SSEMainWindowController.m */,
 				1661BD3225D1E8C500C715D5 /* MIDIController.swift */,
-				F5309000023317A701000164 /* Playing */,
-				F5308FF802330EEE01000164 /* Recording */,
-				F5309001023333DF01000164 /* Deleting */,
-				F530900902333F8B01000164 /* Importing */,
-				F5DFAC8702F7715A01000164 /* Exporting */,
-				F53090110233540701000164 /* Find Missing */,
+				1686427D25D1195600A8B292 /* PlayController.swift */,
+				1686427B25CFC35A00A8B292 /* RecordController.swift */,
+				1686427925CFBF0700A8B292 /* RecordOneController.swift */,
+				1686427725CE84D400A8B292 /* RecordManyController.swift */,
+				1686427325CDEFF900A8B292 /* DeleteController.swift */,
+				1686426F25CCAF7F00A8B292 /* ImportController.swift */,
+				1686427125CDD96F00A8B292 /* ExportController.swift */,
+				1686427525CE71A000A8B292 /* FindMissingController.swift */,
 			);
 			name = "Main window";
 			sourceTree = "<group>";
@@ -537,48 +539,6 @@
 			name = "Toolbar Images";
 			sourceTree = "<group>";
 		};
-		F5308FF802330EEE01000164 /* Recording */ = {
-			isa = PBXGroup;
-			children = (
-				1686427B25CFC35A00A8B292 /* RecordController.swift */,
-				1686427925CFBF0700A8B292 /* RecordOneController.swift */,
-				1686427725CE84D400A8B292 /* RecordManyController.swift */,
-			);
-			name = Recording;
-			sourceTree = "<group>";
-		};
-		F5309000023317A701000164 /* Playing */ = {
-			isa = PBXGroup;
-			children = (
-				1686427D25D1195600A8B292 /* PlayController.swift */,
-			);
-			name = Playing;
-			sourceTree = "<group>";
-		};
-		F5309001023333DF01000164 /* Deleting */ = {
-			isa = PBXGroup;
-			children = (
-				1686427325CDEFF900A8B292 /* DeleteController.swift */,
-			);
-			name = Deleting;
-			sourceTree = "<group>";
-		};
-		F530900902333F8B01000164 /* Importing */ = {
-			isa = PBXGroup;
-			children = (
-				1686426F25CCAF7F00A8B292 /* ImportController.swift */,
-			);
-			name = Importing;
-			sourceTree = "<group>";
-		};
-		F53090110233540701000164 /* Find Missing */ = {
-			isa = PBXGroup;
-			children = (
-				1686427525CE71A000A8B292 /* FindMissingController.swift */,
-			);
-			name = "Find Missing";
-			sourceTree = "<group>";
-		};
 		F565B6ED01E1567501000164 /* Cocoa Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -605,14 +565,6 @@
 				16C43BBB25C52954007A3A48 /* Destination+OutputStreamDestination.swift */,
 			);
 			name = "SnoizeMIDI Extensions ";
-			sourceTree = "<group>";
-		};
-		F5DFAC8702F7715A01000164 /* Exporting */ = {
-			isa = PBXGroup;
-			children = (
-				1686427125CDD96F00A8B292 /* ExportController.swift */,
-			);
-			name = Exporting;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
