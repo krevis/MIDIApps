@@ -206,10 +206,10 @@ extension CombinationInputStream {
     // MARK: Notifications
     //
     // This class reposts these notifications from its streams (with self as object):
-    //    SMInputStreamReadingSysExNotification
-    //    SMInputStreamDoneReadingSysExNotification
+    //    .inputStreamReadingSysEx
+    //    .inputStreamDoneReadingSysEx
     //
-    // It also listens to SMInputStreamSourceListChangedNotification from its streams,
+    // It also listens to .inputStreamSourceListChanged from its streams,
     // and coalesces them into a single notification (with the same name) from this object.
 
     @objc func repostNotification(_ notification: Notification) {
