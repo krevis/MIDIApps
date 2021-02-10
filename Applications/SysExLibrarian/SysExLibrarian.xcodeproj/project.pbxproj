@@ -271,8 +271,6 @@
 		F559F8FA01DEC0C601000164 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
 		F565B6E501E1419001000164 /* SSEMainWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEMainWindowController.h; sourceTree = "<group>"; };
 		F565B6E601E1419001000164 /* SSEMainWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEMainWindowController.m; sourceTree = "<group>"; };
-		F565B6E901E1498301000164 /* SSEMIDIController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSEMIDIController.h; sourceTree = "<group>"; };
-		F565B6EA01E1498301000164 /* SSEMIDIController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSEMIDIController.m; sourceTree = "<group>"; };
 		F57D1E5902122FA501000164 /* SysExLibrarian.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = SysExLibrarian.icns; sourceTree = "<group>"; };
 		F57D1E5B02127DF401000164 /* SysExDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = SysExDocument.icns; sourceTree = "<group>"; };
 		F57D1E5C02127DF401000164 /* LibraryDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = LibraryDocument.icns; sourceTree = "<group>"; };
@@ -492,8 +490,6 @@
 				F565B6E501E1419001000164 /* SSEMainWindowController.h */,
 				F565B6E601E1419001000164 /* SSEMainWindowController.m */,
 				1661BD3225D1E8C500C715D5 /* MIDIController.swift */,
-				F565B6E901E1498301000164 /* SSEMIDIController.h */,
-				F565B6EA01E1498301000164 /* SSEMIDIController.m */,
 				F5309000023317A701000164 /* Playing */,
 				F5308FF802330EEE01000164 /* Recording */,
 				F5309001023333DF01000164 /* Deleting */,
