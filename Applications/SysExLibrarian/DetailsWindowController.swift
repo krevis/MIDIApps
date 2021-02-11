@@ -15,14 +15,15 @@ import SnoizeMIDI
 
 @objc class DetailsWindowController: SSEWindowController {
 
-    @objc static func detailsWindowController(entry: SSELibraryEntry) -> DetailsWindowController {
-        if let controller = controllers.first(where: { $0.entry == entry }) {
-            return controller
+    static func showWindow(forEntry entry: SSELibraryEntry) {
+        var controller = controllers.first(where: { $0.entry == entry })
+        if controller == nil {
+            let newController = DetailsWindowController(entry: entry)
+            controllers.append(newController)
+            controller = newController
         }
 
-        let controller = DetailsWindowController(entry: entry)
-        controllers.append(controller)
-        return controller
+        controller?.showWindow(nil)
     }
 
     init(entry: SSELibraryEntry) {

@@ -753,7 +753,7 @@ extension MainWindowController /* Private */ {
 
     private func showDetailsOfSelectedEntries() {
         for entry in selectedEntries {
-            DetailsWindowController(entry: entry).showWindow(nil)
+            DetailsWindowController.showWindow(forEntry: entry)
         }
     }
 
