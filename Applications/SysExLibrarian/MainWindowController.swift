@@ -13,7 +13,7 @@
 import Cocoa
 import SnoizeMIDI
 
-@objc class MainWindowController: SSEWindowController {
+@objc class MainWindowController: GeneralWindowController {
 
     @objc static var shared = MainWindowController()
 
@@ -99,8 +99,8 @@ import SnoizeMIDI
         toolbarItem.menuFormRepresentation = menuItem
     }
 
-    override func firstResponderWhenNotEditing() -> NSResponder? {
-        return libraryTableView
+    override var firstResponderWhenNotEditing: NSResponder? {
+        libraryTableView
     }
 
     // MARK: Actions
@@ -362,9 +362,9 @@ extension MainWindowController /* Preferences keys */ {
 
 }
 
-extension MainWindowController: NSUserInterfaceValidations {
+extension MainWindowController /* NSUserInterfaceValidations */ {
 
-    func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
+    override func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
         switch item.action {
         case #selector(play(_:)),
              #selector(delete(_:)),
@@ -378,8 +378,7 @@ extension MainWindowController: NSUserInterfaceValidations {
         case #selector(changeProgramNumber(_:)):
             return libraryTableView.numberOfSelectedRows == 1 && programChangeTableColumn.tableView != nil
         default:
-            // TODO Super should implement this to always return true, and we should call it
-            return true
+            return super.validateUserInterfaceItem(item)
         }
     }
 

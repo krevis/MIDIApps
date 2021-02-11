@@ -4,7 +4,6 @@
 
 // TODO Should all be temporary while converting from ObjC to Swift
 
-#import "SSEWindowController.h"
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
 #import "SSETableView.h"

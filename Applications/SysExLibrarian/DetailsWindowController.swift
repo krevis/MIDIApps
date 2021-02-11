@@ -13,7 +13,7 @@
 import Cocoa
 import SnoizeMIDI
 
-@objc class DetailsWindowController: SSEWindowController {
+@objc class DetailsWindowController: GeneralWindowController {
 
     static func showWindow(forEntry entry: SSELibraryEntry) {
         var controller = controllers.first(where: { $0.entry == entry })
@@ -71,7 +71,7 @@ import SnoizeMIDI
 
     // MARK: NSWindowDelegate
 
-    override func windowWillClose(_ notification: Notification) {
+    func windowWillClose(_ notification: Notification) {
         Self.controllers.removeAll { $0 == self }
     }
 

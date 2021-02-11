@@ -12,7 +12,7 @@
 
 import Cocoa
 
-@objc class PreferencesWindowController: SSEWindowController {
+@objc class PreferencesWindowController: GeneralWindowController {
 
     @objc static let sharedInstance = PreferencesWindowController()
 
@@ -35,7 +35,7 @@ import Cocoa
         tabView.selectTabViewItem(withIdentifier: "general")
     }
 
-    override func windowWillClose(_ notification: Notification) {
+    func windowWillClose(_ notification: Notification) {
         if isSysExSpeedTabViewItem(tabView.selectedTabViewItem) {
             sysExSpeedController.willHide()
         }
