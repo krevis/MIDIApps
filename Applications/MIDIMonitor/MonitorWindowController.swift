@@ -205,7 +205,7 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
         }
     }
 
-    @IBAction func toggleSourcesShown(_ sender: AnyObject?) {
+    @IBAction func toggleSourcesShown(_ sender: Any?) {
         sourcesDisclosableView.toggleDisclosure(sender)
         trivialWindowSettingsDidChange()
     }
@@ -393,7 +393,7 @@ extension MonitorWindowController {
         oneChannelField.objectValue = NSNumber(value: oneChannel)
     }
 
-    @IBAction func toggleFilterShown(_ sender: AnyObject?) {
+    @IBAction func toggleFilterShown(_ sender: Any?) {
         filterDisclosableView.toggleDisclosure(sender)
         trivialWindowSettingsDidChange()
     }
@@ -410,20 +410,20 @@ extension MonitorWindowController {
         midiDocument.changeFilterMask(Message.TypeMask(rawValue: tag), turnBitsOn: turnBitsOn)
     }
 
-    @IBAction func changeFilter(_ sender: AnyObject?) {
+    @IBAction func changeFilter(_ sender: Any?) {
         if let button = sender as? NSButton {
             changeFilter(tag: button.tag, state: button.state)
         }
     }
 
-    @IBAction func changeFilterFromMatrix(_ sender: AnyObject?) {
+    @IBAction func changeFilterFromMatrix(_ sender: Any?) {
         if let matrix = sender as? NSMatrix,
            let buttonCell = matrix.selectedCell() as? NSButtonCell {
             changeFilter(tag: buttonCell.tag, state: buttonCell.state)
         }
     }
 
-    @IBAction func setChannelRadioButton(_ sender: AnyObject?) {
+    @IBAction func setChannelRadioButton(_ sender: Any?) {
         if let matrix = sender as? NSMatrix {
             if matrix.selectedCell()?.tag == 0 {
                 midiDocument.showAllChannels()
@@ -434,7 +434,7 @@ extension MonitorWindowController {
         }
     }
 
-    @IBAction func setChannel(_ sender: AnyObject?) {
+    @IBAction func setChannel(_ sender: Any?) {
         if let control = sender as? NSControl {
             let channel = (control.objectValue as? NSNumber)?.intValue ?? 0
             midiDocument.showOnlyOneChannel(channel)
@@ -513,11 +513,11 @@ extension MonitorWindowController: NSTableViewDataSource {
         }
     }
 
-    @IBAction func clearMessages(_ sender: AnyObject?) {
+    @IBAction func clearMessages(_ sender: Any?) {
         midiDocument.clearSavedMessages()
     }
 
-    @IBAction func setMaximumMessageCount(_ sender: AnyObject?) {
+    @IBAction func setMaximumMessageCount(_ sender: Any?) {
         guard let control = sender as? NSControl else { fatalError() }
         if let number = control.objectValue as? NSNumber {
             midiDocument.maxMessageCount = number.intValue
@@ -527,7 +527,7 @@ extension MonitorWindowController: NSTableViewDataSource {
         }
     }
 
-    @IBAction func copy(_ sender: AnyObject?) {
+    @IBAction func copy(_ sender: Any?) {
         guard window?.firstResponder == messagesTableView else { return }
 
         let columns = messagesTableView.tableColumns
@@ -545,7 +545,7 @@ extension MonitorWindowController: NSTableViewDataSource {
         pasteboard.setString(totalString, forType: .string)
     }
 
-    @IBAction func showDetailsOfSelectedMessages(_ sender: AnyObject?) {
+    @IBAction func showDetailsOfSelectedMessages(_ sender: Any?) {
         for message in selectedMessages {
             midiDocument.detailsWindowController(for: message).showWindow(nil)
         }

@@ -14,7 +14,7 @@ import Cocoa
 
 @objc class RecordController: NSObject {
 
-    @objc init(mainWindowController: SSEMainWindowController, midiController: MIDIController) {
+    @objc init(mainWindowController: MainWindowController, midiController: MIDIController) {
         self.mainWindowController = mainWindowController
         self.midiController = midiController
 
@@ -46,7 +46,7 @@ import Cocoa
 
     // MARK: Actions
 
-    @IBAction func cancelRecording(_ sender: AnyObject?) {
+    @IBAction func cancelRecording(_ sender: Any?) {
         midiController?.cancelMessageListen()
         stopObservingMIDIController()
 
@@ -81,7 +81,7 @@ import Cocoa
 
     // MARK: To be used by subclasses
 
-    weak var mainWindowController: SSEMainWindowController?
+    weak var mainWindowController: MainWindowController?
     weak var midiController: MIDIController?
 
     @IBOutlet var sheetWindow: NSPanel!

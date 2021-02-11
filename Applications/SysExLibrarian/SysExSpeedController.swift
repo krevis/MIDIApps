@@ -63,7 +63,7 @@ import SnoizeMIDI
 
     // MARK: Actions
 
-    @objc func takeSpeedFromSelectedCellInTableView(_ sender: AnyObject?) {
+    @objc func takeSpeedFromSelectedCellInTableView(_ sender: Any?) {
         // sender is the outline view; get the selected cell to find its new value.
         guard let cell = outlineView.selectedCell() else { return }
         let newValue = cell.integerValue
@@ -88,7 +88,7 @@ import SnoizeMIDI
         invalidateRowAndParent(row)
     }
 
-    @IBAction func changeBufferSize(_ sender: AnyObject?) {
+    @IBAction func changeBufferSize(_ sender: Any?) {
         let customBufferSize = bufferSizePopUpButton.selectedTag()
         if customBufferSize == 0 {
             UserDefaults.standard.removeObject(forKey: MIDIController.customSysexBufferSizePreferenceKey)

@@ -15,7 +15,7 @@ import SnoizeMIDI
 
 @objc class ExportController: NSObject {
 
-    @objc init(windowController: SSEMainWindowController) {
+    @objc init(windowController: MainWindowController) {
         self.mainWindowController = windowController
 
         super.init()
@@ -67,6 +67,6 @@ import SnoizeMIDI
 
     // MARK: Private
 
-    private weak var mainWindowController: SSEMainWindowController?
+    private weak var mainWindowController: MainWindowController?
 
 }

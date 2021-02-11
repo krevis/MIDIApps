@@ -83,7 +83,7 @@ extension AppController: NSApplicationDelegate {
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         if flag {
-            if let mainWindow = SSEMainWindowController.sharedInstance()?.window,
+            if let mainWindow = MainWindowController.shared.window,
                mainWindow.isMiniaturized {
                 mainWindow.deminiaturize(nil)
             }
@@ -102,7 +102,7 @@ extension AppController: NSUserInterfaceValidations {
     func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
         if item.action == #selector(self.showMainWindowAndAddToLibrary(_:)) {
             // Don't allow adds if the main window is open and has a sheet on it
-            let mainWindow = SSEMainWindowController.sharedInstance()?.window
+            let mainWindow = MainWindowController.shared.window
             return (mainWindow == nil || mainWindow!.attachedSheet == nil)
         }
 
@@ -113,11 +113,11 @@ extension AppController: NSUserInterfaceValidations {
 
 extension AppController /* Actions */ {
 
-    @IBAction func showPreferences(_ sender: AnyObject?) {
+    @IBAction func showPreferences(_ sender: Any?) {
         PreferencesWindowController.sharedInstance.showWindow(nil)
     }
 
-    @IBAction func showAboutBox(_ sender: AnyObject?) {
+    @IBAction func showAboutBox(_ sender: Any?) {
         var options: [NSApplication.AboutPanelOptionKey: Any] = [:]
 
         if #available(macOS 10.13, *) {
@@ -145,7 +145,7 @@ extension AppController /* Actions */ {
         NSApp.orderFrontStandardAboutPanel(options: options)
     }
 
-    @IBAction func showHelp(_ sender: AnyObject?) {
+    @IBAction func showHelp(_ sender: Any?) {
         var message: String?
 
         if var url = SMBundleForObject(self).url(forResource: "docs", withExtension: "htmld") {
@@ -168,7 +168,7 @@ extension AppController /* Actions */ {
         }
     }
 
-    @IBAction func sendFeedback(_ sender: AnyObject?) {
+    @IBAction func sendFeedback(_ sender: Any?) {
         var success = false
 
         let feedbackEmailAddress = "SysExLibrarian@snoize.com"    // Don't localize this
@@ -194,15 +194,13 @@ extension AppController /* Actions */ {
         }
     }
 
-    @IBAction func showMainWindow(_ sender: AnyObject?) {
-        guard let controller = SSEMainWindowController.sharedInstance() else { return }
-        controller.showWindow(nil)
+    @IBAction func showMainWindow(_ sender: Any?) {
+        MainWindowController.shared.showWindow(nil)
     }
 
-    @IBAction func showMainWindowAndAddToLibrary(_ sender: AnyObject?) {
-        guard let controller = SSEMainWindowController.sharedInstance() else { return }
-        controller.showWindow(nil)
-        controller.addToLibrary(sender)
+    @IBAction func showMainWindowAndAddToLibrary(_ sender: Any?) {
+        MainWindowController.shared.showWindow(nil)
+        MainWindowController.shared.addToLibrary(sender)
     }
 
 }
@@ -210,7 +208,7 @@ extension AppController /* Actions */ {
 extension AppController /* Private */ {
 
     private func importFiles() {
-        SSEMainWindowController.sharedInstance().importFiles(filePathsToImport, showingProgress: false)
+        MainWindowController.shared.importFiles(filePathsToImport, showingProgress: false)
         filePathsToImport = []
     }
 

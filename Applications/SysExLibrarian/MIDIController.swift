@@ -15,7 +15,7 @@ import SnoizeMIDI
 
 @objc class MIDIController: NSObject {
 
-    @objc init(mainWindowController: SSEMainWindowController) {
+    @objc init(mainWindowController: MainWindowController) {
         self.mainWindowController = mainWindowController
 
         guard let context = (NSApp.delegate as? AppController)?.midiContext else { fatalError() }
@@ -209,7 +209,7 @@ import SnoizeMIDI
 
     // MARK: Private
 
-    private weak var mainWindowController: SSEMainWindowController?
+    private weak var mainWindowController: MainWindowController?
 
     // MIDI processing
     private let midiContext: MIDIContext

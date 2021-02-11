@@ -15,7 +15,7 @@ import SnoizeMIDI
 
 @objc class PlayController: NSObject {
 
-    @objc init(mainWindowController: SSEMainWindowController, midiController: MIDIController) {
+    @objc init(mainWindowController: MainWindowController, midiController: MIDIController) {
         self.mainWindowController = mainWindowController
         self.midiController = midiController
 
@@ -65,7 +65,7 @@ import SnoizeMIDI
 
     // MARK: Actions
 
-    @IBAction func cancelPlaying(_ sender: AnyObject?) {
+    @IBAction func cancelPlaying(_ sender: Any?) {
         midiController?.cancelSendingMessages()
         // The notification MIDIController.sendFinished will get posted soon;
         // it will call our sendFinished() and thus end the sheet
@@ -73,7 +73,7 @@ import SnoizeMIDI
 
     // MARK: Private
 
-    private weak var mainWindowController: SSEMainWindowController?
+    private weak var mainWindowController: MainWindowController?
     private weak var midiController: MIDIController?
 
     private var topLevelObjects: NSArray?
@@ -85,7 +85,7 @@ import SnoizeMIDI
     private var currentEntry: SSELibraryEntry? {
         didSet {
             if let newCurrentEntry = currentEntry {
-                mainWindowController?.selectEntries([newCurrentEntry])
+                mainWindowController?.selectedEntries = [newCurrentEntry]
             }
         }
     }

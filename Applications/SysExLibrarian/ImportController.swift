@@ -15,7 +15,7 @@ import SnoizeMIDI
 
 @objc class ImportController: NSObject {
 
-    @objc init(windowController: SSEMainWindowController, library: SSELibrary) {
+    @objc init(windowController: MainWindowController, library: SSELibrary) {
         self.mainWindowController = windowController
         self.library = library
 
@@ -36,12 +36,12 @@ import SnoizeMIDI
 
     // MARK: Actions
 
-    @IBAction func cancelImporting(_ sender: AnyObject?) {
+    @IBAction func cancelImporting(_ sender: Any?) {
         // No need to lock just to set a boolean
         importCancelled = true
     }
 
-    @IBAction func endSheetWithReturnCodeFromSenderTag(_ sender: AnyObject?) {
+    @IBAction func endSheetWithReturnCodeFromSenderTag(_ sender: Any?) {
         if let window = mainWindowController?.window,
            let sheet = window.attachedSheet,
            let senderView = sender as? NSView {
@@ -61,7 +61,7 @@ import SnoizeMIDI
     @IBOutlet private var importWarningSheetWindow: NSPanel!
     @IBOutlet private var doNotWarnOnImportAgainCheckbox: NSButton!
 
-    private weak var mainWindowController: SSEMainWindowController?
+    private weak var mainWindowController: MainWindowController?
     private weak var library: SSELibrary?
 
     private var workQueue: DispatchQueue?

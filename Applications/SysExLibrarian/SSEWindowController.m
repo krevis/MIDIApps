@@ -100,12 +100,13 @@
 // UI validation
 //
 
-- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)theItem;
-{
-    // Override in subclasses as necessary
-
-    return YES;
-}
+// TODO Temporarily commented out
+//- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)theItem;
+//{
+//    // Override in subclasses as necessary
+//
+//    return YES;
+//}
 
 //
 // Window utility methods

@@ -6,7 +6,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="SSEMainWindowController">
+        <customObject id="-2" userLabel="File's Owner" customClass="MainWindowController" customModule="SysEx_Librarian" customModuleProvider="target">
             <connections>
                 <outlet property="destinationPopUpButton" destination="337" id="339"/>
                 <outlet property="libraryTableView" destination="21" id="287"/>

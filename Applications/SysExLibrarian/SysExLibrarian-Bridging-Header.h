@@ -7,4 +7,4 @@
 #import "SSEWindowController.h"
 #import "SSELibrary.h"
 #import "SSELibraryEntry.h"
-#import "SSEMainWindowController.h"
+#import "SSETableView.h"

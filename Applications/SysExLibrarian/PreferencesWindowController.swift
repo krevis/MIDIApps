@@ -55,14 +55,14 @@ import Cocoa
         super.showWindow(sender)
     }
 
-    @IBAction func changeSizeFormat(_ sender: AnyObject?) {
+    @IBAction func changeSizeFormat(_ sender: Any?) {
         guard let control = sender as? NSControl, let cell = control.selectedCell() else { return }
         let boolValue = cell.tag == 1
-        UserDefaults.standard.set(boolValue, forKey: SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey)
+        UserDefaults.standard.set(boolValue, forKey: MainWindowController.abbreviateFileSizesInLibraryTableViewPreferenceKey)
         NotificationCenter.default.post(name: .displayPreferenceChanged, object: nil)
     }
 
-    @IBAction func changeSysExFolder(_ sender: AnyObject?) {
+    @IBAction func changeSysExFolder(_ sender: Any?) {
         let openPanel = NSOpenPanel()
         openPanel.canChooseDirectories = true
         openPanel.canChooseFiles = false
@@ -79,35 +79,35 @@ import Cocoa
         }
     }
 
-    @IBAction func changeReadTimeOut(_ sender: AnyObject?) {
+    @IBAction func changeReadTimeOut(_ sender: Any?) {
         guard let control = sender as? NSControl else { return }
         UserDefaults.standard.set(control.integerValue, forKey: MIDIController.sysExReadTimeOutPreferenceKey)
         synchronizeReadTimeOutField()
         NotificationCenter.default.post(name: .sysExReceivePreferenceChanged, object: nil)
     }
 
-    @IBAction func changeIntervalBetweenSentMessages(_ sender: AnyObject?) {
+    @IBAction func changeIntervalBetweenSentMessages(_ sender: Any?) {
         guard let control = sender as? NSControl else { return }
         UserDefaults.standard.set(control.integerValue, forKey: MIDIController.sysExIntervalBetweenSentMessagesPreferenceKey)
         synchronizeIntervalBetweenSentMessagesField()
         NotificationCenter.default.post(name: .sysExSendPreferenceChanged, object: nil)
     }
 
-    @IBAction func listenForProgramChanges(_ sender: AnyObject?) {
+    @IBAction func listenForProgramChanges(_ sender: Any?) {
         guard let control = sender as? NSControl else { return }
         let boolValue = control.integerValue > 0
         UserDefaults.standard.set(boolValue, forKey: MIDIController.listenForProgramChangesPreferenceKey)
         NotificationCenter.default.post(name: .listenForProgramChangesPreferenceChanged, object: nil)
     }
 
-    @IBAction func interruptOnProgramChange(_ sender: AnyObject?) {
+    @IBAction func interruptOnProgramChange(_ sender: Any?) {
         guard let control = sender as? NSControl else { return }
         let boolValue = control.integerValue > 0
         UserDefaults.standard.set(boolValue, forKey: MIDIController.interruptOnProgramChangePreferenceKey)
         // no need for a notification to be posted; relevant code looks up this value each time
     }
 
-    @IBAction func programChangeBaseIndex(_ sender: AnyObject?) {
+    @IBAction func programChangeBaseIndex(_ sender: Any?) {
         guard let control = sender as? NSControl, let cell = control.selectedCell() else { return }
         UserDefaults.standard.set(cell.tag, forKey: MIDIController.programChangeBaseIndexPreferenceKey)
         NotificationCenter.default.post(name: .programChangeBaseIndexPreferenceChanged, object: nil)
@@ -152,7 +152,7 @@ extension PreferencesWindowController /* Private */ {
     private func synchronizeControls() {
         let defaults = UserDefaults.standard
 
-        sizeFormatMatrix.selectCell(withTag: defaults.bool(forKey: SSEAbbreviateFileSizesInLibraryTableViewPreferenceKey) ? 1 : 0)
+        sizeFormatMatrix.selectCell(withTag: defaults.bool(forKey: MainWindowController.abbreviateFileSizesInLibraryTableViewPreferenceKey) ? 1 : 0)
         sysExFolderPathField.stringValue = SSELibrary.shared()!.fileDirectoryPath()
         sysExReadTimeOutSlider.integerValue = defaults.integer(forKey: MIDIController.sysExReadTimeOutPreferenceKey)
         listenForProgramChangesButton.integerValue = defaults.bool(forKey: MIDIController.listenForProgramChangesPreferenceKey) ? 1 : 0

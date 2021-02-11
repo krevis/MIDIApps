@@ -14,7 +14,7 @@ import Cocoa
 
 @objc class DeleteController: NSObject {
 
-    @objc init(windowController: SSEMainWindowController) {
+    @objc init(windowController: MainWindowController) {
         self.mainWindowController = windowController
 
         super.init()
@@ -47,7 +47,7 @@ import Cocoa
 
     // MARK: Actions
 
-    @IBAction func endSheetWithReturnCodeFromSenderTag(_ sender: AnyObject?) {
+    @IBAction func endSheetWithReturnCodeFromSenderTag(_ sender: Any?) {
         if let window = mainWindowController?.window,
            let sheet = window.attachedSheet,
            let senderView = sender as? NSView {
@@ -63,7 +63,7 @@ import Cocoa
     @IBOutlet private var doNotWarnOnDeleteAgainCheckbox: NSButton!
     @IBOutlet private var deleteLibraryFilesWarningSheetWindow: NSPanel!
 
-    private weak var mainWindowController: SSEMainWindowController?
+    private weak var mainWindowController: MainWindowController?
 
     private var entriesToDelete: [SSELibraryEntry] = []
 

@@ -24,7 +24,7 @@
 - (void)speciallyInitializeToolbarItem:(NSToolbarItem *)toolbarItem;
 
 // UI validation
-- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)theItem;
+//- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)theItem;
 
 // Window utility methods
 - (void)finishEditingInWindow;

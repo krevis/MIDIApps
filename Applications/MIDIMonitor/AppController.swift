@@ -103,11 +103,11 @@ extension AppController {
 
     // MARK: Menus and actions
 
-    @IBAction func showPreferences(_ sender: AnyObject?) {
+    @IBAction func showPreferences(_ sender: Any?) {
         PreferencesWindowController.sharedInstance.showWindow(nil)
     }
 
-    @IBAction func showAboutBox(_ sender: AnyObject?) {
+    @IBAction func showAboutBox(_ sender: Any?) {
         var options: [NSApplication.AboutPanelOptionKey: Any] = [:]
 
         if #available(macOS 10.13, *) {
@@ -135,7 +135,7 @@ extension AppController {
         NSApp.orderFrontStandardAboutPanel(options: options)
     }
 
-    @IBAction func showHelp(_ sender: AnyObject?) {
+    @IBAction func showHelp(_ sender: Any?) {
         var message: String?
 
         if var url = SMBundleForObject(self).url(forResource: "docs", withExtension: "htmld") {
@@ -158,7 +158,7 @@ extension AppController {
         }
     }
 
-    @IBAction func sendFeedback(_ sender: AnyObject?) {
+    @IBAction func sendFeedback(_ sender: Any?) {
         var success = false
 
         let feedbackEmailAddress = "MIDIMonitor@snoize.com"    // Don't localize this
@@ -184,7 +184,7 @@ extension AppController {
         }
     }
 
-    @IBAction func restartMIDI(_ sender: AnyObject?) {
+    @IBAction func restartMIDI(_ sender: Any?) {
         let status = MIDIRestart()
         if status != noErr {
             let message = NSLocalizedString("Rescanning the MIDI system resulted in an unexpected error (%d).", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "error message if MIDIRestart() fails")

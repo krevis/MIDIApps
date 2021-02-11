@@ -48,7 +48,7 @@ import Cocoa
 
     // MARK: Actions
 
-    @IBAction func doneRecording(_ sender: AnyObject?) {
+    @IBAction func doneRecording(_ sender: Any?) {
         midiController?.doneWithMultipleMessageListen()
         stopObservingMIDIController()
 

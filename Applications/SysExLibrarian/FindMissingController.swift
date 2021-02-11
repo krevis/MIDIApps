@@ -15,7 +15,7 @@ import SnoizeMIDI
 
 @objc class FindMissingController: NSObject {
 
-    @objc init(windowController: SSEMainWindowController, library: SSELibrary) {
+    @objc init(windowController: MainWindowController, library: SSELibrary) {
         self.mainWindowController = windowController
         self.library = library
 
@@ -36,7 +36,7 @@ import SnoizeMIDI
 
     // MARK: Private
 
-    private weak var mainWindowController: SSEMainWindowController?
+    private weak var mainWindowController: MainWindowController?
     private weak var library: SSELibrary?
 
     private var entriesWithMissingFiles: [SSELibraryEntry] = []
