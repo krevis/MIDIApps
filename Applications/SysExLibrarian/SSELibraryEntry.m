@@ -18,7 +18,7 @@
 
 @import SnoizeMIDI;
 
-#import "SSEAlias.h"
+#import "SysEx_Librarian-Swift.h"
 #import "SSELibrary.h"
 
 
@@ -31,7 +31,7 @@
 @property (nonatomic, readwrite) NSNumber *size;
 @property (nonatomic, readwrite) NSNumber *messageCount;
 
-@property (nonatomic) SSEAlias *alias;
+@property (nonatomic) Alias *alias;
 @property (nonatomic) NSData *oldAliasRecordData;
 
 @end
@@ -107,7 +107,7 @@ NSNotificationName const SSELibraryEntryNameDidChangeNotification = @"SSELibrary
 {
     BOOL wasFilePresent = _flags.hasLookedForFile && _flags.isFilePresent;
     
-    NSString *path = [_alias pathAllowingUI:NO];
+    NSString *path = [_alias pathWithAllowingUI:NO];
 
     _flags.hasLookedForFile = YES;
     _flags.isFilePresent = (path && [[NSFileManager defaultManager] fileExistsAtPath:path]);
@@ -125,7 +125,7 @@ NSNotificationName const SSELibraryEntryNameDidChangeNotification = @"SSELibrary
 
 - (void)setPath:(NSString *)value
 {
-    _alias = [[SSEAlias alloc] initWithPath:value];
+    _alias = [[Alias alloc] initWithPath:value];
     _oldAliasRecordData = nil;
 
     [self.library noteEntryChanged];
@@ -364,7 +364,7 @@ NSNotificationName const SSELibraryEntryNameDidChangeNotification = @"SSELibrary
     SMAssert(_alias == nil);
     data = [dict objectForKey:@"bookmark"];
     if (data && [data isKindOfClass:[NSData class]]) {
-        _alias = [[SSEAlias alloc] initWithData:data];
+        _alias = [[Alias alloc] initWithData:data];
     }
 
     // backwards compatibility
@@ -372,7 +372,7 @@ NSNotificationName const SSELibraryEntryNameDidChangeNotification = @"SSELibrary
     if (data && [data isKindOfClass:[NSData class]]) {
         // Use this to create an alias if we didn't already
         if (!_alias) {
-            _alias = [[SSEAlias alloc] initWithAliasRecordData:data];
+            _alias = [[Alias alloc] initWithAliasRecordData:data];
         }
         // Save this data to write out for old clients
         _oldAliasRecordData = data;

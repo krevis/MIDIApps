@@ -12,7 +12,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class SSEAlias;
 @class SSELibrary;
 @class SystemExclusiveMessage;
 

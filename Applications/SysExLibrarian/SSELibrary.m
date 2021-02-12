@@ -14,7 +14,6 @@
 
 @import SnoizeMIDI;
 
-#import "SSEAlias.h"
 #import "SSELibraryEntry.h"
 #import "NSString+SymlinksAndAliases.h"
 #import "SysEx_Librarian-Swift.h"
@@ -119,12 +118,12 @@ NSString * const SSESysExFileExtension = @"syx";
 
     NSData *bookmarkData = [[NSUserDefaults standardUserDefaults] dataForKey:SSELibraryFileDirectoryBookmarkPreferenceKey];
     if (bookmarkData) {
-        path = [[SSEAlias aliasWithData:bookmarkData] path];
+        path = [[[[Alias alloc] initWithData:bookmarkData] autorelease] path];
     }
     else {
         NSData *aliasData = [[NSUserDefaults standardUserDefaults] dataForKey:SSELibraryFileDirectoryAliasPreferenceKey];
         if (aliasData) {
-            path = [[SSEAlias aliasWithAliasRecordData:aliasData] path];
+            path = [[[[Alias alloc] initWithAliasRecordData:aliasData] autorelease] path];
         }
         else {
             path = [[NSUserDefaults standardUserDefaults] stringForKey:SSELibraryFileDirectoryPathPreferenceKey];
@@ -149,7 +148,7 @@ NSString * const SSESysExFileExtension = @"syx";
 
 - (void)setFileDirectoryPath:(NSString *)newPath
 {
-    SSEAlias *alias = [SSEAlias aliasWithPath:newPath];
+    Alias *alias = [[Alias alloc] initWithPath:newPath];
     SMAssert([alias path] != nil);
 
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -157,6 +156,8 @@ NSString * const SSESysExFileExtension = @"syx";
     // Clear anything that might have been in old SSELibraryFileDirectoryAliasPreferenceKey. if someone runs an old version of the app, let it fall back via the path.
     [defaults setObject:nil forKey:SSELibraryFileDirectoryAliasPreferenceKey];
     [defaults setObject:newPath forKey:SSELibraryFileDirectoryPathPreferenceKey];
+
+    [alias release];
 }
 
 - (BOOL)isPathInFileDirectory:(NSString *)path
