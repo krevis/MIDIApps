@@ -173,6 +173,51 @@ extension GeneralWindowController: NSToolbarDelegate {
 
 }
 
+extension NSToolbarItem {
+
+    fileprivate func takeValues(itemInfo: [String: Any], target: AnyObject?) {
+        if let string = itemInfo["label"] as? String {
+            self.label = string
+        }
+
+        if let string = itemInfo["toolTip"] as? String {
+            self.toolTip = string
+        }
+
+        if let string = itemInfo["paletteLabel"] as? String {
+            self.paletteLabel = string
+        }
+
+        self.target = {
+            if let string = itemInfo["target"] as? String {
+                if string == "FirstResponder" {
+                    return nil
+                }
+                else {
+                    let selector = Selector(string)
+                    if let nonNilTarget = target, nonNilTarget.responds(to: selector) {
+                        return nonNilTarget.perform(selector)?.takeUnretainedValue()
+                    }
+                    else {
+                        return nil
+                    }
+                }
+            }
+
+            return target   // default if not otherwise specified
+        }()
+
+        if let string = itemInfo["action"] as? String {
+            self.action = Selector(string)
+        }
+
+        if let string = itemInfo["imageName"] as? String {
+            self.image = NSImage(named: string)
+        }
+    }
+
+}
+
 extension GeneralWindowController /* Private */ {
 
     // Window stuff

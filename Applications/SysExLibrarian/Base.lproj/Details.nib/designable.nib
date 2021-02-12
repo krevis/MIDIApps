@@ -36,7 +36,7 @@
                                     <rect key="frame" x="1" y="0.0" width="467" height="103"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="32" floatsGroupRows="NO" id="10" customClass="SSETableView">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="32" floatsGroupRows="NO" id="10" customClass="GeneralTableView" customModule="SysEx_Librarian" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="467" height="86"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="2"/>

@@ -253,9 +253,10 @@ import SnoizeMIDI
     }
 
     func synchronizeLibrarySortIndicator() {
-        let column = libraryTableView.tableColumn(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: sortColumnIdentifier))
-        libraryTableView.setSortColumn(column, isAscending: isSortAscending)
-        libraryTableView.highlightedTableColumn = column
+        if let column = libraryTableView.tableColumn(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: sortColumnIdentifier)) {
+            libraryTableView.setSortColumn(column, isAscending: isSortAscending)
+            libraryTableView.highlightedTableColumn = column
+        }
     }
 
     func synchronizeLibrary() {
@@ -332,7 +333,7 @@ import SnoizeMIDI
 
     // MARK: Private
     @IBOutlet private var destinationPopUpButton: NSPopUpButton!
-    @IBOutlet private var libraryTableView: SSETableView!
+    @IBOutlet private var libraryTableView: GeneralTableView!
     @IBOutlet private var programChangeTableColumn: NSTableColumn!
 
     // Library
@@ -384,7 +385,7 @@ extension MainWindowController /* NSUserInterfaceValidations */ {
 
 }
 
-extension MainWindowController: SSETableViewDataSource {
+extension MainWindowController: GeneralTableViewDataSource {
 
     // NSTableViewDataSource
 
@@ -463,24 +464,24 @@ extension MainWindowController: SSETableViewDataSource {
 
     }
 
-    // SSETableViewDataSource
+    // GeneralTableViewDataSource
 
-    func tableView(_ tableView: SSETableView!, deleteRows rows: IndexSet!) {
+    func tableView(_ tableView: GeneralTableView, deleteRows rows: IndexSet) {
         delete(tableView)
     }
 
-    func tableView(_ tableView: SSETableView!, draggingEntered sender: NSDraggingInfo!) -> NSDragOperation {
+    func tableView(_ tableView: GeneralTableView, draggingEntered sender: NSDraggingInfo) -> NSDragOperation {
         // TODO Use new method of getting files as above
         let maybeFilePaths = sender.draggingPasteboard.propertyList(forType: NSPasteboard.PasteboardType("NSFilenamesPboardType"))
         if let filePaths = maybeFilePaths as? [String], areAnyFilesAcceptableForImport(filePaths) {
-            return .generic
+            return .copy
         }
         else {
             return []
         }
     }
 
-    func tableView(_ tableView: SSETableView!, performDragOperation sender: NSDraggingInfo!) -> Bool {
+    func tableView(_ tableView: GeneralTableView, performDragOperation sender: NSDraggingInfo) -> Bool {
         // TODO Use new method of getting files as above
         let maybeFilePaths = sender.draggingPasteboard.propertyList(forType: NSPasteboard.PasteboardType("NSFilenamesPboardType"))
         if let filePaths = maybeFilePaths as? [String] {
@@ -494,7 +495,7 @@ extension MainWindowController: SSETableViewDataSource {
 
 }
 
-extension MainWindowController: SSETableViewDelegate {
+extension MainWindowController: GeneralTableViewDelegate {
 
     // NSTableViewDelegate
 
@@ -552,9 +553,9 @@ extension MainWindowController: SSETableViewDelegate {
         }
     }
 
-    // SSETableViewDelegate
+    // GeneralTableViewDelegate
 
-    func tableViewKeyDownReceivedSpace(_ tableView: SSETableView!) -> Bool {
+    func tableViewKeyDownReceivedSpace(_ tableView: GeneralTableView) -> Bool {
         // Space key is used as a shortcut for -play:
         play(nil)
         return true
