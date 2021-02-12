@@ -81,22 +81,8 @@ import SnoizeMIDI
 
     override func windowDidLoad() {
         super.windowDidLoad()
+        loadToolbar()
         synchronizeInterface()
-    }
-
-    override func speciallyInitializeToolbarItem(_ toolbarItem: NSToolbarItem!) {
-        destinationToolbarItem = toolbarItem
-
-        toolbarItem.view = destinationPopUpButton
-
-        let height = destinationPopUpButton.frame.size.height
-        toolbarItem.minSize = NSSize(width: 150, height: height)
-        toolbarItem.maxSize = NSSize(width: 1000, height: height)
-
-        let menuTitle = NSLocalizedString("Destination", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "title of destination toolbar item")
-        let menuItem = NSMenuItem(title: menuTitle, action: nil, keyEquivalent: "")
-        menuItem.submenu = NSMenu(title: "")
-        toolbarItem.menuFormRepresentation = menuItem
     }
 
     override var firstResponderWhenNotEditing: NSResponder? {
@@ -806,4 +792,87 @@ extension MainWindowController /* Private */ {
             findMissingController.findMissingFiles(forEntries: entriesWithMissingFiles, completion: successfulCompletion)
         }
     }
+}
+
+extension MainWindowController: NSToolbarDelegate {
+
+    private func loadToolbar() {
+        guard let toolbarName = windowNibName else { return }
+
+        // The new Unified toolbar style doesn't leave much room for items, so use the old Expanded version
+        // with the toolbar items under the title
+        if #available(macOS 11.0, *) {
+            window?.toolbarStyle = .expanded
+        }
+
+        let toolbar = NSToolbar(identifier: toolbarName)
+        toolbar.allowsUserCustomization = false
+        toolbar.autosavesConfiguration = true
+        toolbar.delegate = self
+        window?.toolbar = toolbar
+    }
+
+    func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
+        [
+            NSToolbarItem.Identifier("Play"),
+            .space,
+            NSToolbarItem.Identifier("DestinationPopup"),
+            .flexibleSpace,
+            NSToolbarItem.Identifier("RecordOne"),
+            NSToolbarItem.Identifier("RecordMany")
+        ]
+    }
+
+    func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
+        toolbarDefaultItemIdentifiers(toolbar)
+    }
+
+    func toolbar(_ toolbar: NSToolbar, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier, willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem? {
+        let toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier)
+        toolbarItem.isEnabled = true
+
+        switch itemIdentifier.rawValue {
+        case "Play":
+            toolbarItem.label = "Play"
+            toolbarItem.action = #selector(play(_:))
+            toolbarItem.image = NSImage(named: "ToolbarPlayTemplate")
+            toolbarItem.toolTip = "Play back the selected file(s)"
+
+        case "DestinationPopup":
+            toolbarItem.label = "Destination"
+            toolbarItem.action = #selector(play(_:))
+            toolbarItem.image = NSImage(named: "ToolbarPlayTemplate")
+            toolbarItem.toolTip = "Where to send SysEx data"
+
+            destinationToolbarItem = toolbarItem
+
+            toolbarItem.view = destinationPopUpButton
+            let height = destinationPopUpButton.frame.size.height
+            toolbarItem.minSize = NSSize(width: 150, height: height)
+            toolbarItem.maxSize = NSSize(width: 1000, height: height)
+
+            let menuTitle = NSLocalizedString("Destination", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "title of destination toolbar item")
+            let menuItem = NSMenuItem(title: menuTitle, action: nil, keyEquivalent: "")
+            menuItem.submenu = NSMenu(title: "")
+            toolbarItem.menuFormRepresentation = menuItem
+
+        case "RecordOne":
+            toolbarItem.label = "Record One"
+            toolbarItem.action = #selector(recordOne(_:))
+            toolbarItem.image = NSImage(named: "ToolbarRecordOneTemplate")
+            toolbarItem.toolTip = "Record one SysEx message"
+
+        case "RecordMany":
+            toolbarItem.label = "Record Many"
+            toolbarItem.action = #selector(recordMany(_:))
+            toolbarItem.image = NSImage(named: "ToolbarRecordMultipleTemplate")
+            toolbarItem.toolTip = "Record one or more SysEx messages"
+
+        default:
+            break
+        }
+
+        return toolbarItem
+    }
+
 }

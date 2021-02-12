@@ -48,18 +48,6 @@ class GeneralWindowController: NSWindowController {
 
         // Make sure that we are the window's delegate (it might not have been set in the nib)
         window?.delegate = self
-
-        // The new Unified toolbar style doesn't leave much room for items, so use the old Expanded version
-        // with the toolbar items under the title
-        if #available(macOS 11.0, *) {
-            window?.toolbarStyle = .expanded
-        }
-
-        loadToolbar(name: windowNibName) // Might fail, that's OK
-    }
-
-    func speciallyInitializeToolbarItem(_ toolbarItem: NSToolbarItem) {
-        // Subclasses should override to do something special to this item (like set up a view).
     }
 
     // Window utility methods
@@ -101,9 +89,6 @@ class GeneralWindowController: NSWindowController {
     // MARK: Private
 
     let privateUndoManager = UndoManager()
-    var toolbarItemInfo: [NSToolbarItem.Identifier: Any]?
-    var defaultToolbarItemIdentifiers: [NSToolbarItem.Identifier]?
-    var allowedToolbarItemIdentifiers: [NSToolbarItem.Identifier]?
 
 }
 
@@ -145,79 +130,6 @@ extension GeneralWindowController: NSWindowDelegate {
 
 }
 
-extension GeneralWindowController: NSToolbarDelegate {
-
-    func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        defaultToolbarItemIdentifiers ?? []
-    }
-
-    func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        allowedToolbarItemIdentifiers ?? []
-    }
-
-    func toolbar(_ toolbar: NSToolbar, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier, willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem? {
-        let toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier)
-        toolbarItem.label = itemIdentifier.rawValue
-        toolbarItem.isEnabled = true
-
-        if let itemInfo = toolbarItemInfo?[itemIdentifier] as? [String: Any] {
-            toolbarItem.takeValues(itemInfo: itemInfo, target: self)
-
-            if itemInfo["needsSpecialInitialization"] != nil {
-                speciallyInitializeToolbarItem(toolbarItem)
-            }
-        }
-
-        return toolbarItem
-    }
-
-}
-
-extension NSToolbarItem {
-
-    fileprivate func takeValues(itemInfo: [String: Any], target: AnyObject?) {
-        if let string = itemInfo["label"] as? String {
-            self.label = string
-        }
-
-        if let string = itemInfo["toolTip"] as? String {
-            self.toolTip = string
-        }
-
-        if let string = itemInfo["paletteLabel"] as? String {
-            self.paletteLabel = string
-        }
-
-        self.target = {
-            if let string = itemInfo["target"] as? String {
-                if string == "FirstResponder" {
-                    return nil
-                }
-                else {
-                    let selector = Selector(string)
-                    if let nonNilTarget = target, nonNilTarget.responds(to: selector) {
-                        return nonNilTarget.perform(selector)?.takeUnretainedValue()
-                    }
-                    else {
-                        return nil
-                    }
-                }
-            }
-
-            return target   // default if not otherwise specified
-        }()
-
-        if let string = itemInfo["action"] as? String {
-            self.action = Selector(string)
-        }
-
-        if let string = itemInfo["imageName"] as? String {
-            self.image = NSImage(named: string)
-        }
-    }
-
-}
-
 extension GeneralWindowController /* Private */ {
 
     // Window stuff
@@ -228,26 +140,6 @@ extension GeneralWindowController /* Private */ {
         if let window = window {
             window.saveFrame(usingName: window.frameAutosaveName)
         }
-    }
-
-    // Toolbars
-
-    private func loadToolbar(name toolbarName: String?) {
-        // If we have a plist specifying a toolbar, then add one to the window.
-        guard let toolbarName = toolbarName,
-              let toolbarFilePath = Bundle.main.path(forResource: toolbarName, ofType: "toolbar"),
-              let toolbarPropertyList = NSDictionary(contentsOfFile: toolbarFilePath)
-              else { return }
-
-        toolbarItemInfo = toolbarPropertyList["itemInfoByIdentifier"] as? [NSToolbarItem.Identifier: Any]
-        defaultToolbarItemIdentifiers = toolbarPropertyList["defaultItemIdentifiers"] as? [NSToolbarItem.Identifier]
-        allowedToolbarItemIdentifiers = toolbarPropertyList["allowedItemIdentifiers"] as? [NSToolbarItem.Identifier]
-
-        let toolbar = NSToolbar(identifier: toolbarName)
-        toolbar.allowsUserCustomization = false
-        toolbar.autosavesConfiguration = true
-        toolbar.delegate = self
-        window?.toolbar = toolbar
     }
 
 }

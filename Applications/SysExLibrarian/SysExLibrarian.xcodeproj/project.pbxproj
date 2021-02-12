@@ -50,7 +50,6 @@
 		16F0335B0984B76F006C8A44 /* LibraryDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = F57D1E5C02127DF401000164 /* LibraryDocument.icns */; };
 		16F0335C0984B76F006C8A44 /* MIDIDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = F57D1E5D02127DF401000164 /* MIDIDocument.icns */; };
 		16F0335D0984B76F006C8A44 /* SysExDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = F57D1E5B02127DF401000164 /* SysExDocument.icns */; };
-		16F0335F0984B76F006C8A44 /* MainWindow.toolbar in Resources */ = {isa = PBXBuildFile; fileRef = F587526F0214CEDD01000164 /* MainWindow.toolbar */; };
 		16F033600984B76F006C8A44 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		16F033630984B76F006C8A44 /* docs.htmld in Resources */ = {isa = PBXBuildFile; fileRef = F5D90FE4021630C101000164 /* docs.htmld */; };
 		16F033640984B76F006C8A44 /* Details.nib in Resources */ = {isa = PBXBuildFile; fileRef = F5F52C15022015AC01000164 /* Details.nib */; };
@@ -238,7 +237,6 @@
 		169225ED25C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Delete.nib; sourceTree = "<group>"; };
 		169225EE25C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Import.nib; sourceTree = "<group>"; };
 		169225EF25C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		169225F025C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text; name = en; path = en.lproj/MainWindow.toolbar; sourceTree = "<group>"; };
 		169225F125C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SysExLibrarian.strings; sourceTree = "<group>"; };
 		169225F225C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.htmld; name = en; path = en.lproj/docs.htmld; sourceTree = "<group>"; };
 		169B7A1F25CA729900C9BB81 /* SysExSpeedController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SysExSpeedController.swift; sourceTree = "<group>"; };
@@ -434,7 +432,6 @@
 				F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				F5308FEB0233012701000164 /* Icons */,
-				F587526F0214CEDD01000164 /* MainWindow.toolbar */,
 				F5308FEC0233012701000164 /* Toolbar Images */,
 				F5D90FE4021630C101000164 /* docs.htmld */,
 				161B721215D8EA13006E21D4 /* dsa_pub.pem */,
@@ -747,7 +744,6 @@
 				16F0335B0984B76F006C8A44 /* LibraryDocument.icns in Resources */,
 				16F0335C0984B76F006C8A44 /* MIDIDocument.icns in Resources */,
 				16F0335D0984B76F006C8A44 /* SysExDocument.icns in Resources */,
-				16F0335F0984B76F006C8A44 /* MainWindow.toolbar in Resources */,
 				16F033600984B76F006C8A44 /* Credits.rtf in Resources */,
 				16F033630984B76F006C8A44 /* docs.htmld in Resources */,
 				16F033640984B76F006C8A44 /* Details.nib in Resources */,
@@ -922,14 +918,6 @@
 				169225E925C2B03300771B4F /* Base */,
 			);
 			name = MainWindow.nib;
-			sourceTree = "<group>";
-		};
-		F587526F0214CEDD01000164 /* MainWindow.toolbar */ = {
-			isa = PBXVariantGroup;
-			children = (
-				169225F025C2B04800771B4F /* en */,
-			);
-			name = MainWindow.toolbar;
 			sourceTree = "<group>";
 		};
 		F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */ = {
