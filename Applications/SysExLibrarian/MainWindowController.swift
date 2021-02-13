@@ -784,7 +784,7 @@ extension MainWindowController /* Private */ {
                     return true
                 }
 
-                if fileManager.isReadableFile(atPath: filePath) && library.typeOfFile(atPath: filePath) != LibraryFileType.unknown {
+                if fileManager.isReadableFile(atPath: filePath) && library.typeOfFile(atPath: filePath) != .unknown {
                     return true
                 }
             }

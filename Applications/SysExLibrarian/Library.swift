@@ -13,13 +13,6 @@
 import Cocoa
 import SnoizeMIDI
 
-// TODO Move this to be nested under Library
-@objc enum LibraryFileType: Int {
-    case raw
-    case standardMIDI
-    case unknown
-}
-
 @objc class Library: NSObject {
 
     static var shared = Library()
@@ -113,8 +106,6 @@ import SnoizeMIDI
     }
 
     func addNewEntry(sysexData: Data) throws -> LibraryEntry? {
-        // TODO Used to return an error
-
         let fileManager = FileManager.default
 
         // ensure the file directory exists; if not we can't write there
@@ -140,14 +131,9 @@ import SnoizeMIDI
         }
 
         let entry = addEntry(forFile: uniqueNewFilePath)
-        // TODO We will write out the file and then soon afterwards read it in again to get the messages. Pretty inefficient.
+        // Someday: We write out the file, and then soon afterwards will read it again to get the messages. Pretty inefficient.
 
         return entry
-    }
-
-    func removeEntry(_ entry: LibraryEntry) {
-        // TODO Get rid of this?
-        removeEntries([entry])
     }
 
     func removeEntries(_ entriesToRemove: [LibraryEntry]) {
@@ -218,9 +204,15 @@ import SnoizeMIDI
     }
 
     let allowedFileTypes: [String]
-        // TODO maybe return some other type
+        // Should be [UTType], someday, when we can require macOS 11.0
 
-    func typeOfFile(atPath path: String) -> LibraryFileType {
+    enum FileType {
+        case raw
+        case standardMIDI
+        case unknown
+    }
+
+    func typeOfFile(atPath path: String) -> FileType {
         guard !path.isEmpty else { return .unknown }
 
         var fileType = NSString(string: path).pathExtension
@@ -240,8 +232,6 @@ import SnoizeMIDI
     }
 
     func findEntries(forFilePaths filePaths: [String]) -> ([LibraryEntry], [String]) {
-        // TODO Change caller to accept tuple
-
         var entriesByFilePath: [String: LibraryEntry] = [:]
         for entry in entries {
             if let filePath = entry.path {
