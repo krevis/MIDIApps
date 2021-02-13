@@ -68,12 +68,11 @@ import Cocoa
         openPanel.canChooseFiles = false
         openPanel.allowsMultipleSelection = false
 
-        guard let oldPath = SSELibrary.shared()?.fileDirectoryPath() else { return }
-        openPanel.directoryURL = NSURL(fileURLWithPath: oldPath, isDirectory: true) as URL
+        openPanel.directoryURL = NSURL(fileURLWithPath: Library.shared.fileDirectoryPath, isDirectory: true) as URL
         openPanel.beginSheetModal(for: window!) { result in
             if result == .OK && openPanel.urls.count == 1,
                let url = openPanel.urls.first {
-                SSELibrary.shared()?.setFileDirectoryPath(url.path)
+                Library.shared.fileDirectoryPath = url.path
                 self.synchronizeControls()
             }
         }
@@ -153,7 +152,7 @@ extension PreferencesWindowController /* Private */ {
         let defaults = UserDefaults.standard
 
         sizeFormatMatrix.selectCell(withTag: defaults.bool(forKey: MainWindowController.abbreviateFileSizesInLibraryTableViewPreferenceKey) ? 1 : 0)
-        sysExFolderPathField.stringValue = SSELibrary.shared()!.fileDirectoryPath()
+        sysExFolderPathField.stringValue = Library.shared.fileDirectoryPath
         sysExReadTimeOutSlider.integerValue = defaults.integer(forKey: MIDIController.sysExReadTimeOutPreferenceKey)
         listenForProgramChangesButton.integerValue = defaults.bool(forKey: MIDIController.listenForProgramChangesPreferenceKey) ? 1 : 0
         interruptOnProgramChangeButton.integerValue = defaults.bool(forKey: MIDIController.interruptOnProgramChangePreferenceKey) ? 1 : 0

@@ -15,7 +15,7 @@ import SnoizeMIDI
 
 @objc class DetailsWindowController: GeneralWindowController {
 
-    static func showWindow(forEntry entry: SSELibraryEntry) {
+    static func showWindow(forEntry entry: LibraryEntry) {
         var controller = controllers.first(where: { $0.entry == entry })
         if controller == nil {
             let newController = DetailsWindowController(entry: entry)
@@ -26,15 +26,15 @@ import SnoizeMIDI
         controller?.showWindow(nil)
     }
 
-    init(entry: SSELibraryEntry) {
+    init(entry: LibraryEntry) {
         self.entry = entry
-        self.cachedMessages = entry.messages ?? []
+        self.cachedMessages = entry.messages
 
         super.init(window: nil)
         shouldCascadeWindows = true
 
-        NotificationCenter.default.addObserver(self, selector: #selector(self.entryWillBeRemoved(_:)), name: .SSELibraryEntryWillBeRemoved, object: entry)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.entryNameDidChange(_:)), name: .SSELibraryEntryNameDidChange, object: entry)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.entryWillBeRemoved(_:)), name: .libraryEntryWillBeRemoved, object: entry)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.entryNameDidChange(_:)), name: .libraryEntryNameDidChange, object: entry)
     }
 
     required init?(coder: NSCoder) {
@@ -78,7 +78,7 @@ import SnoizeMIDI
     // MARK: Private
 
     static private var controllers: [DetailsWindowController] = []
-    private let entry: SSELibraryEntry
+    private let entry: LibraryEntry
     private let cachedMessages: [SystemExclusiveMessage]
 
     @IBOutlet private var messagesTableView: NSTableView!
@@ -99,8 +99,8 @@ import SnoizeMIDI
     }
 
     private func synchronizeTitle() {
-        window?.title = entry.name
-        window?.representedFilename = entry.path
+        window?.title = entry.name ?? ""
+        window?.representedFilename = entry.path ?? ""
     }
 
     @objc private func entryWillBeRemoved(_ notification: Notification) {

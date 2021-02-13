@@ -41,7 +41,7 @@ import SnoizeMIDI
         // Otherwise, we expect a different notification so that sendWillStart() will be called.
     }
 
-    @objc func playMessages(inEntryForProgramChange entry: SSELibraryEntry) {
+    @objc func playMessages(inEntryForProgramChange entry: LibraryEntry) {
         if !transmitting {
             // Normal case. Nothing is being transmitted, so just remember the current
             // entry and play the messages in it.
@@ -82,7 +82,7 @@ import SnoizeMIDI
     @IBOutlet private var progressMessageField: NSTextField!
     @IBOutlet private var progressBytesField: NSTextField!
 
-    private var currentEntry: SSELibraryEntry? {
+    private var currentEntry: LibraryEntry? {
         didSet {
             if let newCurrentEntry = currentEntry {
                 mainWindowController?.selectedEntries = [newCurrentEntry]
@@ -90,7 +90,7 @@ import SnoizeMIDI
         }
     }
 
-    private var queuedEntry: SSELibraryEntry?
+    private var queuedEntry: LibraryEntry?
 
     private var transmitting = false
     private var scheduledProgressUpdate = false

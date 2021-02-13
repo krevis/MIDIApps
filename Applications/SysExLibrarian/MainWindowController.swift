@@ -18,12 +18,12 @@ import SnoizeMIDI
     @objc static var shared = MainWindowController()
 
     init() {
-        self.library = SSELibrary.shared()
+        self.library = Library.shared
 
         super.init(window: nil)
 
         let center = NotificationCenter.default
-        center.addObserver(self, selector: #selector(libraryDidChange(_:)), name: .SSELibraryDidChange, object: library)
+        center.addObserver(self, selector: #selector(libraryDidChange(_:)), name: .libraryDidChange, object: library)
         center.addObserver(self, selector: #selector(displayPreferencesDidChange(_:)), name: .displayPreferenceChanged, object: nil)
         center.addObserver(self, selector: #selector(listenForProgramChangesDidChange(_:)), name: .listenForProgramChangesPreferenceChanged, object: nil)
         center.addObserver(self, selector: #selector(programChangeBaseIndexDidChange(_:)), name: .programChangeBaseIndexPreferenceChanged, object: nil)
@@ -172,7 +172,7 @@ import SnoizeMIDI
 
             // Make sure that the file really exists right now before we try to rename it
             if let entry = selectedEntries.first,
-               entry.isFilePresentIgnoringCachedValue() {
+               entry.isFilePresentIgnoringCachedValue {
                 libraryTableView.editColumn(columnIndex, row: libraryTableView.selectedRow, with: nil, select: true)
             }
             else {
@@ -265,7 +265,7 @@ import SnoizeMIDI
         importController.importFiles(filePaths, showingProgress: showingProgress)
     }
 
-    func showNewEntries(_ newEntries: [SSELibraryEntry]) {
+    func showNewEntries(_ newEntries: [LibraryEntry]) {
         synchronizeLibrary()
         selectedEntries = newEntries
         scrollToEntries(newEntries)
@@ -275,8 +275,9 @@ import SnoizeMIDI
         guard let allSysexData = SystemExclusiveMessage.data(forMessages: midiController.messages) else { return }
 
         do {
-            let entry = try library.addNewEntry(with: allSysexData)
-            showNewEntries([entry])
+            if let entry = try library.addNewEntry(sysexData: allSysexData) {
+                showNewEntries([entry])
+            }
         }
         catch {
             guard let window = window else { return }
@@ -293,14 +294,14 @@ import SnoizeMIDI
     }
 
     func playEntry(withProgramNumber desiredProgramNumber: UInt8) {
-        if let entry = sortedLibraryEntries.first(where: { $0.programNumber.uint8Value == desiredProgramNumber }) {
+        if let entry = sortedLibraryEntries.first(where: { $0.programNumber == desiredProgramNumber }) {
             playController.playMessages(inEntryForProgramChange: entry)
         }
     }
 
-    var selectedEntries: [SSELibraryEntry] {
+    var selectedEntries: [LibraryEntry] {
         get {
-            var selectedEntries: [SSELibraryEntry] = []
+            var selectedEntries: [LibraryEntry] = []
             for rowIndex in libraryTableView.selectedRowIndexes
             where rowIndex < sortedLibraryEntries.count {
                 selectedEntries.append(sortedLibraryEntries[rowIndex])
@@ -323,8 +324,8 @@ import SnoizeMIDI
     @IBOutlet private var programChangeTableColumn: NSTableColumn!
 
     // Library
-    private let library: SSELibrary
-    private var sortedLibraryEntries: [SSELibraryEntry] = []
+    private let library: Library
+    private var sortedLibraryEntries: [LibraryEntry] = []
 
     // Subcontrollers
     private var midiController: MIDIController!
@@ -361,7 +362,7 @@ extension MainWindowController /* NSUserInterfaceValidations */ {
             return libraryTableView.numberOfSelectedRows > 0
         case #selector(showFileInFinder(_:)),
              #selector(rename(_:)):
-            return libraryTableView.numberOfSelectedRows == 1 && selectedEntries.first!.isFilePresent()
+            return libraryTableView.numberOfSelectedRows == 1 && selectedEntries.first!.isFilePresent
         case #selector(changeProgramNumber(_:)):
             return libraryTableView.numberOfSelectedRows == 1 && programChangeTableColumn.tableView != nil
         default:
@@ -390,18 +391,23 @@ extension MainWindowController: GeneralTableViewDataSource {
         case "manufacturer":
             return entry.manufacturer
         case "size":
-            if UserDefaults.standard.bool(forKey: Self.abbreviateFileSizesInLibraryTableViewPreferenceKey) {
-                return String.abbreviatedByteCount(entry.size.intValue)
+            if let size = entry.size {
+                if UserDefaults.standard.bool(forKey: Self.abbreviateFileSizesInLibraryTableViewPreferenceKey) {
+                    return String.abbreviatedByteCount(size)
+                }
+                else {
+                    return "\(size)"
+                }
             }
             else {
-                return entry.size.stringValue
+                return ""
             }
         case "messageCount":
             return entry.messageCount
         case "programNumber":
             if let programNumber = entry.programNumber {
                 let baseIndex = UserDefaults.standard.integer(forKey: MIDIController.programChangeBaseIndexPreferenceKey)
-                return baseIndex + programNumber.intValue
+                return baseIndex + Int(programNumber)
             }
             else {
                 return nil
@@ -420,7 +426,7 @@ extension MainWindowController: GeneralTableViewDataSource {
         switch tableColumn.identifier.rawValue {
         case "name":
             if let newName = object as? String {
-                if !entry.renameFile(to: newName) {
+                if !entry.renameFile(newName) {
                     if let window = window {
                         let alert = NSAlert()
                         alert.messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "title of error alert")
@@ -431,7 +437,7 @@ extension MainWindowController: GeneralTableViewDataSource {
             }
 
         case "programNumber":
-            var newProgramNumber: NSNumber?
+            var newProgramNumber: UInt8?
             if let newNumber = object as? NSNumber {
                 var intValue = newNumber.intValue
 
@@ -439,7 +445,7 @@ extension MainWindowController: GeneralTableViewDataSource {
                 intValue -= baseIndex
 
                 if (0...127).contains(intValue) {
-                    newProgramNumber = NSNumber(value: intValue)
+                    newProgramNumber = UInt8(intValue)
                 }
             }
             entry.programNumber = newProgramNumber
@@ -491,7 +497,7 @@ extension MainWindowController: GeneralTableViewDelegate {
         let entry = sortedLibraryEntries[row]
 
         let color: NSColor
-        if entry.isFilePresent() {
+        if entry.isFilePresent {
             if #available(macOS 10.14, *) {
                 color = NSColor.labelColor
             }
@@ -531,7 +537,7 @@ extension MainWindowController: GeneralTableViewDelegate {
 
         switch tableColumn.identifier.rawValue {
         case "name":
-            return sortedLibraryEntries[row].isFilePresent()
+            return sortedLibraryEntries[row].isFilePresent
         case "programNumber":
             return true
         default:
@@ -689,29 +695,35 @@ extension MainWindowController /* Private */ {
     }
 
     private func sortLibraryEntries() {
-        if let entries = library.entries() {
-            let sortedEntries = entries.sorted(by: { (entry1, entry2) -> Bool in
-                switch sortColumnIdentifier {
-                case "name":
-                    return entry1.name < entry2.name
-                case "manufacturer":
-                    return entry1.manufacturer < entry2.manufacturer
-                case "size":
-                    return entry1.size.intValue < entry2.size.intValue
-                case "messageCount":
-                    return entry1.messageCount.intValue < entry2.messageCount.intValue
-                case "programNumber":
-                    return entry1.programNumber.intValue < entry2.programNumber.intValue
-                default:
-                    fatalError()
+        let sortedEntries = library.entries.sorted(by: { (entry1, entry2) -> Bool in
+            switch sortColumnIdentifier {
+            case "name":
+                return (entry1.name ?? "") < (entry2.name ?? "")
+            case "manufacturer":
+                return (entry1.manufacturer ?? "") < (entry2.manufacturer ?? "")
+            case "size":
+                return (entry1.size ?? -1) < (entry2.size ?? -1)
+            case "messageCount":
+                return (entry1.messageCount ?? 0) < (entry2.messageCount ?? 0)
+            case "programNumber":
+                func massagedProgramNumber(entry: LibraryEntry) -> Int {
+                    if let value = entry.programNumber {
+                        return Int(value)
+                    }
+                    else {
+                        return -1
+                    }
                 }
-            })
+                return massagedProgramNumber(entry: entry1) < massagedProgramNumber(entry: entry2)
+            default:
+                fatalError()
+            }
+        })
 
-            self.sortedLibraryEntries = isSortAscending ? sortedEntries : sortedEntries.reversed()
-        }
+        self.sortedLibraryEntries = isSortAscending ? sortedEntries : sortedEntries.reversed()
     }
 
-    private func scrollToEntries(_ entries: [SSELibraryEntry]) {
+    private func scrollToEntries(_ entries: [LibraryEntry]) {
         guard entries.count > 0 else { return }
 
         var lowestRow = Int.max
@@ -772,7 +784,7 @@ extension MainWindowController /* Private */ {
                     return true
                 }
 
-                if fileManager.isReadableFile(atPath: filePath) && library.typeOfFile(atPath: filePath) != SSELibraryFileType.unknown {
+                if fileManager.isReadableFile(atPath: filePath) && library.typeOfFile(atPath: filePath) != LibraryFileType.unknown {
                     return true
                 }
             }
@@ -784,7 +796,7 @@ extension MainWindowController /* Private */ {
     // MARK: Finding missing files
 
     private func findMissingFilesThen(successfulCompletion: @escaping (() -> Void)) {
-        let entriesWithMissingFiles = selectedEntries.filter { !$0.isFilePresentIgnoringCachedValue() }
+        let entriesWithMissingFiles = selectedEntries.filter { !$0.isFilePresentIgnoringCachedValue }
         if entriesWithMissingFiles.count == 0 {
             successfulCompletion()
         }

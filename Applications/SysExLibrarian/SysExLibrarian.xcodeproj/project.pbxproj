@@ -33,6 +33,8 @@
 		1686427E25D1195600A8B292 /* PlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686427D25D1195600A8B292 /* PlayController.swift */; };
 		169B7A2025CA729900C9BB81 /* SysExSpeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169B7A1F25CA729900C9BB81 /* SysExSpeedController.swift */; };
 		16B736C225D66C07000DAC58 /* Alias.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736C125D66C07000DAC58 /* Alias.swift */; };
+		16B736C425D7366D000DAC58 /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736C325D7366D000DAC58 /* Library.swift */; };
+		16B736C625D7773B000DAC58 /* LibraryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736C525D7773B000DAC58 /* LibraryEntry.swift */; };
 		16C43B9725C4EB00007A3A48 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43B9625C4EB00007A3A48 /* main.swift */; };
 		16C43BBA25C4F637007A3A48 /* Data+Hashing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43BB925C4F637007A3A48 /* Data+Hashing.swift */; };
 		16C43BBC25C52954007A3A48 /* Destination+OutputStreamDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43BBB25C52954007A3A48 /* Destination+OutputStreamDestination.swift */; };
@@ -59,8 +61,6 @@
 		16F033690984B76F006C8A44 /* Delete.nib in Resources */ = {isa = PBXBuildFile; fileRef = F53090060233385B01000164 /* Delete.nib */; };
 		16F0336A0984B76F006C8A44 /* Import.nib in Resources */ = {isa = PBXBuildFile; fileRef = F530900E023350F901000164 /* Import.nib */; };
 		16F0336B0984B76F006C8A44 /* SysExLibrarian.strings in Resources */ = {isa = PBXBuildFile; fileRef = F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */; };
-		16F033730984B76F006C8A44 /* SSELibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = F583CEB501EE3D3801000164 /* SSELibrary.m */; };
-		16F033740984B76F006C8A44 /* SSELibraryEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = F583CEB901EE3E4401000164 /* SSELibraryEntry.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		16F0338A0984B76F006C8A44 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		16F0338B0984B76F006C8A44 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F559F8FA01DEC0C601000164 /* CoreMIDI.framework */; };
 		16F0338D0984B76F006C8A44 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F539E386020F2C2F01000164 /* Carbon.framework */; };
@@ -239,6 +239,8 @@
 		169225F225C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.htmld; name = en; path = en.lproj/docs.htmld; sourceTree = "<group>"; };
 		169B7A1F25CA729900C9BB81 /* SysExSpeedController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SysExSpeedController.swift; sourceTree = "<group>"; };
 		16B736C125D66C07000DAC58 /* Alias.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alias.swift; sourceTree = "<group>"; };
+		16B736C325D7366D000DAC58 /* Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
+		16B736C525D7773B000DAC58 /* LibraryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryEntry.swift; sourceTree = "<group>"; };
 		16C43B9525C4EB00007A3A48 /* SysExLibrarian-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SysExLibrarian-Bridging-Header.h"; sourceTree = "<group>"; };
 		16C43B9625C4EB00007A3A48 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		16C43BB925C4F637007A3A48 /* Data+Hashing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hashing.swift"; sourceTree = "<group>"; };
@@ -494,6 +496,8 @@
 		F5308FE30232DC6B01000164 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				16B736C325D7366D000DAC58 /* Library.swift */,
+				16B736C525D7773B000DAC58 /* LibraryEntry.swift */,
 				F583CEB401EE3D3801000164 /* SSELibrary.h */,
 				F583CEB501EE3D3801000164 /* SSELibrary.m */,
 				F583CEB801EE3E4401000164 /* SSELibraryEntry.h */,
@@ -808,18 +812,18 @@
 				1686427425CDEFF900A8B292 /* DeleteController.swift in Sources */,
 				16B736C225D66C07000DAC58 /* Alias.swift in Sources */,
 				1686426E25CB869500A8B292 /* AppController.swift in Sources */,
-				16F033730984B76F006C8A44 /* SSELibrary.m in Sources */,
 				16517BAF25D5154F00D0CAC4 /* GeneralWindowController.swift in Sources */,
 				16C43BBA25C4F637007A3A48 /* Data+Hashing.swift in Sources */,
 				16D0EF1C25C9265300399C74 /* DetailsWindowController.swift in Sources */,
-				16F033740984B76F006C8A44 /* SSELibraryEntry.m in Sources */,
 				16D0EF2525C947F800399C74 /* SysExSpeedOutlineView.swift in Sources */,
+				16B736C625D7773B000DAC58 /* LibraryEntry.swift in Sources */,
 				16517B9525D4AAFF00D0CAC4 /* MainWindowController.swift in Sources */,
 				163A3FC1213E09460075F8A0 /* NSString+SymlinksAndAliases.m in Sources */,
 				16C43B9725C4EB00007A3A48 /* main.swift in Sources */,
 				1686427625CE71A000A8B292 /* FindMissingController.swift in Sources */,
 				16517BC225D5F68700D0CAC4 /* GeneralTableView.swift in Sources */,
 				1686427025CCAF7F00A8B292 /* ImportController.swift in Sources */,
+				16B736C425D7366D000DAC58 /* Library.swift in Sources */,
 				1686427C25CFC35A00A8B292 /* RecordController.swift in Sources */,
 				1686427A25CFBF0700A8B292 /* RecordOneController.swift in Sources */,
 				1661BD3325D1E8C500C715D5 /* MIDIController.swift in Sources */,

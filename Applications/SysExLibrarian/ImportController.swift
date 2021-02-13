@@ -15,7 +15,7 @@ import SnoizeMIDI
 
 @objc class ImportController: NSObject {
 
-    @objc init(windowController: MainWindowController, library: SSELibrary) {
+    @objc init(windowController: MainWindowController, library: Library) {
         self.mainWindowController = windowController
         self.library = library
 
@@ -62,7 +62,7 @@ import SnoizeMIDI
     @IBOutlet private var doNotWarnOnImportAgainCheckbox: NSButton!
 
     private weak var mainWindowController: MainWindowController?
-    private weak var library: SSELibrary?
+    private weak var library: Library?
 
     private var workQueue: DispatchQueue?
 
@@ -95,7 +95,7 @@ extension ImportController /* Private */ {
     private func showImportWarning() {
         guard let library = library else { return }
 
-        let areAllFilesInLibraryDirectory = filePathsToImport.allSatisfy({ library.isPath(inFileDirectory: $0) })
+        let areAllFilesInLibraryDirectory = filePathsToImport.allSatisfy({ library.isPathInFileDirectory($0) })
 
         if areAllFilesInLibraryDirectory || UserDefaults.standard.bool(forKey: Self.showWarningOnImportPreferenceKey) == false {
             importFiles()
@@ -189,7 +189,7 @@ extension ImportController /* Private */ {
         autoreleasepool {
             let expandedAndFilteredFilePaths = workQueueExpandAndFilterFiles(paths)
 
-            var newEntries = [SSELibraryEntry]()
+            var newEntries = [LibraryEntry]()
             var badFiles = [String]()
             if expandedAndFilteredFilePaths.count > 0 {
                 (newEntries, badFiles) = addFilesToLibrary(expandedAndFilteredFilePaths)
@@ -248,7 +248,7 @@ extension ImportController /* Private */ {
         return acceptableFilePaths
     }
 
-    private func doneImportingInWorkQueue(_ newEntries: [SSELibraryEntry], _ badFiles: [String]) {
+    private func doneImportingInWorkQueue(_ newEntries: [LibraryEntry], _ badFiles: [String]) {
         if let window = mainWindowController?.window,
            let sheet = window.attachedSheet {
             window.endSheet(sheet)
@@ -261,20 +261,18 @@ extension ImportController /* Private */ {
     // Check if each file is already in the library, and then try to add each new one
     //
 
-    private func addFilesToLibrary(_ paths: [String]) -> ([SSELibraryEntry], [String]) {
+    private func addFilesToLibrary(_ paths: [String]) -> ([LibraryEntry], [String]) {
         // Returns successfully created library entries, and paths for files that could not
         // be successfully imported.
         // NOTE: This may be happening in the main queue or workQueue.
 
         guard let library = library else { return ([], []) }
 
-        var addedEntries = [SSELibraryEntry]()
+        var addedEntries = [LibraryEntry]()
         var badFilePaths = [String]()
 
         // Find the files which are already in the library, and pull them out.
-        var newFilePaths: NSArray?
-        let existingEntries = library.findEntries(forFiles: paths, returningNonMatchingFiles: &newFilePaths) ?? []
-        guard let filePaths = newFilePaths as? [String] else { fatalError() }
+        let (existingEntries, filePaths) = library.findEntries(forFilePaths: paths)
 
         // Try to add each file to the library, keeping track of the successful ones.
         let fileCount = filePaths.count
@@ -309,7 +307,7 @@ extension ImportController /* Private */ {
     // Finishing up
     //
 
-    private func finishImport(_ newEntries: [SSELibraryEntry], _ badFiles: [String]) {
+    private func finishImport(_ newEntries: [LibraryEntry], _ badFiles: [String]) {
         mainWindowController?.showNewEntries(newEntries)
         showErrorMessageForFilesWithNoSysEx(badFiles)
         finishedImport()

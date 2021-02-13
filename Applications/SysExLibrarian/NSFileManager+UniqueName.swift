@@ -14,7 +14,7 @@ import Cocoa
 
 extension FileManager {
 
-    @objc func uniqueFilename(from originalPath: String) -> String? {
+    func uniqueFilename(from originalPath: String) -> String {
         let originalPathAsNSString = NSString(string: originalPath)
         let originalPathWithoutExtension = originalPathAsNSString.deletingPathExtension
         let originalPathExtension = originalPathAsNSString.pathExtension

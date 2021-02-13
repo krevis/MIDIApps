@@ -23,7 +23,7 @@ import Cocoa
     }
 
     // Main window controller sends this to begin the process
-    @objc func deleteEntries(_ entries: [SSELibraryEntry]) {
+    @objc func deleteEntries(_ entries: [LibraryEntry]) {
         guard entries.count > 0, let window = mainWindowController?.window else { return }
 
         entriesToDelete = entries
@@ -65,7 +65,7 @@ import Cocoa
 
     private weak var mainWindowController: MainWindowController?
 
-    private var entriesToDelete: [SSELibraryEntry] = []
+    private var entriesToDelete: [LibraryEntry] = []
 
 }
 
@@ -80,7 +80,7 @@ extension DeleteController /* Private */ {
     private func checkForFilesInLibraryDirectory() {
         guard let window = mainWindowController?.window else { return }
 
-        let areAnyFilesInLibraryDirectory = entriesToDelete.contains(where: { $0.isFileInLibraryFileDirectory() })
+        let areAnyFilesInLibraryDirectory = entriesToDelete.contains(where: { $0.isFileInLibraryFileDirectory })
         if areAnyFilesInLibraryDirectory {
             window.beginSheet(deleteLibraryFilesWarningSheetWindow) { response in
                 if response == .OK {

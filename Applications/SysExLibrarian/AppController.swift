@@ -50,8 +50,7 @@ extension AppController: NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         hasFinishedLaunching = true
 
-        guard let library = SSELibrary.shared() else { fatalError() }
-        if let preflightErrorString = library.preflightAndLoadEntries() {
+        if let preflightErrorString = Library.shared.preflightAndLoadEntries() {
             let alert = NSAlert()
             alert.alertStyle = .critical
             alert.messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")

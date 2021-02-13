@@ -15,7 +15,7 @@ import SnoizeMIDI
 
 @objc class FindMissingController: NSObject {
 
-    @objc init(windowController: MainWindowController, library: SSELibrary) {
+    @objc init(windowController: MainWindowController, library: Library) {
         self.mainWindowController = windowController
         self.library = library
 
@@ -23,7 +23,7 @@ import SnoizeMIDI
     }
 
     // Main window controller sends this to begin the process
-    @objc func findMissingFiles(forEntries entries: [SSELibraryEntry], completion: @escaping () -> Void) {
+    @objc func findMissingFiles(forEntries entries: [LibraryEntry], completion: @escaping () -> Void) {
         // Ask the user to find each missing file.
         // If we go through them all successfully, perform the completion.
         // If we cancel at any point of the process, don't do anything.
@@ -37,9 +37,9 @@ import SnoizeMIDI
     // MARK: Private
 
     private weak var mainWindowController: MainWindowController?
-    private weak var library: SSELibrary?
+    private weak var library: Library?
 
-    private var entriesWithMissingFiles: [SSELibraryEntry] = []
+    private var entriesWithMissingFiles: [LibraryEntry] = []
     private var completion: (() -> Void)?
 
 }
@@ -51,7 +51,7 @@ extension FindMissingController /* Private */ {
             let alert = NSAlert()
             alert.messageText = NSLocalizedString("Missing File", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "title of alert for missing file")
             let informativeFormat = NSLocalizedString("The file for the item \"%@\" could not be found. Would you like to locate it?", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "format of message for missing file")
-            alert.informativeText = String(format: informativeFormat, entry.name)
+            alert.informativeText = String(format: informativeFormat, entry.name ?? "")
             alert.addButton(withTitle: NSLocalizedString("Yes", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "Yes button in alert"))
             alert.addButton(withTitle: NSLocalizedString("Cancel", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "Cancel button in alert"))
             alert.beginSheetModal(for: window) { response in
@@ -72,7 +72,7 @@ extension FindMissingController /* Private */ {
         }
     }
 
-    private func runOpenSheetForMissingFile(_ entry: SSELibraryEntry) {
+    private func runOpenSheetForMissingFile(_ entry: LibraryEntry) {
         guard let window = mainWindowController?.window, let library = library else { return }
 
         let openPanel = NSOpenPanel()
@@ -82,9 +82,8 @@ extension FindMissingController /* Private */ {
                 let filePath = openPanel.urls.first!.path
 
                 // Is this file in use by any entries?  (It might be in use by *this* entry if the file has gotten put in place again!)
-                let matchingEntries = library.findEntries(forFiles: [filePath], returningNonMatchingFiles: nil)
-                if let matchingEntries = matchingEntries,
-                   !matchingEntries.isEmpty,
+                let (matchingEntries, _) = library.findEntries(forFilePaths: [filePath])
+                if !matchingEntries.isEmpty,
                    matchingEntries.firstIndex(of: entry) == nil {
                     let alert = NSAlert()
                     alert.messageText = NSLocalizedString("In Use", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "title of alert for file already in library")
