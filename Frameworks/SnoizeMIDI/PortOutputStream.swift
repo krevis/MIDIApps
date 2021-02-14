@@ -43,25 +43,9 @@ public class PortOutputStream: OutputStream {
 
     public var customSysExBufferSize: Int = 0
 
-    // It's possible (although unlikely) that creating the output port fails.
-    // In ObjC we could have made init return nil, but apparently that is not
-    // easy to do in Swift (especially to make it usable by ObjC):
-    // https://stackoverflow.com/questions/26833845/parameterless-failable-initializer-for-an-nsobject-subclass
-    // https://stackoverflow.com/questions/38311365/swift-failable-initializer-init-cannot-override-a-non-failable-initializer
-    // Best I can do is to make a new static function that returns a new instance, or nil.
-    // Yuck!
-    // TODO Just ignore this error, we did it for input stream port create
-
-    public static func newPortOutputStream(midiContext: MIDIContext) -> PortOutputStream? {
-        var port: MIDIPortRef = 0
-        let status = MIDIOutputPortCreate(midiContext.midiClient, "Output Port" as CFString, &port)
-        guard status == noErr else { return nil }
-
-        return PortOutputStream(midiContext: midiContext, port: port)
-    }
-
-    private init(midiContext: MIDIContext, port: MIDIPortRef) {
-        outputPort = port
+    public override init(midiContext: MIDIContext) {
+        outputPort = 0
+        _ = midiContext.interface.outputPortCreate(midiContext.midiClient, "Output Port" as CFString, &outputPort)
         super.init(midiContext: midiContext)
     }
 

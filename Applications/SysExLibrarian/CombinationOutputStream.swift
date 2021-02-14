@@ -215,17 +215,16 @@ class CombinationOutputStream: NSObject, MessageDestination {
     private func createPortStream() {
         guard portStream == nil else { return }
 
-        if let stream = PortOutputStream.newPortOutputStream(midiContext: midiContext) {
-            stream.ignoresTimeStamps = ignoresTimeStamps
-            stream.sendsSysExAsynchronously = sendsSysExAsynchronously
-            stream.customSysExBufferSize = customSysExBufferSize
+        let stream = PortOutputStream(midiContext: midiContext)
+        stream.ignoresTimeStamps = ignoresTimeStamps
+        stream.sendsSysExAsynchronously = sendsSysExAsynchronously
+        stream.customSysExBufferSize = customSysExBufferSize
 
-            NotificationCenter.default.addObserver(self, selector: #selector(portStreamEndpointDisappeared(_:)), name: .portOutputStreamEndpointDisappeared, object: stream)
-            NotificationCenter.default.addObserver(self, selector: #selector(repostNotification(_:)), name: .portOutputStreamSysExSendWillBegin, object: stream)
-            NotificationCenter.default.addObserver(self, selector: #selector(repostNotification(_:)), name: .portOutputStreamSysExSendDidEnd, object: stream)
+        NotificationCenter.default.addObserver(self, selector: #selector(portStreamEndpointDisappeared(_:)), name: .portOutputStreamEndpointDisappeared, object: stream)
+        NotificationCenter.default.addObserver(self, selector: #selector(repostNotification(_:)), name: .portOutputStreamSysExSendWillBegin, object: stream)
+        NotificationCenter.default.addObserver(self, selector: #selector(repostNotification(_:)), name: .portOutputStreamSysExSendDidEnd, object: stream)
 
-            portStream = stream
-        }
+        portStream = stream
     }
 
     private func removePortStream() {
