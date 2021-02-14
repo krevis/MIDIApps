@@ -150,11 +150,11 @@ extension AppController /* Actions */ {
         if var url = SMBundleForObject(self).url(forResource: "docs", withExtension: "htmld") {
             url.appendPathComponent("index.html")
             if !NSWorkspace.shared.open(url) {
-                message = NSLocalizedString("The help file could not be opened.", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "error message if opening the help file fails")
+                message = NSLocalizedString("The help file could not be opened.", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "error message if opening the help file fails")
             }
         }
         else {
-            message = NSLocalizedString("The help file could not be found.", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "error message if help file can't be found")
+            message = NSLocalizedString("The help file could not be found.", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "error message if help file can't be found")
         }
 
         if let message = message {
