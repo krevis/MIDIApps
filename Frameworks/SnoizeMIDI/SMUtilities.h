@@ -16,11 +16,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-static __inline__ NSBundle *SMBundleForObject(id object) {
-    return [NSBundle bundleForClass:[object class]];
-}
-// TODO Make an internal SMBundle() that returns the SnoizeMIDI bundle (and looks it up only once)
-
 // Work around a bug in the declaration of MIDIPacketListAdd(). The return value should be _Nullable,
 // so Swift code can compare it to nil.
 // This function just calls MIDIPacketListAdd() and does nothing extra.

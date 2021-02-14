@@ -15,13 +15,11 @@ import Foundation
 public extension String {
 
     static func abbreviatedByteCount(_ byteCount: Int) -> String {
-        guard let bundle = Bundle(identifier: "com.snoize.SnoizeMIDI") else { fatalError() }
-
         if byteCount == 1 {
-            return NSLocalizedString("1 byte", tableName: "SnoizeMIDI", bundle: bundle, comment: "string for 1 byte")
+            return NSLocalizedString("1 byte", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "string for 1 byte")
         }
         else if byteCount < 1024 {
-            let format = NSLocalizedString("%ld bytes", tableName: "SnoizeMIDI", bundle: bundle, comment: "format for < 1024 bytes")
+            let format = NSLocalizedString("%ld bytes", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "format for < 1024 bytes")
             return String.localizedStringWithFormat(format, byteCount)
         }
         else {
@@ -30,26 +28,26 @@ public extension String {
             let unitFactor = Double(1024.0)
             fractionalUnits /= unitFactor
             if fractionalUnits < unitFactor {
-                format = NSLocalizedString("%0.1lf KB", tableName: "SnoizeMIDI", bundle: bundle, comment: "format for kilobytes")
+                format = NSLocalizedString("%0.1lf KB", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "format for kilobytes")
             }
             else {
                 fractionalUnits /= unitFactor
                 if fractionalUnits < unitFactor {
-                    format = NSLocalizedString("%0.1lf MB", tableName: "SnoizeMIDI", bundle: bundle, comment: "format for megabytes")
+                    format = NSLocalizedString("%0.1lf MB", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "format for megabytes")
                 }
                 else {
                     fractionalUnits /= unitFactor
                     if fractionalUnits < unitFactor {
-                        format = NSLocalizedString("%0.1lf GB", tableName: "SnoizeMIDI", bundle: bundle, comment: "format for gigabytes")
+                        format = NSLocalizedString("%0.1lf GB", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "format for gigabytes")
                     }
                     else {
                         fractionalUnits /= unitFactor
                         if fractionalUnits < unitFactor {
-                            format = NSLocalizedString("%0.1lf TB", tableName: "SnoizeMIDI", bundle: bundle, comment: "format for terabytes")
+                            format = NSLocalizedString("%0.1lf TB", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "format for terabytes")
                         }
                         else {
                             fractionalUnits /= unitFactor
-                            format = NSLocalizedString("%0.1lf PB", tableName: "SnoizeMIDI", bundle: bundle, comment: "format for petabytes")
+                            format = NSLocalizedString("%0.1lf PB", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "format for petabytes")
                         }
                     }
                 }

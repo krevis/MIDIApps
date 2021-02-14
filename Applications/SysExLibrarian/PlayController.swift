@@ -144,7 +144,7 @@ extension PlayController /* Private */ {
         }
 
         if !success {
-            progressMessageField.stringValue = NSLocalizedString("Cancelled.", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "Cancelled.")
+            progressMessageField.stringValue = NSLocalizedString("Cancelled.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "Cancelled.")
         }
 
         stopObservingMIDIController()

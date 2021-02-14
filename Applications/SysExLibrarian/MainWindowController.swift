@@ -282,8 +282,8 @@ class MainWindowController: GeneralWindowController {
         catch {
             guard let window = window else { return }
 
-            let messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "title of error alert")
-            let informativeTextPart1 = NSLocalizedString("The file could not be created.", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "message of alert when recording to a new file fails")
+            let messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
+            let informativeTextPart1 = NSLocalizedString("The file could not be created.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "message of alert when recording to a new file fails")
             let informativeText = informativeTextPart1 + "\n" + error.localizedDescription
 
             let alert = NSAlert()
@@ -429,8 +429,8 @@ extension MainWindowController: GeneralTableViewDataSource {
                 if !entry.renameFile(newName) {
                     if let window = window {
                         let alert = NSAlert()
-                        alert.messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "title of error alert")
-                        alert.informativeText = NSLocalizedString("The file for this item could not be renamed.", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "message of alert when renaming a file fails")
+                        alert.messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
+                        alert.informativeText = NSLocalizedString("The file for this item could not be renamed.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "message of alert when renaming a file fails")
                         alert.beginSheetModal(for: window, completionHandler: nil)
                     }
                 }
@@ -648,9 +648,9 @@ extension MainWindowController /* Private */ {
 
         let topMenuItem = toolbarItem.menuFormRepresentation
 
-        let selectedDestinationTitle = titleForDestination(currentDestination) ?? NSLocalizedString("None", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "none")
+        let selectedDestinationTitle = titleForDestination(currentDestination) ?? NSLocalizedString("None", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "none")
 
-        let topTitle = NSLocalizedString("Destination", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "title of destination toolbar item") + ": " + selectedDestinationTitle
+        let topTitle = NSLocalizedString("Destination", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of destination toolbar item") + ": " + selectedDestinationTitle
         topMenuItem?.title = topTitle
 
         if let submenu = topMenuItem?.submenu {
@@ -863,7 +863,7 @@ extension MainWindowController: NSToolbarDelegate {
             toolbarItem.minSize = NSSize(width: 150, height: height)
             toolbarItem.maxSize = NSSize(width: 1000, height: height)
 
-            let menuTitle = NSLocalizedString("Destination", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "title of destination toolbar item")
+            let menuTitle = NSLocalizedString("Destination", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of destination toolbar item")
             let menuItem = NSMenuItem(title: menuTitle, action: nil, keyEquivalent: "")
             menuItem.submenu = NSMenu(title: "")
             toolbarItem.menuFormRepresentation = menuItem

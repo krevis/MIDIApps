@@ -67,7 +67,7 @@ class CombinationInputStream: NSObject {
 
         if let stream = spyingInputStream {
             if spyingGroup == nil {
-                spyingGroup = CombinationInputStreamSourceGroup(name: NSLocalizedString("Spy on output to destinations", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "name of group for spying on destinations"), expandable: true)
+                spyingGroup = CombinationInputStreamSourceGroup(name: NSLocalizedString("Spy on output to destinations", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "name of group for spying on destinations"), expandable: true)
             }
 
             if let group = spyingGroup {
@@ -139,7 +139,7 @@ class CombinationInputStream: NSObject {
                 portInputStream.addEndpoint(endpoint)
             }
             else {
-                let missingName = sourceEndpointName ?? NSLocalizedString("Unknown", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "name of missing endpoint if not specified in document")
+                let missingName = sourceEndpointName ?? NSLocalizedString("Unknown", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "name of missing endpoint if not specified in document")
                 missingNames.append(missingName)
             }
 
@@ -187,8 +187,8 @@ class CombinationInputStream: NSObject {
 
     private var willPostSourceListChangedNotification = false
 
-    private lazy var portGroup = CombinationInputStreamSourceGroup(name: NSLocalizedString("MIDI sources", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "name of group for ordinary sources"), expandable: true)
-    private lazy var virtualGroup = CombinationInputStreamSourceGroup(name: NSLocalizedString("Act as a destination for other programs", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "name of source item for virtual destination"), expandable: false)
+    private lazy var portGroup = CombinationInputStreamSourceGroup(name: NSLocalizedString("MIDI sources", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "name of group for ordinary sources"), expandable: true)
+    private lazy var virtualGroup = CombinationInputStreamSourceGroup(name: NSLocalizedString("Act as a destination for other programs", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "name of source item for virtual destination"), expandable: false)
     private var spyingGroup: CombinationInputStreamSourceGroup?
 
 }

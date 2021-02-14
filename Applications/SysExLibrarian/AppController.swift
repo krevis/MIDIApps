@@ -147,18 +147,18 @@ extension AppController /* Actions */ {
     @IBAction func showHelp(_ sender: Any?) {
         var message: String?
 
-        if var url = SMBundleForObject(self).url(forResource: "docs", withExtension: "htmld") {
+        if var url = Bundle.main.url(forResource: "docs", withExtension: "htmld") {
             url.appendPathComponent("index.html")
             if !NSWorkspace.shared.open(url) {
-                message = NSLocalizedString("The help file could not be opened.", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "error message if opening the help file fails")
+                message = NSLocalizedString("The help file could not be opened.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "error message if opening the help file fails")
             }
         }
         else {
-            message = NSLocalizedString("The help file could not be found.", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "error message if help file can't be found")
+            message = NSLocalizedString("The help file could not be found.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "error message if help file can't be found")
         }
 
         if let message = message {
-            let title = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "title of error alert")
+            let title = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
 
             let alert = NSAlert()
             alert.messageText = title
@@ -171,7 +171,7 @@ extension AppController /* Actions */ {
         var success = false
 
         let feedbackEmailAddress = "SysExLibrarian@snoize.com"    // Don't localize this
-        let feedbackEmailSubject = NSLocalizedString("SysEx Librarian Feedback", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "subject of feedback email")
+        let feedbackEmailSubject = NSLocalizedString("SysEx Librarian Feedback", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "subject of feedback email")
         let mailToURLString = "mailto:\(feedbackEmailAddress)?Subject=\(feedbackEmailSubject)"
 
         // Escape the whitespace characters in the URL before opening
@@ -182,9 +182,9 @@ extension AppController /* Actions */ {
         }
 
         if !success {
-            let message = NSLocalizedString("SysEx Librarian could not ask your email application to create a new message.\nPlease send email to:\n%@", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "message of alert when can't send feedback email")
+            let message = NSLocalizedString("SysEx Librarian could not ask your email application to create a new message.\nPlease send email to:\n%@", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "message of alert when can't send feedback email")
 
-            let title = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "title of error alert")
+            let title = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
 
             let alert = NSAlert()
             alert.messageText = title

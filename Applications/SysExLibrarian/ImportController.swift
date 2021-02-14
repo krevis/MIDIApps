@@ -327,14 +327,14 @@ extension ImportController /* Private */ {
         var informativeText: String = ""
 
         if badFileCount == 1 {
-            informativeText = NSLocalizedString("No SysEx data could be found in this file. It has not been added to the library.", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "message when no sysex data found in file")
+            informativeText = NSLocalizedString("No SysEx data could be found in this file. It has not been added to the library.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "message when no sysex data found in file")
         }
         else {
-            let format = NSLocalizedString("No SysEx data could be found in %u of the files. They have not been added to the library.", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "format of message when no sysex data found in files")
+            let format = NSLocalizedString("No SysEx data could be found in %u of the files. They have not been added to the library.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format of message when no sysex data found in files")
             informativeText = String.localizedStringWithFormat(format, badFileCount)
         }
 
-        let messageText = NSLocalizedString("Could not read SysEx", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "title of alert when can't read a sysex file")
+        let messageText = NSLocalizedString("Could not read SysEx", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of alert when can't read a sysex file")
 
         let alert = NSAlert()
         alert.alertStyle = .informational

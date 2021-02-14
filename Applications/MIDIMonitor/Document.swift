@@ -205,12 +205,12 @@ extension Document {
     }
 
     private var badFileTypeError: Error {
-        let reason = NSLocalizedString("Unknown file type.", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "error reason for unknown file type read or write")
+        let reason = NSLocalizedString("Unknown file type.", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "error reason for unknown file type read or write")
         return NSError(domain: midiMonitorErrorDomain, code: 1, userInfo: [NSLocalizedFailureReasonErrorKey: reason])
     }
 
     private var badFileContentsError: Error {
-        let reason = NSLocalizedString("Can't read the contents of the file.", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "error reason for unknown file contents")
+        let reason = NSLocalizedString("Can't read the contents of the file.", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "error reason for unknown file contents")
         return NSError(domain: midiMonitorErrorDomain, code: 2, userInfo: [NSLocalizedFailureReasonErrorKey: reason])
     }
 
@@ -294,7 +294,7 @@ extension Document {
     /*@objc*/ private func undoableSetSelectedInputSources(_ newValue: Set<InputStreamSource>) {
 //        if let undoManager = undoManager {
 //            undoManager.registerUndo(withTarget: self, selector: #selector(self.undoableSetSelectedInputSources(_:)), object: selectedInputSources)
-//            undoManager.setActionName(NSLocalizedString("Change Selected Sources", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change source undo action"))
+//            undoManager.setActionName(NSLocalizedString("Change Selected Sources", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "change source undo action"))
 //        }
 
         stream.selectedInputSources = newValue
@@ -314,7 +314,7 @@ extension Document {
     @objc private func undoableSetMaxMessageCountNumber(_ number: NSNumber) {
         if let undoManager = undoManager {
             undoManager.registerUndo(withTarget: self, selector: #selector(self.undoableSetMaxMessageCountNumber(_:)), object: NSNumber(value: maxMessageCount))
-            undoManager.setActionName(NSLocalizedString("Change Remembered Events", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change history limit undo action"))
+            undoManager.setActionName(NSLocalizedString("Change Remembered Events", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "change history limit undo action"))
         }
 
         history.historySize = number.intValue
@@ -334,7 +334,7 @@ extension Document {
     @objc private func undoableSetFilterMaskNumber(_ number: NSNumber) {
         if let undoManager = undoManager {
             undoManager.registerUndo(withTarget: self, selector: #selector(self.undoableSetFilterMaskNumber(_:)), object: NSNumber(value: filterMask.rawValue))
-            undoManager.setActionName(NSLocalizedString("Change Filter", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change filter undo action"))
+            undoManager.setActionName(NSLocalizedString("Change Filter", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "change filter undo action"))
         }
 
         messageFilter.filterMask = Message.TypeMask(rawValue: number.intValue)
@@ -354,7 +354,7 @@ extension Document {
     @objc private func undoableSetChannelMaskNumber(_ number: NSNumber) {
         if let undoManager = undoManager {
             undoManager.registerUndo(withTarget: self, selector: #selector(self.undoableSetChannelMaskNumber(_:)), object: NSNumber(value: channelMask.rawValue))
-            undoManager.setActionName(NSLocalizedString("Change Channel", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "change channel undo action"))
+            undoManager.setActionName(NSLocalizedString("Change Channel", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "change channel undo action"))
         }
 
         messageFilter.channelMask = VoiceMessage.ChannelMask(rawValue: number.intValue)

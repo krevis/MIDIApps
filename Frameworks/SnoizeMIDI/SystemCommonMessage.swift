@@ -125,13 +125,13 @@ public class SystemCommonMessage: Message {
     public override var typeForDisplay: String {
         switch commonMessageType {
         case .timeCodeQuarterFrame:
-            return NSLocalizedString("MTC Quarter Frame", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of MTC Quarter Frame event")
+            return NSLocalizedString("MTC Quarter Frame", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of MTC Quarter Frame event")
         case .songPositionPointer:
-            return NSLocalizedString("Song Position Pointer", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Song Position Pointer event")
+            return NSLocalizedString("Song Position Pointer", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Song Position Pointer event")
         case .songSelect:
-            return NSLocalizedString("Song Select", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Song Select event")
+            return NSLocalizedString("Song Select", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Song Select event")
         case .tuneRequest:
-            return NSLocalizedString("Tune Request", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Tune Request event")
+            return NSLocalizedString("Tune Request", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Tune Request event")
         }
     }
 

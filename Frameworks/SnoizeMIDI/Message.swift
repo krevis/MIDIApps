@@ -185,7 +185,7 @@ public class Message: NSObject, NSCoding {
 
     public var typeForDisplay: String {
         // Subclasses may override
-        let typeName = NSLocalizedString("Unknown", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of unknown MIDI status byte")
+        let typeName = NSLocalizedString("Unknown", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of unknown MIDI status byte")
         let status = String(format: "%02X", statusByte)
         return "\(typeName) ($\(status))"
     }
@@ -242,8 +242,8 @@ public class Message: NSObject, NSCoding {
     private var originatingEndpointName: String?
     private var timeStampWasZeroWhenReceived: Bool
 
-    private static let fromString = NSLocalizedString("From", tableName: "SnoizeMIDI", bundle: SMBundleForObject(Message.self), comment: "Prefix for endpoint name when it's a source")
-    private static let toString = NSLocalizedString("To", tableName: "SnoizeMIDI", bundle: SMBundleForObject(Message.self), comment: "Prefix for endpoint name when it's a destination")
+    private static let fromString = NSLocalizedString("From", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "Prefix for endpoint name when it's a source")
+    private static let toString = NSLocalizedString("To", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "Prefix for endpoint name when it's a destination")
 
     private static var timeStampDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -399,7 +399,7 @@ extension Message /* Formatting */ {
 
     public static func nameForManufacturerIdentifier(_ manufacturerIdentifierData: Data) -> String {
         return manufacturerNamesByHexIdentifier[manufacturerIdentifierData.lowercaseHexString]
-            ?? NSLocalizedString("Unknown Manufacturer", tableName: "SnoizeMIDI", bundle: SMBundleForObject(Message.self), comment: "unknown manufacturer name")
+            ?? NSLocalizedString("Unknown Manufacturer", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "unknown manufacturer name")
     }
 
     // MARK: Private
@@ -432,13 +432,12 @@ extension Message /* Formatting */ {
         // Instead, we just scan through the dictionary once, and build an array, which is quicker to index into.
 
         var controllerNamesByNumberString: [String: String] = [:]
-        let bundle = SMBundleForObject(Message.self)  // Note: SMBundleForObject(self) returns the Swift bundle
-        if let url = bundle.url(forResource: "ControllerNames", withExtension: "plist"),
+        if let url = Bundle.snoizeMIDI.url(forResource: "ControllerNames", withExtension: "plist"),
            let plist = NSDictionary(contentsOf: url) as? [String: String] {
             controllerNamesByNumberString = plist
         }
 
-        let unknownNameFormat = NSLocalizedString("Controller %u", tableName: "SnoizeMIDI", bundle: bundle, comment: "format of unknown controller")
+        let unknownNameFormat = NSLocalizedString("Controller %u", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "format of unknown controller")
 
         return (0 ..< 128).map {
             controllerNamesByNumberString["\($0)"] ?? String(format: unknownNameFormat, $0)
@@ -447,8 +446,7 @@ extension Message /* Formatting */ {
 
     private static var manufacturerNamesByHexIdentifier: [String: String] = {
         var manufacturerNames: [String: String] = [:]
-        let bundle = SMBundleForObject(Message.self)  // Note: SMBundleForObject(self) returns the Swift bundle
-        if let url = bundle.url(forResource: "ManufacturerNames", withExtension: "plist"),
+        if let url = Bundle.snoizeMIDI.url(forResource: "ManufacturerNames", withExtension: "plist"),
            let plist = NSDictionary(contentsOf: url) as? [String: String] {
             manufacturerNames = plist
         }

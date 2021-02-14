@@ -65,7 +65,7 @@ open class InputStream: MessageParserDelegate {
                 newInputSources.insert(source)
             }
             else {
-                let resolvedName = name ?? NSLocalizedString("Unknown", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "name of missing endpoint if not specified in document")
+                let resolvedName = name ?? NSLocalizedString("Unknown", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "name of missing endpoint if not specified in document")
                 missingNames.append(resolvedName)
             }
         }

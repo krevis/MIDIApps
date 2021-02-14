@@ -33,7 +33,7 @@ public class InvalidMessage: Message {
     }
 
     public var sizeForDisplay: String {
-        let format = NSLocalizedString("%@ bytes", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "Invalid message length format string")
+        let format = NSLocalizedString("%@ bytes", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "Invalid message length format string")
         return String.localizedStringWithFormat(format, Message.formatLength(otherDataLength))
     }
 
@@ -52,7 +52,7 @@ public class InvalidMessage: Message {
     }
 
     public override var typeForDisplay: String {
-        NSLocalizedString("Invalid", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Invalid event")
+        NSLocalizedString("Invalid", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Invalid event")
     }
 
     public override var dataForDisplay: String {

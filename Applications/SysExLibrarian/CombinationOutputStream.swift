@@ -117,7 +117,7 @@ class CombinationOutputStream: NSObject, MessageDestination {
                 }
             }
             else {
-                return NSLocalizedString("Unknown", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "name of missing endpoint if not specified in document")
+                return NSLocalizedString("Unknown", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "name of missing endpoint if not specified in document")
             }
         }
         else if let number = settings["virtualEndpointUniqueID"] as? NSNumber {
@@ -270,6 +270,8 @@ class CombinationOutputStream: NSObject, MessageDestination {
     }
 
 }
+
+// TODO These should also be delegate methods, just like PortOutputStream
 
 extension Notification.Name {
 

@@ -56,17 +56,17 @@ public class SystemRealTimeMessage: Message {
     public override var typeForDisplay: String {
         switch type {
         case .clock:
-            return NSLocalizedString("Clock", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Clock event")
+            return NSLocalizedString("Clock", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Clock event")
         case .start:
-            return NSLocalizedString("Start", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Start event")
+            return NSLocalizedString("Start", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Start event")
         case .continue:
-            return NSLocalizedString("Continue", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Continue event")
+            return NSLocalizedString("Continue", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Continue event")
         case .stop:
-            return NSLocalizedString("Stop", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Stop event")
+            return NSLocalizedString("Stop", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Stop event")
         case .activeSense:
-            return NSLocalizedString("Active Sense", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Active Sense event")
+            return NSLocalizedString("Active Sense", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Active Sense event")
         case .reset:
-            return NSLocalizedString("Reset", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Reset event")
+            return NSLocalizedString("Reset", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Reset event")
         }
     }
 

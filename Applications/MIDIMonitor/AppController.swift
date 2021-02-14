@@ -138,18 +138,18 @@ extension AppController {
     @IBAction func showHelp(_ sender: Any?) {
         var message: String?
 
-        if var url = SMBundleForObject(self).url(forResource: "docs", withExtension: "htmld") {
+        if var url = Bundle.main.url(forResource: "docs", withExtension: "htmld") {
             url.appendPathComponent("index.html")
             if !NSWorkspace.shared.open(url) {
-                message = NSLocalizedString("The help file could not be opened.", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "error message if opening the help file fails")
+                message = NSLocalizedString("The help file could not be opened.", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "error message if opening the help file fails")
             }
         }
         else {
-            message = NSLocalizedString("The help file could not be found.", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "error message if help file can't be found")
+            message = NSLocalizedString("The help file could not be found.", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "error message if help file can't be found")
         }
 
         if let message = message {
-            let title = NSLocalizedString("Error", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "title of error alert")
+            let title = NSLocalizedString("Error", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "title of error alert")
 
             let alert = NSAlert()
             alert.messageText = title
@@ -162,7 +162,7 @@ extension AppController {
         var success = false
 
         let feedbackEmailAddress = "MIDIMonitor@snoize.com"    // Don't localize this
-        let feedbackEmailSubject = NSLocalizedString("MIDI Monitor Feedback", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "subject of feedback email")
+        let feedbackEmailSubject = NSLocalizedString("MIDI Monitor Feedback", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "subject of feedback email")
         let mailToURLString = "mailto:\(feedbackEmailAddress)?Subject=\(feedbackEmailSubject)"
 
         // Escape the whitespace characters in the URL before opening
@@ -173,9 +173,9 @@ extension AppController {
         }
 
         if !success {
-            let message = NSLocalizedString("MIDI Monitor could not ask your email application to create a new message.\nPlease send email to:\n%@", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "message of alert when can't send feedback email")
+            let message = NSLocalizedString("MIDI Monitor could not ask your email application to create a new message.\nPlease send email to:\n%@", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "message of alert when can't send feedback email")
 
-            let title = NSLocalizedString("Error", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "title of error alert")
+            let title = NSLocalizedString("Error", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "title of error alert")
 
             let alert = NSAlert()
             alert.messageText = title
@@ -187,8 +187,8 @@ extension AppController {
     @IBAction func restartMIDI(_ sender: Any?) {
         let status = MIDIRestart()
         if status != noErr {
-            let message = NSLocalizedString("Rescanning the MIDI system resulted in an unexpected error (%d).", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "error message if MIDIRestart() fails")
-            let title = NSLocalizedString("MIDI Error", tableName: "MIDIMonitor", bundle: SMBundleForObject(self), comment: "title of MIDI error panel")
+            let message = NSLocalizedString("Rescanning the MIDI system resulted in an unexpected error (%d).", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "error message if MIDIRestart() fails")
+            let title = NSLocalizedString("MIDI Error", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "title of MIDI error panel")
 
             let alert = NSAlert()
             alert.messageText = title
@@ -204,7 +204,7 @@ extension AppController {
     // MARK: Startup failure handling
 
     private func failedToInitCoreMIDI() {
-        let bundle = SMBundleForObject(self)
+        let bundle = Bundle.main
 
         let alert = NSAlert()
         alert.alertStyle = .critical
@@ -223,7 +223,7 @@ extension AppController {
     private func failedToInstallSpyDriver(_ error: Error) {
         // Failure to install. Customize the error before presenting it.
 
-        let bundle = SMBundleForObject(self)
+        let bundle = Bundle.main
         let installError = error as NSError
 
         var presentedErrorUserInfo: [String: Any] = installError.userInfo
@@ -306,7 +306,7 @@ extension AppController {
     }
 
     private func failedToConnectToSpyClient() {
-        let bundle = SMBundleForObject(self)
+        let bundle = Bundle.main
 
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("MIDI Monitor could not make a connection to its MIDI driver.", tableName: "MIDIMonitor", bundle: bundle, comment: "error message if MIDI spy client creation fails")

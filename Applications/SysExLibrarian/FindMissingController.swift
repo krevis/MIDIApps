@@ -46,11 +46,11 @@ extension FindMissingController /* Private */ {
     private func findNextMissingFile() {
         if let window = mainWindowController?.window, let entry = entriesWithMissingFiles.first {
             let alert = NSAlert()
-            alert.messageText = NSLocalizedString("Missing File", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "title of alert for missing file")
-            let informativeFormat = NSLocalizedString("The file for the item \"%@\" could not be found. Would you like to locate it?", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "format of message for missing file")
+            alert.messageText = NSLocalizedString("Missing File", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of alert for missing file")
+            let informativeFormat = NSLocalizedString("The file for the item \"%@\" could not be found. Would you like to locate it?", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format of message for missing file")
             alert.informativeText = String(format: informativeFormat, entry.name ?? "")
-            alert.addButton(withTitle: NSLocalizedString("Yes", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "Yes button in alert"))
-            alert.addButton(withTitle: NSLocalizedString("Cancel", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "Cancel button in alert"))
+            alert.addButton(withTitle: NSLocalizedString("Yes", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "Yes button in alert"))
+            alert.addButton(withTitle: NSLocalizedString("Cancel", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "Cancel button in alert"))
             alert.beginSheetModal(for: window) { response in
                 if response == .alertFirstButtonReturn /* Yes */ {
                     // Get this sheet out of the way before we open another one
@@ -83,9 +83,9 @@ extension FindMissingController /* Private */ {
                 if !matchingEntries.isEmpty,
                    matchingEntries.firstIndex(of: entry) == nil {
                     let alert = NSAlert()
-                    alert.messageText = NSLocalizedString("In Use", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "title of alert for file already in library")
-                    alert.informativeText = NSLocalizedString("That file is already in the library. Please choose another one.", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "message for file already in library")
-                    alert.addButton(withTitle: NSLocalizedString("Cancel", tableName: "SysExLibrarian", bundle: SMBundleForObject(self), comment: "Cancel button in alert"))
+                    alert.messageText = NSLocalizedString("In Use", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of alert for file already in library")
+                    alert.informativeText = NSLocalizedString("That file is already in the library. Please choose another one.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "message for file already in library")
+                    alert.addButton(withTitle: NSLocalizedString("Cancel", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "Cancel button in alert"))
 
                     let response = alert.runModal()
                     openPanel.orderOut(nil)

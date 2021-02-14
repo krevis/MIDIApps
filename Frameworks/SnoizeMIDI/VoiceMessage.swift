@@ -178,29 +178,29 @@ public class VoiceMessage: Message {
             // In non-expert mode, show these events as Note Offs.
             // In expert mode, show them as Note Ons.
             if dataBytes.1 != 0 || UserDefaults.standard.bool(forKey: Message.expertModePreferenceKey) {
-                return NSLocalizedString("Note On", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Note On event")
+                return NSLocalizedString("Note On", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Note On event")
             }
             else {
                 fallthrough // display as note off
             }
 
         case .noteOff:
-            return NSLocalizedString("Note Off", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Note Off event")
+            return NSLocalizedString("Note Off", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Note Off event")
 
         case .aftertouch:
-            return NSLocalizedString("Aftertouch", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Aftertouch (poly pressure) event")
+            return NSLocalizedString("Aftertouch", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Aftertouch (poly pressure) event")
 
         case .control:
-            return NSLocalizedString("Control", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Control event")
+            return NSLocalizedString("Control", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Control event")
 
         case .program:
-            return NSLocalizedString("Program", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Program event")
+            return NSLocalizedString("Program", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Program event")
 
         case .channelPressure:
-            return NSLocalizedString("Channel Pressure", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Channel Pressure (aftertouch) event")
+            return NSLocalizedString("Channel Pressure", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Channel Pressure (aftertouch) event")
 
         case .pitchWheel:
-            return NSLocalizedString("Pitch Wheel", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "displayed type of Pitch Wheel event")
+            return NSLocalizedString("Pitch Wheel", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Pitch Wheel event")
         }
     }
 
