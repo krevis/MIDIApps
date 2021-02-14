@@ -56,6 +56,8 @@ public class SysExSendRequest: NSObject {
         dataPointer.deallocate()
     }
 
+    public weak var delegate: SysExSendRequestDelegate?
+
     public let message: SystemExclusiveMessage
     public let customSysExBufferSize: Int
 
@@ -174,7 +176,7 @@ public class SysExSendRequest: NSObject {
         // so ensure it's idempotent and only valid state transitions are possible.
         guard state == .sending, (newState == .sent || newState == .cancelled) else { return }
         state = newState
-        NotificationCenter.default.post(name: .sysExSendRequestFinished, object: self)
+        delegate?.sysExSendRequestDidFinish(self)
     }
 
     private func checkMainQueue() {
@@ -188,10 +190,9 @@ public class SysExSendRequest: NSObject {
 
 }
 
-// TODO This notification should maybe just be a delegate method.
-public extension Notification.Name {
+public protocol SysExSendRequestDelegate: NSObjectProtocol {
 
-    static let sysExSendRequestFinished = Notification.Name("SMSysExSendRequestFinishedNotification")
+    func sysExSendRequestDidFinish(_ sysExSendRequest: SysExSendRequest)
 
 }
 

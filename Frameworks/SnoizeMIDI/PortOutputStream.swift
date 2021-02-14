@@ -156,18 +156,7 @@ public class PortOutputStream: OutputStream {
             for endpoint in endpoints {
                 if let request = SysExSendRequest(message: message, endpoint: endpoint, customSysExBufferSize: customSysExBufferSize) {
                     sysExSendRequests.insert(request)
-
-                    var token: NSObjectProtocol?
-                    token = center.addObserver(forName: .sysExSendRequestFinished, object: request, queue: nil) { [weak self] _ in
-                        guard let self = self else { return }
-
-                        center.removeObserver(token!)
-                        token = nil  // Required to break a retain cycle!
-
-                        self.sysExSendRequests.remove(request)
-
-                        center.post(name: .portOutputStreamSysExSendDidEnd, object: self, userInfo: ["sendRequest": request])
-                    }
+                    request.delegate = self
 
                     center.post(name: .portOutputStreamSysExSendWillBegin, object: self, userInfo: ["sendRequest": request])
 
@@ -175,6 +164,16 @@ public class PortOutputStream: OutputStream {
                 }
             }
         }
+    }
+
+}
+
+extension PortOutputStream: SysExSendRequestDelegate {
+
+    public func sysExSendRequestDidFinish(_ sysExSendRequest: SysExSendRequest) {
+        sysExSendRequests.remove(sysExSendRequest)
+
+        NotificationCenter.default.post(name: .portOutputStreamSysExSendDidEnd, object: self, userInfo: ["sendRequest": sysExSendRequest])
     }
 
 }
