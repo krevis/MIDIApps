@@ -10,7 +10,6 @@
 		16133B7515F5C78100533536 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 161B720815D8E97D006E21D4 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		161B721115D8E9BC006E21D4 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 161B720815D8E97D006E21D4 /* Sparkle.framework */; };
 		161B721315D8EA13006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B721215D8EA13006E21D4 /* dsa_pub.pem */; };
-		163A3FC1213E09460075F8A0 /* NSString+SymlinksAndAliases.m in Sources */ = {isa = PBXBuildFile; fileRef = 163A3FC0213E09460075F8A0 /* NSString+SymlinksAndAliases.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		163FB607199EE2530017B664 /* ToolbarPlayTemplate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB605199EE2530017B664 /* ToolbarPlayTemplate.tiff */; };
 		163FB608199EE2530017B664 /* ToolbarPlayTemplate@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB606199EE2530017B664 /* ToolbarPlayTemplate@2x.tiff */; };
 		163FB60B199EE3C30017B664 /* ToolbarRecordMultipleTemplate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB609199EE3C30017B664 /* ToolbarRecordMultipleTemplate.tiff */; };
@@ -203,8 +202,6 @@
 		161B71FF15D8E97C006E21D4 /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = ../../ThirdParty/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		161B721215D8EA13006E21D4 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dsa_pub.pem; path = ../../Updates/dsa_pub.pem; sourceTree = "<group>"; };
 		161B721515D8EA7F006E21D4 /* SysExLibrarian.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = SysExLibrarian.xml; path = ../../Updates/SysExLibrarian.xml; sourceTree = "<group>"; };
-		163A3FB2213E09460075F8A0 /* NSString+SymlinksAndAliases.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+SymlinksAndAliases.h"; sourceTree = "<group>"; };
-		163A3FC0213E09460075F8A0 /* NSString+SymlinksAndAliases.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+SymlinksAndAliases.m"; sourceTree = "<group>"; };
 		163FB605199EE2530017B664 /* ToolbarPlayTemplate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarPlayTemplate.tiff; sourceTree = "<group>"; };
 		163FB606199EE2530017B664 /* ToolbarPlayTemplate@2x.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "ToolbarPlayTemplate@2x.tiff"; sourceTree = "<group>"; };
 		163FB609199EE3C30017B664 /* ToolbarRecordMultipleTemplate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarRecordMultipleTemplate.tiff; sourceTree = "<group>"; };
@@ -270,10 +267,6 @@
 		F57D1E5B02127DF401000164 /* SysExDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = SysExDocument.icns; sourceTree = "<group>"; };
 		F57D1E5C02127DF401000164 /* LibraryDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = LibraryDocument.icns; sourceTree = "<group>"; };
 		F57D1E5D02127DF401000164 /* MIDIDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = MIDIDocument.icns; sourceTree = "<group>"; };
-		F583CEB401EE3D3801000164 /* SSELibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSELibrary.h; sourceTree = "<group>"; };
-		F583CEB501EE3D3801000164 /* SSELibrary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSELibrary.m; sourceTree = "<group>"; };
-		F583CEB801EE3E4401000164 /* SSELibraryEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSELibraryEntry.h; sourceTree = "<group>"; };
-		F583CEB901EE3E4401000164 /* SSELibraryEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSELibraryEntry.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -498,10 +491,6 @@
 			children = (
 				16B736C325D7366D000DAC58 /* Library.swift */,
 				16B736C525D7773B000DAC58 /* LibraryEntry.swift */,
-				F583CEB401EE3D3801000164 /* SSELibrary.h */,
-				F583CEB501EE3D3801000164 /* SSELibrary.m */,
-				F583CEB801EE3E4401000164 /* SSELibraryEntry.h */,
-				F583CEB901EE3E4401000164 /* SSELibraryEntry.m */,
 				16B736C125D66C07000DAC58 /* Alias.swift */,
 			);
 			name = Library;
@@ -536,8 +525,6 @@
 			children = (
 				16517B9225D4A2E900D0CAC4 /* NSFileManager+UniqueName.swift */,
 				16D0EF2A25CA16DF00399C74 /* NSPopUpButton+Extensions.swift */,
-				163A3FB2213E09460075F8A0 /* NSString+SymlinksAndAliases.h */,
-				163A3FC0213E09460075F8A0 /* NSString+SymlinksAndAliases.m */,
 				16517BAE25D5154F00D0CAC4 /* GeneralWindowController.swift */,
 				16517BC125D5F68700D0CAC4 /* GeneralTableView.swift */,
 				16D0EF2625C94D0400399C74 /* ValidatingButton.swift */,
@@ -818,7 +805,6 @@
 				16D0EF2525C947F800399C74 /* SysExSpeedOutlineView.swift in Sources */,
 				16B736C625D7773B000DAC58 /* LibraryEntry.swift in Sources */,
 				16517B9525D4AAFF00D0CAC4 /* MainWindowController.swift in Sources */,
-				163A3FC1213E09460075F8A0 /* NSString+SymlinksAndAliases.m in Sources */,
 				16C43B9725C4EB00007A3A48 /* main.swift in Sources */,
 				1686427625CE71A000A8B292 /* FindMissingController.swift in Sources */,
 				16517BC225D5F68700D0CAC4 /* GeneralTableView.swift in Sources */,

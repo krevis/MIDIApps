@@ -386,19 +386,61 @@ extension Library /* Private */ {
         // we will ensure it (and its intermediate directories) exists, and present an error if there are any problems.
     }
 
-    private func loadEntries() {
-        // We should only be called once at startup
-        precondition(entries.isEmpty)
-        guard let libraryFilePath = libraryFilePath else { return }
+    private var resolvedLibraryFilePath: String? {
+        guard let libraryFilePath = libraryFilePath else { return nil }
 
         // Handle the case when someone has replaced our file with a symlink, an alias, or a symlink to an alias.
         // (If you have more symlinks or aliases chained together, well, sorry.)
         // Note that this only affects the data that we read. When we write we will replace the symlink or alias with a plain file.
-        let resolvedLibraryFilePath = NSString(string: libraryFilePath).sse_stringByResolvingSymlink().sse_stringByResolvingAlias() as String
+
+        let symlinkResolvedLibraryFilePath: String = {
+            do {
+                let symlinkPath: String = try FileManager.default.destinationOfSymbolicLink(atPath: libraryFilePath)
+                if !symlinkPath.hasPrefix("/") {
+                    return (((libraryFilePath as NSString).deletingLastPathComponent as NSString) .appendingPathComponent(symlinkPath) as NSString).standardizingPath
+                }
+                else {
+                    return symlinkPath
+                }
+            }
+            catch { // not a symlink
+                return libraryFilePath
+            }
+        }()
+
+        let aliasResolvedLibraryFilePath: String = {
+            let url = URL(fileURLWithPath: symlinkResolvedLibraryFilePath, isDirectory: false)
+            do {
+                let resolvedURL: URL
+                if #available(macOS 10.10, *) {
+                    resolvedURL = try URL(resolvingAliasFileAt: url, options: .withoutUI)
+                }
+                else {  // macOS < 10.10
+                    let bookmarkData = try URL.bookmarkData(withContentsOf: url)
+                    var isStale = false // don't really care
+                    resolvedURL = try URL(resolvingBookmarkData: bookmarkData, options: .withoutUI, relativeTo: nil, bookmarkDataIsStale: &isStale)
+                }
+                if resolvedURL.isFileURL {
+                    return resolvedURL.path
+                }
+            }
+            catch { // not an alias
+            }
+
+            return symlinkResolvedLibraryFilePath
+        }()
+
+        return aliasResolvedLibraryFilePath
+    }
+
+    private func loadEntries() {
+        // We should only be called once at startup
+        precondition(entries.isEmpty)
+        guard let libraryFilePath = resolvedLibraryFilePath else { return }
 
         var errorToReport: Error?
         do {
-            let data: NSData = try NSData(contentsOfFile: resolvedLibraryFilePath, options: [])
+            let data: NSData = try NSData(contentsOfFile: libraryFilePath, options: [])
             do {
                 let propertyList = try PropertyListSerialization.propertyList(from: data as Data, options: [], format: nil)
                 if let libraryDict = propertyList as? [String: Any],
