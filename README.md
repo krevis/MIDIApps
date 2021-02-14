@@ -8,7 +8,7 @@ This is the source code for the two applications. You do *not* need any of this 
 
 The source code is Open Source under the BSD license. See LICENSE for the legal details.
 
-The project is currently intended to be used with an up-to-date Xcode version, like Xcode 12.3 (with the MacOS 11.1 SDK).  If you need to run it on an earlier Xcode, try checking out older revisions.
+The project is currently intended to be used with an up-to-date Xcode version, like Xcode 12.4 (with the MacOS 11.1 SDK).  If you need to run it on an earlier Xcode, try checking out older revisions.
 
 ## How to build ##
 
@@ -37,7 +37,7 @@ Your source tree should look like this:
 
 The source for the two apps. The project files are MIDIMonitor.xcodeproj and SysExLibrarian.xcodeproj; open them with Xcode.
 
-Both apps are Cocoa, and are written in Swift and Objective-C.
+Both apps are Cocoa, and are written in Swift (with a tiny amount of Objective-C).
 
 The apps rely on the other frameworks, described below.
 
@@ -53,7 +53,6 @@ A framework containing code for dealing with CoreMIDI in a Cocoa app:
 
 This framework is used by both apps. You can use it in your own apps as well.
 
-The code is mainly Objective-C, with one ordinary C file.
 
 ### Frameworks/SnoizeMIDISpy ###
 
