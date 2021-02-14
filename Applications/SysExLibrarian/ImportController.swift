@@ -13,19 +13,17 @@
 import Cocoa
 import SnoizeMIDI
 
-@objc class ImportController: NSObject {
+class ImportController {
 
-    @objc init(windowController: MainWindowController, library: Library) {
+    init(windowController: MainWindowController, library: Library) {
         self.mainWindowController = windowController
         self.library = library
-
-        super.init()
 
         guard Bundle.main.loadNibNamed("Import", owner: self, topLevelObjects: &topLevelObjects) else { fatalError() }
     }
 
     // Main window controller sends this to begin the process
-    @objc func importFiles(_ paths: [String], showingProgress: Bool) {
+    func importFiles(_ paths: [String], showingProgress: Bool) {
         precondition(filePathsToImport.isEmpty)
         filePathsToImport = paths
 
@@ -73,7 +71,7 @@ import SnoizeMIDI
 
 }
 
-@objc extension ImportController /* Preferences keys */ {
+extension ImportController /* Preferences keys */ {
 
     static var showWarningOnImportPreferenceKey = "SSEShowWarningOnImport"
 

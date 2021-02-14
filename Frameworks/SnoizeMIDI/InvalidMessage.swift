@@ -12,16 +12,16 @@
 
 import Foundation
 
-@objc public class InvalidMessage: Message {
+public class InvalidMessage: Message {
 
-    @objc public var data: Data
+    public var data: Data
 
-    @objc init(timeStamp: MIDITimeStamp, data: Data) {
+    init(timeStamp: MIDITimeStamp, data: Data) {
         self.data = data
         super.init(timeStamp: timeStamp, statusByte: 0x00)  // statusByte is ignored
     }
 
-    @objc public required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         guard let data = coder.decodeObject(forKey: "data") as? Data else { return nil }
         self.data = data
         super.init(coder: coder)
@@ -32,7 +32,7 @@ import Foundation
         coder.encode(data, forKey: "data")
     }
 
-    @objc public var sizeForDisplay: String {
+    public var sizeForDisplay: String {
         let format = NSLocalizedString("%@ bytes", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "Invalid message length format string")
         return String.localizedStringWithFormat(format, Message.formatLength(otherDataLength))
     }

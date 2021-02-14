@@ -12,9 +12,9 @@
 
 import Foundation
 
-@objc public class VoiceMessage: Message {
+public class VoiceMessage: Message {
 
-    @objc public enum Status: UInt8 {
+    public enum Status: UInt8 {
         case noteOff = 0x80
         case noteOn = 0x90
         case aftertouch = 0xA0
@@ -33,7 +33,7 @@ import Foundation
         }
     }
 
-    @objc public var status: Status {
+    public var status: Status {
         get { Status(rawValue: statusByte & 0xF0)! }
         set { statusByte = newValue.rawValue | UInt8(channel - 1) }
     }
@@ -47,7 +47,7 @@ import Foundation
         }
     }
 
-    @objc public var dataByte1: UInt8 {
+    public var dataByte1: UInt8 {
         get { dataBytes.0 }
         set {
             guard (0..<128).contains(newValue) else { fatalError() }

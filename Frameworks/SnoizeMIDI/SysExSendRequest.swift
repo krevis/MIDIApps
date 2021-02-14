@@ -12,7 +12,7 @@
 
 import Foundation
 
-@objc public class SysExSendRequest: NSObject {
+public class SysExSendRequest: NSObject {
 
     init?(message: SystemExclusiveMessage, endpoint: Destination, customSysExBufferSize: Int = 0) {
         self.midiContext = endpoint.midiContext
@@ -56,10 +56,10 @@ import Foundation
         dataPointer.deallocate()
     }
 
-    @objc public let message: SystemExclusiveMessage
-    @objc public let customSysExBufferSize: Int
+    public let message: SystemExclusiveMessage
+    public let customSysExBufferSize: Int
 
-    @objc public func send() -> Bool {
+    public func send() -> Bool {
         checkMainQueue()
 
         guard state == .pending else { return false }
@@ -112,7 +112,7 @@ import Foundation
         }
     }
 
-    @objc public func cancel() -> Bool {
+    public func cancel() -> Bool {
         checkMainQueue()
 
         guard state == .sending else { return false }
@@ -134,19 +134,19 @@ import Foundation
         }
     }
 
-    @objc public var bytesRemaining: Int {
+    public var bytesRemaining: Int {
         return Int(sysexSendRequest.bytesToSend)
     }
 
-    @objc public var totalBytes: Int {
+    public var totalBytes: Int {
         return dataCount
     }
 
-    @objc public var bytesSent: Int {
+    public var bytesSent: Int {
         return totalBytes - bytesRemaining
     }
 
-    @objc public var wereAllBytesSent: Bool {
+    public var wereAllBytesSent: Bool {
         return bytesRemaining == 0
     }
 
@@ -192,13 +192,6 @@ import Foundation
 public extension Notification.Name {
 
     static let sysExSendRequestFinished = Notification.Name("SMSysExSendRequestFinishedNotification")
-
-}
-
-// TODO Duplicate stuff while migrating from ObjC to Swift
-@objc public extension NSNotification {
-
-    static let sysExSendRequestFinished = Notification.Name.sysExSendRequestFinished
 
 }
 

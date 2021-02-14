@@ -13,9 +13,9 @@
 import Foundation
 import CoreMIDI
 
-@objc public class MIDIContext: NSObject, CoreMIDIContext {
+public class MIDIContext: CoreMIDIContext {
 
-    public convenience override init() {
+    public convenience init() {
         self.init(interface: RealCoreMIDIInterface())
     }
 
@@ -23,8 +23,6 @@ import CoreMIDI
         checkMainQueue()
 
         self.privateInterface = interface
-
-        super.init()
 
         let status: OSStatus
         if #available(macOS 10.11, iOS 9.0, *) {
@@ -71,7 +69,7 @@ import CoreMIDI
 
     // MARK: Public API
 
-    @objc public var connectedToCoreMIDI: Bool {
+    public var connectedToCoreMIDI: Bool {
         privateInterface != nil
     }
 
@@ -102,11 +100,11 @@ import CoreMIDI
         destinationList.objects.first { $0.name == name }
     }
 
-    @objc public var externalDevices: [ExternalDevice] {
+    public var externalDevices: [ExternalDevice] {
         externalDeviceList.objects
     }
 
-    @objc public func forceCoreMIDIToUseNewSysExSpeed() {
+    public func forceCoreMIDIToUseNewSysExSpeed() {
         // The CoreMIDI client caches the last device that was given to MIDISendSysex(), along with its max sysex speed.
         // So when we change the speed, it doesn't notice and continues to use the old speed.
         // To fix this, we send a tiny sysex message to a different device.  Unfortunately we can't just use a NULL endpoint,
@@ -120,7 +118,7 @@ import CoreMIDI
         //  }
     }
 
-    @objc public func disconnect() {
+    public func disconnect() {
         // Disconnect from CoreMIDI. Necessary only for very special circumstances, since CoreMIDI will be unusable afterwards.
         _ = interface.clientDispose(midiClient)
         midiClient = 0
@@ -327,18 +325,7 @@ public extension Notification.Name {
 
 }
 
-// TODO Duplicate stuff while migrating from ObjC to Swift
-@objc public extension NSNotification {
-
-    static let midiObjectsAppeared = Notification.Name.midiObjectsAppeared
-    static let midiObjectDisappeared = Notification.Name.midiObjectDisappeared
-    static let midiObjectWasReplaced = Notification.Name.midiObjectWasReplaced
-    static let midiObjectListChanged = Notification.Name.midiObjectListChanged
-    static let midiObjectPropertyChanged = Notification.Name.midiObjectPropertyChanged
-
-}
-
-@objc public extension MIDIContext {
+public extension MIDIContext {
 
     // Keys in userInfo dictionary for notifications
     static let objectsThatAppeared = "SMMIDIObjectsThatAppeared"

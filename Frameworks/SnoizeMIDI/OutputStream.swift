@@ -13,9 +13,9 @@
 import Foundation
 import CoreAudio
 
-@objc public class OutputStream: NSObject, MessageDestination {
+public class OutputStream: NSObject, MessageDestination {
 
-    @objc public var ignoresTimeStamps = false
+    public var ignoresTimeStamps = false
 
     init(midiContext: MIDIContext) {
         self.midiContext = midiContext

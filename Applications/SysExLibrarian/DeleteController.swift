@@ -12,18 +12,16 @@
 
 import Cocoa
 
-@objc class DeleteController: NSObject {
+class DeleteController {
 
-    @objc init(windowController: MainWindowController) {
+    init(windowController: MainWindowController) {
         self.mainWindowController = windowController
-
-        super.init()
 
         guard Bundle.main.loadNibNamed("Delete", owner: self, topLevelObjects: &topLevelObjects) else { fatalError() }
     }
 
     // Main window controller sends this to begin the process
-    @objc func deleteEntries(_ entries: [LibraryEntry]) {
+    func deleteEntries(_ entries: [LibraryEntry]) {
         guard entries.count > 0, let window = mainWindowController?.window else { return }
 
         entriesToDelete = entries
@@ -69,7 +67,7 @@ import Cocoa
 
 }
 
-@objc extension DeleteController /* Preferences keys */ {
+extension DeleteController /* Preferences keys */ {
 
     static var showWarningOnDeletePreferenceKey = "SSEShowWarningOnDelete"
 

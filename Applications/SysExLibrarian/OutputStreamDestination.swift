@@ -12,14 +12,15 @@
 
 import Foundation
 
-@objc protocol OutputStreamDestination: AnyObject, NSObjectProtocol {
+// TODO See if this still needs to be AnyObject, NSObjectProtocol
+protocol OutputStreamDestination: AnyObject, NSObjectProtocol {
 
     var outputStreamDestinationName: String? { get }
 
 }
 
-// TODO Move to other file, follow pattern from input stream
-@objc class SingleOutputStreamDestination: NSObject, OutputStreamDestination {
+// TODO Move to other file, follow pattern from InputStreamSource
+class SingleOutputStreamDestination: NSObject, OutputStreamDestination {
 
     init(name: String?) {
         self.name = name

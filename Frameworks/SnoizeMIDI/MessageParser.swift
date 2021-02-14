@@ -20,7 +20,7 @@ protocol MessageParserDelegate: AnyObject {
 
 }
 
-@objc public class MessageParser: NSObject {
+public class MessageParser {
 
     deinit {
         sysExTimeOutTimer?.invalidate()
@@ -28,10 +28,10 @@ protocol MessageParserDelegate: AnyObject {
 
     weak var delegate: MessageParserDelegate?
     public weak var originatingEndpoint: Endpoint?
-    @objc public var sysExTimeOut: TimeInterval = 1.0   // seconds
-    @objc public var ignoresInvalidData = false
+    public var sysExTimeOut: TimeInterval = 1.0   // seconds
+    public var ignoresInvalidData = false
 
-    @objc public func takePacketList(_ packetListPtr: UnsafePointer<MIDIPacketList>) {
+    public func takePacketList(_ packetListPtr: UnsafePointer<MIDIPacketList>) {
         var messages: [Message] = []
 
         if #available(macOS 10.15, iOS 13.0, *) {
@@ -67,7 +67,7 @@ protocol MessageParserDelegate: AnyObject {
         }
     }
 
-    @objc public func cancelReceivingSysExMessage() -> Bool {
+    public func cancelReceivingSysExMessage() -> Bool {
         // Returns YES if it successfully cancels a sysex message which is being received, and NO otherwise.
         if readingSysExData != nil {
             readingSysExData = nil

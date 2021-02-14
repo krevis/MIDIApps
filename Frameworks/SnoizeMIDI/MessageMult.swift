@@ -12,22 +12,22 @@
 
 import Foundation
 
-@objc public class MessageMult: NSObject, MessageDestination {
-    @objc public var destinations: [MessageDestination] = []
+public class MessageMult: NSObject, MessageDestination {
+    public var destinations: [MessageDestination] = []
 
-    @objc public func addDestination(_ destination: MessageDestination) {
+    public func addDestination(_ destination: MessageDestination) {
         if !destinations.contains(where: { $0 === destination }) {
             destinations.append(destination)
         }
     }
 
-    @objc public func removeDestination(_ destination: MessageDestination) {
+    public func removeDestination(_ destination: MessageDestination) {
         destinations.removeAll { $0 === destination }
     }
 
     // MARK: MessageDestination
 
-    @objc public func takeMIDIMessages(_ messages: [Message]) {
+    public func takeMIDIMessages(_ messages: [Message]) {
         destinations.forEach { $0.takeMIDIMessages(messages) }
     }
 

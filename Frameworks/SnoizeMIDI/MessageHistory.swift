@@ -12,17 +12,17 @@
 
 import Foundation
 
-@objc public class MessageHistory: NSObject, MessageDestination {
+public class MessageHistory: NSObject, MessageDestination {
 
     // Remembers the most recent received messages.
 
-    @objc public var savedMessages: [Message] = [] {
+    public var savedMessages: [Message] = [] {
         didSet {
             _ = limitSavedMessages()
         }
     }
 
-    @objc public func clearSavedMessages() {
+    public func clearSavedMessages() {
         if savedMessages.count > 0 {
             savedMessages = []
             historyChanged(newMessages: false)
@@ -31,7 +31,7 @@ import Foundation
 
     // How many messages to remember.
 
-    @objc public var historySize: Int = MessageHistory.defaultHistorySize {
+    public var historySize: Int = MessageHistory.defaultHistorySize {
         didSet {
             if limitSavedMessages() {
                 historyChanged(newMessages: false)
@@ -39,7 +39,7 @@ import Foundation
         }
     }
 
-    @objc public static let defaultHistorySize: Int = 1000
+    public static let defaultHistorySize: Int = 1000
 
     // When the history changes, a notification named .messageHistoryChanged is posted.
     // User info contains a Bool under key MessageHistory.wereMessagesAdded which is true
@@ -48,7 +48,7 @@ import Foundation
 
     // MARK: MessageDestination
 
-    @objc public func takeMIDIMessages(_ messages: [Message]) {
+    public func takeMIDIMessages(_ messages: [Message]) {
         savedMessages += messages
         historyChanged(newMessages: true)
     }

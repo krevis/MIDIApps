@@ -12,16 +12,16 @@
 
 import Foundation
 
-@objc public class MessageFilter: NSObject, MessageDestination {
+public class MessageFilter: NSObject, MessageDestination {
 
-    @objc public weak var messageDestination: MessageDestination?
+    public weak var messageDestination: MessageDestination?
 
     public var filterMask: Message.TypeMask = []
     public var channelMask: VoiceMessage.ChannelMask = VoiceMessage.ChannelMask.all
 
     // MARK: MessageDestination
 
-    @objc public func takeMIDIMessages(_ messages: [Message]) {
+    public func takeMIDIMessages(_ messages: [Message]) {
         let filteredMessages = filterMessages(messages)
         if filteredMessages.count > 0 {
             messageDestination?.takeMIDIMessages(filteredMessages)

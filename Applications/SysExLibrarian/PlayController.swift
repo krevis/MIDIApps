@@ -13,9 +13,9 @@
 import Cocoa
 import SnoizeMIDI
 
-@objc class PlayController: NSObject {
+class PlayController: NSObject {
 
-    @objc init(mainWindowController: MainWindowController, midiController: MIDIController) {
+    init(mainWindowController: MainWindowController, midiController: MIDIController) {
         self.mainWindowController = mainWindowController
         self.midiController = midiController
 
@@ -30,7 +30,7 @@ import SnoizeMIDI
 
     // MARK: API for main window controller
 
-    @objc func playMessages(_ messages: [SystemExclusiveMessage]) {
+    func playMessages(_ messages: [SystemExclusiveMessage]) {
         guard let midiController = midiController else { return }
 
         observeMIDIController()
@@ -41,7 +41,7 @@ import SnoizeMIDI
         // Otherwise, we expect a different notification so that sendWillStart() will be called.
     }
 
-    @objc func playMessages(inEntryForProgramChange entry: LibraryEntry) {
+    func playMessages(inEntryForProgramChange entry: LibraryEntry) {
         if !transmitting {
             // Normal case. Nothing is being transmitted, so just remember the current
             // entry and play the messages in it.
@@ -153,7 +153,7 @@ extension PlayController /* Private */ {
 
         // Maybe there's a queued entry that needs sending...
         if let queuedEntry = queuedEntry, currentEntry != queuedEntry {
-            let messages = queuedEntry.messages ?? []
+            let messages = queuedEntry.messages
 
             // yes, move the queued entry to be current
             self.currentEntry = queuedEntry

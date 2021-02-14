@@ -12,31 +12,29 @@
 
 import Foundation
 
-@objc open class InputStream: NSObject, MessageParserDelegate {
+open class InputStream: MessageParserDelegate {
 
-    @objc public init(midiContext: MIDIContext) {
+    public init(midiContext: MIDIContext) {
         self.midiContext = midiContext
 
         // Default to main queue for taking pending read packets
         readQueue = DispatchQueue.main
-
-        super.init()
     }
 
     public let midiContext: MIDIContext
-    @objc public var readQueue: DispatchQueue
-    @objc public weak var messageDestination: MessageDestination?
-    @objc public var sysExTimeOut: TimeInterval = 1.0 {
+    public var readQueue: DispatchQueue
+    public weak var messageDestination: MessageDestination?
+    public var sysExTimeOut: TimeInterval = 1.0 {
         didSet {
             parsers.forEach { $0.sysExTimeOut = sysExTimeOut }
         }
     }
 
-    @objc public func cancelReceivingSysExMessage() {
+    public func cancelReceivingSysExMessage() {
         parsers.forEach { _ = $0.cancelReceivingSysExMessage() }
     }
 
-    @objc open var persistentSettings: Any? {
+    open var persistentSettings: Any? {
         var persistentSettings: [[String: Any]] = []
         for inputSource in selectedInputSources {
             var dict: [String: Any] = [:]
@@ -53,7 +51,7 @@ import Foundation
         return persistentSettings
     }
 
-    @objc open func takePersistentSettings(_ settings: Any!) -> [String]! {
+    open func takePersistentSettings(_ settings: Any!) -> [String]! {
         // If any endpoints couldn't be found, their names are returned
         // TODO Fix type to be nicer
         guard let dicts = settings as? [[String: Any]] else { return nil }
@@ -202,15 +200,6 @@ public extension Notification.Name {
     static let inputStreamSourceListChanged = Notification.Name("SMInputStreamSourceListChangedNotification")
 
     // TODO Formalize these userInfo keys, if we have to have them
-
-}
-
-// TODO Duplicate stuff while migrating from ObjC to Swift
-@objc public extension NSNotification {
-
-    static let inputStreamReadingSysEx = Notification.Name.inputStreamReadingSysEx
-    static let inputStreamDoneReadingSysEx = Notification.Name.inputStreamDoneReadingSysEx
-    static let inputStreamSourceListChanged = Notification.Name.inputStreamSourceListChanged
 
 }
 

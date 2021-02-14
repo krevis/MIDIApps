@@ -12,7 +12,7 @@
 
 import Cocoa
 
-@objc extension NSPopUpButton {
+extension NSPopUpButton {
 
     func addItem(title: String, representedObject: AnyObject) {
         // NOTE We should just do this, but as of 10.1.3 (and before) it can fail:

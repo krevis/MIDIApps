@@ -22,7 +22,7 @@ class AppController: NSObject {
     }
 
     var midiContext: MIDIContext?
-    @objc var midiSpyClient: MIDISpyClientRef?
+    var midiSpyClient: MIDISpyClientRef?
 
     private var shouldOpenUntitledDocument = false
     private var newlyAppearedSources: Set<Source>?
@@ -104,7 +104,7 @@ extension AppController {
     // MARK: Menus and actions
 
     @IBAction func showPreferences(_ sender: Any?) {
-        PreferencesWindowController.sharedInstance.showWindow(nil)
+        PreferencesWindowController.shared.showWindow(nil)
     }
 
     @IBAction func showAboutBox(_ sender: Any?) {

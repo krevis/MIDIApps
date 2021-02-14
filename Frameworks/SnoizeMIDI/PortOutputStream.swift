@@ -13,7 +13,7 @@
 import Foundation
 import CoreAudio
 
-@objc public class PortOutputStream: OutputStream {
+public class PortOutputStream: OutputStream {
 
     public var endpoints: Set<Destination> = [] {
         didSet {
@@ -31,17 +31,17 @@ import CoreAudio
         }
     }
 
-    @objc public var sendsSysExAsynchronously: Bool = false
+    public var sendsSysExAsynchronously: Bool = false
 
-    @objc public func cancelPendingSysExSendRequests() {
+    public func cancelPendingSysExSendRequests() {
         sysExSendRequests.forEach { _ = $0.cancel() }
     }
 
-    @objc public var pendingSysExSendRequests: [SysExSendRequest] {
+    public var pendingSysExSendRequests: [SysExSendRequest] {
         return Array(sysExSendRequests)
     }
 
-    @objc public var customSysExBufferSize: Int = 0
+    public var customSysExBufferSize: Int = 0
 
     // It's possible (although unlikely) that creating the output port fails.
     // In ObjC we could have made init return nil, but apparently that is not
@@ -72,7 +72,7 @@ import CoreAudio
 
     // MARK: OutputStream overrides
 
-    @objc public override func takeMIDIMessages(_ messages: [Message]) {
+    public override func takeMIDIMessages(_ messages: [Message]) {
         if sendsSysExAsynchronously {
             // Find the messages which are sysex and which have timestamps which are <= now,
             // and send them using MIDISendSysex(). Other messages get sent normally.
@@ -190,15 +190,5 @@ public extension Notification.Name {
     static let portOutputStreamSysExSendDidEnd = Notification.Name("SMPortOutputStreamFinishedSysExSendNotification")
     // userInfo has key "sendRequest", object SysExSendRequest
     // TODO Formalize that
-
-}
-
-// TODO Duplicate stuff while migrating from ObjC to Swift
-
-@objc public extension NSNotification {
-
-    static let portOutputStreamEndpointDisappeared = Notification.Name.portOutputStreamEndpointDisappeared
-    static let portOutputStreamSysExSendWillBegin = Notification.Name.portOutputStreamSysExSendWillBegin
-    static let portOutputStreamSysExSendDidEnd = Notification.Name.portOutputStreamSysExSendDidEnd
 
 }

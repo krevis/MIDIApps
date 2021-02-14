@@ -15,12 +15,12 @@ import SnoizeMIDI
 
 class CombinationOutputStream: NSObject, MessageDestination {
 
-    @objc static func destinationsInContext(_ midiContext: MIDIContext) -> [Destination] {
+    static func destinationsInContext(_ midiContext: MIDIContext) -> [Destination] {
         // The regular set of destination endpoints, but without any of our own virtual endpoints
         midiContext.destinations.filter { !$0.isOwnedByThisProcess }
     }
 
-    @objc init(midiContext: MIDIContext) {
+    init(midiContext: MIDIContext) {
         self.midiContext = midiContext
         virtualStreamDestination = SingleOutputStreamDestination(name: midiContext.name)
 
@@ -33,23 +33,23 @@ class CombinationOutputStream: NSObject, MessageDestination {
         NotificationCenter.default.removeObserver(self)
     }
 
-    @objc var messageDestination: MessageDestination?
+    var messageDestination: MessageDestination?
 
-    @objc var destinations: [OutputStreamDestination] {
+    var destinations: [OutputStreamDestination] {
         // Flatten the groups
         Array(groupedDestinations.joined())
     }
 
     // Returns an array of arrays. Each of the 2nd level arrays contains destinations that are of the same kind.
     // (That is, the first array has destinations for the port stream, the second array has destinations for the virtual stream, etc.)
-    @objc var groupedDestinations: [[OutputStreamDestination]] {
+    var groupedDestinations: [[OutputStreamDestination]] {
         // TODO perhaps do it like CombinationInputStreamSourceGroup instead
         [ Self.destinationsInContext(midiContext),
           [virtualStreamDestination]
         ]
     }
 
-    @objc var selectedDestination: OutputStreamDestination? {
+    var selectedDestination: OutputStreamDestination? {
         get {
             if virtualStream != nil {
                 return virtualStreamDestination
@@ -78,11 +78,11 @@ class CombinationOutputStream: NSObject, MessageDestination {
         }
     }
 
-    @objc func setVirtualDisplayName(_ name: String?) {
+    func setVirtualDisplayName(_ name: String?) {
         virtualStreamDestination.name = name
     }
 
-    @objc var persistentSettings: [String: Any]? {
+    var persistentSettings: [String: Any]? {
         var persistentSettings: [String: Any] = [:]
 
         if let stream = portStream {
@@ -100,7 +100,7 @@ class CombinationOutputStream: NSObject, MessageDestination {
         return persistentSettings.count > 0 ? persistentSettings : nil
     }
 
-    @objc func takePersistentSettings(_ settings: [String: Any]) -> String? {
+    func takePersistentSettings(_ settings: [String: Any]) -> String? {
         // If the endpoint indicated by the persistent settings couldn't be found, its name is returned
 
         if let number = settings["portEndpointUniqueID"] as? NSNumber {
@@ -130,7 +130,7 @@ class CombinationOutputStream: NSObject, MessageDestination {
     }
 
     // If YES, then ignore the timestamps in the messages we receive, and send immediately instead
-    @objc var ignoresTimeStamps: Bool = false {
+    var ignoresTimeStamps: Bool = false {
         didSet {
             stream?.ignoresTimeStamps = ignoresTimeStamps
         }
@@ -138,7 +138,7 @@ class CombinationOutputStream: NSObject, MessageDestination {
 
     // If YES, then use MIDISendSysex() to send sysex messages. Otherwise, use plain old MIDI packets.
     // (This can only work on port streams, not virtual ones.)
-    @objc var sendsSysExAsynchronously = false {
+    var sendsSysExAsynchronously = false {
         didSet {
             if stream == portStream {
                 portStream?.sendsSysExAsynchronously = sendsSysExAsynchronously
@@ -146,17 +146,17 @@ class CombinationOutputStream: NSObject, MessageDestination {
         }
     }
 
-    @objc var canSendSysExAsynchronously: Bool {
+    var canSendSysExAsynchronously: Bool {
         self.stream == portStream && portStream != nil && portStream!.sendsSysExAsynchronously
     }
 
-    @objc var customSysExBufferSize: Int = 0 {
+    var customSysExBufferSize: Int = 0 {
         didSet {
             portStream?.customSysExBufferSize = customSysExBufferSize
         }
     }
 
-    @objc func cancelPendingSysExSendRequests() {
+    func cancelPendingSysExSendRequests() {
         if stream == portStream {
             portStream?.cancelPendingSysExSendRequests()
         }

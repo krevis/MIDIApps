@@ -14,14 +14,13 @@ import Foundation
 
 // TODO This probably could be a struct.
 
-@objc class Alias: NSObject {
+class Alias {
 
-    @objc init(data: Data) {
+    init(data: Data) {
         bookmarkData = data
-        super.init()
     }
 
-    @objc convenience init?(aliasRecordData: Data) {
+    convenience init?(aliasRecordData: Data) {
         if let cfBookmarkData = CFURLCreateBookmarkDataFromAliasRecord(kCFAllocatorDefault, aliasRecordData as CFData) {
             self.init(data: cfBookmarkData.takeRetainedValue() as Data)
         }
@@ -30,7 +29,7 @@ import Foundation
         }
     }
 
-    @objc convenience init?(path: String) {
+    convenience init?(path: String) {
         do {
             let url = URL(fileURLWithPath: path)
             let bookmarkData = try url.bookmarkData()
@@ -41,15 +40,15 @@ import Foundation
         }
     }
 
-    @objc var data: Data {
+    var data: Data {
         bookmarkData
     }
 
-    @objc var path: String? {
+    var path: String? {
         path(allowingUI: true)
     }
 
-    @objc func path(allowingUI: Bool) -> String? {
+    func path(allowingUI: Bool) -> String? {
         do {
             let options: URL.BookmarkResolutionOptions = allowingUI ? [] : .withoutUI
             var isStale = false

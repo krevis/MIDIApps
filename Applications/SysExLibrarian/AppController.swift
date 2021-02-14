@@ -13,13 +13,13 @@
 import Cocoa
 import SnoizeMIDI
 
-@objc class AppController: NSObject {
+class AppController: NSObject {
 
     override init() {
         super.init()
     }
 
-    @objc private(set) var midiContext: MIDIContext?
+    private(set) var midiContext: MIDIContext?
 
     // MARK: Private
     private var hasFinishedLaunching = false
@@ -113,7 +113,7 @@ extension AppController: NSUserInterfaceValidations {
 extension AppController /* Actions */ {
 
     @IBAction func showPreferences(_ sender: Any?) {
-        PreferencesWindowController.sharedInstance.showWindow(nil)
+        PreferencesWindowController.shared.showWindow(nil)
     }
 
     @IBAction func showAboutBox(_ sender: Any?) {

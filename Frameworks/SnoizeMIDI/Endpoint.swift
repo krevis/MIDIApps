@@ -13,7 +13,7 @@
 import Foundation
 import CoreMIDI
 
-@objc public class Endpoint: MIDIObject {
+public class Endpoint: MIDIObject {
 
     required init(context: CoreMIDIContext, objectRef: MIDIObjectRef) {
         super.init(context: context, objectRef: objectRef)
@@ -49,7 +49,7 @@ import CoreMIDI
         isVirtual && ownerPID == getpid()
     }
 
-    @objc public var connectedExternalDevices: [ExternalDevice] {
+    public var connectedExternalDevices: [ExternalDevice] {
         uniqueIDsOfConnectedThings.compactMap { uniqueID -> ExternalDevice? in
             if let deviceRef = deviceRefFromConnectedUniqueID(uniqueID) {
                 return midiContext.findObject(midiObjectRef: deviceRef)

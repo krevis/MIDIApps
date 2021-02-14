@@ -12,7 +12,7 @@
 
 import Foundation
 
-@objc public class SystemCommonMessage: Message {
+public class SystemCommonMessage: Message {
 
     // TODO There should be associated data on the type to store the bytes, probably
     public enum CommonMessageType: UInt8 {

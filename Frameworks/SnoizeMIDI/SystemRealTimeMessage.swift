@@ -12,7 +12,7 @@
 
 import Foundation
 
-@objc public class SystemRealTimeMessage: Message {
+public class SystemRealTimeMessage: Message {
 
     public enum MessageType: UInt8 {
         case clock          = 0xF8

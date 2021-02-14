@@ -13,7 +13,7 @@
 import Cocoa
 import SnoizeMIDI
 
-@objc class SysExSpeedController: NSObject {
+class SysExSpeedController: NSObject {
 
     override init() {
         super.init()
@@ -37,7 +37,7 @@ import SnoizeMIDI
         }
     }
 
-    @objc func willShow() {
+    func willShow() {
         // TODO Can this be more specific now?
     //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(midiSetupChanged:) name:NSNotification.clientSetupChanged object:[SMClient sharedClient]];
 
@@ -53,7 +53,7 @@ import SnoizeMIDI
         }
     }
 
-    @objc func willHide() {
+    func willHide() {
         //    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSNotification.clientSetupChanged object:[SMClient sharedClient]]; // TODO
 
         releaseDestinationsAndExternalDevices()

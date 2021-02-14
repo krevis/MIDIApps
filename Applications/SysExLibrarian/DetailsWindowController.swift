@@ -13,7 +13,7 @@
 import Cocoa
 import SnoizeMIDI
 
-@objc class DetailsWindowController: GeneralWindowController {
+class DetailsWindowController: GeneralWindowController {
 
     static func showWindow(forEntry entry: LibraryEntry) {
         var controller = controllers.first(where: { $0.entry == entry })

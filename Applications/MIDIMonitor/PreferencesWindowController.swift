@@ -15,14 +15,14 @@ import SnoizeMIDI
 
 class PreferencesWindowController: UtilityWindowController, NSWindowRestoration {
 
-    static let sharedInstance = PreferencesWindowController(windowNibName: "Preferences")
+    static let shared = PreferencesWindowController(windowNibName: "Preferences")
 
     //
     // Internal
     //
 
     static func restoreWindow(withIdentifier identifier: NSUserInterfaceItemIdentifier, state: NSCoder, completionHandler: @escaping (NSWindow?, Error?) -> Void) {
-        completionHandler(sharedInstance.window, nil)
+        completionHandler(shared.window, nil)
     }
 
     @IBOutlet private var tabView: NSTabView!

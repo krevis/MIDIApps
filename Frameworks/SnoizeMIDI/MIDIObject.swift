@@ -122,14 +122,14 @@ public class MIDIObject: NSObject, CoreMIDIObjectWrapper, CoreMIDIPropertyChange
     }
 
     private lazy var cachedName = cacheProperty(kMIDIPropertyName, String.self)
-    @objc public var name: String? {
+    public var name: String? {
         get { self[cachedName] }
         set { self[cachedName] = newValue }
     }
 
     private lazy var cachedMaxSysExSpeed = cacheProperty(kMIDIPropertyMaxSysExSpeed, Int32.self)
     private let fallbackMaxSysExSpeed: Int32 = 3125 // bytes/sec for MIDI 1.0
-    @objc public var maxSysExSpeed: Int32 {
+    public var maxSysExSpeed: Int32 {
         get { self[cachedMaxSysExSpeed] ?? fallbackMaxSysExSpeed }
         set { self[cachedMaxSysExSpeed] = newValue }
     }

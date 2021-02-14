@@ -14,7 +14,7 @@ import Foundation
 import CoreMIDI
 import CoreAudio
 
-@objc public class Message: NSObject, NSCoding {
+public class Message: NSObject, NSCoding {
 
     public struct TypeMask: OptionSet {
         public let rawValue: Int
@@ -57,7 +57,7 @@ import CoreAudio
         public static let all                   = Self(rawValue: (1 << 19) - 1)
     }
 
-    @objc public init(timeStamp: MIDITimeStamp, statusByte: UInt8) {
+    public init(timeStamp: MIDITimeStamp, statusByte: UInt8) {
         self.timeStampWasZeroWhenReceived = timeStamp == 0
         self.timeStamp = timeStampWasZeroWhenReceived ? AudioGetCurrentHostTime() : timeStamp
         self.timeBase = MessageTimeBase.current
@@ -65,7 +65,7 @@ import CoreAudio
         super.init()
     }
 
-    @objc public required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         if coder.containsValue(forKey: "timeStampInNanos") {
             let nanos = coder.decodeInt64(forKey: "timeStampInNanos")
             self.timeStamp = AudioConvertNanosToHostTime(UInt64(nanos))
@@ -140,7 +140,7 @@ import CoreAudio
         }
     }
 
-    @objc public var originatingEndpoint: Endpoint? {
+    public var originatingEndpoint: Endpoint? {
         didSet {
             if oldValue != originatingEndpoint {
                 originatingEndpointName = nil
@@ -253,10 +253,10 @@ import CoreAudio
 
 }
 
-@objc extension Message /* Formatting */ {
+extension Message /* Formatting */ {
     // TODO Move this all out to somewhere else
 
-    @objc public enum NoteFormattingOption: Int {
+    public enum NoteFormattingOption: Int {
         case decimal
         case hexadecimal
         case nameMiddleC3    // Middle C = 60 decimal = C3, aka "Yamaha"
@@ -267,7 +267,7 @@ import CoreAudio
         }
     }
 
-    @objc public enum ControllerFormattingOption: Int {
+    public enum ControllerFormattingOption: Int {
         case decimal
         case hexadecimal
         case name
@@ -277,7 +277,7 @@ import CoreAudio
         }
     }
 
-    @objc public enum DataFormattingOption: Int {
+    public enum DataFormattingOption: Int {
         case decimal
         case hexadecimal
 
@@ -286,7 +286,7 @@ import CoreAudio
         }
     }
 
-    @objc public enum TimeFormattingOption: Int {
+    public enum TimeFormattingOption: Int {
         case hostTimeInteger
         case hostTimeNanoseconds
         case hostTimeSeconds

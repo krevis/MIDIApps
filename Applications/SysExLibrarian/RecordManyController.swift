@@ -12,7 +12,7 @@
 
 import Cocoa
 
-@objc class RecordManyController: RecordController {
+class RecordManyController: RecordController {
 
     // MARK: RecordController subclass
 

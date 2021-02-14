@@ -12,9 +12,9 @@
 
 import Foundation
 
-@objc public class VirtualInputStream: InputStream {
+public class VirtualInputStream: InputStream {
 
-    @objc public override init(midiContext: MIDIContext) {
+    public override init(midiContext: MIDIContext) {
         virtualEndpointName = midiContext.name
         uniqueID = 0 // Let CoreMIDI assign a unique ID to the virtual endpoint when it is created
 
@@ -27,7 +27,7 @@ import Foundation
         isActive = false
     }
 
-    @objc public var uniqueID: MIDIUniqueID {
+    public var uniqueID: MIDIUniqueID {
         didSet {
             if uniqueID != oldValue, let endpoint = endpoint {
                 endpoint.uniqueID = uniqueID
@@ -37,7 +37,7 @@ import Foundation
         }
     }
 
-    @objc public var virtualEndpointName: String {
+    public var virtualEndpointName: String {
         didSet {
             if virtualEndpointName != oldValue {
                 endpoint?.name = virtualEndpointName
@@ -45,11 +45,11 @@ import Foundation
         }
     }
 
-    @objc public func setInputSourceName(_ name: String) {
+    public func setInputSourceName(_ name: String) {
         singleSource.name = name
     }
 
-    @objc public private(set) var endpoint: Destination?
+    public private(set) var endpoint: Destination?
 
     // MARK: InputStream subclass
 
@@ -86,7 +86,7 @@ import Foundation
 
     // MARK: InputStream overrides
 
-    @objc public override var persistentSettings: Any? {
+    public override var persistentSettings: Any? {
         if isActive {
             return ["uniqueID": uniqueID]
         }
@@ -95,7 +95,7 @@ import Foundation
         }
     }
 
-    @objc public override func takePersistentSettings(_ settings: Any!) -> [String]! {
+    public override func takePersistentSettings(_ settings: Any!) -> [String]! {
         if let settings = settings as? [String: Any?],
            let settingsUniqueID = settings["uniqueID"] as? MIDIUniqueID {
             uniqueID = settingsUniqueID

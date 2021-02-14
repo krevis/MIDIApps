@@ -12,9 +12,9 @@
 
 import Cocoa
 
-@objc class RecordController: NSObject {
+class RecordController: NSObject {
 
-    @objc init(mainWindowController: MainWindowController, midiController: MIDIController) {
+    init(mainWindowController: MainWindowController, midiController: MIDIController) {
         self.mainWindowController = mainWindowController
         self.midiController = midiController
 
@@ -27,7 +27,7 @@ import Cocoa
 
     // MARK: API for main window controller
 
-    @objc func beginRecording() {
+    func beginRecording() {
         guard let window = mainWindowController?.window else { return }
 
         if topLevelObjects == nil {

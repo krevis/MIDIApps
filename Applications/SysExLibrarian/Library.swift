@@ -13,7 +13,7 @@
 import Cocoa
 import SnoizeMIDI
 
-@objc class Library: NSObject {
+class Library: NSObject {
 
     static var shared = Library()
 

@@ -12,9 +12,9 @@
 
 import Cocoa
 
-@objc class PreferencesWindowController: GeneralWindowController {
+class PreferencesWindowController: GeneralWindowController {
 
-    @objc static let sharedInstance = PreferencesWindowController()
+    static let shared = PreferencesWindowController()
 
     init() {
         super.init(window: nil)
@@ -194,15 +194,5 @@ extension Notification.Name {
     static let sysExSendPreferenceChanged = Notification.Name("SSESysExSendPreferenceChangedNotification")
     static let sysExReceivePreferenceChanged = Notification.Name("SSESysExReceivePreferenceChangedNotification")
     static let listenForProgramChangesPreferenceChanged = Notification.Name("SSEListenForProgramChangesPreferenceChangedNotification")
-
-}
-
-// TODO Duplicate stuff while migrating from ObjC to Swift
-@objc extension NSNotification {
-
-    static let displayPreferenceChanged = Notification.Name.displayPreferenceChanged
-    static let sysExSendPreferenceChanged = Notification.Name.sysExSendPreferenceChanged
-    static let sysExReceivePreferenceChanged = Notification.Name.sysExReceivePreferenceChanged
-    static let listenForProgramChangesPreferenceChanged = Notification.Name.listenForProgramChangesPreferenceChanged
 
 }

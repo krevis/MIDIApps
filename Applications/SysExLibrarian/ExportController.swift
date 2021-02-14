@@ -13,17 +13,15 @@
 import Cocoa
 import SnoizeMIDI
 
-@objc class ExportController: NSObject {
+class ExportController {
 
-    @objc init(windowController: MainWindowController) {
+    init(windowController: MainWindowController) {
         self.mainWindowController = windowController
-
-        super.init()
     }
 
     // Main window controller sends this to export messages
     // asSMF == YES for standard MIDI file, NO for sysex (.syx)
-    @objc func exportMessages(_ messages: [SystemExclusiveMessage], fromFileName: String?, asSMF: Bool) {
+    func exportMessages(_ messages: [SystemExclusiveMessage], fromFileName: String?, asSMF: Bool) {
         guard let window = mainWindowController?.window else { return }
 
         // Pick a file name to export to.

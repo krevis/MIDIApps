@@ -184,6 +184,8 @@ class GeneralTableView: NSTableView {
 
 }
 
+// TODO Express the optionality of these methods in these two protocols in some better way
+
 @objc protocol GeneralTableViewDataSource: NSTableViewDataSource {
 
     @objc optional func tableView(_ tableView: GeneralTableView, deleteRows: IndexSet)

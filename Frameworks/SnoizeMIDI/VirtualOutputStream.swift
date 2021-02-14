@@ -12,7 +12,7 @@
 
 import Foundation
 
-@objc public class VirtualOutputStream: OutputStream {
+public class VirtualOutputStream: OutputStream {
 
     public let endpoint: Source
 

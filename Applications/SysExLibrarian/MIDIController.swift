@@ -13,9 +13,9 @@
 import Cocoa
 import SnoizeMIDI
 
-@objc class MIDIController: NSObject {
+class MIDIController: NSObject {
 
-    @objc init(mainWindowController: MainWindowController) {
+    init(mainWindowController: MainWindowController) {
         self.mainWindowController = mainWindowController
 
         guard let context = (NSApp.delegate as? AppController)?.midiContext else { fatalError() }
@@ -75,15 +75,15 @@ import SnoizeMIDI
         inputStream.messageDestination = nil
     }
 
-    @objc var destinations: [OutputStreamDestination] {
+    var destinations: [OutputStreamDestination] {
         outputStream.destinations
     }
 
-    @objc var groupedDestinations: [[OutputStreamDestination]] {
+    var groupedDestinations: [[OutputStreamDestination]] {
         outputStream.groupedDestinations
     }
 
-    @objc var selectedDestination: OutputStreamDestination? {
+    var selectedDestination: OutputStreamDestination? {
         get {
             outputStream.selectedDestination
         }
@@ -95,7 +95,7 @@ import SnoizeMIDI
         }
     }
 
-    @objc var messages: [SystemExclusiveMessage] = [] {
+    var messages: [SystemExclusiveMessage] = [] {
         didSet {
             sendingMessageCount = messages.count
             sendingMessageIndex = 0
@@ -283,9 +283,9 @@ extension MIDIController /* Preferences Keys*/ {
     static let selectedDestinationPreferenceKey = "SSESelectedDestination"
     static let sysExReadTimeOutPreferenceKey = "SSESysExReadTimeOut"
     static let sysExIntervalBetweenSentMessagesPreferenceKey = "SSESysExIntervalBetweenSentMessages"
-    @objc static let listenForProgramChangesPreferenceKey = "SSEListenForProgramChanges"
+    static let listenForProgramChangesPreferenceKey = "SSEListenForProgramChanges"
     static let interruptOnProgramChangePreferenceKey = "SSEInterruptOnProgramChange"
-    @objc static let programChangeBaseIndexPreferenceKey = "SSEProgramChangeBaseIndex"
+    static let programChangeBaseIndexPreferenceKey = "SSEProgramChangeBaseIndex"
     static let customSysexBufferSizePreferenceKey = "SSECustomSysexBufferSize"
 
 }
@@ -302,13 +302,6 @@ extension Notification.Name {
 
     static let programChangeBaseIndexPreferenceChanged = Notification.Name("SSEProgramChangeBaseIndexChangedNotification")
     static let customSysexBufferSizePreferenceChanged = Notification.Name("SSECustomSysexBufferSizePreferenceChangedNotification")
-
-}
-
-// TODO Duplicate stuff while migrating from ObjC to Swift
-@objc public extension NSNotification {
-
-    static let programChangeBaseIndexPreferenceChanged = Notification.Name.programChangeBaseIndexPreferenceChanged
 
 }
 

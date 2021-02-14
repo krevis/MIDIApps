@@ -13,9 +13,9 @@
 import Cocoa
 import SnoizeMIDI
 
-@objc class MainWindowController: GeneralWindowController {
+class MainWindowController: GeneralWindowController {
 
-    @objc static var shared = MainWindowController()
+    static var shared = MainWindowController()
 
     init() {
         self.library = Library.shared

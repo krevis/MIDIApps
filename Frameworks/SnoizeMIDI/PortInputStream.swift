@@ -12,9 +12,9 @@
 
 import Foundation
 
-@objc public class PortInputStream: InputStream {
+public class PortInputStream: InputStream {
 
-    @objc public override init(midiContext: MIDIContext) {
+    public override init(midiContext: MIDIContext) {
         super.init(midiContext: midiContext)
 
         _ = midiContext.interface.inputPortCreate(midiContext.midiClient, "Input port" as CFString, midiReadProc, Unmanaged.passUnretained(self).toOpaque(), &inputPort)

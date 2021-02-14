@@ -13,17 +13,14 @@
 import Cocoa
 import SnoizeMIDI
 
-@objc class FindMissingController: NSObject {
-
-    @objc init(windowController: MainWindowController, library: Library) {
+class FindMissingController {
+    init(windowController: MainWindowController, library: Library) {
         self.mainWindowController = windowController
         self.library = library
-
-        super.init()
     }
 
     // Main window controller sends this to begin the process
-    @objc func findMissingFiles(forEntries entries: [LibraryEntry], completion: @escaping () -> Void) {
+    func findMissingFiles(forEntries entries: [LibraryEntry], completion: @escaping () -> Void) {
         // Ask the user to find each missing file.
         // If we go through them all successfully, perform the completion.
         // If we cancel at any point of the process, don't do anything.

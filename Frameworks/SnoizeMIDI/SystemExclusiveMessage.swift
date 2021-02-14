@@ -12,7 +12,7 @@
 
 import Foundation
 
-@objc public class SystemExclusiveMessage: Message {
+public class SystemExclusiveMessage: Message {
 
     // Init with data that does *not* include the starting 0xF0 or ending 0xF7.
     public init(timeStamp: MIDITimeStamp, data: Data) {
@@ -40,14 +40,14 @@ import Foundation
     // MARK: Public
 
     // Data *without* the starting 0xF0 or ending 0xF7 (EOX).
-    @objc public var data: Data {
+    public var data: Data {
         didSet {
             cachedDataWithEOX = nil
         }
     }
 
     // Whether the message was received with an ending 0xF7 (EOX) or not.
-    @objc public var wasReceivedWithEOX = true
+    public var wasReceivedWithEOX = true
 
     // Data without the starting 0xF0, always with ending 0xF7.
     public override var otherData: Data? {
@@ -63,34 +63,34 @@ import Foundation
     }
 
     // Data as received, without starting 0xF0. May or may not include 0xF7.
-    @objc public var receivedData: Data {
+    public var receivedData: Data {
         wasReceivedWithEOX ? otherData! : data
     }
 
-    @objc public var receivedDataLength: Int {
+    public var receivedDataLength: Int {
         receivedData.count
     }
 
     // Data as received, with 0xF0 at start. May or may not include 0xF7.
-    @objc public var receivedDataWithStartByte: Data {
+    public var receivedDataWithStartByte: Data {
         dataByAddingStartByte(receivedData)
     }
 
-    @objc public var receivedDataWithStartByteLength: Int {
+    public var receivedDataWithStartByteLength: Int {
         receivedDataLength + 1
     }
 
     // Data with leading 0xF0 and ending 0xF7.
-    @objc public var fullMessageData: Data {
+    public var fullMessageData: Data {
         dataByAddingStartByte(otherData!)
     }
 
-    @objc public var fullMessageDataLength: Int {
+    public var fullMessageDataLength: Int {
         otherDataLength + 1
     }
 
     // Manufacturer ID bytes. May be 1 to 3 bytes in length, or nil if it can't be determined.
-    @objc public var manufacturerIdentifier: Data? {
+    public var manufacturerIdentifier: Data? {
         guard data.count > 0 else { return nil }
 
         // If the first byte is not 0, the manufacturer ID is one byte long. Otherwise, return a three-byte value (if possible).
@@ -105,12 +105,12 @@ import Foundation
         }
     }
 
-    @objc public var manufacturerName: String? {
+    public var manufacturerName: String? {
         guard let identifier = manufacturerIdentifier else { return nil }
         return Message.nameForManufacturerIdentifier(identifier)
     }
 
-    @objc public var sizeForDisplay: String {
+    public var sizeForDisplay: String {
         let formattedLength = Message.formatLength(receivedDataWithStartByteLength)
         let format = NSLocalizedString("%@ bytes", tableName: "SnoizeMIDI", bundle: SMBundleForObject(self), comment: "SysEx length format string")
         return String.localizedStringWithFormat(format, formattedLength)
@@ -154,7 +154,7 @@ extension SystemExclusiveMessage {
     // Convert an array of sysex messages to a single chunk of data (e.g. for a .syx file),
     // and vice-versa.
 
-    @objc public static func messages(fromData data: Data) -> [SystemExclusiveMessage] {
+    public static func messages(fromData data: Data) -> [SystemExclusiveMessage] {
         // Scan through data and make messages out of it.
         // Messages must start with 0xF0.  Messages may end in any byte >= 0x80.
 
@@ -195,7 +195,7 @@ extension SystemExclusiveMessage {
         return messages
     }
 
-    @objc public static func data(forMessages messages: [SystemExclusiveMessage]) -> Data? {
+    public static func data(forMessages messages: [SystemExclusiveMessage]) -> Data? {
         guard messages.count > 0 else { return nil }
 
         var resultData = Data()
@@ -225,7 +225,7 @@ extension SystemExclusiveMessage {
 
     // Extract sysex messages from a Standard MIDI file, and vice-versa.
 
-    @objc public static func messages(fromStandardMIDIFileData data: Data) -> [SystemExclusiveMessage] {
+    public static func messages(fromStandardMIDIFileData data: Data) -> [SystemExclusiveMessage] {
         var possibleSequence: MusicSequence?
         guard NewMusicSequence(&possibleSequence) == noErr, let sequence = possibleSequence else { return [] }
         defer { _ = DisposeMusicSequence(sequence) }
@@ -322,7 +322,7 @@ extension SystemExclusiveMessage {
         return messages
     }
 
-    @objc public static func standardMIDIFileData(forMessages messages: [SystemExclusiveMessage]) -> Data? {
+    public static func standardMIDIFileData(forMessages messages: [SystemExclusiveMessage]) -> Data? {
         guard messages.count > 0 else { return nil }
 
         var possibleSequence: MusicSequence?
