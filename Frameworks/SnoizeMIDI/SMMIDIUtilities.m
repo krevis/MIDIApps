@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2002-2006, Kurt Revis.  All rights reserved.
+ Copyright (c) 2021, Kurt Revis.  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
@@ -11,7 +11,7 @@
  */
 
 
-#import <SnoizeMIDI/SMUtilities.h>
+#import <SnoizeMIDI/SMMIDIUtilities.h>
 
 MIDIPacket * _Nullable SMWorkaroundMIDIPacketListAdd(MIDIPacketList *pktlist, ByteCount listSize, MIDIPacket *curPacket, MIDITimeStamp time, ByteCount nData, const Byte *data)
 {
