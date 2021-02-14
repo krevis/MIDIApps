@@ -19,18 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 static __inline__ NSBundle *SMBundleForObject(id object) {
     return [NSBundle bundleForClass:[object class]];
 }
-
 // TODO Make an internal SMBundle() that returns the SnoizeMIDI bundle (and looks it up only once)
-
-extern void SMRequestConcreteImplementation(id self, SEL _cmd);
-extern void SMRejectUnusedImplementation(id self, SEL _cmd);
-
-#if DEBUG
-#define SMAssert(expression)	if (!(expression)) SMAssertionFailed(#expression, __FILE__, __LINE__)
-extern void SMAssertionFailed(const char *expression, const char *file, unsigned int line);
-#else
-#define SMAssert(expression)
-#endif
 
 // Work around a bug in the declaration of MIDIPacketListAdd(). The return value should be _Nullable,
 // so Swift code can compare it to nil.

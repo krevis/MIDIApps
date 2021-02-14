@@ -11,30 +11,7 @@
  */
 
 
-#import "SMUtilities.h"
-#import <AvailabilityMacros.h>
-#import <objc/runtime.h>
-#import <CoreMIDI/CoreMIDI.h>
-
-
-void SMRequestConcreteImplementation(id self, SEL _cmd)
-{
-    NSString *message = [NSString stringWithFormat:@"Object %@ of class %@ has no concrete implementation of selector %@", self, NSStringFromClass([self class]), NSStringFromSelector(_cmd)];
-    NSAssert(NO, message);
-}
-
-void SMRejectUnusedImplementation(id self, SEL _cmd)
-{
-    NSString *message = [NSString stringWithFormat:@"Object %@ of class %@ was sent selector %@ which should be not be used", self, NSStringFromClass([self class]), NSStringFromSelector(_cmd)];
-    NSAssert(NO, message);
-}
-
-#if DEBUG
-extern void SMAssertionFailed(const char *expression, const char *file, unsigned int line)
-{
-    NSLog(@"SnoizeMIDI: Assertion failed: condition %s, file %s, line %u", expression, file, line);
-}
-#endif
+#import <SnoizeMIDI/SMUtilities.h>
 
 MIDIPacket * _Nullable SMWorkaroundMIDIPacketListAdd(MIDIPacketList *pktlist, ByteCount listSize, MIDIPacket *curPacket, MIDITimeStamp time, ByteCount nData, const Byte *data)
 {
