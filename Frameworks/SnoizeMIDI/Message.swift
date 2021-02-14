@@ -431,17 +431,17 @@ extension Message /* Formatting */ {
         // We could create a new string for the controllerNumber and look that up in the dictionary, but that gets expensive to do all the time.
         // Instead, we just scan through the dictionary once, and build an array, which is quicker to index into.
 
+        var controllerNamesByNumberString: [String: String] = [:]
         let bundle = SMBundleForObject(Message.self)  // Note: SMBundleForObject(self) returns the Swift bundle
-        var controllerNamesByNumberString: NSDictionary?
-        if let url = bundle.url(forResource: "ControllerNames", withExtension: "plist") {
-            controllerNamesByNumberString = NSDictionary(contentsOf: url)
+        if let url = bundle.url(forResource: "ControllerNames", withExtension: "plist"),
+           let plist = NSDictionary(contentsOf: url) as? [String: String] {
+            controllerNamesByNumberString = plist
         }
 
         let unknownNameFormat = NSLocalizedString("Controller %u", tableName: "SnoizeMIDI", bundle: bundle, comment: "format of unknown controller")
 
-        return (0 ..< 128).map { controllerIndex in
-            controllerNamesByNumberString?.object(forKey: "\(controllerIndex)") as? String
-                ?? String(format: unknownNameFormat, controllerIndex)
+        return (0 ..< 128).map {
+            controllerNamesByNumberString["\($0)"] ?? String(format: unknownNameFormat, $0)
         }
     }()
 
