@@ -55,11 +55,11 @@ class Library: NSObject {
             let alias = Alias(path: newValue)!
 
             let defaults = UserDefaults.standard
-            defaults.set(alias.data, forKey: Self.libraryFileDirectoryBookmarkPreferenceKey)
-            // Clear anything that might have been in old LibraryFileDirectoryAliasPreferenceKey.
+            defaults.set(alias.data, forKey: Self.libraryFileDirectoryBookmarkDefaultsKey)
+            // Clear anything that might have been in old libraryFileDirectoryAliasDefaultsKey.
             // If someone runs an old version of the app, let it fall back via the path.
-            defaults.removeObject(forKey: Self.libraryFileDirectoryAliasPreferenceKey)
-            defaults.set(newValue, forKey: Self.libraryFileDirectoryPathPreferenceKey)
+            defaults.removeObject(forKey: Self.libraryFileDirectoryAliasDefaultsKey)
+            defaults.set(newValue, forKey: Self.libraryFileDirectoryPathDefaultsKey)
         }
     }
 
@@ -290,11 +290,11 @@ extension Notification.Name {
 
 }
 
-extension Library /* Preferences keys */ {
+extension Library /* Defaults keys */ {
 
-    static let libraryFileDirectoryBookmarkPreferenceKey = "SSELibraryFileDirectoryBookmark"
-    static let libraryFileDirectoryAliasPreferenceKey = "SSELibraryFileDirectoryAlias"
-    static let libraryFileDirectoryPathPreferenceKey = "SSELibraryFileDirectoryPath"
+    static let libraryFileDirectoryBookmarkDefaultsKey = "SSELibraryFileDirectoryBookmark"
+    static let libraryFileDirectoryAliasDefaultsKey = "SSELibraryFileDirectoryAlias"
+    static let libraryFileDirectoryPathDefaultsKey = "SSELibraryFileDirectoryPath"
 
 }
 
@@ -321,22 +321,22 @@ extension Library /* Private */ {
     }
 
     private var rememberedFileDirectoryPath: String? {
-        if let bookmarkData = UserDefaults.standard.data(forKey: Self.libraryFileDirectoryBookmarkPreferenceKey) {
+        if let bookmarkData = UserDefaults.standard.data(forKey: Self.libraryFileDirectoryBookmarkDefaultsKey) {
             return Alias(data: bookmarkData).path
         }
-        else if let aliasData = UserDefaults.standard.data(forKey: Self.libraryFileDirectoryAliasPreferenceKey) {
+        else if let aliasData = UserDefaults.standard.data(forKey: Self.libraryFileDirectoryAliasDefaultsKey) {
             return Alias(aliasRecordData: aliasData)?.path
         }
         else {
-            return UserDefaults.standard.string(forKey: Self.libraryFileDirectoryPathPreferenceKey)
+            return UserDefaults.standard.string(forKey: Self.libraryFileDirectoryPathDefaultsKey)
         }
     }
 
     private func clearRememberedFileDirectoryPath() {
         let defaults = UserDefaults.standard
-        defaults.removeObject(forKey: Self.libraryFileDirectoryBookmarkPreferenceKey)
-        defaults.removeObject(forKey: Self.libraryFileDirectoryAliasPreferenceKey)
-        defaults.removeObject(forKey: Self.libraryFileDirectoryPathPreferenceKey)
+        defaults.removeObject(forKey: Self.libraryFileDirectoryBookmarkDefaultsKey)
+        defaults.removeObject(forKey: Self.libraryFileDirectoryAliasDefaultsKey)
+        defaults.removeObject(forKey: Self.libraryFileDirectoryPathDefaultsKey)
     }
 
     private var defaultFileDirectoryPath: String {
