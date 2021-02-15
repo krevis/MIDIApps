@@ -322,10 +322,12 @@ extension Library /* Private */ {
 
     private var rememberedFileDirectoryPath: String? {
         if let bookmarkData = UserDefaults.standard.data(forKey: Self.libraryFileDirectoryBookmarkDefaultsKey) {
-            return Alias(data: bookmarkData).path
+            var alias = Alias(data: bookmarkData)
+            return alias.path()
         }
         else if let aliasData = UserDefaults.standard.data(forKey: Self.libraryFileDirectoryAliasDefaultsKey) {
-            return Alias(aliasRecordData: aliasData)?.path
+            var alias = Alias(aliasRecordData: aliasData)
+            return alias?.path()
         }
         else {
             return UserDefaults.standard.string(forKey: Self.libraryFileDirectoryPathDefaultsKey)
