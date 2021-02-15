@@ -33,6 +33,8 @@ class CombinationOutputStream: NSObject, MessageDestination {
         NotificationCenter.default.removeObserver(self)
     }
 
+    weak var delegate: CombinationOutputStreamDelegate?
+
     var messageDestination: MessageDestination?
 
     var destinations: [OutputStreamDestination] {
@@ -219,18 +221,11 @@ class CombinationOutputStream: NSObject, MessageDestination {
         stream.ignoresTimeStamps = ignoresTimeStamps
         stream.sendsSysExAsynchronously = sendsSysExAsynchronously
         stream.customSysExBufferSize = customSysExBufferSize
-
-        NotificationCenter.default.addObserver(self, selector: #selector(portStreamEndpointDisappeared(_:)), name: .portOutputStreamEndpointDisappeared, object: stream)
-        NotificationCenter.default.addObserver(self, selector: #selector(repostNotification(_:)), name: .portOutputStreamSysExSendWillBegin, object: stream)
-        NotificationCenter.default.addObserver(self, selector: #selector(repostNotification(_:)), name: .portOutputStreamSysExSendDidEnd, object: stream)
-
+        stream.delegate = self
         portStream = stream
     }
 
     private func removePortStream() {
-        if let stream = portStream {
-            NotificationCenter.default.removeObserver(self, name: nil, object: stream)
-        }
         portStream = nil
     }
 
@@ -252,17 +247,8 @@ class CombinationOutputStream: NSObject, MessageDestination {
         self.virtualStream = nil
     }
 
-    @objc private func repostNotification(_ notification: Notification) {
-        NotificationCenter.default.post(name: notification.name, object: self, userInfo: notification.userInfo)
-    }
-
-    @objc private func portStreamEndpointDisappeared(_ notification: Notification) {
-        // TODO Make sure this comes through
-        NotificationCenter.default.post(name: .combinationOutputStreamSelectedDestinationDisappeared, object: self)
-    }
-
     @objc private func midiObjectListChanged(_ notification: Notification) {
-        // TODO Make sure this comes through
+        // TODO Make sure this comes through; remove if nothing needs it
         if let midiObjectType = notification.userInfo?[MIDIContext.objectType] as? MIDIObjectType,
            midiObjectType == .destination {
             NotificationCenter.default.post(name: .combinationOutputStreamDestinationListChanged, object: self)
@@ -271,16 +257,37 @@ class CombinationOutputStream: NSObject, MessageDestination {
 
 }
 
-// TODO These should also be delegate methods, just like PortOutputStream
+extension CombinationOutputStream: PortOutputStreamDelegate {
+
+    func portOutputStreamEndpointDisappeared(_ portOutputStream: PortOutputStream) {
+        // TODO Make sure this comes through
+        delegate?.combinationOutputStreamEndpointDisappeared(self)
+    }
+
+    @objc(portOutputStream:willBeginSendingSysEx:) func portOutputStream(_ portOutputStream: PortOutputStream, willBeginSendingSysEx request: SysExSendRequest) {
+        delegate?.combinationOutputStream(self, willBeginSendingSysEx: request)
+    }
+
+    func portOutputStream(_ portOutputStream: PortOutputStream, didEndSendingSysEx request: SysExSendRequest) {
+        delegate?.combinationOutputStream(self, didEndSendingSysEx: request)
+    }
+
+}
+
+protocol CombinationOutputStreamDelegate: NSObjectProtocol {
+
+    // Sent when one of the stream's destination endpoints is removed by the system.
+    func combinationOutputStreamEndpointDisappeared(_ stream: CombinationOutputStream)
+
+    // Sent when sysex begins sending and ends sending.
+    func combinationOutputStream(_ stream: CombinationOutputStream, willBeginSendingSysEx request: SysExSendRequest)
+    func combinationOutputStream(_ stream: CombinationOutputStream, didEndSendingSysEx request: SysExSendRequest)
+
+}
 
 extension Notification.Name {
 
-    static let combinationOutputStreamSelectedDestinationDisappeared = Notification.Name("SSECombinationOutputStreamSelectedDestinationDisappearedNotification")
-
+    // TODO Does anything actually need this?
     static let combinationOutputStreamDestinationListChanged = Notification.Name("SSECombinationOutputStreamDestinationListChangedNotification")
-
-    // CombinationOutputStream also reposts the following notifications from its PortOutputStream, with 'self' as the object:
-    //    portOutputStreamSysExSendWillBegin
-    //    portOutputStreamSysExSendDidEnd
 
 }

@@ -39,10 +39,8 @@ class MIDIController: NSObject {
                 // since it's too low-level and fires too early when setting up a virtual destination
                 // TODO Really? Could we be more specific?
 
-        center.addObserver(self, selector: #selector(outputStreamSelectedDestinationDisappeared(_:)), name: .portOutputStreamEndpointDisappeared, object: outputStream)
-        center.addObserver(self, selector: #selector(willStartSendingSysEx(_:)), name: .portOutputStreamSysExSendWillBegin, object: outputStream)
-        center.addObserver(self, selector: #selector(doneSendingSysEx(_:)), name: .portOutputStreamSysExSendDidEnd, object: outputStream)
         center.addObserver(self, selector: #selector(customSysexBufferSizeChanged(_:)), name: .customSysexBufferSizePreferenceChanged, object: nil)
+        outputStream.delegate = self
         outputStream.ignoresTimeStamps = true
         outputStream.sendsSysExAsynchronously = true
         outputStream.customSysExBufferSize = UserDefaults.standard.integer(forKey: Self.customSysexBufferSizePreferenceKey)
@@ -348,14 +346,6 @@ extension MIDIController /* Private */ {
         mainWindowController?.synchronizeDestinations()
     }
 
-    @objc private func outputStreamSelectedDestinationDisappeared(_ notification: Notification) {
-        if sendStatus == .sending || sendStatus == .willDelayBeforeNext || sendStatus == .delayingBeforeNext {
-            cancelSendingMessages()
-        }
-
-        selectFirstAvailableDestinationWhenPossible()
-    }
-
     private func selectFirstAvailableDestinationWhenPossible() {
         // TODO There was some old stuff to delay this if a setup change notification was being processed. Do we still need that?
         selectFirstAvailableDestination()
@@ -415,34 +405,6 @@ extension MIDIController /* Private */ {
         }
     }
 
-    @objc private func willStartSendingSysEx(_ notification: Notification) {
-        currentSendRequest = notification.userInfo?["sendRequest"] as? SysExSendRequest
-    }
-
-    @objc private func doneSendingSysEx(_ notification: Notification) {
-        // NOTE: The request may or may not have finished successfully.
-
-        guard let sendRequest = notification.userInfo?["sendRequest"] as? SysExSendRequest else { fatalError() }
-        assert(sendRequest == currentSendRequest)
-
-        bytesSent += sendRequest.bytesSent
-        sendingMessageIndex += 1
-        currentSendRequest = nil
-
-        if sendStatus == .cancelled {
-            sendStatus = .finishing
-            finishedSendingMessages(success: false)
-        }
-        else if sendingMessageIndex < sendingMessageCount && sendRequest.wereAllBytesSent {
-            sendStatus = .willDelayBeforeNext
-            sendNextSysExMessageAfterDelay()
-        }
-        else {
-            sendStatus = .finishing
-            finishedSendingMessages(success: sendRequest.wereAllBytesSent)
-        }
-    }
-
     private func finishedSendingMessages(success: Bool) {
         NotificationCenter.default.post(name: .sendFinished, object: self, userInfo: ["success": success])
 
@@ -454,6 +416,46 @@ extension MIDIController /* Private */ {
 
     @objc private func customSysexBufferSizeChanged(_ notification: Notification) {
         outputStream.customSysExBufferSize = UserDefaults.standard.integer(forKey: Self.customSysexBufferSizePreferenceKey)
+    }
+
+}
+
+extension MIDIController: CombinationOutputStreamDelegate {
+
+    func combinationOutputStreamEndpointDisappeared(_ stream: CombinationOutputStream) {
+        if sendStatus == .sending || sendStatus == .willDelayBeforeNext || sendStatus == .delayingBeforeNext {
+            cancelSendingMessages()
+        }
+
+        selectFirstAvailableDestinationWhenPossible()
+    }
+
+    // Sent when sysex begins sending and ends sending.
+    func combinationOutputStream(_ stream: CombinationOutputStream, willBeginSendingSysEx request: SysExSendRequest) {
+        currentSendRequest = request
+    }
+
+    func combinationOutputStream(_ stream: CombinationOutputStream, didEndSendingSysEx request: SysExSendRequest) {
+        // NOTE: The request may or may not have finished successfully.
+        guard request == currentSendRequest else { return }
+
+        bytesSent += request.bytesSent
+        sendingMessageIndex += 1
+        currentSendRequest = nil
+
+        if sendStatus == .cancelled {
+            sendStatus = .finishing
+            finishedSendingMessages(success: false)
+        }
+        else if sendingMessageIndex < sendingMessageCount && request.wereAllBytesSent {
+            sendStatus = .willDelayBeforeNext
+            sendNextSysExMessageAfterDelay()
+        }
+        else {
+            sendStatus = .finishing
+            finishedSendingMessages(success: request.wereAllBytesSent)
+        }
+
     }
 
 }

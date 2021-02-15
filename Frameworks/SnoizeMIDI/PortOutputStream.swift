@@ -15,6 +15,19 @@ import CoreAudio
 
 public class PortOutputStream: OutputStream {
 
+    public override init(midiContext: MIDIContext) {
+        outputPort = 0
+        _ = midiContext.interface.outputPortCreate(midiContext.midiClient, "Output Port" as CFString, &outputPort)
+        super.init(midiContext: midiContext)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        _ = midiContext.interface.portDispose(outputPort)
+    }
+
+    public weak var delegate: PortOutputStreamDelegate?
+
     public var endpoints: Set<Destination> = [] {
         didSet {
             // The closure-based notification observer API is still awkward to use without creating retain cycles.
@@ -42,17 +55,6 @@ public class PortOutputStream: OutputStream {
     }
 
     public var customSysExBufferSize: Int = 0
-
-    public override init(midiContext: MIDIContext) {
-        outputPort = 0
-        _ = midiContext.interface.outputPortCreate(midiContext.midiClient, "Output Port" as CFString, &outputPort)
-        super.init(midiContext: midiContext)
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-        MIDIPortDispose(outputPort)
-    }
 
     // MARK: OutputStream overrides
 
@@ -92,7 +94,7 @@ public class PortOutputStream: OutputStream {
         var newEndpoints = endpoints
         newEndpoints.remove(endpoint)
         endpoints = newEndpoints
-        NotificationCenter.default.post(name: .portOutputStreamEndpointDisappeared, object: self)
+        delegate?.portOutputStreamEndpointDisappeared(self)
     }
 
     @objc private func endpointWasReplaced(notification: Notification) {
@@ -134,15 +136,13 @@ public class PortOutputStream: OutputStream {
     private var sysExSendRequests = Set<SysExSendRequest>()
 
     private func sendSysExMessagesAsynchronously(_ messages: [SystemExclusiveMessage]) {
-        let center = NotificationCenter.default
-
         for message in messages {
             for endpoint in endpoints {
                 if let request = SysExSendRequest(message: message, endpoint: endpoint, customSysExBufferSize: customSysExBufferSize) {
                     sysExSendRequests.insert(request)
                     request.delegate = self
 
-                    center.post(name: .portOutputStreamSysExSendWillBegin, object: self, userInfo: ["sendRequest": request])
+                    delegate?.portOutputStream(self, willBeginSendingSysEx: request)
 
                     _ = request.send()
                 }
@@ -157,21 +157,18 @@ extension PortOutputStream: SysExSendRequestDelegate {
     public func sysExSendRequestDidFinish(_ sysExSendRequest: SysExSendRequest) {
         sysExSendRequests.remove(sysExSendRequest)
 
-        NotificationCenter.default.post(name: .portOutputStreamSysExSendDidEnd, object: self, userInfo: ["sendRequest": sysExSendRequest])
+        delegate?.portOutputStream(self, didEndSendingSysEx: sysExSendRequest)
     }
 
 }
 
-// TODO These notifications should just be delegate methods.
+public protocol PortOutputStreamDelegate: NSObjectProtocol {
 
-public extension Notification.Name {
+    // Sent when one of the stream's destination endpoints is removed by the system.
+    func portOutputStreamEndpointDisappeared(_ stream: PortOutputStream)
 
-    static let portOutputStreamEndpointDisappeared = Notification.Name("SMPortOutputStreamEndpointDisappearedNotification")
-    // Posted when one of the stream's destination endpoints is removed by the system.
-
-    static let portOutputStreamSysExSendWillBegin = Notification.Name("SMPortOutputStreamWillStartSysExSendNotification")
-    static let portOutputStreamSysExSendDidEnd = Notification.Name("SMPortOutputStreamFinishedSysExSendNotification")
-    // userInfo has key "sendRequest", object SysExSendRequest
-    // TODO Formalize that
+    // Sent when sysex begins sending and ends sending.
+    func portOutputStream(_ stream: PortOutputStream, willBeginSendingSysEx request: SysExSendRequest)
+    func portOutputStream(_ stream: PortOutputStream, didEndSendingSysEx request: SysExSendRequest)
 
 }
