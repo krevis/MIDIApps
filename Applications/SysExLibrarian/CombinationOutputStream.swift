@@ -44,8 +44,8 @@ class CombinationOutputStream: NSObject, MessageDestination {
 
     // Returns an array of arrays. Each of the 2nd level arrays contains destinations that are of the same kind.
     // (That is, the first array has destinations for the port stream, the second array has destinations for the virtual stream, etc.)
+    // If this ever gets more complicated, make an intermediate object like CombinationInputStreamSourceGroup.
     var groupedDestinations: [[OutputStreamDestination]] {
-        // TODO perhaps do it like CombinationInputStreamSourceGroup instead
         [ Self.destinationsInContext(midiContext),
           [virtualStreamDestination]
         ]
