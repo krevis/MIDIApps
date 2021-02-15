@@ -87,7 +87,7 @@ class PreferencesWindowController: GeneralWindowController {
 
     @IBAction func changeIntervalBetweenSentMessages(_ sender: Any?) {
         guard let control = sender as? NSControl else { return }
-        UserDefaults.standard.set(control.integerValue, forKey: MIDIController.sysExIntervalBetweenSentMessagesPreferenceKey)
+        UserDefaults.standard.set(control.integerValue, forKey: MIDIController.timeBetweenSentSysExPreferenceKey)
         synchronizeIntervalBetweenSentMessagesField()
         NotificationCenter.default.post(name: .sysExSendPreferenceChanged, object: nil)
     }
@@ -158,7 +158,7 @@ extension PreferencesWindowController /* Private */ {
         interruptOnProgramChangeButton.integerValue = defaults.bool(forKey: MIDIController.interruptOnProgramChangePreferenceKey) ? 1 : 0
         programChangeBaseIndexMatrix.selectCell(withTag: defaults.integer(forKey: MIDIController.programChangeBaseIndexPreferenceKey))
         synchronizeReadTimeOutField()
-        sysExIntervalBetweenSentMessagesSlider.integerValue = defaults.integer(forKey: MIDIController.sysExIntervalBetweenSentMessagesPreferenceKey)
+        sysExIntervalBetweenSentMessagesSlider.integerValue = defaults.integer(forKey: MIDIController.timeBetweenSentSysExPreferenceKey)
         synchronizeIntervalBetweenSentMessagesField()
     }
 
@@ -167,7 +167,7 @@ extension PreferencesWindowController /* Private */ {
     }
 
     private func synchronizeIntervalBetweenSentMessagesField() {
-        sysExIntervalBetweenSentMessagesField.stringValue = formatMilliseconds(UserDefaults.standard.integer(forKey: MIDIController.sysExIntervalBetweenSentMessagesPreferenceKey))
+        sysExIntervalBetweenSentMessagesField.stringValue = formatMilliseconds(UserDefaults.standard.integer(forKey: MIDIController.timeBetweenSentSysExPreferenceKey))
     }
 
     private static var millisecondsFormat = NSLocalizedString("%ld milliseconds", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format for milliseconds")

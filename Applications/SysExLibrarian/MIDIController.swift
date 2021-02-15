@@ -280,7 +280,7 @@ extension MIDIController /* Preferences Keys*/ {
 
     static let selectedDestinationPreferenceKey = "SSESelectedDestination"
     static let sysExReadTimeOutPreferenceKey = "SSESysExReadTimeOut"
-    static let sysExIntervalBetweenSentMessagesPreferenceKey = "SSESysExIntervalBetweenSentMessages"
+    static let timeBetweenSentSysExPreferenceKey = "SSESysExIntervalBetweenSentMessages"
     static let listenForProgramChangesPreferenceKey = "SSEListenForProgramChanges"
     static let interruptOnProgramChangePreferenceKey = "SSEInterruptOnProgramChange"
     static let programChangeBaseIndexPreferenceKey = "SSEProgramChangeBaseIndex"
@@ -306,7 +306,7 @@ extension Notification.Name {
 extension MIDIController /* Private */ {
 
     @objc private func sendPreferenceDidChange(_ notification: Notification?) {
-        pauseTimeBetweenMessages = Double(UserDefaults.standard.integer(forKey: Self.sysExIntervalBetweenSentMessagesPreferenceKey)) / 1000.0
+        pauseTimeBetweenMessages = Double(UserDefaults.standard.integer(forKey: Self.timeBetweenSentSysExPreferenceKey)) / 1000.0
     }
 
     @objc private func receivePreferenceDidChange(_ notification: Notification?) {
