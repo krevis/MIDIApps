@@ -346,7 +346,7 @@ class MainWindowController: GeneralWindowController {
 
 extension MainWindowController /* Preferences keys */ {
 
-    static let abbreviateFileSizesInLibraryTableViewPreferenceKey = "SSEAbbreviateFileSizesInLibraryTableView"
+    static let abbreviateSizesInLibraryPreferenceKey = "SSEAbbreviateFileSizesInLibraryTableView"
 
 }
 
@@ -392,7 +392,7 @@ extension MainWindowController: GeneralTableViewDataSource {
             return entry.manufacturer
         case "size":
             if let size = entry.size {
-                if UserDefaults.standard.bool(forKey: Self.abbreviateFileSizesInLibraryTableViewPreferenceKey) {
+                if UserDefaults.standard.bool(forKey: Self.abbreviateSizesInLibraryPreferenceKey) {
                     return String.abbreviatedByteCount(size)
                 }
                 else {

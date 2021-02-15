@@ -58,7 +58,7 @@ class PreferencesWindowController: GeneralWindowController {
     @IBAction func changeSizeFormat(_ sender: Any?) {
         guard let control = sender as? NSControl, let cell = control.selectedCell() else { return }
         let boolValue = cell.tag == 1
-        UserDefaults.standard.set(boolValue, forKey: MainWindowController.abbreviateFileSizesInLibraryTableViewPreferenceKey)
+        UserDefaults.standard.set(boolValue, forKey: MainWindowController.abbreviateSizesInLibraryPreferenceKey)
         NotificationCenter.default.post(name: .displayPreferenceChanged, object: nil)
     }
 
@@ -151,7 +151,7 @@ extension PreferencesWindowController /* Private */ {
     private func synchronizeControls() {
         let defaults = UserDefaults.standard
 
-        sizeFormatMatrix.selectCell(withTag: defaults.bool(forKey: MainWindowController.abbreviateFileSizesInLibraryTableViewPreferenceKey) ? 1 : 0)
+        sizeFormatMatrix.selectCell(withTag: defaults.bool(forKey: MainWindowController.abbreviateSizesInLibraryPreferenceKey) ? 1 : 0)
         sysExFolderPathField.stringValue = Library.shared.fileDirectoryPath
         sysExReadTimeOutSlider.integerValue = defaults.integer(forKey: MIDIController.sysExReadTimeOutPreferenceKey)
         listenForProgramChangesButton.integerValue = defaults.bool(forKey: MIDIController.listenForProgramChangesPreferenceKey) ? 1 : 0
