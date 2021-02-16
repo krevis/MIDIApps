@@ -14,8 +14,8 @@ import Foundation
 
 public class SysExSendRequest: NSObject {
 
-    init?(message: SystemExclusiveMessage, endpoint: Destination, customSysExBufferSize: Int = 0) {
-        self.midiContext = endpoint.midiContext
+    init?(message: SystemExclusiveMessage, destination: Destination, customSysExBufferSize: Int = 0) {
+        self.midiContext = destination.midiContext
         self.message = message
         self.customSysExBufferSize = customSysExBufferSize
 
@@ -31,10 +31,10 @@ public class SysExSendRequest: NSObject {
         _ = mutableBufferPtr.initialize(from: fullMessageData)
         dataPointer = UnsafePointer(mutableBufferPtr.baseAddress!)
 
-        maxSysExSpeed = Int(endpoint.maxSysExSpeed)
+        maxSysExSpeed = Int(destination.maxSysExSpeed)
 
         sysexSendRequest = MIDISysexSendRequest(
-            destination: endpoint.endpointRef,
+            destination: destination.endpointRef,
             data: dataPointer,
             bytesToSend: UInt32(dataCount),
             complete: false,

@@ -28,16 +28,12 @@ class MIDIController: NSObject {
 
         let center = NotificationCenter.default
 
+        // TODO Should be delegate methods, not notifications
         center.addObserver(self, selector: #selector(readingSysEx(_:)), name: .inputStreamReadingSysEx, object: inputStream)
         center.addObserver(self, selector: #selector(readingSysEx(_:)), name: .inputStreamDoneReadingSysEx, object: inputStream)
         center.addObserver(self, selector: #selector(portInputStreamSourceListChanged(_:)), name: .inputStreamSourceListChanged, object: inputStream)
         inputStream.messageDestination = self
         inputStream.selectedInputSources = Set(inputStream.inputSources)
-
-        //    [center addObserver:self selector:@selector(midiSetupChanged:) name:NSNotification.clientSetupChanged object:[SMClient sharedClient]];
-                // use the general setup changed notification rather than SSECombinationOutputStreamDestinationListChangedNotification,
-                // since it's too low-level and fires too early when setting up a virtual destination
-                // TODO Really? Could we be more specific?
 
         center.addObserver(self, selector: #selector(customSysexBufferSizeChanged(_:)), name: .customSysexBufferSizePreferenceChanged, object: nil)
         outputStream.delegate = self
@@ -340,12 +336,6 @@ extension MIDIController /* Private */ {
         inputStream.selectedInputSources = Set(inputStream.inputSources)
     }
 
-    private func midiSetupChanged(_ notification: Notification) {
-        // TODO Nothing calls this now
-        // TODO This may now come in too early; try to be more specific
-        mainWindowController?.synchronizeDestinations()
-    }
-
     private func selectFirstAvailableDestinationWhenPossible() {
         // TODO There was some old stuff to delay this if a setup change notification was being processed. Do we still need that?
         selectFirstAvailableDestination()
@@ -422,7 +412,11 @@ extension MIDIController /* Private */ {
 
 extension MIDIController: CombinationOutputStreamDelegate {
 
-    func combinationOutputStreamEndpointDisappeared(_ stream: CombinationOutputStream) {
+    func combinationOutputStreamDestinationsChanged(_ stream: CombinationOutputStream) {
+        mainWindowController?.synchronizeDestinations()
+    }
+
+    func combinationOutputStreamDestinationDisappeared(_ stream: CombinationOutputStream) {
         if sendStatus == .sending || sendStatus == .willDelayBeforeNext || sendStatus == .delayingBeforeNext {
             cancelSendingMessages()
         }

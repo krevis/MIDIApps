@@ -28,18 +28,18 @@ public class PortOutputStream: OutputStream {
 
     public weak var delegate: PortOutputStreamDelegate?
 
-    public var endpoints: Set<Destination> = [] {
+    public var destinations: Set<Destination> = [] {
         didSet {
             // The closure-based notification observer API is still awkward to use without creating retain cycles.
             // Easier to use ObjC selectors.
             let center = NotificationCenter.default
-            oldValue.subtracting(endpoints).forEach {
+            oldValue.subtracting(destinations).forEach {
                 center.removeObserver(self, name: .midiObjectDisappeared, object: $0)
                 center.removeObserver(self, name: .midiObjectWasReplaced, object: $0)
             }
-            endpoints.subtracting(oldValue).forEach {
-                center.addObserver(self, selector: #selector(self.endpointDisappeared(notification:)), name: .midiObjectDisappeared, object: $0)
-                center.addObserver(self, selector: #selector(self.endpointWasReplaced(notification:)), name: .midiObjectWasReplaced, object: $0)
+            destinations.subtracting(oldValue).forEach {
+                center.addObserver(self, selector: #selector(self.destinationDisappeared(notification:)), name: .midiObjectDisappeared, object: $0)
+                center.addObserver(self, selector: #selector(self.destinationWasReplaced(notification:)), name: .midiObjectWasReplaced, object: $0)
             }
         }
     }
@@ -74,8 +74,8 @@ public class PortOutputStream: OutputStream {
     // MARK: OutputStream subclass-implementation methods
 
     override func send(_ packetListPtr: UnsafePointer<MIDIPacketList>) {
-        for endpoint in endpoints {
-            _ = MIDISend(outputPort, endpoint.endpointRef, packetListPtr)
+        for destination in destinations {
+            _ = MIDISend(outputPort, destination.endpointRef, packetListPtr)
         }
     }
 
@@ -83,33 +83,33 @@ public class PortOutputStream: OutputStream {
 
     private var outputPort: MIDIPortRef
 
-    @objc private func endpointDisappeared(notification: Notification) {
+    @objc private func destinationDisappeared(notification: Notification) {
         if let endpoint = notification.object as? Destination {
-            endpointDisappeared(endpoint)
+            destinationDisappeared(endpoint)
         }
     }
 
-    private func endpointDisappeared(_ endpoint: Destination) {
-        guard endpoints.contains(endpoint) else { return }
-        var newEndpoints = endpoints
-        newEndpoints.remove(endpoint)
-        endpoints = newEndpoints
-        delegate?.portOutputStreamEndpointDisappeared(self)
+    private func destinationDisappeared(_ destination: Destination) {
+        guard destinations.contains(destination) else { return }
+        var newDestinations = destinations
+        newDestinations.remove(destination)
+        destinations = newDestinations
+        delegate?.portOutputStreamDestinationDisappeared(self)
     }
 
-    @objc private func endpointWasReplaced(notification: Notification) {
-        if let endpoint = notification.object as? Destination,
+    @objc private func destinationWasReplaced(notification: Notification) {
+        if let destination = notification.object as? Destination,
            let replacement = notification.userInfo?[MIDIContext.objectReplacement] as? Destination {
-            endpointWasReplaced(endpoint, replacement)
+            destinationWasReplaced(destination, replacement)
         }
     }
 
-    private func endpointWasReplaced(_ endpoint: Destination, _ replacement: Destination) {
-        guard endpoints.contains(endpoint) else { return }
-        var newEndpoints = endpoints
-        newEndpoints.remove(endpoint)
-        newEndpoints.insert(replacement)
-        endpoints = newEndpoints
+    private func destinationWasReplaced(_ destination: Destination, _ replacement: Destination) {
+        guard destinations.contains(destination) else { return }
+        var newDestinations = destinations
+        newDestinations.remove(destination)
+        newDestinations.insert(replacement)
+        destinations = newDestinations
     }
 
     private func splitMessagesByAsyncSysex(_ messages: [Message]) -> ([SystemExclusiveMessage], [Message]) {
@@ -137,8 +137,8 @@ public class PortOutputStream: OutputStream {
 
     private func sendSysExMessagesAsynchronously(_ messages: [SystemExclusiveMessage]) {
         for message in messages {
-            for endpoint in endpoints {
-                if let request = SysExSendRequest(message: message, endpoint: endpoint, customSysExBufferSize: customSysExBufferSize) {
+            for destination in destinations {
+                if let request = SysExSendRequest(message: message, destination: destination, customSysExBufferSize: customSysExBufferSize) {
                     sysExSendRequests.insert(request)
                     request.delegate = self
 
@@ -165,7 +165,7 @@ extension PortOutputStream: SysExSendRequestDelegate {
 public protocol PortOutputStreamDelegate: NSObjectProtocol {
 
     // Sent when one of the stream's destination endpoints is removed by the system.
-    func portOutputStreamEndpointDisappeared(_ stream: PortOutputStream)
+    func portOutputStreamDestinationDisappeared(_ stream: PortOutputStream)
 
     // Sent when sysex begins sending and ends sending.
     func portOutputStream(_ stream: PortOutputStream, willBeginSendingSysEx request: SysExSendRequest)

@@ -57,7 +57,7 @@ class CombinationOutputStream: NSObject, MessageDestination {
                 return virtualStreamDestination
             }
             else if portStream != nil {
-                return portStream!.endpoints.first
+                return portStream!.destinations.first
             }
             else {
                 return nil
@@ -66,10 +66,10 @@ class CombinationOutputStream: NSObject, MessageDestination {
         set {
             if newValue != nil {
                 if let newDestination = newValue as? Destination {
-                    selectEndpoint(newDestination)
+                    selectDestination(newDestination)
                 }
                 else {
-                    selectEndpoint(nil) // Use the virtual stream
+                    selectDestination(nil) // Use the virtual stream
                 }
             }
             else {
@@ -88,9 +88,9 @@ class CombinationOutputStream: NSObject, MessageDestination {
         var persistentSettings: [String: Any] = [:]
 
         if let stream = portStream {
-            if let endpoint = stream.endpoints.first {
-                persistentSettings["portEndpointUniqueID"] = NSNumber(value: endpoint.uniqueID)
-                if let name = endpoint.name {
+            if let destination = stream.destinations.first {
+                persistentSettings["portEndpointUniqueID"] = NSNumber(value: destination.uniqueID)
+                if let name = destination.name {
                     persistentSettings["portEndpointName"] = name
                 }
             }
@@ -107,12 +107,12 @@ class CombinationOutputStream: NSObject, MessageDestination {
 
         if let number = settings["portEndpointUniqueID"] as? NSNumber {
             if let endpoint = midiContext.findDestination(uniqueID: number.int32Value) {
-                selectEndpoint(endpoint)
+                selectDestination(endpoint)
             }
             else if let endpointName = settings["portEndpointName"] as? String {
                 // Maybe an endpoint with this name still exists, but with a different unique ID.
                 if let endpoint = midiContext.findDestination(name: endpointName) {
-                    selectEndpoint(endpoint)
+                    selectDestination(endpoint)
                 }
                 else {
                     return endpointName
@@ -125,7 +125,7 @@ class CombinationOutputStream: NSObject, MessageDestination {
         else if let number = settings["virtualEndpointUniqueID"] as? NSNumber {
             removeVirtualStream()
             virtualEndpointUniqueID = number.int32Value
-            selectEndpoint(nil) // Use the virtual stream
+            selectDestination(nil) // Use the virtual stream
         }
 
         return nil
@@ -194,13 +194,13 @@ class CombinationOutputStream: NSObject, MessageDestination {
     private let virtualStreamDestination: SingleOutputStreamDestination
     private var virtualEndpointUniqueID: MIDIUniqueID = 0
 
-    private func selectEndpoint(_ destination: Destination?) {
+    private func selectDestination(_ destination: Destination?) {
         if let destination = destination {
             // Set up the port stream
             if portStream == nil {
                 createPortStream()
             }
-            portStream?.endpoints = Set([destination])
+            portStream?.destinations = Set([destination])
 
             removeVirtualStream()
         }
@@ -248,10 +248,9 @@ class CombinationOutputStream: NSObject, MessageDestination {
     }
 
     @objc private func midiObjectListChanged(_ notification: Notification) {
-        // TODO Make sure this comes through; remove if nothing needs it
         if let midiObjectType = notification.userInfo?[MIDIContext.objectType] as? MIDIObjectType,
            midiObjectType == .destination {
-            NotificationCenter.default.post(name: .combinationOutputStreamDestinationListChanged, object: self)
+            delegate?.combinationOutputStreamDestinationsChanged(self)
         }
     }
 
@@ -259,9 +258,8 @@ class CombinationOutputStream: NSObject, MessageDestination {
 
 extension CombinationOutputStream: PortOutputStreamDelegate {
 
-    func portOutputStreamEndpointDisappeared(_ portOutputStream: PortOutputStream) {
-        // TODO Make sure this comes through
-        delegate?.combinationOutputStreamEndpointDisappeared(self)
+    func portOutputStreamDestinationDisappeared(_ stream: PortOutputStream) {
+        delegate?.combinationOutputStreamDestinationDisappeared(self)
     }
 
     @objc(portOutputStream:willBeginSendingSysEx:) func portOutputStream(_ portOutputStream: PortOutputStream, willBeginSendingSysEx request: SysExSendRequest) {
@@ -276,18 +274,14 @@ extension CombinationOutputStream: PortOutputStreamDelegate {
 
 protocol CombinationOutputStreamDelegate: NSObjectProtocol {
 
-    // Sent when one of the stream's destination endpoints is removed by the system.
-    func combinationOutputStreamEndpointDisappeared(_ stream: CombinationOutputStream)
+    // Sent when the list of destinations changed.
+    func combinationOutputStreamDestinationsChanged(_ stream: CombinationOutputStream)
+
+    // Sent when one of the stream's destinations is removed by the system.
+    func combinationOutputStreamDestinationDisappeared(_ stream: CombinationOutputStream)
 
     // Sent when sysex begins sending and ends sending.
     func combinationOutputStream(_ stream: CombinationOutputStream, willBeginSendingSysEx request: SysExSendRequest)
     func combinationOutputStream(_ stream: CombinationOutputStream, didEndSendingSysEx request: SysExSendRequest)
-
-}
-
-extension Notification.Name {
-
-    // TODO Does anything actually need this?
-    static let combinationOutputStreamDestinationListChanged = Notification.Name("SSECombinationOutputStreamDestinationListChangedNotification")
 
 }

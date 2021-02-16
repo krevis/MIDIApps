@@ -119,7 +119,7 @@ class CombinationInputStream: NSObject {
     }
 
     func takePersistentSettings(_ settings: [String: Any]) -> [String]? {
-        // If any endpoints couldn't be found, their names are returned
+        // If any sources couldn't be found, their names are returned
         var missingNames: [String] = []
 
         // Clear out the current input sources
@@ -128,18 +128,18 @@ class CombinationInputStream: NSObject {
         if let oldStyleUniqueID = settings["portEndpointUniqueID"] as? NSNumber {
             // This is an old-style document, specifiying an endpoint for the port input stream.
             // We may have an endpoint name under key "portEndpointName"
-            let sourceEndpointName = settings["portEndpointName"] as? String
+            let sourceName = settings["portEndpointName"] as? String
 
-            var sourceEndpoint = midiContext.findSource(uniqueID: oldStyleUniqueID.int32Value)
-            if sourceEndpoint == nil, let name = sourceEndpointName {
-                sourceEndpoint = midiContext.findSource(name: name)
+            var source = midiContext.findSource(uniqueID: oldStyleUniqueID.int32Value)
+            if source == nil, let name = sourceName {
+                source = midiContext.findSource(name: name)
             }
 
-            if let endpoint = sourceEndpoint {
-                portInputStream.addEndpoint(endpoint)
+            if let source = source {
+                portInputStream.addSource(source)
             }
             else {
-                let missingName = sourceEndpointName ?? NSLocalizedString("Unknown", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "name of missing endpoint if not specified in document")
+                let missingName = sourceName ?? NSLocalizedString("Unknown", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "name of missing source if not specified in document")
                 missingNames.append(missingName)
             }
 

@@ -79,6 +79,10 @@ protocol CoreMIDIInterface {
 
     func outputPortCreate(_ client: MIDIClientRef, _ portName: CFString, _ outPort: UnsafeMutablePointer<MIDIPortRef>) -> OSStatus
 
+    func portConnectSource(_ port: MIDIPortRef, _ source: MIDIEndpointRef, _ connRefCon: UnsafeMutableRawPointer?) -> OSStatus
+
+    func portDisconnectSource(_ port: MIDIPortRef, _ source: MIDIEndpointRef) -> OSStatus
+
     func portDispose(_ port: MIDIPortRef) -> OSStatus
 
 }
@@ -224,6 +228,14 @@ struct RealCoreMIDIInterface: CoreMIDIInterface {
 
     func outputPortCreate(_ client: MIDIClientRef, _ portName: CFString, _ outPort: UnsafeMutablePointer<MIDIPortRef>) -> OSStatus {
         MIDIOutputPortCreate(client, portName, outPort)
+    }
+
+    func portConnectSource(_ port: MIDIPortRef, _ source: MIDIEndpointRef, _ connRefCon: UnsafeMutableRawPointer?) -> OSStatus {
+        MIDIPortConnectSource(port, source, connRefCon)
+    }
+
+    func portDisconnectSource(_ port: MIDIPortRef, _ source: MIDIEndpointRef) -> OSStatus {
+        MIDIPortDisconnectSource(port, source)
     }
 
     public func portDispose(_ port: MIDIPortRef) -> OSStatus {

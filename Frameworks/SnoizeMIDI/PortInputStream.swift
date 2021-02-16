@@ -28,31 +28,31 @@ public class PortInputStream: InputStream {
         _ = midiContext.interface.portDispose(inputPort)
     }
 
-    public var endpoints: Set<Source> = [] {
+    public var sources: Set<Source> = [] {
         didSet {
             // The closure-based notification observer API is still awkward to use without creating retain cycles.
             // Easier to use ObjC selectors.
             let center = NotificationCenter.default
-            oldValue.subtracting(endpoints).forEach { endpoint in
-                _ = MIDIPortDisconnectSource(inputPort, endpoint.endpointRef)
-                // An error can happen in normal circumstances (if the endpoint has disappeared), so ignore it.
+            oldValue.subtracting(sources).forEach { source in
+                _ = midiContext.interface.portDisconnectSource(inputPort, source.endpointRef)
+                // An error can happen in normal circumstances (if the source has disappeared), so ignore it.
 
                 // At any time after MIDIPortDisconnectSource(), we can expect that
                 // retainForIncomingMIDI() will no longer be called.
                 // However, parser(sourceConnectionRefCon:) may still be called, on the main thread,
                 // later on; it should not crash or fail, but it may return nil.
-                parsersForEndpoints[endpoint] = nil
+                parsersForSources[source] = nil
 
-                center.removeObserver(self, name: .midiObjectDisappeared, object: endpoint)
-                center.removeObserver(self, name: .midiObjectWasReplaced, object: endpoint)
+                center.removeObserver(self, name: .midiObjectDisappeared, object: source)
+                center.removeObserver(self, name: .midiObjectWasReplaced, object: source)
             }
-            endpoints.subtracting(oldValue).forEach { endpoint in
-                parsersForEndpoints[endpoint] = createParser(originatingEndpoint: endpoint)
+            sources.subtracting(oldValue).forEach { source in
+                parsersForSources[source] = createParser(originatingEndpoint: source)
 
-                center.addObserver(self, selector: #selector(self.endpointDisappeared(_:)), name: .midiObjectDisappeared, object: endpoint)
-                center.addObserver(self, selector: #selector(self.endpointWasReplaced(_:)), name: .midiObjectWasReplaced, object: endpoint)
+                center.addObserver(self, selector: #selector(self.sourceDisappeared(_:)), name: .midiObjectDisappeared, object: source)
+                center.addObserver(self, selector: #selector(self.sourceWasReplaced(_:)), name: .midiObjectWasReplaced, object: source)
 
-                _ = MIDIPortConnectSource(inputPort, endpoint.endpointRef, Unmanaged.passUnretained(endpoint).toOpaque())
+                _ = midiContext.interface.portConnectSource(inputPort, source.endpointRef, Unmanaged.passUnretained(source).toOpaque())
 
                 // At any time after MIDIPortConnectSource(), we can expect
                 // retainForIncomingMIDI() and parser(sourceConnectionRefCon:) to be called.
@@ -60,27 +60,27 @@ public class PortInputStream: InputStream {
         }
     }
 
-    public func addEndpoint(_ endpoint: Source) {
-        endpoints = endpoints.union([endpoint])
+    public func addSource(_ source: Source) {
+        sources = sources.union([source])
     }
 
-    public func removeEndpoint(_ endpoint: Source) {
-        endpoints = endpoints.subtracting([endpoint])
+    public func removeSource(_ source: Source) {
+        sources = sources.subtracting([source])
     }
 
     // MARK: InputStream subclass
     // TODO Make this a protocol.
 
     public override var parsers: [MessageParser] {
-        return Array(parsersForEndpoints.values)
+        return Array(parsersForSources.values)
     }
 
     public override func parser(sourceConnectionRefCon: UnsafeMutableRawPointer?) -> MessageParser? {
         // Note: sourceConnectionRefCon points to a Source.
-        // We are allowed to return nil if we are no longer listening to this source endpoint.
+        // We are allowed to return nil if we are no longer listening to this source.
         guard let refCon = sourceConnectionRefCon else { return nil }
-        let endpoint = Unmanaged<Source>.fromOpaque(refCon).takeUnretainedValue()
-        return parsersForEndpoints[endpoint]
+        let source = Unmanaged<Source>.fromOpaque(refCon).takeUnretainedValue()
+        return parsersForSources[source]
     }
 
     public override func streamSource(parser: MessageParser) -> InputStreamSource? {
@@ -93,18 +93,18 @@ public class PortInputStream: InputStream {
 
     public override var selectedInputSources: Set<InputStreamSource> {
         get {
-            return Set(endpoints.map { $0.asInputStreamSource() })
+            return Set(sources.map { $0.asInputStreamSource() })
         }
         set {
-            endpoints = Set(newValue.compactMap { $0.provider as? Source })
+            sources = Set(newValue.compactMap { $0.provider as? Source })
         }
     }
 
     // MARK: Private
 
     private var inputPort: MIDIPortRef = 0
-    private var parsersForEndpoints: [Source: MessageParser] = [:]
-        // TODO Consider making the key endpoint.endpointRef() = MIDIObjectRef to avoid retain and identity issues? But note MessageParser.originatingEndpoint
+    private var parsersForSources: [Source: MessageParser] = [:]
+        // TODO Consider making the key source.endpointRef() = MIDIObjectRef to avoid retain and identity issues? But note MessageParser.originatingEndpoint
 
     @objc private func midiObjectListChanged(_ notification: Notification) {
         if let midiObjectType = notification.userInfo?[MIDIContext.objectType] as? MIDIObjectType,
@@ -113,18 +113,18 @@ public class PortInputStream: InputStream {
         }
     }
 
-    @objc private func endpointDisappeared(_ notification: Notification) {
-        guard let endpoint = notification.object as? Source,
-              endpoints.contains(endpoint) else { return }
-        removeEndpoint(endpoint)
+    @objc private func sourceDisappeared(_ notification: Notification) {
+        guard let source = notification.object as? Source,
+              sources.contains(source) else { return }
+        removeSource(source)
     }
 
-    @objc private func endpointWasReplaced(_ notification: Notification) {
-        guard let endpoint = notification.object as? Source,
-              endpoints.contains(endpoint) else { return }
-        removeEndpoint(endpoint)
-        if let newEndpoint = notification.userInfo?[MIDIContext.objectReplacement] as? Source {
-            addEndpoint(newEndpoint)
+    @objc private func sourceWasReplaced(_ notification: Notification) {
+        guard let source = notification.object as? Source,
+              sources.contains(source) else { return }
+        removeSource(source)
+        if let newSource = notification.userInfo?[MIDIContext.objectReplacement] as? Source {
+            addSource(newSource)
         }
     }
 
