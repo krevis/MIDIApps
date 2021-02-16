@@ -66,6 +66,10 @@ public class Endpoint: MIDIObject {
 
     // MARK: Internal
 
+    func setPrivateToThisProcess() {
+        self[kMIDIPropertyPrivate as CFString] = Int32(1)
+    }
+
     func setOwnedByThisProcess() {
         // We have a chicken-egg problem. When setting values of properties, we want
         // to make sure that the endpoint is owned by this process. However, there's
@@ -81,10 +85,10 @@ public class Endpoint: MIDIObject {
 
     // We set this property on the virtual endpoints that we create,
     // so we can query them to see if they're ours.
-    private let propertyOwnerPID = "SMEndpointPropertyOwnerPID"
+    private static let propertyOwnerPID = "SMEndpointPropertyOwnerPID"
     private var ownerPID: Int32 {
-        get { self[propertyOwnerPID as CFString] ?? 0 }
-        set { self[propertyOwnerPID as CFString] = newValue }
+        get { self[Endpoint.propertyOwnerPID as CFString] ?? 0 }
+        set { self[Endpoint.propertyOwnerPID as CFString] = newValue }
     }
 
     private var cachedDeviceRef: MIDIDeviceRef?

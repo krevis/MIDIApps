@@ -27,6 +27,8 @@ protocol CoreMIDIContext: AnyObject {
 
     func generateNewUniqueID() -> MIDIUniqueID
 
+    func allowMIDIObject(ref: MIDIObjectRef, type: MIDIObjectType) -> Bool
+
     // Interaction with other MIDIObject subclasses
     // TODO These belong in a separate protocol or extension or something
 

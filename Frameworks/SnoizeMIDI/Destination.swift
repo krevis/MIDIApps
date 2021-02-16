@@ -53,8 +53,6 @@ public class Destination: Endpoint, CoreMIDIObjectListable {
         clearMIDIObjectRef()
     }
 
-    // TODO sysExSpeedWorkaroundEndpoint and related
-
 }
 
 extension CoreMIDIContext {

@@ -71,30 +71,32 @@ class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>
 
         let newObjectRefs = T.fetchMIDIObjectRefs(context)
         for objectRef in newObjectRefs {
-            if let existing = objectMap[objectRef] {
-                // This objectRef has an existing wrapper object.
-                objectWasNotRemoved(existing)
+            if context.allowMIDIObject(ref: objectRef, type: midiObjectType) {
+                if let existing = objectMap[objectRef] {
+                    // This objectRef has an existing wrapper object.
+                    objectWasNotRemoved(existing)
 
-                // It's possible that any of its properties changed, though
-                // (including the uniqueID).
-                existing.invalidateCachedProperties()
+                    // It's possible that any of its properties changed, though
+                    // (including the uniqueID).
+                    existing.invalidateCachedProperties()
 
-                newObjectMap[objectRef] = existing
-            }
-            else {
-                // This objectRef does not have an existing wrapper; make one.
-                if let new = createObject(objectRef) {
-                    // If the new object has the same uniqueID as an old object,
-                    // that's a replacement that needs a special notification.
-                    if let original = findObject(uniqueID: new.uniqueID) {
-                        objectWasNotRemoved(original)
-                        replacements.append((original: original, replacement: new))
+                    newObjectMap[objectRef] = existing
+                }
+                else {
+                    // This objectRef does not have an existing wrapper; make one.
+                    if let new = createObject(objectRef) {
+                        // If the new object has the same uniqueID as an old object,
+                        // that's a replacement that needs a special notification.
+                        if let original = findObject(uniqueID: new.uniqueID) {
+                            objectWasNotRemoved(original)
+                            replacements.append((original: original, replacement: new))
+                        }
+                        else {
+                            addedObjects.append(new)
+                        }
+
+                        newObjectMap[objectRef] = new
                     }
-                    else {
-                        addedObjects.append(new)
-                    }
-
-                    newObjectMap[objectRef] = new
                 }
             }
         }

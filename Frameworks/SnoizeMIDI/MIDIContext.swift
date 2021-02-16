@@ -110,12 +110,10 @@ public class MIDIContext: CoreMIDIContext {
         // To fix this, we send a tiny sysex message to a different device.  Unfortunately we can't just use a NULL endpoint,
         // it has to be a real live endpoint.
 
-        // TODO Implement
-        //  if let endpoint = Destination.sysExSpeedWorkaroundEndpoint {
-        //      let message = SystemExclusiveMessage(timeStamp: 0, data: Data())
-        //          _ = SysExSendRequest(message: message, endpoint: endpoint)?.send()
-        //      }
-        //  }
+        if let destination = sysExSpeedWorkaroundDestination {
+            let message = SystemExclusiveMessage(timeStamp: 0, data: Data())
+            _ = SysExSendRequest(message: message, destination: destination)?.send()
+        }
     }
 
     public func disconnect() {
@@ -163,6 +161,15 @@ public class MIDIContext: CoreMIDIContext {
                 }
             }
         }
+    }
+
+    func allowMIDIObject(ref: MIDIObjectRef, type: MIDIObjectType) -> Bool {
+        // Don't let our MIDIObjectLists create a Destination for the SysEx speed workaround virtual endpoint
+        if ref == sysExSpeedWorkaroundEndpoint {
+            return false
+        }
+
+        return true
     }
 
     func postObjectsAddedNotification<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>(_ objects: [T]) {
@@ -285,6 +292,35 @@ public class MIDIContext: CoreMIDIContext {
     private func midiObjectList(type: MIDIObjectType) -> CoreMIDIObjectList? {
         midiObjectListsByType[type]
     }
+
+    // MARK: Sysex speed workaround
+    //
+    // The CoreMIDI client caches the last device that was given to MIDISendSysex(), along with its max
+    // sysex speed. When we change the speed, it doesn't notice, and continues to use the old speed.
+    // To work around this, we send a tiny sysex message to a different device.
+    // Unfortunately we can't just use a NULL endpoint, it has to be a real live endpoint.
+    //
+    // Create a virtual endpoint, like createVirtualDestination(), but avoid adding the Destination
+    // to the object list. It isn't a normal endpoint and shouldn't be treated as one.
+
+    private lazy var sysExSpeedWorkaroundDestination: Destination? = {
+        var newEndpointRef: MIDIEndpointRef = 0
+        guard interface.destinationCreate(midiClient, "Workaround" as CFString, { _, _, _ in }, nil, &newEndpointRef) == noErr else { return nil }
+        sysExSpeedWorkaroundEndpoint = newEndpointRef
+
+        let destination = Destination(context: self, objectRef: newEndpointRef)
+        destination.setPrivateToThisProcess()
+        destination.setOwnedByThisProcess()
+        while destination.uniqueID == 0 {
+            destination.uniqueID = generateNewUniqueID()
+        }
+        destination.manufacturer = "Snoize"
+        destination.model = "Workaround"
+
+        return destination
+    }()
+
+    private var sysExSpeedWorkaroundEndpoint: MIDIObjectRef = 0
 
 }
 
