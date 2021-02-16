@@ -138,8 +138,8 @@ public class MessageParser {
 
                     if pendingDataIndex == pendingDataLength {
                         // This message is now done
-                        if pendingMessageStatus >= 0xF0 {
-                            message = SystemCommonMessage(timeStamp: timeStamp, type: SystemCommonMessage.CommonMessageType(rawValue: pendingMessageStatus)!, data: Array(pendingDataBytes.prefix(upTo: pendingDataLength)))
+                        if let status = SystemCommonMessage.Status(rawValue: pendingMessageStatus) {
+                            message = SystemCommonMessage(timeStamp: timeStamp, status: status, data: pendingDataBytes)
                         }
                         else {
                             message = VoiceMessage(timeStamp: timeStamp, statusByte: pendingMessageStatus, data: pendingDataBytes)
@@ -187,13 +187,13 @@ public class MessageParser {
                             byteIsInvalid = true
                         }
                     }
-                    else if let systemCommonMessageType = SystemCommonMessage.CommonMessageType(rawValue: byte) {
-                        let dataLength = systemCommonMessageType.otherDataLength
+                    else if let systemCommonMessageStatus = SystemCommonMessage.Status(rawValue: byte) {
+                        let dataLength = systemCommonMessageStatus.otherDataLength
                         if dataLength > 0 {
                             pendingDataLength = dataLength
                         }
                         else {
-                            message = SystemCommonMessage(timeStamp: timeStamp, type: systemCommonMessageType, data: [])
+                            message = SystemCommonMessage(timeStamp: timeStamp, status: systemCommonMessageStatus, data: [])
                         }
                     }
                     else {

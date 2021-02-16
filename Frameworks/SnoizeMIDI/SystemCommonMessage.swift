@@ -14,8 +14,7 @@ import Foundation
 
 public class SystemCommonMessage: Message {
 
-    // TODO There should be associated data on the type to store the bytes, probably
-    public enum CommonMessageType: UInt8 {
+    public enum Status: UInt8 {
         case timeCodeQuarterFrame   = 0xF1
         case songPositionPointer    = 0xF2
         case songSelect             = 0xF3
@@ -31,108 +30,151 @@ public class SystemCommonMessage: Message {
         }
     }
 
-    public var commonMessageType: CommonMessageType {
-        get {
-            CommonMessageType(rawValue: statusByte)!
-        }
-        set {
-            self.statusByte = newValue.rawValue
-        }
+    public var dataByte1: UInt8? {
+        storage.dataByte1
     }
 
-    public var dataByte1: UInt8 {
-        get { dataBytes.0 }
-        set {
-            guard (0..<128).contains(newValue) else { fatalError() }
-            dataBytes.0 = newValue
-        }
+    public var dataByte2: UInt8? {
+        storage.dataByte2
     }
 
-    public var dataByte2: UInt8 {
-        get { dataBytes.1 }
-        set {
-            guard (0..<128).contains(newValue) else { fatalError() }
-            dataBytes.1 = newValue
-        }
-    }
-
-    init(timeStamp: MIDITimeStamp, type: CommonMessageType, data: [UInt8]) {
-        if data.count > 0 {
-            let byte0 = data[data.startIndex]
-            guard (0..<128).contains(byte0) else { fatalError() }
-            dataBytes.0 = byte0
-            if data.count > 1 {
-                let byte1 = data[data.startIndex + 1]
-                guard (0..<128).contains(byte1) else { fatalError() }
-                dataBytes.1 = byte1
-            }
-        }
-        super.init(timeStamp: timeStamp, statusByte: type.rawValue)
+    init(timeStamp: MIDITimeStamp, status: Status, data: [UInt8]) {
+        guard let storage = Storage(status: status, data: data) else { fatalError() }
+        self.storage = storage
+        super.init(timeStamp: timeStamp, statusByte: status.rawValue)
     }
 
     required init?(coder: NSCoder) {
         var length = 0
-        if let decodedBytes = coder.decodeBytes(forKey: "dataBytes", returnedLength: &length),
+        let statusByte = coder.decodeInteger(forKey: "statusByte")
+        if let status = Status(rawValue: UInt8(statusByte)),
+           let decodedBytes = coder.decodeBytes(forKey: "dataBytes", returnedLength: &length),
            length == 2 {
-            guard (0..<128).contains(decodedBytes[0]) else { fatalError() }
-            guard (0..<128).contains(decodedBytes[1]) else { fatalError() }
-            dataBytes.0 = decodedBytes[0]
-            dataBytes.1 = decodedBytes[1]
+            var dataBytes: [UInt8] = []
+            for dataByteIndex in 0 ..< status.otherDataLength {
+                dataBytes.append(decodedBytes[dataByteIndex])
+            }
+            if let decodedStorage = Storage(status: status, data: dataBytes) {
+                self.storage = decodedStorage
+                super.init(coder: coder)
+            }
+            else {
+                return nil
+            }
         }
         else {
             return nil
         }
-        super.init(coder: coder)
     }
 
     public override func encode(with coder: NSCoder) {
         super.encode(with: coder)
-        var bytes = [dataBytes.0, dataBytes.1]
+        var bytes = [storage.dataByte1 ?? 0, storage.dataByte2 ?? 0]
         coder.encodeBytes(&bytes, length: 2, forKey: "dataBytes")
     }
-
-    // MARK: Private
-
-    private var dataBytes: (UInt8, UInt8) = (0, 0)
 
     // MARK: Message overrides
 
     public override var messageType: TypeMask {
-        switch commonMessageType {
-        case .timeCodeQuarterFrame: return .timeCode
-        case .songPositionPointer:  return .songPositionPointer
-        case .songSelect:           return .songSelect
-        case .tuneRequest:          return .tuneRequest
-        }
+        storage.messageType
     }
 
     public override var otherDataLength: Int {
-        commonMessageType.otherDataLength
+        storage.status.otherDataLength
     }
 
     public override var otherData: Data? {
-        if otherDataLength == 2 {
-            return Data([dataBytes.0, dataBytes.1])
-        }
-        else if otherDataLength == 1 {
-            return Data([dataBytes.0])
-        }
-        else {
-            return Data()
-        }
+        storage.otherData
     }
 
     public override var typeForDisplay: String {
-        switch commonMessageType {
-        case .timeCodeQuarterFrame:
-            return NSLocalizedString("MTC Quarter Frame", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of MTC Quarter Frame event")
-        case .songPositionPointer:
-            return NSLocalizedString("Song Position Pointer", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Song Position Pointer event")
-        case .songSelect:
-            return NSLocalizedString("Song Select", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Song Select event")
-        case .tuneRequest:
-            return NSLocalizedString("Tune Request", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Tune Request event")
+        storage.typeForDisplay
+    }
+
+    // MARK: Private
+
+    private enum Storage {
+        case timeCodeQuarterFrame(UInt8)
+        case songPositionPointer(UInt8, UInt8)
+        case songSelect(UInt8)
+        case tuneRequest
+
+        init?(status: Status, data: [UInt8]) {
+            guard status.otherDataLength == data.count else { return nil }
+            if data.count > 0 {
+                guard data[0] < 128 else { return nil }
+            }
+            if data.count > 1 {
+                guard data[1] < 128 else { return nil }
+            }
+
+            switch status {
+            case .timeCodeQuarterFrame: self = .timeCodeQuarterFrame(data[0])
+            case .songPositionPointer:  self = .songPositionPointer(data[0], data[1])
+            case .songSelect:           self = .songSelect(data[0])
+            case .tuneRequest:          self = .tuneRequest
+            }
+        }
+
+        var status: Status {
+            switch self {
+            case .timeCodeQuarterFrame: return .timeCodeQuarterFrame
+            case .songPositionPointer:  return .songPositionPointer
+            case .songSelect:           return .songSelect
+            case .tuneRequest:          return .tuneRequest
+            }
+        }
+
+        var dataByte1: UInt8? {
+            switch self {
+            case .timeCodeQuarterFrame(let byte1):      return byte1
+            case .songPositionPointer(let byte1, _):    return byte1
+            case .songSelect(let byte1):                return byte1
+            case .tuneRequest:                          return nil
+            }
+        }
+
+        var dataByte2: UInt8? {
+            switch self {
+            case .timeCodeQuarterFrame:                 return nil
+            case .songPositionPointer(_, let byte2):    return byte2
+            case .songSelect:                           return nil
+            case .tuneRequest:                          return nil
+            }
+        }
+
+        var otherData: Data {
+            switch self {
+            case .timeCodeQuarterFrame(let byte1):              return Data([byte1])
+            case .songPositionPointer(let byte1, let byte2):    return Data([byte1, byte2])
+            case .songSelect(let byte1):                        return Data([byte1])
+            case .tuneRequest:                                  return Data()
+            }
+        }
+
+        var messageType: TypeMask {
+            switch self {
+            case .timeCodeQuarterFrame: return .timeCode
+            case .songPositionPointer:  return .songPositionPointer
+            case .songSelect:           return .songSelect
+            case .tuneRequest:          return .tuneRequest
+            }
+        }
+
+        var typeForDisplay: String {
+            switch self {
+            case .timeCodeQuarterFrame:
+                return NSLocalizedString("MTC Quarter Frame", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of MTC Quarter Frame event")
+            case .songPositionPointer:
+                return NSLocalizedString("Song Position Pointer", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Song Position Pointer event")
+            case .songSelect:
+                return NSLocalizedString("Song Select", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Song Select event")
+            case .tuneRequest:
+                return NSLocalizedString("Tune Request", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Tune Request event")
+            }
         }
     }
+
+    private var storage: Storage
 
 }
