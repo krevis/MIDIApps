@@ -127,8 +127,8 @@ open class InputStream: MessageParserDelegate {
         fatalError("Must implement in subclass")
     }
 
+    // For convenience when working with `selectedInputSources`
     public var inputSourcesSet: Set<InputStreamSource> {
-        // TODO for convenience going to Swift and dealing with selectedInputSources... may change
         return Set(inputSources)
     }
 
