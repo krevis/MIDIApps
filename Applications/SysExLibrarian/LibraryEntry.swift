@@ -43,7 +43,7 @@ class LibraryEntry: NSObject {
         }
 
         if let manufacturer = manufacturer {
-            dict["manufacturer"] = manufacturer
+            dict["manufacturerName"] = manufacturer
         }
 
         if let size = size {
