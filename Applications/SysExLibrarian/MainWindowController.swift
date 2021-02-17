@@ -46,6 +46,8 @@ class MainWindowController: GeneralWindowController {
             // Someday: Consider handling file promises, as below (higher priority than file URLs).
             // As of 10.15 the Finder doesn't create them for drags, so it isn't terribly important.
             // libraryTableView.registerForDraggedTypes(NSFilePromiseReceiver.readableDraggedTypes.map { NSPasteboard.PasteboardType($0) })
+            // https://developer.apple.com/documentation/appkit/nstableviewdatasource/supporting_table_view_drag_and_drop_through_file_promises
+
             libraryTableView.registerForDraggedTypes([.fileURL])
         }
         else {
