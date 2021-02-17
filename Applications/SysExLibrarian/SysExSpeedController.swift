@@ -38,8 +38,7 @@ class SysExSpeedController: NSObject {
     }
 
     func willShow() {
-        // TODO Can this be more specific now?
-    //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(midiSetupChanged:) name:NSNotification.clientSetupChanged object:[SMClient sharedClient]];
+        NotificationCenter.default.addObserver(self, selector: #selector(midiObjectListChanged(_:)), name: .midiObjectListChanged, object: midiContext)
 
         captureDestinationsAndExternalDevices()
 
@@ -54,7 +53,7 @@ class SysExSpeedController: NSObject {
     }
 
     func willHide() {
-        //    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSNotification.clientSetupChanged object:[SMClient sharedClient]]; // TODO
+        NotificationCenter.default.removeObserver(self, name: .midiObjectListChanged, object: midiContext)
 
         releaseDestinationsAndExternalDevices()
 
@@ -109,6 +108,10 @@ class SysExSpeedController: NSObject {
     var trackingMIDIObject: MIDIObject?
     var speedOfTrackingMIDIObject: Int = 0
 
+    var midiContext: MIDIContext {
+        ((NSApp.delegate as? AppController)?.midiContext)!
+    }
+
     func captureDestinationsAndExternalDevices() {
         let center = NotificationCenter.default
 
@@ -119,7 +122,6 @@ class SysExSpeedController: NSObject {
             center.removeObserver(self, name: .midiObjectPropertyChanged, object: externalDevice)
         }
 
-        guard let midiContext = (NSApp.delegate as? AppController)?.midiContext else { fatalError() }
         destinations = CombinationOutputStream.destinationsInContext(midiContext)
         externalDevices = midiContext.externalDevices
 
@@ -136,8 +138,7 @@ class SysExSpeedController: NSObject {
         externalDevices = []
     }
 
-    @objc func midiSetupChanged(_ notification: Notification) {
-        // TODO Call this...
+    @objc func midiObjectListChanged(_ notification: Notification) {
         captureDestinationsAndExternalDevices()
 
         if let window = outlineView.window, window.isVisible {
@@ -258,7 +259,6 @@ extension SysExSpeedController: NSOutlineViewDataSource {
                 midiObject.maxSysExSpeed = newValue
 
                 // Work around bug where CoreMIDI doesn't pay attention to the new speed
-                guard let midiContext = (NSApp.delegate as? AppController)?.midiContext else { fatalError() }
                 midiContext.forceCoreMIDIToUseNewSysExSpeed()
             }
 
