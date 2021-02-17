@@ -83,9 +83,8 @@ class GeneralTableView: NSTableView {
                 deleteForward(self)
                 handled = true
             case 0x20:
-                if let delegate = delegate as? GeneralTableViewDelegate,
-                   let handledByDelegate = delegate.tableViewKeyDownReceivedSpace?(self) {
-                    handled = handledByDelegate
+                if let delegate = delegate as? GeneralTableViewDelegate {
+                    handled = delegate.tableViewKeyDownReceivedSpace(self)
                 }
             default:
                 break
@@ -118,9 +117,8 @@ class GeneralTableView: NSTableView {
     // MARK: Dragging
 
     override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
-        if let dataSource = dataSource as? GeneralTableViewDataSource,
-           let operation = dataSource.tableView?(self, draggingEntered: sender) {
-            draggingOperation = operation
+        if let dataSource = dataSource as? GeneralTableViewDataSource {
+            draggingOperation = dataSource.tableView(self, draggingEntered: sender)
         }
         else {
             draggingOperation = []
@@ -146,9 +144,8 @@ class GeneralTableView: NSTableView {
     }
 
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
-        if let dataSource = dataSource as? GeneralTableViewDataSource,
-           let handled = dataSource.tableView?(self, performDragOperation: sender) {
-            return handled
+        if let dataSource = dataSource as? GeneralTableViewDataSource {
+            return dataSource.tableView(self, performDragOperation: sender)
         }
         else {
             return false
@@ -178,27 +175,25 @@ class GeneralTableView: NSTableView {
 
     private func deleteSelectedRows() {
         if let dataSource = dataSource as? GeneralTableViewDataSource {
-            dataSource.tableView?(self, deleteRows: selectedRowIndexes)
+            dataSource.tableView(self, deleteRows: selectedRowIndexes)
         }
     }
 
 }
 
-// TODO Express the optionality of these methods in these two protocols in some better way
+protocol GeneralTableViewDataSource: NSTableViewDataSource {
 
-@objc protocol GeneralTableViewDataSource: NSTableViewDataSource {
+    func tableView(_ tableView: GeneralTableView, deleteRows: IndexSet)
 
-    @objc optional func tableView(_ tableView: GeneralTableView, deleteRows: IndexSet)
+    func tableView(_ tableView: GeneralTableView, draggingEntered sender: NSDraggingInfo) -> NSDragOperation
 
-    @objc optional func tableView(_ tableView: GeneralTableView, draggingEntered sender: NSDraggingInfo) -> NSDragOperation
-
-    @objc optional func tableView(_ tableView: GeneralTableView, performDragOperation sender: NSDraggingInfo) -> Bool
+    func tableView(_ tableView: GeneralTableView, performDragOperation sender: NSDraggingInfo) -> Bool
 
 }
 
-@objc protocol GeneralTableViewDelegate: NSTableViewDelegate {
+protocol GeneralTableViewDelegate: NSTableViewDelegate {
 
-    @objc optional func tableViewKeyDownReceivedSpace(_ tableView: GeneralTableView) -> Bool
+    func tableViewKeyDownReceivedSpace(_ tableView: GeneralTableView) -> Bool
     // Return true if delegate handled the space key. Return false if you did nothing and want the table view to handle it.
 
 }
