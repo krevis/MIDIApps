@@ -30,23 +30,6 @@ class Library: NSObject {
         super.init()
     }
 
-    lazy var libraryFilePath: String? = {
-        do {
-            var libraryFileURL = try FileManager.default.url(for: .libraryDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-
-            libraryFileURL.appendPathComponent("Preferences")
-            // This path should exist as-is; don't bother trying to resolve symlinks or aliases.
-
-            libraryFileURL.appendPathComponent("SysEx Librarian Library.sXLb")
-
-            return libraryFileURL.path
-        }
-        catch {
-            // TODO Should this do better?
-            return nil
-        }
-    }()
-
     var fileDirectoryPath: String {
         get {
             rememberedFileDirectoryPath ?? defaultFileDirectoryPath
@@ -166,11 +149,15 @@ class Library: NSObject {
     }
 
     @objc func save() {
-        guard isDirty, let libraryFilePath = libraryFilePath else { return }
+        guard isDirty else { return }
 
         let propertyList = ["Entries": entries.compactMap({ $0.dictionaryValues })]
+        var maybeLibraryFilePath: String?
 
         do {
+            let libraryFilePath = try baseLibraryFilePath()
+            maybeLibraryFilePath = libraryFilePath
+
             let fileData = try PropertyListSerialization.data(fromPropertyList: propertyList, format: .xml, options: 0)
             try NSData(data: fileData).write(toFile: libraryFilePath, options: .atomic)
 
@@ -192,13 +179,20 @@ class Library: NSObject {
             // Present the error, Can't continue saving, but can continue with the app.
             // This is not fantastic UI, but it works.  This should not happen unless the user is trying to provoke us, anyway.
             let messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
-            let informativeTextFormat = NSLocalizedString("The library \"%@\" could not be saved.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format of error message if the library file can't be saved")
-            let informativeText = String(format: informativeTextFormat, libraryFilePath) + "\n" + error.localizedDescription
+
+            let informativeTextHeader: String
+            if let libraryFilePath = maybeLibraryFilePath {
+                let informativeTextFormat = NSLocalizedString("The library \"%@\" could not be saved.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format of error message if the library file can't be saved")
+                informativeTextHeader = String(format: informativeTextFormat, libraryFilePath)
+            }
+            else {
+                informativeTextHeader = NSLocalizedString("The path to the library file \"~/Preferences/SysEx Librarian Library.sXLb\" could not be created.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "error message if the path to the library file can't be created")
+            }
 
             let alert = NSAlert()
             alert.alertStyle = .critical
             alert.messageText = messageText
-            alert.informativeText = informativeText
+            alert.informativeText = informativeTextHeader + "\n" + error.localizedDescription
             alert.runModal()
         }
     }
@@ -388,8 +382,19 @@ extension Library /* Private */ {
         // we will ensure it (and its intermediate directories) exists, and present an error if there are any problems.
     }
 
-    private var resolvedLibraryFilePath: String? {
-        guard let libraryFilePath = libraryFilePath else { return nil }
+    private func baseLibraryFilePath() throws -> String {
+        var libraryFileURL = try FileManager.default.url(for: .libraryDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+
+        libraryFileURL.appendPathComponent("Preferences")
+        // This path should exist as-is; don't bother trying to resolve symlinks or aliases.
+
+        libraryFileURL.appendPathComponent("SysEx Librarian Library.sXLb")
+
+        return libraryFileURL.path
+    }
+
+    private func resolvedLibraryFilePath() throws -> String {
+        let libraryFilePath = try baseLibraryFilePath()
 
         // Handle the case when someone has replaced our file with a symlink, an alias, or a symlink to an alias.
         // (If you have more symlinks or aliases chained together, well, sorry.)
@@ -436,48 +441,65 @@ extension Library /* Private */ {
     }
 
     private func loadEntries() {
-        // We should only be called once at startup
+        // We should be called only once, at startup
         precondition(entries.isEmpty)
-        guard let libraryFilePath = resolvedLibraryFilePath else { return }
 
         var errorToReport: Error?
+
+        var maybeLibraryFilePath: String?
         do {
-            let data: NSData = try NSData(contentsOfFile: libraryFilePath, options: [])
+            maybeLibraryFilePath = try resolvedLibraryFilePath()
+        }
+        catch {
+            errorToReport = error
+        }
+
+        if let libraryFilePath = maybeLibraryFilePath {
             do {
-                let propertyList = try PropertyListSerialization.propertyList(from: data as Data, options: [], format: nil)
-                if let libraryDict = propertyList as? [String: Any],
-                   let entryDicts = libraryDict["Entries"] as? [[String: Any]] {
-                    entries = entryDicts.compactMap { LibraryEntry(library: self, dictionary: $0) }
+                let data: NSData = try NSData(contentsOfFile: libraryFilePath, options: [])
+                do {
+                    let propertyList = try PropertyListSerialization.propertyList(from: data as Data, options: [], format: nil)
+                    if let libraryDict = propertyList as? [String: Any],
+                       let entryDicts = libraryDict["Entries"] as? [[String: Any]] {
+                        entries = entryDicts.compactMap { LibraryEntry(library: self, dictionary: $0) }
+                    }
+                }
+                catch {
+                    errorToReport = error
                 }
             }
             catch {
+                // Couldn't load data.
                 errorToReport = error
-            }
-        }
-        catch {
-            // Couldn't load data.
-            errorToReport = error
-            // Ignore file not found errors. That just means there isn't a file to read from.
-            let nsError = error as NSError
-            if nsError.domain == NSCocoaErrorDomain && nsError.code == NSFileReadNoSuchFileError {
-                errorToReport = nil
-            }
-            else if let underlyingError = nsError.userInfo[NSUnderlyingErrorKey] as? NSError,
-                    underlyingError.domain == NSPOSIXErrorDomain && underlyingError.code == ENOENT {
-                errorToReport = nil
+                // Ignore file not found errors. That just means there isn't a file to read from.
+                let nsError = error as NSError
+                if nsError.domain == NSCocoaErrorDomain && nsError.code == NSFileReadNoSuchFileError {
+                    errorToReport = nil
+                }
+                else if let underlyingError = nsError.userInfo[NSUnderlyingErrorKey] as? NSError,
+                        underlyingError.domain == NSPOSIXErrorDomain && underlyingError.code == ENOENT {
+                    errorToReport = nil
+                }
             }
         }
 
         if let errorToReport = errorToReport {
             // Report on error, then continue with an empty library.
             let messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
-            let informativeTextFormat = NSLocalizedString("The library \"%@\" could not be read.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format of error message if the library file can't be read")
-            let informativeText = String(format: informativeTextFormat, libraryFilePath) + "\n" + errorToReport.localizedDescription
+
+            let informativeTextHeader: String
+            if let libraryFilePath = maybeLibraryFilePath {
+                let informativeTextFormat = NSLocalizedString("The library file \"%@\" could not be read.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format of error message if the library file can't be read")
+                informativeTextHeader = String(format: informativeTextFormat, libraryFilePath)
+            }
+            else {
+                informativeTextHeader = NSLocalizedString("The path to the library file \"~/Preferences/SysEx Librarian Library.sXLb\" could not be created.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "error message if the path to the library file can't be created")
+            }
 
             let alert = NSAlert()
             alert.alertStyle = .critical
             alert.messageText = messageText
-            alert.informativeText = informativeText
+            alert.informativeText = informativeTextHeader + "\n" + errorToReport.localizedDescription
             alert.runModal()
         }
 
