@@ -123,6 +123,9 @@
 		16B736E125D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736E025D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift */; };
 		16B736E225D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736E025D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift */; };
 		16B736E325D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736E025D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift */; };
+		16B7375525DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7375425DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift */; };
+		16B7375625DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7375425DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift */; };
+		16B7375725DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7375425DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift */; };
 		16C43B5625C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43B5525C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift */; };
 		16C43B5725C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43B5525C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift */; };
 		16C43B5825C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43B5525C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift */; };
@@ -197,6 +200,7 @@
 		16B4A55E0972152700F11AD6 /* Snoize-Framework-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Framework-Debug.xcconfig"; path = "../../Configurations/Snoize-Framework-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		16B4A5610972153E00F11AD6 /* Snoize-Framework-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Framework-Release.xcconfig"; path = "../../Configurations/Snoize-Framework-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
 		16B736E025D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+SnoizeMIDI.swift"; sourceTree = "<group>"; };
+		16B7375425DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Endpoint+InputStreamSourceProviding.swift"; sourceTree = "<group>"; };
 		16C43B5525C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+AbbreviatedByteCount.swift"; sourceTree = "<group>"; };
 		16D0EF1D25C92A6D00399C74 /* Data+HexDump.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+HexDump.swift"; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -391,6 +395,7 @@
 			children = (
 				16966A5D25A9417400D5BE2A /* InputStream.swift */,
 				16966B8A25B7CE1900D5BE2A /* InputStreamSource.swift */,
+				16B7375425DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift */,
 				16966A4D25A9399600D5BE2A /* SingleInputStreamSource.swift */,
 				16966A6D25ABCD7A00D5BE2A /* MessageParser.swift */,
 				16966A3D25A91B5F00D5BE2A /* PortInputStream.swift */,
@@ -611,6 +616,7 @@
 				16966A5E25A9417400D5BE2A /* InputStream.swift in Sources */,
 				1691F99725BD621A00B9CE06 /* MIDIObject.swift in Sources */,
 				16966A9E25AD6A8F00D5BE2A /* SystemRealTimeMessage.swift in Sources */,
+				16B7375525DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift in Sources */,
 				1691F9D525BD68F700B9CE06 /* CoreMIDIContext.swift in Sources */,
 				1691F9E925BEB47500B9CE06 /* Cache.swift in Sources */,
 				1691F9F325BF964D00B9CE06 /* MIDIContext.swift in Sources */,
@@ -657,6 +663,7 @@
 				16966A6F25ABCD7A00D5BE2A /* MessageParser.swift in Sources */,
 				1691F99825BD621A00B9CE06 /* MIDIObject.swift in Sources */,
 				16992872259707190057715C /* MessageMult.swift in Sources */,
+				16B7375625DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift in Sources */,
 				1691F9D625BD68F700B9CE06 /* CoreMIDIContext.swift in Sources */,
 				1691F9EA25BEB47500B9CE06 /* Cache.swift in Sources */,
 				1691F9F425BF964D00B9CE06 /* MIDIContext.swift in Sources */,
@@ -703,6 +710,7 @@
 				16966A7025ABCD7A00D5BE2A /* MessageParser.swift in Sources */,
 				1691F99925BD621A00B9CE06 /* MIDIObject.swift in Sources */,
 				16992873259707190057715C /* MessageMult.swift in Sources */,
+				16B7375725DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift in Sources */,
 				1691F9D725BD68F700B9CE06 /* CoreMIDIContext.swift in Sources */,
 				1691F9EB25BEB47500B9CE06 /* Cache.swift in Sources */,
 				1691F9F525BF964D00B9CE06 /* MIDIContext.swift in Sources */,
