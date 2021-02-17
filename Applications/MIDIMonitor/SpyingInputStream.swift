@@ -147,7 +147,7 @@ class SpyingInputStream: SnoizeMIDI.InputStream {
     @objc private func midiObjectListChanged(_ notification: Notification) {
         if let midiObjectType = notification.userInfo?[MIDIContext.objectType] as? MIDIObjectType,
            midiObjectType == .destination {
-            postSourceListChangedNotification()
+            sourceListChanged()
         }
     }
 

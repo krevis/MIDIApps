@@ -28,10 +28,7 @@ class MIDIController: NSObject {
 
         let center = NotificationCenter.default
 
-        // TODO Should be delegate methods, not notifications
-        center.addObserver(self, selector: #selector(readingSysEx(_:)), name: .inputStreamReadingSysEx, object: inputStream)
-        center.addObserver(self, selector: #selector(readingSysEx(_:)), name: .inputStreamDoneReadingSysEx, object: inputStream)
-        center.addObserver(self, selector: #selector(portInputStreamSourceListChanged(_:)), name: .inputStreamSourceListChanged, object: inputStream)
+        inputStream.delegate = self
         inputStream.messageDestination = self
         inputStream.selectedInputSources = Set(inputStream.inputSources)
 
@@ -313,32 +310,18 @@ extension MIDIController /* Private */ {
         if UserDefaults.standard.bool(forKey: Self.listenForProgramChangesPreferenceKey) {
             if virtualInputStream == nil {
                 let stream = VirtualInputStream(midiContext: midiContext)
+                stream.delegate = self
                 stream.messageDestination = self
                 stream.selectedInputSources = Set(stream.inputSources)
-                let center = NotificationCenter.default
-                center.addObserver(self, selector: #selector(readingSysEx(_:)), name: .inputStreamReadingSysEx, object: stream)
-                center.addObserver(self, selector: #selector(readingSysEx(_:)), name: .inputStreamDoneReadingSysEx, object: stream)
                 virtualInputStream = stream
             }
         }
         else {
             if let stream = virtualInputStream {
                 stream.messageDestination = nil
-                let center = NotificationCenter.default
-                center.removeObserver(self, name: .inputStreamReadingSysEx, object: stream)
-                center.removeObserver(self, name: .inputStreamDoneReadingSysEx, object: stream)
                 virtualInputStream = nil
             }
         }
-    }
-
-    @objc private func portInputStreamSourceListChanged(_ notification: Notification) {
-        inputStream.selectedInputSources = Set(inputStream.inputSources)
-    }
-
-    private func selectFirstAvailableDestinationWhenPossible() {
-        // TODO There was some old stuff to delay this if a setup change notification was being processed. Do we still need that?
-        selectFirstAvailableDestination()
     }
 
     private func selectFirstAvailableDestination() {
@@ -360,8 +343,8 @@ extension MIDIController /* Private */ {
         listeningToSysexMessages = true
     }
 
-    @objc private func readingSysEx(_ notification: Notification) {
-        messageBytesRead = (notification.userInfo?["length"] as? NSNumber)?.intValue ?? 0
+    private func updateSysExReadStatus(byteCount: Int) {
+        messageBytesRead = byteCount
 
         // We want multiple updates to get coalesced, so only do this once
         if !scheduledUpdateSysExReadIndicator {
@@ -410,6 +393,24 @@ extension MIDIController /* Private */ {
 
 }
 
+extension MIDIController: InputStreamDelegate {
+
+    func inputStreamReadingSysEx(_ stream: SnoizeMIDI.InputStream, byteCountSoFar: Int, streamSource: InputStreamSource) {
+        updateSysExReadStatus(byteCount: byteCountSoFar)
+    }
+
+    func inputStreamFinishedReadingSysEx(_ stream: SnoizeMIDI.InputStream, byteCount: Int, streamSource: InputStreamSource, isValid: Bool) {
+        updateSysExReadStatus(byteCount: byteCount)
+    }
+
+    func inputStreamSourceListChanged(_ stream: SnoizeMIDI.InputStream) {
+        if stream === inputStream {
+            inputStream.selectedInputSources = Set(inputStream.inputSources)
+        }
+    }
+
+}
+
 extension MIDIController: CombinationOutputStreamDelegate {
 
     func combinationOutputStreamDestinationsChanged(_ stream: CombinationOutputStream) {
@@ -421,7 +422,7 @@ extension MIDIController: CombinationOutputStreamDelegate {
             cancelSendingMessages()
         }
 
-        selectFirstAvailableDestinationWhenPossible()
+        selectFirstAvailableDestination()
     }
 
     // Sent when sysex begins sending and ends sending.

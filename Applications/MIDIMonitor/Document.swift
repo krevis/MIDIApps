@@ -21,19 +21,15 @@ class Document: NSDocument {
 
         super.init()
 
-        let center = NotificationCenter.default
-
-        center.addObserver(self, selector: #selector(self.readingSysEx(_:)), name: .inputStreamReadingSysEx, object: stream)
-        center.addObserver(self, selector: #selector(self.doneReadingSysEx(_:)), name: .inputStreamDoneReadingSysEx, object: stream)
-        center.addObserver(self, selector: #selector(self.sourceListDidChange(_:)), name: .inputStreamSourceListChanged, object: stream)
         updateVirtualEndpointName()
 
+        stream.delegate = self
         stream.messageDestination = messageFilter
         messageFilter.filterMask = Message.TypeMask.all
         messageFilter.channelMask = VoiceMessage.ChannelMask.all
 
         messageFilter.messageDestination = history
-        center.addObserver(self, selector: #selector(self.historyDidChange(_:)), name: .messageHistoryChanged, object: history)
+        history.delegate = self
 
         // If the user changed the value of this old obsolete preference, bring its value forward to our new preference
         // (the default value was YES)
@@ -46,10 +42,6 @@ class Document: NSDocument {
         autoselectSources()
 
         updateChangeCount(.changeCleared)
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self)
     }
 
     // MARK: Private
@@ -528,27 +520,16 @@ extension Document {
 
     // MARK: Updates when changes happen
 
-    @objc private func sourceListDidChange(_ notification: Notification?) {
-        monitorWindowController?.updateSources()
-
-        // Also, it's possible that the endpoint names went from being unique to non-unique, so we need
-        // to refresh the messages displayed.
-        monitorWindowController?.updateVisibleMessages()
+    @objc private func updateSysExReadIndicators() {
+        isSysExUpdateQueued = false
+        monitorWindowController?.updateSysExReadIndicator()
     }
 
-    @objc private func historyDidChange(_ notification: Notification?) {
-        updateChangeCount(.changeDone)
+}
 
-        if let wereMessagesAdded = notification?.userInfo?[MessageHistory.wereMessagesAdded] as? Bool {
-            updateMessages(scrollingToBottom: wereMessagesAdded)
-        }
-    }
+extension Document: CombinationInputStreamDelegate {
 
-    private func updateMessages(scrollingToBottom: Bool) {
-        monitorWindowController?.updateMessages(scrollingToBottom: scrollingToBottom)
-    }
-
-    @objc private func readingSysEx(_ notification: Notification?) {
+    func combinationInputStreamReadingSysEx(_ stream: CombinationInputStream, byteCountSoFar: Int, streamSource: InputStreamSource) {
         // We want multiple updates to get coalesced, so only queue it once
         if !isSysExUpdateQueued {
             isSysExUpdateQueued = true
@@ -556,18 +537,30 @@ extension Document {
         }
     }
 
-    @objc private func updateSysExReadIndicators() {
-        isSysExUpdateQueued = false
-        monitorWindowController?.updateSysExReadIndicator()
-    }
-
-    @objc private func doneReadingSysEx(_ notification: Notification?) {
+    func combinationInputStreamFinishedReadingSysEx(_ stream: CombinationInputStream, byteCount: Int, streamSource: InputStreamSource, isValid: Bool) {
         if isSysExUpdateQueued {
             NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(self.updateSysExReadIndicators), object: nil)
             isSysExUpdateQueued = false
         }
 
         monitorWindowController?.stopSysExReadIndicator()
+    }
+
+    func combinationInputStreamSourceListChanged(_ stream: CombinationInputStream) {
+        monitorWindowController?.updateSources()
+
+        // Also, it's possible that the endpoint names went from being unique to non-unique, so we need
+        // to refresh the messages displayed.
+        monitorWindowController?.updateVisibleMessages()
+    }
+
+}
+
+extension Document: MessageHistoryDelegate {
+
+    func messageHistoryChanged(_ messageHistory: MessageHistory, messagesWereAdded: Bool) {
+        updateChangeCount(.changeDone)
+        monitorWindowController?.updateMessages(scrollingToBottom: messagesWereAdded)
     }
 
 }

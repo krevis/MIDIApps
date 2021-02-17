@@ -30,34 +30,20 @@ class CombinationInputStream: NSObject {
 
         super.init()
 
-        func observeNotificationsFromStream(_ object: AnyObject) {
-            let center = NotificationCenter.default
-            center.addObserver(self, selector: #selector(self.repostNotification(_:)), name: .inputStreamReadingSysEx, object: object)
-            center.addObserver(self, selector: #selector(self.repostNotification(_:)), name: .inputStreamDoneReadingSysEx, object: object)
-            center.addObserver(self, selector: #selector(self.inputSourceListChanged(_:)), name: .inputStreamSourceListChanged, object: object)
-        }
-
         portInputStream.messageDestination = self
-        observeNotificationsFromStream(portInputStream)
+        portInputStream.delegate = self
 
         virtualInputStream.messageDestination = self
-        observeNotificationsFromStream(virtualInputStream)
+        virtualInputStream.delegate = self
 
         if let stream = spyingInputStream {
             stream.messageDestination = self
-            observeNotificationsFromStream(stream)
+            stream.delegate = self
         }
     }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-
-        portInputStream.messageDestination = nil
-        virtualInputStream.messageDestination = nil
-        spyingInputStream?.messageDestination = nil
-    }
-
-    var messageDestination: MessageDestination?
+    weak var delegate: CombinationInputStreamDelegate?
+    weak var messageDestination: MessageDestination?
 
     var sourceGroups: [CombinationInputStreamSourceGroup] {
         var groups = [portGroup, virtualGroup]
@@ -185,11 +171,25 @@ class CombinationInputStream: NSObject {
     private let virtualInputStream: VirtualInputStream
     private let spyingInputStream: SpyingInputStream?
 
-    private var willPostSourceListChangedNotification = false
+    private var willSendSourceListChanged = false
 
     private lazy var portGroup = CombinationInputStreamSourceGroup(name: NSLocalizedString("MIDI sources", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "name of group for ordinary sources"), expandable: true)
     private lazy var virtualGroup = CombinationInputStreamSourceGroup(name: NSLocalizedString("Act as a destination for other programs", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "name of source item for virtual destination"), expandable: false)
     private var spyingGroup: CombinationInputStreamSourceGroup?
+
+}
+
+protocol CombinationInputStreamDelegate: NSObjectProtocol {
+
+    // Like InputStreamDelegate
+
+    // Sent when the stream begins or continues receiving a SystemExclusive message
+    func combinationInputStreamReadingSysEx(_ stream: CombinationInputStream, byteCountSoFar: Int, streamSource: InputStreamSource)
+
+    // Sent when the stream finishes receiving a SystemExclusive message
+    func combinationInputStreamFinishedReadingSysEx(_ stream: CombinationInputStream, byteCount: Int, streamSource: InputStreamSource, isValid: Bool)
+
+    func combinationInputStreamSourceListChanged(_ stream: CombinationInputStream)
 
 }
 
@@ -201,30 +201,25 @@ extension CombinationInputStream: MessageDestination {
 
 }
 
-extension CombinationInputStream {
+extension CombinationInputStream: InputStreamDelegate {
 
-    // MARK: Notifications
-    //
-    // This class reposts these notifications from its streams (with self as object):
-    //    .inputStreamReadingSysEx
-    //    .inputStreamDoneReadingSysEx
-    //
-    // It also listens to .inputStreamSourceListChanged from its streams,
-    // and coalesces them into a single notification (with the same name) from this object.
-
-    @objc func repostNotification(_ notification: Notification) {
-        NotificationCenter.default.post(name: notification.name, object: self, userInfo: notification.userInfo)
+    func inputStreamReadingSysEx(_ stream: SnoizeMIDI.InputStream, byteCountSoFar: Int, streamSource: InputStreamSource) {
+        delegate?.combinationInputStreamReadingSysEx(self, byteCountSoFar: byteCountSoFar, streamSource: streamSource)
     }
 
-    @objc func inputSourceListChanged(_ notification: Notification) {
+    func inputStreamFinishedReadingSysEx(_ stream: SnoizeMIDI.InputStream, byteCount: Int, streamSource: InputStreamSource, isValid: Bool) {
+        delegate?.combinationInputStreamFinishedReadingSysEx(self, byteCount: byteCount, streamSource: streamSource, isValid: isValid)
+    }
+
+    func inputStreamSourceListChanged(_ stream: SnoizeMIDI.InputStream) {
         // We may get this notification from more than one of our streams, so coalesce all the notifications from all of the streams into one notification from us.
 
-        if !willPostSourceListChangedNotification {
-            willPostSourceListChangedNotification = true
+        if !willSendSourceListChanged {
+            willSendSourceListChanged = true
 
             DispatchQueue.main.async {
-                self.willPostSourceListChangedNotification = false
-                NotificationCenter.default.post(name: notification.name, object: self)
+                self.willSendSourceListChanged = false
+                self.delegate?.combinationInputStreamSourceListChanged(self)
             }
         }
     }

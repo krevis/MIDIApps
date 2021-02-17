@@ -23,6 +23,7 @@ open class InputStream: MessageParserDelegate {
 
     public let midiContext: MIDIContext
     public var readQueue: DispatchQueue
+    public weak var delegate: InputStreamDelegate?
     public weak var messageDestination: MessageDestination?
     public var sysExTimeOut: TimeInterval = 1.0 {
         didSet {
@@ -88,8 +89,8 @@ open class InputStream: MessageParserDelegate {
         return parser
     }
 
-    public func postSourceListChangedNotification() {
-        NotificationCenter.default.post(name: .inputStreamSourceListChanged, object: self)
+    public func sourceListChanged() {
+        delegate?.inputStreamSourceListChanged(self)
     }
 
     // MARK: For subclasses to implement
@@ -149,18 +150,13 @@ open class InputStream: MessageParserDelegate {
 
     public func parserIsReadingSysEx(_ parser: MessageParser, length: Int) {
         if let streamSource = streamSource(parser: parser) {
-            let userInfo = ["length": length,
-                            "source": streamSource] as [String: Any]
-            NotificationCenter.default.post(name: .inputStreamReadingSysEx, object: self, userInfo: userInfo)
+            delegate?.inputStreamReadingSysEx(self, byteCountSoFar: length, streamSource: streamSource)
         }
     }
 
     public func parserFinishedReadingSysEx(_ parser: MessageParser, message: SystemExclusiveMessage) {
         if let streamSource = streamSource(parser: parser) {
-            let userInfo = ["length": 1 + message.receivedData.count,
-                            "valid": message.wasReceivedWithEOX,
-                            "source": streamSource] as [String: Any]
-            NotificationCenter.default.post(name: .inputStreamDoneReadingSysEx, object: self, userInfo: userInfo)
+            delegate?.inputStreamFinishedReadingSysEx(self, byteCount: 1 + message.receivedData.count, streamSource: streamSource, isValid: message.wasReceivedWithEOX)
         }
     }
 
@@ -184,22 +180,15 @@ open class InputStream: MessageParserDelegate {
 
 }
 
-// TODO These notifications should just be delegate methods.
+public protocol InputStreamDelegate: NSObjectProtocol {
 
-public extension Notification.Name {
+    // Sent when the stream begins or continues receiving a SystemExclusive message
+    func inputStreamReadingSysEx(_ stream: InputStream, byteCountSoFar: Int, streamSource: InputStreamSource)
 
-    static let inputStreamReadingSysEx = Notification.Name("SMInputStreamReadingSysExNotification")
-    // contains key @"length" with NSNumber (NSUInteger) size of data read so far
-    // contains key @"source" with id<SMInputStreamSource> that this sysex data was read from
+    // Sent when the stream finishes receiving a SystemExclusive message
+    func inputStreamFinishedReadingSysEx(_ stream: InputStream, byteCount: Int, streamSource: InputStreamSource, isValid: Bool)
 
-    static let inputStreamDoneReadingSysEx = Notification.Name("SMInputStreamDoneReadingSysExNotification")
-    // contains key @"length" with NSNumber (NSUInteger) indicating size of data read
-    // contains key @"source" with id<SMInputStreamSource> that this sysex data was read from
-    // contains key @"valid" with NSNumber (BOOL) indicating whether sysex ended properly or not
-
-    static let inputStreamSourceListChanged = Notification.Name("SMInputStreamSourceListChangedNotification")
-
-    // TODO Formalize these userInfo keys, if we have to have them
+    func inputStreamSourceListChanged(_ stream: InputStream)
 
 }
 

@@ -110,7 +110,7 @@ public class PortInputStream: InputStream {
     @objc private func midiObjectListChanged(_ notification: Notification) {
         if let midiObjectType = notification.userInfo?[MIDIContext.objectType] as? MIDIObjectType,
            midiObjectType == .source {
-            postSourceListChangedNotification()
+            sourceListChanged()
         }
     }
 

@@ -16,6 +16,8 @@ public class MessageHistory: NSObject, MessageDestination {
 
     // Remembers the most recent received messages.
 
+    public weak var delegate: MessageHistoryDelegate?
+
     public var savedMessages: [Message] = [] {
         didSet {
             _ = limitSavedMessages()
@@ -25,7 +27,7 @@ public class MessageHistory: NSObject, MessageDestination {
     public func clearSavedMessages() {
         if savedMessages.count > 0 {
             savedMessages = []
-            historyChanged(newMessages: false)
+            historyChanged(messagesWereAdded: false)
         }
     }
 
@@ -34,23 +36,18 @@ public class MessageHistory: NSObject, MessageDestination {
     public var historySize: Int = MessageHistory.defaultHistorySize {
         didSet {
             if limitSavedMessages() {
-                historyChanged(newMessages: false)
+                historyChanged(messagesWereAdded: false)
             }
         }
     }
 
     public static let defaultHistorySize: Int = 1000
 
-    // When the history changes, a notification named .messageHistoryChanged is posted.
-    // User info contains a Bool under key MessageHistory.wereMessagesAdded which is true
-    // when new messages were added to the history.
-    static public let wereMessagesAdded = "SMMessageHistoryWereMessagesAdded"
-
     // MARK: MessageDestination
 
     public func takeMIDIMessages(_ messages: [Message]) {
         savedMessages += messages
-        historyChanged(newMessages: true)
+        historyChanged(messagesWereAdded: true)
     }
 
     // MARK: Private
@@ -65,15 +62,14 @@ public class MessageHistory: NSObject, MessageDestination {
         }
     }
 
-    private func historyChanged(newMessages: Bool) {
-        let userInfo = [MessageHistory.wereMessagesAdded: newMessages]
-        NotificationCenter.default.post(name: .messageHistoryChanged, object: self, userInfo: userInfo)
+    private func historyChanged(messagesWereAdded: Bool) {
+        delegate?.messageHistoryChanged(self, messagesWereAdded: messagesWereAdded)
     }
 
 }
 
-public extension Notification.Name {
+public protocol MessageHistoryDelegate: NSObjectProtocol {
 
-    static let messageHistoryChanged = Notification.Name("SMMessageHistoryChangedNotification")
+    func messageHistoryChanged(_ messageHistory: MessageHistory, messagesWereAdded: Bool)
 
 }
