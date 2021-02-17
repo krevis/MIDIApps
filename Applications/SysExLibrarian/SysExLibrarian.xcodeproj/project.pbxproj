@@ -34,6 +34,7 @@
 		16B736C225D66C07000DAC58 /* Alias.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736C125D66C07000DAC58 /* Alias.swift */; };
 		16B736C425D7366D000DAC58 /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736C325D7366D000DAC58 /* Library.swift */; };
 		16B736C625D7773B000DAC58 /* LibraryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736C525D7773B000DAC58 /* LibraryEntry.swift */; };
+		16B7375F25DD03F6000DAC58 /* SingleOutputStreamDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7375E25DD03F6000DAC58 /* SingleOutputStreamDestination.swift */; };
 		16C43B9725C4EB00007A3A48 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43B9625C4EB00007A3A48 /* main.swift */; };
 		16C43BBA25C4F637007A3A48 /* Data+Hashing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43BB925C4F637007A3A48 /* Data+Hashing.swift */; };
 		16C43BBC25C52954007A3A48 /* Destination+OutputStreamDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43BBB25C52954007A3A48 /* Destination+OutputStreamDestination.swift */; };
@@ -238,6 +239,7 @@
 		16B736C125D66C07000DAC58 /* Alias.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alias.swift; sourceTree = "<group>"; };
 		16B736C325D7366D000DAC58 /* Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
 		16B736C525D7773B000DAC58 /* LibraryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryEntry.swift; sourceTree = "<group>"; };
+		16B7375E25DD03F6000DAC58 /* SingleOutputStreamDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleOutputStreamDestination.swift; sourceTree = "<group>"; };
 		16C43B9525C4EB00007A3A48 /* SysExLibrarian-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SysExLibrarian-Bridging-Header.h"; sourceTree = "<group>"; };
 		16C43B9625C4EB00007A3A48 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		16C43BB925C4F637007A3A48 /* Data+Hashing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hashing.swift"; sourceTree = "<group>"; };
@@ -537,6 +539,7 @@
 			children = (
 				16C43BBF25C52C89007A3A48 /* CombinationOutputStream.swift */,
 				16C43BBD25C529BA007A3A48 /* OutputStreamDestination.swift */,
+				16B7375E25DD03F6000DAC58 /* SingleOutputStreamDestination.swift */,
 				16C43BBB25C52954007A3A48 /* Destination+OutputStreamDestination.swift */,
 			);
 			name = "SnoizeMIDI Extensions ";
@@ -808,6 +811,7 @@
 				16C43B9725C4EB00007A3A48 /* main.swift in Sources */,
 				1686427625CE71A000A8B292 /* FindMissingController.swift in Sources */,
 				16517BC225D5F68700D0CAC4 /* GeneralTableView.swift in Sources */,
+				16B7375F25DD03F6000DAC58 /* SingleOutputStreamDestination.swift in Sources */,
 				1686427025CCAF7F00A8B292 /* ImportController.swift in Sources */,
 				16B736C425D7366D000DAC58 /* Library.swift in Sources */,
 				1686427C25CFC35A00A8B292 /* RecordController.swift in Sources */,

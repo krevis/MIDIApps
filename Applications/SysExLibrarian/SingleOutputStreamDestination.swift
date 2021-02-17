@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2002-2021, Kurt Revis.  All rights reserved.
+ Copyright (c) 2021, Kurt Revis.  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
@@ -12,8 +12,17 @@
 
 import Foundation
 
-protocol OutputStreamDestination: NSObjectProtocol {
+class SingleOutputStreamDestination: NSObject, OutputStreamDestination {
 
-    var outputStreamDestinationName: String? { get }
+    init(name: String?) {
+        self.name = name
+        super.init()
+    }
+
+    var name: String?
+
+    var outputStreamDestinationName: String? {
+        name
+    }
 
 }
