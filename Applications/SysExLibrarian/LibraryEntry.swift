@@ -210,16 +210,14 @@ class LibraryEntry: NSObject {
             switch library.typeOfFile(atPath: path) {
             case .raw:
                 messages = SystemExclusiveMessage.messages(fromData: data)
+                updateDerivedInformation(messages)
             case .standardMIDI:
                 messages = SystemExclusiveMessage.messages(fromStandardMIDIFileData: data)
+                updateDerivedInformation(messages)
             default:
                 break
             }
         }
-
-        // Always update this stuff when we read the messages
-        // TODO But perhaps not, if there was an error reading the file
-        updateDerivedInformation(messages: messages)
 
         return messages
     }
@@ -322,7 +320,7 @@ extension LibraryEntry /* Private */ {
         messages.count
     }
 
-    private func updateDerivedInformation(messages: [SystemExclusiveMessage]) {
+    private func updateDerivedInformation(_ messages: [SystemExclusiveMessage]) {
         manufacturer = Self.manufacturer(messages: messages)
         size = Self.size(messages: messages)
         messageCount = Self.messageCount(messages: messages)
