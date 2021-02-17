@@ -104,7 +104,8 @@ public class PortInputStream: InputStream {
 
     private var inputPort: MIDIPortRef = 0
     private var parsersForSources: [Source: MessageParser] = [:]
-        // TODO Consider making the key source.endpointRef() = MIDIObjectRef to avoid retain and identity issues? But note MessageParser.originatingEndpoint
+        // Someday: Consider making the key be source.endpointRef (a MIDIObjectRef)
+        // to avoid retain and identity issues. But note MessageParser.originatingEndpoint.
 
     @objc private func midiObjectListChanged(_ notification: Notification) {
         if let midiObjectType = notification.userInfo?[MIDIContext.objectType] as? MIDIObjectType,
