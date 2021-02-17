@@ -43,22 +43,10 @@ class MainWindowController: GeneralWindowController {
         window?.showsToolbarButton = false
 
         if #available(OSX 10.13, *) {
-            libraryTableView.registerForDraggedTypes([NSPasteboard.PasteboardType.fileURL])
-            /* TODO Later:
-             // https://stackoverflow.com/questions/44537356/swift-4-nsfilenamespboardtype-not-available-what-to-use-instead-for-registerfo
-             override func draggingEnded(_ sender: NSDraggingInfo)
-             {
-                 sender
-                     .draggingPasteboard()
-                     .readObjects(forClasses: [NSURL.self],
-                                  options: nil)?
-                     .forEach
-                     {
-                         // Do something with the file paths.
-                         if let url = $0 as? URL { print(url.path) }
-                     }
-             }
-             */
+            // Someday: Consider handling file promises, as below (higher priority than file URLs).
+            // As of 10.15 the Finder doesn't create them for drags, so it isn't terribly important.
+            // libraryTableView.registerForDraggedTypes(NSFilePromiseReceiver.readableDraggedTypes.map { NSPasteboard.PasteboardType($0) })
+            libraryTableView.registerForDraggedTypes([.fileURL])
         }
         else {
             // Fallback on earlier versions
@@ -462,10 +450,25 @@ extension MainWindowController: GeneralTableViewDataSource {
         delete(tableView)
     }
 
+    private func filePaths(fromDraggingInfo draggingInfo: NSDraggingInfo) -> [String] {
+        if #available(OSX 10.13, *) {
+            if let nsURLs = draggingInfo.draggingPasteboard.readObjects(forClasses: [NSURL.self], options: nil) as? [NSURL] {
+                return nsURLs.compactMap { $0.filePathURL?.path }
+            }
+        }
+        else {
+            // Fallback for earlier versions
+            if let filePaths = draggingInfo.draggingPasteboard.propertyList(forType: NSPasteboard.PasteboardType("NSFilenamesPboardType")) as? [String] {
+                return filePaths
+            }
+        }
+
+        return []
+    }
+
     func tableView(_ tableView: GeneralTableView, draggingEntered sender: NSDraggingInfo) -> NSDragOperation {
-        // TODO Use new method of getting files as above
-        let maybeFilePaths = sender.draggingPasteboard.propertyList(forType: NSPasteboard.PasteboardType("NSFilenamesPboardType"))
-        if let filePaths = maybeFilePaths as? [String], areAnyFilesAcceptableForImport(filePaths) {
+        let paths = filePaths(fromDraggingInfo: sender)
+        if !paths.isEmpty && areAnyFilesAcceptableForImport(paths) {
             return .copy
         }
         else {
@@ -474,10 +477,9 @@ extension MainWindowController: GeneralTableViewDataSource {
     }
 
     func tableView(_ tableView: GeneralTableView, performDragOperation sender: NSDraggingInfo) -> Bool {
-        // TODO Use new method of getting files as above
-        let maybeFilePaths = sender.draggingPasteboard.propertyList(forType: NSPasteboard.PasteboardType("NSFilenamesPboardType"))
-        if let filePaths = maybeFilePaths as? [String] {
-            importFiles(filePaths, showingProgress: true)
+        let paths = filePaths(fromDraggingInfo: sender)
+        if !paths.isEmpty {
+            importFiles(paths, showingProgress: true)
             return true
         }
         else {
