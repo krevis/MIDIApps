@@ -12,7 +12,7 @@
 
 import Foundation
 
-open class InputStream: MessageParserDelegate {
+open class InputStream {
 
     public init(midiContext: MIDIContext) {
         self.midiContext = midiContext
@@ -52,10 +52,10 @@ open class InputStream: MessageParserDelegate {
         return persistentSettings
     }
 
-    open func takePersistentSettings(_ settings: Any!) -> [String]! {
+    open func takePersistentSettings(_ settings: Any) -> [String] {
         // If any endpoints couldn't be found, their names are returned
-        // TODO Fix type to be nicer
-        guard let dicts = settings as? [[String: Any]] else { return nil }
+
+        guard let dicts = settings as? [[String: Any]] else { return [] }
 
         var newInputSources: Set<InputStreamSource> = []
         var missingNames: [String] = []
@@ -77,7 +77,9 @@ open class InputStream: MessageParserDelegate {
     }
 
     // MARK: For subclass use only
-    //       TODO Move to a separate file, or at least extension
+
+    // FUTURE: It would be nice to implement the functionality of our subclasses via composition instead
+    // of inheritance. When doing so, these subclass-related methods will perhaps get put in a protocol.
 
     public let midiReadProc: MIDIReadProc = inputStreamMIDIReadProc
 
@@ -94,7 +96,6 @@ open class InputStream: MessageParserDelegate {
     }
 
     // MARK: For subclasses to implement
-    //       TODO Move to a separate file, or at least extension
 
     open func retainForIncomingMIDI(sourceConnectionRefCon: UnsafeMutableRawPointer?) {
         // NOTE: This is called on the CoreMIDI thread!
@@ -142,7 +143,9 @@ open class InputStream: MessageParserDelegate {
         }
     }
 
-    // MARK: MessageParserDelegate
+}
+
+extension InputStream: MessageParserDelegate {
 
     public func parserDidReadMessages(_ parser: MessageParser, messages: [Message]) {
         messageDestination?.takeMIDIMessages(messages)
@@ -160,7 +163,9 @@ open class InputStream: MessageParserDelegate {
         }
     }
 
-    // MARK: Private
+}
+
+extension InputStream /* Private */ {
 
     private func findInputSource(name: String?, uniqueID: MIDIUniqueID?) -> InputStreamSource? {
         // Find the input source with the desired unique ID. If there are no matches by uniqueID, return the first source whose name matches.

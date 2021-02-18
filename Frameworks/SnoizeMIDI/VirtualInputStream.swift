@@ -87,16 +87,11 @@ public class VirtualInputStream: InputStream {
     // MARK: InputStream overrides
 
     public override var persistentSettings: Any? {
-        if isActive {
-            return ["uniqueID": uniqueID]
-        }
-        else {
-            return nil
-        }
+        isActive ? ["uniqueID": uniqueID] : nil
     }
 
-    public override func takePersistentSettings(_ settings: Any!) -> [String]! {
-        if let settings = settings as? [String: Any?],
+    public override func takePersistentSettings(_ settings: Any) -> [String] {
+        if let settings = settings as? [String: Any],
            let settingsUniqueID = settings["uniqueID"] as? MIDIUniqueID {
             uniqueID = settingsUniqueID
             isActive = true
@@ -104,7 +99,7 @@ public class VirtualInputStream: InputStream {
         else {
             isActive = false
         }
-        return nil
+        return []
     }
 
     // MARK: Private

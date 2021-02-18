@@ -69,7 +69,6 @@ public class PortInputStream: InputStream {
     }
 
     // MARK: InputStream subclass
-    // TODO Make this a protocol.
 
     public override var parsers: [MessageParser] {
         return Array(parsersForSources.values)

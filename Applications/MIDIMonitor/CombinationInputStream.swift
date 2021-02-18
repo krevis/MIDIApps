@@ -139,8 +139,8 @@ class CombinationInputStream: NSObject {
             // This is a current-style document
 
             func makeInputStreamTakePersistentSettings(_ stream: SnoizeMIDI.InputStream, _ streamSettings: Any?) {
-                guard let streamSettings = streamSettings else { return }
-                if let streamMissingNames = stream.takePersistentSettings(streamSettings) {
+                if let streamSettings = streamSettings {
+                    let streamMissingNames = stream.takePersistentSettings(streamSettings)
                     missingNames += streamMissingNames
                 }
             }
