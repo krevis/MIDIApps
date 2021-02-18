@@ -267,11 +267,6 @@ extension Document {
 
     // MARK: Core document properties
 
-    // NOTE ON UNDOABLE DOCUMENT PROPERTIES:
-    // After migrating to Swift, we can no longer easily use NSUndoManager's prepareWithInvocationTarget mechanism.
-    // It would be nicer to use block-based undo registration, but that requires macOS 10.11. So, for now, register using selectors,
-    // and use a separate @objc-exposed method to do the work.
-
     var selectedInputSources: Set<InputStreamSource> {
         get {
             return stream.selectedInputSources
@@ -282,15 +277,40 @@ extension Document {
         }
     }
 
-    // TODO But this can't be ObjC
-    /*@objc*/ private func undoableSetSelectedInputSources(_ newValue: Set<InputStreamSource>) {
-//        if let undoManager = undoManager {
-//            undoManager.registerUndo(withTarget: self, selector: #selector(self.undoableSetSelectedInputSources(_:)), object: selectedInputSources)
-//            undoManager.setActionName(NSLocalizedString("Change Selected Sources", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "change source undo action"))
-//        }
+    private func undoableSetSelectedInputSources(_ newValue: Set<InputStreamSource>) {
+        if let undoManager = undoManager {
+            if #available(macOS 10.11, *) {
+                let currentSelectedInputSources = selectedInputSources
+                undoManager.registerUndo(withTarget: self) {
+                    $0.undoableSetSelectedInputSources(currentSelectedInputSources)
+                }
+            }
+            else {
+                // Pre-macOS 10.11 fallback: Put the Swift struct Set<InputStreamSource>
+                // in an NSObject box, and use it to register the undo via a method visible to ObjC.
+                let boxedSelectedInputSources = Box(selectedInputSources)
+                undoManager.registerUndo(withTarget: self, selector: #selector(self.undoableSetSelectedInputSourcesBoxed(_:)), object: boxedSelectedInputSources)
+            }
+
+            undoManager.setActionName(NSLocalizedString("Change Selected Sources", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "change source undo action"))
+        }
 
         stream.selectedInputSources = newValue
         monitorWindowController?.updateSources()
+    }
+
+    @objc private func undoableSetSelectedInputSourcesBoxed(_ newValueBoxed: NSObject) {
+        if let box = newValueBoxed as? Box<Set<InputStreamSource>> {
+            undoableSetSelectedInputSources(box.unbox)
+        }
+    }
+
+    private class Box<T>: NSObject {
+        let unbox: T
+        init(_ value: T) {
+            self.unbox = value
+            super.init()
+        }
     }
 
     var maxMessageCount: Int {
