@@ -84,8 +84,12 @@ public class MessageParser {
     private var startSysExTimeStamp: MIDITimeStamp = 0
     private var sysExTimeOutTimer: Timer?
 
-    // swiftlint:disable cyclomatic_complexity function_body_length
-    // (Sorry! TODO: Fix overly long and complex function)
+    private struct PendingMessage {
+        var status: UInt8 = 0
+        var data: [UInt8] = []
+        var expectedCount: Int = 0
+    }
+
     private func messagesForPacket(_ packetPtr: UnsafePointer<MIDIPacket>) -> [Message] {
         // Split this packet into separate MIDI messages.
 
@@ -93,11 +97,7 @@ public class MessageParser {
         guard packetDataCount > 0 else { return [] }
         let timeStamp = packetPtr.pointee.timeStamp
 
-        var pendingMessageStatus: UInt8 = 0
-        var pendingDataBytes: [UInt8] = [0, 0]
-        var pendingDataIndex = 0
-        var pendingDataLength = 0
-
+        var pendingMessage = PendingMessage()
         var readingInvalidData: Data?
 
         // Safely getting to the packet data is more difficult than it should be.
@@ -108,126 +108,143 @@ public class MessageParser {
         // in the tuple in the struct. There may be more.
         // Do it the hard way instead.
         let rawPacketDataPtr = UnsafeRawBufferPointer(start: UnsafeRawPointer(packetPtr) + MemoryLayout.offset(of: \MIDIPacket.data)!, count: packetDataCount)
-        return rawPacketDataPtr.enumerated().compactMap { (byteIndex, byte) -> Message? in
-            var message: Message?
+        return rawPacketDataPtr.enumerated().flatMap { (byteIndex, byte) -> [Message] in
+            var messages: [Message] = []
             var byteIsInvalid = false
 
+            var maybeMessage: Message?
             if byte >= 0xF8 {
-                // Real Time message
-                if let messageType = SystemRealTimeMessage.MessageType(rawValue: byte) {
-                    message = SystemRealTimeMessage(timeStamp: timeStamp, type: messageType)
-                }
-                else {
-                    // Byte is invalid
-                    byteIsInvalid = true
-                }
+                // Real Time message, always one byte, may be interspersed anywhere in other messages (including SysEx)
+                (maybeMessage, byteIsInvalid) = parseRealTimeMessage(byte, timeStamp)
             }
             else if byte < 0x80 {
-                if let data = readingSysExData {
-                    readingSysExData?.append(byte)
-
-                    // Tell the delegate we're still reading, every 256 bytes
-                    let sysExMessageDataCount = 1 /* for 0xF0 */ + data.count
-                    if sysExMessageDataCount % 256 == 0 {
-                        delegate?.parserIsReadingSysEx(self, length: sysExMessageDataCount)
-                    }
-                }
-                else if pendingDataIndex < pendingDataLength {
-                    pendingDataBytes[pendingDataIndex] = byte
-                    pendingDataIndex += 1
-
-                    if pendingDataIndex == pendingDataLength {
-                        // This message is now done
-                        if let status = SystemCommonMessage.Status(rawValue: pendingMessageStatus) {
-                            message = SystemCommonMessage(timeStamp: timeStamp, status: status, data: pendingDataBytes)
-                        }
-                        else {
-                            message = VoiceMessage(timeStamp: timeStamp, statusByte: pendingMessageStatus, data: pendingDataBytes)
-                        }
-                    }
+                // Message data byte, goes into pendingMessage, might complete a multibyte message
+                (maybeMessage, byteIsInvalid) = parseMessageData(byte, timeStamp, &pendingMessage)
+            }
+            else if byte == 0xF7 {
+                // Explicit end of a SysEx message
+                if let sysExMessage = finishSysExMessage(validEnd: true) {
+                    messages.append(sysExMessage)
                 }
                 else {
-                    // Skip this byte -- it is invalid
+                    // SysEx end byte with no SysEx message being read. Technically invalid.
                     byteIsInvalid = true
                 }
             }
             else {
-                if readingSysExData != nil {
-                    message = finishSysExMessage(validEnd: (byte == 0xF7))
+                // Start of a non-real-time message.
+                // This terminates the current SysEx message, if any
+                if let sysExMessage = finishSysExMessage(validEnd: false) {
+                    messages.append(sysExMessage)
                 }
-
-                pendingMessageStatus = byte
-                pendingDataLength = 0
-                pendingDataIndex = 0
-
-                switch byte & 0xF0 {
-                case 0x80,    // Note off
-                     0x90,    // Note on
-                     0xA0,    // Aftertouch
-                     0xB0,    // Controller
-                     0xE0:    // Pitch wheel
-                    pendingDataLength = 2
-
-                case 0xC0,    // Program change
-                     0xD0:    // Channel pressure
-                    pendingDataLength = 1
-
-                case 0xF0:
-                    // System common message
-                    if byte == 0xF0 {
-                        // System exclusive
-                        readingSysExData = Data()
-                        startSysExTimeStamp = timeStamp
-                        delegate?.parserIsReadingSysEx(self, length: 1)
-                    }
-                    else if byte == 0xF7 {
-                        // System exclusive ends--already handled above.
-                        // But if this is showing up outside of sysex, it's invalid.
-                        if message == nil {
-                            byteIsInvalid = true
-                        }
-                    }
-                    else if let systemCommonMessageStatus = SystemCommonMessage.Status(rawValue: byte) {
-                        let dataLength = systemCommonMessageStatus.otherDataLength
-                        if dataLength > 0 {
-                            pendingDataLength = dataLength
-                        }
-                        else {
-                            message = SystemCommonMessage(timeStamp: timeStamp, status: systemCommonMessageStatus, data: [])
-                        }
-                    }
-                    else {
-                        // Invalid message
-                        byteIsInvalid = true
-                    }
-
-                default:
-                    // This can't happen, but handle it anyway
-                    byteIsInvalid = true
-                }
+                (maybeMessage, byteIsInvalid) = parseMessageStart(byte, timeStamp, &pendingMessage)
             }
 
-            if !ignoresInvalidData {
-                if byteIsInvalid {
-                    if readingInvalidData == nil {
-                        readingInvalidData = Data()
-                    }
-                    readingInvalidData?.append(byte)
-                }
-
-                if let invalidData = readingInvalidData,
-                   !byteIsInvalid || byteIndex == packetDataCount - 1 {
-                    // We hit the end of a stretch of invalid data.
-                    message = InvalidMessage(timeStamp: timeStamp, data: invalidData)
-                    readingInvalidData = nil
-                }
+            if let message = maybeMessage {
+                messages.append(message)
             }
 
-            message?.originatingEndpoint = originatingEndpoint
-            return message
+            if !ignoresInvalidData,
+               let invalidMessage = parsePotentiallyInvalidByte(byte, timeStamp, byteIsInvalid, (byteIndex == packetDataCount - 1), &readingInvalidData) {
+                messages.append(invalidMessage)
+            }
+
+            messages.forEach { $0.originatingEndpoint = originatingEndpoint }
+            return messages
         }
     }
-    // swiftlint:enable cyclomatic_complexity function_body_length
+
+    private func parseRealTimeMessage(_ byte: UInt8, _ timeStamp: MIDITimeStamp) -> (Message?, Bool) {
+        // Real Time message
+        if let messageType = SystemRealTimeMessage.MessageType(rawValue: byte) {
+            return (SystemRealTimeMessage(timeStamp: timeStamp, type: messageType), false)
+        }
+        else {
+            return (nil, true)
+        }
+    }
+
+    private func parseMessageData(_ byte: UInt8, _ timeStamp: MIDITimeStamp, _ pendingMessage: inout PendingMessage) -> (Message?, Bool) {
+        if let data = readingSysExData {
+            readingSysExData?.append(byte)
+
+            // Tell the delegate we're still reading, every 256 bytes
+            let sysExMessageDataCount = 1 /* for 0xF0 */ + data.count
+            if sysExMessageDataCount % 256 == 0 {
+                delegate?.parserIsReadingSysEx(self, length: sysExMessageDataCount)
+            }
+        }
+        else if pendingMessage.data.count < pendingMessage.expectedCount {
+            pendingMessage.data.append(byte)
+
+            if pendingMessage.data.count == pendingMessage.expectedCount {
+                // This message is now done
+                if let status = SystemCommonMessage.Status(rawValue: pendingMessage.status) {
+                    return (SystemCommonMessage(timeStamp: timeStamp, status: status, data: pendingMessage.data), false)
+                }
+                else {
+                    return (VoiceMessage(timeStamp: timeStamp, statusByte: pendingMessage.status, data: pendingMessage.data), false)
+                }
+            }
+        }
+        else {
+            // Skip this byte -- it is invalid
+            return (nil, true)
+        }
+
+        // No message yet, but this byte was valid
+        return (nil, false)
+    }
+
+    private func parseMessageStart(_ byte: UInt8, _ timeStamp: MIDITimeStamp, _ pendingMessage: inout PendingMessage) -> (Message?, Bool) {
+        var message: Message?
+        var byteIsInvalid = false
+
+        pendingMessage.status = byte
+        pendingMessage.data = []
+        pendingMessage.expectedCount = 0
+
+        switch byte & 0xF0 {
+        case 0x80,    // Note off
+             0x90,    // Note on
+             0xA0,    // Aftertouch
+             0xB0,    // Controller
+             0xE0:    // Pitch wheel
+            pendingMessage.expectedCount = 2
+
+        case 0xC0,    // Program change
+             0xD0:    // Channel pressure
+            pendingMessage.expectedCount = 1
+
+        case 0xF0:
+            // System common message
+            if byte == 0xF0 {
+                // System exclusive start
+                readingSysExData = Data()
+                startSysExTimeStamp = timeStamp
+                delegate?.parserIsReadingSysEx(self, length: 1)
+            }
+            else if let systemCommonMessageStatus = SystemCommonMessage.Status(rawValue: byte) {
+                let dataLength = systemCommonMessageStatus.otherDataLength
+                if dataLength > 0 {
+                    pendingMessage.expectedCount = dataLength
+                }
+                else {
+                    message = SystemCommonMessage(timeStamp: timeStamp, status: systemCommonMessageStatus, data: [])
+                }
+            }
+            else {
+                // Invalid message
+                byteIsInvalid = true
+            }
+
+        default:
+            // This can't happen, but handle it anyway
+            byteIsInvalid = true
+        }
+
+        return (message, byteIsInvalid)
+    }
 
     private func finishSysExMessage(validEnd: Bool) -> SystemExclusiveMessage? {
         // NOTE: If we want, we could refuse sysex messages that don't end in 0xF7.
@@ -241,6 +258,25 @@ public class MessageParser {
         delegate?.parserFinishedReadingSysEx(self, message: message)
 
         return message
+    }
+
+    private func parsePotentiallyInvalidByte(_ byte: UInt8, _ timeStamp: MIDITimeStamp, _ byteIsInvalid: Bool, _ isLastByteInPacket: Bool, _ readingInvalidData: inout Data?) -> Message? {
+        if byteIsInvalid {
+            if readingInvalidData == nil {
+                readingInvalidData = Data()
+            }
+            readingInvalidData?.append(byte)
+        }
+
+        if let invalidData = readingInvalidData,
+           !byteIsInvalid || isLastByteInPacket {
+            // We hit the end of a stretch of invalid data.
+            readingInvalidData = nil
+            return InvalidMessage(timeStamp: timeStamp, data: invalidData)
+        }
+        else {
+            return nil
+        }
     }
 
     @objc private func sysExTimedOut(_ timer: Timer) {
