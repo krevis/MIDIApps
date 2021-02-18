@@ -46,8 +46,6 @@ public struct InputStreamSource: Hashable {
     }
 
     public let provider: InputStreamSourceProviding
-        // TODO Can we make the struct generic and thus have this return T instead of the protocol?
-        // if so we could avoid making the protocol public
 
     public var name: String? {
         provider.inputStreamSourceName
