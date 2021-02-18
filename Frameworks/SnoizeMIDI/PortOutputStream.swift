@@ -113,7 +113,7 @@ public class PortOutputStream: OutputStream {
     }
 
     private func splitMessagesByAsyncSysex(_ messages: [Message]) -> ([SystemExclusiveMessage], [Message]) {
-        // Note: Someday this should use `stablePartition`, when that gets added
+        // FUTURE: This should use `stablePartition`, when that gets added
         // to the Swift standard library.
 
         var asyncSysexMessages: [SystemExclusiveMessage] = []

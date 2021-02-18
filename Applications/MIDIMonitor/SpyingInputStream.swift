@@ -14,7 +14,8 @@ import Cocoa
 import SnoizeMIDI
 
 class SpyingInputStream: SnoizeMIDI.InputStream {
-    // TODO Perhaps this should not inherit from the stream, but use a protocol instead
+    // FUTURE: Perhaps this should not inherit from InputStream, but instead be some kind of
+    // plug-in impl object owned by the stream, or an object that wraps InputStream
 
     private let spyClient: MIDISpyClientRef
     private var spyPort: MIDISpyPortRef?

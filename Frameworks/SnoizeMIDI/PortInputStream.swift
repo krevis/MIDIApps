@@ -104,7 +104,7 @@ public class PortInputStream: InputStream {
 
     private var inputPort: MIDIPortRef = 0
     private var parsersForSources: [Source: MessageParser] = [:]
-        // Someday: Consider making the key be source.endpointRef (a MIDIObjectRef)
+        // FUTURE: Consider making the key be source.endpointRef (a MIDIObjectRef)
         // to avoid retain and identity issues. But note MessageParser.originatingEndpoint.
 
     @objc private func midiObjectListChanged(_ notification: Notification) {

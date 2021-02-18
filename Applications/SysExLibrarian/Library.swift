@@ -114,7 +114,7 @@ class Library: NSObject {
         }
 
         let entry = addEntry(forFile: uniqueNewFilePath)
-        // Someday: We write out the file, and then soon afterwards will read it again to get the messages. Pretty inefficient.
+        // FUTURE: We write out the file, and then soon afterwards will read it again to get the messages. Pretty inefficient.
 
         return entry
     }
@@ -198,7 +198,7 @@ class Library: NSObject {
     }
 
     let allowedFileTypes: [String]
-        // Should be [UTType], someday, when we can require macOS 11.0
+        // FUTURE: Should be [UTType], when we can require macOS 11.0
 
     enum FileType {
         case raw

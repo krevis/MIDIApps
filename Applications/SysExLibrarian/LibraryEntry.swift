@@ -136,7 +136,7 @@ class LibraryEntry: NSObject {
                     modifiedNewFileName = (newFileName as NSString).appendingPathExtension(fileExtension) ?? newFileName
                     // And make sure the extension is hidden in the filesystem.
                     shouldHideExtension = true
-                    // Someday: In this case, we really should ask the user if they really want to change the extension, or not.
+                    // FUTURE: In this case, we should ask the user whether they really want to change the extension.
                 }
             }
             else {
@@ -151,7 +151,7 @@ class LibraryEntry: NSObject {
             modifiedNewFileName = newFileName
         }
 
-        /* Someday, we should do something like the code below (not sure if it's correct):
+        /* FUTURE: We should do something like the code below (not sure if it's correct):
         // Limit new file name to 255 unicode characters, because that's all HFS+ will allow.
         // NOTE Yes, we should be taking into account the actual filesystem, which might not be HFS+.
         if ([modifiedNewFileName length] > 255) {
