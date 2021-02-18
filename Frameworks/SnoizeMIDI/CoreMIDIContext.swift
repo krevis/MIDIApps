@@ -21,7 +21,7 @@ protocol CoreMIDIContext: AnyObject {
     // Basic functionality
 
     var interface: CoreMIDIInterface { get }
-    var midiClient: MIDIClientRef { get }
+    var client: MIDIClientRef { get }
 
     func forcePropertyChanged(_ type: MIDIObjectType, _ objectRef: MIDIObjectRef, _ property: CFString)
 
@@ -30,7 +30,6 @@ protocol CoreMIDIContext: AnyObject {
     func allowMIDIObject(ref: MIDIObjectRef, type: MIDIObjectType) -> Bool
 
     // Interaction with other MIDIObject subclasses
-    // TODO These belong in a separate protocol or extension or something
 
     func postObjectsAddedNotification<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>(_ objects: [T])
 

@@ -17,7 +17,7 @@ public class PortInputStream: InputStream {
     public override init(midiContext: MIDIContext) {
         super.init(midiContext: midiContext)
 
-        _ = midiContext.interface.inputPortCreate(midiContext.midiClient, "Input port" as CFString, midiReadProc, Unmanaged.passUnretained(self).toOpaque(), &inputPort)
+        _ = midiContext.interface.inputPortCreate(midiContext.client, "Input port" as CFString, midiReadProc, Unmanaged.passUnretained(self).toOpaque(), &inputPort)
 
         NotificationCenter.default.addObserver(self, selector: #selector(self.midiObjectListChanged(_:)), name: .midiObjectListChanged, object: midiContext)
     }

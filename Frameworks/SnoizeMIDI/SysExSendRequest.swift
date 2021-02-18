@@ -210,7 +210,7 @@ private func customMIDISendSysex(_ midiContext: CoreMIDIContext, _ request: Unsa
     }
 
     var port = MIDIPortRef()
-    let status = midiContext.interface.outputPortCreate(midiContext.midiClient, "CustomMIDISendSysex" as CFString, &port)
+    let status = midiContext.interface.outputPortCreate(midiContext.client, "CustomMIDISendSysex" as CFString, &port)
     if status != noErr {
         return status
     }

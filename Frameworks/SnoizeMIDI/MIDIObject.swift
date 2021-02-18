@@ -15,7 +15,7 @@ import CoreMIDI
 
 public class MIDIObject: NSObject, CoreMIDIObjectWrapper, CoreMIDIPropertyChangeHandling {
 
-    unowned var midiContext: CoreMIDIContext    // TODO Should arguably be public but with what type? CoreMIDIContext is internal, should be MIDIContext
+    unowned var midiContext: CoreMIDIContext    // Future: Should arguably be public, but with what type? CoreMIDIContext is internal, MIDIContext would be more useful.
     private(set) var midiObjectRef: MIDIObjectRef
 
     required init(context: CoreMIDIContext, objectRef: MIDIObjectRef) {

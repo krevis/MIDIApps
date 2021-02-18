@@ -62,7 +62,7 @@ extension CoreMIDIContext {
 
         var newEndpointRef: MIDIEndpointRef = 0
 
-        guard interface.destinationCreate(midiClient, name as CFString, midiReadProc, readProcRefCon, &newEndpointRef) == noErr else { return nil }
+        guard interface.destinationCreate(client, name as CFString, midiReadProc, readProcRefCon, &newEndpointRef) == noErr else { return nil }
 
         // We want to get at the Destination immediately, to configure it.
         // CoreMIDI will send us a notification that something was added,

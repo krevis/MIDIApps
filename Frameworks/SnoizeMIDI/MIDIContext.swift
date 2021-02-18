@@ -26,7 +26,7 @@ public class MIDIContext: CoreMIDIContext {
 
         let status: OSStatus
         if #available(macOS 10.11, iOS 9.0, *) {
-            status = interface.clientCreateWithBlock(name as CFString, &midiClient) { unsafeNotification in
+            status = interface.clientCreateWithBlock(name as CFString, &client) { unsafeNotification in
                 // We are called on an arbitrary queue, so we need to dispatch to the
                 // main queue for later handling.
                 // But `unsafeNotification` is only valid during this function call,
@@ -48,7 +48,7 @@ public class MIDIContext: CoreMIDIContext {
                     let context = Unmanaged<MIDIContext>.fromOpaque(refCon).takeUnretainedValue()
                     context.handle(ourNotification)
                 }
-            }, Unmanaged.passUnretained(self).toOpaque(), &midiClient)
+            }, Unmanaged.passUnretained(self).toOpaque(), &client)
         }
 
         if status != noErr {
@@ -118,8 +118,8 @@ public class MIDIContext: CoreMIDIContext {
 
     public func disconnect() {
         // Disconnect from CoreMIDI. Necessary only for very special circumstances, since CoreMIDI will be unusable afterwards.
-        _ = interface.clientDispose(midiClient)
-        midiClient = 0
+        _ = interface.clientDispose(client)
+        client = 0
         privateInterface = nil
     }
 
@@ -135,7 +135,7 @@ public class MIDIContext: CoreMIDIContext {
         }
     }
 
-    var midiClient: MIDIClientRef = 0
+    var client: MIDIClientRef = 0
 
     func updateEndpointsForDevice(_ device: Device) {
         // This is a very blunt approach, but reliable. Don't assume
@@ -305,7 +305,7 @@ public class MIDIContext: CoreMIDIContext {
 
     private lazy var sysExSpeedWorkaroundDestination: Destination? = {
         var newEndpointRef: MIDIEndpointRef = 0
-        guard interface.destinationCreate(midiClient, "Workaround" as CFString, { _, _, _ in }, nil, &newEndpointRef) == noErr else { return nil }
+        guard interface.destinationCreate(client, "Workaround" as CFString, { _, _, _ in }, nil, &newEndpointRef) == noErr else { return nil }
         sysExSpeedWorkaroundEndpoint = newEndpointRef
 
         let destination = Destination(context: self, objectRef: newEndpointRef)

@@ -17,7 +17,7 @@ public class PortOutputStream: OutputStream {
 
     public override init(midiContext: MIDIContext) {
         outputPort = 0
-        _ = midiContext.interface.outputPortCreate(midiContext.midiClient, "Output Port" as CFString, &outputPort)
+        _ = midiContext.interface.outputPortCreate(midiContext.client, "Output Port" as CFString, &outputPort)
         super.init(midiContext: midiContext)
     }
 

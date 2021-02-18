@@ -63,7 +63,7 @@ extension CoreMIDIContext {
         // If newUniqueID is 0, we'll use the unique ID that CoreMIDI generates for us
 
         var newEndpointRef: MIDIEndpointRef = 0
-        guard interface.sourceCreate(midiClient, name as CFString, &newEndpointRef) == noErr else { return nil }
+        guard interface.sourceCreate(client, name as CFString, &newEndpointRef) == noErr else { return nil }
 
         // We want to get at the Source immediately, to configure it.
         // CoreMIDI will send us a notification that something was added,
