@@ -129,9 +129,9 @@ extension DetailsWindowController: NSTableViewDataSource {
         case "manufacturer":
             return message.manufacturerName
         case "sizeDecimal":
-            return Message.formatLength(message.receivedDataWithStartByteLength, usingOption: .decimal)
+            return MessageFormatter.formatLength(message.receivedDataWithStartByteLength, usingOption: .decimal)
         case "sizeHex":
-            return Message.formatLength(message.receivedDataWithStartByteLength, usingOption: .hexadecimal)
+            return MessageFormatter.formatLength(message.receivedDataWithStartByteLength, usingOption: .hexadecimal)
         case "sizeAbbreviated":
             return String.abbreviatedByteCount(message.receivedDataWithStartByteLength)
         default:

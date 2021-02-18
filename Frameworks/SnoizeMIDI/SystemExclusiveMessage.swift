@@ -107,11 +107,11 @@ public class SystemExclusiveMessage: Message {
 
     public var manufacturerName: String? {
         guard let identifier = manufacturerIdentifier else { return nil }
-        return Message.nameForManufacturerIdentifier(identifier)
+        return MessageFormatter.nameForManufacturerIdentifier(identifier)
     }
 
     public var sizeForDisplay: String {
-        let formattedLength = Message.formatLength(receivedDataWithStartByteLength)
+        let formattedLength = MessageFormatter.formatLength(receivedDataWithStartByteLength)
         let format = NSLocalizedString("%@ bytes", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "SysEx length format string")
         return String.localizedStringWithFormat(format, formattedLength)
     }

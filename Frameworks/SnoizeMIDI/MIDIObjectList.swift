@@ -174,7 +174,7 @@ class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>
     }
 
     private func refreshOrdering(_ objectRefs: [MIDIObjectRef]) {
-        // TODO This should perhaps just invalidate the ordering, so it can
+        // FUTURE: This should perhaps just invalidate the ordering, so it can
         // be recomputed it the next time somebody asks for it
 
         var newOrdering: [T] = []

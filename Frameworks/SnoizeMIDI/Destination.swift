@@ -32,7 +32,7 @@ public class Destination: Endpoint, CoreMIDIObjectListable {
         }
 
         if property == kMIDIPropertyDisplayName {
-            // TODO Something more targeted would be nice.
+            // FUTURE: Something more targeted would be nice.
             midiContext.postObjectListChangedNotification(Self.midiObjectType)
         }
     }

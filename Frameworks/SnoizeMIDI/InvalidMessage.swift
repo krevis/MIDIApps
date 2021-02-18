@@ -34,7 +34,7 @@ public class InvalidMessage: Message {
 
     public var sizeForDisplay: String {
         let format = NSLocalizedString("%@ bytes", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "Invalid message length format string")
-        return String.localizedStringWithFormat(format, Message.formatLength(otherDataLength))
+        return String.localizedStringWithFormat(format, MessageFormatter.formatLength(otherDataLength))
     }
 
     // MARK: Message overrides

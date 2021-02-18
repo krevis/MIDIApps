@@ -177,7 +177,7 @@ public class VoiceMessage: Message {
             // the exact same meaning as Note Off (with 0 velocity).
             // In non-expert mode, show these events as Note Offs.
             // In expert mode, show them as Note Ons.
-            if dataBytes.1 != 0 || UserDefaults.standard.bool(forKey: Message.expertModePreferenceKey) {
+            if dataBytes.1 != 0 || UserDefaults.standard.bool(forKey: MessageFormatter.expertModePreferenceKey) {
                 return NSLocalizedString("Note On", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Note On event")
             }
             else {
@@ -211,19 +211,19 @@ public class VoiceMessage: Message {
     public override var dataForDisplay: String {
         switch status {
         case .noteOff, .noteOn, .aftertouch:
-            return Message.formatNoteNumber(dataBytes.0) + "\t" + Message.formatDataByte(dataBytes.1)
+            return MessageFormatter.formatNoteNumber(dataBytes.0) + "\t" + MessageFormatter.formatDataByte(dataBytes.1)
 
         case .control:
-            return Message.formatControllerNumber(dataBytes.0) + "\t" + Message.formatDataByte(dataBytes.1)
+            return MessageFormatter.formatControllerNumber(dataBytes.0) + "\t" + MessageFormatter.formatDataByte(dataBytes.1)
 
         case .program:
-            return Message.formatProgramNumber(dataBytes.0)
+            return MessageFormatter.formatProgramNumber(dataBytes.0)
 
         case .channelPressure:
             return super.dataForDisplay
 
         case .pitchWheel:
-            return Message.formatSignedDataBytes(dataBytes.0, dataBytes.1)
+            return MessageFormatter.formatSignedDataBytes(dataBytes.0, dataBytes.1)
         }
     }
 

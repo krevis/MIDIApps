@@ -502,7 +502,7 @@ extension MonitorWindowController: NSTableViewDataSource {
         case "channel":
             return message.channelForDisplay
         case "data":
-            if UserDefaults.standard.bool(forKey: Message.expertModePreferenceKey) {
+            if UserDefaults.standard.bool(forKey: MessageFormatter.expertModePreferenceKey) {
                 return message.expertDataForDisplay
             }
             else {
