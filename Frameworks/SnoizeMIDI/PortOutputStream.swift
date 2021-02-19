@@ -122,7 +122,7 @@ public class PortOutputStream: OutputStream {
 
         for message in messages {
             if let sysexMessage = message as? SystemExclusiveMessage,
-               sysexMessage.timeStamp <= now {
+               sysexMessage.hostTimeStamp <= now {
                 asyncSysexMessages.append(sysexMessage)
             }
             else {

@@ -13,20 +13,16 @@
 import Foundation
 import CoreAudio
 
+// NOTE: This is the wrong way to do things. Host time may pause while the system is asleep, but clock time will not.
+// So this single snapshot of a relationship between host time and clock time is only useful until the system sleeps.
+// See also https://developer.apple.com/library/archive/technotes/tn2169/_index.html
+//
+// This class is only present for backwards compatibility.
+
 class MessageTimeBase: NSObject, NSCoding {
 
     static var current: MessageTimeBase = {
         // Establish a base of what host time corresponds to what clock time.
-        // TODO We should do this a few times and average the results, and also try to be careful not to get
-        // scheduled out during this process. We may need to switch ourself to be a time-constraint thread temporarily
-        // in order to do this. See discussion in the CoreAudio-API archives.
-
-        // TODO This is completely wrong. The host time clock may pause while the system is asleep, but NSDate will not.
-        //      So this single snapshot of a relationship between host time and clock time is only useful until the system sleeps.
-        // See also https://developer.apple.com/library/archive/technotes/tn2169/_index.html
-        //          https://developer.apple.com/forums/thread/84410 which points to clock_gettime() and CLOCK_MONOTONIC which may be the right way to go
-        //          (but it's only available starting on macOS 10.12)
-
         let hostTimeInNanos = AudioConvertHostTimeToNanos(AudioGetCurrentHostTime())
         let timeInterval = Date.timeIntervalSinceReferenceDate
         return MessageTimeBase(hostTimeInNanos: hostTimeInNanos, timeInterval: timeInterval)

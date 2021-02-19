@@ -59,8 +59,9 @@ public class Message: NSObject, NSCoding {
 
     public init(timeStamp: MIDITimeStamp, statusByte: UInt8) {
         self.timeStampWasZeroWhenReceived = timeStamp == 0
-        self.timeStamp = timeStampWasZeroWhenReceived ? AudioGetCurrentHostTime() : timeStamp
-        self.timeBase = MessageTimeBase.current
+        self.hostTimeStamp = timeStampWasZeroWhenReceived ? AudioGetCurrentHostTime() : timeStamp
+        self.clockTimeStamp = Date.timeIntervalSinceReferenceDate
+        self.timeBase = nil
         self.statusByte = statusByte
         super.init()
     }
@@ -68,18 +69,25 @@ public class Message: NSObject, NSCoding {
     public required init?(coder: NSCoder) {
         if coder.containsValue(forKey: "timeStampInNanos") {
             let nanos = coder.decodeInt64(forKey: "timeStampInNanos")
-            self.timeStamp = AudioConvertNanosToHostTime(UInt64(nanos))
+            self.hostTimeStamp = AudioConvertNanosToHostTime(UInt64(nanos))
             timeStampWasZeroWhenReceived = coder.decodeBool(forKey: "timeStampWasZeroWhenReceived")
         }
         else {
             // fall back to old, inaccurate method
             // (we stored HostTime but not the ratio to convert it to nanoseconds)
-            self.timeStamp = MIDITimeStamp(coder.decodeInt64(forKey: "timeStamp"))
-            self.timeStampWasZeroWhenReceived = self.timeStamp == 0
+            self.hostTimeStamp = MIDITimeStamp(coder.decodeInt64(forKey: "timeStamp"))
+            self.timeStampWasZeroWhenReceived = self.hostTimeStamp == 0
         }
 
-        guard let timeBase = coder.decodeObject(forKey: "timeBase") as? MessageTimeBase else { return nil }
+        let timeBase: MessageTimeBase? = coder.decodeObject(forKey: "timeBase") as? MessageTimeBase
+            // May be nil, in favor of clockTimeStamp.
+
+        let clockTimeStampOrZero = coder.decodeDouble(forKey: "clockTimeStamp")
+        let clockTimeStamp: TimeInterval? = (clockTimeStampOrZero != 0 ? clockTimeStampOrZero : nil)
+
+        guard timeBase != nil || clockTimeStamp != nil else { return nil }
         self.timeBase = timeBase
+        self.clockTimeStamp = clockTimeStamp
 
         let status = coder.decodeInteger(forKey: "statusByte")
         guard (0x80...0xFF).contains(status) else { return nil }
@@ -93,20 +101,27 @@ public class Message: NSObject, NSCoding {
     }
 
     public func encode(with coder: NSCoder) {
-        let nanos = AudioConvertHostTimeToNanos(timeStamp)
+        let nanos = AudioConvertHostTimeToNanos(hostTimeStamp)
         coder.encode(Int64(nanos), forKey: "timeStampInNanos")
         coder.encode(timeStampWasZeroWhenReceived, forKey: "timeStampWasZeroWhenReceived")
 
-        let time = timeStampWasZeroWhenReceived ? 0 : timeStamp
+        let time = timeStampWasZeroWhenReceived ? 0 : hostTimeStamp
         coder.encode(Int64(time), forKey: "timeStamp")
             // for backwards compatibility
 
-        coder.encode(timeBase, forKey: "timeBase")
+        coder.encode(timeBase ?? MessageTimeBase.current, forKey: "timeBase")
+            // for backwards compatibility
+
         coder.encode(Int(statusByte), forKey: "statusByte")
         coder.encode(originatingEndpointForDisplay, forKey: "originatingEndpoint")
+
+        if let clockTimeStamp = clockTimeStamp {
+            coder.encode(clockTimeStamp, forKey: "clockTimeStamp")
+        }
     }
 
-    public let timeStamp: MIDITimeStamp
+    public let hostTimeStamp: MIDITimeStamp     // in host time units
+    public let clockTimeStamp: TimeInterval?    // like Date.timeIntervalSinceReferenceDate
     public internal(set) var statusByte: UInt8
 
     // Type of this message (mask containing at most one value)
@@ -152,32 +167,41 @@ public class Message: NSObject, NSCoding {
 
     public var timeStampForDisplay: String {
         let displayZero = timeStampWasZeroWhenReceived && UserDefaults.standard.bool(forKey: MessageFormatter.expertModePreferenceKey)
-        let displayTimeStamp = displayZero ? 0 : timeStamp
+        let displayedHostTimeStamp = displayZero ? 0 : hostTimeStamp
 
         switch MessageFormatter.TimeFormattingOption.default {
         case .hostTimeInteger:
-            return String(format: "%llu", displayTimeStamp)
+            return String(format: "%llu", displayedHostTimeStamp)
 
         case .hostTimeHexInteger:
-            return String(format: "%016llX", displayTimeStamp)
+            return String(format: "%016llX", displayedHostTimeStamp)
 
         case .hostTimeNanoseconds:
-            return String(format: "%llu", AudioConvertHostTimeToNanos(displayTimeStamp))
+            return String(format: "%llu", AudioConvertHostTimeToNanos(displayedHostTimeStamp))
 
         case .hostTimeSeconds:
-            return String(format: "%.3lf", Double(AudioConvertHostTimeToNanos(displayTimeStamp)) / 1.0e9)
+            return String(format: "%.3lf", Double(AudioConvertHostTimeToNanos(displayedHostTimeStamp)) / 1.0e9)
 
         case .clockTime:
             if displayZero {
                 return "0"
             }
-            else {
-                let timeStampInNanos = AudioConvertHostTimeToNanos(displayTimeStamp)
+            else if let clockTimeStamp = clockTimeStamp {
+                // New way: Use the actual clock timestamp that we saved when the message was created
+                let date = Date(timeIntervalSinceReferenceDate: clockTimeStamp)
+                return Self.timeStampDateFormatter.string(from: date)
+            }
+            else if let timeBase = timeBase {
+                // We have to use the older, mistaken method: MessageTimeBase contains an offset from host time to clock time.
+                let timeStampInNanos = AudioConvertHostTimeToNanos(hostTimeStamp)
                 let hostTimeBaseInNanos = timeBase.hostTimeInNanos
                 let timeDeltaInNanos = Double(timeStampInNanos) - Double(hostTimeBaseInNanos) // may be negative!
                 let timeStampInterval = timeDeltaInNanos / 1.0e9
                 let date = Date(timeIntervalSinceReferenceDate: timeBase.timeInterval + timeStampInterval)
                 return Self.timeStampDateFormatter.string(from: date)
+            }
+            else {  // Shouldn't happen
+                return ""
             }
         }
 
@@ -238,8 +262,11 @@ public class Message: NSObject, NSCoding {
 
     // MARK: Private
 
-    private var timeBase: MessageTimeBase
     private var originatingEndpointName: String?
+
+    // FUTURE: Get rid of this. Only present for backwards compatibility in MIDI Monitor documents, to display timestamp as clock time.
+    private var timeBase: MessageTimeBase?
+
     private var timeStampWasZeroWhenReceived: Bool
 
     private static let fromString = NSLocalizedString("From", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "Prefix for endpoint name when it's a source")
