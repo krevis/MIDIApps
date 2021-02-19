@@ -31,10 +31,8 @@
 
     // Wait a few seconds for the MIDIServer to hopefully shut down,
     // then relaunch for the update:
-    [invocation retain];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(6 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [invocation invoke];
-        [invocation release];   // TODO ARC-ify everything
     });
 
     return YES;
