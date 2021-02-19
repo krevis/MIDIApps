@@ -42,25 +42,19 @@ public class PortInputStream: InputStream {
                 _ = midiContext.interface.portDisconnectSource(inputPort, source.endpointRef)
                 // An error can happen in normal circumstances (if the source has disappeared), so ignore it.
 
-                // At any time after MIDIPortDisconnectSource(), we can expect that
-                // retainForIncomingMIDI() will no longer be called.
-                // However, parser(sourceConnectionRefCon:) may still be called, on the main thread,
-                // later on; it should not crash or fail, but it may return nil.
-                parsersForSources[source] = nil
+                parsersForSourceEndpointRefs[source.endpointRef] = nil
 
                 center.removeObserver(self, name: .midiObjectDisappeared, object: source)
                 center.removeObserver(self, name: .midiObjectWasReplaced, object: source)
             }
             sources.subtracting(oldValue).forEach { source in
-                parsersForSources[source] = createParser(originatingEndpoint: source)
+                parsersForSourceEndpointRefs[source.endpointRef] = createParser(originatingEndpoint: source)
 
                 center.addObserver(self, selector: #selector(self.sourceDisappeared(_:)), name: .midiObjectDisappeared, object: source)
                 center.addObserver(self, selector: #selector(self.sourceWasReplaced(_:)), name: .midiObjectWasReplaced, object: source)
 
-                _ = midiContext.interface.portConnectSource(inputPort, source.endpointRef, Unmanaged.passUnretained(source).toOpaque())
-
-                // At any time after MIDIPortConnectSource(), we can expect
-                // retainForIncomingMIDI() and parser(sourceConnectionRefCon:) to be called.
+                let connRefCon = UnsafeMutableRawPointer(bitPattern: Int(source.endpointRef))   // like casting to void* in C
+                _ = midiContext.interface.portConnectSource(inputPort, source.endpointRef, connRefCon)
             }
         }
     }
@@ -76,15 +70,15 @@ public class PortInputStream: InputStream {
     // MARK: InputStream subclass
 
     public override var parsers: [MessageParser] {
-        return Array(parsersForSources.values)
+        return Array(parsersForSourceEndpointRefs.values)
     }
 
     public override func parser(sourceConnectionRefCon: UnsafeMutableRawPointer?) -> MessageParser? {
-        // Note: sourceConnectionRefCon points to a Source.
-        // We are allowed to return nil if we are no longer listening to this source.
+        // Note: sourceConnectionRefCon is a MIDIEndpointRef of a Source.
+        // We are allowed to return nil, e.g. if we are no longer listening to this source, or if the source has gone away.
         guard let refCon = sourceConnectionRefCon else { return nil }
-        let source = Unmanaged<Source>.fromOpaque(refCon).takeUnretainedValue()
-        return parsersForSources[source]
+        let endpointRef = MIDIEndpointRef(Int(bitPattern: refCon))   // like casting from void* in C
+        return parsersForSourceEndpointRefs[endpointRef]
     }
 
     public override func streamSource(parser: MessageParser) -> InputStreamSource? {
@@ -107,9 +101,7 @@ public class PortInputStream: InputStream {
     // MARK: Private
 
     private var inputPort: MIDIPortRef = 0
-    private var parsersForSources: [Source: MessageParser] = [:]
-        // FUTURE: Consider making the key be source.endpointRef (a MIDIObjectRef)
-        // to avoid retain and identity issues. But note MessageParser.originatingEndpoint.
+    private var parsersForSourceEndpointRefs: [MIDIEndpointRef: MessageParser] = [:]
 
     @objc private func midiObjectListChanged(_ notification: Notification) {
         if let midiObjectType = notification.userInfo?[MIDIContext.objectType] as? MIDIObjectType,

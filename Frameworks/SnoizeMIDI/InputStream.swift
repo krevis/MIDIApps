@@ -120,22 +120,6 @@ open class InputStream {
 
     // MARK: For subclasses to implement
 
-    open func retainForIncomingMIDI(sourceConnectionRefCon: UnsafeMutableRawPointer?) {
-        // NOTE: This is called on the CoreMIDI thread!
-        //
-        // The input stream (self) is already retained appropriately.
-        // Subclasses may override if they have other data, dependent on the given refCon,
-        // which needs to be retained until the incoming MIDI is processed on the main thread.
-    }
-
-    open func releaseForIncomingMIDI(sourceConnectionRefCon: UnsafeMutableRawPointer?) {
-        // Normally called on the main thread, but could be called on other queues if set
-        //
-        // The input stream (self) is already released appropriately.
-        // Subclasses may override if they have other data, dependent on the given refCon,
-        // which needs to be retained until the incoming MIDI is processed on the main thread.
-    }
-
     open var parsers: [MessageParser] {
         fatalError("Must implement in subclass")
     }
@@ -220,12 +204,6 @@ extension InputStream /* Private */ {
         let numPackets = packetListPtr.pointee.numPackets
         guard numPackets > 0 else { return }
 
-        // Make sure that the input stream retains anything that depends on the
-        // srcConnRefCon during the interval between now and the time that parser.take(packetList)
-        // is done working.
-        // FUTURE: There is a race here. The srcConnRefCon could become invalid before we manage to call this.
-        self.retainForIncomingMIDI(sourceConnectionRefCon: srcConnRefCon)
-
         let packetListSize: Int
         if #available(macOS 10.15, iOS 13.0, *) {
             packetListSize = MIDIPacketList.sizeInBytes(pktList: packetListPtr)
@@ -247,10 +225,6 @@ extension InputStream /* Private */ {
                     // (which may be nil, if the input stream was disconnected from this source)
                     // and give it the packet list.
                     self.parser(sourceConnectionRefCon: srcConnRefCon)?.takePacketList(packetListPtr)
-
-                    // Now that we're done with the input stream and its ref con (whatever that is),
-                    // release them.
-                    self.releaseForIncomingMIDI(sourceConnectionRefCon: srcConnRefCon)
                 }
             }
         }

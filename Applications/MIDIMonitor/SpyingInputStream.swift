@@ -19,15 +19,15 @@ class SpyingInputStream: SnoizeMIDI.InputStream {
 
     private let spyClient: MIDISpyClientRef
     private var spyPort: MIDISpyPortRef?
-    private var endpoints: Set<Destination> = []
-    private var parsersForEndpoints = NSMapTable<Destination, MessageParser>.weakToStrongObjects()
+    private var destinations: Set<Destination> = []
+    private var parsersForDestinationEndpointRefs: [MIDIEndpointRef: MessageParser] = [:]
 
     init?(midiContext: MIDIContext, midiSpyClient: MIDISpyClientRef) {
         spyClient = midiSpyClient
 
         super.init(midiContext: midiContext)
 
-        // TODO Would be safer if MIDISpyPortCreate() took a block, so we could pass midiReadBlock instead,
+        // TODO It would be safer if MIDISpyPortCreate() took a block, so we could pass midiReadBlock instead,
         // which keeps a weak reference to self (instead of this unmanaged, effectively unowned reference).
         let status = MIDISpyPortCreate(spyClient, midiReadProc, Unmanaged.passUnretained(self).toOpaque(), &spyPort)
         if status != noErr {
@@ -51,38 +51,19 @@ class SpyingInputStream: SnoizeMIDI.InputStream {
     // MARK: InputStream subclass
 
     override var parsers: [MessageParser] {
-        return parsersForEndpoints.objectEnumerator()?.allObjects as? [MessageParser] ?? []
+        return Array(parsersForDestinationEndpointRefs.values)
     }
 
     override func parser(sourceConnectionRefCon: UnsafeMutableRawPointer?) -> MessageParser? {
-        // note: refCon is a Destination*.
-        // We are allowed to return nil if we are no longer listening to this source endpoint.
+        // Note: sourceConnectionRefCon is a MIDIEndpointRef of a Destination.
+        // We are allowed to return nil, e.g. if we are no longer listening to this destination, or if the destination has gone away.
         guard let refCon = sourceConnectionRefCon else { return nil }
-        let endpoint = Unmanaged<Destination>.fromOpaque(refCon).takeUnretainedValue()
-        return parsersForEndpoints.object(forKey: endpoint)
+        let endpointRef = MIDIEndpointRef(Int(bitPattern: refCon))   // like casting from void* in C
+        return parsersForDestinationEndpointRefs[endpointRef]
     }
 
     override func streamSource(parser: MessageParser) -> InputStreamSource? {
         return parser.originatingEndpoint?.asInputStreamSource()
-    }
-
-    override func retainForIncomingMIDI(sourceConnectionRefCon: UnsafeMutableRawPointer?) {
-        super.retainForIncomingMIDI(sourceConnectionRefCon: sourceConnectionRefCon)
-
-        // Retain the endpoint too, since we use it as a key in parser(sourceConnectionRefCon:)
-        // TODO: This is too late. It may have been deallocated in the meantime.
-        if let refCon = sourceConnectionRefCon {
-            _ = Unmanaged<Destination>.fromOpaque(refCon).retain()
-        }
-    }
-
-    override func releaseForIncomingMIDI(sourceConnectionRefCon: UnsafeMutableRawPointer?) {
-        // release the endpoint that we retained earlier
-        if let refCon = sourceConnectionRefCon {
-            Unmanaged<Destination>.fromOpaque(refCon).release()
-        }
-
-        super.releaseForIncomingMIDI(sourceConnectionRefCon: sourceConnectionRefCon)
     }
 
     override var inputSources: [InputStreamSource] {
@@ -92,60 +73,61 @@ class SpyingInputStream: SnoizeMIDI.InputStream {
 
     override var selectedInputSources: Set<InputStreamSource> {
         get {
-            return Set(endpoints.map { $0.asInputStreamSource() })
+            return Set(destinations.map { $0.asInputStreamSource() })
         }
         set {
-            let newEndpoints = Set(newValue.compactMap { $0.provider as? Destination })
+            let newDestinations = Set(newValue.compactMap { $0.provider as? Destination })
 
-            let endpointsToAdd = newEndpoints.subtracting(endpoints)
-            let endpointsToRemove = endpoints.subtracting(newEndpoints)
+            let destinationsToAdd = newDestinations.subtracting(destinations)
+            let destinationsToRemove = destinations.subtracting(newDestinations)
 
-            for endpoint in endpointsToRemove {
-                removeEndpoint(endpoint)
+            for destination in destinationsToRemove {
+                removeDestination(destination)
             }
 
-            for endpoint in endpointsToAdd {
-                addEndpoint(endpoint)
+            for destination in destinationsToAdd {
+                addDestination(destination)
             }
         }
     }
 
     // MARK: Private
 
-    private func addEndpoint(_ endpoint: Destination) {
-        guard !endpoints.contains(endpoint) else { return }
+    private func addDestination(_ destination: Destination) {
+        guard !destinations.contains(destination) else { return }
 
-        let parser = createParser(originatingEndpoint: endpoint)
-        parsersForEndpoints.setObject(parser, forKey: endpoint)
+        let parser = createParser(originatingEndpoint: destination)
+        parsersForDestinationEndpointRefs[destination.endpointRef] = parser
 
         let center = NotificationCenter.default
-        center.addObserver(self, selector: #selector(self.endpointDisappeared(_:)), name: .midiObjectDisappeared, object: endpoint)
-        center.addObserver(self, selector: #selector(self.endpointWasReplaced(_:)), name: .midiObjectWasReplaced, object: endpoint)
+        center.addObserver(self, selector: #selector(self.destinationDisappeared(_:)), name: .midiObjectDisappeared, object: destination)
+        center.addObserver(self, selector: #selector(self.destinationWasReplaced(_:)), name: .midiObjectWasReplaced, object: destination)
 
-        _ = endpoints.insert(endpoint)
+        _ = destinations.insert(destination)
 
-        let status = MIDISpyPortConnectDestination(spyPort, endpoint.endpointRef, Unmanaged.passUnretained(endpoint).toOpaque())
+        let connRefCon = UnsafeMutableRawPointer(bitPattern: Int(destination.endpointRef))   // like casting to void* in C
+        let status = MIDISpyPortConnectDestination(spyPort, destination.endpointRef, connRefCon)
         if status != noErr {
             NSLog("Error from MIDISpyPortConnectDestination: \(status)")
         }
     }
 
-    private func removeEndpoint(_ endpoint: Destination) {
-        guard endpoints.contains(endpoint) else { return }
+    private func removeDestination(_ destination: Destination) {
+        guard destinations.contains(destination) else { return }
 
-        let status = MIDISpyPortDisconnectDestination(spyPort, endpoint.endpointRef)
+        let status = MIDISpyPortDisconnectDestination(spyPort, destination.endpointRef)
         if status != noErr {
             NSLog("Error from MIDISpyPortDisconnectDestination: \(status)")
             // An error can happen in normal circumstances (if the endpoint has disappeared), so ignore it.
         }
 
-        parsersForEndpoints.removeObject(forKey: endpoint)
+        parsersForDestinationEndpointRefs[destination.endpointRef] = nil
 
         let center = NotificationCenter.default
-        center.removeObserver(self, name: .midiObjectDisappeared, object: endpoint)
-        center.removeObserver(self, name: .midiObjectWasReplaced, object: endpoint)
+        center.removeObserver(self, name: .midiObjectDisappeared, object: destination)
+        center.removeObserver(self, name: .midiObjectWasReplaced, object: destination)
 
-        endpoints.remove(endpoint)
+        destinations.remove(destination)
     }
 
     @objc private func midiObjectListChanged(_ notification: Notification) {
@@ -155,18 +137,18 @@ class SpyingInputStream: SnoizeMIDI.InputStream {
         }
     }
 
-    @objc private func endpointDisappeared(_ notification: Notification) {
-        guard let endpoint = notification.object as? Destination,
-              endpoints.contains(endpoint) else { return }
-        removeEndpoint(endpoint)
+    @objc private func destinationDisappeared(_ notification: Notification) {
+        guard let destination = notification.object as? Destination,
+              destinations.contains(destination) else { return }
+        removeDestination(destination)
     }
 
-    @objc private func endpointWasReplaced(_ notification: Notification) {
-        guard let endpoint = notification.object as? Destination,
-              endpoints.contains(endpoint) else { return }
-        removeEndpoint(endpoint)
-        if let newEndpoint = notification.userInfo?[MIDIContext.objectReplacement] as? Destination {
-            addEndpoint(newEndpoint)
+    @objc private func destinationWasReplaced(_ notification: Notification) {
+        guard let destination = notification.object as? Destination,
+              destinations.contains(destination) else { return }
+        removeDestination(destination)
+        if let newDestination = notification.userInfo?[MIDIContext.objectReplacement] as? Destination {
+            addDestination(newDestination)
         }
     }
 
