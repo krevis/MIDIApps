@@ -12,7 +12,7 @@
 
 #include "MIDISpyClient.h"
 
-#include <Carbon/Carbon.h>   // only for Mac error codes
+#include <CoreServices/CoreServices.h>
 #include <pthread.h>
 
 #include "MIDISpyShared.h"
@@ -36,8 +36,7 @@ typedef struct __MIDISpyClient
 typedef struct __MIDISpyPort
 {
     MIDISpyClientRef client;
-    MIDIReadProc readProc;
-    void *refCon;
+    MIDIReadBlock readBlock;
     CFMutableArrayRef connections;
 } MIDISpyPort;
 
@@ -259,11 +258,11 @@ void MIDISpyClientDisposeSharedMIDIClient(void)
 }
 
 
-OSStatus MIDISpyPortCreate(MIDISpyClientRef clientRef, MIDIReadProc readProc, void *refCon, MIDISpyPortRef *outSpyPortRefPtr)
+OSStatus MIDISpyPortCreate(MIDISpyClientRef clientRef, MIDIReadBlock readBlock, MIDISpyPortRef *outSpyPortRefPtr)
 {
     MIDISpyPort *spyPortRef;
 
-    if (!clientRef || !readProc || !outSpyPortRefPtr )
+    if (!clientRef || !readBlock || !outSpyPortRefPtr )
         return paramErr;
 
     spyPortRef = (MIDISpyPort *)malloc(sizeof(MIDISpyPort));
@@ -271,8 +270,8 @@ OSStatus MIDISpyPortCreate(MIDISpyClientRef clientRef, MIDIReadProc readProc, vo
         return memFullErr;
     
     spyPortRef->client = clientRef;
-    spyPortRef->readProc = readProc;
-    spyPortRef->refCon = refCon;
+    spyPortRef->readBlock = readBlock;
+    CFRetain(readBlock);
 
     spyPortRef->connections = CFArrayCreateMutable(kCFAllocatorDefault, 0, NULL);
     if (!spyPortRef->connections) {
@@ -315,6 +314,8 @@ OSStatus MIDISpyPortDispose(MIDISpyPortRef spyPortRef)
     portIndex = CFArrayGetFirstIndexOfValue(ports, CFRangeMake(0, CFArrayGetCount(ports)), spyPortRef);
     if (portIndex != kCFNotFound)
         CFArrayRemoveValueAtIndex(ports, portIndex);            
+
+    CFRelease(spyPortRef->readBlock);
 
     free(spyPortRef);
 
@@ -615,7 +616,7 @@ static CFDataRef LocalMessagePortCallback(CFMessagePortRef local, SInt32 msgid, 
 
     // Find the endpoint with this unique ID.
     // Then find all ports which are connected to this endpoint,
-    // and for each, call port->readProc(packetList, port->refCon, connection->refCon)
+    // and for each, call port->readBlock().
 
     endpoint = EndpointWithUniqueID(endpointUniqueID);
     if (endpoint) {
@@ -629,7 +630,7 @@ static CFDataRef LocalMessagePortCallback(CFMessagePortRef local, SInt32 msgid, 
                 MIDISpyPortConnection *connection;
 
                 connection = (MIDISpyPortConnection *)CFArrayGetValueAtIndex(connections, connectionIndex);
-                connection->port->readProc(packetList, connection->port->refCon, connection->refCon);
+                connection->port->readBlock(packetList, connection->refCon);
             }
         }        
     }

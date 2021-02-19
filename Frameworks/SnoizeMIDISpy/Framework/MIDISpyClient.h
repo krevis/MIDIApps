@@ -40,7 +40,7 @@ extern OSStatus MIDISpyClientDispose(MIDISpyClientRef clientRef);
 extern void MIDISpyClientDisposeSharedMIDIClient(void);
     // Use only in special circumstances, if you want to remove the app's connection to the MIDIServer
 
-extern OSStatus MIDISpyPortCreate(MIDISpyClientRef clientRef, MIDIReadProc readProc, void *refCon, MIDISpyPortRef *outSpyPortRefPtr);
+extern OSStatus MIDISpyPortCreate(MIDISpyClientRef clientRef, MIDIReadBlock readBlock, MIDISpyPortRef *outSpyPortRefPtr);
 extern OSStatus MIDISpyPortDispose(MIDISpyPortRef spyPortRef);
 
 extern OSStatus MIDISpyPortConnectDestination(MIDISpyPortRef spyPortRef, MIDIEndpointRef destinationEndpoint, void *connectionRefCon);

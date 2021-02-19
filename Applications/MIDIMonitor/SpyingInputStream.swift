@@ -27,13 +27,7 @@ class SpyingInputStream: SnoizeMIDI.InputStream {
 
         super.init(midiContext: midiContext)
 
-        // TODO It would be safer if MIDISpyPortCreate() took a block, so we could pass midiReadBlock instead,
-        // which keeps a weak reference to self (instead of this unmanaged, effectively unowned reference).
-        let status = MIDISpyPortCreate(spyClient, midiReadProc, Unmanaged.passUnretained(self).toOpaque(), &spyPort)
-        if status != noErr {
-            NSLog("Error from MIDISpyPortCreate: \(status)")
-            return nil
-        }
+        guard MIDISpyPortCreate(spyClient, midiReadBlock, &spyPort) == noErr else { return nil }
 
         NotificationCenter.default.addObserver(self, selector: #selector(self.midiObjectListChanged(_:)), name: .midiObjectListChanged, object: midiContext)
     }
