@@ -27,6 +27,8 @@ class SpyingInputStream: SnoizeMIDI.InputStream {
 
         super.init(midiContext: midiContext)
 
+        // TODO Would be safer if MIDISpyPortCreate() took a block, so we could pass midiReadBlock instead,
+        // which keeps a weak reference to self (instead of this unmanaged, effectively unowned reference).
         let status = MIDISpyPortCreate(spyClient, midiReadProc, Unmanaged.passUnretained(self).toOpaque(), &spyPort)
         if status != noErr {
             NSLog("Error from MIDISpyPortCreate: \(status)")
@@ -68,6 +70,7 @@ class SpyingInputStream: SnoizeMIDI.InputStream {
         super.retainForIncomingMIDI(sourceConnectionRefCon: sourceConnectionRefCon)
 
         // Retain the endpoint too, since we use it as a key in parser(sourceConnectionRefCon:)
+        // TODO: This is too late. It may have been deallocated in the meantime.
         if let refCon = sourceConnectionRefCon {
             _ = Unmanaged<Destination>.fromOpaque(refCon).retain()
         }

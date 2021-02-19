@@ -64,11 +64,11 @@ public class VirtualInputStream: InputStream {
 
     public override func parser(sourceConnectionRefCon refCon: UnsafeMutableRawPointer?) -> MessageParser? {
         // refCon is ignored, since it only applies to connections created with MIDIPortConnectSource()
-        return parser
+        parser
     }
 
     public override func streamSource(parser: MessageParser) -> InputStreamSource? {
-        return singleSource.asInputStreamSource()
+        singleSource.asInputStreamSource()
     }
 
     public override var inputSources: [InputStreamSource] {
@@ -122,7 +122,13 @@ public class VirtualInputStream: InputStream {
     }
 
     private func createEndpoint() {
-        endpoint = midiContext.createVirtualDestination(name: virtualEndpointName, uniqueID: uniqueID, midiReadProc: midiReadProc, readProcRefCon: Unmanaged.passUnretained(self).toOpaque())
+
+        if #available(OSX 10.11, *) {
+            endpoint = midiContext.createVirtualDestination(name: virtualEndpointName, uniqueID: uniqueID, midiReadBlock: midiReadBlock)
+        }
+        else {
+            endpoint = midiContext.createVirtualDestination(name: virtualEndpointName, uniqueID: uniqueID, midiReadProc: midiReadProc, readProcRefCon: Unmanaged.passUnretained(self).toOpaque())
+        }
 
         if let endpoint = endpoint {
             if parser == nil {

@@ -81,7 +81,30 @@ open class InputStream {
     // FUTURE: It would be nice to implement the functionality of our subclasses via composition instead
     // of inheritance. When doing so, these subclass-related methods will perhaps get put in a protocol.
 
-    public let midiReadProc: MIDIReadProc = inputStreamMIDIReadProc
+    // MIDIReadProc to be passed to functions like MIDIInputPortCreate() on macOS before 10.11
+    public let midiReadProc: MIDIReadProc = { (packetListPtr, readProcRefCon, srcConnRefCon) in
+        // NOTE: This function is called in a high-priority, time-constraint thread,
+        // created for us by CoreMIDI.
+
+        // NOTE: There's a race. The inputStream could get deallocated while this code is running on the MIDI thread,
+        // including in this window of time before we fetch and retain it.
+        // In macOS 10.11 and later, CoreMIDI's newer block-based callbacks, which allow the inputStream to be captured as a weak
+        // reference in a block, is a better way.
+
+        guard let readProcRefCon = readProcRefCon else { return }
+        let inputStream = Unmanaged<InputStream>.fromOpaque(readProcRefCon).takeUnretainedValue()
+        inputStream.midiRead(packetListPtr, srcConnRefCon)
+    }
+
+    // MIDIReadBlock to be passed to functions like MIDIInputPortCreateWithBlock() on macOS post 10.11
+    public lazy var midiReadBlock: MIDIReadBlock = { [weak self] (packetListPtr, srcConnRefCon) in
+        // NOTE: This function is called in a high-priority, time-constraint thread,
+        // created for us by CoreMIDI.
+
+        // NOTE: Needs to be lazy in order to capture self as a weak reference.
+
+        self?.midiRead(packetListPtr, srcConnRefCon)
+    }
 
     public func createParser(originatingEndpoint: Endpoint?) -> MessageParser {
         let parser = MessageParser()
@@ -183,6 +206,56 @@ extension InputStream /* Private */ {
         }
     }
 
+    fileprivate func midiRead(_ packetListPtr: UnsafePointer<MIDIPacketList>, _ srcConnRefCon: UnsafeMutableRawPointer?) {
+        // NOTE: This function is called in a high-priority, time-constraint thread,
+        // created for us by CoreMIDI.
+        //
+        // Because we're in a time-constraint thread, we should avoid allocating memory,
+        // since the allocator uses a single app-wide lock. (If another low-priority thread holds
+        // that lock, we'll have to wait for that thread to release it, which is priority inversion.)
+        // We're not even attempting to do that yet, because neither MIDI Monitor nor SysEx Librarian
+        // need that level of performance. (Probably the best solution is to stuff the packet list
+        // into a ring buffer, then consume it in the other queue, but the devil is in the details.)
+
+        let numPackets = packetListPtr.pointee.numPackets
+        guard numPackets > 0 else { return }
+
+        // Make sure that the input stream retains anything that depends on the
+        // srcConnRefCon during the interval between now and the time that parser.take(packetList)
+        // is done working.
+        // FUTURE: There is a race here. The srcConnRefCon could become invalid before we manage to call this.
+        self.retainForIncomingMIDI(sourceConnectionRefCon: srcConnRefCon)
+
+        let packetListSize: Int
+        if #available(macOS 10.15, iOS 13.0, *) {
+            packetListSize = MIDIPacketList.sizeInBytes(pktList: packetListPtr)
+        }
+        else {
+            packetListSize = SMPacketListSize(packetListPtr)
+        }
+
+        // Copy the packet data for later
+        let data = Data(bytes: packetListPtr, count: packetListSize)
+
+        // And process it on the queue
+        self.readQueue.async {
+            autoreleasepool {
+                data.withUnsafeBytes { (rawPtr: UnsafeRawBufferPointer) in
+                    let packetListPtr = rawPtr.bindMemory(to: MIDIPacketList.self).baseAddress!
+
+                    // Find the parser that is associated with this particular connection
+                    // (which may be nil, if the input stream was disconnected from this source)
+                    // and give it the packet list.
+                    self.parser(sourceConnectionRefCon: srcConnRefCon)?.takePacketList(packetListPtr)
+
+                    // Now that we're done with the input stream and its ref con (whatever that is),
+                    // release them.
+                    self.releaseForIncomingMIDI(sourceConnectionRefCon: srcConnRefCon)
+                }
+            }
+        }
+    }
+
 }
 
 public protocol InputStreamDelegate: NSObjectProtocol {
@@ -195,63 +268,4 @@ public protocol InputStreamDelegate: NSObjectProtocol {
 
     func inputStreamSourceListChanged(_ stream: InputStream)
 
-}
-
-private func inputStreamMIDIReadProc(_ packetListPtr: UnsafePointer<MIDIPacketList>, _ readProcRefCon: UnsafeMutableRawPointer?, _ srcConnRefCon: UnsafeMutableRawPointer?) {
-    // NOTE: This function is called in a high-priority, time-constraint thread,
-    // created for us by CoreMIDI.
-    //
-    // Because we're in a time-constraint thread, we should avoid allocating memory,
-    // since the allocator uses a single app-wide lock. (If another low-priority thread holds
-    // that lock, we'll have to wait for that thread to release it, which is priority inversion.)
-    // We're not even attempting to do that yet, because neither MIDI Monitor nor SysEx Librarian
-    // need that level of performance. (Probably the best solution is to stuff the packet list
-    // into a ring buffer, then consume it in the other queue, but the devil is in the details.)
-
-    guard let readProcRefCon = readProcRefCon else { return }
-    let numPackets = packetListPtr.pointee.numPackets
-    guard numPackets > 0 else { return }
-
-    let inputStream = Unmanaged<InputStream>.fromOpaque(readProcRefCon).takeUnretainedValue()
-    // NOTE: There is a race condition here.
-    // By the time the async block runs, the input stream may be gone or in a different state.
-    // Make sure that the input stream retains itself, and anything that depends on the
-    // srcConnRefCon, during the interval between now and the time that parser.take(packetList)
-    // is done working.
-    // TODO There's still a race. The inputStream could get deallocated at any time
-    // while this code is running on the MIDI thread.
-    // We should make the refCon be some kind of token that we can use to safely
-    // look up the input stream, only when on the appropriate queue, handling cases
-    // when the stream is gone.
-    inputStream.retainForIncomingMIDI(sourceConnectionRefCon: srcConnRefCon)
-
-    let packetListSize: Int
-    if #available(macOS 10.15, iOS 13.0, *) {
-        packetListSize = MIDIPacketList.sizeInBytes(pktList: packetListPtr)
-    }
-    else {
-        packetListSize = SMPacketListSize(packetListPtr)
-    }
-
-    // Copy the packet data for later
-    let data = Data(bytes: packetListPtr, count: packetListSize)
-
-    // And process it on the queue
-    inputStream.readQueue.async {
-        autoreleasepool {
-            data.withUnsafeBytes { (rawPtr: UnsafeRawBufferPointer) in
-                let packetListPtr = rawPtr.bindMemory(to: MIDIPacketList.self).baseAddress!
-
-                // Starting with an input stream (captured above),
-                // find the parser that is associated with this particular connection
-                // (which may be nil, if the input stream was disconnected from this source)
-                // and give it the packet list.
-                inputStream.parser(sourceConnectionRefCon: srcConnRefCon)?.takePacketList(packetListPtr)
-
-                // Now that we're done with the input stream and its ref con (whatever that is),
-                // release them.
-                inputStream.releaseForIncomingMIDI(sourceConnectionRefCon: srcConnRefCon)
-            }
-        }
-    }
 }
