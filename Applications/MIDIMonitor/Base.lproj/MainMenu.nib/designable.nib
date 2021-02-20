@@ -236,9 +236,9 @@
             <point key="canvasLocation" x="-5" y="-79"/>
         </menu>
         <customObject id="199" userLabel="AppController" customClass="AppController" customModule="MIDI_Monitor" customModuleProvider="target"/>
-        <customObject id="236" customClass="SUUpdater">
+        <customObject id="236" customClass="SPUStandardUpdaterController">
             <connections>
-                <outlet property="delegate" destination="199" id="Kel-0m-z8D"/>
+                <outlet property="updaterDelegate" destination="199" id="VFH-db-NT8"/>
             </connections>
         </customObject>
     </objects>

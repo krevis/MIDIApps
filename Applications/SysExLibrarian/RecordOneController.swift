@@ -58,7 +58,7 @@ class RecordOneController: RecordController {
         stopObservingMIDIController()
 
         // Close the sheet, after a little bit of a delay (makes it look nicer)
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.mainWindowController?.window?.endSheet(self.sheetWindow)
 
             // Don't actually add the entry until after we've ended the sheet,

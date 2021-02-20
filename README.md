@@ -37,7 +37,7 @@ Your source tree should look like this:
 
 The source for the two apps. The project files are MIDIMonitor.xcodeproj and SysExLibrarian.xcodeproj; open them with Xcode.
 
-Both apps are Cocoa, and are written in Swift (with a tiny amount of Objective-C).
+Both apps are Cocoa, and are written in Swift.
 
 The apps rely on the other frameworks, described below.
 

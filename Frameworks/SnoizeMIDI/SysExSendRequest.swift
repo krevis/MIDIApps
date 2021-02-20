@@ -239,7 +239,7 @@ private func customMIDISendSysex(_ midiContext: CoreMIDIContext, _ request: Unsa
         }
 
         if !request.pointee.complete.boolValue {
-            queue.asyncAfter(deadline: DispatchTime.now() + perBufferDelay) {
+            queue.asyncAfter(deadline: .now() + perBufferDelay) {
                 sendNextBuffer()
             }
         }

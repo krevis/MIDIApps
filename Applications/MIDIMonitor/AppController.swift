@@ -44,7 +44,7 @@ class AppController: NSObject {
         }
     }
 
-    @objc func disconnectMIDI() {
+    func disconnectMIDI() {
         midiContext?.disconnect()
         if let spyClient = midiSpyClient {
             MIDISpyClientDispose(spyClient)
@@ -350,11 +350,11 @@ extension AppController {
             if let autoConnectOption = AutoConnectOption(rawValue: UserDefaults.standard.integer(forKey: PreferenceKeys.autoConnectNewSources)) {
                 switch autoConnectOption {
                 case .addInCurrentWindow:
-                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         self.autoConnectToNewlyAppearedSources()
                     }
                 case .openNewWindow:
-                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         self.openWindowForNewlyAppearedSources()
                     }
                 case .disabled:
@@ -400,6 +400,28 @@ extension AppController {
         }
 
         newlyAppearedSources = nil
+    }
+
+}
+
+extension AppController: SPUUpdaterDelegate {
+
+    func updater(_ updater: SPUUpdater, shouldPostponeRelaunchForUpdate item: SUAppcastItem, untilInvokingBlock installHandler: @escaping () -> Void) -> Bool {
+        // The update might contain a MIDI driver that needs to get
+        // installed. In order for it to work immediately,
+        // we want the MIDIServer to shut down now, so we can install
+        // the driver and then trigger the MIDIServer to run again.
+
+        // Remove our connections to the MIDIServer first:
+        disconnectMIDI()
+
+        // Wait a few seconds for the MIDIServer to hopefully shut down,
+        // then relaunch for the update:
+        DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) {
+            installHandler()
+        }
+
+        return true
     }
 
 }

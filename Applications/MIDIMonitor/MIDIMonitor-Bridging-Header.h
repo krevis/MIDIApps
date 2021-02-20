@@ -3,3 +3,4 @@
 //
 
 #import <SnoizeMIDISpy/SnoizeMIDISpy.h>
+#import <Sparkle/Sparkle.h>

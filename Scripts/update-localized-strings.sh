@@ -3,7 +3,7 @@
 # Run this from the MIDIApps directory as "./Scripts/update-localized-strings.sh"
 
 pushd Applications/MIDIMonitor	
-genstrings *.swift *.m -o en.lproj
+genstrings *.swift -o en.lproj
 popd
 
 pushd Applications/SysExLibrarian
