@@ -950,9 +950,9 @@
 			baseConfigurationReference = 169E7171097B2203001AFB58 /* Snoize-Application-Release.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.4.1;
+				CURRENT_PROJECT_VERSION = 1.5;
 				INFOPLIST_FILE = "Info-MIDIMonitor.plist";
-				MARKETING_VERSION = 1.4.1;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.MIDIMonitor;
 				PRODUCT_NAME = "MIDI Monitor";
 				SWIFT_OBJC_BRIDGING_HEADER = "MIDIMonitor-Bridging-Header.h";
@@ -972,9 +972,9 @@
 			baseConfigurationReference = 169E716F097B2203001AFB58 /* Snoize-Application-Debug.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.4.1;
+				CURRENT_PROJECT_VERSION = 1.5;
 				INFOPLIST_FILE = "Info-MIDIMonitor.plist";
-				MARKETING_VERSION = 1.4.1;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.MIDIMonitor;
 				PRODUCT_NAME = "MIDI Monitor";
 				SWIFT_OBJC_BRIDGING_HEADER = "MIDIMonitor-Bridging-Header.h";
