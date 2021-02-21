@@ -138,8 +138,11 @@ OSStatus MIDISpyClientCreate(MIDISpyClientRef *outClientRefPtr)
     }
     clientRef->driverPort = driverPort;
     
-    // Ask for an identifier number from the driver
-    sendStatus = CFMessagePortSendRequest(driverPort, kSpyingMIDIDriverGetNextListenerIdentifierMessageID, NULL, 300, 300, kCFRunLoopDefaultMode, &identifierData);
+    // Ask for an identifier number from the driver.
+    // Use a custom run loop mode while waiting for the reply, not kCFRunLoopDefaultMode,
+    // so we don't accidentally run any delayed performs at a bad time during startup.
+    CFStringRef replyMode = CFSTR("MIDISpyClientCreateMode");
+    sendStatus = CFMessagePortSendRequest(driverPort, kSpyingMIDIDriverGetNextListenerIdentifierMessageID, NULL, 300, 300, replyMode, &identifierData);
 
     if (sendStatus != kCFMessagePortSuccess) {
         __Debug_String("MIDISpyClientCreate: CFMessagePortSendRequest(kSpyingMIDIDriverGetNextListenerIdentifierMessageID) returned error");
