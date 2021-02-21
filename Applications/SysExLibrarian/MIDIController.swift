@@ -16,8 +16,6 @@ import SnoizeMIDI
 class MIDIController: NSObject {
 
     init(mainWindowController: MainWindowController) {
-        self.mainWindowController = mainWindowController
-
         guard let context = (NSApp.delegate as? AppController)?.midiContext else { fatalError() }
         self.midiContext = context
 
@@ -58,6 +56,9 @@ class MIDIController: NSObject {
         if !didSetDestinationFromDefaults {
             selectFirstAvailableDestination()
         }
+
+        // Do this last, so we don't call back into the window controller while we are initializing ourself
+        self.mainWindowController = mainWindowController
     }
 
     deinit {
