@@ -15,7 +15,7 @@ import CoreMIDI
 
 // MARK: CoreMIDI Object Wrapper
 
-protocol CoreMIDIObjectWrapper: AnyObject, Identifiable, Hashable {
+protocol CoreMIDIObjectWrapper: AnyObject, Hashable {
 
     var midiContext: CoreMIDIContext { get }
     var midiObjectRef: MIDIObjectRef { get }
@@ -24,25 +24,26 @@ protocol CoreMIDIObjectWrapper: AnyObject, Identifiable, Hashable {
 
 extension CoreMIDIObjectWrapper {
 
-    // MARK: Identifiable default implementation
-
-    public var id: (CoreMIDIContext, MIDIObjectRef) {  // swiftlint:disable:this identifier_name
-        (midiContext, midiObjectRef)
-    }
-
     // MARK: Equatable default implementation
 
     public static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.id == rhs.id
+        lhs.midiContext.client == rhs.midiContext.client && lhs.midiObjectRef == rhs.midiObjectRef
     }
 
     // MARK: Hashable default implementation
 
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
+        hasher.combine(midiContext.client)
+        hasher.combine(midiObjectRef)
     }
 
 }
+
+// FUTURE: CoreMIDIObjectWrapper could conform to Identifiable, with an id
+// containing the midiContext (or midiContext.client) and midiObjectRef.
+// That could be a struct that we define, or a tuple (when Swift supports
+// tuples being Hashable).
+// (But remember that Identifiable requires macOS 10.15 or later.)
 
 // MARK: MIDI Property Accessors
 
