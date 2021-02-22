@@ -19,6 +19,8 @@ class AppController: NSObject {
         super.init()
     }
 
+    @IBOutlet var updaterController: SPUStandardUpdaterController?
+
     private(set) var midiContext: MIDIContext?
 
     // MARK: Private

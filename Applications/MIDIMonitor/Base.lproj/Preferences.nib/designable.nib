@@ -429,7 +429,7 @@
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <binding destination="287" name="value" keyPath="updater.automaticallyChecksForUpdates" id="kPP-hr-u2T"/>
+                                                <binding destination="-2" name="value" keyPath="updater.automaticallyChecksForUpdates" id="E1B-uy-7XZ"/>
                                             </connections>
                                         </button>
                                         <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="290">
@@ -447,8 +447,8 @@
                                                 </menu>
                                             </popUpButtonCell>
                                             <connections>
-                                                <binding destination="287" name="enabled" keyPath="updater.automaticallyChecksForUpdates" id="MOX-nG-R8v"/>
-                                                <binding destination="287" name="selectedTag" keyPath="updater.updateCheckInterval" id="9vB-Tl-slM"/>
+                                                <binding destination="-2" name="enabled" keyPath="updater.automaticallyChecksForUpdates" id="Yrr-b2-NIW"/>
+                                                <binding destination="-2" name="selectedTag" keyPath="updater.updateCheckInterval" id="2kY-l2-J2Z"/>
                                             </connections>
                                         </popUpButton>
                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="khN-uK-h7m">
@@ -474,7 +474,6 @@ If OFF, it applies only to Untitled documents.</string>
             </connections>
             <point key="canvasLocation" x="-359" y="77"/>
         </window>
-        <customObject id="287" customClass="SPUStandardUpdaterController"/>
         <userDefaultsController representsSharedInstance="YES" id="hTq-ws-cwy"/>
     </objects>
 </document>

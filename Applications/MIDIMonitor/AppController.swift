@@ -24,6 +24,8 @@ class AppController: NSObject {
     var midiContext: MIDIContext?
     var midiSpyClient: MIDISpyClientRef?
 
+    @IBOutlet var updaterController: SPUStandardUpdaterController?
+
     private var shouldOpenUntitledDocument = false
     private var newlyAppearedSources: Set<Source>?
 

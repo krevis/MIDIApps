@@ -241,7 +241,11 @@
             </items>
             <point key="canvasLocation" x="-328" y="154"/>
         </menu>
-        <customObject id="200" userLabel="AppController" customClass="AppController" customModule="SysEx_Librarian" customModuleProvider="target"/>
+        <customObject id="200" userLabel="AppController" customClass="AppController" customModule="SysEx_Librarian" customModuleProvider="target">
+            <connections>
+                <outlet property="updaterController" destination="244" id="aAQ-CS-43L"/>
+            </connections>
+        </customObject>
         <customObject id="244" customClass="SPUStandardUpdaterController"/>
     </objects>
 </document>

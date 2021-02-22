@@ -532,7 +532,7 @@
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <binding destination="300441" name="value" keyPath="updater.automaticallyChecksForUpdates" id="axp-fB-hIZ"/>
+                                                <binding destination="-2" name="value" keyPath="updater.automaticallyChecksForUpdates" id="csg-j5-fqK"/>
                                             </connections>
                                         </button>
                                         <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="300452">
@@ -550,8 +550,8 @@
                                                 </menu>
                                             </popUpButtonCell>
                                             <connections>
-                                                <binding destination="300441" name="enabled" keyPath="updater.automaticallyChecksForUpdates" id="grz-Bv-F65"/>
-                                                <binding destination="300441" name="selectedTag" keyPath="updater.updateCheckInterval" id="Ox3-0D-r5U"/>
+                                                <binding destination="-2" name="enabled" keyPath="updater.automaticallyChecksForUpdates" id="oMy-25-rGc"/>
+                                                <binding destination="-2" name="selectedTag" keyPath="updater.updateCheckInterval" id="CA3-jz-V1H"/>
                                             </connections>
                                         </popUpButton>
                                     </subviews>
@@ -575,7 +575,6 @@
                 <outlet property="outlineView" destination="353" id="369"/>
             </connections>
         </customObject>
-        <customObject id="300441" customClass="SPUStandardUpdaterController"/>
         <userDefaultsController representsSharedInstance="YES" id="Zf6-y3-vh7"/>
     </objects>
 </document>

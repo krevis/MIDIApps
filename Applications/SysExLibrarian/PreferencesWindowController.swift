@@ -28,6 +28,11 @@ class PreferencesWindowController: GeneralWindowController {
         return "Preferences"
     }
 
+    // Allow bindings in the nib to get to the app's updater
+    @objc var updater: SPUUpdater? {
+        (NSApp.delegate as? AppController)?.updaterController?.updater
+    }
+
     override func windowDidLoad() {
         super.windowDidLoad()
 

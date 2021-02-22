@@ -17,6 +17,11 @@ class PreferencesWindowController: UtilityWindowController, NSWindowRestoration 
 
     static let shared = PreferencesWindowController(windowNibName: "Preferences")
 
+    // Allow bindings in the nib to get to the app's updater
+    @objc var updater: SPUUpdater? {
+        (NSApp.delegate as? AppController)?.updaterController?.updater
+    }
+
     //
     // Internal
     //

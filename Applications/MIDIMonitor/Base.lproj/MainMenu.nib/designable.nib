@@ -235,7 +235,11 @@
             </items>
             <point key="canvasLocation" x="-5" y="-79"/>
         </menu>
-        <customObject id="199" userLabel="AppController" customClass="AppController" customModule="MIDI_Monitor" customModuleProvider="target"/>
+        <customObject id="199" userLabel="AppController" customClass="AppController" customModule="MIDI_Monitor" customModuleProvider="target">
+            <connections>
+                <outlet property="updaterController" destination="236" id="W3e-kE-KNg"/>
+            </connections>
+        </customObject>
         <customObject id="236" customClass="SPUStandardUpdaterController">
             <connections>
                 <outlet property="updaterDelegate" destination="199" id="VFH-db-NT8"/>
