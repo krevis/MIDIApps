@@ -686,7 +686,15 @@ extension MainWindowController /* Private */ {
     }
 
     private func titleForDestination(_ destination: OutputStreamDestination?) -> String? {
-        destination?.outputStreamDestinationName
+        var title = destination?.outputStreamDestinationName
+
+        // https://github.com/krevis/MIDIApps/issues/79
+        // If we somehow have a \0 character in this string, NSPopUpButton strips everything
+        // after the \0 when drawing the non-popped-up button. That broke sometime between macOS 10.11
+        // and 10.15.7. Work around it.
+        title = title?.replacingOccurrences(of: "\0", with: "")
+
+        return title
     }
 
     // MARK: Library interaction
