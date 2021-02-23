@@ -85,7 +85,7 @@ class DetailsWindowController: GeneralWindowController {
     @IBOutlet private var textView: NSTextView!
 
     private func synchronizeMessageDataDisplay() {
-        var formatted = ""
+        var formatted = " "     // Not an empty string so we don't lose formatting if we don't have a selected row
 
         let selectedRow = messagesTableView.selectedRow
         if selectedRow >= 0 {
@@ -145,6 +145,16 @@ extension DetailsWindowController: NSTableViewDelegate {
 
     func tableViewSelectionDidChange(_ notification: Notification) {
         synchronizeMessageDataDisplay()
+    }
+
+    func tableView(_ tableView: NSTableView, selectionIndexesForProposedSelection proposedSelectionIndexes: IndexSet) -> IndexSet {
+        // Don't allow an empty selection
+        if proposedSelectionIndexes.count == 0 {
+            return tableView.selectedRowIndexes
+        }
+        else {
+            return proposedSelectionIndexes
+        }
     }
 
 }
