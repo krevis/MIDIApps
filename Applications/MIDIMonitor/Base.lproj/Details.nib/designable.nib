@@ -8,8 +8,8 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="DetailsWindowController" customModule="MIDI_Monitor" customModuleProvider="target">
             <connections>
+                <outlet property="dataContainerView" destination="EFT-sI-Saw" id="UTw-ei-guE"/>
                 <outlet property="sizeField" destination="15" id="21"/>
-                <outlet property="textView" destination="8" id="12"/>
                 <outlet property="timeField" destination="17" id="19"/>
                 <outlet property="window" destination="5" id="10"/>
             </connections>
@@ -26,57 +26,11 @@
                 <rect key="frame" x="0.0" y="0.0" width="494" height="380"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <scrollView fixedFrame="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" horizontalScrollElasticity="none" findBarPosition="aboveHorizontalRuler" translatesAutoresizingMaskIntoConstraints="NO" id="7">
+                    <customView id="EFT-sI-Saw">
                         <rect key="frame" x="0.0" y="0.0" width="494" height="300"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <clipView key="contentView" id="DHy-N0-X2f">
-                            <rect key="frame" x="1" y="1" width="492" height="298"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                            <subviews>
-                                <textView editable="NO" importsGraphics="NO" richText="NO" horizontallyResizable="YES" verticallyResizable="YES" usesFontPanel="YES" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="8">
-                                    <rect key="frame" x="0.0" y="0.0" width="507" height="298"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="minSize" width="492" height="298"/>
-                                    <size key="maxSize" width="509" height="10000000"/>
-                                    <attributedString key="textStorage">
-                                        <fragment>
-                                            <mutableString key="content">000000  42 30 28 50 00 00 00 00  00 00 01 00 07 00 00 00  |B0(P            |
-000010  01 00 00 00 01 00 00 00  00 00 0A 00 0B 00 00 00  |                |
-000020  01 00 00 00 01 00 01 00  01 00 01 00 01 00 01 00  |                |
-000030  01 00 00 00 01 00 01 00  02 00 00 00 03 00 01 00  |                |
-000040  01 00 01 00 01 00 00 00  00 00 00 00 00 00 00 00  |                |
-000050  00 00 01 0B 00 00 00 00  00 00 00 00 00 00 00 00  |                |
-000060  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |                |
-000070  00 00 00 00 01 00 00 00  00 00 0F 07 01 00 00 00  |                |
-000080  01 00 0F 07 01 00 00 00  02 00 0F 07 01 00 00 00  |                |
-000090  03 00 0F 07 01 00 00 00  04 00 0F 07 01 00 00 00  |                |
-0000A0  05 00 0F 07 01 00 00 00  06 00 0F 07 01 00 00 00  |                |
-0000B0  07 00 0F 07 01 00 00 00  08 00 0F 07 01 00 00 00  |                |
-</mutableString>
-                                            <attributes>
-                                                <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                <font key="NSFont" size="10" name="Menlo-Regular"/>
-                                                <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
-                                            </attributes>
-                                        </fragment>
-                                    </attributedString>
-                                    <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                </textView>
-                            </subviews>
-                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                        </clipView>
-                        <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="30">
-                            <rect key="frame" x="-100" y="-100" width="87" height="18"/>
-                            <autoresizingMask key="autoresizingMask"/>
-                        </scroller>
-                        <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="31">
-                            <rect key="frame" x="477" y="1" width="16" height="298"/>
-                            <autoresizingMask key="autoresizingMask"/>
-                        </scroller>
-                    </scrollView>
-                    <textField verticalHuggingPriority="750" fixedFrame="YES" id="15">
+                    </customView>
+                    <textField verticalHuggingPriority="750" id="15">
                         <rect key="frame" x="95" y="314" width="165" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" title="10012 bytes" drawsBackground="YES" id="26">
@@ -85,7 +39,7 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" id="16">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="16">
                         <rect key="frame" x="18" y="316" width="71" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="right" title="Size" id="27">
@@ -94,7 +48,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" fixedFrame="YES" id="17">
+                    <textField verticalHuggingPriority="750" id="17">
                         <rect key="frame" x="95" y="341" width="165" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" title="11686988193822" drawsBackground="YES" id="28">
@@ -103,7 +57,7 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" id="18">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="18">
                         <rect key="frame" x="18" y="343" width="71" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="right" title="Time" id="29">

@@ -4,3 +4,4 @@
 
 #import <SnoizeMIDISpy/SnoizeMIDISpy.h>
 #import <Sparkle/Sparkle.h>
+#import <HexFiend/HexFiend.h>

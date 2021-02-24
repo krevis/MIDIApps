@@ -51,14 +51,32 @@ class DetailsWindowController: UtilityWindowController, NSWindowDelegate {
 
     @IBOutlet private var timeField: NSTextField!
     @IBOutlet private var sizeField: NSTextField!
-    @IBOutlet private var textView: NSTextView!
+    @IBOutlet private var dataContainerView: NSView!
+
+    private let dataController = HFController()
 
     override func windowDidLoad() {
         super.windowDidLoad()
 
         updateDescriptionFields()
 
-        textView.string = dataForDisplay.formattedAsHexDump()
+        let byteSlice = HFFullMemoryByteSlice(data: dataForDisplay)
+        let byteArray = HFBTreeByteArray()
+        byteArray.insertByteSlice(byteSlice, in: HFRange(location: 0, length: 0))
+        dataController.byteArray = byteArray
+
+        let layoutRep = HFLayoutRepresenter()
+        let innerReps: [HFRepresenter] = [ HFLineCountingRepresenter(), HFHexTextRepresenter(), HFStringEncodingTextRepresenter(), HFVerticalScrollerRepresenter() ]
+
+        dataController.addRepresenter(layoutRep)
+        innerReps.forEach { dataController.addRepresenter($0) }
+
+        innerReps.forEach { layoutRep.addRepresenter($0) }
+
+        let layoutView = layoutRep.view()
+        layoutView.frame = dataContainerView.frame
+        layoutView.autoresizingMask = [.width, .height]
+        dataContainerView.addSubview(layoutView)
     }
 
     override func windowTitle(forDocumentDisplayName displayName: String) -> String {
