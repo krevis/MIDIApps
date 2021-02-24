@@ -230,12 +230,20 @@ class CombinationInputStreamSourceGroup: NSObject {
 
     let name: String
     let expandable: Bool
-    fileprivate(set) var sources: [InputStreamSource]
+
+    fileprivate(set) var sources: [InputStreamSource] {
+        didSet {
+            boxedSources = sources.map { Box($0) }
+        }
+    }
+
+    private(set) var boxedSources: [Box<InputStreamSource>]
 
     init(name myName: String, expandable myExpandable: Bool) {
         name = myName
         expandable = myExpandable
         sources = []
+        boxedSources = []
         super.init()
     }
 

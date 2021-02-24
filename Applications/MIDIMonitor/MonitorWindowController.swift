@@ -179,6 +179,10 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
 
     // MARK: Input Sources Outline View
 
+    // Note: On macOS 10.15 (and possibly before), we can provide items which are Swift structs.
+    // However, in macOS 10.9-10.11 (and maybe later) this causes a crash in swift_unknownObjectRetain.
+    // Work around it by boxing the structs (InputStreamSource) in Box.
+
     func updateSources() {
         inputSourceGroups = midiDocument.inputSourceGroups
         sourcesOutlineView.reloadData()
@@ -192,14 +196,14 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
         // Of all of the input sources, find the first one which is in the given set.
         // Then expand the outline view to show this source, and scroll it to be visible.
         for group in inputSourceGroups where group.expandable {
-            for source in group.sources {
-                if sources.contains(source) {
+            for source in group.boxedSources {
+                if sources.contains(source.unbox) {
                     // Found one!
                     sourcesOutlineView.expandItem(group)
                     sourcesOutlineView.scrollRowToVisible(sourcesOutlineView.row(forItem: source))
 
                     // And now we're done
-                    break
+                    return
                 }
             }
         }
@@ -215,18 +219,19 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
             return inputSourceGroups.count
         }
         else if let group = item as? CombinationInputStreamSourceGroup {
-            return group.sources.count
+            return group.boxedSources.count
         }
         else {
             return 0
         }
     }
+
     func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
         if item == nil {
             return inputSourceGroups[index]
         }
         else if let group = item as? CombinationInputStreamSourceGroup {
-            return group.sources[index]
+            return group.boxedSources[index]
         }
         else {
             fatalError()
@@ -251,8 +256,8 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
             if let group = item as? CombinationInputStreamSourceGroup {
                 return group.name
             }
-            else if let source = item as? InputStreamSource {
-                return source.name ?? ""
+            else if let source = item as? Box<InputStreamSource> {
+                return source.unbox.name ?? ""
             }
             else {
                 return nil
@@ -262,8 +267,8 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
             if let group = item as? CombinationInputStreamSourceGroup {
                 return buttonStateForInputSources(group.sources)
             }
-            else if let source = item as? InputStreamSource {
-                return buttonStateForInputSources([source])
+            else if let source = item as? Box<InputStreamSource> {
+                return buttonStateForInputSources([source.unbox])
             }
             else {
                 return nil
@@ -288,8 +293,8 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
         if let group = item as? CombinationInputStreamSourceGroup {
             sources = group.sources
         }
-        else if let source = item as? InputStreamSource {
-            sources = [source]
+        else if let source = item as? Box<InputStreamSource> {
+            sources = [source.unbox]
         }
         else {
             sources = []

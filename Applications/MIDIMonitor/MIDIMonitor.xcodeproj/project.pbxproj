@@ -37,6 +37,7 @@
 		1692D764258D75EE0092D6E7 /* CombinationInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D763258D75EE0092D6E7 /* CombinationInputStream.swift */; };
 		1692D766258DC8410092D6E7 /* SpyingInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D765258DC8410092D6E7 /* SpyingInputStream.swift */; };
 		16980517258874BF00059CB4 /* DetailsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16980516258874BF00059CB4 /* DetailsWindowController.swift */; };
+		16A3C27125E5CBC6001F01A3 /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A3C27025E5CBC6001F01A3 /* Box.swift */; };
 		16C267D215D836B2009F4BE4 /* SNDisclosureArrowDown.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 16C267D015D836B2009F4BE4 /* SNDisclosureArrowDown.tiff */; };
 		16C267D315D836B2009F4BE4 /* SNDisclosureArrowRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 16C267D115D836B2009F4BE4 /* SNDisclosureArrowRight.tiff */; };
 		16E8F01A097B2E5200B52193 /* SnoizeMIDISpy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169E71B1097B242A001AFB58 /* SnoizeMIDISpy.framework */; };
@@ -288,6 +289,7 @@
 		169E7171097B2203001AFB58 /* Snoize-Application-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Application-Release.xcconfig"; path = "../../Configurations/Snoize-Application-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
 		169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDI.xcodeproj; path = ../../Frameworks/SnoizeMIDI/SnoizeMIDI.xcodeproj; sourceTree = SOURCE_ROOT; };
 		169E71A8097B242A001AFB58 /* SnoizeMIDISpy.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDISpy.xcodeproj; path = ../../Frameworks/SnoizeMIDISpy/SnoizeMIDISpy.xcodeproj; sourceTree = SOURCE_ROOT; };
+		16A3C27025E5CBC6001F01A3 /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
 		16C267D015D836B2009F4BE4 /* SNDisclosureArrowDown.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SNDisclosureArrowDown.tiff; sourceTree = "<group>"; };
 		16C267D115D836B2009F4BE4 /* SNDisclosureArrowRight.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SNDisclosureArrowRight.tiff; sourceTree = "<group>"; };
 		16F20F4906EAA14A00D9C507 /* Defaults.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = Defaults.plist; sourceTree = "<group>"; };
@@ -460,6 +462,7 @@
 				1692D72E258B31370092D6E7 /* AppController.swift */,
 				1692D74C258C3EC10092D6E7 /* Document.swift */,
 				160A5EA0258825B0008C0CE1 /* PreferenceKeys.swift */,
+				16A3C27025E5CBC6001F01A3 /* Box.swift */,
 				1692D777258DE9740092D6E7 /* Window Controllers */,
 				F57F62950261E14501000164 /* SnoizeMIDI Extensions */,
 				F571C56C01903F3301000164 /* Views */,
@@ -856,6 +859,7 @@
 				160A5EA1258825B0008C0CE1 /* PreferenceKeys.swift in Sources */,
 				16F9FA452586EDED00169621 /* NonHighlightingCells.swift in Sources */,
 				1692D766258DC8410092D6E7 /* SpyingInputStream.swift in Sources */,
+				16A3C27125E5CBC6001F01A3 /* Box.swift in Sources */,
 				1692D72F258B31370092D6E7 /* AppController.swift in Sources */,
 				160A5E8D258822CB008C0CE1 /* SysExWindowController.swift in Sources */,
 				16F9FA592586F51400169621 /* DisclosureButton.swift in Sources */,

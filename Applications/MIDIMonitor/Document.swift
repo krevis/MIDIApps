@@ -305,14 +305,6 @@ extension Document {
         }
     }
 
-    private class Box<T>: NSObject {
-        let unbox: T
-        init(_ value: T) {
-            self.unbox = value
-            super.init()
-        }
-    }
-
     var maxMessageCount: Int {
         get {
             return history.historySize
