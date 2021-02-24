@@ -38,6 +38,8 @@
 		1692D766258DC8410092D6E7 /* SpyingInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D765258DC8410092D6E7 /* SpyingInputStream.swift */; };
 		16980517258874BF00059CB4 /* DetailsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16980516258874BF00059CB4 /* DetailsWindowController.swift */; };
 		16A3C27125E5CBC6001F01A3 /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A3C27025E5CBC6001F01A3 /* Box.swift */; };
+		16A3C31D25E71631001F01A3 /* HexFiend.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16A3C2F325E715D8001F01A3 /* HexFiend.framework */; };
+		16A3C31E25E71631001F01A3 /* HexFiend.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 16A3C2F325E715D8001F01A3 /* HexFiend.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16C267D215D836B2009F4BE4 /* SNDisclosureArrowDown.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 16C267D015D836B2009F4BE4 /* SNDisclosureArrowDown.tiff */; };
 		16C267D315D836B2009F4BE4 /* SNDisclosureArrowRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 16C267D115D836B2009F4BE4 /* SNDisclosureArrowRight.tiff */; };
 		16E8F01A097B2E5200B52193 /* SnoizeMIDISpy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169E71B1097B242A001AFB58 /* SnoizeMIDISpy.framework */; };
@@ -191,6 +193,55 @@
 			remoteGlobalIDString = 164103F309735FA6008DABCC;
 			remoteInfo = SnoizeMIDISpy.framework;
 		};
+		16A3C2F025E715D8001F01A3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16A3C2E425E715D8001F01A3 /* HexFiend_2.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D1107320486CEB800E47090;
+			remoteInfo = HexFiend_2;
+		};
+		16A3C2F225E715D8001F01A3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16A3C2E425E715D8001F01A3 /* HexFiend_2.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D01E7BB80CDC530C00943F9E;
+			remoteInfo = HexFiend_Framework;
+		};
+		16A3C2F425E715D8001F01A3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16A3C2E425E715D8001F01A3 /* HexFiend_2.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A5EF294A20F187B700CA7B39;
+			remoteInfo = HexFiend_Framework_iOS;
+		};
+		16A3C2F625E715D8001F01A3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16A3C2E425E715D8001F01A3 /* HexFiend_2.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D047E3151022CEFE00EF307B;
+			remoteInfo = "FortunateSon (PrivilegedHelper)";
+		};
+		16A3C2F825E715D8001F01A3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16A3C2E425E715D8001F01A3 /* HexFiend_2.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D00C15E50FF091FF006D021F;
+			remoteInfo = HexFiendling;
+		};
+		16A3C2FA25E715D8001F01A3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16A3C2E425E715D8001F01A3 /* HexFiend_2.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9408FBFA19DD72DE004F800E;
+			remoteInfo = "HexFiend_Framework Tests";
+		};
+		16A3C2FC25E715D8001F01A3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16A3C2E425E715D8001F01A3 /* HexFiend_2.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A550A7161F7877F8001C79C7;
+			remoteInfo = hexf;
+		};
 		16C9CFAD2116D4A6004434D8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 161B71E015D8D76A006E21D4 /* Sparkle.xcodeproj */;
@@ -243,6 +294,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				16133B7415F5C75C00533536 /* Sparkle.framework in CopyFiles */,
+				16A3C31E25E71631001F01A3 /* HexFiend.framework in CopyFiles */,
 				162972B1097B414800158D7B /* SnoizeMIDI.framework in CopyFiles */,
 				162972B2097B414C00158D7B /* SnoizeMIDISpy.framework in CopyFiles */,
 			);
@@ -290,6 +342,7 @@
 		169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDI.xcodeproj; path = ../../Frameworks/SnoizeMIDI/SnoizeMIDI.xcodeproj; sourceTree = SOURCE_ROOT; };
 		169E71A8097B242A001AFB58 /* SnoizeMIDISpy.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDISpy.xcodeproj; path = ../../Frameworks/SnoizeMIDISpy/SnoizeMIDISpy.xcodeproj; sourceTree = SOURCE_ROOT; };
 		16A3C27025E5CBC6001F01A3 /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
+		16A3C2E425E715D8001F01A3 /* HexFiend_2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = HexFiend_2.xcodeproj; path = ../../ThirdParty/HexFiend/HexFiend_2.xcodeproj; sourceTree = "<group>"; };
 		16C267D015D836B2009F4BE4 /* SNDisclosureArrowDown.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SNDisclosureArrowDown.tiff; sourceTree = "<group>"; };
 		16C267D115D836B2009F4BE4 /* SNDisclosureArrowRight.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SNDisclosureArrowRight.tiff; sourceTree = "<group>"; };
 		16F20F4906EAA14A00D9C507 /* Defaults.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = Defaults.plist; sourceTree = "<group>"; };
@@ -317,6 +370,7 @@
 				16E8F01D097B2E8B00B52193 /* SnoizeMIDI.framework in Frameworks */,
 				16E8F01A097B2E5200B52193 /* SnoizeMIDISpy.framework in Frameworks */,
 				161B71F815D8D79E006E21D4 /* Sparkle.framework in Frameworks */,
+				16A3C31D25E71631001F01A3 /* HexFiend.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -410,6 +464,7 @@
 				169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */,
 				169E71A8097B242A001AFB58 /* SnoizeMIDISpy.xcodeproj */,
 				161B71E015D8D76A006E21D4 /* Sparkle.xcodeproj */,
+				16A3C2E425E715D8001F01A3 /* HexFiend_2.xcodeproj */,
 			);
 			name = "Other Projects";
 			sourceTree = "<group>";
@@ -429,6 +484,20 @@
 			children = (
 				169E71AF097B242A001AFB58 /* MIDI Monitor.plugin */,
 				169E71B1097B242A001AFB58 /* SnoizeMIDISpy.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		16A3C2E525E715D8001F01A3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				16A3C2F125E715D8001F01A3 /* Hex Fiend.app */,
+				16A3C2F325E715D8001F01A3 /* HexFiend.framework */,
+				16A3C2F525E715D8001F01A3 /* HexFiend_Framework_iOS.framework */,
+				16A3C2F725E715D8001F01A3 /* com.ridiculousfish.HexFiend.PrivilegedHelper */,
+				16A3C2F925E715D8001F01A3 /* HexFiendling.app */,
+				16A3C2FB25E715D8001F01A3 /* HexFiend_Framework Tests.xctest */,
+				16A3C2FD25E715D8001F01A3 /* hexf */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -589,6 +658,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 16A3C2E525E715D8001F01A3 /* Products */;
+					ProjectRef = 16A3C2E425E715D8001F01A3 /* HexFiend_2.xcodeproj */;
+				},
+				{
 					ProductGroup = 169E71A2097B2419001AFB58 /* Products */;
 					ProjectRef = 169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */;
 				},
@@ -733,6 +806,55 @@
 			fileType = wrapper.framework;
 			path = SnoizeMIDISpy.framework;
 			remoteRef = 169E71B0097B242A001AFB58 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		16A3C2F125E715D8001F01A3 /* Hex Fiend.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "Hex Fiend.app";
+			remoteRef = 16A3C2F025E715D8001F01A3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		16A3C2F325E715D8001F01A3 /* HexFiend.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = HexFiend.framework;
+			remoteRef = 16A3C2F225E715D8001F01A3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		16A3C2F525E715D8001F01A3 /* HexFiend_Framework_iOS.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = HexFiend_Framework_iOS.framework;
+			remoteRef = 16A3C2F425E715D8001F01A3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		16A3C2F725E715D8001F01A3 /* com.ridiculousfish.HexFiend.PrivilegedHelper */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = com.ridiculousfish.HexFiend.PrivilegedHelper;
+			remoteRef = 16A3C2F625E715D8001F01A3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		16A3C2F925E715D8001F01A3 /* HexFiendling.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = HexFiendling.app;
+			remoteRef = 16A3C2F825E715D8001F01A3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		16A3C2FB25E715D8001F01A3 /* HexFiend_Framework Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "HexFiend_Framework Tests.xctest";
+			remoteRef = 16A3C2FA25E715D8001F01A3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		16A3C2FD25E715D8001F01A3 /* hexf */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = hexf;
+			remoteRef = 16A3C2FC25E715D8001F01A3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		16C9CFAE2116D4A6004434D8 /* generate_appcast */ = {
@@ -956,6 +1078,10 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1.5;
 				INFOPLIST_FILE = "Info-MIDIMonitor.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.MIDIMonitor;
 				PRODUCT_NAME = "MIDI Monitor";
@@ -978,6 +1104,10 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1.5;
 				INFOPLIST_FILE = "Info-MIDIMonitor.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.MIDIMonitor;
 				PRODUCT_NAME = "MIDI Monitor";
