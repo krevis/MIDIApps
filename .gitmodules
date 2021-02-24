@@ -1,3 +1,6 @@
 [submodule "ThirdParty/Sparkle"]
 	path = ThirdParty/Sparkle
 	url = https://github.com/sparkle-project/Sparkle.git
+[submodule "ThirdParty/HexFiend"]
+	path = ThirdParty/HexFiend
+	url = https://github.com/HexFiend/HexFiend.git
