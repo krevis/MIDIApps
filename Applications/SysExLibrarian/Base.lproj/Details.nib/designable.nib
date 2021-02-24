@@ -33,11 +33,11 @@
                                 <rect key="frame" x="0.0" y="0.0" width="484" height="104"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <clipView key="contentView" id="vfP-wz-dTt">
-                                    <rect key="frame" x="1" y="0.0" width="467" height="103"/>
+                                    <rect key="frame" x="1" y="0.0" width="482" height="103"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="32" floatsGroupRows="NO" id="10" customClass="GeneralTableView" customModule="SysEx_Librarian" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="0.0" width="467" height="86"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="482" height="86"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -89,7 +89,7 @@
                                                     </textFieldCell>
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                 </tableColumn>
-                                                <tableColumn identifier="manufacturer" editable="NO" width="148" minWidth="79.027000427246094" maxWidth="1000" id="8">
+                                                <tableColumn identifier="manufacturer" editable="NO" width="163" minWidth="79.027000427246094" maxWidth="1000" id="8">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Manufacturer">
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -114,27 +114,27 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="33">
-                                    <rect key="frame" x="468" y="17" width="15" height="86"/>
+                                    <rect key="frame" x="467" y="17" width="16" height="86"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <tableHeaderView key="headerView" id="32">
-                                    <rect key="frame" x="0.0" y="0.0" width="467" height="17"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="482" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
-                            <scrollView fixedFrame="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" findBarPosition="aboveHorizontalRuler" id="13">
+                            <scrollView fixedFrame="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" horizontalScrollElasticity="none" findBarPosition="aboveHorizontalRuler" id="13">
                                 <rect key="frame" x="0.0" y="114" width="484" height="294"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <clipView key="contentView" drawsBackground="NO" id="PTW-27-umw">
-                                    <rect key="frame" x="1" y="1" width="467" height="292"/>
+                                    <rect key="frame" x="1" y="1" width="482" height="292"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="14">
-                                            <rect key="frame" x="0.0" y="0.0" width="482" height="292"/>
+                                        <textView editable="NO" importsGraphics="NO" richText="NO" horizontallyResizable="YES" verticallyResizable="YES" usesFontPanel="YES" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="14">
+                                            <rect key="frame" x="0.0" y="0.0" width="497" height="292"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                            <size key="minSize" width="467" height="292"/>
+                                            <size key="minSize" width="482" height="292"/>
                                             <size key="maxSize" width="508" height="10000000"/>
                                             <attributedString key="textStorage">
                                                 <fragment>
@@ -156,7 +156,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="35">
-                                    <rect key="frame" x="468" y="1" width="15" height="292"/>
+                                    <rect key="frame" x="467" y="1" width="16" height="292"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
