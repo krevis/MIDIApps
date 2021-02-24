@@ -347,15 +347,15 @@ extension AppController {
         guard sources.count > 0 else { return }
 
         if newlyAppearedSources == nil {
-            newlyAppearedSources = Set<Source>()
-
             if let autoConnectOption = AutoConnectOption(rawValue: UserDefaults.standard.integer(forKey: PreferenceKeys.autoConnectNewSources)) {
                 switch autoConnectOption {
                 case .addInCurrentWindow:
+                    newlyAppearedSources = Set<Source>()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         self.autoConnectToNewlyAppearedSources()
                     }
                 case .openNewWindow:
+                    newlyAppearedSources = Set<Source>()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         self.openWindowForNewlyAppearedSources()
                     }
