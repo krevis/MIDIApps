@@ -416,7 +416,13 @@ extension MainWindowController: GeneralTableViewDataSource {
         switch tableColumn.identifier.rawValue {
         case "name":
             if let newName = object as? String {
-                if !entry.renameFile(newName) {
+                if entry.renameFile(newName) {
+                    // Table view will be reloaded asynchronously; after that, scroll to keep the entry visible
+                    DispatchQueue.main.async {
+                        self.scrollToEntries([entry])
+                    }
+                }
+                else {
                     if let window = window {
                         let alert = NSAlert()
                         alert.messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
