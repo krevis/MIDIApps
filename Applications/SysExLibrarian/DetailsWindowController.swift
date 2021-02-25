@@ -59,20 +59,32 @@ class DetailsWindowController: GeneralWindowController {
             messagesTableView.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
         }
 
+        dataController.editable = false
+        dataController.savable = false
+
+        dataController.addRepresenter(dataLayoutRep)
+        let innerReps: [HFRepresenter] = [ HFLineCountingRepresenter(), HFHexTextRepresenter(), HFStringEncodingTextRepresenter(), HFVerticalScrollerRepresenter() ]
+        innerReps.forEach { dataController.addRepresenter($0) }
+        innerReps.forEach { dataLayoutRep.addRepresenter($0) }
+
+        let layoutView = dataLayoutRep.view()
+        layoutView.frame = dataContainerView.bounds
+        layoutView.autoresizingMask = [.width, .height]
+        dataContainerView.addSubview(layoutView)
+
+        if let window = window {
+            // Tweak the window's minSize to match the data layout.
+            let bytesPerLine = dataLayoutRep.maximumBytesPerLineForLayout(inProposedWidth: window.minSize.width)
+            let minWidth = dataLayoutRep.minimumViewWidth(forBytesPerLine: bytesPerLine)
+            window.minSize = NSSize(width: minWidth, height: window.minSize.height)
+
+            // Then ensure the window is sized to fit the layout and that minSize
+            var windowFrame = window.frame
+            windowFrame.size = minimumWindowSize(windowFrame.size)
+            window.setFrame(windowFrame, display: true)
+        }
+
         synchronizeMessageDataDisplay()
-    }
-
-    // MARK: Actions
-
-    @IBAction override func selectAll(_ sender: Any?) {
-        // Forward to the text view, even if it isn't the first responder
-        textView.selectAll(sender)
-    }
-
-    // MARK: NSWindowDelegate
-
-    func windowWillClose(_ notification: Notification) {
-        Self.controllers.removeAll { $0 == self }
     }
 
     // MARK: Private
@@ -82,20 +94,45 @@ class DetailsWindowController: GeneralWindowController {
     private let cachedMessages: [SystemExclusiveMessage]
 
     @IBOutlet private var messagesTableView: NSTableView!
-    @IBOutlet private var textView: NSTextView!
+    @IBOutlet private var dataContainerView: NSView!
+
+    private let dataController = HFController()
+    private let dataLayoutRep = HFLayoutRepresenter()
 
     private func synchronizeMessageDataDisplay() {
-        var formatted = " "     // Not an empty string so we don't lose formatting if we don't have a selected row
-
         let selectedRow = messagesTableView.selectedRow
+        let data: Data
         if selectedRow >= 0 {
-            let data = cachedMessages[selectedRow].receivedDataWithStartByte
-            formatted = data.formattedAsHexDump()
-                + "\nMD5 checksum:   \(data.md5HexHash)"
-                + "\nSHA-1 checksum: \(data.sha1HexHash)"
+            data = cachedMessages[selectedRow].receivedDataWithStartByte
+        }
+        else {
+            data = Data()
         }
 
-        textView.string = formatted
+        let byteSlice = HFFullMemoryByteSlice(data: data)
+        let byteArray = HFBTreeByteArray()
+        byteArray.insertByteSlice(byteSlice, in: HFRange(location: 0, length: 0))
+        dataController.byteArray = byteArray
+
+        // TODO Also display data.md5HexHash and data.sha1HexHash somewhere
+
+        // TODO Repeated close/reopen is causing the divider to move a little each time
+    }
+
+    private func minimumWindowSize(_ proposedWindowFrameSize: NSSize) -> NSSize {
+        // Resize to a size that will exactly fit the layout, with no extra space on the trailing side.
+        let layoutView = dataLayoutRep.view()
+        let proposedSizeInLayoutCoordinates = layoutView.convert(proposedWindowFrameSize, from: nil)
+        let resultingWidthInLayoutCoordinates = dataLayoutRep.minimumViewWidthForLayout(inProposedWidth: proposedSizeInLayoutCoordinates.width)
+        var resultingSize = layoutView.convert(NSSize(width: resultingWidthInLayoutCoordinates, height: proposedSizeInLayoutCoordinates.height), to: nil)
+
+        // But ensure we don't get smaller than the window's minSize.
+        if let window = window {
+            resultingSize.width = Swift.max(resultingSize.width, window.minSize.width)
+            resultingSize.height = Swift.max(resultingSize.height, window.minSize.height)
+        }
+
+        return resultingSize
     }
 
     private func synchronizeTitle() {
@@ -109,6 +146,18 @@ class DetailsWindowController: GeneralWindowController {
 
     @objc private func entryNameDidChange(_ notification: Notification) {
         synchronizeTitle()
+    }
+
+}
+
+extension DetailsWindowController /* NSWindowDelegate */ {
+
+    func windowWillClose(_ notification: Notification) {
+        Self.controllers.removeAll { $0 == self }
+    }
+
+    func windowWillResize(_ sender: NSWindow, to frameSize: NSSize) -> NSSize {
+        minimumWindowSize(frameSize)
     }
 
 }
@@ -160,7 +209,7 @@ extension DetailsWindowController: NSTableViewDelegate {
 }
 
 private let minMessagesViewHeight = CGFloat(32.0)
-private let minTextViewHeight = CGFloat(32.0)
+private let minDataViewHeight = CGFloat(32.0)
 
 extension DetailsWindowController: NSSplitViewDelegate {
 
@@ -169,7 +218,7 @@ extension DetailsWindowController: NSSplitViewDelegate {
     }
 
     func splitView(_ splitView: NSSplitView, constrainMaxCoordinate proposedMaximumPosition: CGFloat, ofSubviewAt dividerIndex: Int) -> CGFloat {
-        proposedMaximumPosition - minTextViewHeight
+        proposedMaximumPosition - minDataViewHeight
     }
 
     func splitView(_ splitView: NSSplitView, resizeSubviewsWithOldSize oldSize: NSSize) {
@@ -191,20 +240,20 @@ extension DetailsWindowController: NSSplitViewDelegate {
             )
             view2.frame = CGRect(x: v2Frame.origin.x,
                                  y: minMessagesViewHeight + dividerThickness,
-                                 width: v2Frame.size.height,
+                                 width: v2Frame.size.width,
                                  height: boundsHeight - (dividerThickness + minMessagesViewHeight)
             )
         }
-        else if v2Frame.size.height < minTextViewHeight {
+        else if v2Frame.size.height < minDataViewHeight {
             view1.frame = CGRect(x: v1Frame.origin.x,
                                  y: 0,
                                  width: v1Frame.size.width,
-                                 height: boundsHeight - (dividerThickness + minTextViewHeight)
+                                 height: boundsHeight - (dividerThickness + minDataViewHeight)
             )
             view2.frame = CGRect(x: v2Frame.origin.x,
-                                 y: boundsHeight - minTextViewHeight,
-                                 width: v2Frame.size.height,
-                                 height: minTextViewHeight
+                                 y: boundsHeight - minDataViewHeight,
+                                 width: v2Frame.size.width,
+                                 height: minDataViewHeight
             )
         }
     }

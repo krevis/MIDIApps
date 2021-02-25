@@ -3,3 +3,4 @@
 //
 
 #import <Sparkle/Sparkle.h>
+#import <HexFiend/HexFiend.h>

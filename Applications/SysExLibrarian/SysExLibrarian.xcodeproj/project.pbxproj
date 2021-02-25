@@ -31,6 +31,8 @@
 		1686427C25CFC35A00A8B292 /* RecordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686427B25CFC35A00A8B292 /* RecordController.swift */; };
 		1686427E25D1195600A8B292 /* PlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686427D25D1195600A8B292 /* PlayController.swift */; };
 		169B7A2025CA729900C9BB81 /* SysExSpeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169B7A1F25CA729900C9BB81 /* SysExSpeedController.swift */; };
+		16A3C3D325E7816C001F01A3 /* HexFiend.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16A3C3D225E7816C001F01A3 /* HexFiend.framework */; };
+		16A3C3D425E7844C001F01A3 /* HexFiend.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 16A3C3D225E7816C001F01A3 /* HexFiend.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16B736C225D66C07000DAC58 /* Alias.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736C125D66C07000DAC58 /* Alias.swift */; };
 		16B736C425D7366D000DAC58 /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736C325D7366D000DAC58 /* Library.swift */; };
 		16B736C625D7773B000DAC58 /* LibraryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736C525D7773B000DAC58 /* LibraryEntry.swift */; };
@@ -242,6 +244,7 @@
 			files = (
 				16133B7515F5C78100533536 /* Sparkle.framework in CopyFiles */,
 				16F034320984BABA006C8A44 /* SnoizeMIDI.framework in CopyFiles */,
+				16A3C3D425E7844C001F01A3 /* HexFiend.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,6 +288,7 @@
 		169225F125C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SysExLibrarian.strings; sourceTree = "<group>"; };
 		169225F225C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.htmld; name = en; path = en.lproj/docs.htmld; sourceTree = "<group>"; };
 		169B7A1F25CA729900C9BB81 /* SysExSpeedController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SysExSpeedController.swift; sourceTree = "<group>"; };
+		16A3C3D225E7816C001F01A3 /* HexFiend.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = HexFiend.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		16B736C125D66C07000DAC58 /* Alias.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alias.swift; sourceTree = "<group>"; };
 		16B736C325D7366D000DAC58 /* Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
 		16B736C525D7773B000DAC58 /* LibraryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryEntry.swift; sourceTree = "<group>"; };
@@ -330,6 +334,7 @@
 				16F0338D0984B76F006C8A44 /* Carbon.framework in Frameworks */,
 				16F034250984BA49006C8A44 /* SnoizeMIDI.framework in Frameworks */,
 				161B721115D8E9BC006E21D4 /* Sparkle.framework in Frameworks */,
+				16A3C3D325E7816C001F01A3 /* HexFiend.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -494,6 +499,7 @@
 		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				16A3C3D225E7816C001F01A3 /* HexFiend.framework */,
 				1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */,
 				1058C7A8FEA54F5311CA2CBB /* Other Frameworks */,
 			);
