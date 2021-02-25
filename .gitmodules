@@ -4,3 +4,4 @@
 [submodule "ThirdParty/HexFiend"]
 	path = ThirdParty/HexFiend
 	url = https://github.com/HexFiend/HexFiend.git
+	shallow = true
