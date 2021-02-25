@@ -64,6 +64,9 @@ class DetailsWindowController: UtilityWindowController {
 
         updateDescriptionFields()
 
+        dataController.editable = false
+        dataController.savable = false
+
         let byteSlice = HFFullMemoryByteSlice(data: dataForDisplay)
         let byteArray = HFBTreeByteArray()
         byteArray.insertByteSlice(byteSlice, in: HFRange(location: 0, length: 0))
