@@ -133,7 +133,7 @@ extension AppController /* Actions */ {
         // Similarly the font is not necessarily the systme font. Override both.
         if #available(macOS 10.13, *) {
             if let creditsURL = Bundle.main.url(forResource: "Credits", withExtension: "rtf"),
-               let credits = NSMutableAttributedString(url: creditsURL, documentAttributes: nil) {
+               let credits = try? NSMutableAttributedString(url: creditsURL, options: [:], documentAttributes: nil) {
                 let range = NSRange(location: 0, length: credits.length)
                 credits.addAttribute(.font, value: NSFont.labelFont(ofSize: NSFont.labelFontSize), range: range)
                 if #available(macOS 10.14, *) {

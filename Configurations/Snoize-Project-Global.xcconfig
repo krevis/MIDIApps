@@ -7,8 +7,8 @@
 // over time, that causes more problems than it solves.
 SDKROOT = macosx
 
-// Minimum OS we'll attempt to run on is 10.9 (Mavericks)
-MACOSX_DEPLOYMENT_TARGET = 10.9
+// Minimum OS we'll attempt to run on is 10.11 (El Capitan, 2015)
+MACOSX_DEPLOYMENT_TARGET = 10.11
 
 // Nice warnings
 WARNING_CFLAGS = -Wmost -Wparentheses

@@ -218,7 +218,7 @@ private func customMIDISendSysex(_ midiContext: CoreMIDIContext, _ request: Unsa
     let packetListSize = MemoryLayout.offset(of: \MIDIPacketList.packet.data)! + bufferSize
     var packetListData = Data(count: packetListSize)
 
-    let queue = DispatchQueue(label: "com.snoize.SnoizeMIDI.CustomMIDISendSysex", target: DispatchQueue.global(priority: .high))
+    let queue = DispatchQueue(label: "com.snoize.SnoizeMIDI.CustomMIDISendSysex", qos: .userInitiated)
 
     func sendNextBuffer() {
         let packetDataSize = min(Int(request.pointee.bytesToSend), bufferSize)

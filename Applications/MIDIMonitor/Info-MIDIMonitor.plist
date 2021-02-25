@@ -50,7 +50,7 @@
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.9.0</string>
+	<string>10.11.0</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2001-2021 Kurt Revis</string>
 	<key>NSMainNibFile</key>
