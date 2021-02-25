@@ -78,7 +78,7 @@ class DetailsWindowController: UtilityWindowController {
         innerReps.forEach { dataLayoutRep.addRepresenter($0) }
 
         let layoutView = dataLayoutRep.view()
-        layoutView.frame = dataContainerView.frame
+        layoutView.frame = dataContainerView.bounds
         layoutView.autoresizingMask = [.width, .height]
         dataContainerView.addSubview(layoutView)
 
