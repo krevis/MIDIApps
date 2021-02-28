@@ -52,6 +52,10 @@ class DetailsWindowController: GeneralWindowController {
     override func windowDidLoad() {
         super.windowDidLoad()
 
+        // Setting the autosave name in the nib causes it to not restore to the exact original position.
+        // Doing it here works more consistently. Suggested by: https://stackoverflow.com/a/30101966/1218876
+        splitView.autosaveName = "Details"
+
         synchronizeTitle()
 
         messagesTableView.reloadData()
@@ -117,10 +121,8 @@ class DetailsWindowController: GeneralWindowController {
         byteArray.insertByteSlice(byteSlice, in: HFRange(location: 0, length: 0))
         dataController.byteArray = byteArray
 
-        md5ChecksumField.stringValue = data.md5HexHash
-        sha1ChecksumField.stringValue = data.sha1HexHash
-
-        // TODO Repeated close/reopen is causing the divider to move a little each time
+        md5ChecksumField.stringValue = data.count > 0 ? data.md5HexHash : ""
+        sha1ChecksumField.stringValue = data.count > 0 ? data.sha1HexHash : ""
     }
 
     private func minimumWindowSize(_ proposedWindowFrameSize: NSSize) -> NSSize {
