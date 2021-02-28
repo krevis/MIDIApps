@@ -93,8 +93,11 @@ class DetailsWindowController: GeneralWindowController {
     private let entry: LibraryEntry
     private let cachedMessages: [SystemExclusiveMessage]
 
+    @IBOutlet private var splitView: NSSplitView!
     @IBOutlet private var messagesTableView: NSTableView!
     @IBOutlet private var dataContainerView: NSView!
+    @IBOutlet private var md5ChecksumField: NSTextField!
+    @IBOutlet private var sha1ChecksumField: NSTextField!
 
     private let dataController = HFController()
     private let dataLayoutRep = HFLayoutRepresenter()
@@ -114,7 +117,8 @@ class DetailsWindowController: GeneralWindowController {
         byteArray.insertByteSlice(byteSlice, in: HFRange(location: 0, length: 0))
         dataController.byteArray = byteArray
 
-        // TODO Also display data.md5HexHash and data.sha1HexHash somewhere
+        md5ChecksumField.stringValue = data.md5HexHash
+        sha1ChecksumField.stringValue = data.sha1HexHash
 
         // TODO Repeated close/reopen is causing the divider to move a little each time
     }
@@ -208,8 +212,8 @@ extension DetailsWindowController: NSTableViewDelegate {
 
 }
 
-private let minMessagesViewHeight = CGFloat(32.0)
-private let minDataViewHeight = CGFloat(32.0)
+private let minMessagesViewHeight = CGFloat(40.0)
+private let minDataViewHeight = CGFloat(80.0)
 
 extension DetailsWindowController: NSSplitViewDelegate {
 
