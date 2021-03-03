@@ -165,11 +165,12 @@ public struct MessageFormatter {
     static func formatExpertStatusByte(_ statusByte: UInt8, otherData: Data?) -> String {
         var result = String(format: "%02X", statusByte)
 
+        let maxOtherDataCount = 255
         if let data = otherData, !data.isEmpty {
-            for byte in data[data.startIndex ..< min(data.startIndex + 31, data.endIndex)] {
+            for byte in data[data.startIndex ..< min(data.startIndex + maxOtherDataCount, data.endIndex)] {
                 result += String(format: " %02X", byte)
             }
-            if data.count > 31 {
+            if data.count > maxOtherDataCount {
                 result += "…"
             }
         }
