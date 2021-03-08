@@ -501,6 +501,14 @@
 	<key>004001</key><string>Softbank Mobile</string>
 	<key>004003</key><string>D&amp;M Holdings</string>
 	<key>004004</key><string>Xing</string>
-	<key>004005</key><string>Pioneer DJ</string>
+	<key>004005</key><string>AlphaTheta (Pioneer DJ)</string>
+	<key>004006</key><string>Pioneer</string>
+	<key>004007</key><string>Slik</string>
+	<key>004800</key><string>sigboost</string>
+	<key>004801</key><string>Lost Technology</string>
+	<key>004802</key><string>Uchiwa Fuujinn</string>
+	<key>004803</key><string>Tsukuba Science</string>
+	<key>004804</key><string>Sonicware</string>
+	<key>004805</key><string>Keshi Nomi Workshop</string>
 </dict>
 </plist>
