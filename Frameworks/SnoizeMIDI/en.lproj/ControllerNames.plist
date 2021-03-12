@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
-<plist version="0.9">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
 <dict>
 	<key>0</key>
 	<string>Bank Select</string>
@@ -67,7 +67,7 @@
 	<key>51</key>
 	<string>General Purpose 4 (fine)</string>
 	<key>64</key>
-	<string>Hold Pedal</string>
+	<string>Damper Pedal (Sustain)</string>
 	<key>65</key>
 	<string>Portamento On/Off</string>
 	<key>66</key>
@@ -81,7 +81,7 @@
 	<key>70</key>
 	<string>Sound Variation</string>
 	<key>71</key>
-	<string>Timbre/Resonance</string>
+	<string>Timbre/Harmonic Intensity</string>
 	<key>72</key>
 	<string>Release Time</string>
 	<key>73</key>
@@ -119,9 +119,9 @@
 	<key>95</key>
 	<string>Phaser Depth</string>
 	<key>96</key>
-	<string>Data Button +1</string>
+	<string>Data Increment</string>
 	<key>97</key>
-	<string>Data Button -1</string>
+	<string>Data Decrement</string>
 	<key>98</key>
 	<string>Non-Registered Parameter LSB</string>
 	<key>99</key>
@@ -143,8 +143,8 @@
 	<key>125</key>
 	<string>Omni Mode On</string>
 	<key>126</key>
-	<string>Poly Mode On/Off</string>
+	<string>Mono Mode On (Poly Mode Off)</string>
 	<key>127</key>
-	<string>Poly Mode On</string>
+	<string>Poly Mode On (Mono Mode Off)</string>
 </dict>
 </plist>
