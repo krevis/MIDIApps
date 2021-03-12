@@ -108,6 +108,8 @@
 	<string>General Purpose 8</string>
 	<key>84</key>
 	<string>Portamento Control</string>
+	<key>88</key>
+	<string>High Resolution Velocity Prefix</string>
 	<key>91</key>
 	<string>Reverb Send Level</string>
 	<key>92</key>
