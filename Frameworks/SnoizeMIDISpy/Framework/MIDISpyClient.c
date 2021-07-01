@@ -256,7 +256,7 @@ void MIDISpyClientDisposeSharedMIDIClient(void)
 {
     if (sMIDIClientRef) {
         MIDIClientDispose(sMIDIClientRef);
-        sMIDIClientRef = (MIDIClientRef)NULL;
+        sMIDIClientRef = (MIDIClientRef)0;
     }
 }
 
