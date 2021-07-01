@@ -27,7 +27,7 @@ class AppController: NSObject {
     @IBOutlet var updaterController: SPUStandardUpdaterController?
 
     private var shouldOpenUntitledDocument = false
-    private var newlyAppearedSources: Set<Source>?
+    private var newlyAppearedInputStreamSources: Set<InputStreamSource>?
 
     override init() {
         super.init()
@@ -343,19 +343,23 @@ extension AppController {
 
     @objc func midiObjectsAppeared(_ notification: Notification) {
         guard let objects = notification.userInfo?[MIDIContext.objectsThatAppeared] as? [MIDIObject] else { return }
-        let sources = objects.compactMap({ $0 as? Source })
-        guard sources.count > 0 else { return }
+        let inputStreamSources = objects.compactMap { object -> InputStreamSource? in
+            guard let endpoint = object as? Endpoint, !endpoint.isVirtual /* TODO isOwnedByThisProcess except that doesn't work... we need to filter out virtual destination for new window so we don't make another new window for it... */  else { return nil }
+            return endpoint.asInputStreamSource()
+        }
+            // TODO Choose Source, Destination, or both depending on pref
+        guard inputStreamSources.count > 0 else { return }
 
-        if newlyAppearedSources == nil {
+        if newlyAppearedInputStreamSources == nil {
             if let autoConnectOption = AutoConnectOption(rawValue: UserDefaults.standard.integer(forKey: PreferenceKeys.autoConnectNewSources)) {
                 switch autoConnectOption {
                 case .addInCurrentWindow:
-                    newlyAppearedSources = Set<Source>()
+                    newlyAppearedInputStreamSources = Set<InputStreamSource>()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         self.autoConnectToNewlyAppearedSources()
                     }
                 case .openNewWindow:
-                    newlyAppearedSources = Set<Source>()
+                    newlyAppearedInputStreamSources = Set<InputStreamSource>()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         self.openWindowForNewlyAppearedSources()
                     }
@@ -365,15 +369,13 @@ extension AppController {
             }
         }
 
-        newlyAppearedSources?.formUnion(sources)
+        newlyAppearedInputStreamSources?.formUnion(inputStreamSources)
     }
 
     private func autoConnectToNewlyAppearedSources() {
-        if let sources = newlyAppearedSources,
-           sources.count > 0,
+        if let inputStreamSources = newlyAppearedInputStreamSources,
+           inputStreamSources.count > 0,
            let document = (NSDocumentController.shared.currentDocument ?? NSApp.orderedDocuments.first) as? Document {
-            let inputStreamSources = Set(sources.map { $0.asInputStreamSource() })
-
             document.selectedInputSources = document.selectedInputSources.union(inputStreamSources)
 
             if let windowController = document.windowControllers.first as? MonitorWindowController {
@@ -382,15 +384,13 @@ extension AppController {
             }
         }
 
-        newlyAppearedSources = nil
+        newlyAppearedInputStreamSources = nil
     }
 
     private func openWindowForNewlyAppearedSources() {
-        if let sources = newlyAppearedSources,
-           sources.count > 0,
+        if let inputStreamSources = newlyAppearedInputStreamSources,
+           inputStreamSources.count > 0,
            let document = try? NSDocumentController.shared.openUntitledDocumentAndDisplay(false) as? Document {
-            let inputStreamSources = Set(sources.map { $0.asInputStreamSource() })
-
             document.makeWindowControllers()
             document.selectedInputSources = inputStreamSources
             document.showWindows()
@@ -401,7 +401,7 @@ extension AppController {
             }
         }
 
-        newlyAppearedSources = nil
+        newlyAppearedInputStreamSources = nil
     }
 
 }
