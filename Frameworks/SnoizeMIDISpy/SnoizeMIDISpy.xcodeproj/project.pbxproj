@@ -575,6 +575,8 @@
 				EXPORTED_SYMBOLS_FILE = Driver/SpyingMIDIDriver.exp;
 				INFOPLIST_FILE = "Info-SpyingMIDIDriver.plist";
 				INSTALL_PATH = "/Library/Audio/MIDI Drivers";
+				OTHER_CFLAGS = "-fno-sanitize=address";
+				OTHER_LDFLAGS = "-fno-sanitize=address";
 				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.MIDIMonitorDriver;
 				PRODUCT_NAME = "MIDI Monitor";
 				WRAPPER_EXTENSION = plugin;
@@ -588,6 +590,8 @@
 				EXPORTED_SYMBOLS_FILE = Driver/SpyingMIDIDriver.exp;
 				INFOPLIST_FILE = "Info-SpyingMIDIDriver.plist";
 				INSTALL_PATH = "/Library/Audio/MIDI Drivers";
+				OTHER_CFLAGS = "-fno-sanitize=address";
+				OTHER_LDFLAGS = "-fno-sanitize=address";
 				PRODUCT_BUNDLE_IDENTIFIER = com.snoize.MIDIMonitorDriver;
 				PRODUCT_NAME = "MIDI Monitor";
 				SKIP_INSTALL = YES;
