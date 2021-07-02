@@ -216,10 +216,6 @@ public class MIDIContext: CoreMIDIContext {
         return addedSource
     }
 
-    func removedVirtualSource(_ source: Source) {
-        sourceList.objectWasRemoved(midiObjectRef: source.midiObjectRef, parentObjectRef: 0, parentType: .other)
-    }
-
     func addedVirtualDestination(midiObjectRef: MIDIObjectRef) -> Destination? {
         var addedDestination: Destination?
         destinationList.objectWasAdded(midiObjectRef: midiObjectRef, parentObjectRef: 0, parentType: .other, preNotificationClosure: {
@@ -229,10 +225,6 @@ public class MIDIContext: CoreMIDIContext {
             addedDestination?.setOwnedByThisProcess()
         })
         return addedDestination
-    }
-
-    func removedVirtualDestination(_ destination: Destination) {
-        destinationList.objectWasRemoved(midiObjectRef: destination.midiObjectRef, parentObjectRef: 0, parentType: .other)
     }
 
     // MARK: Notifications

@@ -43,14 +43,13 @@ public class Destination: Endpoint, CoreMIDIObjectListable {
         // Only possible for virtual endpoints owned by this process
         guard midiObjectRef != 0 && isOwnedByThisProcess else { return }
 
+        // Tell CoreMIDI to remove the endpoint
         _ = midiContext.interface.endpointDispose(endpointRef)
 
-        // This object still hangs around in the endpoint lists until CoreMIDI gets around to posting a notification.
-        // We should remove it immediately.
-        midiContext.removedVirtualDestination(self)
-
-        // Now we can forget the objectRef (not earlier!)
-        clearMIDIObjectRef()
+        // This object continues to live in the endpoint list until CoreMIDI notifies us, at which time we remove it.
+        // There is no need for us to remove it immediately. (In fact, it's better that we don't;
+        // it's possible that CoreMIDI has enqueued notifications to us about the endpoint, including the notification
+        // that it was added in the first place. If we get that AFTER we remove it from the list, we'll add it again.)
     }
 
 }

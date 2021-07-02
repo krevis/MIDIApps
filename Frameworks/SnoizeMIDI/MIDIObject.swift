@@ -148,10 +148,4 @@ public class MIDIObject: NSObject, CoreMIDIObjectWrapper, CoreMIDIPropertyChange
         }
     }
 
-    func clearMIDIObjectRef() {
-        // Called when this object has been removed from CoreMIDI
-        // and it should no longer be used.
-        midiObjectRef = 0
-    }
-
 }

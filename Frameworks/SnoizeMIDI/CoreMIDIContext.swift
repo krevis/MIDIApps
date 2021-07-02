@@ -46,8 +46,6 @@ protocol CoreMIDIContext: AnyObject {
     func findObject(uniqueID: MIDIUniqueID) -> Destination?
 
     func addedVirtualSource(midiObjectRef: MIDIObjectRef) -> Source?
-    func removedVirtualSource(_ source: Source)
     func addedVirtualDestination(midiObjectRef: MIDIObjectRef) -> Destination?
-    func removedVirtualDestination(_ destination: Destination)
 
 }
