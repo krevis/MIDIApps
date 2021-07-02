@@ -339,15 +339,15 @@ extension AppController {
 
 extension AppController {
 
-    // MARK: When sources appear
+    // MARK: When sources and/or destinations appear
 
     @objc func midiObjectsAppeared(_ notification: Notification) {
         guard let objects = notification.userInfo?[MIDIContext.objectsThatAppeared] as? [MIDIObject] else { return }
-        let inputStreamSources = objects.compactMap { object -> InputStreamSource? in
-            guard let endpoint = object as? Endpoint, !endpoint.isOwnedByThisProcess else { return nil }
-            return endpoint.asInputStreamSource()
-        }
-            // TODO Choose Source, Destination, or both depending on pref
+
+        // For each endpoint (Source or Destination) that appeared, which is not a virtual endpoint owned by this process,
+        // get its InputStreamSource. Select them all in the active document or a new document.
+        let endpoints = objects.compactMap({ $0 as? Endpoint }).filter({ !$0.isOwnedByThisProcess })
+        let inputStreamSources = endpoints.map { $0.asInputStreamSource() }
         guard inputStreamSources.count > 0 else { return }
 
         if newlyAppearedInputStreamSources == nil {

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -31,12 +31,12 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="129" y="369" width="350" height="456"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1025"/>
             <view key="contentView" id="156">
                 <rect key="frame" x="0.0" y="0.0" width="350" height="456"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <tabView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="158">
+                    <tabView fixedFrame="YES" initialItem="157" translatesAutoresizingMaskIntoConstraints="NO" id="158">
                         <rect key="frame" x="-11" y="-10" width="369" height="462"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <font key="font" metaFont="system"/>
@@ -277,16 +277,16 @@
                                     <rect key="frame" x="10" y="33" width="349" height="416"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="193">
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="193">
                                             <rect key="frame" x="15" y="382" width="309" height="17"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="New windows will use these sources:" id="275">
+                                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="New windows will observe:" id="275">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <button translatesAutoresizingMaskIntoConstraints="NO" id="253">
+                                        <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="253">
                                             <rect key="frame" x="28" y="358" width="104" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="MIDI sources" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="277">
@@ -297,7 +297,7 @@
                                                 <action selector="changeAutoSelectOrdinarySources:" target="-2" id="260"/>
                                             </connections>
                                         </button>
-                                        <button translatesAutoresizingMaskIntoConstraints="NO" id="254">
+                                        <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="254">
                                             <rect key="frame" x="28" y="336" width="260" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Act as destination for other programs" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="278">
@@ -308,16 +308,16 @@
                                                 <action selector="changeAutoSelectVirtualDestination:" target="-2" id="261"/>
                                             </connections>
                                         </button>
-                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="MnG-tK-BBF">
-                                            <rect key="frame" x="15" y="274" width="219" height="22"/>
+                                        <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MnG-tK-BBF">
+                                            <rect key="frame" x="15" y="274" width="319" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" title="When new MIDI sources are added:" id="MKx-x1-Y1S">
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" title="When new MIDI sources or destinations are added:" id="MKx-x1-Y1S">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <button translatesAutoresizingMaskIntoConstraints="NO" id="255">
+                                        <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="255">
                                             <rect key="frame" x="28" y="314" width="209" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Spy on output to destinations" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="279">
@@ -328,7 +328,7 @@
                                                 <action selector="changeAutoSelectSpyingDestinations:" target="-2" id="262"/>
                                             </connections>
                                         </button>
-                                        <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8FA-H3-vub" userLabel="New Sources">
+                                        <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8FA-H3-vub" userLabel="New Sources">
                                             <rect key="frame" x="29" y="210" width="293" height="56"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
