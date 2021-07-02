@@ -195,15 +195,18 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
 
         // Of all of the input sources, find the first one which is in the given set.
         // Then expand the outline view to show this source, and scroll it to be visible.
+        // Subsequent sources will expand their groups (if necessary) but won't scroll.
+        var foundFirstSource = false
         for group in inputSourceGroups where group.expandable {
             for source in group.boxedSources {
                 if sources.contains(source.unbox) {
                     // Found one!
                     sourcesOutlineView.expandItem(group)
-                    sourcesOutlineView.scrollRowToVisible(sourcesOutlineView.row(forItem: source))
 
-                    // And now we're done
-                    return
+                    if !foundFirstSource {
+                        sourcesOutlineView.scrollRowToVisible(sourcesOutlineView.row(forItem: source))
+                        foundFirstSource = true
+                    }
                 }
             }
         }
