@@ -614,7 +614,8 @@
 				167B882606ED4D650053D305 /* Sources */,
 				1692D743258BFE730092D6E7 /* Run Script (SwiftLint) */,
 				167B883806ED4D650053D305 /* Frameworks */,
-				162972B4097B415900158D7B /* Run Script (Remove Headers from Frameworks) */,
+				162972B4097B415900158D7B /* Run Script (Remove Headers and Modules from Frameworks) */,
+				160DC141268EF53800A799EC /* Run Script (Remove excess HexFiend installed files) */,
 			);
 			buildRules = (
 			);
@@ -928,7 +929,25 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		162972B4097B415900158D7B /* Run Script (Remove Headers from Frameworks) */ = {
+		160DC141268EF53800A799EC /* Run Script (Remove excess HexFiend installed files) */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script (Remove excess HexFiend installed files)";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "# Remove stuff that HexFiend.framework installs:\n#    /Frameworks/HexFiend.framework\n#    /usr/local/bin/com.ridiculousfish.HexFiend.PrivilegedHelper\n#\n# (Ideally we'd set SKIP_INSTALL = YES in the targets in HexFiend,\n#  so it didn't leave those files in the first place, but that would\n#  require changing the source.)\n\nrm -rf $DSTROOT/Frameworks\nrm -rf $DSTROOT/usr\n";
+		};
+		162972B4097B415900158D7B /* Run Script (Remove Headers and Modules from Frameworks) */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 8;
 			comments = "Remove Headers from Frameworks";
@@ -936,12 +955,12 @@
 			);
 			inputPaths = (
 			);
-			name = "Run Script (Remove Headers from Frameworks)";
+			name = "Run Script (Remove Headers and Modules from Frameworks)";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "find \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH\" \\( -type d -or -type l \\) -name Headers -exec rm -rf {} \\; -prune\n";
+			shellScript = "find \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH\" \\( -type d -or -type l \\) -name Headers -exec rm -rf {} \\; -prune\nfind \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH\" \\( -type d -or -type l \\) -name Modules -exec rm -rf {} \\; -prune\n";
 		};
 		1692D743258BFE730092D6E7 /* Run Script (SwiftLint) */ = {
 			isa = PBXShellScriptBuildPhase;
