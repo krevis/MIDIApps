@@ -206,8 +206,14 @@ public class MIDIContext: CoreMIDIContext {
     }
 
     func addedVirtualSource(midiObjectRef: MIDIObjectRef) -> Source? {
-        sourceList.objectWasAdded(midiObjectRef: midiObjectRef, parentObjectRef: 0, parentType: .other)
-        return sourceList.findObject(objectRef: midiObjectRef)
+        var addedSource: Source?
+        sourceList.objectWasAdded(midiObjectRef: midiObjectRef, parentObjectRef: 0, parentType: .other, preNotificationClosure: {
+            // Immediately set the "owned by this process" flag on the object, before posting a notification about it,
+            // so receivers of the notification can decide whether to pay attention to it
+            addedSource = self.sourceList.findObject(objectRef: midiObjectRef)
+            addedSource?.setOwnedByThisProcess()
+        })
+        return addedSource
     }
 
     func removedVirtualSource(_ source: Source) {
@@ -215,8 +221,14 @@ public class MIDIContext: CoreMIDIContext {
     }
 
     func addedVirtualDestination(midiObjectRef: MIDIObjectRef) -> Destination? {
-        destinationList.objectWasAdded(midiObjectRef: midiObjectRef, parentObjectRef: 0, parentType: .other)
-        return destinationList.findObject(objectRef: midiObjectRef)
+        var addedDestination: Destination?
+        destinationList.objectWasAdded(midiObjectRef: midiObjectRef, parentObjectRef: 0, parentType: .other, preNotificationClosure: {
+            // Immediately set the "owned by this process" flag on the object, before posting a notification about it,
+            // so receivers of the notification can decide whether to pay attention to it
+            addedDestination = self.destinationList.findObject(objectRef: midiObjectRef)
+            addedDestination?.setOwnedByThisProcess()
+        })
+        return addedDestination
     }
 
     func removedVirtualDestination(_ destination: Destination) {
@@ -259,7 +271,8 @@ public class MIDIContext: CoreMIDIContext {
             midiObjectList(type: objectType)?.objectWasAdded(
                 midiObjectRef: object,
                 parentObjectRef: parent,
-                parentType: parentType
+                parentType: parentType,
+                preNotificationClosure: nil
             )
 
         case .removed(let object, let objectType, let parent, let parentType):

@@ -85,10 +85,6 @@ extension CoreMIDIContext {
         // trusting that we won't add it again later.
         guard let destination = addedVirtualDestination(midiObjectRef: newEndpointRef) else { return nil }
 
-        // TODO It would be really nice if we could configure the destination, with the code below, before notifying that it was added.
-
-        destination.setOwnedByThisProcess()
-
         if uniqueID != 0 {
             destination.uniqueID = uniqueID
         }

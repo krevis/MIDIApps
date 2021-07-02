@@ -71,8 +71,6 @@ extension CoreMIDIContext {
         // trusting that we won't add it again later.
         guard let source = addedVirtualSource(midiObjectRef: newEndpointRef) else { return nil }
 
-        source.setOwnedByThisProcess()
-
         if uniqueID != 0 {
             source.uniqueID = uniqueID
         }

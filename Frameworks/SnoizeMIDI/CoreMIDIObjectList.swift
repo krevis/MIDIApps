@@ -49,7 +49,7 @@ protocol CoreMIDIObjectList {
 
     func objectPropertyChanged(midiObjectRef: MIDIObjectRef, property: CFString)
 
-    func objectWasAdded(midiObjectRef: MIDIObjectRef, parentObjectRef: MIDIObjectRef, parentType: MIDIObjectType)
+    func objectWasAdded(midiObjectRef: MIDIObjectRef, parentObjectRef: MIDIObjectRef, parentType: MIDIObjectType, preNotificationClosure: (() -> Void)?)
     func objectWasRemoved(midiObjectRef: MIDIObjectRef, parentObjectRef: MIDIObjectRef, parentType: MIDIObjectType)
 
     func updateList()

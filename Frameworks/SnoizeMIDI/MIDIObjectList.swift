@@ -35,10 +35,12 @@ class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>
         }
     }
 
-    func objectWasAdded(midiObjectRef: MIDIObjectRef, parentObjectRef: MIDIObjectRef, parentType: MIDIObjectType) {
+    func objectWasAdded(midiObjectRef: MIDIObjectRef, parentObjectRef: MIDIObjectRef, parentType: MIDIObjectType, preNotificationClosure: (() -> Void)?) {
         if let addedObject = addObject(midiObjectRef) {
             // The objects' ordering may have changed, so refresh it
             refreshOrdering(T.fetchMIDIObjectRefs(context))
+
+            preNotificationClosure?()
 
             context.postObjectsAddedNotification([addedObject])
             context.postObjectListChangedNotification(midiObjectType)
