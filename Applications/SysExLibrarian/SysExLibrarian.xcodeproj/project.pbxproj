@@ -638,7 +638,7 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1240;
+				LastUpgradeCheck = 1250;
 				TargetAttributes = {
 					16F033360984B76F006C8A44 = {
 						DevelopmentTeam = YDJAW5GX9U;
@@ -1094,6 +1094,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 16F033330984B760006C8A44 /* Snoize-Project-Debug.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				ENABLE_TESTABILITY = YES;
 			};
 			name = Debug;
@@ -1102,6 +1103,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 16F033350984B760006C8A44 /* Snoize-Project-Release.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 			};
 			name = Release;
 		};
