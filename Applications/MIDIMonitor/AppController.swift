@@ -344,7 +344,7 @@ extension AppController {
     @objc func midiObjectsAppeared(_ notification: Notification) {
         guard let objects = notification.userInfo?[MIDIContext.objectsThatAppeared] as? [MIDIObject] else { return }
         let inputStreamSources = objects.compactMap { object -> InputStreamSource? in
-            guard let endpoint = object as? Endpoint, !endpoint.isVirtual /* TODO isOwnedByThisProcess except that doesn't work... we need to filter out virtual destination for new window so we don't make another new window for it... */  else { return nil }
+            guard let endpoint = object as? Endpoint, !endpoint.isOwnedByThisProcess else { return nil }
             return endpoint.asInputStreamSource()
         }
             // TODO Choose Source, Destination, or both depending on pref
