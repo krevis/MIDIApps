@@ -25,6 +25,7 @@ class MainWindowController: GeneralWindowController {
         let center = NotificationCenter.default
         center.addObserver(self, selector: #selector(libraryDidChange(_:)), name: .libraryDidChange, object: library)
         center.addObserver(self, selector: #selector(displayPreferencesDidChange(_:)), name: .displayPreferenceChanged, object: nil)
+        center.addObserver(self, selector: #selector(doubleClickToSendMessagesDidChange(_:)), name: .doubleClickToSendPreferenceChanged, object: nil)
         center.addObserver(self, selector: #selector(listenForProgramChangesDidChange(_:)), name: .listenForProgramChangesPreferenceChanged, object: nil)
         center.addObserver(self, selector: #selector(programChangeBaseIndexDidChange(_:)), name: .programChangeBaseIndexPreferenceChanged, object: nil)
     }
@@ -54,8 +55,16 @@ class MainWindowController: GeneralWindowController {
             // Fallback on earlier versions
             libraryTableView.registerForDraggedTypes([NSPasteboard.PasteboardType("NSFilenamesPboardType")])
         }
+        
         libraryTableView.target = self
-        libraryTableView.doubleAction = #selector(play(_:))
+        
+        // Configure the table view to send messages on double-click if enabled in preferences
+        if UserDefaults.standard.bool(forKey: Self.doubleClickToSendPreferenceKey) {
+            libraryTableView.doubleAction = #selector(play(_:))
+        }
+        else {
+            libraryTableView.doubleAction = nil
+        }
 
         // Fix cells so they don't draw their own background (overdrawing the alternating row colors)
         for tableColumn in libraryTableView.tableColumns {
@@ -337,6 +346,7 @@ class MainWindowController: GeneralWindowController {
 extension MainWindowController /* Preferences keys */ {
 
     static let abbreviateSizesInLibraryPreferenceKey = "SSEAbbreviateFileSizesInLibraryTableView"
+    static let doubleClickToSendPreferenceKey = "SSEDoubleClickToSendMessages"
 
 }
 
@@ -569,6 +579,15 @@ extension MainWindowController /* Private */ {
 
     @objc private func displayPreferencesDidChange(_ notification: Notification) {
         libraryTableView.reloadData()
+    }
+
+    @objc private func doubleClickToSendMessagesDidChange(_ notification: Notification) {
+        if UserDefaults.standard.bool(forKey: Self.doubleClickToSendPreferenceKey) {
+            libraryTableView.doubleAction = #selector(play(_:))
+        }
+        else {
+            libraryTableView.doubleAction = nil
+        }
     }
 
     @objc private func listenForProgramChangesDidChange(_ notification: Notification?) {

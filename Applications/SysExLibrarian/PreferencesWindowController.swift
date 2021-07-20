@@ -66,6 +66,13 @@ class PreferencesWindowController: GeneralWindowController {
         UserDefaults.standard.set(boolValue, forKey: MainWindowController.abbreviateSizesInLibraryPreferenceKey)
         NotificationCenter.default.post(name: .displayPreferenceChanged, object: nil)
     }
+    
+    @IBAction func changeDoubleClickToSendMessages(_ sender: Any?) {
+        guard let control = sender as? NSControl else { return }
+        let boolValue = control.integerValue > 0
+        UserDefaults.standard.set(boolValue, forKey: MainWindowController.doubleClickToSendPreferenceKey)
+        NotificationCenter.default.post(name: .doubleClickToSendPreferenceChanged, object: nil)
+    }
 
     @IBAction func changeSysExFolder(_ sender: Any?) {
         let openPanel = NSOpenPanel()
@@ -126,6 +133,7 @@ class PreferencesWindowController: GeneralWindowController {
     @IBOutlet private var sysExIntervalBetweenSentMessagesSlider: NSSlider!
     @IBOutlet private var sysExIntervalBetweenSentMessagesField: NSTextField!
     @IBOutlet private var tabView: NSTabView!
+    @IBOutlet private var doubleClickToSendMessagesButton: NSButton!
     @IBOutlet private var listenForProgramChangesButton: NSButton!
     @IBOutlet private var interruptOnProgramChangeButton: NSButton!
     @IBOutlet private var programChangeBaseIndexMatrix: NSMatrix!
@@ -157,6 +165,7 @@ extension PreferencesWindowController /* Private */ {
         let defaults = UserDefaults.standard
 
         sizeFormatMatrix.selectCell(withTag: defaults.bool(forKey: MainWindowController.abbreviateSizesInLibraryPreferenceKey) ? 1 : 0)
+        doubleClickToSendMessagesButton.integerValue = defaults.bool(forKey: MainWindowController.doubleClickToSendPreferenceKey) ? 1 : 0
         sysExFolderPathField.stringValue = Library.shared.fileDirectoryPath
         sysExReadTimeOutSlider.integerValue = defaults.integer(forKey: MIDIController.sysExReadTimeOutPreferenceKey)
         listenForProgramChangesButton.integerValue = defaults.bool(forKey: MIDIController.listenForProgramChangesPreferenceKey) ? 1 : 0
@@ -196,6 +205,7 @@ extension PreferencesWindowController /* Private */ {
 extension Notification.Name {
 
     static let displayPreferenceChanged = Notification.Name("SSEDisplayPreferenceChangedNotification")
+    static let doubleClickToSendPreferenceChanged = Notification.Name("SSEDoubleClickToSendPreferenceChangedNotification")
     static let sysExSendPreferenceChanged = Notification.Name("SSESysExSendPreferenceChangedNotification")
     static let sysExReceivePreferenceChanged = Notification.Name("SSESysExReceivePreferenceChangedNotification")
     static let listenForProgramChangesPreferenceChanged = Notification.Name("SSEListenForProgramChangesPreferenceChangedNotification")
