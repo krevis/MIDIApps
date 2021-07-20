@@ -22,6 +22,8 @@
 	<true/>
 	<key>SSEShowWarningOnImport</key>
 	<true/>
+	<key>SSEDoubleClickToSendMessages</key>
+	<true/>
 	<key>SSESysExIntervalBetweenSentMessages</key>
 	<integer>150</integer>
 	<key>SSESysExReadTimeOut</key>

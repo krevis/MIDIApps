@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PreferencesWindowController" customModule="SysEx_Librarian" customModuleProvider="target">
             <connections>
+                <outlet property="doubleClickToSendMessagesButton" destination="0Gb-Vg-4Zv" id="3C5-XP-lL4"/>
                 <outlet property="interruptOnProgramChangeButton" destination="300367" id="300409"/>
                 <outlet property="listenForProgramChangesButton" destination="300368" id="300410"/>
                 <outlet property="programChangeBaseIndexMatrix" destination="Lgo-tg-VNj" id="m4A-FP-OWF"/>
@@ -28,7 +29,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="123" y="373" width="431" height="413"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1025"/>
             <view key="contentView" id="288">
                 <rect key="frame" x="0.0" y="0.0" width="431" height="413"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -282,6 +283,17 @@
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0Gb-Vg-4Zv">
+                                            <rect key="frame" x="15" y="19" width="217" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="Double-click to send messages" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="8Dc-Y4-DuH">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="changeDoubleClickToSendMessages:" target="-2" id="NIG-dq-aCl"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>
@@ -294,17 +306,17 @@
                                             <rect key="frame" x="16" y="54" width="395" height="303"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="YyG-ou-Q1J">
-                                                <rect key="frame" x="1" y="0.0" width="393" height="302"/>
+                                                <rect key="frame" x="1" y="1" width="393" height="301"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" headerView="300439" id="353" customClass="SysExSpeedOutlineView" customModule="SysEx_Librarian" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="0.0" width="393" height="285"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="393" height="284"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <size key="intercellSpacing" width="3" height="2"/>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                         <tableColumns>
-                                                            <tableColumn identifier="name" editable="NO" width="146" minWidth="40" maxWidth="1000" id="360">
+                                                            <tableColumn identifier="name" editable="NO" width="117" minWidth="40" maxWidth="1000" id="360">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Ports and Devices">
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
@@ -382,11 +394,11 @@
                                                     </tableView>
                                                 </subviews>
                                             </clipView>
-                                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="300438">
+                                            <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="300438">
                                                 <rect key="frame" x="1" y="-30" width="393" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
-                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="300440">
+                                            <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="300440">
                                                 <rect key="frame" x="-30" y="17" width="15" height="213"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
