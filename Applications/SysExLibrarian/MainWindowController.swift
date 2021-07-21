@@ -55,16 +55,11 @@ class MainWindowController: GeneralWindowController {
             // Fallback on earlier versions
             libraryTableView.registerForDraggedTypes([NSPasteboard.PasteboardType("NSFilenamesPboardType")])
         }
-        
+
         libraryTableView.target = self
-        
+
         // Configure the table view to send messages on double-click if enabled in preferences
-        if UserDefaults.standard.bool(forKey: Self.doubleClickToSendPreferenceKey) {
-            libraryTableView.doubleAction = #selector(play(_:))
-        }
-        else {
-            libraryTableView.doubleAction = nil
-        }
+        doubleClickToSendMessagesDidChange(nil)
 
         // Fix cells so they don't draw their own background (overdrawing the alternating row colors)
         for tableColumn in libraryTableView.tableColumns {
@@ -581,7 +576,7 @@ extension MainWindowController /* Private */ {
         libraryTableView.reloadData()
     }
 
-    @objc private func doubleClickToSendMessagesDidChange(_ notification: Notification) {
+    @objc private func doubleClickToSendMessagesDidChange(_ notification: Notification?) {
         if UserDefaults.standard.bool(forKey: Self.doubleClickToSendPreferenceKey) {
             libraryTableView.doubleAction = #selector(play(_:))
         }

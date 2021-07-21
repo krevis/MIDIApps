@@ -284,9 +284,9 @@
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0Gb-Vg-4Zv">
-                                            <rect key="frame" x="15" y="19" width="217" height="18"/>
+                                            <rect key="frame" x="15" y="19" width="271" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="Double-click to send messages" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="8Dc-Y4-DuH">
+                                            <buttonCell key="cell" type="check" title="Double-click on file to play its messages" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="8Dc-Y4-DuH">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>

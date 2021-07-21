@@ -66,7 +66,7 @@ class PreferencesWindowController: GeneralWindowController {
         UserDefaults.standard.set(boolValue, forKey: MainWindowController.abbreviateSizesInLibraryPreferenceKey)
         NotificationCenter.default.post(name: .displayPreferenceChanged, object: nil)
     }
-    
+
     @IBAction func changeDoubleClickToSendMessages(_ sender: Any?) {
         guard let control = sender as? NSControl else { return }
         let boolValue = control.integerValue > 0
