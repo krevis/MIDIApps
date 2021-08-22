@@ -74,8 +74,6 @@
 	<string>SysEx Librarian</string>
 	<key>CFBundleGetInfoString</key>
 	<string>1.5, Copyright 2002-2021 Kurt Revis</string>
-	<key>CFBundleIconFile</key>
-	<string>SysExLibrarian.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>

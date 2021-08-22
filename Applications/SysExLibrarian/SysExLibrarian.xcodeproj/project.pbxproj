@@ -33,6 +33,7 @@
 		169B7A2025CA729900C9BB81 /* SysExSpeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169B7A1F25CA729900C9BB81 /* SysExSpeedController.swift */; };
 		16A3C3D325E7816C001F01A3 /* HexFiend.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16A3C3D225E7816C001F01A3 /* HexFiend.framework */; };
 		16A3C3D425E7844C001F01A3 /* HexFiend.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 16A3C3D225E7816C001F01A3 /* HexFiend.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		16A7F90726D1E917007587B7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16A7F90626D1E917007587B7 /* Assets.xcassets */; };
 		16B736C225D66C07000DAC58 /* Alias.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736C125D66C07000DAC58 /* Alias.swift */; };
 		16B736C425D7366D000DAC58 /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736C325D7366D000DAC58 /* Library.swift */; };
 		16B736C625D7773B000DAC58 /* LibraryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736C525D7773B000DAC58 /* LibraryEntry.swift */; };
@@ -50,7 +51,6 @@
 		16F033540984B76F006C8A44 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
 		16F033560984B76F006C8A44 /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = F559F90A01DEC5E001000164 /* Preferences.nib */; };
 		16F033570984B76F006C8A44 /* MainWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = F559F90F01DEFA9701000164 /* MainWindow.nib */; };
-		16F0335A0984B76F006C8A44 /* SysExLibrarian.icns in Resources */ = {isa = PBXBuildFile; fileRef = F57D1E5902122FA501000164 /* SysExLibrarian.icns */; };
 		16F0335B0984B76F006C8A44 /* LibraryDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = F57D1E5C02127DF401000164 /* LibraryDocument.icns */; };
 		16F0335C0984B76F006C8A44 /* MIDIDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = F57D1E5D02127DF401000164 /* MIDIDocument.icns */; };
 		16F0335D0984B76F006C8A44 /* SysExDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = F57D1E5B02127DF401000164 /* SysExDocument.icns */; };
@@ -113,13 +113,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = A581997216AF687400325CF3;
 			remoteInfo = SnoizeMIDIOSX;
-		};
-		1691C54525E1EF54000DF665 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 161B71FF15D8E97C006E21D4 /* Sparkle.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 72A5D59C1D6927730009E5AC;
-			remoteInfo = SparkleCore;
 		};
 		1691C54725E1EF54000DF665 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -289,6 +282,7 @@
 		169225F225C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.htmld; name = en; path = en.lproj/docs.htmld; sourceTree = "<group>"; };
 		169B7A1F25CA729900C9BB81 /* SysExSpeedController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SysExSpeedController.swift; sourceTree = "<group>"; };
 		16A3C3D225E7816C001F01A3 /* HexFiend.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = HexFiend.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		16A7F90626D1E917007587B7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		16B736C125D66C07000DAC58 /* Alias.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alias.swift; sourceTree = "<group>"; };
 		16B736C325D7366D000DAC58 /* Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
 		16B736C525D7773B000DAC58 /* LibraryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryEntry.swift; sourceTree = "<group>"; };
@@ -318,7 +312,6 @@
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		F539E386020F2C2F01000164 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		F559F8FA01DEC0C601000164 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
-		F57D1E5902122FA501000164 /* SysExLibrarian.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = SysExLibrarian.icns; sourceTree = "<group>"; };
 		F57D1E5B02127DF401000164 /* SysExDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = SysExDocument.icns; sourceTree = "<group>"; };
 		F57D1E5C02127DF401000164 /* LibraryDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = LibraryDocument.icns; sourceTree = "<group>"; };
 		F57D1E5D02127DF401000164 /* MIDIDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = MIDIDocument.icns; sourceTree = "<group>"; };
@@ -364,7 +357,6 @@
 			isa = PBXGroup;
 			children = (
 				161B720815D8E97D006E21D4 /* Sparkle.framework */,
-				1691C54625E1EF54000DF665 /* SparkleCore.framework */,
 				1691C54825E1EF54000DF665 /* Autoupdate */,
 				1691C54A25E1EF54000DF665 /* org.sparkle-project.InstallerLauncher.xpc */,
 				1691C54C25E1EF54000DF665 /* org.sparkle-project.InstallerConnection.xpc */,
@@ -475,6 +467,8 @@
 		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				16A7F90626D1E917007587B7 /* Assets.xcassets */,
+				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				16F0384B0984C9D7006C8A44 /* Defaults.plist */,
 				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
 				F559F90A01DEC5E001000164 /* Preferences.nib */,
@@ -487,7 +481,6 @@
 				F530900E023350F901000164 /* Import.nib */,
 				16F033940984B76F006C8A44 /* Info-SysExLibrarian.plist */,
 				F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */,
-				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				F5308FEB0233012701000164 /* Icons */,
 				F5308FEC0233012701000164 /* Toolbar Images */,
 				F5D90FE4021630C101000164 /* docs.htmld */,
@@ -563,7 +556,6 @@
 		F5308FEB0233012701000164 /* Icons */ = {
 			isa = PBXGroup;
 			children = (
-				F57D1E5902122FA501000164 /* SysExLibrarian.icns */,
 				F57D1E5B02127DF401000164 /* SysExDocument.icns */,
 				F57D1E5C02127DF401000164 /* LibraryDocument.icns */,
 				F57D1E5D02127DF401000164 /* MIDIDocument.icns */,
@@ -721,13 +713,6 @@
 			remoteRef = 1682E81A176EE3C400089623 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		1691C54625E1EF54000DF665 /* SparkleCore.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SparkleCore.framework;
-			remoteRef = 1691C54525E1EF54000DF665 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		1691C54825E1EF54000DF665 /* Autoupdate */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.executable";
@@ -843,7 +828,6 @@
 				16F033540984B76F006C8A44 /* MainMenu.nib in Resources */,
 				16F033560984B76F006C8A44 /* Preferences.nib in Resources */,
 				16F033570984B76F006C8A44 /* MainWindow.nib in Resources */,
-				16F0335A0984B76F006C8A44 /* SysExLibrarian.icns in Resources */,
 				163FB60C199EE3C30017B664 /* ToolbarRecordMultipleTemplate@2x.tiff in Resources */,
 				16F0335B0984B76F006C8A44 /* LibraryDocument.icns in Resources */,
 				16F0335C0984B76F006C8A44 /* MIDIDocument.icns in Resources */,
@@ -864,6 +848,7 @@
 				16F0384C0984C9D7006C8A44 /* Defaults.plist in Resources */,
 				161B721315D8EA13006E21D4 /* dsa_pub.pem in Resources */,
 				163FB60B199EE3C30017B664 /* ToolbarRecordMultipleTemplate.tiff in Resources */,
+				16A7F90726D1E917007587B7 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1073,6 +1058,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 16F033300984B760006C8A44 /* Snoize-Application-Debug.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1.5;
 				INFOPLIST_FILE = "Info-SysExLibrarian.plist";
@@ -1093,6 +1079,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 16F033320984B760006C8A44 /* Snoize-Application-Release.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1.5;
 				INFOPLIST_FILE = "Info-SysExLibrarian.plist";
