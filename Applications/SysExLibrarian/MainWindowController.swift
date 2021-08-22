@@ -879,13 +879,13 @@ extension MainWindowController: NSToolbarDelegate {
         case "Play":
             toolbarItem.label = "Play"
             toolbarItem.action = #selector(play(_:))
-            toolbarItem.image = NSImage(named: "ToolbarPlayTemplate")
+            toolbarItem.image = NSImage(named: "ToolbarPlay")
             toolbarItem.toolTip = "Play back the selected file(s)"
 
         case "DestinationPopup":
             toolbarItem.label = "Destination"
             toolbarItem.action = #selector(play(_:))
-            toolbarItem.image = NSImage(named: "ToolbarPlayTemplate")
+            toolbarItem.image = NSImage(named: "ToolbarPlay")
             toolbarItem.toolTip = "Where to send SysEx data"
 
             destinationToolbarItem = toolbarItem
@@ -903,13 +903,13 @@ extension MainWindowController: NSToolbarDelegate {
         case "RecordOne":
             toolbarItem.label = "Record One"
             toolbarItem.action = #selector(recordOne(_:))
-            toolbarItem.image = NSImage(named: "ToolbarRecordOneTemplate")
+            toolbarItem.image = NSImage(named: "ToolbarRecordOne")
             toolbarItem.toolTip = "Record one SysEx message"
 
         case "RecordMany":
             toolbarItem.label = "Record Many"
             toolbarItem.action = #selector(recordMany(_:))
-            toolbarItem.image = NSImage(named: "ToolbarRecordMultipleTemplate")
+            toolbarItem.image = NSImage(named: "ToolbarRecordMultiple")
             toolbarItem.toolTip = "Record one or more SysEx messages"
 
         default:

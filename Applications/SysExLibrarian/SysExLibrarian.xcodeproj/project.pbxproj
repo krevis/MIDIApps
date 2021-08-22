@@ -10,12 +10,6 @@
 		16133B7515F5C78100533536 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 161B720815D8E97D006E21D4 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		161B721115D8E9BC006E21D4 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 161B720815D8E97D006E21D4 /* Sparkle.framework */; };
 		161B721315D8EA13006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B721215D8EA13006E21D4 /* dsa_pub.pem */; };
-		163FB607199EE2530017B664 /* ToolbarPlayTemplate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB605199EE2530017B664 /* ToolbarPlayTemplate.tiff */; };
-		163FB608199EE2530017B664 /* ToolbarPlayTemplate@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB606199EE2530017B664 /* ToolbarPlayTemplate@2x.tiff */; };
-		163FB60B199EE3C30017B664 /* ToolbarRecordMultipleTemplate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB609199EE3C30017B664 /* ToolbarRecordMultipleTemplate.tiff */; };
-		163FB60C199EE3C30017B664 /* ToolbarRecordMultipleTemplate@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB60A199EE3C30017B664 /* ToolbarRecordMultipleTemplate@2x.tiff */; };
-		163FB60F199EE6810017B664 /* ToolbarRecordOneTemplate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB60D199EE6810017B664 /* ToolbarRecordOneTemplate.tiff */; };
-		163FB610199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 163FB60E199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff */; };
 		16517B9325D4A2E900D0CAC4 /* NSFileManager+UniqueName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16517B9225D4A2E900D0CAC4 /* NSFileManager+UniqueName.swift */; };
 		16517B9525D4AAFF00D0CAC4 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16517B9425D4AAFF00D0CAC4 /* MainWindowController.swift */; };
 		16517BAF25D5154F00D0CAC4 /* GeneralWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16517BAE25D5154F00D0CAC4 /* GeneralWindowController.swift */; };
@@ -248,12 +242,6 @@
 		161B71FF15D8E97C006E21D4 /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = ../../ThirdParty/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		161B721215D8EA13006E21D4 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dsa_pub.pem; path = ../../Updates/dsa_pub.pem; sourceTree = "<group>"; };
 		161B721515D8EA7F006E21D4 /* SysExLibrarian.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = SysExLibrarian.xml; path = ../../Updates/SysExLibrarian.xml; sourceTree = "<group>"; };
-		163FB605199EE2530017B664 /* ToolbarPlayTemplate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarPlayTemplate.tiff; sourceTree = "<group>"; };
-		163FB606199EE2530017B664 /* ToolbarPlayTemplate@2x.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "ToolbarPlayTemplate@2x.tiff"; sourceTree = "<group>"; };
-		163FB609199EE3C30017B664 /* ToolbarRecordMultipleTemplate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarRecordMultipleTemplate.tiff; sourceTree = "<group>"; };
-		163FB60A199EE3C30017B664 /* ToolbarRecordMultipleTemplate@2x.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "ToolbarRecordMultipleTemplate@2x.tiff"; sourceTree = "<group>"; };
-		163FB60D199EE6810017B664 /* ToolbarRecordOneTemplate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarRecordOneTemplate.tiff; sourceTree = "<group>"; };
-		163FB60E199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "ToolbarRecordOneTemplate@2x.tiff"; sourceTree = "<group>"; };
 		16517B9225D4A2E900D0CAC4 /* NSFileManager+UniqueName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSFileManager+UniqueName.swift"; sourceTree = "<group>"; };
 		16517B9425D4AAFF00D0CAC4 /* MainWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
 		16517BAE25D5154F00D0CAC4 /* GeneralWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralWindowController.swift; sourceTree = "<group>"; };
@@ -482,7 +470,6 @@
 				16F033940984B76F006C8A44 /* Info-SysExLibrarian.plist */,
 				F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */,
 				F5308FEB0233012701000164 /* Icons */,
-				F5308FEC0233012701000164 /* Toolbar Images */,
 				F5D90FE4021630C101000164 /* docs.htmld */,
 				161B721215D8EA13006E21D4 /* dsa_pub.pem */,
 			);
@@ -561,19 +548,6 @@
 				F57D1E5D02127DF401000164 /* MIDIDocument.icns */,
 			);
 			name = Icons;
-			sourceTree = "<group>";
-		};
-		F5308FEC0233012701000164 /* Toolbar Images */ = {
-			isa = PBXGroup;
-			children = (
-				163FB605199EE2530017B664 /* ToolbarPlayTemplate.tiff */,
-				163FB606199EE2530017B664 /* ToolbarPlayTemplate@2x.tiff */,
-				163FB609199EE3C30017B664 /* ToolbarRecordMultipleTemplate.tiff */,
-				163FB60A199EE3C30017B664 /* ToolbarRecordMultipleTemplate@2x.tiff */,
-				163FB60D199EE6810017B664 /* ToolbarRecordOneTemplate.tiff */,
-				163FB60E199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff */,
-			);
-			name = "Toolbar Images";
 			sourceTree = "<group>";
 		};
 		F565B6ED01E1567501000164 /* Cocoa Extensions */ = {
@@ -828,7 +802,6 @@
 				16F033540984B76F006C8A44 /* MainMenu.nib in Resources */,
 				16F033560984B76F006C8A44 /* Preferences.nib in Resources */,
 				16F033570984B76F006C8A44 /* MainWindow.nib in Resources */,
-				163FB60C199EE3C30017B664 /* ToolbarRecordMultipleTemplate@2x.tiff in Resources */,
 				16F0335B0984B76F006C8A44 /* LibraryDocument.icns in Resources */,
 				16F0335C0984B76F006C8A44 /* MIDIDocument.icns in Resources */,
 				16F0335D0984B76F006C8A44 /* SysExDocument.icns in Resources */,
@@ -838,16 +811,11 @@
 				16F033660984B76F006C8A44 /* RecordOne.nib in Resources */,
 				16F033670984B76F006C8A44 /* RecordMany.nib in Resources */,
 				16F033680984B76F006C8A44 /* Play.nib in Resources */,
-				163FB610199EE6810017B664 /* ToolbarRecordOneTemplate@2x.tiff in Resources */,
 				16F033690984B76F006C8A44 /* Delete.nib in Resources */,
 				16F0336A0984B76F006C8A44 /* Import.nib in Resources */,
 				16F0336B0984B76F006C8A44 /* SysExLibrarian.strings in Resources */,
-				163FB607199EE2530017B664 /* ToolbarPlayTemplate.tiff in Resources */,
-				163FB608199EE2530017B664 /* ToolbarPlayTemplate@2x.tiff in Resources */,
-				163FB60F199EE6810017B664 /* ToolbarRecordOneTemplate.tiff in Resources */,
 				16F0384C0984C9D7006C8A44 /* Defaults.plist in Resources */,
 				161B721315D8EA13006E21D4 /* dsa_pub.pem in Resources */,
-				163FB60B199EE3C30017B664 /* ToolbarRecordMultipleTemplate.tiff in Resources */,
 				16A7F90726D1E917007587B7 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
