@@ -33,8 +33,6 @@
 	<string>MIDI Monitor</string>
 	<key>CFBundleGetInfoString</key>
 	<string>1.5, Copyright 2001-2021 Kurt Revis</string>
-	<key>CFBundleIconFile</key>
-	<string>MIDIMonitor.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
