@@ -45,9 +45,6 @@
 		16F033540984B76F006C8A44 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
 		16F033560984B76F006C8A44 /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = F559F90A01DEC5E001000164 /* Preferences.nib */; };
 		16F033570984B76F006C8A44 /* MainWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = F559F90F01DEFA9701000164 /* MainWindow.nib */; };
-		16F0335B0984B76F006C8A44 /* LibraryDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = F57D1E5C02127DF401000164 /* LibraryDocument.icns */; };
-		16F0335C0984B76F006C8A44 /* MIDIDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = F57D1E5D02127DF401000164 /* MIDIDocument.icns */; };
-		16F0335D0984B76F006C8A44 /* SysExDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = F57D1E5B02127DF401000164 /* SysExDocument.icns */; };
 		16F033600984B76F006C8A44 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		16F033630984B76F006C8A44 /* docs.htmld in Resources */ = {isa = PBXBuildFile; fileRef = F5D90FE4021630C101000164 /* docs.htmld */; };
 		16F033640984B76F006C8A44 /* Details.nib in Resources */ = {isa = PBXBuildFile; fileRef = F5F52C15022015AC01000164 /* Details.nib */; };
@@ -300,9 +297,6 @@
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		F539E386020F2C2F01000164 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		F559F8FA01DEC0C601000164 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
-		F57D1E5B02127DF401000164 /* SysExDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = SysExDocument.icns; sourceTree = "<group>"; };
-		F57D1E5C02127DF401000164 /* LibraryDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = LibraryDocument.icns; sourceTree = "<group>"; };
-		F57D1E5D02127DF401000164 /* MIDIDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = MIDIDocument.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -469,7 +463,6 @@
 				F530900E023350F901000164 /* Import.nib */,
 				16F033940984B76F006C8A44 /* Info-SysExLibrarian.plist */,
 				F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */,
-				F5308FEB0233012701000164 /* Icons */,
 				F5D90FE4021630C101000164 /* docs.htmld */,
 				161B721215D8EA13006E21D4 /* dsa_pub.pem */,
 			);
@@ -538,16 +531,6 @@
 				16B736C125D66C07000DAC58 /* Alias.swift */,
 			);
 			name = Library;
-			sourceTree = "<group>";
-		};
-		F5308FEB0233012701000164 /* Icons */ = {
-			isa = PBXGroup;
-			children = (
-				F57D1E5B02127DF401000164 /* SysExDocument.icns */,
-				F57D1E5C02127DF401000164 /* LibraryDocument.icns */,
-				F57D1E5D02127DF401000164 /* MIDIDocument.icns */,
-			);
-			name = Icons;
 			sourceTree = "<group>";
 		};
 		F565B6ED01E1567501000164 /* Cocoa Extensions */ = {
@@ -802,9 +785,6 @@
 				16F033540984B76F006C8A44 /* MainMenu.nib in Resources */,
 				16F033560984B76F006C8A44 /* Preferences.nib in Resources */,
 				16F033570984B76F006C8A44 /* MainWindow.nib in Resources */,
-				16F0335B0984B76F006C8A44 /* LibraryDocument.icns in Resources */,
-				16F0335C0984B76F006C8A44 /* MIDIDocument.icns in Resources */,
-				16F0335D0984B76F006C8A44 /* SysExDocument.icns in Resources */,
 				16F033600984B76F006C8A44 /* Credits.rtf in Resources */,
 				16F033630984B76F006C8A44 /* docs.htmld in Resources */,
 				16F033640984B76F006C8A44 /* Details.nib in Resources */,

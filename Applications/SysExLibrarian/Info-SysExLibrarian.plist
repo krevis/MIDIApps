@@ -14,7 +14,9 @@
 				<string>Syx</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
-			<string>SysExDocument.icns</string>
+			<string>SysExDocument</string>
+			<key>CFBundleTypeIconSystemGenerated</key>
+			<integer>1</integer>
 			<key>CFBundleTypeName</key>
 			<string>SysEx Librarian Document</string>
 			<key>CFBundleTypeOSTypes</key>
@@ -23,6 +25,8 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 			<key>LSTypeIsPackage</key>
 			<false/>
 		</dict>
@@ -36,7 +40,9 @@
 				<string>Midi</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
-			<string>MIDIDocument.icns</string>
+			<string>MIDIDocument</string>
+			<key>CFBundleTypeIconSystemGenerated</key>
+			<integer>1</integer>
 			<key>CFBundleTypeName</key>
 			<string>MIDI file</string>
 			<key>CFBundleTypeOSTypes</key>
@@ -46,6 +52,8 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 			<key>LSTypeIsPackage</key>
 			<false/>
 		</dict>
@@ -55,7 +63,9 @@
 				<string>sXLb</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
-			<string>LibraryDocument.icns</string>
+			<string>LibraryDocument</string>
+			<key>CFBundleTypeIconSystemGenerated</key>
+			<integer>1</integer>
 			<key>CFBundleTypeName</key>
 			<string>SysEx Librarian Library</string>
 			<key>CFBundleTypeOSTypes</key>
@@ -64,6 +74,8 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSPersistentStoreTypeKey</key>
