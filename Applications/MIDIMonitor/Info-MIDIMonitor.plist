@@ -8,7 +8,9 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeIconFile</key>
-			<string>Document.icns</string>
+			<string></string>
+			<key>CFBundleTypeIconSystemGenerated</key>
+			<integer>1</integer>
 			<key>CFBundleTypeName</key>
 			<string>MIDI Monitor Document</string>
 			<key>CFBundleTypeRole</key>
@@ -73,15 +75,16 @@
 			<key>UTTypeDescription</key>
 			<string>MIDI Monitor Document</string>
 			<key>UTTypeIconFile</key>
-			<string>Document</string>
+			<string></string>
+			<key>UTTypeIcons</key>
+			<dict>
+				<key>UTTypeIconText</key>
+				<string>MIDI Monitor</string>
+			</dict>
 			<key>UTTypeIdentifier</key>
 			<string>com.snoize.midimonitor</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
-				<key>com.apple.ostype</key>
-				<array>
-					<string>mMon</string>
-				</array>
 				<key>public.filename-extension</key>
 				<array>
 					<string>mMon</string>

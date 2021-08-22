@@ -18,7 +18,6 @@
 		167B881A06ED4D650053D305 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
 		167B881C06ED4D650053D305 /* MIDIMonitor.strings in Resources */ = {isa = PBXBuildFile; fileRef = F53BB4AE015D96A501000164 /* MIDIMonitor.strings */; };
 		167B881D06ED4D650053D305 /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = F53A1C0A015EC0FB01000164 /* Preferences.nib */; };
-		167B881F06ED4D650053D305 /* Document.icns in Resources */ = {isa = PBXBuildFile; fileRef = F57053DA018D364A01000164 /* Document.icns */; };
 		167B882106ED4D650053D305 /* docs.htmld in Resources */ = {isa = PBXBuildFile; fileRef = F56D31A30195A90E01000164 /* docs.htmld */; };
 		167B882206ED4D650053D305 /* SysEx.nib in Resources */ = {isa = PBXBuildFile; fileRef = F56E05CE0206BF0C01000164 /* SysEx.nib */; };
 		167B882306ED4D650053D305 /* MIDIMonitor.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B4FDCFA73011CA2CEA /* MIDIMonitor.nib */; };
@@ -341,7 +340,6 @@
 		16F9FA5C2586FD0B00169621 /* DisclosableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosableView.swift; sourceTree = "<group>"; };
 		2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		F57053DA018D364A01000164 /* Document.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Document.icns; sourceTree = "<group>"; };
 		F5B4281801A360AD01000164 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
@@ -545,7 +543,6 @@
 				F56E05CE0206BF0C01000164 /* SysEx.nib */,
 				167B884206ED4D650053D305 /* Info-MIDIMonitor.plist */,
 				F53BB4AE015D96A501000164 /* MIDIMonitor.strings */,
-				F57053DA018D364A01000164 /* Document.icns */,
 				F56D31A30195A90E01000164 /* docs.htmld */,
 				161B71F915D8DD83006E21D4 /* dsa_pub.pem */,
 			);
@@ -884,7 +881,6 @@
 				167B881A06ED4D650053D305 /* MainMenu.nib in Resources */,
 				167B881C06ED4D650053D305 /* MIDIMonitor.strings in Resources */,
 				167B881D06ED4D650053D305 /* Preferences.nib in Resources */,
-				167B881F06ED4D650053D305 /* Document.icns in Resources */,
 				167B882106ED4D650053D305 /* docs.htmld in Resources */,
 				167B882206ED4D650053D305 /* SysEx.nib in Resources */,
 				167B882306ED4D650053D305 /* MIDIMonitor.nib in Resources */,
