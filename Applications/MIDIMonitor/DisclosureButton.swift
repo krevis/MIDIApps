@@ -25,8 +25,8 @@ class DisclosureButton: NSButton {
     }
 
     private func configure() {
-        image = NSImage(named: "SNDisclosureArrowRight")
-        alternateImage = NSImage(named: "SNDisclosureArrowDown")
+        image = NSImage(named: "DisclosureArrowRight")
+        alternateImage = NSImage(named: "DisclosureArrowDown")
 
         if let buttonCell = cell as? NSButtonCell {
             buttonCell.highlightsBy = .pushInCellMask
