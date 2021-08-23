@@ -10,6 +10,15 @@
 		16133B7515F5C78100533536 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 161B720815D8E97D006E21D4 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		161B721115D8E9BC006E21D4 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 161B720815D8E97D006E21D4 /* Sparkle.framework */; };
 		161B721315D8EA13006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B721215D8EA13006E21D4 /* dsa_pub.pem */; };
+		163849D226D37E62007C15DF /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849B926D37E62007C15DF /* MainMenu.xib */; };
+		163849E326D37E7A007C15DF /* Play.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849D326D37E79007C15DF /* Play.xib */; };
+		163849E426D37E7A007C15DF /* Details.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849D526D37E79007C15DF /* Details.xib */; };
+		163849E526D37E7A007C15DF /* RecordOne.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849D726D37E79007C15DF /* RecordOne.xib */; };
+		163849E626D37E7A007C15DF /* Delete.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849D926D37E79007C15DF /* Delete.xib */; };
+		163849E726D37E7A007C15DF /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849DB26D37E79007C15DF /* Preferences.xib */; };
+		163849E826D37E7A007C15DF /* Import.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849DD26D37E79007C15DF /* Import.xib */; };
+		163849E926D37E7A007C15DF /* RecordMany.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849DF26D37E79007C15DF /* RecordMany.xib */; };
+		163849EA26D37E7A007C15DF /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849E126D37E79007C15DF /* MainWindow.xib */; };
 		16517B9325D4A2E900D0CAC4 /* NSFileManager+UniqueName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16517B9225D4A2E900D0CAC4 /* NSFileManager+UniqueName.swift */; };
 		16517B9525D4AAFF00D0CAC4 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16517B9425D4AAFF00D0CAC4 /* MainWindowController.swift */; };
 		16517BAF25D5154F00D0CAC4 /* GeneralWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16517BAE25D5154F00D0CAC4 /* GeneralWindowController.swift */; };
@@ -42,17 +51,8 @@
 		16D0EF2725C94D0400399C74 /* ValidatingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D0EF2625C94D0400399C74 /* ValidatingButton.swift */; };
 		16D0EF2B25CA16DF00399C74 /* NSPopUpButton+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D0EF2A25CA16DF00399C74 /* NSPopUpButton+Extensions.swift */; };
 		16DE09DD25CB4934004F62F7 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16DE09DC25CB4934004F62F7 /* PreferencesWindowController.swift */; };
-		16F033540984B76F006C8A44 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
-		16F033560984B76F006C8A44 /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = F559F90A01DEC5E001000164 /* Preferences.nib */; };
-		16F033570984B76F006C8A44 /* MainWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = F559F90F01DEFA9701000164 /* MainWindow.nib */; };
 		16F033600984B76F006C8A44 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		16F033630984B76F006C8A44 /* docs.htmld in Resources */ = {isa = PBXBuildFile; fileRef = F5D90FE4021630C101000164 /* docs.htmld */; };
-		16F033640984B76F006C8A44 /* Details.nib in Resources */ = {isa = PBXBuildFile; fileRef = F5F52C15022015AC01000164 /* Details.nib */; };
-		16F033660984B76F006C8A44 /* RecordOne.nib in Resources */ = {isa = PBXBuildFile; fileRef = F5308FE80232F9D401000164 /* RecordOne.nib */; };
-		16F033670984B76F006C8A44 /* RecordMany.nib in Resources */ = {isa = PBXBuildFile; fileRef = F5308FF10233059B01000164 /* RecordMany.nib */; };
-		16F033680984B76F006C8A44 /* Play.nib in Resources */ = {isa = PBXBuildFile; fileRef = F5308FFD023315AD01000164 /* Play.nib */; };
-		16F033690984B76F006C8A44 /* Delete.nib in Resources */ = {isa = PBXBuildFile; fileRef = F53090060233385B01000164 /* Delete.nib */; };
-		16F0336A0984B76F006C8A44 /* Import.nib in Resources */ = {isa = PBXBuildFile; fileRef = F530900E023350F901000164 /* Import.nib */; };
 		16F0336B0984B76F006C8A44 /* SysExLibrarian.strings in Resources */ = {isa = PBXBuildFile; fileRef = F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */; };
 		16F0338A0984B76F006C8A44 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		16F0338B0984B76F006C8A44 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F559F8FA01DEC0C601000164 /* CoreMIDI.framework */; };
@@ -239,6 +239,15 @@
 		161B71FF15D8E97C006E21D4 /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = ../../ThirdParty/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		161B721215D8EA13006E21D4 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dsa_pub.pem; path = ../../Updates/dsa_pub.pem; sourceTree = "<group>"; };
 		161B721515D8EA7F006E21D4 /* SysExLibrarian.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = SysExLibrarian.xml; path = ../../Updates/SysExLibrarian.xml; sourceTree = "<group>"; };
+		163849BA26D37E62007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		163849D426D37E79007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Play.xib; sourceTree = "<group>"; };
+		163849D626D37E79007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Details.xib; sourceTree = "<group>"; };
+		163849D826D37E79007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/RecordOne.xib; sourceTree = "<group>"; };
+		163849DA26D37E79007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Delete.xib; sourceTree = "<group>"; };
+		163849DC26D37E79007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Preferences.xib; sourceTree = "<group>"; };
+		163849DE26D37E79007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Import.xib; sourceTree = "<group>"; };
+		163849E026D37E79007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/RecordMany.xib; sourceTree = "<group>"; };
+		163849E226D37E79007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainWindow.xib; sourceTree = "<group>"; };
 		16517B9225D4A2E900D0CAC4 /* NSFileManager+UniqueName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSFileManager+UniqueName.swift"; sourceTree = "<group>"; };
 		16517B9425D4AAFF00D0CAC4 /* MainWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
 		16517BAE25D5154F00D0CAC4 /* GeneralWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralWindowController.swift; sourceTree = "<group>"; };
@@ -253,15 +262,6 @@
 		1686427925CFBF0700A8B292 /* RecordOneController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordOneController.swift; sourceTree = "<group>"; };
 		1686427B25CFC35A00A8B292 /* RecordController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordController.swift; sourceTree = "<group>"; };
 		1686427D25D1195600A8B292 /* PlayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayController.swift; sourceTree = "<group>"; };
-		169225E625C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MainMenu.nib; sourceTree = "<group>"; };
-		169225E725C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Preferences.nib; sourceTree = "<group>"; };
-		169225E825C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Details.nib; sourceTree = "<group>"; };
-		169225E925C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MainWindow.nib; sourceTree = "<group>"; };
-		169225EA25C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Play.nib; sourceTree = "<group>"; };
-		169225EB25C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/RecordOne.nib; sourceTree = "<group>"; };
-		169225EC25C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/RecordMany.nib; sourceTree = "<group>"; };
-		169225ED25C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Delete.nib; sourceTree = "<group>"; };
-		169225EE25C2B03300771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Import.nib; sourceTree = "<group>"; };
 		169225EF25C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		169225F125C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SysExLibrarian.strings; sourceTree = "<group>"; };
 		169225F225C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.htmld; name = en; path = en.lproj/docs.htmld; sourceTree = "<group>"; };
@@ -450,19 +450,19 @@
 			isa = PBXGroup;
 			children = (
 				16A7F90626D1E917007587B7 /* Assets.xcassets */,
-				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
-				16F0384B0984C9D7006C8A44 /* Defaults.plist */,
-				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
-				F559F90A01DEC5E001000164 /* Preferences.nib */,
-				F5F52C15022015AC01000164 /* Details.nib */,
-				F559F90F01DEFA9701000164 /* MainWindow.nib */,
-				F5308FFD023315AD01000164 /* Play.nib */,
-				F5308FE80232F9D401000164 /* RecordOne.nib */,
-				F5308FF10233059B01000164 /* RecordMany.nib */,
-				F53090060233385B01000164 /* Delete.nib */,
-				F530900E023350F901000164 /* Import.nib */,
+				163849B926D37E62007C15DF /* MainMenu.xib */,
+				163849DB26D37E79007C15DF /* Preferences.xib */,
+				163849D526D37E79007C15DF /* Details.xib */,
+				163849E126D37E79007C15DF /* MainWindow.xib */,
+				163849D326D37E79007C15DF /* Play.xib */,
+				163849D726D37E79007C15DF /* RecordOne.xib */,
+				163849DF26D37E79007C15DF /* RecordMany.xib */,
+				163849D926D37E79007C15DF /* Delete.xib */,
+				163849DD26D37E79007C15DF /* Import.xib */,
 				16F033940984B76F006C8A44 /* Info-SysExLibrarian.plist */,
+				16F0384B0984C9D7006C8A44 /* Defaults.plist */,
 				F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */,
+				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				F5D90FE4021630C101000164 /* docs.htmld */,
 				161B721215D8EA13006E21D4 /* dsa_pub.pem */,
 			);
@@ -782,18 +782,18 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				16F033540984B76F006C8A44 /* MainMenu.nib in Resources */,
-				16F033560984B76F006C8A44 /* Preferences.nib in Resources */,
-				16F033570984B76F006C8A44 /* MainWindow.nib in Resources */,
 				16F033600984B76F006C8A44 /* Credits.rtf in Resources */,
+				163849E826D37E7A007C15DF /* Import.xib in Resources */,
 				16F033630984B76F006C8A44 /* docs.htmld in Resources */,
-				16F033640984B76F006C8A44 /* Details.nib in Resources */,
-				16F033660984B76F006C8A44 /* RecordOne.nib in Resources */,
-				16F033670984B76F006C8A44 /* RecordMany.nib in Resources */,
-				16F033680984B76F006C8A44 /* Play.nib in Resources */,
-				16F033690984B76F006C8A44 /* Delete.nib in Resources */,
-				16F0336A0984B76F006C8A44 /* Import.nib in Resources */,
+				163849E626D37E7A007C15DF /* Delete.xib in Resources */,
+				163849E726D37E7A007C15DF /* Preferences.xib in Resources */,
+				163849E326D37E7A007C15DF /* Play.xib in Resources */,
+				163849D226D37E62007C15DF /* MainMenu.xib in Resources */,
+				163849E926D37E7A007C15DF /* RecordMany.xib in Resources */,
+				163849E426D37E7A007C15DF /* Details.xib in Resources */,
 				16F0336B0984B76F006C8A44 /* SysExLibrarian.strings in Resources */,
+				163849E526D37E7A007C15DF /* RecordOne.xib in Resources */,
+				163849EA26D37E7A007C15DF /* MainWindow.xib in Resources */,
 				16F0384C0984C9D7006C8A44 /* Defaults.plist in Resources */,
 				161B721315D8EA13006E21D4 /* dsa_pub.pem in Resources */,
 				16A7F90726D1E917007587B7 /* Assets.xcassets in Resources */,
@@ -903,12 +903,76 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */ = {
+		163849B926D37E62007C15DF /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				169225E625C2B03300771B4F /* Base */,
+				163849BA26D37E62007C15DF /* Base */,
 			);
-			name = MainMenu.nib;
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		163849D326D37E79007C15DF /* Play.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				163849D426D37E79007C15DF /* Base */,
+			);
+			name = Play.xib;
+			sourceTree = "<group>";
+		};
+		163849D526D37E79007C15DF /* Details.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				163849D626D37E79007C15DF /* Base */,
+			);
+			name = Details.xib;
+			sourceTree = "<group>";
+		};
+		163849D726D37E79007C15DF /* RecordOne.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				163849D826D37E79007C15DF /* Base */,
+			);
+			name = RecordOne.xib;
+			sourceTree = "<group>";
+		};
+		163849D926D37E79007C15DF /* Delete.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				163849DA26D37E79007C15DF /* Base */,
+			);
+			name = Delete.xib;
+			sourceTree = "<group>";
+		};
+		163849DB26D37E79007C15DF /* Preferences.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				163849DC26D37E79007C15DF /* Base */,
+			);
+			name = Preferences.xib;
+			sourceTree = "<group>";
+		};
+		163849DD26D37E79007C15DF /* Import.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				163849DE26D37E79007C15DF /* Base */,
+			);
+			name = Import.xib;
+			sourceTree = "<group>";
+		};
+		163849DF26D37E79007C15DF /* RecordMany.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				163849E026D37E79007C15DF /* Base */,
+			);
+			name = RecordMany.xib;
+			sourceTree = "<group>";
+		};
+		163849E126D37E79007C15DF /* MainWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				163849E226D37E79007C15DF /* Base */,
+			);
+			name = MainWindow.xib;
 			sourceTree = "<group>";
 		};
 		2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */ = {
@@ -917,62 +981,6 @@
 				169225EF25C2B04800771B4F /* en */,
 			);
 			name = Credits.rtf;
-			sourceTree = "<group>";
-		};
-		F5308FE80232F9D401000164 /* RecordOne.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				169225EB25C2B03300771B4F /* Base */,
-			);
-			name = RecordOne.nib;
-			sourceTree = "<group>";
-		};
-		F5308FF10233059B01000164 /* RecordMany.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				169225EC25C2B03300771B4F /* Base */,
-			);
-			name = RecordMany.nib;
-			sourceTree = "<group>";
-		};
-		F5308FFD023315AD01000164 /* Play.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				169225EA25C2B03300771B4F /* Base */,
-			);
-			name = Play.nib;
-			sourceTree = "<group>";
-		};
-		F53090060233385B01000164 /* Delete.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				169225ED25C2B03300771B4F /* Base */,
-			);
-			name = Delete.nib;
-			sourceTree = "<group>";
-		};
-		F530900E023350F901000164 /* Import.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				169225EE25C2B03300771B4F /* Base */,
-			);
-			name = Import.nib;
-			sourceTree = "<group>";
-		};
-		F559F90A01DEC5E001000164 /* Preferences.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				169225E725C2B03300771B4F /* Base */,
-			);
-			name = Preferences.nib;
-			sourceTree = "<group>";
-		};
-		F559F90F01DEFA9701000164 /* MainWindow.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				169225E925C2B03300771B4F /* Base */,
-			);
-			name = MainWindow.nib;
 			sourceTree = "<group>";
 		};
 		F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */ = {
@@ -989,14 +997,6 @@
 				169225F225C2B04800771B4F /* en */,
 			);
 			name = docs.htmld;
-			sourceTree = "<group>";
-		};
-		F5F52C15022015AC01000164 /* Details.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				169225E825C2B03300771B4F /* Base */,
-			);
-			name = Details.nib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

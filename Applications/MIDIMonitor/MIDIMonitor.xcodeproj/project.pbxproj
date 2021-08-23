@@ -14,14 +14,14 @@
 		161B71FA15D8DD83006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B71F915D8DD83006E21D4 /* dsa_pub.pem */; };
 		162972B1097B414800158D7B /* SnoizeMIDI.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		162972B2097B414C00158D7B /* SnoizeMIDISpy.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71B1097B242A001AFB58 /* SnoizeMIDISpy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		163849B426D37AF1007C15DF /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849AA26D37AF0007C15DF /* Preferences.xib */; };
+		163849B526D37AF1007C15DF /* SysEx.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849AC26D37AF0007C15DF /* SysEx.xib */; };
+		163849B626D37AF1007C15DF /* MIDIMonitor.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849AE26D37AF0007C15DF /* MIDIMonitor.xib */; };
+		163849B726D37AF1007C15DF /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849B026D37AF0007C15DF /* MainMenu.xib */; };
+		163849B826D37AF1007C15DF /* Details.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849B226D37AF0007C15DF /* Details.xib */; };
 		167B881906ED4D650053D305 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
-		167B881A06ED4D650053D305 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
 		167B881C06ED4D650053D305 /* MIDIMonitor.strings in Resources */ = {isa = PBXBuildFile; fileRef = F53BB4AE015D96A501000164 /* MIDIMonitor.strings */; };
-		167B881D06ED4D650053D305 /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = F53A1C0A015EC0FB01000164 /* Preferences.nib */; };
 		167B882106ED4D650053D305 /* docs.htmld in Resources */ = {isa = PBXBuildFile; fileRef = F56D31A30195A90E01000164 /* docs.htmld */; };
-		167B882206ED4D650053D305 /* SysEx.nib in Resources */ = {isa = PBXBuildFile; fileRef = F56E05CE0206BF0C01000164 /* SysEx.nib */; };
-		167B882306ED4D650053D305 /* MIDIMonitor.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B4FDCFA73011CA2CEA /* MIDIMonitor.nib */; };
-		167B882406ED4D650053D305 /* Details.nib in Resources */ = {isa = PBXBuildFile; fileRef = 1691E0DC04CA26F300ACFC9D /* Details.nib */; };
 		167B882506ED4D650053D305 /* Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 16F20F4906EAA14A00D9C507 /* Defaults.plist */; };
 		167B883906ED4D650053D305 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		167B883B06ED4D650053D305 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B4281801A360AD01000164 /* CoreMIDI.framework */; };
@@ -300,16 +300,16 @@
 		162310440E6CCC6100A700CA /* SnoizeMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SnoizeMIDI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		162310450E6CCC6100A700CA /* SnoizeMIDISpy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SnoizeMIDISpy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		162A31F0254E91B5008E1F38 /* Snoize-Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Snoize-Signing.xcconfig"; path = "../../Configurations/Snoize-Signing.xcconfig"; sourceTree = "<group>"; };
+		163849AB26D37AF0007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Preferences.xib; sourceTree = "<group>"; };
+		163849AD26D37AF0007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/SysEx.xib; sourceTree = "<group>"; };
+		163849AF26D37AF0007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MIDIMonitor.xib; sourceTree = "<group>"; };
+		163849B126D37AF0007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		163849B326D37AF0007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Details.xib; sourceTree = "<group>"; };
 		167B884206ED4D650053D305 /* Info-MIDIMonitor.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-MIDIMonitor.plist"; sourceTree = "<group>"; };
 		167B884306ED4D650053D305 /* MIDI Monitor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MIDI Monitor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		169225AF25C2AEC300771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		169225B225C2AEC400771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/MIDIMonitor.strings; sourceTree = "<group>"; };
 		169225B625C2AEC400771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.htmld; name = en; path = en.lproj/docs.htmld; sourceTree = "<group>"; };
-		169225BC25C2AF0100771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MainMenu.nib; sourceTree = "<group>"; };
-		169225BD25C2AF0100771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MIDIMonitor.nib; sourceTree = "<group>"; };
-		169225BE25C2AF0200771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Preferences.nib; sourceTree = "<group>"; };
-		169225BF25C2AF0200771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/Details.nib; sourceTree = "<group>"; };
-		169225C025C2AF0200771B4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/SysEx.nib; sourceTree = "<group>"; };
 		1692D71125899A8C0092D6E7 /* PreferencesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesWindowController.swift; sourceTree = "<group>"; };
 		1692D7182589E83D0092D6E7 /* UtilityWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityWindowController.swift; sourceTree = "<group>"; };
 		1692D72C2589E91D0092D6E7 /* MonitorWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorWindowController.swift; sourceTree = "<group>"; };
@@ -534,15 +534,15 @@
 			isa = PBXGroup;
 			children = (
 				16A4169526D1CABC00DD5F9E /* Assets.xcassets */,
-				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
-				16F20F4906EAA14A00D9C507 /* Defaults.plist */,
-				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
-				2A37F4B4FDCFA73011CA2CEA /* MIDIMonitor.nib */,
-				F53A1C0A015EC0FB01000164 /* Preferences.nib */,
-				1691E0DC04CA26F300ACFC9D /* Details.nib */,
-				F56E05CE0206BF0C01000164 /* SysEx.nib */,
+				163849B026D37AF0007C15DF /* MainMenu.xib */,
+				163849AE26D37AF0007C15DF /* MIDIMonitor.xib */,
+				163849AA26D37AF0007C15DF /* Preferences.xib */,
+				163849B226D37AF0007C15DF /* Details.xib */,
+				163849AC26D37AF0007C15DF /* SysEx.xib */,
 				167B884206ED4D650053D305 /* Info-MIDIMonitor.plist */,
+				16F20F4906EAA14A00D9C507 /* Defaults.plist */,
 				F53BB4AE015D96A501000164 /* MIDIMonitor.strings */,
+				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				F56D31A30195A90E01000164 /* docs.htmld */,
 				161B71F915D8DD83006E21D4 /* dsa_pub.pem */,
 			);
@@ -877,16 +877,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				163849B526D37AF1007C15DF /* SysEx.xib in Resources */,
 				167B881906ED4D650053D305 /* Credits.rtf in Resources */,
-				167B881A06ED4D650053D305 /* MainMenu.nib in Resources */,
+				163849B826D37AF1007C15DF /* Details.xib in Resources */,
+				163849B626D37AF1007C15DF /* MIDIMonitor.xib in Resources */,
 				167B881C06ED4D650053D305 /* MIDIMonitor.strings in Resources */,
-				167B881D06ED4D650053D305 /* Preferences.nib in Resources */,
 				167B882106ED4D650053D305 /* docs.htmld in Resources */,
-				167B882206ED4D650053D305 /* SysEx.nib in Resources */,
-				167B882306ED4D650053D305 /* MIDIMonitor.nib in Resources */,
-				167B882406ED4D650053D305 /* Details.nib in Resources */,
 				16A4169626D1CABC00DD5F9E /* Assets.xcassets in Resources */,
+				163849B726D37AF1007C15DF /* MainMenu.xib in Resources */,
 				167B882506ED4D650053D305 /* Defaults.plist in Resources */,
+				163849B426D37AF1007C15DF /* Preferences.xib in Resources */,
 				161B71FA15D8DD83006E21D4 /* dsa_pub.pem in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -988,28 +988,44 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		1691E0DC04CA26F300ACFC9D /* Details.nib */ = {
+		163849AA26D37AF0007C15DF /* Preferences.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				169225BF25C2AF0200771B4F /* Base */,
+				163849AB26D37AF0007C15DF /* Base */,
 			);
-			name = Details.nib;
+			name = Preferences.xib;
 			sourceTree = "<group>";
 		};
-		2A37F4B4FDCFA73011CA2CEA /* MIDIMonitor.nib */ = {
+		163849AC26D37AF0007C15DF /* SysEx.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				169225BD25C2AF0100771B4F /* Base */,
+				163849AD26D37AF0007C15DF /* Base */,
 			);
-			name = MIDIMonitor.nib;
+			name = SysEx.xib;
 			sourceTree = "<group>";
 		};
-		2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */ = {
+		163849AE26D37AF0007C15DF /* MIDIMonitor.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				169225BC25C2AF0100771B4F /* Base */,
+				163849AF26D37AF0007C15DF /* Base */,
 			);
-			name = MainMenu.nib;
+			name = MIDIMonitor.xib;
+			sourceTree = "<group>";
+		};
+		163849B026D37AF0007C15DF /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				163849B126D37AF0007C15DF /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		163849B226D37AF0007C15DF /* Details.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				163849B326D37AF0007C15DF /* Base */,
+			);
+			name = Details.xib;
 			sourceTree = "<group>";
 		};
 		2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */ = {
@@ -1018,14 +1034,6 @@
 				169225AF25C2AEC300771B4F /* en */,
 			);
 			name = Credits.rtf;
-			sourceTree = "<group>";
-		};
-		F53A1C0A015EC0FB01000164 /* Preferences.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				169225BE25C2AF0200771B4F /* Base */,
-			);
-			name = Preferences.nib;
 			sourceTree = "<group>";
 		};
 		F53BB4AE015D96A501000164 /* MIDIMonitor.strings */ = {
@@ -1042,14 +1050,6 @@
 				169225B625C2AEC400771B4F /* en */,
 			);
 			name = docs.htmld;
-			sourceTree = "<group>";
-		};
-		F56E05CE0206BF0C01000164 /* SysEx.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				169225C025C2AF0200771B4F /* Base */,
-			);
-			name = SysEx.nib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
