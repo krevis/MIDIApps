@@ -612,7 +612,7 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1250;
+				LastUpgradeCheck = 1300;
 				TargetAttributes = {
 					167B880506ED4D650053D305 = {
 						DevelopmentTeam = YDJAW5GX9U;
