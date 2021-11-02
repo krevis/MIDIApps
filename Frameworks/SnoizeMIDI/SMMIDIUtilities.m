@@ -42,6 +42,9 @@ void SMPacketListApply(const MIDIPacketList *packetList, void (NS_NOESCAPE ^bloc
     // This is similarly maddening to implement in Swift. If you have an UnsafePointer<MIDIPacketList>
     // which is based on data that is exactly sized to fit the packet list, calling `pointee`
     // will crash (at least, under ASAN). Just do it in C.
+    //
+    // For reference, here's a similar case, with a much more expensive workaround that's all Swift:
+    // https://stackoverflow.com/questions/68229346/crash-with-midipacketnext
 
     if (packetList->numPackets == 0) {
         return;
