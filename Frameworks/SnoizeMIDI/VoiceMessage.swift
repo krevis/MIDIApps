@@ -63,7 +63,7 @@ public class VoiceMessage: Message {
         }
     }
 
-    init(timeStamp: MIDITimeStamp, statusByte: UInt8, data: [UInt8]) {
+    public init(timeStamp: MIDITimeStamp, statusByte: UInt8, data: [UInt8]) {
         if data.count > 0 {
             let byte0 = data[data.startIndex]
             guard (0..<128).contains(byte0) else { fatalError() }
