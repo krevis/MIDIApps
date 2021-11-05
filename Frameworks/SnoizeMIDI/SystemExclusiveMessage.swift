@@ -147,6 +147,10 @@ public class SystemExclusiveMessage: Message {
         return result
     }
 
+    public override var expertDataForDisplay: String {
+        return MessageFormatter.formatExpertStatusByte(statusByte, otherData: receivedData)
+    }
+
 }
 
 extension SystemExclusiveMessage {
@@ -360,6 +364,23 @@ extension SystemExclusiveMessage {
         var unmanagedResultData: Unmanaged<CFData>?
         guard MusicSequenceFileCreateData(sequence, .midiType, MusicSequenceFileFlags(rawValue: 0), 0, &unmanagedResultData) == noErr else { return nil }
         return unmanagedResultData?.takeRetainedValue() as Data?
+    }
+
+}
+
+
+public class HackSystemExclusiveMessage: SystemExclusiveMessage {
+
+    // Data without the starting 0xF0, and hacked to not include ending 0xF7.
+    public override var otherData: Data? {
+        guard let withF7 = super.otherData else { return nil }
+        let len = withF7.count
+        if len == 0 {
+            return withF7
+        }
+        else {
+            return withF7.subdata(in: 0..<(len - 1))
+        }
     }
 
 }
