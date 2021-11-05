@@ -837,7 +837,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+			shellScript = "# Adds support for Apple Silicon brew directory\n# https://stackoverflow.com/questions/65991508/swiftlint-cant-be-found-on-apple-silicon-xcode\n# https://developer.apple.com/forums/thread/688642\nexport PATH=\"$PATH:/opt/homebrew/bin\"\n\nif which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 		16F034490984BB6C006C8A44 /* Run Script (Remove Headers and Modules from Frameworks) */ = {
 			isa = PBXShellScriptBuildPhase;
