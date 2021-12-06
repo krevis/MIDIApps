@@ -25,15 +25,15 @@ NSInteger SMPacketListSize(const MIDIPacketList * _Nonnull packetList)
     // and pointless -- Swift MIDIPacketList.sizeInBytes() works fine,
     // when it's available.
 
-    // Find the last packet in the packet list
-    if (packetList->numPackets == 0) {
-        return 0;
-    }
+    // Iterate just past the last packet in the list, then subtract to return the total size.
+    // (Arguably, we don't need to include the padding at the end of the last packet, but
+    // this way matches the behavior of MIDIPacketList.sizeInBytes() which does.)
+
     const MIDIPacket *packet = &packetList->packet[0];
-    for (UInt32 i = 0; i < packetList->numPackets - 1; i++) {
+    for (UInt32 i = 0; i < packetList->numPackets; i++) {
         packet = MIDIPacketNext(packet);
     }
-    NSInteger size = (intptr_t)(&packet->data[packet->length]) - (intptr_t)packetList;
+    NSInteger size = (intptr_t)(packet) - (intptr_t)packetList;
     return size;    
 }
 
