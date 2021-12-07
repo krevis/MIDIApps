@@ -368,7 +368,6 @@ extension SystemExclusiveMessage {
 
 }
 
-
 public class HackSystemExclusiveMessage: SystemExclusiveMessage {
 
     // Data without the starting 0xF0, and hacked to not include ending 0xF7.
