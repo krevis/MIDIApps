@@ -104,6 +104,8 @@
 	<string>public.app-category.utilities</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.11.0</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>SysEx Librarian stores recorded sysex files in your Documents folder, by default. (The location can be changed in the preferences.)</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2002-2021 Kurt Revis</string>
 	<key>NSMainNibFile</key>
