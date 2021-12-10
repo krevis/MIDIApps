@@ -240,6 +240,17 @@ class LibraryEntry: NSObject {
         return library.isPathInFileDirectory(path)
     }
 
+    var fileReadError: Error? {
+        guard let path = path else { return nil }
+        do {
+            _ = try NSData(contentsOfFile: path, options: [])
+            return nil
+        }
+        catch {
+            return error
+        }
+    }
+
     var programNumber: UInt8? /* 0 ..< 127 */ {
         didSet {
             if oldValue != programNumber {

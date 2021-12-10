@@ -137,7 +137,9 @@ class MainWindowController: GeneralWindowController {
     @IBAction func play(_ sender: Any?) {
         guard finishEditingWithoutError() else { return }
         findMissingFilesThen {
-            self.playSelectedEntries()
+            self.alertUnreadableFilesThen {
+                self.playSelectedEntries()
+            }
         }
     }
 
@@ -192,7 +194,9 @@ class MainWindowController: GeneralWindowController {
         guard finishEditingWithoutError() else { return }
 
         findMissingFilesThen {
-            self.showDetailsOfSelectedEntries()
+            self.alertUnreadableFilesThen {
+                self.showDetailsOfSelectedEntries()
+            }
         }
     }
 
@@ -200,7 +204,9 @@ class MainWindowController: GeneralWindowController {
         guard finishEditingWithoutError() else { return }
 
         findMissingFilesThen {
-            self.exportSelectedEntriesAsSMF()
+            self.alertUnreadableFilesThen {
+                self.exportSelectedEntriesAsSMF()
+            }
         }
     }
 
@@ -208,7 +214,9 @@ class MainWindowController: GeneralWindowController {
         guard finishEditingWithoutError() else { return }
 
         findMissingFilesThen {
-            self.exportSelectedEntriesAsSYX()
+            self.alertUnreadableFilesThen {
+                self.exportSelectedEntriesAsSYX()
+            }
         }
     }
 
@@ -330,6 +338,7 @@ class MainWindowController: GeneralWindowController {
     private lazy var importController = ImportController(windowController: self, library: library)
     private lazy var exportController = ExportController(windowController: self)
     private lazy var findMissingController = FindMissingController(windowController: self, library: library)
+    private lazy var reportFileReadErrorController = ReportFileReadErrorController(windowController: self, library: library)
 
     // Transient data
     private var sortColumnIdentifier = "name"
@@ -825,7 +834,7 @@ extension MainWindowController /* Private */ {
         return false
     }
 
-    // MARK: Finding missing files
+    // MARK: Finding missing or unreadable files
 
     private func findMissingFilesThen(successfulCompletion: @escaping (() -> Void)) {
         let entriesWithMissingFiles = selectedEntries.filter { !$0.isFilePresentIgnoringCachedValue }
@@ -836,6 +845,25 @@ extension MainWindowController /* Private */ {
             findMissingController.findMissingFiles(forEntries: entriesWithMissingFiles, completion: successfulCompletion)
         }
     }
+
+    private func alertUnreadableFilesThen(successfulCompletion: @escaping (() -> Void)) {
+        let entriesAndFileReadErrors = selectedEntries.compactMap { (entry: LibraryEntry) -> (LibraryEntry, Error)? in
+            if let error = entry.fileReadError {
+                return (entry, error)
+            }
+            else {
+                return nil
+            }
+        }
+
+        if entriesAndFileReadErrors.count == 0 {
+            successfulCompletion()
+        }
+        else {
+            reportFileReadErrorController.reportErrors(forEntries: entriesAndFileReadErrors, completion: successfulCompletion)
+        }
+    }
+
 }
 
 extension MainWindowController: NSToolbarDelegate {

@@ -19,6 +19,7 @@
 		163849E826D37E7A007C15DF /* Import.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849DD26D37E79007C15DF /* Import.xib */; };
 		163849E926D37E7A007C15DF /* RecordMany.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849DF26D37E79007C15DF /* RecordMany.xib */; };
 		163849EA26D37E7A007C15DF /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849E126D37E79007C15DF /* MainWindow.xib */; };
+		1648DDA62762ED980062DC29 /* ReportFileReadErrorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1648DDA52762ED980062DC29 /* ReportFileReadErrorController.swift */; };
 		16517B9325D4A2E900D0CAC4 /* NSFileManager+UniqueName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16517B9225D4A2E900D0CAC4 /* NSFileManager+UniqueName.swift */; };
 		16517B9525D4AAFF00D0CAC4 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16517B9425D4AAFF00D0CAC4 /* MainWindowController.swift */; };
 		16517BAF25D5154F00D0CAC4 /* GeneralWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16517BAE25D5154F00D0CAC4 /* GeneralWindowController.swift */; };
@@ -248,6 +249,7 @@
 		163849DE26D37E79007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Import.xib; sourceTree = "<group>"; };
 		163849E026D37E79007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/RecordMany.xib; sourceTree = "<group>"; };
 		163849E226D37E79007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainWindow.xib; sourceTree = "<group>"; };
+		1648DDA52762ED980062DC29 /* ReportFileReadErrorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportFileReadErrorController.swift; sourceTree = "<group>"; };
 		16517B9225D4A2E900D0CAC4 /* NSFileManager+UniqueName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSFileManager+UniqueName.swift"; sourceTree = "<group>"; };
 		16517B9425D4AAFF00D0CAC4 /* MainWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
 		16517BAE25D5154F00D0CAC4 /* GeneralWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralWindowController.swift; sourceTree = "<group>"; };
@@ -519,6 +521,7 @@
 				1686426F25CCAF7F00A8B292 /* ImportController.swift */,
 				1686427125CDD96F00A8B292 /* ExportController.swift */,
 				1686427525CE71A000A8B292 /* FindMissingController.swift */,
+				1648DDA52762ED980062DC29 /* ReportFileReadErrorController.swift */,
 			);
 			name = "Main window";
 			sourceTree = "<group>";
@@ -874,6 +877,7 @@
 				16C43B9725C4EB00007A3A48 /* main.swift in Sources */,
 				1686427625CE71A000A8B292 /* FindMissingController.swift in Sources */,
 				16517BC225D5F68700D0CAC4 /* GeneralTableView.swift in Sources */,
+				1648DDA62762ED980062DC29 /* ReportFileReadErrorController.swift in Sources */,
 				16B7375F25DD03F6000DAC58 /* SingleOutputStreamDestination.swift in Sources */,
 				1686427025CCAF7F00A8B292 /* ImportController.swift in Sources */,
 				16B736C425D7366D000DAC58 /* Library.swift in Sources */,
