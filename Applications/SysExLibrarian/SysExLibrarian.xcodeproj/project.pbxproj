@@ -822,7 +822,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "# Remove stuff that HexFiend.framework installs:\n#    /Frameworks/HexFiend.framework\n#    /usr/local/bin/com.ridiculousfish.HexFiend.PrivilegedHelper\n#\n# (Ideally we'd set SKIP_INSTALL = YES in the targets in HexFiend,\n#  so it didn't leave those files in the first place, but that would\n#  require changing the source.)\n\nrm -rf $DSTROOT/Frameworks\nrm -rf $DSTROOT/usr\n";
+			shellScript = "# Remove stuff that HexFiend.framework installs:\n#    /Frameworks/HexFiend.framework\n#    /usr/local/bin/com.ridiculousfish.HexFiend.PrivilegedHelper\n#\n# (Ideally we'd set SKIP_INSTALL = YES in the targets in HexFiend,\n#  so it didn't leave those files in the first place, but that would\n#  require changing the source.)\n\nrm -rf \"$DSTROOT/Frameworks\"\nrm -rf \"$DSTROOT/usr\"\n";
 		};
 		16D0EF0925C91E3F00399C74 /* Run Script (SwiftLint) */ = {
 			isa = PBXShellScriptBuildPhase;

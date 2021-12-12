@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scheme
+   LastUpgradeVersion = "1310"
+   version = "1.8">
+   <BuildAction
+      parallelizeBuildables = "YES"
+      buildImplicitDependencies = "YES">
+      <BuildActionEntries>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "16F033360984B76F006C8A44"
+               BuildableName = "SysEx Librarian.app"
+               BlueprintName = "SysExLibrarian"
+               ReferencedContainer = "container:SysExLibrarian.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+      </BuildActionEntries>
+   </BuildAction>
+   <TestAction
+      buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      shouldUseLaunchSchemeArgsEnv = "YES">
+      <Testables>
+      </Testables>
+   </TestAction>
+   <LaunchAction
+      buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      displayScaleIsEnabled = "NO"
+      displayScale = "1.00"
+      enableAddressSanitizer = "YES"
+      enableASanStackUseAfterReturn = "YES"
+      enableUBSanitizer = "YES"
+      launchStyle = "0"
+      useCustomWorkingDirectory = "NO"
+      ignoresPersistentStateOnLaunch = "NO"
+      debugDocumentVersioning = "YES"
+      debugServiceExtension = "internal"
+      allowLocationSimulation = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "16F033360984B76F006C8A44"
+            BuildableName = "SysEx Librarian.app"
+            BlueprintName = "SysExLibrarian"
+            ReferencedContainer = "container:SysExLibrarian.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+   </LaunchAction>
+   <ProfileAction
+      displayScaleIsEnabled = "NO"
+      displayScale = "1.00"
+      buildConfiguration = "Release"
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      savedToolIdentifier = ""
+      useCustomWorkingDirectory = "NO"
+      debugDocumentVersioning = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "16F033360984B76F006C8A44"
+            BuildableName = "SysEx Librarian.app"
+            BlueprintName = "SysExLibrarian"
+            ReferencedContainer = "container:SysExLibrarian.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+   </ProfileAction>
+   <AnalyzeAction
+      buildConfiguration = "Debug">
+   </AnalyzeAction>
+   <ArchiveAction
+      buildConfiguration = "Release"
+      revealArchiveInOrganizer = "NO">
+      <PostActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "# Put the app in a disk image, notarized, for distribution.&#10;#&#10;# 1. Notarize the app and staple the notarization to it&#10;# 2. Package the app in a disk image, and sign the image, using create-dmg &#10;#    (from https://github.com/sindresorhus/create-dmg).&#10;# 3. Notarize the disk image and staple the notarization to it&#10;#&#10;# Based on&#10;# https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution/customizing_the_notarization_workflow&#10;# https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution/customizing_the_notarization_workflow/customizing_the_xcode_archive_process&#10;# https://scriptingosx.com/2021/07/notarize-a-command-line-tool-with-notarytool/&#10;#&#10;# In theory one only needs to notarize and staple the disk image, and that should handle the app inside.&#10;# However, that apparently doesn&apos;t staple the notarization to the app, so you can still end up with&#10;# an app that needs to talk to the notarization server when it first launches.&#10;# So notarize the app and the disk image separately.&#10;&#10;# Incredibly, Xcode just ignores the output of script that run before and after scheme builds.&#10;# It doesn&apos;t mention the script in the build logs, and shows no indication that it&apos;s running.&#10;# Redirect the logs so we can see them to debug things.&#10;exec &gt; /tmp/${PROJECT_NAME}-Archive-Packaging.log 2&gt;&amp;1&#10;&#10;# Show all the Xcode-set variables&#10;env&#10;&#10;# Exit when any command fails&#10;set -e&#10;&#10;# NOTARYTOOL_CREDS is the name of the keychain item created with `notarytool store-credentials`.&#10;# Grant keychain access to Xcode if prompted by Xcode.&#10;NOTARYTOOL_CREDS=&quot;Notarization: Kurt Revis: YDJAW5GX9U&quot;&#10;&#10;# Put all the exported stuff in one place&#10;EXPORT_PATH=&quot;$TEMP_DIR/Export&quot;&#10;&#10;# Export the app from the archive&#10;/usr/bin/xcodebuild -exportArchive -archivePath &quot;$ARCHIVE_PATH&quot; -exportOptionsPlist &quot;$SRCROOT/../../Packaging/ExportOptions.plist&quot; -exportPath &quot;$EXPORT_PATH&quot;&#10;&#10;# Because we can&apos;t upload the .app bundle directly to the notary service, &#10;# create a compressed archive (zip) containing it&#10;APP_PATH=&quot;$EXPORT_PATH/$PRODUCT_NAME.app&quot;&#10;ZIP_PATH=&quot;$EXPORT_PATH/$PRODUCT_NAME.zip&quot;&#10;/usr/bin/ditto -c -k --keepParent &quot;$APP_PATH&quot; &quot;$ZIP_PATH&quot; &#10;&#10;# Notarize the app&#10;xcrun notarytool submit &quot;$ZIP_PATH&quot; --keychain-profile &quot;$NOTARYTOOL_CREDS&quot; --verbose --wait --timeout 5m&#10;&#10;# Staple the notarization to the exported app&#10;xcrun stapler staple &quot;$APP_PATH&quot;&#10;&#10;# Make the disk image containing the exported, notarized, stapled app&#10;# Have to set and export the PATH so create-dmg can find node and so on&#10;export PATH=/opt/homebrew/bin:$PATH&#10;create-dmg --overwrite &quot;$APP_PATH&quot; &quot;$EXPORT_PATH&quot;&#10;&#10;# create-dmg named the image something like &quot;MIDI Monitor 1.5.dmg&quot;&#10;# Rename it to what we want: &quot;MIDIMonitor_1_5.dmg&quot;&#10;DISK_IMAGE_ORIG=&quot;${EXPORT_PATH}/${PRODUCT_NAME} ${MARKETING_VERSION}.dmg&quot;&#10;DISK_IMAGE=&quot;${EXPORT_PATH}/${PRODUCT_NAME// /}_${MARKETING_VERSION//./_}.dmg&quot;&#10;mv &quot;$DISK_IMAGE_ORIG&quot; &quot;$DISK_IMAGE&quot;&#10;&#10;# Notarize the disk image too&#10;xcrun notarytool submit &quot;$DISK_IMAGE&quot; --keychain-profile &quot;$NOTARYTOOL_CREDS&quot; --verbose --wait --timeout 5m&#10;&#10;# Staple the notarization to the disk image&#10;xcrun stapler staple &quot;$DISK_IMAGE&quot;&#10;&#10;# As a convenience, open the export folder in Finder&#10;/usr/bin/open &quot;$EXPORT_PATH&quot;&#10;"
+               shellToInvoke = "/bin/sh -x">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "16F033360984B76F006C8A44"
+                     BuildableName = "SysEx Librarian.app"
+                     BlueprintName = "SysExLibrarian"
+                     ReferencedContainer = "container:SysExLibrarian.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PostActions>
+   </ArchiveAction>
+</Scheme>
