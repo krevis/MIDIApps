@@ -301,7 +301,8 @@
 
           <p>To see the contents of an event, double-click it, or select it and use the menu command <span class="label label-default">Events</span> &gt; <span class="label label-default">Show Detailed Data</span>.</p>
 
-          <p>The window shows information about the event, as well as a dump of the event's data in both hexadecimal and ASCII formats. Press the &quot;Save As&quot; button to save the event data to a file.</p>
+          <p>The window shows information about the event, as well as a dump of the event's data in both hexadecimal and ASCII formats, which you can select and copy.</p>
+          <p>System Exclusive events also display a &quot;Save As&quot; button which saves the data to a file.</p>
 
           <h3>Rescan MIDI</h3>
           <p>You can use the menu command <span class="label label-default">Special</span> &gt; <span class="label label-default">Rescan MIDI</span> to reinitialize the entire MIDI system and look for available devices. Generally you shouldn't need to do this, but I've included it as a convenience. The Audio MIDI Setup application has a &quot;Rescan MIDI&quot; button that does exactly the same thing. <br>(Developers: the menu command just calls CoreMIDI's <code>MIDIRestart()</code> function.)</p>
@@ -343,13 +344,6 @@
 
       <p>Please send questions or comments to <a href="mailto:MIDIMonitor@snoize.com">MIDIMonitor@snoize.com</a>
       <br>If you find this app useful, if you encounter bugs, or if you have suggestions for improvement, I'd love to hear about it!</p>
-
-
-      <h3>Acknowledgements</h3>
-
-      <P>MIDI Monitor is copyright &copy; 2001-2018 by Kurt Revis. All rights reserved.
-
-      <P>Thanks to the folks on the <a href="https://lists.apple.com/mailman/listinfo/coreaudio-api">CoreAudio-API mailing list</a> for all the help they have provided, and to everyone who has sent in bug reports and feature requests.
 
     </div><!-- /.container -->
 
