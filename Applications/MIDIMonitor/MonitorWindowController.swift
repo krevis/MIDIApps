@@ -690,3 +690,27 @@ extension MonitorWindowController {
     }
 
 }
+
+extension MonitorWindowController: NSWindowDelegate {
+
+    // NSWindowRestoration-related:
+    //
+    // In some cases, the document's saved window settings will not match
+    // the window size that was automatically encoded in restorable state.
+    // (For instance, if we don't dirty the document when the window settings
+    // were changed, and the user didn't save before quitting, and autosave
+    // is turned off.)
+    // Therefore, we must also put the window settings into the restorable
+    // state, and restore that after the regular document settings are done.
+
+    func window(_ window: NSWindow, willEncodeRestorableState state: NSCoder) {
+        state.encode(windowSettings, forKey: "windowSettings")
+    }
+
+    func window(_ window: NSWindow, didDecodeRestorableState state: NSCoder) {
+        if let decodedWindowSettings = state.decodeObject(forKey: "windowSettings") as? [String: Any] {
+            restoreWindowSettings(decodedWindowSettings)
+        }
+    }
+
+}
