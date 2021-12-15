@@ -148,7 +148,7 @@ extension MonitorWindowController {
         // Also, don't do it for untitled, unsaved documents which have no fileURL yet, because that's annoying.
         // Similarly, don't do it if "Ask to keep changes when closing documents" is turned on.
 
-        if midiDocument.fileURL != nil && UserDefaults.standard.bool(forKey: "NSCloseAlwaysConfirmsChanges") {
+        if midiDocument.fileURL != nil && !UserDefaults.standard.bool(forKey: "NSCloseAlwaysConfirmsChanges") {
             let change = NSDocument.ChangeType(rawValue: (NSDocument.ChangeType.changeDone.rawValue | NSDocument.ChangeType.changeDiscardable.rawValue))!
             midiDocument.updateChangeCount(change)
         }
