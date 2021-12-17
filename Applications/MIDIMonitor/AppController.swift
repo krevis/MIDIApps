@@ -311,14 +311,18 @@ extension AppController {
         let bundle = Bundle.main
 
         let alert = NSAlert()
-        alert.messageText = NSLocalizedString("MIDI Monitor could not make a connection to its MIDI driver.", tableName: "MIDIMonitor", bundle: bundle, comment: "error message if MIDI spy client creation fails")
-        alert.informativeText = NSLocalizedString("If you continue, MIDI Monitor will not be able to see the output of other MIDI applications, but all other features will still work.\n\nTo fix the problem:\n1. Remove any old 32-bit-only drivers from /Library/Audio/MIDI Drivers.\n2. Restart your computer.", tableName: "MIDIMonitor", bundle: bundle, comment: "second line of warning when MIDI spy is unavailable")
+        alert.messageText = NSLocalizedString("MIDI Monitor could not connect to its MIDI driver", tableName: "MIDIMonitor", bundle: bundle, comment: "error message if MIDI spy client creation fails")
+        alert.informativeText = NSLocalizedString("MIDI Monitor will not be able to spy on the output of other MIDI applications. It can still receive incoming MIDI events.\n\n1. Check your MIDI drivers in /Library/Audio/MIDI Drivers. There might be old drivers that are interfering with new ones. Remove drivers for hardware that you no longer use.\n2. Restart your computer, whether or not you did anything in step 1.", tableName: "MIDIMonitor", bundle: bundle, comment: "second line of warning when MIDI spy is unavailable")
         alert.addButton(withTitle: NSLocalizedString("Continue", tableName: "MIDIMonitor", bundle: bundle, comment: "Continue button after MIDI spy client creation fails"))
-        alert.addButton(withTitle: NSLocalizedString("Restart", tableName: "MIDIMonitor", bundle: bundle, comment: "Restart button after MIDI spy client creation fails"))
         alert.addButton(withTitle: NSLocalizedString("Show MIDI Drivers", tableName: "MIDIMonitor", bundle: bundle, comment: "Show MIDI Drivers button after MIDI spy client creation fails"))
+        alert.addButton(withTitle: NSLocalizedString("Restart", tableName: "MIDIMonitor", bundle: bundle, comment: "Restart button after MIDI spy client creation fails"))
 
         let response = alert.runModal()
         if response == .alertSecondButtonReturn {
+            // Show MIDI Drivers
+            NSWorkspace.shared.open(URL(fileURLWithPath: "/Library/Audio/MIDI Drivers"))
+        }
+        else if response == .alertThirdButtonReturn {
             // Restart
             let ynAlert = NSAlert()
             ynAlert.messageText = NSLocalizedString("Are you sure you want to restart now?", tableName: "MIDIMonitor", bundle: bundle, comment: "Restart y/n?")
@@ -328,10 +332,6 @@ extension AppController {
                 let appleScript = NSAppleScript(source: "tell application \"Finder\" to restart")
                 appleScript?.executeAndReturnError(nil)
             }
-        }
-        else if response == .alertThirdButtonReturn {
-            // Show MIDI Drivers
-            NSWorkspace.shared.open(URL(fileURLWithPath: "/Library/Audio/MIDI Drivers"))
         }
     }
 
