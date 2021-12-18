@@ -132,9 +132,7 @@ extension MonitorWindowController {
             updateMaxMessageCount()
             updateFilterControls()
 
-            if let windowSettings = smmDocument.windowSettings {
-                restoreWindowSettings(windowSettings)
-            }
+            restoreWindowSettings(smmDocument.windowSettings ?? [:])
         }
     }
 
