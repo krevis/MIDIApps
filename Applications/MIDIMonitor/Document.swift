@@ -279,17 +279,9 @@ extension Document {
 
     private func undoableSetSelectedInputSources(_ newValue: Set<InputStreamSource>) {
         if let undoManager = undoManager {
-            if #available(macOS 10.11, *) {
-                let currentSelectedInputSources = selectedInputSources
-                undoManager.registerUndo(withTarget: self) {
-                    $0.undoableSetSelectedInputSources(currentSelectedInputSources)
-                }
-            }
-            else {
-                // Pre-macOS 10.11 fallback: Put the Swift struct Set<InputStreamSource>
-                // in an NSObject box, and use it to register the undo via a method visible to ObjC.
-                let boxedSelectedInputSources = Box(selectedInputSources)
-                undoManager.registerUndo(withTarget: self, selector: #selector(self.undoableSetSelectedInputSourcesBoxed(_:)), object: boxedSelectedInputSources)
+            let currentSelectedInputSources = selectedInputSources
+            undoManager.registerUndo(withTarget: self) {
+                $0.undoableSetSelectedInputSources(currentSelectedInputSources)
             }
 
             undoManager.setActionName(NSLocalizedString("Change Selected Sources", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "change source undo action"))
@@ -297,12 +289,6 @@ extension Document {
 
         stream.selectedInputSources = newValue
         monitorWindowController?.updateSources()
-    }
-
-    @objc private func undoableSetSelectedInputSourcesBoxed(_ newValueBoxed: NSObject) {
-        if let box = newValueBoxed as? Box<Set<InputStreamSource>> {
-            undoableSetSelectedInputSources(box.unbox)
-        }
     }
 
     var maxMessageCount: Int {

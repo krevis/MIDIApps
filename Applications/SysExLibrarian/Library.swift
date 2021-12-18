@@ -418,15 +418,7 @@ extension Library /* Private */ {
         let aliasResolvedLibraryFilePath: String = {
             let url = URL(fileURLWithPath: symlinkResolvedLibraryFilePath, isDirectory: false)
             do {
-                let resolvedURL: URL
-                if #available(macOS 10.10, *) {
-                    resolvedURL = try URL(resolvingAliasFileAt: url, options: .withoutUI)
-                }
-                else {  // macOS < 10.10
-                    let bookmarkData = try URL.bookmarkData(withContentsOf: url)
-                    var isStale = false // don't really care
-                    resolvedURL = try URL(resolvingBookmarkData: bookmarkData, options: .withoutUI, relativeTo: nil, bookmarkDataIsStale: &isStale)
-                }
+                let resolvedURL = try URL(resolvingAliasFileAt: url, options: .withoutUI)
                 if resolvedURL.isFileURL {
                     return resolvedURL.path
                 }

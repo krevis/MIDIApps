@@ -56,17 +56,6 @@ public class Destination: Endpoint, CoreMIDIObjectListable {
 
 extension CoreMIDIContext {
 
-    public func createVirtualDestination(name: String, uniqueID: MIDIUniqueID, midiReadProc: @escaping(MIDIReadProc), readProcRefCon: UnsafeMutableRawPointer?) -> Destination? {
-        // If newUniqueID is 0, we'll use the unique ID that CoreMIDI generates for us
-
-        var newEndpointRef: MIDIEndpointRef = 0
-
-        guard interface.destinationCreate(client, name as CFString, midiReadProc, readProcRefCon, &newEndpointRef) == noErr else { return nil }
-
-        return commonCreateVirtualDestination(name, uniqueID, newEndpointRef)
-    }
-
-    @available (macOS 10.11, *)
     public func createVirtualDestination(name: String, uniqueID: MIDIUniqueID, midiReadBlock: @escaping(MIDIReadBlock)) -> Destination? {
         // If newUniqueID is 0, we'll use the unique ID that CoreMIDI generates for us
 
@@ -74,10 +63,6 @@ extension CoreMIDIContext {
 
         guard interface.destinationCreateWithBlock(client, name as CFString, &newEndpointRef, midiReadBlock) == noErr else { return nil }
 
-        return commonCreateVirtualDestination(name, uniqueID, newEndpointRef)
-    }
-
-    private func commonCreateVirtualDestination(_ name: String, _ uniqueID: MIDIUniqueID, _ newEndpointRef: MIDIEndpointRef) -> Destination? {
         // We want to get at the Destination immediately, to configure it.
         // CoreMIDI will send us a notification that something was added,
         // but that won't arrive until later. So manually add the new Destination,

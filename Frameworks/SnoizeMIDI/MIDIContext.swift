@@ -24,31 +24,16 @@ public class MIDIContext: CoreMIDIContext {
 
         self.privateInterface = interface
 
-        let status: OSStatus
-        if #available(macOS 10.11, iOS 9.0, *) {
-            status = interface.clientCreateWithBlock(name as CFString, &client) { unsafeNotification in
-                // We are called on an arbitrary queue, so we need to dispatch to the
-                // main queue for later handling.
-                // But `unsafeNotification` is only valid during this function call,
-                // so extract values from it right away.
-                if let ourNotification = ContextNotification.fromCoreMIDI(unsafeNotification) {
-                    DispatchQueue.main.async {
-                        self.handle(ourNotification)
-                    }
+        let status = interface.clientCreateWithBlock(name as CFString, &client) { unsafeNotification in
+            // We are called on an arbitrary queue, so we need to dispatch to the
+            // main queue for later handling.
+            // But `unsafeNotification` is only valid during this function call,
+            // so extract values from it right away.
+            if let ourNotification = ContextNotification.fromCoreMIDI(unsafeNotification) {
+                DispatchQueue.main.async {
+                    self.handle(ourNotification)
                 }
             }
-        }
-        else {
-            status = interface.clientCreate(name as CFString, { (unsafeNotification, refCon) in
-                // We assume CoreMIDI is following its documentation, calling us
-                // "on the run loop which was current when MIDIClientCreate was first
-                // called", which must be the main queue's run loop.
-                if let refCon = refCon,
-                   let ourNotification = ContextNotification.fromCoreMIDI(unsafeNotification) {
-                    let context = Unmanaged<MIDIContext>.fromOpaque(refCon).takeUnretainedValue()
-                    context.handle(ourNotification)
-                }
-            }, Unmanaged.passUnretained(self).toOpaque(), &client)
         }
 
         if status != noErr {
@@ -310,7 +295,7 @@ public class MIDIContext: CoreMIDIContext {
 
     private lazy var sysExSpeedWorkaroundDestination: Destination? = {
         var newEndpointRef: MIDIEndpointRef = 0
-        guard interface.destinationCreate(client, "Workaround" as CFString, { _, _, _ in }, nil, &newEndpointRef) == noErr else { return nil }
+        guard interface.destinationCreateWithBlock(client, "Workaround" as CFString, &newEndpointRef, { _, _ in }) == noErr else { return nil }
         sysExSpeedWorkaroundEndpoint = newEndpointRef
 
         let destination = Destination(context: self, objectRef: newEndpointRef)

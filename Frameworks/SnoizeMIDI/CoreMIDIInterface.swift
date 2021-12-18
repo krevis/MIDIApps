@@ -20,8 +20,6 @@ protocol CoreMIDIInterface {
 
     func clientCreateWithBlock(_ name: CFString, _ outClient: UnsafeMutablePointer<MIDIClientRef>, _ notifyBlock: MIDINotifyBlock?) -> OSStatus
 
-    func clientCreate(_ name: CFString, _ notifyProc: MIDINotifyProc?, _ notifyRefCon: UnsafeMutableRawPointer?, _ outClient: UnsafeMutablePointer<MIDIClientRef>) -> OSStatus
-
     func clientDispose(_ client: MIDIClientRef) -> OSStatus
 
     func objectGetStringProperty(_ obj: MIDIObjectRef, _ propertyID: CFString, _ str: UnsafeMutablePointer<Unmanaged<CFString>?>) -> OSStatus
@@ -63,9 +61,6 @@ protocol CoreMIDIInterface {
 
     func sourceCreate(_ client: MIDIClientRef, _ name: CFString, _ outSrc: UnsafeMutablePointer<MIDIEndpointRef>) -> OSStatus
 
-    func destinationCreate(_ client: MIDIClientRef, _ name: CFString, _ readProc: @escaping MIDIReadProc, _ refCon: UnsafeMutableRawPointer?, _ outDest: UnsafeMutablePointer<MIDIEndpointRef>) -> OSStatus
-
-    @available(macOS 10.11, *)
     func destinationCreateWithBlock(_ client: MIDIClientRef, _ name: CFString, _ outDest: UnsafeMutablePointer<MIDIEndpointRef>, _ readBlock: @escaping MIDIReadBlock) -> OSStatus
 
     func endpointGetEntity(_ inEndpoint: MIDIEndpointRef, _ outEntity: UnsafeMutablePointer<MIDIEntityRef>?) -> OSStatus
@@ -78,9 +73,6 @@ protocol CoreMIDIInterface {
 
     func sendSysex(_ request: UnsafeMutablePointer<MIDISysexSendRequest>) -> OSStatus
 
-    func inputPortCreate(_ client: MIDIClientRef, _ portName: CFString, _ readProc: @escaping MIDIReadProc, _ refCon: UnsafeMutableRawPointer?, _ outPort: UnsafeMutablePointer<MIDIPortRef>) -> OSStatus
-
-    @available(macOS 10.11, *)
     func inputPortCreateWithBlock(_ client: MIDIClientRef, _ portName: CFString, _ outPort: UnsafeMutablePointer<MIDIPortRef>, _ readBlock: @escaping MIDIReadBlock) -> OSStatus
 
     func outputPortCreate(_ client: MIDIClientRef, _ portName: CFString, _ outPort: UnsafeMutablePointer<MIDIPortRef>) -> OSStatus
@@ -96,16 +88,7 @@ protocol CoreMIDIInterface {
 struct RealCoreMIDIInterface: CoreMIDIInterface {
 
     func clientCreateWithBlock(_ name: CFString, _ outClient: UnsafeMutablePointer<MIDIClientRef>, _ notifyBlock: MIDINotifyBlock?) -> OSStatus {
-        if #available(OSX 10.11, iOS 9.0, *) {
-            return MIDIClientCreateWithBlock(name, outClient, notifyBlock)
-        }
-        else {
-            fatalError()
-        }
-    }
-
-    func clientCreate(_ name: CFString, _ notifyProc: MIDINotifyProc?, _ notifyRefCon: UnsafeMutableRawPointer?, _ outClient: UnsafeMutablePointer<MIDIClientRef>) -> OSStatus {
-        MIDIClientCreate(name, notifyProc, notifyRefCon, outClient)
+        return MIDIClientCreateWithBlock(name, outClient, notifyBlock)
     }
 
     func clientDispose(_ client: MIDIClientRef) -> OSStatus {
@@ -204,11 +187,6 @@ struct RealCoreMIDIInterface: CoreMIDIInterface {
         MIDISourceCreate(client, name, outSrc)
     }
 
-    func destinationCreate(_ client: MIDIClientRef, _ name: CFString, _ readProc: @escaping MIDIReadProc, _ refCon: UnsafeMutableRawPointer?, _ outDest: UnsafeMutablePointer<MIDIEndpointRef>) -> OSStatus {
-        MIDIDestinationCreate(client, name, readProc, refCon, outDest)
-    }
-
-    @available(macOS 10.11, *)
     func destinationCreateWithBlock(_ client: MIDIClientRef, _ name: CFString, _ outDest: UnsafeMutablePointer<MIDIEndpointRef>, _ readBlock: @escaping MIDIReadBlock) -> OSStatus {
         MIDIDestinationCreateWithBlock(client, name, outDest, readBlock)
     }
@@ -233,11 +211,6 @@ struct RealCoreMIDIInterface: CoreMIDIInterface {
         MIDISendSysex(request)
     }
 
-    func inputPortCreate(_ client: MIDIClientRef, _ portName: CFString, _ readProc: @escaping MIDIReadProc, _ refCon: UnsafeMutableRawPointer?, _ outPort: UnsafeMutablePointer<MIDIPortRef>) -> OSStatus {
-        MIDIInputPortCreate(client, portName, readProc, refCon, outPort)
-    }
-
-    @available(macOS 10.11, *)
     public func inputPortCreateWithBlock(_ client: MIDIClientRef, _ portName: CFString, _ outPort: UnsafeMutablePointer<MIDIPortRef>, _ readBlock: @escaping MIDIReadBlock) -> OSStatus {
         MIDIInputPortCreateWithBlock(client, portName, outPort, readBlock)
     }

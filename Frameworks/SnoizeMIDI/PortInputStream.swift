@@ -17,12 +17,7 @@ public class PortInputStream: InputStream {
     public override init(midiContext: MIDIContext) {
         super.init(midiContext: midiContext)
 
-        if #available(OSX 10.11, *) {
-            _ = midiContext.interface.inputPortCreateWithBlock(midiContext.client, "Input port" as CFString, &inputPort, midiReadBlock)
-        }
-        else {
-            _ = midiContext.interface.inputPortCreate(midiContext.client, "Input port" as CFString, midiReadProc, Unmanaged.passUnretained(self).toOpaque(), &inputPort)
-        }
+        _ = midiContext.interface.inputPortCreateWithBlock(midiContext.client, "Input port" as CFString, &inputPort, midiReadBlock)
 
         NotificationCenter.default.addObserver(self, selector: #selector(self.midiObjectListChanged(_:)), name: .midiObjectListChanged, object: midiContext)
     }

@@ -123,12 +123,7 @@ public class VirtualInputStream: InputStream {
 
     private func createEndpoint() {
 
-        if #available(OSX 10.11, *) {
-            endpoint = midiContext.createVirtualDestination(name: virtualEndpointName, uniqueID: uniqueID, midiReadBlock: midiReadBlock)
-        }
-        else {
-            endpoint = midiContext.createVirtualDestination(name: virtualEndpointName, uniqueID: uniqueID, midiReadProc: midiReadProc, readProcRefCon: Unmanaged.passUnretained(self).toOpaque())
-        }
+        endpoint = midiContext.createVirtualDestination(name: virtualEndpointName, uniqueID: uniqueID, midiReadBlock: midiReadBlock)
 
         if let endpoint = endpoint {
             if parser == nil {

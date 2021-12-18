@@ -81,22 +81,7 @@ open class InputStream {
     // FUTURE: It would be nice to implement the functionality of our subclasses via composition instead
     // of inheritance. When doing so, these subclass-related methods will perhaps get put in a protocol.
 
-    // MIDIReadProc to be passed to functions like MIDIInputPortCreate() on macOS before 10.11
-    public let midiReadProc: MIDIReadProc = { (packetListPtr, readProcRefCon, srcConnRefCon) in
-        // NOTE: This function is called in a high-priority, time-constraint thread,
-        // created for us by CoreMIDI.
-
-        // NOTE: There's a race. The inputStream could get deallocated while this code is running on the MIDI thread,
-        // including in this window of time before we fetch and retain it.
-        // In macOS 10.11 and later, CoreMIDI's newer block-based callbacks, which allow the inputStream to be captured as a weak
-        // reference in a block, is a better way.
-
-        guard let readProcRefCon = readProcRefCon else { return }
-        let inputStream = Unmanaged<InputStream>.fromOpaque(readProcRefCon).takeUnretainedValue()
-        inputStream.midiRead(packetListPtr, srcConnRefCon)
-    }
-
-    // MIDIReadBlock to be passed to functions like MIDIInputPortCreateWithBlock() on macOS post 10.11
+    // MIDIReadBlock to be passed to functions like MIDIInputPortCreateWithBlock()
     public lazy var midiReadBlock: MIDIReadBlock = { [weak self] (packetListPtr, srcConnRefCon) in
         // NOTE: This function is called in a high-priority, time-constraint thread,
         // created for us by CoreMIDI.

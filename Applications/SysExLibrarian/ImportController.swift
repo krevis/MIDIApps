@@ -146,12 +146,7 @@ extension ImportController /* Private */ {
 
         let paths = self.filePathsToImport
         if workQueue == nil {
-            if #available(OSX 10.10, iOS 8.0, *) {
-                workQueue = DispatchQueue(label: "Import", qos: .userInitiated)
-            }
-            else {
-                workQueue = DispatchQueue(label: "Import")
-            }
+            workQueue = DispatchQueue(label: "Import", qos: .userInitiated)
         }
         workQueue?.async {
             self.workQueueImportFiles(paths)
