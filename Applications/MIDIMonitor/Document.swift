@@ -248,11 +248,11 @@ extension Document {
             // Unfortunately this is not easy in Objective-C:
             // void (*objc_msgSendTyped)(id self, SEL _cmd, NSDocument *document, BOOL shouldClose, void *contextInfo) = (void*)objc_msgSend;
             // objc_msgSendTyped(delegate, shouldCloseSelector, self, YES /* close now */, contextInfo);
-            // and it's not nice in Swift either. https://stackoverflow.com/a/43553386
+            // and it's not nice in Swift either. https://stackoverflow.com/a/35165890
             let delegateObject = delegate as AnyObject
             if let selector = shouldCloseSelector,
                let imp = class_getMethodImplementation(type(of: delegateObject), selector) {
-                unsafeBitCast(imp, to: (@convention(c)(Any?, Selector, Any?, Bool, Any?)->Void).self)(delegateObject, selector, self, true /*close now */, contextInfo)
+                unsafeBitCast(imp, to: (@convention(c)(Any?, Selector, Any?, Bool, UnsafeMutableRawPointer?)->Void).self)(delegateObject, selector, self, true /*close now */, contextInfo)
             }
         }
         else {
