@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2002-2021, Kurt Revis.  All rights reserved.
+ Copyright (c) 2002-2022, Kurt Revis.  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
@@ -98,12 +98,25 @@ class DisclosableView: NSView {
         // (The window width may change while the subviews are hidden.)
         sizeBeforeHidden = frame.size
 
-        // Now shrink the window, causing this view to shrink and our subviews to be obscured.
-        // Also remove the subviews from the view hierarchy.
-        changeWindowHeight(by: -(originalHeight - hiddenHeight))
-        removeSubviews()
+        let completion = { [self] in
+            // After the animation, remove our subviews from the view hierarchy.
+            removeSubviews()
+            needsDisplay = true
+        }
 
-        needsDisplay = true
+        if let window = window, window.styleMask.contains(.fullScreen) {
+            // We're in full screen, so we can't resize the window. Resize ourself and other content views instead.
+            NSAnimationContext.runAnimationGroup { animationContext in
+                animationContext.completionHandler = completion
+                animationContext.allowsImplicitAnimation = true
+                changeSelfHeightAndAdjustOtherContentViews(by: -(originalHeight - hiddenHeight))
+            }
+        }
+        else {
+            // Now shrink the window, causing this view to shrink and our subviews to be obscured.
+            changeWindowHeight(by: -(originalHeight - hiddenHeight))
+            completion()
+        }
     }
 
     private func show() {
@@ -121,16 +134,29 @@ class DisclosableView: NSView {
         resizeSubviews(withOldSize: sizeBeforeHidden)
         setFrameSize(hiddenSize)
 
-        // Finally resize the window, causing our height to increase.
-        changeWindowHeight(by: originalHeight - hiddenHeight)
+        let completion = { [self] in
+            if originalNextKeyView != nil {
+                // Restore the key loop to its old configuration.
+                lastChildKeyView?.nextKeyView = nextKeyView
+                nextKeyView = originalNextKeyView
+            }
 
-        if originalNextKeyView != nil {
-            // Restore the key loop to its old configuration.
-            lastChildKeyView?.nextKeyView = nextKeyView
-            nextKeyView = originalNextKeyView
+            needsDisplay = true
         }
 
-        needsDisplay = true
+        if let window = window, window.styleMask.contains(.fullScreen) {
+            // We're in full screen, so we can't resize the window. Resize ourself and other content views instead.
+            NSAnimationContext.runAnimationGroup { animationContext in
+                animationContext.completionHandler = completion
+                animationContext.allowsImplicitAnimation = true
+                changeSelfHeightAndAdjustOtherContentViews(by: (originalHeight - hiddenHeight))
+            }
+        }
+        else {
+            // Finally resize the window, causing our height to increase.
+            changeWindowHeight(by: originalHeight - hiddenHeight)
+            completion()
+        }
     }
 
     private func removeSubviews() {
@@ -271,6 +297,42 @@ class DisclosableView: NSView {
     func restoreViewMasks(_ viewsAndMasks: [(NSView, NSView.AutoresizingMask)]) {
         for (view, mask) in viewsAndMasks {
             view.autoresizingMask = mask
+        }
+    }
+
+    private func changeSelfHeightAndAdjustOtherContentViews(by amount: CGFloat) {
+        guard let window = window else { return }
+
+        // Change this view's height by the given amount, and adjust the window's content view's other subviews
+        // to make sense. Specifically, the subviews below us. If the subview can resize, change its height;
+        // if it can't, change its position.
+
+        for windowSubview in window.contentView?.subviews ?? [] {
+            if windowSubview == self {
+                // This is us. Resize to be shorter or taller, keeping the same top (maxY).
+                var frame = windowSubview.frame
+                frame.origin.y -= amount
+                frame.size.height += amount
+                windowSubview.frame = frame
+            }
+            else if windowSubview.frame.maxY < self.frame.maxY {
+                // This subview is below us
+                if windowSubview.autoresizingMask.contains(.height) {
+                    // and resizes when the window height changes. Make it taller or shorter, staying fixed to the bottom of the window.
+                    var frame = windowSubview.frame
+                    frame.size.height -= amount
+                    windowSubview.frame = frame
+                }
+                else {
+                    // and doesn't resize when the window height changes. Keep its same top (maxY).
+                    var frame = windowSubview.frame
+                    frame.origin.y -= amount
+                    windowSubview.frame = frame
+                }
+            }
+            else {
+                // This subview is above us. Don't change it.
+            }
         }
     }
 
