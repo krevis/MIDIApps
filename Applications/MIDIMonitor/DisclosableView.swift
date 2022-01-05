@@ -234,12 +234,7 @@ class DisclosableView: NSView {
             window.setFrame(newWindowFrame, display: false, animate: false)
         }
 
-        // Adjust the window's min and max sizes to make sense.
-        window.minSize = CGSize(width: window.minSize.width, height: window.minSize.height + amount)
-        // If there is no max size set (height of 0), don't change it.
-        if window.maxSize.height > 0 {
-            window.maxSize = CGSize(width: window.maxSize.width, height: window.maxSize.height + amount)
-        }
+        changeWindowMinMaxHeightBy(window, amount)
 
         // Restore the saved autoresize masks.
         restoreViewMasks(windowSubviewsAndMasks)
@@ -300,6 +295,15 @@ class DisclosableView: NSView {
         }
     }
 
+    private func changeWindowMinMaxHeightBy(_ window: NSWindow, _ amount: CGFloat) {
+        // Adjust the window's min and max sizes to make sense.
+        window.minSize = CGSize(width: window.minSize.width, height: window.minSize.height + amount)
+        // If there is no max size set (height of 0), don't change it.
+        if window.maxSize.height > 0 {
+            window.maxSize = CGSize(width: window.maxSize.width, height: window.maxSize.height + amount)
+        }
+    }
+
     private func changeSelfHeightAndAdjustOtherContentViews(by amount: CGFloat) {
         guard let window = window else { return }
 
@@ -334,6 +338,8 @@ class DisclosableView: NSView {
                 // This subview is above us. Don't change it.
             }
         }
+
+        changeWindowMinMaxHeightBy(window, amount)
     }
 
 }
