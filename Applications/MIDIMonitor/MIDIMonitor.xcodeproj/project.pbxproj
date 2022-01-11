@@ -17,12 +17,11 @@
 		163849B626D37AF1007C15DF /* MIDIMonitor.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849AE26D37AF0007C15DF /* MIDIMonitor.xib */; };
 		163849B726D37AF1007C15DF /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849B026D37AF0007C15DF /* MainMenu.xib */; };
 		163849B826D37AF1007C15DF /* Details.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849B226D37AF0007C15DF /* Details.xib */; };
+		1646BF19278D157200B904E4 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 1646BF18278D157200B904E4 /* Sparkle */; };
 		167B881906ED4D650053D305 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		167B881C06ED4D650053D305 /* MIDIMonitor.strings in Resources */ = {isa = PBXBuildFile; fileRef = F53BB4AE015D96A501000164 /* MIDIMonitor.strings */; };
 		167B882106ED4D650053D305 /* docs.htmld in Resources */ = {isa = PBXBuildFile; fileRef = F56D31A30195A90E01000164 /* docs.htmld */; };
 		167B882506ED4D650053D305 /* Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 16F20F4906EAA14A00D9C507 /* Defaults.plist */; };
-		167B883906ED4D650053D305 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
-		167B883B06ED4D650053D305 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B4281801A360AD01000164 /* CoreMIDI.framework */; };
 		1692D71225899A8C0092D6E7 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D71125899A8C0092D6E7 /* PreferencesWindowController.swift */; };
 		1692D7192589E83D0092D6E7 /* UtilityWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D7182589E83D0092D6E7 /* UtilityWindowController.swift */; };
 		1692D72D2589E91D0092D6E7 /* MonitorWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D72C2589E91D0092D6E7 /* MonitorWindowController.swift */; };
@@ -162,13 +161,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		160A5E8C258822CB008C0CE1 /* SysExWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SysExWindowController.swift; sourceTree = "<group>"; };
 		160A5EA0258825B0008C0CE1 /* PreferenceKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceKeys.swift; sourceTree = "<group>"; };
 		161B71F915D8DD83006E21D4 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dsa_pub.pem; path = ../../Updates/dsa_pub.pem; sourceTree = "<group>"; };
 		161B71FC15D8DFA5006E21D4 /* MIDIMonitor.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = MIDIMonitor.xml; path = ../../Updates/MIDIMonitor.xml; sourceTree = "<group>"; };
-		162310440E6CCC6100A700CA /* SnoizeMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SnoizeMIDI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		162310450E6CCC6100A700CA /* SnoizeMIDISpy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SnoizeMIDISpy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		162A31F0254E91B5008E1F38 /* Snoize-Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Snoize-Signing.xcconfig"; path = "../../Configurations/Snoize-Signing.xcconfig"; sourceTree = "<group>"; };
 		163849AB26D37AF0007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Preferences.xib; sourceTree = "<group>"; };
 		163849AD26D37AF0007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/SysEx.xib; sourceTree = "<group>"; };
@@ -208,9 +204,6 @@
 		16F9FA582586F51400169621 /* DisclosureButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosureButton.swift; sourceTree = "<group>"; };
 		16F9FA5A2586F9BB00169621 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		16F9FA5C2586FD0B00169621 /* DisclosableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosableView.swift; sourceTree = "<group>"; };
-		2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
-		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		F5B4281801A360AD01000164 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -218,9 +211,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				167B883906ED4D650053D305 /* Cocoa.framework in Frameworks */,
-				167B883B06ED4D650053D305 /* CoreMIDI.framework in Frameworks */,
 				16E8F01D097B2E8B00B52193 /* SnoizeMIDI.framework in Frameworks */,
+				1646BF19278D157200B904E4 /* Sparkle in Frameworks */,
 				16E8F01A097B2E5200B52193 /* SnoizeMIDISpy.framework in Frameworks */,
 				16A3C31D25E71631001F01A3 /* HexFiend.framework in Frameworks */,
 			);
@@ -229,26 +221,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */,
-				F5B4281801A360AD01000164 /* CoreMIDI.framework */,
-				162310440E6CCC6100A700CA /* SnoizeMIDI.framework */,
-				162310450E6CCC6100A700CA /* SnoizeMIDISpy.framework */,
-			);
-			name = "Linked Frameworks";
-			sourceTree = "<group>";
-		};
-		1058C7A8FEA54F5311CA2CBB /* Other Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */,
-				2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */,
-			);
-			name = "Other Frameworks";
-			sourceTree = "<group>";
-		};
 		161B71FB15D8DF8E006E21D4 /* Sparkle Updates (for reference only, not shipped in app) */ = {
 			isa = PBXGroup;
 			children = (
@@ -343,7 +315,6 @@
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
 				169E7113097B200A001AFB58 /* Configurations */,
 				169E71A0097B23FF001AFB58 /* Other Projects */,
-				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
 				161B71FB15D8DF8E006E21D4 /* Sparkle Updates (for reference only, not shipped in app) */,
 			);
@@ -392,15 +363,6 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */,
-				1058C7A8FEA54F5311CA2CBB /* Other Frameworks */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		F571C56C01903F3301000164 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -444,6 +406,9 @@
 				162972C5097B41AA00158D7B /* PBXTargetDependency */,
 			);
 			name = MIDIMonitor;
+			packageProductDependencies = (
+				1646BF18278D157200B904E4 /* Sparkle */,
+			);
 			productInstallPath = /Users/Shared/krevis/InstalledProducts;
 			productName = MIDIMonitor;
 			productReference = 167B884306ED4D650053D305 /* MIDI Monitor.app */;
@@ -476,6 +441,9 @@
 				ja,
 			);
 			mainGroup = 2A37F4AAFDCFA73011CA2CEA /* MIDIMonitor */;
+			packageReferences = (
+				1646BF17278D157200B904E4 /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			projectDirPath = "";
 			projectReferences = (
 				{
@@ -847,6 +815,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1646BF17278D157200B904E4 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1646BF18278D157200B904E4 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1646BF17278D157200B904E4 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
 }

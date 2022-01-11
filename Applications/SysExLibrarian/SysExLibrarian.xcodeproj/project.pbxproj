@@ -17,6 +17,9 @@
 		163849E826D37E7A007C15DF /* Import.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849DD26D37E79007C15DF /* Import.xib */; };
 		163849E926D37E7A007C15DF /* RecordMany.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849DF26D37E79007C15DF /* RecordMany.xib */; };
 		163849EA26D37E7A007C15DF /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849E126D37E79007C15DF /* MainWindow.xib */; };
+		1646BF31278D15C700B904E4 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 1646BF30278D15C700B904E4 /* Sparkle */; };
+		1646BF33278D19AE00B904E4 /* HexFiend.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1606497E278D13E8005D51A3 /* HexFiend.framework */; };
+		1646BF34278D19AE00B904E4 /* HexFiend.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1606497E278D13E8005D51A3 /* HexFiend.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1648DDA62762ED980062DC29 /* ReportFileReadErrorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1648DDA52762ED980062DC29 /* ReportFileReadErrorController.swift */; };
 		16517B9325D4A2E900D0CAC4 /* NSFileManager+UniqueName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16517B9225D4A2E900D0CAC4 /* NSFileManager+UniqueName.swift */; };
 		16517B9525D4AAFF00D0CAC4 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16517B9425D4AAFF00D0CAC4 /* MainWindowController.swift */; };
@@ -33,8 +36,6 @@
 		1686427C25CFC35A00A8B292 /* RecordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686427B25CFC35A00A8B292 /* RecordController.swift */; };
 		1686427E25D1195600A8B292 /* PlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686427D25D1195600A8B292 /* PlayController.swift */; };
 		169B7A2025CA729900C9BB81 /* SysExSpeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169B7A1F25CA729900C9BB81 /* SysExSpeedController.swift */; };
-		16A3C3D325E7816C001F01A3 /* HexFiend.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16A3C3D225E7816C001F01A3 /* HexFiend.framework */; };
-		16A3C3D425E7844C001F01A3 /* HexFiend.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 16A3C3D225E7816C001F01A3 /* HexFiend.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16A7F90726D1E917007587B7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16A7F90626D1E917007587B7 /* Assets.xcassets */; };
 		16B736C225D66C07000DAC58 /* Alias.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736C125D66C07000DAC58 /* Alias.swift */; };
 		16B736C425D7366D000DAC58 /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736C325D7366D000DAC58 /* Library.swift */; };
@@ -53,9 +54,6 @@
 		16F033600984B76F006C8A44 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		16F033630984B76F006C8A44 /* docs.htmld in Resources */ = {isa = PBXBuildFile; fileRef = F5D90FE4021630C101000164 /* docs.htmld */; };
 		16F0336B0984B76F006C8A44 /* SysExLibrarian.strings in Resources */ = {isa = PBXBuildFile; fileRef = F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */; };
-		16F0338A0984B76F006C8A44 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
-		16F0338B0984B76F006C8A44 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F559F8FA01DEC0C601000164 /* CoreMIDI.framework */; };
-		16F0338D0984B76F006C8A44 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F539E386020F2C2F01000164 /* Carbon.framework */; };
 		16F034250984BA49006C8A44 /* SnoizeMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16F0332F0984B74B006C8A44 /* SnoizeMIDI.framework */; };
 		16F034320984BABA006C8A44 /* SnoizeMIDI.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 16F0332F0984B74B006C8A44 /* SnoizeMIDI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		16F0384C0984C9D7006C8A44 /* Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 16F0384B0984C9D7006C8A44 /* Defaults.plist */; };
@@ -149,14 +147,13 @@
 			dstSubfolderSpec = 10;
 			files = (
 				16F034320984BABA006C8A44 /* SnoizeMIDI.framework in CopyFiles */,
-				16A3C3D425E7844C001F01A3 /* HexFiend.framework in CopyFiles */,
+				1646BF34278D19AE00B904E4 /* HexFiend.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		16064970278D13E8005D51A3 /* HexFiend_2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = HexFiend_2.xcodeproj; path = ../../ThirdParty/HexFiend/HexFiend_2.xcodeproj; sourceTree = "<group>"; };
 		161B721215D8EA13006E21D4 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dsa_pub.pem; path = ../../Updates/dsa_pub.pem; sourceTree = "<group>"; };
 		161B721515D8EA7F006E21D4 /* SysExLibrarian.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = SysExLibrarian.xml; path = ../../Updates/SysExLibrarian.xml; sourceTree = "<group>"; };
@@ -188,7 +185,6 @@
 		169225F125C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SysExLibrarian.strings; sourceTree = "<group>"; };
 		169225F225C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.htmld; name = en; path = en.lproj/docs.htmld; sourceTree = "<group>"; };
 		169B7A1F25CA729900C9BB81 /* SysExSpeedController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SysExSpeedController.swift; sourceTree = "<group>"; };
-		16A3C3D225E7816C001F01A3 /* HexFiend.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = HexFiend.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		16A7F90626D1E917007587B7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		16B736C125D66C07000DAC58 /* Alias.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alias.swift; sourceTree = "<group>"; };
 		16B736C325D7366D000DAC58 /* Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
@@ -215,10 +211,6 @@
 		16F033940984B76F006C8A44 /* Info-SysExLibrarian.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-SysExLibrarian.plist"; sourceTree = "<group>"; };
 		16F033950984B76F006C8A44 /* SysEx Librarian.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SysEx Librarian.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		16F0384B0984C9D7006C8A44 /* Defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Defaults.plist; sourceTree = "<group>"; };
-		2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
-		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		F539E386020F2C2F01000164 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
-		F559F8FA01DEC0C601000164 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -226,36 +218,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				16F0338A0984B76F006C8A44 /* Cocoa.framework in Frameworks */,
-				16F0338B0984B76F006C8A44 /* CoreMIDI.framework in Frameworks */,
-				16F0338D0984B76F006C8A44 /* Carbon.framework in Frameworks */,
+				1646BF31278D15C700B904E4 /* Sparkle in Frameworks */,
+				1646BF33278D19AE00B904E4 /* HexFiend.framework in Frameworks */,
 				16F034250984BA49006C8A44 /* SnoizeMIDI.framework in Frameworks */,
-				16A3C3D325E7816C001F01A3 /* HexFiend.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */,
-				F539E386020F2C2F01000164 /* Carbon.framework */,
-				F559F8FA01DEC0C601000164 /* CoreMIDI.framework */,
-			);
-			name = "Linked Frameworks";
-			sourceTree = "<group>";
-		};
-		1058C7A8FEA54F5311CA2CBB /* Other Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */,
-				2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */,
-			);
-			name = "Other Frameworks";
-			sourceTree = "<group>";
-		};
 		16064971278D13E8005D51A3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -276,6 +247,13 @@
 				161B721515D8EA7F006E21D4 /* SysExLibrarian.xml */,
 			);
 			name = "Sparkle Updates (for reference only, not shipped in app)";
+			sourceTree = "<group>";
+		};
+		1646BF32278D19AE00B904E4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		16F032D20984B6F3006C8A44 /* Configurations */ = {
@@ -326,9 +304,9 @@
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
 				16F032D20984B6F3006C8A44 /* Configurations */,
 				16F032D50984B6FB006C8A44 /* Other Projects */,
-				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
 				161B721415D8EA71006E21D4 /* Sparkle Updates (for reference only, not shipped in app) */,
+				1646BF32278D19AE00B904E4 /* Frameworks */,
 			);
 			name = SysExLibrarian;
 			sourceTree = "<group>";
@@ -377,16 +355,6 @@
 				161B721215D8EA13006E21D4 /* dsa_pub.pem */,
 			);
 			name = Resources;
-			sourceTree = "<group>";
-		};
-		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				16A3C3D225E7816C001F01A3 /* HexFiend.framework */,
-				1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */,
-				1058C7A8FEA54F5311CA2CBB /* Other Frameworks */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		F5308FDF0232DC6B01000164 /* App Controller */ = {
@@ -488,6 +456,9 @@
 				16F0339D0984B7B0006C8A44 /* PBXTargetDependency */,
 			);
 			name = SysExLibrarian;
+			packageProductDependencies = (
+				1646BF30278D15C700B904E4 /* Sparkle */,
+			);
 			productInstallPath = /Users/Shared/krevis/InstalledProducts;
 			productName = SysExLibrarian;
 			productReference = 16F033950984B76F006C8A44 /* SysEx Librarian.app */;
@@ -520,6 +491,9 @@
 				en,
 			);
 			mainGroup = 2A37F4AAFDCFA73011CA2CEA /* SysExLibrarian */;
+			packageReferences = (
+				1646BF2F278D15C700B904E4 /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			projectDirPath = "";
 			projectReferences = (
 				{
@@ -918,6 +892,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1646BF2F278D15C700B904E4 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1646BF30278D15C700B904E4 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1646BF2F278D15C700B904E4 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
 }
