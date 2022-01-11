@@ -31,6 +31,7 @@ Your source tree should look like this:
 	* SnoizeMIDI
 	* SnoizeMIDISpy
 * Third Party
+    * HexFiend
 * Updates
 
 ### Applications/MIDIMonitor Applications/SysExLibrarian ###
@@ -70,12 +71,17 @@ The driver is written in C++, and the framework is C and Objective-C. You should
 
 Contains .xcconfig files used to coordinate build settings across all the Xcode projects.
 
-### Third Party, Updates ###
+### Third Party ###
 
-Contains the git submodule for Sparkle (the ubiquitous app-auto-update framework) and the server-side files to make it work.
+Contains the git submodule for HexFiend, which we use to display hex dumps in various views.
 
 If you don't see the Sparkle submodule, do a `git submodule update --init --recursive`.
 
+### Updates ###
+
+Contains the server-side files used to make app updates work (via Sparkle). You don't need to touch these. 
+
+Note that the app targets use Sparkle as a package dependency via Swift Package Manager. Xcode should automatically get the package for you.
 
 ## Questions? ##
 
