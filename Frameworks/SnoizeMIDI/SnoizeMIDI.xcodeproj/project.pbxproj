@@ -8,110 +8,40 @@
 
 /* Begin PBXBuildFile section */
 		1691F95325B90AA500B9CE06 /* MessageDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F95225B90AA500B9CE06 /* MessageDestination.swift */; };
-		1691F95425B90AA500B9CE06 /* MessageDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F95225B90AA500B9CE06 /* MessageDestination.swift */; };
-		1691F95525B90AA500B9CE06 /* MessageDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F95225B90AA500B9CE06 /* MessageDestination.swift */; };
 		1691F98D25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F98C25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift */; };
-		1691F98E25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F98C25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift */; };
-		1691F98F25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F98C25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift */; };
 		1691F99725BD621A00B9CE06 /* MIDIObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F99625BD621A00B9CE06 /* MIDIObject.swift */; };
-		1691F99825BD621A00B9CE06 /* MIDIObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F99625BD621A00B9CE06 /* MIDIObject.swift */; };
-		1691F99925BD621A00B9CE06 /* MIDIObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F99625BD621A00B9CE06 /* MIDIObject.swift */; };
 		1691F9A125BD625800B9CE06 /* CoreMIDIObjectList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9A025BD625800B9CE06 /* CoreMIDIObjectList.swift */; };
-		1691F9A225BD625800B9CE06 /* CoreMIDIObjectList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9A025BD625800B9CE06 /* CoreMIDIObjectList.swift */; };
-		1691F9A325BD625800B9CE06 /* CoreMIDIObjectList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9A025BD625800B9CE06 /* CoreMIDIObjectList.swift */; };
 		1691F9A825BD628700B9CE06 /* MIDIObjectList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9A725BD628700B9CE06 /* MIDIObjectList.swift */; };
-		1691F9A925BD628700B9CE06 /* MIDIObjectList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9A725BD628700B9CE06 /* MIDIObjectList.swift */; };
-		1691F9AA25BD628700B9CE06 /* MIDIObjectList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9A725BD628700B9CE06 /* MIDIObjectList.swift */; };
 		1691F9AF25BD62B300B9CE06 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9AE25BD62B300B9CE06 /* Device.swift */; };
-		1691F9B025BD62B300B9CE06 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9AE25BD62B300B9CE06 /* Device.swift */; };
-		1691F9B125BD62B300B9CE06 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9AE25BD62B300B9CE06 /* Device.swift */; };
 		1691F9B625BD62C700B9CE06 /* ExternalDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9B525BD62C700B9CE06 /* ExternalDevice.swift */; };
-		1691F9B725BD62C700B9CE06 /* ExternalDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9B525BD62C700B9CE06 /* ExternalDevice.swift */; };
-		1691F9B825BD62C700B9CE06 /* ExternalDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9B525BD62C700B9CE06 /* ExternalDevice.swift */; };
 		1691F9BD25BD62F200B9CE06 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9BC25BD62F200B9CE06 /* Endpoint.swift */; };
-		1691F9BE25BD62F200B9CE06 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9BC25BD62F200B9CE06 /* Endpoint.swift */; };
-		1691F9BF25BD62F200B9CE06 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9BC25BD62F200B9CE06 /* Endpoint.swift */; };
 		1691F9C425BD630900B9CE06 /* Source.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9C325BD630900B9CE06 /* Source.swift */; };
-		1691F9C525BD630900B9CE06 /* Source.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9C325BD630900B9CE06 /* Source.swift */; };
-		1691F9C625BD630900B9CE06 /* Source.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9C325BD630900B9CE06 /* Source.swift */; };
 		1691F9CB25BD632500B9CE06 /* Destination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9CA25BD632500B9CE06 /* Destination.swift */; };
-		1691F9CC25BD632500B9CE06 /* Destination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9CA25BD632500B9CE06 /* Destination.swift */; };
-		1691F9CD25BD632500B9CE06 /* Destination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9CA25BD632500B9CE06 /* Destination.swift */; };
 		1691F9D525BD68F700B9CE06 /* CoreMIDIContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9D425BD68F700B9CE06 /* CoreMIDIContext.swift */; };
-		1691F9D625BD68F700B9CE06 /* CoreMIDIContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9D425BD68F700B9CE06 /* CoreMIDIContext.swift */; };
-		1691F9D725BD68F700B9CE06 /* CoreMIDIContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9D425BD68F700B9CE06 /* CoreMIDIContext.swift */; };
 		1691F9DF25BD7E5100B9CE06 /* CoreMIDIInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9DE25BD7E5100B9CE06 /* CoreMIDIInterface.swift */; };
-		1691F9E025BD7E5100B9CE06 /* CoreMIDIInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9DE25BD7E5100B9CE06 /* CoreMIDIInterface.swift */; };
-		1691F9E125BD7E5100B9CE06 /* CoreMIDIInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9DE25BD7E5100B9CE06 /* CoreMIDIInterface.swift */; };
 		1691F9E925BEB47500B9CE06 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9E825BEB47500B9CE06 /* Cache.swift */; };
-		1691F9EA25BEB47500B9CE06 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9E825BEB47500B9CE06 /* Cache.swift */; };
-		1691F9EB25BEB47500B9CE06 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9E825BEB47500B9CE06 /* Cache.swift */; };
 		1691F9F325BF964D00B9CE06 /* MIDIContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9F225BF964D00B9CE06 /* MIDIContext.swift */; };
-		1691F9F425BF964D00B9CE06 /* MIDIContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9F225BF964D00B9CE06 /* MIDIContext.swift */; };
-		1691F9F525BF964D00B9CE06 /* MIDIContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F9F225BF964D00B9CE06 /* MIDIContext.swift */; };
 		169669F325A8E49300D5BE2A /* VirtualInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169669F225A8E49300D5BE2A /* VirtualInputStream.swift */; };
-		169669F425A8E49300D5BE2A /* VirtualInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169669F225A8E49300D5BE2A /* VirtualInputStream.swift */; };
-		169669F525A8E49300D5BE2A /* VirtualInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169669F225A8E49300D5BE2A /* VirtualInputStream.swift */; };
 		16966A3E25A91B5F00D5BE2A /* PortInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A3D25A91B5F00D5BE2A /* PortInputStream.swift */; };
-		16966A3F25A91B5F00D5BE2A /* PortInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A3D25A91B5F00D5BE2A /* PortInputStream.swift */; };
-		16966A4025A91B5F00D5BE2A /* PortInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A3D25A91B5F00D5BE2A /* PortInputStream.swift */; };
 		16966A4E25A9399600D5BE2A /* SingleInputStreamSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A4D25A9399600D5BE2A /* SingleInputStreamSource.swift */; };
-		16966A4F25A9399600D5BE2A /* SingleInputStreamSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A4D25A9399600D5BE2A /* SingleInputStreamSource.swift */; };
-		16966A5025A9399600D5BE2A /* SingleInputStreamSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A4D25A9399600D5BE2A /* SingleInputStreamSource.swift */; };
 		16966A5E25A9417400D5BE2A /* InputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A5D25A9417400D5BE2A /* InputStream.swift */; };
-		16966A5F25A9417400D5BE2A /* InputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A5D25A9417400D5BE2A /* InputStream.swift */; };
-		16966A6025A9417400D5BE2A /* InputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A5D25A9417400D5BE2A /* InputStream.swift */; };
 		16966A6E25ABCD7A00D5BE2A /* MessageParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A6D25ABCD7A00D5BE2A /* MessageParser.swift */; };
-		16966A6F25ABCD7A00D5BE2A /* MessageParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A6D25ABCD7A00D5BE2A /* MessageParser.swift */; };
-		16966A7025ABCD7A00D5BE2A /* MessageParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A6D25ABCD7A00D5BE2A /* MessageParser.swift */; };
 		16966A8B25AD0F8500D5BE2A /* InvalidMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A8A25AD0F8500D5BE2A /* InvalidMessage.swift */; };
-		16966A8C25AD0F8500D5BE2A /* InvalidMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A8A25AD0F8500D5BE2A /* InvalidMessage.swift */; };
-		16966A8D25AD0F8500D5BE2A /* InvalidMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A8A25AD0F8500D5BE2A /* InvalidMessage.swift */; };
 		16966A9E25AD6A8F00D5BE2A /* SystemRealTimeMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A9D25AD6A8F00D5BE2A /* SystemRealTimeMessage.swift */; };
-		16966A9F25AD6A8F00D5BE2A /* SystemRealTimeMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A9D25AD6A8F00D5BE2A /* SystemRealTimeMessage.swift */; };
-		16966AA025AD6A8F00D5BE2A /* SystemRealTimeMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966A9D25AD6A8F00D5BE2A /* SystemRealTimeMessage.swift */; };
 		16966AAE25AD73AB00D5BE2A /* SystemCommonMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966AAD25AD73AB00D5BE2A /* SystemCommonMessage.swift */; };
-		16966AAF25AD73AB00D5BE2A /* SystemCommonMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966AAD25AD73AB00D5BE2A /* SystemCommonMessage.swift */; };
-		16966AB025AD73AB00D5BE2A /* SystemCommonMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966AAD25AD73AB00D5BE2A /* SystemCommonMessage.swift */; };
 		16966AC125AECFB100D5BE2A /* SystemExclusiveMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966AC025AECFB100D5BE2A /* SystemExclusiveMessage.swift */; };
-		16966AC225AECFB100D5BE2A /* SystemExclusiveMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966AC025AECFB100D5BE2A /* SystemExclusiveMessage.swift */; };
-		16966AC325AECFB100D5BE2A /* SystemExclusiveMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966AC025AECFB100D5BE2A /* SystemExclusiveMessage.swift */; };
 		16966AD425B4F90800D5BE2A /* VoiceMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966AD325B4F90800D5BE2A /* VoiceMessage.swift */; };
-		16966AD525B4F90800D5BE2A /* VoiceMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966AD325B4F90800D5BE2A /* VoiceMessage.swift */; };
-		16966AD625B4F90800D5BE2A /* VoiceMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966AD325B4F90800D5BE2A /* VoiceMessage.swift */; };
 		16966AF425B5222600D5BE2A /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966AF325B5222600D5BE2A /* Message.swift */; };
-		16966AF525B5222600D5BE2A /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966AF325B5222600D5BE2A /* Message.swift */; };
-		16966AF625B5222600D5BE2A /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966AF325B5222600D5BE2A /* Message.swift */; };
 		16966B0425B6481B00D5BE2A /* MessageTimeBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B0325B6481B00D5BE2A /* MessageTimeBase.swift */; };
-		16966B0525B6481B00D5BE2A /* MessageTimeBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B0325B6481B00D5BE2A /* MessageTimeBase.swift */; };
-		16966B0625B6481B00D5BE2A /* MessageTimeBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B0325B6481B00D5BE2A /* MessageTimeBase.swift */; };
 		16966B8B25B7CE1900D5BE2A /* InputStreamSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B8A25B7CE1900D5BE2A /* InputStreamSource.swift */; };
-		16966B8C25B7CE1900D5BE2A /* InputStreamSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B8A25B7CE1900D5BE2A /* InputStreamSource.swift */; };
-		16966B8D25B7CE1900D5BE2A /* InputStreamSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16966B8A25B7CE1900D5BE2A /* InputStreamSource.swift */; };
 		16992871259707190057715C /* MessageMult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16992870259707190057715C /* MessageMult.swift */; };
-		16992872259707190057715C /* MessageMult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16992870259707190057715C /* MessageMult.swift */; };
-		16992873259707190057715C /* MessageMult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16992870259707190057715C /* MessageMult.swift */; };
 		1699288425971AFD0057715C /* MessageFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699288325971AFD0057715C /* MessageFilter.swift */; };
-		1699288525971AFD0057715C /* MessageFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699288325971AFD0057715C /* MessageFilter.swift */; };
-		1699288625971AFD0057715C /* MessageFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699288325971AFD0057715C /* MessageFilter.swift */; };
 		1699289A25971F3A0057715C /* MessageHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699289925971F3A0057715C /* MessageHistory.swift */; };
-		1699289B25971F3A0057715C /* MessageHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699289925971F3A0057715C /* MessageHistory.swift */; };
-		1699289C25971F3A0057715C /* MessageHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699289925971F3A0057715C /* MessageHistory.swift */; };
 		169928F1259B16730057715C /* Data+LowercaseHexString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169928F0259B16730057715C /* Data+LowercaseHexString.swift */; };
-		169928F2259B16730057715C /* Data+LowercaseHexString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169928F0259B16730057715C /* Data+LowercaseHexString.swift */; };
-		169928F3259B16730057715C /* Data+LowercaseHexString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169928F0259B16730057715C /* Data+LowercaseHexString.swift */; };
 		1699290D259FCBA60057715C /* VirtualOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699290C259FCBA60057715C /* VirtualOutputStream.swift */; };
-		1699290E259FCBA60057715C /* VirtualOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699290C259FCBA60057715C /* VirtualOutputStream.swift */; };
-		1699290F259FCBA60057715C /* VirtualOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699290C259FCBA60057715C /* VirtualOutputStream.swift */; };
 		16A3B72725A03DFA00C7F61E /* PortOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A3B72625A03DFA00C7F61E /* PortOutputStream.swift */; };
-		16A3B72825A03DFA00C7F61E /* PortOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A3B72625A03DFA00C7F61E /* PortOutputStream.swift */; };
-		16A3B72925A03DFA00C7F61E /* PortOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A3B72625A03DFA00C7F61E /* PortOutputStream.swift */; };
 		16A3B73A25A156D300C7F61E /* OutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A3B73925A156D300C7F61E /* OutputStream.swift */; };
-		16A3B73B25A156D300C7F61E /* OutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A3B73925A156D300C7F61E /* OutputStream.swift */; };
-		16A3B73C25A156D300C7F61E /* OutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A3B73925A156D300C7F61E /* OutputStream.swift */; };
 		16A3B74D25A40A0D00C7F61E /* SysExSendRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A3B74C25A40A0D00C7F61E /* SysExSendRequest.swift */; };
-		16A3B74E25A40A0D00C7F61E /* SysExSendRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A3B74C25A40A0D00C7F61E /* SysExSendRequest.swift */; };
-		16A3B74F25A40A0D00C7F61E /* SysExSendRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A3B74C25A40A0D00C7F61E /* SysExSendRequest.swift */; };
 		16B11BC60971D40100DB1DB5 /* SMMIDIUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B890971D40100DB1DB5 /* SMMIDIUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		16B11BC70971D40100DB1DB5 /* SMMIDIUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B8A0971D40100DB1DB5 /* SMMIDIUtilities.m */; };
 		16B11BCE0971D40100DB1DB5 /* SnoizeMIDI.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B910971D40100DB1DB5 /* SnoizeMIDI.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -121,24 +51,10 @@
 		16B11DF20971D80F00DB1DB5 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B11DF00971D80F00DB1DB5 /* CoreMIDI.framework */; };
 		16B11DF30971D81400DB1DB5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D69BFE84028FC02AAC07 /* Foundation.framework */; };
 		16B736E125D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736E025D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift */; };
-		16B736E225D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736E025D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift */; };
-		16B736E325D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736E025D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift */; };
 		16B7375525DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7375425DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift */; };
-		16B7375625DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7375425DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift */; };
-		16B7375725DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7375425DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift */; };
 		16B7377225DDFA24000DAC58 /* MessageFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7377125DDFA24000DAC58 /* MessageFormatter.swift */; };
-		16B7377325DDFA24000DAC58 /* MessageFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7377125DDFA24000DAC58 /* MessageFormatter.swift */; };
-		16B7377425DDFA24000DAC58 /* MessageFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7377125DDFA24000DAC58 /* MessageFormatter.swift */; };
 		16C43B5625C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43B5525C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift */; };
-		16C43B5725C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43B5525C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift */; };
-		16C43B5825C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43B5525C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift */; };
 		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
-		A53DDBE1148F434E006D2FFD /* SMMIDIUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B8A0971D40100DB1DB5 /* SMMIDIUtilities.m */; };
-		A53DDC16148F4C5D006D2FFD /* SnoizeMIDI.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B910971D40100DB1DB5 /* SnoizeMIDI.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A53DDC1B148F4C70006D2FFD /* SMMIDIUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B890971D40100DB1DB5 /* SMMIDIUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A581993116AF687400325CF3 /* SMMIDIUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B11B8A0971D40100DB1DB5 /* SMMIDIUtilities.m */; };
-		A581994F16AF687400325CF3 /* SnoizeMIDI.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B910971D40100DB1DB5 /* SnoizeMIDI.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A581995216AF687400325CF3 /* SMMIDIUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B890971D40100DB1DB5 /* SMMIDIUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -202,9 +118,7 @@
 		16C43B5525C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+AbbreviatedByteCount.swift"; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* SnoizeMIDI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SnoizeMIDI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A53DDB97148F4219006D2FFD /* libSnoizeMIDIiOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSnoizeMIDIiOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A53DDB9D148F4219006D2FFD /* SnoizeMIDIiOS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SnoizeMIDIiOS-Prefix.pch"; sourceTree = "<group>"; };
-		A581997216AF687400325CF3 /* libSnoizeMIDI.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSnoizeMIDI.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -217,20 +131,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A53DDB94148F4219006D2FFD /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A581994C16AF687400325CF3 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -238,8 +138,6 @@
 			isa = PBXGroup;
 			children = (
 				8DC2EF5B0486A6940098B216 /* SnoizeMIDI.framework */,
-				A53DDB97148F4219006D2FFD /* libSnoizeMIDIiOS.a */,
-				A581997216AF687400325CF3 /* libSnoizeMIDI.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -428,24 +326,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A53DDB95148F4219006D2FFD /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A53DDC16148F4C5D006D2FFD /* SnoizeMIDI.h in Headers */,
-				A53DDC1B148F4C70006D2FFD /* SMMIDIUtilities.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A581994E16AF687400325CF3 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A581994F16AF687400325CF3 /* SnoizeMIDI.h in Headers */,
-				A581995216AF687400325CF3 /* SMMIDIUtilities.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -469,40 +349,6 @@
 			productReference = 8DC2EF5B0486A6940098B216 /* SnoizeMIDI.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		A53DDB96148F4219006D2FFD /* SnoizeMIDIiOS */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A53DDBA3148F4219006D2FFD /* Build configuration list for PBXNativeTarget "SnoizeMIDIiOS" */;
-			buildPhases = (
-				A53DDB93148F4219006D2FFD /* Sources */,
-				A53DDB94148F4219006D2FFD /* Frameworks */,
-				A53DDB95148F4219006D2FFD /* Headers */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = SnoizeMIDIiOS;
-			productName = SnoizeMIDIiOS;
-			productReference = A53DDB97148F4219006D2FFD /* libSnoizeMIDIiOS.a */;
-			productType = "com.apple.product-type.library.static";
-		};
-		A581992D16AF687400325CF3 /* SnoizeMIDIOSX */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A581996F16AF687400325CF3 /* Build configuration list for PBXNativeTarget "SnoizeMIDIOSX" */;
-			buildPhases = (
-				A581992E16AF687400325CF3 /* Sources */,
-				A581994C16AF687400325CF3 /* Frameworks */,
-				A581994E16AF687400325CF3 /* Headers */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = SnoizeMIDIOSX;
-			productName = SnoizeMIDIiOS;
-			productReference = A581997216AF687400325CF3 /* libSnoizeMIDI.a */;
-			productType = "com.apple.product-type.library.static";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -512,16 +358,6 @@
 				LastUpgradeCheck = 1320;
 				TargetAttributes = {
 					8DC2EF4F0486A6940098B216 = {
-						DevelopmentTeam = YDJAW5GX9U;
-						LastSwiftMigration = 1230;
-						ProvisioningStyle = Automatic;
-					};
-					A53DDB96148F4219006D2FFD = {
-						DevelopmentTeam = YDJAW5GX9U;
-						LastSwiftMigration = 1230;
-						ProvisioningStyle = Automatic;
-					};
-					A581992D16AF687400325CF3 = {
 						DevelopmentTeam = YDJAW5GX9U;
 						LastSwiftMigration = 1230;
 						ProvisioningStyle = Automatic;
@@ -545,8 +381,6 @@
 			projectRoot = ../..;
 			targets = (
 				8DC2EF4F0486A6940098B216 /* SnoizeMIDI */,
-				A53DDB96148F4219006D2FFD /* SnoizeMIDIiOS */,
-				A581992D16AF687400325CF3 /* SnoizeMIDIOSX */,
 			);
 		};
 /* End PBXProject section */
@@ -631,100 +465,6 @@
 				16B7377225DDFA24000DAC58 /* MessageFormatter.swift in Sources */,
 				16966AAE25AD73AB00D5BE2A /* SystemCommonMessage.swift in Sources */,
 				1691F9C425BD630900B9CE06 /* Source.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A53DDB93148F4219006D2FFD /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				16966AC225AECFB100D5BE2A /* SystemExclusiveMessage.swift in Sources */,
-				1691F9A925BD628700B9CE06 /* MIDIObjectList.swift in Sources */,
-				1699288525971AFD0057715C /* MessageFilter.swift in Sources */,
-				A53DDBE1148F434E006D2FFD /* SMMIDIUtilities.m in Sources */,
-				16966A6F25ABCD7A00D5BE2A /* MessageParser.swift in Sources */,
-				1691F99825BD621A00B9CE06 /* MIDIObject.swift in Sources */,
-				16992872259707190057715C /* MessageMult.swift in Sources */,
-				16B7375625DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift in Sources */,
-				1691F9D625BD68F700B9CE06 /* CoreMIDIContext.swift in Sources */,
-				1691F9EA25BEB47500B9CE06 /* Cache.swift in Sources */,
-				1691F9F425BF964D00B9CE06 /* MIDIContext.swift in Sources */,
-				16B736E225D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift in Sources */,
-				16966A5F25A9417400D5BE2A /* InputStream.swift in Sources */,
-				1691F9A225BD625800B9CE06 /* CoreMIDIObjectList.swift in Sources */,
-				16966A9F25AD6A8F00D5BE2A /* SystemRealTimeMessage.swift in Sources */,
-				1691F9B025BD62B300B9CE06 /* Device.swift in Sources */,
-				1691F9B725BD62C700B9CE06 /* ExternalDevice.swift in Sources */,
-				16A3B73B25A156D300C7F61E /* OutputStream.swift in Sources */,
-				1691F95425B90AA500B9CE06 /* MessageDestination.swift in Sources */,
-				169928F2259B16730057715C /* Data+LowercaseHexString.swift in Sources */,
-				1691F9CC25BD632500B9CE06 /* Destination.swift in Sources */,
-				16966AD525B4F90800D5BE2A /* VoiceMessage.swift in Sources */,
-				1699290E259FCBA60057715C /* VirtualOutputStream.swift in Sources */,
-				16966A8C25AD0F8500D5BE2A /* InvalidMessage.swift in Sources */,
-				169669F425A8E49300D5BE2A /* VirtualInputStream.swift in Sources */,
-				16966B0525B6481B00D5BE2A /* MessageTimeBase.swift in Sources */,
-				16966A3F25A91B5F00D5BE2A /* PortInputStream.swift in Sources */,
-				1691F98E25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift in Sources */,
-				16966AF525B5222600D5BE2A /* Message.swift in Sources */,
-				16C43B5725C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift in Sources */,
-				1691F9E025BD7E5100B9CE06 /* CoreMIDIInterface.swift in Sources */,
-				16966A4F25A9399600D5BE2A /* SingleInputStreamSource.swift in Sources */,
-				16A3B72825A03DFA00C7F61E /* PortOutputStream.swift in Sources */,
-				16A3B74E25A40A0D00C7F61E /* SysExSendRequest.swift in Sources */,
-				16966AAF25AD73AB00D5BE2A /* SystemCommonMessage.swift in Sources */,
-				16966B8C25B7CE1900D5BE2A /* InputStreamSource.swift in Sources */,
-				1691F9BE25BD62F200B9CE06 /* Endpoint.swift in Sources */,
-				16B7377325DDFA24000DAC58 /* MessageFormatter.swift in Sources */,
-				1699289B25971F3A0057715C /* MessageHistory.swift in Sources */,
-				1691F9C525BD630900B9CE06 /* Source.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A581992E16AF687400325CF3 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				16966AC325AECFB100D5BE2A /* SystemExclusiveMessage.swift in Sources */,
-				1691F9AA25BD628700B9CE06 /* MIDIObjectList.swift in Sources */,
-				1699288625971AFD0057715C /* MessageFilter.swift in Sources */,
-				A581993116AF687400325CF3 /* SMMIDIUtilities.m in Sources */,
-				16966A7025ABCD7A00D5BE2A /* MessageParser.swift in Sources */,
-				1691F99925BD621A00B9CE06 /* MIDIObject.swift in Sources */,
-				16992873259707190057715C /* MessageMult.swift in Sources */,
-				16B7375725DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift in Sources */,
-				1691F9D725BD68F700B9CE06 /* CoreMIDIContext.swift in Sources */,
-				1691F9EB25BEB47500B9CE06 /* Cache.swift in Sources */,
-				1691F9F525BF964D00B9CE06 /* MIDIContext.swift in Sources */,
-				16B736E325D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift in Sources */,
-				16966A6025A9417400D5BE2A /* InputStream.swift in Sources */,
-				1691F9A325BD625800B9CE06 /* CoreMIDIObjectList.swift in Sources */,
-				16966AA025AD6A8F00D5BE2A /* SystemRealTimeMessage.swift in Sources */,
-				1691F9B125BD62B300B9CE06 /* Device.swift in Sources */,
-				1691F9B825BD62C700B9CE06 /* ExternalDevice.swift in Sources */,
-				16A3B73C25A156D300C7F61E /* OutputStream.swift in Sources */,
-				1691F95525B90AA500B9CE06 /* MessageDestination.swift in Sources */,
-				169928F3259B16730057715C /* Data+LowercaseHexString.swift in Sources */,
-				1691F9CD25BD632500B9CE06 /* Destination.swift in Sources */,
-				16966AD625B4F90800D5BE2A /* VoiceMessage.swift in Sources */,
-				1699290F259FCBA60057715C /* VirtualOutputStream.swift in Sources */,
-				16966A8D25AD0F8500D5BE2A /* InvalidMessage.swift in Sources */,
-				169669F525A8E49300D5BE2A /* VirtualInputStream.swift in Sources */,
-				16966B0625B6481B00D5BE2A /* MessageTimeBase.swift in Sources */,
-				16966A4025A91B5F00D5BE2A /* PortInputStream.swift in Sources */,
-				1691F98F25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift in Sources */,
-				16966AF625B5222600D5BE2A /* Message.swift in Sources */,
-				16C43B5825C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift in Sources */,
-				1691F9E125BD7E5100B9CE06 /* CoreMIDIInterface.swift in Sources */,
-				16966A5025A9399600D5BE2A /* SingleInputStreamSource.swift in Sources */,
-				16A3B72925A03DFA00C7F61E /* PortOutputStream.swift in Sources */,
-				16A3B74F25A40A0D00C7F61E /* SysExSendRequest.swift in Sources */,
-				16966AB025AD73AB00D5BE2A /* SystemCommonMessage.swift in Sources */,
-				16966B8D25B7CE1900D5BE2A /* InputStreamSource.swift in Sources */,
-				1691F9BF25BD62F200B9CE06 /* Endpoint.swift in Sources */,
-				16B7377425DDFA24000DAC58 /* MessageFormatter.swift in Sources */,
-				1699289C25971F3A0057715C /* MessageHistory.swift in Sources */,
-				1691F9C625BD630900B9CE06 /* Source.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -846,136 +586,6 @@
 			};
 			name = Release;
 		};
-		A53DDBA1148F4219006D2FFD /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				COPY_PHASE_STRIP = NO;
-				DSTROOT = /tmp/SnoizeMIDIiOS.dst;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "SnoizeMIDIiOS-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_THUMB_SUPPORT = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = SnoizeMIDI;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "SnoizeMIDIiOS-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Debug;
-		};
-		A53DDBA2148F4219006D2FFD /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				COPY_PHASE_STRIP = YES;
-				DSTROOT = /tmp/SnoizeMIDIiOS.dst;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "SnoizeMIDIiOS-Prefix.pch";
-				GCC_THUMB_SUPPORT = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = SnoizeMIDI;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "SnoizeMIDIiOS-Bridging-Header.h";
-				SWIFT_VERSION = 5.0;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		A581997016AF687400325CF3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				DSTROOT = /tmp/SnoizeMIDIiOS.dst;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "SnoizeMIDIiOS-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = SnoizeMIDI;
-				PUBLIC_HEADERS_FOLDER_PATH = SnoizeMIDI;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "SnoizeMIDIOSX-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Debug;
-		};
-		A581997116AF687400325CF3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = YES;
-				DSTROOT = /tmp/SnoizeMIDIiOS.dst;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "SnoizeMIDIiOS-Prefix.pch";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = SnoizeMIDI;
-				PUBLIC_HEADERS_FOLDER_PATH = SnoizeMIDI;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "SnoizeMIDIOSX-Bridging-Header.h";
-				SWIFT_VERSION = 5.0;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -993,24 +603,6 @@
 			buildConfigurations = (
 				1DEB91B208733DA50010E9CD /* Debug */,
 				1DEB91B308733DA50010E9CD /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A53DDBA3148F4219006D2FFD /* Build configuration list for PBXNativeTarget "SnoizeMIDIiOS" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A53DDBA1148F4219006D2FFD /* Debug */,
-				A53DDBA2148F4219006D2FFD /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A581996F16AF687400325CF3 /* Build configuration list for PBXNativeTarget "SnoizeMIDIOSX" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A581997016AF687400325CF3 /* Debug */,
-				A581997116AF687400325CF3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
