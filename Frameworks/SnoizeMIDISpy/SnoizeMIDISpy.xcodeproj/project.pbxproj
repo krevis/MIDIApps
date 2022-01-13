@@ -270,7 +270,6 @@
 				164103E009735FA5008DABCC /* Resources */,
 				164103E209735FA5008DABCC /* Sources */,
 				164103E609735FA5008DABCC /* Frameworks */,
-				164103EA09735FA5008DABCC /* Rez */,
 				164103EB09735FA5008DABCC /* CopyFiles */,
 			);
 			buildRules = (
@@ -292,7 +291,6 @@
 				164103FB09735FA6008DABCC /* Resources */,
 				164103FC09735FA6008DABCC /* Sources */,
 				1641040109735FA6008DABCC /* Frameworks */,
-				1641040409735FA6008DABCC /* Rez */,
 				16CDFB8C2133643E000CCD7B /* Lipo old i386 driver into built driver */,
 			);
 			buildRules = (
@@ -362,23 +360,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXRezBuildPhase section */
-		164103EA09735FA5008DABCC /* Rez */ = {
-			isa = PBXRezBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1641040409735FA6008DABCC /* Rez */ = {
-			isa = PBXRezBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXRezBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		16CDFB8C2133643E000CCD7B /* Lipo old i386 driver into built driver */ = {
