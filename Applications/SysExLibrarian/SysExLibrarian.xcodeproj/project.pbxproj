@@ -249,13 +249,6 @@
 			name = "Sparkle Updates (for reference only, not shipped in app)";
 			sourceTree = "<group>";
 		};
-		1646BF32278D19AE00B904E4 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		16F032D20984B6F3006C8A44 /* Configurations */ = {
 			isa = PBXGroup;
 			children = (
@@ -306,7 +299,6 @@
 				16F032D50984B6FB006C8A44 /* Other Projects */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
 				161B721415D8EA71006E21D4 /* Sparkle Updates (for reference only, not shipped in app) */,
-				1646BF32278D19AE00B904E4 /* Frameworks */,
 			);
 			name = SysExLibrarian;
 			sourceTree = "<group>";
