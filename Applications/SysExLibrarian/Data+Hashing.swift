@@ -1,9 +1,9 @@
-//
-//  Data+Hashing.swift
-//  SysExLibrarian
-//
-//  Created by Kurt Revis on 1/29/21.
-//
+/*
+ Copyright (c) 2021, Kurt Revis.  All rights reserved.
+
+ This source code is licensed under the BSD-style license found in the
+ LICENSE file in the root directory of this source tree.
+ */
 
 import Foundation
 import CommonCrypto
