@@ -113,7 +113,7 @@ public class PortOutputStream: OutputStream {
 
         var asyncSysexMessages: [SystemExclusiveMessage] = []
         var normalMessages: [Message] = []
-        let now = AudioGetCurrentHostTime()
+        let now = SMGetCurrentHostTime()
 
         for message in messages {
             if let sysexMessage = message as? SystemExclusiveMessage,

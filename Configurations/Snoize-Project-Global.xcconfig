@@ -1,12 +1,5 @@
 #include "Snoize-Signing.xcconfig"
 
-// Set SDKROOT to "Latest OS X".
-// We used to set it to a specific version, in order to establish the maximum API we could use,
-// which was typically at least one or two versions behind the latest SDK.
-// Unfortunately, since Apple has been removing "old" SDKs very aggressively,
-// over time, that causes more problems than it solves.
-SDKROOT = macosx
-
 // Minimum OS we'll attempt to run on is 10.11 (El Capitan, 2015)
 MACOSX_DEPLOYMENT_TARGET = 10.11
 

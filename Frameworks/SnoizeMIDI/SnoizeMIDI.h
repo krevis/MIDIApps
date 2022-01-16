@@ -6,3 +6,4 @@
  */
 
 #import <SnoizeMIDI/SMMIDIUtilities.h>
+#import <SnoizeMIDI/SMHostTimeBase.h>

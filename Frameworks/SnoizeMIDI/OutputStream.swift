@@ -70,7 +70,7 @@ public class OutputStream: NSObject, MessageDestination {
                 // with this data (either the message's fullData or a subrange).
                 // If successful, returns a non-nil pointer for the next packet.
                 // If unsuccessful, returns nil.
-                let packetTimeStamp = ignoresTimeStamps ? AudioGetCurrentHostTime() : message.hostTimeStamp
+                let packetTimeStamp = ignoresTimeStamps ? SMGetCurrentHostTime() : message.hostTimeStamp
                 return data.withUnsafeBytes {
                     return SMWorkaroundMIDIPacketListAdd(packetListPtr, maxPacketListSize, packetPtr, packetTimeStamp, data.count, $0.bindMemory(to: UInt8.self).baseAddress!)
                 }

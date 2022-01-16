@@ -193,7 +193,7 @@ public protocol SysExSendRequestDelegate: NSObjectProtocol {
 
 // Like MIDISendSysex, but specify a size for each buffer to send, and a delay in seconds between sending each buffer.
 private func customMIDISendSysex(_ midiContext: CoreMIDIContext, _ request: UnsafeMutablePointer<MIDISysexSendRequest>, _ bufferSize: Int, _ perBufferDelay: Double) -> OSStatus {
-    guard bufferSize >= 3 && bufferSize <= 32767 else { return OSStatus(paramErr) }
+    guard bufferSize >= 3 && bufferSize <= 32767 else { return OSStatus(-50 /* paramErr */) }
 
     if request.pointee.bytesToSend == 0 {
         request.pointee.complete = true

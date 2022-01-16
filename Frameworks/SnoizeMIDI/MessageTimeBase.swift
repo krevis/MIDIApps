@@ -18,7 +18,7 @@ class MessageTimeBase: NSObject, NSCoding {
 
     static var current: MessageTimeBase = {
         // Establish a base of what host time corresponds to what clock time.
-        let hostTimeInNanos = AudioConvertHostTimeToNanos(AudioGetCurrentHostTime())
+        let hostTimeInNanos = SMConvertHostTimeToNanos(SMGetCurrentHostTime())
         let timeInterval = Date.timeIntervalSinceReferenceDate
         return MessageTimeBase(hostTimeInNanos: hostTimeInNanos, timeInterval: timeInterval)
     }()
@@ -36,7 +36,7 @@ class MessageTimeBase: NSObject, NSCoding {
         else {
             // fallback: inaccurate because the HostTime to nanos
             // ratio may have changed from when this was archived
-            self.hostTimeInNanos = AudioConvertHostTimeToNanos(UInt64(coder.decodeInt64(forKey: "hostTime")))
+            self.hostTimeInNanos = SMConvertHostTimeToNanos(UInt64(coder.decodeInt64(forKey: "hostTime")))
         }
         self.timeInterval = coder.decodeDouble(forKey: "timeInterval")
         super.init()
@@ -45,7 +45,7 @@ class MessageTimeBase: NSObject, NSCoding {
     public func encode(with coder: NSCoder) {
         coder.encode(Int64(hostTimeInNanos), forKey: "hostTimeInNanos")
 
-        coder.encode(Int64(AudioConvertNanosToHostTime(hostTimeInNanos)), forKey: "hostTime") // backwards compatibility
+        coder.encode(Int64(SMConvertNanosToHostTime(hostTimeInNanos)), forKey: "hostTime") // backwards compatibility
 
         coder.encode(Double(timeInterval), forKey: "timeInterval")
     }

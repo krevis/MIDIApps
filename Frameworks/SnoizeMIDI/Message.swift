@@ -54,7 +54,7 @@ public class Message: NSObject, NSCoding {
 
     public init(timeStamp: MIDITimeStamp, statusByte: UInt8) {
         self.timeStampWasZeroWhenReceived = timeStamp == 0
-        self.hostTimeStamp = timeStampWasZeroWhenReceived ? AudioGetCurrentHostTime() : timeStamp
+        self.hostTimeStamp = timeStampWasZeroWhenReceived ? SMGetCurrentHostTime() : timeStamp
         self.clockTimeStamp = Date.timeIntervalSinceReferenceDate
         self.timeBase = nil
         self.statusByte = statusByte
@@ -64,7 +64,7 @@ public class Message: NSObject, NSCoding {
     public required init?(coder: NSCoder) {
         if coder.containsValue(forKey: "timeStampInNanos") {
             let nanos = coder.decodeInt64(forKey: "timeStampInNanos")
-            self.hostTimeStamp = AudioConvertNanosToHostTime(UInt64(nanos))
+            self.hostTimeStamp = SMConvertNanosToHostTime(UInt64(nanos))
             timeStampWasZeroWhenReceived = coder.decodeBool(forKey: "timeStampWasZeroWhenReceived")
         }
         else {
@@ -96,7 +96,7 @@ public class Message: NSObject, NSCoding {
     }
 
     public func encode(with coder: NSCoder) {
-        let nanos = AudioConvertHostTimeToNanos(hostTimeStamp)
+        let nanos = SMConvertHostTimeToNanos(hostTimeStamp)
         coder.encode(Int64(nanos), forKey: "timeStampInNanos")
         coder.encode(timeStampWasZeroWhenReceived, forKey: "timeStampWasZeroWhenReceived")
 
@@ -172,10 +172,10 @@ public class Message: NSObject, NSCoding {
             return String(format: "%016llX", displayedHostTimeStamp)
 
         case .hostTimeNanoseconds:
-            return String(format: "%llu", AudioConvertHostTimeToNanos(displayedHostTimeStamp))
+            return String(format: "%llu", SMConvertHostTimeToNanos(displayedHostTimeStamp))
 
         case .hostTimeSeconds:
-            return String(format: "%.3lf", Double(AudioConvertHostTimeToNanos(displayedHostTimeStamp)) / 1.0e9)
+            return String(format: "%.3lf", Double(SMConvertHostTimeToNanos(displayedHostTimeStamp)) / 1.0e9)
 
         case .clockTime:
             if displayZero {
@@ -188,7 +188,7 @@ public class Message: NSObject, NSCoding {
             }
             else if let timeBase = timeBase {
                 // We have to use the older, mistaken method: MessageTimeBase contains an offset from host time to clock time.
-                let timeStampInNanos = AudioConvertHostTimeToNanos(hostTimeStamp)
+                let timeStampInNanos = SMConvertHostTimeToNanos(hostTimeStamp)
                 let hostTimeBaseInNanos = timeBase.hostTimeInNanos
                 let timeDeltaInNanos = Double(timeStampInNanos) - Double(hostTimeBaseInNanos) // may be negative!
                 let timeStampInterval = timeDeltaInNanos / 1.0e9

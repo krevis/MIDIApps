@@ -53,6 +53,8 @@
 		16B736E125D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736E025D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift */; };
 		16B7375525DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7375425DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift */; };
 		16B7377225DDFA24000DAC58 /* MessageFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7377125DDFA24000DAC58 /* MessageFormatter.swift */; };
+		16BE926E27940405002EBBA8 /* SMHostTimeBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 16BE926C27940405002EBBA8 /* SMHostTimeBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		16BE926F27940405002EBBA8 /* SMHostTimeBase.c in Sources */ = {isa = PBXBuildFile; fileRef = 16BE926D27940405002EBBA8 /* SMHostTimeBase.c */; };
 		16C43B5625C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43B5525C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift */; };
 		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
@@ -94,8 +96,6 @@
 		16966AF325B5222600D5BE2A /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		16966B0325B6481B00D5BE2A /* MessageTimeBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTimeBase.swift; sourceTree = "<group>"; };
 		16966B8A25B7CE1900D5BE2A /* InputStreamSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputStreamSource.swift; sourceTree = "<group>"; };
-		1699286E259707190057715C /* SnoizeMIDIiOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SnoizeMIDIiOS-Bridging-Header.h"; sourceTree = "<group>"; };
-		1699286F259707190057715C /* SnoizeMIDIOSX-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SnoizeMIDIOSX-Bridging-Header.h"; sourceTree = "<group>"; };
 		16992870259707190057715C /* MessageMult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageMult.swift; sourceTree = "<group>"; };
 		1699288325971AFD0057715C /* MessageFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageFilter.swift; sourceTree = "<group>"; };
 		1699289925971F3A0057715C /* MessageHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageHistory.swift; sourceTree = "<group>"; };
@@ -115,10 +115,11 @@
 		16B736E025D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+SnoizeMIDI.swift"; sourceTree = "<group>"; };
 		16B7375425DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Endpoint+InputStreamSourceProviding.swift"; sourceTree = "<group>"; };
 		16B7377125DDFA24000DAC58 /* MessageFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageFormatter.swift; sourceTree = "<group>"; };
+		16BE926C27940405002EBBA8 /* SMHostTimeBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SMHostTimeBase.h; sourceTree = "<group>"; };
+		16BE926D27940405002EBBA8 /* SMHostTimeBase.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SMHostTimeBase.c; sourceTree = "<group>"; };
 		16C43B5525C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+AbbreviatedByteCount.swift"; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* SnoizeMIDI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SnoizeMIDI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A53DDB9D148F4219006D2FFD /* SnoizeMIDIiOS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SnoizeMIDIiOS-Prefix.pch"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -209,6 +210,8 @@
 			children = (
 				16B11B890971D40100DB1DB5 /* SMMIDIUtilities.h */,
 				16B11B8A0971D40100DB1DB5 /* SMMIDIUtilities.m */,
+				16BE926C27940405002EBBA8 /* SMHostTimeBase.h */,
+				16BE926D27940405002EBBA8 /* SMHostTimeBase.c */,
 			);
 			name = "CoreMIDI Extensions";
 			sourceTree = "<group>";
@@ -217,9 +220,6 @@
 			isa = PBXGroup;
 			children = (
 				16B11B910971D40100DB1DB5 /* SnoizeMIDI.h */,
-				A53DDB9D148F4219006D2FFD /* SnoizeMIDIiOS-Prefix.pch */,
-				1699286E259707190057715C /* SnoizeMIDIiOS-Bridging-Header.h */,
-				1699286F259707190057715C /* SnoizeMIDIOSX-Bridging-Header.h */,
 			);
 			name = "Framework Headers";
 			sourceTree = "<group>";
@@ -322,6 +322,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				16B11BC60971D40100DB1DB5 /* SMMIDIUtilities.h in Headers */,
+				16BE926E27940405002EBBA8 /* SMHostTimeBase.h in Headers */,
 				16B11BCE0971D40100DB1DB5 /* SnoizeMIDI.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -429,6 +430,7 @@
 				1691F9A825BD628700B9CE06 /* MIDIObjectList.swift in Sources */,
 				1699288425971AFD0057715C /* MessageFilter.swift in Sources */,
 				16966A6E25ABCD7A00D5BE2A /* MessageParser.swift in Sources */,
+				16BE926F27940405002EBBA8 /* SMHostTimeBase.c in Sources */,
 				16966A5E25A9417400D5BE2A /* InputStream.swift in Sources */,
 				1691F99725BD621A00B9CE06 /* MIDIObject.swift in Sources */,
 				16966A9E25AD6A8F00D5BE2A /* SystemRealTimeMessage.swift in Sources */,
@@ -565,6 +567,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				ENABLE_TESTABILITY = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator";
 			};
 			name = Debug;
 		};
@@ -583,6 +586,7 @@
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator";
 			};
 			name = Release;
 		};
