@@ -59,20 +59,6 @@
 			remoteGlobalIDString = 164103D709735FA5008DABCC;
 			remoteInfo = SnoizeMIDISpy.framework;
 		};
-		1651E77A14A971C800EF79CD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = A53DDB97148F4219006D2FFD;
-			remoteInfo = SnoizeMIDIiOS;
-		};
-		1682E810176EE3A400089623 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = A581997216AF687400325CF3;
-			remoteInfo = SnoizeMIDIOSX;
-		};
 		169E71A6097B2419001AFB58 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */;
@@ -195,7 +181,7 @@
 		169E71A8097B242A001AFB58 /* SnoizeMIDISpy.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDISpy.xcodeproj; path = ../../Frameworks/SnoizeMIDISpy/SnoizeMIDISpy.xcodeproj; sourceTree = SOURCE_ROOT; };
 		16A3C27025E5CBC6001F01A3 /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
 		16A3C2E425E715D8001F01A3 /* HexFiend_2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = HexFiend_2.xcodeproj; path = ../../ThirdParty/HexFiend/HexFiend_2.xcodeproj; sourceTree = "<group>"; };
-		16A4169526D1CABC00DD5F9E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = MIDIMonitor/Assets.xcassets; sourceTree = "<group>"; };
+		16A4169526D1CABC00DD5F9E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		16F20F4906EAA14A00D9C507 /* Defaults.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = Defaults.plist; sourceTree = "<group>"; };
 		16F9FA2A2586DFE300169621 /* MIDIMonitor-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MIDIMonitor-Bridging-Header.h"; sourceTree = "<group>"; };
 		16F9FA302586EC0800169621 /* FastAnimatingWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FastAnimatingWindow.swift; sourceTree = "<group>"; };
@@ -270,8 +256,6 @@
 			isa = PBXGroup;
 			children = (
 				169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */,
-				1651E77B14A971C800EF79CD /* libSnoizeMIDIiOS.a */,
-				1682E811176EE3A400089623 /* libSnoizeMIDI.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -467,20 +451,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		1651E77B14A971C800EF79CD /* libSnoizeMIDIiOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libSnoizeMIDIiOS.a;
-			remoteRef = 1651E77A14A971C800EF79CD /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1682E811176EE3A400089623 /* libSnoizeMIDI.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libSnoizeMIDI.a;
-			remoteRef = 1682E810176EE3A400089623 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
