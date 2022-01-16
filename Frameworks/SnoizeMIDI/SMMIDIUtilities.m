@@ -28,7 +28,7 @@ NSInteger SMPacketListSize(const MIDIPacketList * _Nonnull packetList)
         packet = MIDIPacketNext(packet);
     }
     NSInteger size = (intptr_t)(packet) - (intptr_t)packetList;
-    return size;    
+    return size;
 }
 
 void SMPacketListApply(const MIDIPacketList *packetList, void (NS_NOESCAPE ^block)(const MIDIPacket *packet))
