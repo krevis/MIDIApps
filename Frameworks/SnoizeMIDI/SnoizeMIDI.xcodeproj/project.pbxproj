@@ -53,8 +53,8 @@
 		16B736E125D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736E025D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift */; };
 		16B7375525DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7375425DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift */; };
 		16B7377225DDFA24000DAC58 /* MessageFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7377125DDFA24000DAC58 /* MessageFormatter.swift */; };
-		16BE926E27940405002EBBA8 /* SMHostTimeBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 16BE926C27940405002EBBA8 /* SMHostTimeBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		16BE926F27940405002EBBA8 /* SMHostTimeBase.c in Sources */ = {isa = PBXBuildFile; fileRef = 16BE926D27940405002EBBA8 /* SMHostTimeBase.c */; };
+		16BE926E27940405002EBBA8 /* SMHostTimeUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 16BE926C27940405002EBBA8 /* SMHostTimeUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		16BE926F27940405002EBBA8 /* SMHostTimeUtilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 16BE926D27940405002EBBA8 /* SMHostTimeUtilities.c */; };
 		16C43B5625C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C43B5525C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift */; };
 		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
@@ -115,8 +115,8 @@
 		16B736E025D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+SnoizeMIDI.swift"; sourceTree = "<group>"; };
 		16B7375425DCFFD5000DAC58 /* Endpoint+InputStreamSourceProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Endpoint+InputStreamSourceProviding.swift"; sourceTree = "<group>"; };
 		16B7377125DDFA24000DAC58 /* MessageFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageFormatter.swift; sourceTree = "<group>"; };
-		16BE926C27940405002EBBA8 /* SMHostTimeBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SMHostTimeBase.h; sourceTree = "<group>"; };
-		16BE926D27940405002EBBA8 /* SMHostTimeBase.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SMHostTimeBase.c; sourceTree = "<group>"; };
+		16BE926C27940405002EBBA8 /* SMHostTimeUtilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SMHostTimeUtilities.h; sourceTree = "<group>"; };
+		16BE926D27940405002EBBA8 /* SMHostTimeUtilities.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SMHostTimeUtilities.c; sourceTree = "<group>"; };
 		16C43B5525C4D4A5007A3A48 /* String+AbbreviatedByteCount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+AbbreviatedByteCount.swift"; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* SnoizeMIDI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SnoizeMIDI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -181,7 +181,7 @@
 			children = (
 				16B11BD40971D5FC00DB1DB5 /* Framework Headers */,
 				16B11BD70971D61700DB1DB5 /* Foundation Extensions */,
-				16B11BD10971D5C400DB1DB5 /* CoreMIDI Extensions */,
+				16B11BD10971D5C400DB1DB5 /* CoreAudio and CoreMIDI Extensions */,
 				16B11BDC0971D63D00DB1DB5 /* CoreMIDI Objects */,
 				16B11BDF0971D67400DB1DB5 /* Messages */,
 				16B11BE20971D6C500DB1DB5 /* Streams */,
@@ -205,15 +205,15 @@
 			name = Configurations;
 			sourceTree = "<group>";
 		};
-		16B11BD10971D5C400DB1DB5 /* CoreMIDI Extensions */ = {
+		16B11BD10971D5C400DB1DB5 /* CoreAudio and CoreMIDI Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				16B11B890971D40100DB1DB5 /* SMMIDIUtilities.h */,
 				16B11B8A0971D40100DB1DB5 /* SMMIDIUtilities.m */,
-				16BE926C27940405002EBBA8 /* SMHostTimeBase.h */,
-				16BE926D27940405002EBBA8 /* SMHostTimeBase.c */,
+				16BE926C27940405002EBBA8 /* SMHostTimeUtilities.h */,
+				16BE926D27940405002EBBA8 /* SMHostTimeUtilities.c */,
 			);
-			name = "CoreMIDI Extensions";
+			name = "CoreAudio and CoreMIDI Extensions";
 			sourceTree = "<group>";
 		};
 		16B11BD40971D5FC00DB1DB5 /* Framework Headers */ = {
@@ -322,7 +322,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				16B11BC60971D40100DB1DB5 /* SMMIDIUtilities.h in Headers */,
-				16BE926E27940405002EBBA8 /* SMHostTimeBase.h in Headers */,
+				16BE926E27940405002EBBA8 /* SMHostTimeUtilities.h in Headers */,
 				16B11BCE0971D40100DB1DB5 /* SnoizeMIDI.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -430,7 +430,7 @@
 				1691F9A825BD628700B9CE06 /* MIDIObjectList.swift in Sources */,
 				1699288425971AFD0057715C /* MessageFilter.swift in Sources */,
 				16966A6E25ABCD7A00D5BE2A /* MessageParser.swift in Sources */,
-				16BE926F27940405002EBBA8 /* SMHostTimeBase.c in Sources */,
+				16BE926F27940405002EBBA8 /* SMHostTimeUtilities.c in Sources */,
 				16966A5E25A9417400D5BE2A /* InputStream.swift in Sources */,
 				1691F99725BD621A00B9CE06 /* MIDIObject.swift in Sources */,
 				16966A9E25AD6A8F00D5BE2A /* SystemRealTimeMessage.swift in Sources */,

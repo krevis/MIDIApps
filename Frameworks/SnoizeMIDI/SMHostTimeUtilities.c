@@ -5,7 +5,7 @@
  LICENSE file in the root directory of this source tree.
  */
 
-#import "SMHostTimeBase.h"
+#import "SMHostTimeUtilities.h"
 
 #if TARGET_OS_OSX
 
