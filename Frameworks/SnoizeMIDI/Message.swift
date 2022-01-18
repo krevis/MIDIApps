@@ -63,14 +63,14 @@ public class Message: NSObject, NSCoding {
 
     public required init?(coder: NSCoder) {
         if coder.containsValue(forKey: "timeStampInNanos") {
-            let nanos = coder.decodeInt64(forKey: "timeStampInNanos")
-            self.hostTimeStamp = SMConvertNanosToHostTime(UInt64(nanos))
+            let nanos = UInt64(bitPattern: coder.decodeInt64(forKey: "timeStampInNanos"))
+            self.hostTimeStamp = SMConvertNanosToHostTime(nanos)
             timeStampWasZeroWhenReceived = coder.decodeBool(forKey: "timeStampWasZeroWhenReceived")
         }
         else {
             // fall back to old, inaccurate method
             // (we stored HostTime but not the ratio to convert it to nanoseconds)
-            self.hostTimeStamp = MIDITimeStamp(coder.decodeInt64(forKey: "timeStamp"))
+            self.hostTimeStamp = MIDITimeStamp(bitPattern: coder.decodeInt64(forKey: "timeStamp"))
             self.timeStampWasZeroWhenReceived = self.hostTimeStamp == 0
         }
 
@@ -97,11 +97,11 @@ public class Message: NSObject, NSCoding {
 
     public func encode(with coder: NSCoder) {
         let nanos = SMConvertHostTimeToNanos(hostTimeStamp)
-        coder.encode(Int64(nanos), forKey: "timeStampInNanos")
+        coder.encode(Int64(bitPattern: nanos), forKey: "timeStampInNanos")
         coder.encode(timeStampWasZeroWhenReceived, forKey: "timeStampWasZeroWhenReceived")
 
         let time = timeStampWasZeroWhenReceived ? 0 : hostTimeStamp
-        coder.encode(Int64(time), forKey: "timeStamp")
+        coder.encode(Int64(bitPattern: time), forKey: "timeStamp")
             // for backwards compatibility
 
         coder.encode(timeBase ?? MessageTimeBase.current, forKey: "timeBase")

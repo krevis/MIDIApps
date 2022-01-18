@@ -31,21 +31,21 @@ class MessageTimeBase: NSObject, NSCoding {
 
     required init?(coder: NSCoder) {
         if coder.containsValue(forKey: "hostTimeInNanos") {
-            self.hostTimeInNanos = UInt64(coder.decodeInt64(forKey: "hostTimeInNanos"))
+            self.hostTimeInNanos = UInt64(bitPattern: coder.decodeInt64(forKey: "hostTimeInNanos"))
         }
         else {
             // fallback: inaccurate because the HostTime to nanos
             // ratio may have changed from when this was archived
-            self.hostTimeInNanos = SMConvertHostTimeToNanos(UInt64(coder.decodeInt64(forKey: "hostTime")))
+            self.hostTimeInNanos = SMConvertHostTimeToNanos(UInt64(bitPattern: coder.decodeInt64(forKey: "hostTime")))
         }
         self.timeInterval = coder.decodeDouble(forKey: "timeInterval")
         super.init()
     }
 
     public func encode(with coder: NSCoder) {
-        coder.encode(Int64(hostTimeInNanos), forKey: "hostTimeInNanos")
+        coder.encode(Int64(bitPattern: hostTimeInNanos), forKey: "hostTimeInNanos")
 
-        coder.encode(Int64(SMConvertNanosToHostTime(hostTimeInNanos)), forKey: "hostTime") // backwards compatibility
+        coder.encode(Int64(bitPattern: SMConvertNanosToHostTime(hostTimeInNanos)), forKey: "hostTime") // backwards compatibility
 
         coder.encode(Double(timeInterval), forKey: "timeInterval")
     }
