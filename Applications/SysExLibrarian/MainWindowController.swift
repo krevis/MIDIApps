@@ -470,7 +470,7 @@ extension MainWindowController: GeneralTableViewDataSource {
     private func filePaths(fromDraggingInfo draggingInfo: NSDraggingInfo) -> [String] {
         if #available(OSX 10.13, *) {
             if let nsURLs = draggingInfo.draggingPasteboard.readObjects(forClasses: [NSURL.self], options: nil) as? [NSURL] {
-                return nsURLs.compactMap { $0.filePathURL?.path }
+                return nsURLs.compactMap(\.filePathURL?.path)
             }
         }
         else {

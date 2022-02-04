@@ -63,19 +63,19 @@ public class VirtualInputStream: InputStream {
     }
 
     public override func streamSource(parser: MessageParser) -> InputStreamSource? {
-        singleSource.asInputStreamSource()
+        singleSource.asInputStreamSource
     }
 
     public override var inputSources: [InputStreamSource] {
-        [singleSource.asInputStreamSource()]
+        [singleSource.asInputStreamSource]
     }
 
     public override var selectedInputSources: Set<InputStreamSource> {
         get {
-            isActive ? [singleSource.asInputStreamSource()] : []
+            isActive ? [singleSource.asInputStreamSource] : []
         }
         set {
-            isActive = newValue.contains(singleSource.asInputStreamSource())
+            isActive = newValue.contains(singleSource.asInputStreamSource)
         }
     }
 

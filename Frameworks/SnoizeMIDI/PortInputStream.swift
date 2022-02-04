@@ -72,16 +72,16 @@ public class PortInputStream: InputStream {
     }
 
     public override func streamSource(parser: MessageParser) -> InputStreamSource? {
-        return parser.originatingEndpoint?.asInputStreamSource()
+        parser.originatingEndpoint?.asInputStreamSource
     }
 
     public override var inputSources: [InputStreamSource] {
-        midiContext.sources.map { $0.asInputStreamSource() }
+        midiContext.sources.map(\.asInputStreamSource)
     }
 
     public override var selectedInputSources: Set<InputStreamSource> {
         get {
-            return Set(sources.map { $0.asInputStreamSource() })
+            Set(sources.map(\.asInputStreamSource))
         }
         set {
             sources = Set(newValue.compactMap { $0.provider as? Source })

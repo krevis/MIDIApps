@@ -318,7 +318,7 @@ extension LibraryEntry /* Private */ {
     }
 
     static private func size(messages: [SystemExclusiveMessage]) -> Int {
-        messages.map({ $0.fullMessageDataLength }).reduce(0, (+))
+        messages.map(\.fullMessageDataLength).reduce(0, (+))
         // messages.reduce(0, { $0 + $1.fullMessageDataLength })
     }
 

@@ -342,7 +342,7 @@ extension AppController {
         // For each endpoint (Source or Destination) that appeared, which is not a virtual endpoint owned by this process,
         // get its InputStreamSource. Select them all in the active document or a new document.
         let endpoints = objects.compactMap({ $0 as? Endpoint }).filter({ !$0.isOwnedByThisProcess })
-        let inputStreamSources = endpoints.map { $0.asInputStreamSource() }
+        let inputStreamSources = endpoints.map(\.asInputStreamSource)
         guard inputStreamSources.count > 0 else { return }
 
         if newlyAppearedInputStreamSources == nil {

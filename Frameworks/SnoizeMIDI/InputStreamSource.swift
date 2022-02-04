@@ -30,7 +30,7 @@ public protocol InputStreamSourceProviding {
     func isEqualTo(_ other: InputStreamSourceProviding) -> Bool
     func inputStreamSourceHash(into hasher: inout Hasher)
 
-    func asInputStreamSource() -> InputStreamSource
+    var asInputStreamSource: InputStreamSource { get }
 
 }
 

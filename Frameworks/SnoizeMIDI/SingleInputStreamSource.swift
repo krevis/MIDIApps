@@ -36,7 +36,7 @@ extension SingleInputStreamSource: InputStreamSourceProviding {
         hasher.combine(ObjectIdentifier(self))
     }
 
-    func asInputStreamSource() -> InputStreamSource {
+    var asInputStreamSource: InputStreamSource {
         InputStreamSource(provider: self)
     }
 

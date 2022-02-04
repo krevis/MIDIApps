@@ -32,7 +32,7 @@ extension Endpoint: InputStreamSourceProviding {
         hasher.combine(endpointRef)
     }
 
-    public func asInputStreamSource() -> InputStreamSource {
+    public var asInputStreamSource: InputStreamSource {
         InputStreamSource(provider: self)
     }
 

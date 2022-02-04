@@ -73,7 +73,7 @@ extension DeleteController /* Private */ {
     private func checkForFilesInLibraryDirectory() {
         guard let window = mainWindowController?.window else { return }
 
-        let areAnyFilesInLibraryDirectory = entriesToDelete.contains(where: { $0.isFileInLibraryFileDirectory })
+        let areAnyFilesInLibraryDirectory = entriesToDelete.contains(where: \.isFileInLibraryFileDirectory)
         if areAnyFilesInLibraryDirectory {
             window.beginSheet(deleteLibraryFilesWarningSheetWindow) { response in
                 if response == .OK {

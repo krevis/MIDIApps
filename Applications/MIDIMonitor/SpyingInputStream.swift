@@ -52,17 +52,17 @@ class SpyingInputStream: SnoizeMIDI.InputStream {
     }
 
     override func streamSource(parser: MessageParser) -> InputStreamSource? {
-        return parser.originatingEndpoint?.asInputStreamSource()
+        return parser.originatingEndpoint?.asInputStreamSource
     }
 
     override var inputSources: [InputStreamSource] {
         let destinations = midiContext.destinations.filter { !$0.isOwnedByThisProcess }
-        return destinations.map { $0.asInputStreamSource() }
+        return destinations.map(\.asInputStreamSource)
     }
 
     override var selectedInputSources: Set<InputStreamSource> {
         get {
-            return Set(destinations.map { $0.asInputStreamSource() })
+            Set(destinations.map(\.asInputStreamSource))
         }
         set {
             let newDestinations = Set(newValue.compactMap { $0.provider as? Destination })
