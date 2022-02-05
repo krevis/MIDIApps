@@ -70,7 +70,7 @@ public class PortOutputStream: OutputStream {
 
     override func send(_ packetListPtr: UnsafePointer<MIDIPacketList>) {
         for destination in destinations {
-            _ = MIDISend(outputPort, destination.endpointRef, packetListPtr)
+            _ = midiContext.interface.send(outputPort, destination.endpointRef, packetListPtr)
         }
     }
 
