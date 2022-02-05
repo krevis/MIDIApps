@@ -15,7 +15,7 @@ class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>
 
         // Populate our object wrappers
         T.fetchMIDIObjectRefs(context).forEach {
-            _ = addObject($0)
+            addObject($0)
         }
     }
 
@@ -146,7 +146,7 @@ class MIDIObjectList<T: CoreMIDIObjectListable & CoreMIDIPropertyChangeHandling>
         return T.init(context: context, objectRef: midiObjectRef)
     }
 
-    private func addObject(_ midiObjectRef: MIDIObjectRef) -> T? {
+    @discardableResult private func addObject(_ midiObjectRef: MIDIObjectRef) -> T? {
         let possibleObject = createObject(midiObjectRef)
 
         if let addedObject = possibleObject {

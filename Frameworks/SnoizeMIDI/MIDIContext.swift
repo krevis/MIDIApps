@@ -92,7 +92,7 @@ public class MIDIContext: CoreMIDIContext {
 
         if let destination = sysExSpeedWorkaroundDestination {
             let message = SystemExclusiveMessage(timeStamp: 0, data: Data())
-            _ = SysExSendRequest(message: message, destination: destination)?.send()
+            SysExSendRequest(message: message, destination: destination)?.send()
         }
     }
 

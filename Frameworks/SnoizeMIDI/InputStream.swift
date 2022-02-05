@@ -27,7 +27,7 @@ open class InputStream {
     }
 
     public func cancelReceivingSysExMessage() {
-        parsers.forEach { _ = $0.cancelReceivingSysExMessage() }
+        parsers.forEach { $0.cancelReceivingSysExMessage() }
     }
 
     open var persistentSettings: Any? {

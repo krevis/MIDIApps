@@ -117,7 +117,7 @@ extension Document {
         guard let dict = propertyList as? [String: Any] else { throw badFileContentsError }
 
         if let settings = try readStreamSettings(dict) {
-            _ = stream.takePersistentSettings(settings)
+            stream.takePersistentSettings(settings)
             monitorWindowController?.updateSources()
         }
         else {

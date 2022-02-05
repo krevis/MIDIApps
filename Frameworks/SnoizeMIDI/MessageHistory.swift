@@ -15,7 +15,7 @@ public class MessageHistory: NSObject, MessageDestination {
 
     public var savedMessages: [Message] = [] {
         didSet {
-            _ = limitSavedMessages()
+            limitSavedMessages()
         }
     }
 
@@ -47,7 +47,7 @@ public class MessageHistory: NSObject, MessageDestination {
 
     // MARK: Private
 
-    private func limitSavedMessages() -> Bool {
+    @discardableResult private func limitSavedMessages() -> Bool {
         if savedMessages.count > historySize {
             savedMessages = savedMessages.suffix(historySize)
             return true

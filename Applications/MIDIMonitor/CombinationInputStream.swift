@@ -99,7 +99,7 @@ class CombinationInputStream: NSObject {
         return persistentSettings.count > 0 ? persistentSettings : nil
     }
 
-    func takePersistentSettings(_ settings: [String: Any]) -> [String]? {
+    @discardableResult func takePersistentSettings(_ settings: [String: Any]) -> [String]? {
         // If any sources couldn't be found, their names are returned
         var missingNames: [String] = []
 

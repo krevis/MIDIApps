@@ -42,7 +42,7 @@ public class PortOutputStream: OutputStream {
     public var sendsSysExAsynchronously: Bool = false
 
     public func cancelPendingSysExSendRequests() {
-        sysExSendRequests.forEach { _ = $0.cancel() }
+        sysExSendRequests.forEach { $0.cancel() }
     }
 
     public var pendingSysExSendRequests: [SysExSendRequest] {
@@ -139,7 +139,7 @@ public class PortOutputStream: OutputStream {
 
                     delegate?.portOutputStream(self, willBeginSendingSysEx: request)
 
-                    _ = request.send()
+                    request.send()
                 }
             }
         }

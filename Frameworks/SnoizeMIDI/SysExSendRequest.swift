@@ -56,7 +56,7 @@ public class SysExSendRequest: NSObject {
     public let message: SystemExclusiveMessage
     public let customSysExBufferSize: Int
 
-    public func send() -> Bool {
+    @discardableResult public func send() -> Bool {
         checkMainQueue()
 
         guard state == .pending else { return false }
@@ -109,7 +109,7 @@ public class SysExSendRequest: NSObject {
         }
     }
 
-    public func cancel() -> Bool {
+    @discardableResult public func cancel() -> Bool {
         checkMainQueue()
 
         guard state == .sending else { return false }

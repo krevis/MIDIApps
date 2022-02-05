@@ -62,7 +62,7 @@ public class MessageParser {
         }
     }
 
-    public func cancelReceivingSysExMessage() -> Bool {
+    @discardableResult public func cancelReceivingSysExMessage() -> Bool {
         // Returns YES if it successfully cancels a sysex message which is being received, and NO otherwise.
         if readingSysExData != nil {
             readingSysExData = nil
