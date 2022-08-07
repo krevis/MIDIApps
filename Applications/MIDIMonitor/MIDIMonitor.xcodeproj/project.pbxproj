@@ -580,6 +580,7 @@
 		};
 		1692D743258BFE730092D6E7 /* Run Script (SwiftLint) */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);

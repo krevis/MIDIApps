@@ -109,20 +109,6 @@
 			remoteGlobalIDString = A550A7161F7877F8001C79C7;
 			remoteInfo = hexf;
 		};
-		1651E78414A9724300EF79CD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = A53DDB97148F4219006D2FFD;
-			remoteInfo = SnoizeMIDIiOS;
-		};
-		1682E81A176EE3C400089623 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = A581997216AF687400325CF3;
-			remoteInfo = SnoizeMIDIOSX;
-		};
 		16F0332E0984B74B006C8A44 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */;
@@ -275,8 +261,6 @@
 			isa = PBXGroup;
 			children = (
 				16F0332F0984B74B006C8A44 /* SnoizeMIDI.framework */,
-				1651E78514A9724300EF79CD /* libSnoizeMIDIiOS.a */,
-				1682E81B176EE3C400089623 /* libSnoizeMIDI.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -554,20 +538,6 @@
 			remoteRef = 16064987278D13E8005D51A3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		1651E78514A9724300EF79CD /* libSnoizeMIDIiOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libSnoizeMIDIiOS.a;
-			remoteRef = 1651E78414A9724300EF79CD /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1682E81B176EE3C400089623 /* libSnoizeMIDI.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libSnoizeMIDI.a;
-			remoteRef = 1682E81A176EE3C400089623 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		16F0332F0984B74B006C8A44 /* SnoizeMIDI.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -623,6 +593,7 @@
 		};
 		16D0EF0925C91E3F00399C74 /* Run Script (SwiftLint) */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
