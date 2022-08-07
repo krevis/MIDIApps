@@ -22,12 +22,6 @@ class MonitorWindowController: NSWindowController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: .displayPreferenceChanged, object: nil)
-
-        nextMessagesRefreshTimer?.invalidate()
-    }
-
     override var windowNibName: NSNib.Name? {
         return "MIDIMonitor"
     }
@@ -708,6 +702,15 @@ extension MonitorWindowController {
 }
 
 extension MonitorWindowController: NSWindowDelegate {
+
+    // Lifecycle
+
+    func windowWillClose(_ notification: Notification) {
+        // Clean up when the window is closed. This window controller will go away soon.
+        NotificationCenter.default.removeObserver(self, name: .displayPreferenceChanged, object: nil)
+        nextMessagesRefreshTimer?.invalidate()
+        nextMessagesRefreshTimer = nil
+    }
 
     // NSWindowRestoration-related:
     //
