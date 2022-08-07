@@ -15,3 +15,6 @@ DEBUG_INFORMATION_FORMAT = dwarf
 
 // Don't strip debug symbols when copying frameworks
 COPY_PHASE_STRIP = NO
+
+// No need for this in debug, only release
+DEAD_CODE_STRIPPING = NO
