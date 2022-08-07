@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2001-2011, Kurt Revis.  All rights reserved.
+ Copyright (c) 2001-2022, Kurt Revis.  All rights reserved.
 
  This source code is licensed under the BSD-style license found in the
  LICENSE file in the root directory of this source tree.
@@ -108,15 +108,17 @@ void SpyingMIDIDriver::BroadcasterListenerCountChanged(MessagePortBroadcaster *b
 
 void SpyingMIDIDriver::EnableMonitoring(Boolean enabled)
 {
-    OSStatus status;
+#if DEBUG
+    OSStatus status =
+#endif
+    MIDIDriverEnableMonitoring(Self(), enabled);
 
-    status = MIDIDriverEnableMonitoring(Self(), enabled);
-    #if DEBUG
-        if (status == noErr)
-            fprintf(stderr, "SpyingMIDIDriver: MIDIDriverEnableMonitoring(%d) succeeded!\n", enabled);
-        else
-            fprintf(stderr, "SpyingMIDIDriver: MIDIDriverEnableMonitoring(%d) failed: %ld\n", enabled, (long)status);
-    #endif
+#if DEBUG
+    if (status == noErr)
+        fprintf(stderr, "SpyingMIDIDriver: MIDIDriverEnableMonitoring(%d) succeeded!\n", enabled);
+    else
+        fprintf(stderr, "SpyingMIDIDriver: MIDIDriverEnableMonitoring(%d) failed: %ld\n", enabled, (long)status);
+#endif
 }
 
 CFMutableDataRef SpyingMIDIDriver::PackageMonitoredDataForBroadcast(MIDIEndpointRef destination, const MIDIPacketList *packetList)
