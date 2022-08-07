@@ -33,9 +33,9 @@ NSString * const MIDISpyDriverInstallationErrorDomain = @"com.snoize.MIDISpy";
 //
 
 static NSError * FindDriverInFramework(CFURLRef *urlPtr, CFStringRef *versionPtr);
-static NSURL *UserMIDIDriversURL(NSError **outErrorPtr);
+static NSURL *MIDIDriversURL(NSSearchPathDomainMask domain, NSError **outErrorPtr);
 static BOOL FindInstalledDriver(CFURLRef *urlPtr, CFStringRef *versionPtr);
-static void CreateBundlesForDriversInDomain(short findFolderDomain, CFMutableArrayRef createdBundles);
+static void CreateBundlesForDriversInDomain(NSSearchPathDomainMask domain, CFMutableArrayRef createdBundles);
 static NSError * RemoveInstalledDriver(CFURLRef driverURL);
 static NSError * InstallDriver(CFURLRef ourDriverURL);
 
@@ -170,10 +170,10 @@ static BOOL FindInstalledDriver(CFURLRef *urlPtr, CFStringRef *versionPtr)
     BOOL success = NO;
 
     createdBundles = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
-    CreateBundlesForDriversInDomain(kSystemDomain, createdBundles);
-    CreateBundlesForDriversInDomain(kLocalDomain, createdBundles);
-    CreateBundlesForDriversInDomain(kNetworkDomain, createdBundles);
-    CreateBundlesForDriversInDomain(kUserDomain, createdBundles);
+    CreateBundlesForDriversInDomain(NSSystemDomainMask, createdBundles);
+    CreateBundlesForDriversInDomain(NSLocalDomainMask, createdBundles);
+    CreateBundlesForDriversInDomain(NSNetworkDomainMask, createdBundles);
+    CreateBundlesForDriversInDomain(NSUserDomainMask, createdBundles);
 
     // See if the driver is installed anywhere.
     driverBundle = CFBundleGetBundleWithIdentifier(kSpyingMIDIDriverPlugInIdentifier);
@@ -201,9 +201,9 @@ static BOOL FindInstalledDriver(CFURLRef *urlPtr, CFStringRef *versionPtr)
 }
 
 
-static NSURL *UserMIDIDriversURL(NSError **outErrorPtr) {
+static NSURL *MIDIDriversURL(NSSearchPathDomainMask domain, NSError **outErrorPtr) {
     NSError *error = nil;
-    NSURL *libraryURL = [[NSFileManager defaultManager] URLForDirectory:NSLibraryDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:&error];
+    NSURL *libraryURL = [[NSFileManager defaultManager] URLForDirectory:NSLibraryDirectory inDomain:domain appropriateForURL:nil create:NO error:&error];
     if (!libraryURL) {
         if (outErrorPtr) {
             *outErrorPtr = error;
@@ -215,7 +215,7 @@ static NSURL *UserMIDIDriversURL(NSError **outErrorPtr) {
     NSURL *folderURL = [[libraryURL URLByAppendingPathComponent:@"Audio" isDirectory:YES] URLByAppendingPathComponent:@"MIDI Drivers" isDirectory:YES];
     if (!folderURL) {
         if (outErrorPtr) {
-            NSString *reason = @"Could not make a URL for the user's Library/Audio/MIDI Drivers folder.";
+            NSString *reason = @"Could not make a URL for the domain's Library/Audio/MIDI Drivers folder.";
             *outErrorPtr = [NSError errorWithDomain:MIDISpyDriverInstallationErrorDomain code:MIDISpyDriverInstallationErrorCannotMakeDriversURL userInfo:@{NSLocalizedFailureReasonErrorKey: reason}];
         }
         return nil;
@@ -228,9 +228,9 @@ static NSURL *UserMIDIDriversURL(NSError **outErrorPtr) {
 }
 
 
-static void CreateBundlesForDriversInDomain(short findFolderDomain, CFMutableArrayRef createdBundles)
+static void CreateBundlesForDriversInDomain(NSSearchPathDomainMask domain, CFMutableArrayRef createdBundles)
 {
-    NSURL *folderURL = UserMIDIDriversURL(NULL);
+    NSURL *folderURL = MIDIDriversURL(domain, NULL);
     if (!folderURL) {
         return;
     }
@@ -267,7 +267,7 @@ static NSError * InstallDriver(CFURLRef ourDriverURL)
     }
 
     NSError *error = nil;
-    NSURL *folderURL = UserMIDIDriversURL(&error);
+    NSURL *folderURL = MIDIDriversURL(NSUserDomainMask, &error);
     if (!folderURL) {
         __Debug_String("MIDISpy: Couldn't get URL to ~/Library/Audio/MIDI Drivers");
         return error;
