@@ -95,6 +95,10 @@ extension AppController: NSApplicationDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(self.midiObjectsAppeared(_:)), name: .midiObjectsAppeared, object: midiContext)
     }
 
+    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
+        true
+    }
+
 }
 
 extension AppController {

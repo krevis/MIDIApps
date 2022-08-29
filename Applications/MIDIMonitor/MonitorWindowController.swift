@@ -727,7 +727,7 @@ extension MonitorWindowController: NSWindowDelegate {
     }
 
     func window(_ window: NSWindow, didDecodeRestorableState state: NSCoder) {
-        if let decodedWindowSettings = state.decodeObject(forKey: "windowSettings") as? [String: Any] {
+        if let decodedWindowSettings = state.decodeObject(of: [NSDictionary.self, NSNumber.self, NSString.self], forKey: "windowSettings") as? [String: Any] {
             restoreWindowSettings(decodedWindowSettings)
         }
     }

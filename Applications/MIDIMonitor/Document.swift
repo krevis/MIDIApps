@@ -450,9 +450,9 @@ extension Document {
         else {
             var window: NSWindow?
 
-            if let messageIndexNumber = state.decodeObject(forKey: "messageIndex") as? NSNumber {
-                let messageIndex = messageIndexNumber.intValue
-                if messageIndex < savedMessages.count {
+            if state.containsValue(forKey: "messageIndex") {
+                let messageIndex = state.decodeInteger(forKey: "messageIndex")
+                if state.error == nil, messageIndex < savedMessages.count {
                     window = detailsWindowController(for: savedMessages[messageIndex]).window
                 }
             }

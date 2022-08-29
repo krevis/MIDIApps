@@ -92,6 +92,10 @@ extension AppController: NSApplicationDelegate {
         return false
     }
 
+    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
+        true
+    }
+
 }
 
 extension AppController: NSUserInterfaceValidations {
