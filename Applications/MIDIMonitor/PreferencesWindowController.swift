@@ -7,6 +7,7 @@
 
 import Cocoa
 import SnoizeMIDI
+import Sparkle.SPUUpdater
 
 class PreferencesWindowController: UtilityWindowController, NSWindowRestoration {
 

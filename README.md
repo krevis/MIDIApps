@@ -75,7 +75,7 @@ Contains .xcconfig files used to coordinate build settings across all the Xcode 
 
 Contains the git submodule for HexFiend, which we use to display hex dumps in various views.
 
-If you don't see the Sparkle submodule, do a `git submodule update --init --recursive`.
+If you don't see the HexFiend submodule, do `git submodule update --init --recursive`.
 
 ### Updates ###
 
