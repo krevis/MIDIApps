@@ -112,26 +112,18 @@ extension AppController {
     @IBAction func showAboutBox(_ sender: Any?) {
         var options: [NSApplication.AboutPanelOptionKey: Any] = [:]
 
-        if #available(macOS 10.13, *) {
-            options[NSApplication.AboutPanelOptionKey.version] = ""
-        }
-        else {
-            // This works before the above API was available in 10.13
-            options[NSApplication.AboutPanelOptionKey(rawValue: "Version")] = ""
-        }
+        options[NSApplication.AboutPanelOptionKey.version] = ""
 
         // The RTF file Credits.rtf has foreground text color = black, but that's wrong for 10.14 dark mode.
         // Similarly the font is not necessarily the systme font. Override both.
-        if #available(macOS 10.13, *) {
-            if let creditsURL = Bundle.main.url(forResource: "Credits", withExtension: "rtf"),
-               let credits = try? NSMutableAttributedString(url: creditsURL, options: [:], documentAttributes: nil) {
-                let range = NSRange(location: 0, length: credits.length)
-                credits.addAttribute(.font, value: NSFont.labelFont(ofSize: NSFont.labelFontSize), range: range)
-                if #available(macOS 10.14, *) {
-                    credits.addAttribute(.foregroundColor, value: NSColor.labelColor, range: range)
-                }
-                options[NSApplication.AboutPanelOptionKey.credits] = credits
+        if let creditsURL = Bundle.main.url(forResource: "Credits", withExtension: "rtf"),
+           let credits = try? NSMutableAttributedString(url: creditsURL, options: [:], documentAttributes: nil) {
+            let range = NSRange(location: 0, length: credits.length)
+            credits.addAttribute(.font, value: NSFont.labelFont(ofSize: NSFont.labelFontSize), range: range)
+            if #available(macOS 10.14, *) {
+                credits.addAttribute(.foregroundColor, value: NSColor.labelColor, range: range)
             }
+            options[NSApplication.AboutPanelOptionKey.credits] = credits
         }
 
         NSApp.orderFrontStandardAboutPanel(options: options)

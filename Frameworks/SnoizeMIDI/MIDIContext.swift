@@ -310,12 +310,7 @@ public class MIDIContext: CoreMIDIContext {
 }
 
 private func checkMainQueue() {
-    if #available(macOS 10.12, iOS 10.0, *) {
-        dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
-    }
-    else {
-        assert(Thread.isMainThread)
-    }
+    dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
 }
 
 // MARK: Notifications

@@ -38,18 +38,11 @@ class MainWindowController: GeneralWindowController {
 
         window?.showsToolbarButton = false
 
-        if #available(OSX 10.13, *) {
-            // FUTURE: Consider handling file promises, as below (higher priority than file URLs).
-            // As of 10.15 the Finder doesn't create them for drags, so it isn't terribly important.
-            // libraryTableView.registerForDraggedTypes(NSFilePromiseReceiver.readableDraggedTypes.map { NSPasteboard.PasteboardType($0) })
-            // https://developer.apple.com/documentation/appkit/nstableviewdatasource/supporting_table_view_drag_and_drop_through_file_promises
-
-            libraryTableView.registerForDraggedTypes([.fileURL])
-        }
-        else {
-            // Fallback on earlier versions
-            libraryTableView.registerForDraggedTypes([NSPasteboard.PasteboardType("NSFilenamesPboardType")])
-        }
+        // FUTURE: Consider handling file promises, as below (higher priority than file URLs).
+        // As of 10.15 the Finder doesn't create them for drags, so it isn't terribly important.
+        // libraryTableView.registerForDraggedTypes(NSFilePromiseReceiver.readableDraggedTypes.map { NSPasteboard.PasteboardType($0) })
+        // https://developer.apple.com/documentation/appkit/nstableviewdatasource/supporting_table_view_drag_and_drop_through_file_promises
+        libraryTableView.registerForDraggedTypes([.fileURL])
 
         libraryTableView.target = self
 
@@ -468,16 +461,8 @@ extension MainWindowController: GeneralTableViewDataSource {
     }
 
     private func filePaths(fromDraggingInfo draggingInfo: NSDraggingInfo) -> [String] {
-        if #available(OSX 10.13, *) {
-            if let nsURLs = draggingInfo.draggingPasteboard.readObjects(forClasses: [NSURL.self], options: nil) as? [NSURL] {
-                return nsURLs.compactMap(\.filePathURL?.path)
-            }
-        }
-        else {
-            // Fallback for earlier versions
-            if let filePaths = draggingInfo.draggingPasteboard.propertyList(forType: NSPasteboard.PasteboardType("NSFilenamesPboardType")) as? [String] {
-                return filePaths
-            }
+        if let nsURLs = draggingInfo.draggingPasteboard.readObjects(forClasses: [NSURL.self], options: nil) as? [NSURL] {
+            return nsURLs.compactMap(\.filePathURL?.path)
         }
 
         return []
