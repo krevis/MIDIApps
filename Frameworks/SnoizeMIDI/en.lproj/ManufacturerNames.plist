@@ -1272,6 +1272,40 @@
 	<string>Guangzhou Rantion Technology</string>
 	<key>002161</key>
 	<string>Ryme Music</string>
+	<key>002162</key>
+	<string>GS Music</string>
+	<key>002163</key>
+	<string>Flamma Innovation</string>
+	<key>002164</key>
+	<string>Mooer Audio</string>
+	<key>002165</key>
+	<string>Raw Material Software Limited (JUCE)</string>
+	<key>002166</key>
+	<string>Birdkids</string>
+	<key>002167</key>
+	<string>Beijing QianYinHuLian Tech. Co</string>
+	<key>002168</key>
+	<string>Nimikry Music</string>
+	<key>002169</key>
+	<string>Newzik</string>
+	<key>00216a</key>
+	<string>Hamburg Wave</string>
+	<key>00216b</key>
+	<string>Grimm Audio</string>
+	<key>00216c</key>
+	<string>Arcana Instruments</string>
+	<key>00216d</key>
+	<string>GameChanger Audio</string>
+	<key>00216e</key>
+	<string>OakTone</string>
+	<key>00216f</key>
+	<string>Digi-Gurdy</string>
+	<key>002170</key>
+	<string>MusiKraken</string>
+	<key>002171</key>
+	<string>PhotoSynth &gt; InterFACE</string>
+	<key>002172</key>
+	<string>Instruments of Things</string>
 	<key>004000</key>
 	<string>Crimson Technology</string>
 	<key>004001</key>
@@ -1298,5 +1332,7 @@
 	<string>Sonicware</string>
 	<key>004805</key>
 	<string>Keshi Nomi Workshop</string>
+	<key>004806</key>
+	<string>Black Corporation</string>
 </dict>
 </plist>
