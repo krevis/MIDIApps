@@ -50,12 +50,17 @@ public class Source: Endpoint, CoreMIDIObjectListable {
 
 }
 
-extension CoreMIDIContext {
+extension MIDIContext {
 
     public func createVirtualSource(name: String, uniqueID: MIDIUniqueID) -> Source? {
-        // If newUniqueID is 0, we'll use the unique ID that CoreMIDI generates for us
+        // If uniqueID is 0, we'll use the unique ID that CoreMIDI generates for us
 
         var newEndpointRef: MIDIEndpointRef = 0
+
+        // Ensure the sources list is up to date first, since it gets lazily loaded
+        _ = self.sources
+
+        // Now create the virtual source in CoreMIDI
         guard interface.sourceCreate(client, name as CFString, &newEndpointRef) == noErr else { return nil }
 
         // We want to get at the Source immediately, to configure it.

@@ -303,7 +303,8 @@ extension MIDIController /* Private */ {
     }
 
     @objc private func listenForProgramChangesPreferenceDidChange(_ notification: Notification?) {
-        if UserDefaults.standard.bool(forKey: Self.listenForProgramChangesPreferenceKey) {
+        listeningToProgramChangeMessages = UserDefaults.standard.bool(forKey: Self.listenForProgramChangesPreferenceKey)
+        if listeningToProgramChangeMessages {
             if virtualInputStream == nil {
                 let stream = VirtualInputStream(midiContext: midiContext)
                 stream.delegate = self

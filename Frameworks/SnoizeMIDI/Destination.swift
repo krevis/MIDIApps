@@ -49,13 +49,17 @@ public class Destination: Endpoint, CoreMIDIObjectListable {
 
 }
 
-extension CoreMIDIContext {
+extension MIDIContext {
 
     public func createVirtualDestination(name: String, uniqueID: MIDIUniqueID, midiReadBlock: @escaping(MIDIReadBlock)) -> Destination? {
-        // If newUniqueID is 0, we'll use the unique ID that CoreMIDI generates for us
+        // If uniqueID is 0, we'll use the unique ID that CoreMIDI generates for us
 
         var newEndpointRef: MIDIEndpointRef = 0
 
+        // Ensure the destinations list is up to date first, since it gets lazily loaded
+        _ = self.destinations
+
+        // Now create the virtual destination in CoreMIDI
         guard interface.destinationCreateWithBlock(client, name as CFString, &newEndpointRef, midiReadBlock) == noErr else { return nil }
 
         // We want to get at the Destination immediately, to configure it.
