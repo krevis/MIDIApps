@@ -40,7 +40,7 @@ class SysExWindowController: DetailsWindowController {
     }
 
     @IBAction func save(_ sender: AnyObject) {
-        guard let window = window else { return }
+        guard let window else { return }
 
         let savePanel = NSSavePanel()
         savePanel.allowedFileTypes = ["syx"]

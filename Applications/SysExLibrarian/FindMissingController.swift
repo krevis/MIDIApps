@@ -65,7 +65,7 @@ extension FindMissingController /* Private */ {
     }
 
     private func runOpenSheetForMissingFile(_ entry: LibraryEntry) {
-        guard let window = mainWindowController?.window, let library = library else { return }
+        guard let window = mainWindowController?.window, let library else { return }
 
         let openPanel = NSOpenPanel()
         openPanel.allowedFileTypes = library.allowedFileTypes

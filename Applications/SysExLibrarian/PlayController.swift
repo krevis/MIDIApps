@@ -26,7 +26,7 @@ class PlayController: NSObject {
     // MARK: API for main window controller
 
     func playMessages(_ messages: [SystemExclusiveMessage]) {
-        guard let midiController = midiController else { return }
+        guard let midiController else { return }
 
         observeMIDIController()
 
@@ -95,7 +95,7 @@ class PlayController: NSObject {
 extension PlayController /* Private */ {
 
     private func observeMIDIController() {
-        guard let midiController = midiController else { return }
+        guard let midiController else { return }
         let center = NotificationCenter.default
         center.addObserver(self, selector: #selector(self.sendWillStart(_:)), name: .sendWillStart, object: midiController)
         center.addObserver(self, selector: #selector(self.sendFinished(_:)), name: .sendFinished, object: midiController)
@@ -103,7 +103,7 @@ extension PlayController /* Private */ {
     }
 
     private func stopObservingMIDIController() {
-        guard let midiController = midiController else { return }
+        guard let midiController else { return }
         let center = NotificationCenter.default
         center.removeObserver(self, name: .sendWillStart, object: midiController)
         center.removeObserver(self, name: .sendFinished, object: midiController)
@@ -147,7 +147,7 @@ extension PlayController /* Private */ {
         transmitting = false
 
         // Maybe there's a queued entry that needs sending...
-        if let queuedEntry = queuedEntry, currentEntry != queuedEntry {
+        if let queuedEntry, currentEntry != queuedEntry {
             let messages = queuedEntry.messages
 
             // yes, move the queued entry to be current

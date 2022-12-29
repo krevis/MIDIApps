@@ -116,7 +116,7 @@ class CombinationInputStream: NSObject {
                 source = midiContext.findSource(name: name)
             }
 
-            if let source = source {
+            if let source {
                 portInputStream.addSource(source)
             }
             else {
@@ -134,7 +134,7 @@ class CombinationInputStream: NSObject {
             // This is a current-style document
 
             func makeInputStreamTakePersistentSettings(_ stream: SnoizeMIDI.InputStream, _ streamSettings: Any?) {
-                if let streamSettings = streamSettings {
+                if let streamSettings {
                     let streamMissingNames = stream.takePersistentSettings(streamSettings)
                     missingNames += streamMissingNames
                 }

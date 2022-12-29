@@ -111,7 +111,7 @@ extension MonitorWindowController {
 
     override var document: AnyObject? {
         didSet {
-            guard let document = document else { return }
+            guard let document else { return }
             guard let smmDocument = document as? Document else { fatalError() }
 
             _ = window // Make sure the window and all views are loaded first
@@ -135,7 +135,7 @@ extension MonitorWindowController {
         // Also, don't do it for untitled, unsaved documents which have no fileURL yet, because that's annoying.
         // Similarly, don't do it if "Ask to keep changes when closing documents" is turned on.
 
-        guard let midiDocument = midiDocument else { return }
+        guard let midiDocument else { return }
         if midiDocument.fileURL != nil && !UserDefaults.standard.bool(forKey: "NSCloseAlwaysConfirmsChanges") {
             let change = NSDocument.ChangeType(rawValue: (NSDocument.ChangeType.changeDone.rawValue | NSDocument.ChangeType.changeDiscardable.rawValue))!
             midiDocument.updateChangeCount(change)
@@ -172,7 +172,7 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
     // Work around it by boxing the structs (InputStreamSource) in Box.
 
     func updateSources() {
-        guard let midiDocument = midiDocument else { return }
+        guard let midiDocument else { return }
 
         inputSourceGroups = midiDocument.inputSourceGroups
         sourcesOutlineView.reloadData()
@@ -241,7 +241,7 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
     }
 
     func outlineView(_ outlineView: NSOutlineView, objectValueFor tableColumn: NSTableColumn?, byItem item: Any?) -> Any? {
-        guard let item = item else { fatalError() }
+        guard let item else { fatalError() }
 
         let identifier = tableColumn?.identifier.rawValue
         switch identifier {
@@ -273,8 +273,8 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
     }
 
     func outlineView(_ outlineView: NSOutlineView, setObjectValue object: Any?, for tableColumn: NSTableColumn?, byItem item: Any?) {
-        guard let midiDocument = midiDocument else { return }
-        guard let item = item,
+        guard let midiDocument else { return }
+        guard let item,
               let number = object as? NSNumber else { fatalError() }
 
         var newState = NSControl.StateValue(rawValue: number.intValue)
@@ -325,7 +325,7 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
     }
 
     private func buttonStateForInputSources(_ sources: [InputStreamSource]) -> NSControl.StateValue {
-        guard let midiDocument = midiDocument else { return .off }
+        guard let midiDocument else { return .off }
         let selectedSources = midiDocument.selectedInputSources
 
         var areAnySelected = false
@@ -354,7 +354,7 @@ extension MonitorWindowController {
     // MARK: Filter
 
     func updateFilterControls() {
-        guard let midiDocument = midiDocument else { return }
+        guard let midiDocument else { return }
 
         let currentMask = midiDocument.filterMask.rawValue
 
@@ -401,7 +401,7 @@ extension MonitorWindowController {
     }
 
     private func changeFilter(tag: Int, state: NSControl.StateValue) {
-        guard let midiDocument = midiDocument else { return }
+        guard let midiDocument else { return }
 
         let turnBitsOn: Bool
         switch state {
@@ -428,7 +428,7 @@ extension MonitorWindowController {
     }
 
     @IBAction func setChannelRadioButton(_ sender: Any?) {
-        guard let midiDocument = midiDocument else { return }
+        guard let midiDocument else { return }
 
         if let matrix = sender as? NSMatrix {
             if matrix.selectedCell()?.tag == 0 {
@@ -441,7 +441,7 @@ extension MonitorWindowController {
     }
 
     @IBAction func setChannel(_ sender: Any?) {
-        guard let midiDocument = midiDocument else { return }
+        guard let midiDocument else { return }
 
         if let control = sender as? NSControl {
             let channel = (control.objectValue as? NSNumber)?.intValue ?? 0
@@ -456,7 +456,7 @@ extension MonitorWindowController: NSTableViewDataSource {
     // MARK: Messages Table View
 
     func updateMaxMessageCount() {
-        guard let midiDocument = midiDocument else { return }
+        guard let midiDocument else { return }
 
         maxMessageCountField.objectValue = NSNumber(value: midiDocument.maxMessageCount)
     }
@@ -524,13 +524,13 @@ extension MonitorWindowController: NSTableViewDataSource {
     }
 
     @IBAction func clearMessages(_ sender: Any?) {
-        guard let midiDocument = midiDocument else { return }
+        guard let midiDocument else { return }
 
         midiDocument.clearSavedMessages()
     }
 
     @IBAction func setMaximumMessageCount(_ sender: Any?) {
-        guard let midiDocument = midiDocument else { return }
+        guard let midiDocument else { return }
         guard let control = sender as? NSControl else { fatalError() }
 
         if let number = control.objectValue as? NSNumber {
@@ -560,7 +560,7 @@ extension MonitorWindowController: NSTableViewDataSource {
     }
 
     @IBAction func showDetailsOfSelectedMessages(_ sender: Any?) {
-        guard let midiDocument = midiDocument else { return }
+        guard let midiDocument else { return }
 
         for message in selectedMessages {
             midiDocument.detailsWindowController(for: message).showWindow(nil)
@@ -576,7 +576,7 @@ extension MonitorWindowController: NSTableViewDataSource {
     }
 
     private func refreshMessagesTableView() {
-        guard let midiDocument = midiDocument else { return }
+        guard let midiDocument else { return }
 
         let oldMessages = displayedMessages
         let newMessages = midiDocument.savedMessages

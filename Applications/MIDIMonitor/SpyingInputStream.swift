@@ -30,7 +30,7 @@ class SpyingInputStream: SnoizeMIDI.InputStream {
     deinit {
         NotificationCenter.default.removeObserver(self)
 
-        if let spyPort = spyPort {
+        if let spyPort {
             MIDISpyPortDispose(spyPort)
         }
 

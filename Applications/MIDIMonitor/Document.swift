@@ -273,7 +273,7 @@ extension Document {
     }
 
     private func undoableSetSelectedInputSources(_ newValue: Set<InputStreamSource>) {
-        if let undoManager = undoManager {
+        if let undoManager {
             let currentSelectedInputSources = selectedInputSources
             undoManager.registerUndo(withTarget: self) {
                 $0.undoableSetSelectedInputSources(currentSelectedInputSources)
@@ -297,7 +297,7 @@ extension Document {
     }
 
     @objc private func undoableSetMaxMessageCountNumber(_ number: NSNumber) {
-        if let undoManager = undoManager {
+        if let undoManager {
             undoManager.registerUndo(withTarget: self, selector: #selector(self.undoableSetMaxMessageCountNumber(_:)), object: NSNumber(value: maxMessageCount))
             undoManager.setActionName(NSLocalizedString("Change Remembered Events", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "change history limit undo action"))
         }
@@ -317,7 +317,7 @@ extension Document {
     }
 
     @objc private func undoableSetFilterMaskNumber(_ number: NSNumber) {
-        if let undoManager = undoManager {
+        if let undoManager {
             undoManager.registerUndo(withTarget: self, selector: #selector(self.undoableSetFilterMaskNumber(_:)), object: NSNumber(value: filterMask.rawValue))
             undoManager.setActionName(NSLocalizedString("Change Filter", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "change filter undo action"))
         }
@@ -337,7 +337,7 @@ extension Document {
     }
 
     @objc private func undoableSetChannelMaskNumber(_ number: NSNumber) {
-        if let undoManager = undoManager {
+        if let undoManager {
             undoManager.registerUndo(withTarget: self, selector: #selector(self.undoableSetChannelMaskNumber(_:)), object: NSNumber(value: channelMask.rawValue))
             undoManager.setActionName(NSLocalizedString("Change Channel", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "change channel undo action"))
         }

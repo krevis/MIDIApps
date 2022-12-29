@@ -29,27 +29,27 @@ class LibraryEntry: NSObject {
             dict["bookmark"] = bookmarkData
         }
 
-        if let oldAliasRecordData = oldAliasRecordData {
+        if let oldAliasRecordData {
             dict["alias"] = oldAliasRecordData
         }
 
-        if let name = name {
+        if let name {
             dict["name"] = name
         }
 
-        if let manufacturer = manufacturer {
+        if let manufacturer {
             dict["manufacturerName"] = manufacturer
         }
 
-        if let size = size {
+        if let size {
             dict["size"] = size
         }
 
-        if let messageCount = messageCount {
+        if let messageCount {
             dict["messageCount"] = messageCount
         }
 
-        if let programNumber = programNumber {
+        if let programNumber {
             dict["programNumber"] = programNumber
         }
 
@@ -98,7 +98,7 @@ class LibraryEntry: NSObject {
     func setNameFromFile() {
         var newName: String?
 
-        if let path = path {
+        if let path {
             newName = FileManager.default.displayName(atPath: path)
         }
 
@@ -106,7 +106,7 @@ class LibraryEntry: NSObject {
     }
 
     func renameFile(_ newFileName: String) -> Bool {
-        guard let path = path else { return false }
+        guard let path else { return false }
 
         let fileName = (path as NSString).lastPathComponent
         let fileExtension = (fileName as NSString).pathExtension
@@ -200,7 +200,7 @@ class LibraryEntry: NSObject {
     var messages: [SystemExclusiveMessage] {
         var messages: [SystemExclusiveMessage] = []
 
-        if let path = path,
+        if let path,
            let data = NSData(contentsOfFile: path) as Data? {
             switch library.typeOfFile(atPath: path) {
             case .raw:
@@ -231,12 +231,12 @@ class LibraryEntry: NSObject {
     }
 
     var isFileInLibraryFileDirectory: Bool {
-        guard isFilePresentIgnoringCachedValue, let path = path else { return false }
+        guard isFilePresentIgnoringCachedValue, let path else { return false }
         return library.isPathInFileDirectory(path)
     }
 
     var fileReadError: Error? {
-        guard let path = path else { return nil }
+        guard let path else { return nil }
         do {
             _ = try NSData(contentsOfFile: path, options: [])
             return nil

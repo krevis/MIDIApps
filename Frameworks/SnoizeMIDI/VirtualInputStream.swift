@@ -24,7 +24,7 @@ public class VirtualInputStream: InputStream {
 
     public var uniqueID: MIDIUniqueID {
         didSet {
-            if uniqueID != oldValue, let endpoint = endpoint {
+            if uniqueID != oldValue, let endpoint {
                 endpoint.uniqueID = uniqueID
                 // that may or may not have worked
                 uniqueID = endpoint.uniqueID
@@ -49,7 +49,7 @@ public class VirtualInputStream: InputStream {
     // MARK: InputStream subclass
 
     public override var parsers: [MessageParser] {
-        if let parser = parser {
+        if let parser {
             return [parser]
         }
         else {
@@ -120,7 +120,7 @@ public class VirtualInputStream: InputStream {
 
         endpoint = midiContext.createVirtualDestination(name: virtualEndpointName, uniqueID: uniqueID, midiReadBlock: midiReadBlock)
 
-        if let endpoint = endpoint {
+        if let endpoint {
             if parser == nil {
                 parser = createParser(originatingEndpoint: endpoint)
             }

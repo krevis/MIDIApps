@@ -110,7 +110,7 @@ public class Message: NSObject, NSCoding {
         coder.encode(Int(statusByte), forKey: "statusByte")
         coder.encode(originatingEndpointForDisplay, forKey: "originatingEndpoint")
 
-        if let clockTimeStamp = clockTimeStamp {
+        if let clockTimeStamp {
             coder.encode(clockTimeStamp, forKey: "clockTimeStamp")
         }
     }
@@ -142,7 +142,7 @@ public class Message: NSObject, NSCoding {
     // All data including status byte and otherData
     public var fullData: Data {
         let statusByteData = Data([statusByte])
-        if let otherData = otherData {
+        if let otherData {
             return statusByteData + otherData
         }
         else {
@@ -181,12 +181,12 @@ public class Message: NSObject, NSCoding {
             if displayZero {
                 return "0"
             }
-            else if let clockTimeStamp = clockTimeStamp {
+            else if let clockTimeStamp {
                 // New way: Use the actual clock timestamp that we saved when the message was created
                 let date = Date(timeIntervalSinceReferenceDate: clockTimeStamp)
                 return Self.timeStampDateFormatter.string(from: date)
             }
-            else if let timeBase = timeBase {
+            else if let timeBase {
                 // We have to use the older, mistaken method: MessageTimeBase contains an offset from host time to clock time.
                 let timeStampInNanos = SMConvertHostTimeToNanos(hostTimeStamp)
                 let hostTimeBaseInNanos = timeBase.hostTimeInNanos

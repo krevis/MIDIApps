@@ -157,11 +157,11 @@ extension InputStream /* Private */ {
     private func findInputSource(name: String?, uniqueID: MIDIUniqueID?) -> InputStreamSource? {
         // Find the input source with the desired unique ID. If there are no matches by uniqueID, return the first source whose name matches.
         // Otherwise, return nil.
-        if let uniqueID = uniqueID,
+        if let uniqueID,
            let match = inputSources.first(where: { $0.uniqueID == uniqueID }) {
             return match
         }
-        else if let name = name,
+        else if let name,
                 let match = inputSources.first(where: { $0.name == name }) {
             return match
         }

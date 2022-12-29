@@ -269,7 +269,7 @@ extension SystemExclusiveMessage {
                 let status = MusicEventIteratorGetEventInfo(iterator, &timeStamp, &eventType, &eventData, &eventDataSize)
 
                 if status == noErr && eventType == kMusicEventType_MIDIRawData && eventDataSize > 0,
-                   let eventData = eventData {
+                   let eventData {
                     // eventData is a pointer to a MIDIRawData struct, which contains
                     // another length field and then the "raw" MIDI data.
                     let midiRawDataEventPtr = eventData.bindMemory(to: MIDIRawData.self, capacity: Int(eventDataSize))

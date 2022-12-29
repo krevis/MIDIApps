@@ -142,7 +142,7 @@ extension AppController {
             message = NSLocalizedString("The help file could not be found.", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "error message if help file can't be found")
         }
 
-        if let message = message {
+        if let message {
             let title = NSLocalizedString("Error", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "title of error alert")
 
             let alert = NSAlert()

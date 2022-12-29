@@ -150,7 +150,7 @@ extension AppController /* Actions */ {
             message = NSLocalizedString("The help file could not be found.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "error message if help file can't be found")
         }
 
-        if let message = message {
+        if let message {
             let title = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
 
             let alert = NSAlert()

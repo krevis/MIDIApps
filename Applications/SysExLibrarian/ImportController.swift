@@ -86,7 +86,7 @@ extension ImportController /* Private */ {
     }
 
     private func showImportWarning() {
-        guard let library = library else { return }
+        guard let library else { return }
 
         let areAllFilesInLibraryDirectory = filePathsToImport.allSatisfy({ library.isPathInFileDirectory($0) })
 
@@ -190,7 +190,7 @@ extension ImportController /* Private */ {
     }
 
     private func workQueueExpandAndFilterFiles(_ paths: [String]) -> [String] {
-        guard let library = library else { return [] }
+        guard let library else { return [] }
         let fileManager = FileManager.default
 
         var acceptableFilePaths = [String]()
@@ -254,7 +254,7 @@ extension ImportController /* Private */ {
         // be successfully imported.
         // NOTE: This may be happening in the main queue or workQueue.
 
-        guard let library = library else { return ([], []) }
+        guard let library else { return ([], []) }
 
         var addedEntries = [LibraryEntry]()
         var badFilePaths = [String]()

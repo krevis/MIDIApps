@@ -270,7 +270,7 @@ class MainWindowController: GeneralWindowController {
             }
         }
         catch {
-            guard let window = window else { return }
+            guard let window else { return }
 
             let messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
             let informativeTextPart1 = NSLocalizedString("The file could not be created.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "message of alert when recording to a new file fails")
@@ -373,7 +373,7 @@ extension MainWindowController: GeneralTableViewDataSource {
     }
 
     func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
-        guard let tableColumn = tableColumn, row < sortedLibraryEntries.count else { return nil }
+        guard let tableColumn, row < sortedLibraryEntries.count else { return nil }
 
         let entry = sortedLibraryEntries[row]
 
@@ -411,7 +411,7 @@ extension MainWindowController: GeneralTableViewDataSource {
     }
 
     func tableView(_ tableView: NSTableView, setObjectValue object: Any?, for tableColumn: NSTableColumn?, row: Int) {
-        guard let tableColumn = tableColumn, row < sortedLibraryEntries.count else { return }
+        guard let tableColumn, row < sortedLibraryEntries.count else { return }
 
         let entry = sortedLibraryEntries[row]
 
@@ -425,7 +425,7 @@ extension MainWindowController: GeneralTableViewDataSource {
                     }
                 }
                 else {
-                    if let window = window {
+                    if let window {
                         let alert = NSAlert()
                         alert.messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
                         alert.informativeText = NSLocalizedString("The file for this item could not be renamed.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "message of alert when renaming a file fails")
@@ -537,7 +537,7 @@ extension MainWindowController: GeneralTableViewDelegate {
     }
 
     func tableView(_ tableView: NSTableView, shouldEdit tableColumn: NSTableColumn?, row: Int) -> Bool {
-        guard let tableColumn = tableColumn, row < sortedLibraryEntries.count else { return false }
+        guard let tableColumn, row < sortedLibraryEntries.count else { return false }
 
         switch tableColumn.identifier.rawValue {
         case "name":
@@ -619,7 +619,7 @@ extension MainWindowController /* Private */ {
     // MARK: Destination selections (popup and toolbar menu)
 
     private func synchronizeDestinationPopUp(destinationGroups: [[OutputStreamDestination]], currentDestination: OutputStreamDestination?) {
-        guard let window = window else { return }
+        guard let window else { return }
 
         // The pop up button redraws whenever it's changed, so turn off autodisplay to stop the blinkiness
         let wasAutodisplay = window.isAutodisplay

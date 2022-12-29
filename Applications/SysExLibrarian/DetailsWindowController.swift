@@ -71,7 +71,7 @@ class DetailsWindowController: GeneralWindowController {
         layoutView.autoresizingMask = [.width, .height]
         dataContainerView.addSubview(layoutView)
 
-        if let window = window {
+        if let window {
             // Tweak the window's minSize to match the data layout.
             let bytesPerLine = dataLayoutRep.maximumBytesPerLineForLayout(inProposedWidth: window.minSize.width)
             let minWidth = dataLayoutRep.minimumViewWidth(forBytesPerLine: bytesPerLine)
@@ -128,7 +128,7 @@ class DetailsWindowController: GeneralWindowController {
         var resultingSize = layoutView.convert(NSSize(width: resultingWidthInLayoutCoordinates, height: proposedSizeInLayoutCoordinates.height), to: nil)
 
         // But ensure we don't get smaller than the window's minSize.
-        if let window = window {
+        if let window {
             resultingSize.width = Swift.max(resultingSize.width, window.minSize.width)
             resultingSize.height = Swift.max(resultingSize.height, window.minSize.height)
         }

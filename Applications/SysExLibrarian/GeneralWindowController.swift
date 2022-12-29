@@ -48,7 +48,7 @@ class GeneralWindowController: NSWindowController {
     // Window utility methods
 
     func finishEditingInWindow() {
-        guard let window = window else { return }
+        guard let window else { return }
         if window.makeFirstResponder(firstResponderWhenNotEditing) {
             // Validation turned out OK
         }
@@ -132,7 +132,7 @@ extension GeneralWindowController /* Private */ {
     private func autosaveCurrentWindowFrame() {
         // Work around an AppKit bug: the frame that gets saved in NSUserDefaults is the window's old position, not the new one.
         // We get notified after the window has been moved/resized and the defaults changed.
-        if let window = window {
+        if let window {
             window.saveFrame(usingName: window.frameAutosaveName)
         }
     }

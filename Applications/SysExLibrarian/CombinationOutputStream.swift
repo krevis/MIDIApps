@@ -190,7 +190,7 @@ class CombinationOutputStream: NSObject, MessageDestination {
     private var virtualEndpointUniqueID: MIDIUniqueID = 0
 
     private func selectDestination(_ destination: Destination?) {
-        if let destination = destination {
+        if let destination {
             // Set up the port stream
             if portStream == nil {
                 createPortStream()

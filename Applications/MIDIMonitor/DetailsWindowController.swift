@@ -15,7 +15,7 @@ class DetailsWindowController: UtilityWindowController {
     init(message: Message) {
         self.message = message
         super.init(window: nil)
-        if let windowNibName = windowNibName {
+        if let windowNibName {
             windowFrameAutosaveName = windowNibName
         }
         shouldCascadeWindows = true
@@ -77,7 +77,7 @@ class DetailsWindowController: UtilityWindowController {
         layoutView.autoresizingMask = [.width, .height]
         dataContainerView.addSubview(layoutView)
 
-        if let window = window {
+        if let window {
             // Tweak the window's minSize to match the data layout.
             let bytesPerLine = dataLayoutRep.maximumBytesPerLineForLayout(inProposedWidth: window.minSize.width)
             let minWidth = dataLayoutRep.minimumViewWidth(forBytesPerLine: bytesPerLine)
@@ -116,7 +116,7 @@ class DetailsWindowController: UtilityWindowController {
         var resultingSize = layoutView.convert(NSSize(width: resultingWidthInLayoutCoordinates, height: proposedSizeInLayoutCoordinates.height), to: nil)
 
         // But ensure we don't get smaller than the window's minSize.
-        if let window = window {
+        if let window {
             resultingSize.width = Swift.max(resultingSize.width, window.minSize.width)
             resultingSize.height = Swift.max(resultingSize.height, window.minSize.height)
         }
@@ -127,7 +127,7 @@ class DetailsWindowController: UtilityWindowController {
     private func autosaveCurrentWindowFrame() {
         // Work around an AppKit bug: the frame that gets saved in NSUserDefaults is the window's old position, not the new one.
         // We get notified after the window has been moved/resized and the defaults changed.
-        if let window = window {
+        if let window {
             window.saveFrame(usingName: window.frameAutosaveName)
         }
     }

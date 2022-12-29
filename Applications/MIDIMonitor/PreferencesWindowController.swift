@@ -42,7 +42,7 @@ class PreferencesWindowController: UtilityWindowController, NSWindowRestoration 
     @IBOutlet private var expertModeTextField: NSTextField!
 
     override func windowDidLoad() {
-        guard let window = window else { fatalError() }
+        guard let window else { fatalError() }
 
         super.windowDidLoad()
 

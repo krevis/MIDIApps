@@ -16,7 +16,7 @@ class ValidatingButton: NSButton, NSValidatedUserInterfaceItem {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        if let window = window {
+        if let window {
             NotificationCenter.default.addObserver(self, selector: #selector(self.windowDidUpdate(_:)), name: NSWindow.didUpdateNotification, object: window)
         }
 
@@ -30,7 +30,7 @@ class ValidatingButton: NSButton, NSValidatedUserInterfaceItem {
     @objc private func windowDidUpdate(_ notification: Notification) {
         var shouldBeEnabled = false
 
-        if let action = action,
+        if let action,
            let validator = NSApp.target(forAction: action, to: target, from: self) {
             let validatorObject = validator as AnyObject
             if validatorObject.responds(to: action) {

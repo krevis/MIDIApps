@@ -99,7 +99,7 @@ class DisclosableView: NSView {
             needsDisplay = true
         }
 
-        if let window = window, window.styleMask.contains(.fullScreen) {
+        if let window, window.styleMask.contains(.fullScreen) {
             // We're in full screen, so we can't resize the window. Resize ourself and other content views instead.
             NSAnimationContext.runAnimationGroup { animationContext in
                 animationContext.completionHandler = completion
@@ -139,7 +139,7 @@ class DisclosableView: NSView {
             needsDisplay = true
         }
 
-        if let window = window, window.styleMask.contains(.fullScreen) {
+        if let window, window.styleMask.contains(.fullScreen) {
             // We're in full screen, so we can't resize the window. Resize ourself and other content views instead.
             NSAnimationContext.runAnimationGroup { animationContext in
                 animationContext.completionHandler = completion
@@ -184,7 +184,7 @@ class DisclosableView: NSView {
         // * Then resize the window, and fix up the window's min/max sizes.
         // * For each view that we touched earlier, restore the old autoresize mask.
 
-        guard let window = window else { return }
+        guard let window else { return }
 
         // Compute the window's new frame.
         var newWindowFrame = window.frame
@@ -300,7 +300,7 @@ class DisclosableView: NSView {
     }
 
     private func changeSelfHeightAndAdjustOtherContentViews(by amount: CGFloat) {
-        guard let window = window else { return }
+        guard let window else { return }
 
         // Change this view's height by the given amount, and adjust the window's content view's other subviews
         // to make sense. Specifically, the subviews below us. If the subview can resize, change its height;

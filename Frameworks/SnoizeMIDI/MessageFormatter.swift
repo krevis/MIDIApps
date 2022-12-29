@@ -104,7 +104,7 @@ public struct MessageFormatter {
     }
 
     public static func formatData(_ data: Data?) -> String {
-        guard let data = data else { return "" }
+        guard let data else { return "" }
         return data.map({ formatDataByte($0, usingOption: DataFormattingOption.default) }).joined(separator: " ")
     }
 

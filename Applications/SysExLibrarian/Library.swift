@@ -365,7 +365,7 @@ extension Library /* Private */ {
         // check whether it still exists. If not, then clear it and go back to the default.
         // (If it doesn't exist, it could be for some user name that doesn't exist, or could be wrong
         //  for some reason that's hard to recover from. Better to just ignore it.)
-        if let rememberedFileDirectoryPath = rememberedFileDirectoryPath {
+        if let rememberedFileDirectoryPath {
             var isDirectory: ObjCBool = false
             let exists = FileManager.default.fileExists(atPath: rememberedFileDirectoryPath, isDirectory: &isDirectory)
             if !(exists && isDirectory.boolValue) {
@@ -470,7 +470,7 @@ extension Library /* Private */ {
             }
         }
 
-        if let errorToReport = errorToReport {
+        if let errorToReport {
             // Report on error, then continue with an empty library.
             let messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
 
