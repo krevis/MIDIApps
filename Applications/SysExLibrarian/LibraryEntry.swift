@@ -108,6 +108,47 @@ class LibraryEntry: NSObject {
     func renameFile(_ newFileName: String) -> Bool {
         guard let path else { return false }
 
+        let fixResult = fixNewFileName(path, newFileName)
+
+        let newPath = ((path as NSString).deletingLastPathComponent as NSString).appendingPathComponent(fixResult.fixedNewFileName)
+        var success = false
+
+        if newPath == path {
+            success = true
+        }
+        else if FileManager.default.fileExists(atPath: newPath) {
+            success = false
+        }
+        else {
+            do {
+                try FileManager.default.moveItem(atPath: path, toPath: newPath)
+                success = true
+            }
+            catch { /* success is still false */ }
+        }
+
+        if success && (fixResult.shouldHideExtension || fixResult.shouldShowExtension) {
+            do {
+                try FileManager.default.setAttributes([.extensionHidden: fixResult.shouldHideExtension], ofItemAtPath: newPath)
+            }
+            catch { /* It is no big deal if this fails */ }
+        }
+
+        if success {
+            self.path = newPath // Update our alias to the file
+            setNameFromFile()   // Make sure we are consistent with the Finder
+        }
+
+        return success
+    }
+
+    private struct FileNameFixResult {
+        let fixedNewFileName: String
+        let shouldHideExtension: Bool
+        let shouldShowExtension: Bool
+    }
+
+    private func fixNewFileName(_ path: String, _ newFileName: String) -> FileNameFixResult {
         let fileName = (path as NSString).lastPathComponent
         let fileExtension = (fileName as NSString).pathExtension
 
@@ -165,36 +206,7 @@ class LibraryEntry: NSObject {
         // We always need to change '/' to a different character, since (as far as I know) there is no way of escaping the '/' character from NSFileManager calls. It gets changed to ":" in the Finder for all file systems, so let's just do that. (Note that the character will still display as '/'!)
         let fixedNewFileName = modifiedNewFileName.replacingOccurrences(of: ":", with: "-", options: .literal).replacingOccurrences(of: "/", with: ":", options: .literal)
 
-        let newPath = ((path as NSString).deletingLastPathComponent as NSString).appendingPathComponent(fixedNewFileName)
-        var success = false
-
-        if newPath == path {
-            success = true
-        }
-        else if FileManager.default.fileExists(atPath: newPath) {
-            success = false
-        }
-        else {
-            do {
-                try FileManager.default.moveItem(atPath: path, toPath: newPath)
-                success = true
-            }
-            catch { /* success is still false */ }
-        }
-
-        if success && (shouldHideExtension || shouldShowExtension) {
-            do {
-                try FileManager.default.setAttributes([.extensionHidden: shouldHideExtension], ofItemAtPath: newPath)
-            }
-            catch { /* It is no big deal if this fails */ }
-        }
-
-        if success {
-            self.path = newPath // Update our alias to the file
-            setNameFromFile()   // Make sure we are consistent with the Finder
-        }
-
-        return success
+        return FileNameFixResult(fixedNewFileName: fixedNewFileName, shouldHideExtension: shouldHideExtension, shouldShowExtension: shouldShowExtension)
     }
 
     var messages: [SystemExclusiveMessage] {

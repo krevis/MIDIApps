@@ -12,3 +12,6 @@ force_cast:
 file_length:
   warning: 700
   ignore_comment_only_lines: true
+
+for_where:
+  allow_for_as_filter: true

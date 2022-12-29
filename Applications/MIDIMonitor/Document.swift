@@ -247,7 +247,7 @@ extension Document {
             let delegateObject = delegate as AnyObject
             if let selector = shouldCloseSelector,
                let imp = class_getMethodImplementation(type(of: delegateObject), selector) {
-                unsafeBitCast(imp, to: (@convention(c)(Any?, Selector, Any?, Bool, UnsafeMutableRawPointer?)->Void).self)(delegateObject, selector, self, true /*close now */, contextInfo)
+                unsafeBitCast(imp, to: (@convention(c)(Any?, Selector, Any?, Bool, UnsafeMutableRawPointer?) -> Void).self)(delegateObject, selector, self, true /*close now */, contextInfo)
             }
         }
         else {

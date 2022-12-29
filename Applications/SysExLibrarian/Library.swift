@@ -471,27 +471,31 @@ extension Library /* Private */ {
         }
 
         if let errorToReport {
-            // Report on error, then continue with an empty library.
-            let messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
-
-            let informativeTextHeader: String
-            if let libraryFilePath = maybeLibraryFilePath {
-                let informativeTextFormat = NSLocalizedString("The library file \"%@\" could not be read.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format of error message if the library file can't be read")
-                informativeTextHeader = String(format: informativeTextFormat, libraryFilePath)
-            }
-            else {
-                informativeTextHeader = NSLocalizedString("The path to the library file \"~/Preferences/SysEx Librarian Library.sXLb\" could not be created.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "error message if the path to the library file can't be created")
-            }
-
-            let alert = NSAlert()
-            alert.alertStyle = .critical
-            alert.messageText = messageText
-            alert.informativeText = informativeTextHeader + "\n" + errorToReport.localizedDescription
-            alert.runModal()
+            reportLoadEntriesError(maybeLibraryFilePath, errorToReport)
         }
 
         // Ignore any changes that came from reading entries
         isDirty = false
+    }
+
+    private func reportLoadEntriesError(_ maybeLibraryFilePath: String?, _ errorToReport: Error) {
+        // Report on error, then continue with an empty library.
+        let messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
+
+        let informativeTextHeader: String
+        if let libraryFilePath = maybeLibraryFilePath {
+            let informativeTextFormat = NSLocalizedString("The library file \"%@\" could not be read.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format of error message if the library file can't be read")
+            informativeTextHeader = String(format: informativeTextFormat, libraryFilePath)
+        }
+        else {
+            informativeTextHeader = NSLocalizedString("The path to the library file \"~/Preferences/SysEx Librarian Library.sXLb\" could not be created.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "error message if the path to the library file can't be created")
+        }
+
+        let alert = NSAlert()
+        alert.alertStyle = .critical
+        alert.messageText = messageText
+        alert.informativeText = informativeTextHeader + "\n" + errorToReport.localizedDescription
+        alert.runModal()
     }
 
 }

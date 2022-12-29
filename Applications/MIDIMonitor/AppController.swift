@@ -262,11 +262,8 @@ extension AppController {
             if filePath == nil {
                 filePath = installError.userInfo[NSFilePathErrorKey] as? String
             }
-            if filePath == nil {
-                if let url = installError.userInfo[NSURLErrorKey] as? URL,
-                   url.isFileURL {
-                    filePath = url.path
-                }
+            if filePath == nil, let url = installError.userInfo[NSURLErrorKey] as? URL, url.isFileURL {
+                filePath = url.path
             }
 
             if let realFilePath = filePath, realFilePath != "" {
@@ -279,8 +276,7 @@ extension AppController {
             }
         }
 
-        let presentedError = NSError(domain: installError.domain, code: installError.code, userInfo: presentedErrorUserInfo)
-        NSApp.presentError(presentedError)
+        NSApp.presentError(NSError(domain: installError.domain, code: installError.code, userInfo: presentedErrorUserInfo))
     }
 
     // NSErrorRecoveryAttempting informal protocol

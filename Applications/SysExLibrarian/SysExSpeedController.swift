@@ -179,7 +179,7 @@ class SysExSpeedController: NSObject {
                 for higherRow in stride(from: row - 1, through: 0, by: -1) {
                     if outlineView.level(forRow: higherRow) < level {
                         outlineView.setNeedsDisplay(outlineView.rect(ofRow: higherRow))
-                        break
+                        return
                     }
                 }
             }

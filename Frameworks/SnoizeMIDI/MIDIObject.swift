@@ -77,7 +77,7 @@ public class MIDIObject: NSObject, CoreMIDIObjectWrapper, CoreMIDIPropertyChange
         // NOTE: Calling withTypedCache() may cause the AnyCache to be mutated,
         // but since we're calling it on a value directly from a Dictionary subscript,
         // we can modify it in place.
-        ///
+        //
         // If you ever introduce an intermediate variable, like
         // `if var anyCache = cachedValues[cachedProperty]`, it causes a local
         // copy of the AnyCache to be made. Any mutation only applies to it,
