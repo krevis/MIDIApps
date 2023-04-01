@@ -74,7 +74,7 @@ void CreateMessageQueue(MessageQueueHandler inHandler, void *inHandlerRefCon)
     }
 }
 
-void DestroyMessageQueue()
+void DestroyMessageQueue(void)
 {
     if (runLoopSource) {
         CFRunLoopSourceInvalidate(runLoopSource);

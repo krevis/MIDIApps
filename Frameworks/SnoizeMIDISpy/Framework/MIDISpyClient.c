@@ -444,7 +444,7 @@ static inline MIDIObjectRef midiObjFromVoidPtr(const void* val)
 #endif
 }
 
-void RebuildEndpointUniqueIDDictionary()
+void RebuildEndpointUniqueIDDictionary(void)
 {
     // Make a dictionary which maps from an endpoint's uniqueID to its MIDIEndpointRef.
     ItemCount endpointIndex, endpointCount;
