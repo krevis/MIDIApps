@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2001-2022, Kurt Revis.  All rights reserved.
+ Copyright (c) 2001-2023, Kurt Revis.  All rights reserved.
 
  This source code is licensed under the BSD-style license found in the
  LICENSE file in the root directory of this source tree.
@@ -123,7 +123,7 @@ void SpyingMIDIDriver::EnableMonitoring(Boolean enabled)
 
 CFMutableDataRef SpyingMIDIDriver::PackageMonitoredDataForBroadcast(MIDIEndpointRef destination, const MIDIPacketList *packetList)
 {
-    UInt32 packetListSize, totalSize;
+    intptr_t packetListSize, totalSize;
     CFMutableDataRef data;
     UInt8 *dataBuffer;
 
@@ -146,23 +146,18 @@ CFMutableDataRef SpyingMIDIDriver::PackageMonitoredDataForBroadcast(MIDIEndpoint
     return data;
 }
 
-UInt32 SpyingMIDIDriver::SizeOfPacketList(const MIDIPacketList *packetList)
+intptr_t SpyingMIDIDriver::SizeOfPacketList(const MIDIPacketList *packetList)
 {
-    UInt32 packetCount;
-    UInt32 packetListSize;
-    const MIDIPacket *packet;
+    // Iterate just past the last packet in the list, then subtract to return the total size.
+    // (Arguably, we don't need to include the padding at the end of the last packet, but
+    // this way matches the behavior of MIDIPacketList.sizeInBytes() which does.)
 
-    packetListSize = offsetof(MIDIPacketList, packet);
-
-    packetCount = packetList->numPackets;
-    packet = &packetList->packet[0];
-    while (packetCount--) {
-        packetListSize += offsetof(MIDIPacket, data);
-        packetListSize += packet->length;
+    const MIDIPacket *packet = &packetList->packet[0];
+    for (UInt32 i = 0; i < packetList->numPackets; i++) {
         packet = MIDIPacketNext(packet);
     }
-
-    return packetListSize;
+    intptr_t size = (intptr_t)(packet) - (intptr_t)packetList;
+    return size;
 }
 
 void messageQueueHandler(CFTypeRef objectFromQueue, void *refCon)

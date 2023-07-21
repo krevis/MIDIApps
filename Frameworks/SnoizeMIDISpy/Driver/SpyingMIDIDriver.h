@@ -28,7 +28,7 @@ private:
     void EnableMonitoring(Boolean enable);
 
     CFMutableDataRef PackageMonitoredDataForBroadcast(MIDIEndpointRef destination, const MIDIPacketList *packetList);
-    UInt32 SizeOfPacketList(const MIDIPacketList *packetList);
+    intptr_t SizeOfPacketList(const MIDIPacketList *packetList);
 
     
     MessagePortBroadcaster *mBroadcaster;
