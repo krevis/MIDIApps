@@ -19,11 +19,11 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.5</string>
+	<string>1.5.4</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.5</string>
+	<string>1.5.4</string>
 	<key>CFPlugInFactories</key>
 	<dict>
 		<key>4FA13C6B-2D94-11D6-8C2F-000A27B4965C</key>
