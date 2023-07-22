@@ -591,26 +591,96 @@ void SetClientSubscribesToDataFromEndpoint(MIDISpyClientRef clientRef, MIDIEndpo
     }
 }
 
+static bool SanityCheckMIDIPacketList(const MIDIPacketList *packetList, CFIndex packetListLength)
+{
+    // Return true if packetListLength is large enough to contain all the messages that
+    // the packetList claims to have.
+    //
+    // Preconditions:
+    //    packetListLength >= sizeof(MIDIPacketList.numPackets)
+    //    packetList != NULL
+    //    packetList is at least 4-byte aligned
+    //
+    // Be careful because the packetList might be truncated at *any* byte position.
+    //
+    // For reference:
+    //
+    //    struct MIDIPacketList
+    //    {
+    //        UInt32              numPackets;
+    //        MIDIPacket          packet[1];  // actually a variable number of packets
+    //    };
+    //    struct MIDIPacket
+    //    {
+    //        MIDITimeStamp       timeStamp;
+    //        UInt16              length;
+    //        Byte                data[256];  // actually `length` bytes
+    //    };
+    //
+    // Note that `MIDIPacket`s are 4-byte aligned on Apple Silicon, so there may
+    // be padding between the end of one `MIDIPacket` and the start of the next.
+    // `MIDIPacketNext()` accounts for any padding.
+
+    uintptr_t actualEndPtr = (uintptr_t)packetList + packetListLength;
+
+    UInt32 claimedNumPackets = packetList->numPackets;
+    const MIDIPacket *nextPacket = &packetList->packet[0];
+
+    for (UInt32 packetIndex = 0; packetIndex < claimedNumPackets; packetIndex++) {
+        // Ensure we can see all of nextPacket.
+
+        // First, can we see the header including timeStamp and length?
+        if ((uintptr_t)(&nextPacket->data[0]) > actualEndPtr) {
+            return false;
+        }
+        // We're safe to read the length.
+        // Second, check that all the data is accessible.
+        if ((uintptr_t)(&nextPacket->data[0]) + nextPacket->length > actualEndPtr) {
+            return false;
+        }
+
+        // All the data is accessible.
+        // Advance to the next packet. Use MIDIPacketNext() to account for padding.
+        nextPacket = MIDIPacketNext(nextPacket);
+    }
+
+    return true;
+}
+
 static CFDataRef LocalMessagePortCallback(CFMessagePortRef local, SInt32 msgid, CFDataRef data, void *info)
 {
     const UInt8 *bytes;
+    CFIndex dataLength;
     SInt32 endpointUniqueID;
     const MIDIPacketList *packetList;
+    CFIndex packetListLength;
     MIDIEndpointRef endpoint;
     MIDISpyClientRef clientRef = (MIDISpyClientRef)info;
 
     if (!data) {
         __Debug_String("MIDISpyClient: Got empty data from driver!");
         return NULL;
-    } else if (CFDataGetLength(data) < (sizeof(SInt32) + sizeof(SInt32))) {
+    }
+
+    dataLength = CFDataGetLength(data);
+    if (dataLength < (sizeof(SInt32) + sizeof(packetList->numPackets))) {
         __Debug_String("MIDISpyClient: Got too-small data from driver!");
         return NULL;
     }
 
-    bytes = CFDataGetBytePtr(data);
+    bytes = CFDataGetBytePtr(data);     // Guaranteed to be 16-byte aligned by CFData
 
     endpointUniqueID = *(SInt32 *)bytes;
     packetList = (const MIDIPacketList *)(bytes + sizeof(SInt32));
+    packetListLength = dataLength - sizeof(SInt32);
+
+    // Sanity check that this is a valid MIDIPacketList before we send it on.
+    // Versions of the spying driver before 1.5.4 sometimes didn't send all of the data,
+    // and it's possible that we are connecting to an old driver.
+    if (!SanityCheckMIDIPacketList(packetList, packetListLength)) {
+        __Debug_String("MIDISpyClient: Message is too small to contain the full packet list, dropping it");
+        return NULL;
+    }
 
     // Find the endpoint with this unique ID.
     // Then find all ports which are connected to this endpoint,
