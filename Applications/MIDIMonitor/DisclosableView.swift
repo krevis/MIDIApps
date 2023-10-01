@@ -45,11 +45,13 @@ class DisclosableView: NSView {
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         originalHeight = frame.height
+        clipsToBounds = true
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         originalHeight = frame.height
+        clipsToBounds = true
     }
 
     override func awakeFromNib() {

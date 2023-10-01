@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="19158" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="22154" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19158"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22154"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -37,17 +37,17 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="69" y="243" width="517" height="575"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1025"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1728" height="1079"/>
             <value key="minSize" type="size" width="500" height="500"/>
             <view key="contentView" id="45">
                 <rect key="frame" x="0.0" y="0.0" width="517" height="575"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="383" customClass="DisclosableView" customModule="MIDI_Monitor" customModuleProvider="target">
+                    <customView clipsToBounds="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="383" customClass="DisclosableView" customModule="MIDI_Monitor" customModuleProvider="target">
                         <rect key="frame" x="20" y="211" width="477" height="193"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <subviews>
-                            <button fixedFrame="YES" tag="262144" translatesAutoresizingMaskIntoConstraints="NO" id="487">
+                            <button tag="262144" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="487">
                                 <rect key="frame" x="304" y="18" width="71" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="check" title="Invalid" bezelStyle="regularSquare" imagePosition="left" alignment="left" tag="262144" inset="2" id="503">
@@ -59,7 +59,7 @@
                                     <outlet property="nextKeyView" destination="41" id="488"/>
                                 </connections>
                             </button>
-                            <button fixedFrame="YES" tag="131072" translatesAutoresizingMaskIntoConstraints="NO" id="443">
+                            <button tag="131072" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="443">
                                 <rect key="frame" x="304" y="51" width="129" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="check" title="System Exclusive" bezelStyle="regularSquare" imagePosition="left" alignment="left" tag="131072" inset="2" id="502">
@@ -71,7 +71,7 @@
                                     <outlet property="nextKeyView" destination="487" id="489"/>
                                 </connections>
                             </button>
-                            <button fixedFrame="YES" tag="129024" translatesAutoresizingMaskIntoConstraints="NO" id="411">
+                            <button tag="129024" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="411">
                                 <rect key="frame" x="304" y="172" width="84" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="check" title="Real Time" bezelStyle="regularSquare" imagePosition="left" alignment="left" tag="129024" inset="2" id="501">
@@ -180,7 +180,7 @@
                                     <outlet property="nextKeyView" destination="411" id="475"/>
                                 </connections>
                             </matrix>
-                            <button fixedFrame="YES" tag="1920" translatesAutoresizingMaskIntoConstraints="NO" id="396">
+                            <button tag="1920" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="396">
                                 <rect key="frame" x="151" y="172" width="129" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="check" title="System Common" bezelStyle="regularSquare" imagePosition="left" alignment="left" tag="1920" inset="2" id="500">
@@ -192,7 +192,7 @@
                                     <outlet property="nextKeyView" destination="398" id="473"/>
                                 </connections>
                             </button>
-                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="395">
+                            <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="395">
                                 <rect key="frame" x="128" y="7" width="25" height="22"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" enabled="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" title="1" drawsBackground="YES" id="499">
@@ -212,7 +212,7 @@
                                     <outlet property="nextKeyView" destination="396" id="472"/>
                                 </connections>
                             </textField>
-                            <button fixedFrame="YES" tag="127" translatesAutoresizingMaskIntoConstraints="NO" id="390">
+                            <button tag="127" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="390">
                                 <rect key="frame" x="19" y="172" width="122" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="check" title="Voice Messages" bezelStyle="regularSquare" imagePosition="left" alignment="left" tag="127" inset="2" id="498">
@@ -272,7 +272,7 @@
                             <outlet property="nextKeyView" destination="390" id="485"/>
                         </connections>
                     </customView>
-                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="369" customClass="DisclosableView" customModule="MIDI_Monitor" customModuleProvider="target">
+                    <customView clipsToBounds="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="369" customClass="DisclosableView" customModule="MIDI_Monitor" customModuleProvider="target">
                         <rect key="frame" x="20" y="427" width="477" height="107"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <subviews>
@@ -369,7 +369,7 @@
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                 <tableColumns>
-                                                    <tableColumn identifier="timeStamp" editable="NO" width="78.1240234375" minWidth="40" maxWidth="1000" id="33">
+                                                    <tableColumn identifier="timeStamp" editable="NO" width="78" minWidth="40" maxWidth="1000" id="33">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Time">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
@@ -381,7 +381,7 @@
                                                         </textFieldCell>
                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     </tableColumn>
-                                                    <tableColumn identifier="source" editable="NO" width="95.77099609375" minWidth="10" maxWidth="1000" id="236">
+                                                    <tableColumn identifier="source" editable="NO" width="96" minWidth="10" maxWidth="1000" id="236">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Source">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -417,7 +417,7 @@
                                                         </textFieldCell>
                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     </tableColumn>
-                                                    <tableColumn identifier="data" editable="NO" width="200.10498046875" minWidth="28.50200080871582" maxWidth="10000" id="47">
+                                                    <tableColumn identifier="data" editable="NO" width="200" minWidth="28.50200080871582" maxWidth="10000" id="47">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Data">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -450,7 +450,7 @@
                                         <autoresizingMask key="autoresizingMask"/>
                                     </tableHeaderView>
                                 </scrollView>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="40">
+                                <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="40">
                                     <rect key="frame" x="19" y="182" width="110" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Remember up to" id="493">
@@ -459,7 +459,7 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="41">
+                                <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="41">
                                     <rect key="frame" x="134" y="180" width="61" height="22"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1000" drawsBackground="YES" id="494">
@@ -479,7 +479,7 @@
                                         <outlet property="nextKeyView" destination="57" id="463"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="58">
+                                <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="58">
                                     <rect key="frame" x="200" y="182" width="45" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="events" id="496">
@@ -499,7 +499,7 @@
                                                 <rect key="frame" x="0.0" y="1" width="16" height="16"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </progressIndicator>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="229">
+                                            <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="229">
                                                 <rect key="frame" x="17" y="-1" width="66" height="17"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Receiving..." id="497">
