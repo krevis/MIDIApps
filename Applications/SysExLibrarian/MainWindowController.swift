@@ -619,38 +619,29 @@ extension MainWindowController /* Private */ {
     // MARK: Destination selections (popup and toolbar menu)
 
     private func synchronizeDestinationPopUp(destinationGroups: [[OutputStreamDestination]], currentDestination: OutputStreamDestination?) {
-        guard let window else { return }
+        // The pop up button redraws whenever it's changed, so use an animation group to stop the blinkiness
+        NSAnimationContext.runAnimationGroup { _ in
+            destinationPopUpButton.removeAllItems()
 
-        // The pop up button redraws whenever it's changed, so turn off autodisplay to stop the blinkiness
-        let wasAutodisplay = window.isAutodisplay
-        window.isAutodisplay = false
-        defer {
-            if wasAutodisplay {
-                window.displayIfNeeded()
-            }
-            window.isAutodisplay = wasAutodisplay
-        }
+            var found = false
+            for (index, destinations) in destinationGroups.enumerated() {
+                if index > 0 {
+                    destinationPopUpButton.addSeparatorItem()
+                }
 
-        destinationPopUpButton.removeAllItems()
+                for destination in destinations {
+                    destinationPopUpButton.addItem(title: titleForDestination(destination) ?? "", representedObject: destination)
 
-        var found = false
-        for (index, destinations) in destinationGroups.enumerated() {
-            if index > 0 {
-                destinationPopUpButton.addSeparatorItem()
-            }
-
-            for destination in destinations {
-                destinationPopUpButton.addItem(title: titleForDestination(destination) ?? "", representedObject: destination)
-
-                if !found && destination === currentDestination {
-                    destinationPopUpButton.selectItem(at: destinationPopUpButton.numberOfItems - 1)
-                    found = true
+                    if !found && destination === currentDestination {
+                        destinationPopUpButton.selectItem(at: destinationPopUpButton.numberOfItems - 1)
+                        found = true
+                    }
                 }
             }
-        }
 
-        if !found {
-            destinationPopUpButton.select(nil)
+            if !found {
+                destinationPopUpButton.select(nil)
+            }
         }
     }
 
