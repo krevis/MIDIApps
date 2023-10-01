@@ -94,12 +94,10 @@ extension Document {
             // Was: dict["messageData"] = NSKeyedArchiver.archivedData(withRootObject: savedMessages)
             // Except: After the Swift migration, we now need to map from the Swift classes
             // to the ObjC class names. So we have to do this the hard way.
-            let mutableData = NSMutableData()
-            let archiver = NSKeyedArchiver(forWritingWith: mutableData)
+            let archiver = NSKeyedArchiver(requiringSecureCoding: false)
             Message.prepareToEncodeWithObjCCompatibility(archiver: archiver)
             archiver.encode(savedMessages, forKey: NSKeyedArchiveRootObjectKey)
-            archiver.finishEncoding()
-            dict["messageData"] = mutableData
+            dict["messageData"] = archiver.encodedData
         }
 
         if let windowSettings = monitorWindowController?.windowSettings {
@@ -144,7 +142,8 @@ extension Document {
             // Was: messages = NSKeyedUnarchiver.unarchiveObject(with: messageData) as? [Message]
             // Except: After the Swift migration, we now need to map from the ObjC class names
             // to the Swift classes. So we have to do this the hard way.
-            let unarchiver = NSKeyedUnarchiver(forReadingWith: messageData)
+            let unarchiver = try NSKeyedUnarchiver(forReadingFrom: messageData)
+            unarchiver.requiresSecureCoding = false
             Message.prepareToDecodeWithObjCCompatibility(unarchiver: unarchiver)
             let decoded = unarchiver.decodeObject(forKey: NSKeyedArchiveRootObjectKey)
             unarchiver.finishDecoding()
