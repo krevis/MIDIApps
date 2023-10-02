@@ -2,8 +2,8 @@
 
 // Minimum OS we'll attempt to run on is 10.14.6 (Mojave, 2018)
 MACOSX_DEPLOYMENT_TARGET = 10.14.6
-// SnoizeMIDI can build for iOS too. We don't need much, but it's easiest to require iOS 11 so we're always 64-bit.
-IPHONEOS_DEPLOYMENT_TARGET = 11.0
+// SnoizeMIDI can build for iOS too. We don't need much, the minimum supported by Xcode is fine.
+IPHONEOS_DEPLOYMENT_TARGET = 12.0
 
 // Nice warnings
 WARNING_CFLAGS = -Wmost -Wparentheses
