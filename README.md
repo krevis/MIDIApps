@@ -8,7 +8,7 @@ This is the source code for the two applications. You do *not* need any of this 
 
 The source code is Open Source under the BSD license. See LICENSE for the legal details.
 
-The project is currently intended to be used with an up-to-date Xcode version, like Xcode 12.4 (with the MacOS 11.1 SDK).  If you need to run it on an earlier Xcode, try checking out older revisions.
+The project is currently intended to be used with an up-to-date Xcode version, like Xcode 15.0 (with the MacOS 14.0 SDK).  If you need to run it on an earlier Xcode, try checking out older revisions.
 
 ## How to build ##
 
