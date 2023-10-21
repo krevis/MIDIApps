@@ -169,7 +169,7 @@ public class SysExSendRequest: NSObject {
         // Transitions only from state == .sending.
         // To make cancellation feasible, this function may be called multiple times,
         // so ensure it's idempotent and only valid state transitions are possible.
-        guard state == .sending, (newState == .sent || newState == .cancelled) else { return }
+        guard state == .sending, newState == .sent || newState == .cancelled else { return }
         state = newState
         delegate?.sysExSendRequestDidFinish(self)
     }
