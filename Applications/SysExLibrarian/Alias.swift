@@ -38,12 +38,12 @@ struct Alias {
     }
 
     mutating func path() -> String? {
-        path(allowingUI: true)
+        path(allowingMountingUI: true)
     }
 
-    mutating func path(allowingUI: Bool) -> String? {
+    mutating func path(allowingMountingUI: Bool) -> String? {
         do {
-            let options: URL.BookmarkResolutionOptions = allowingUI ? [] : .withoutUI
+            let options: URL.BookmarkResolutionOptions = allowingMountingUI ? [] : [.withoutUI, .withoutMounting]
             var isStale = false
             let url = try URL(resolvingBookmarkData: bookmarkData, options: options, relativeTo: nil, bookmarkDataIsStale: &isStale)
             if url.isFileURL {

@@ -61,7 +61,7 @@ class LibraryEntry: NSObject {
             let wasFilePresent = hasLookedForFile && privateIsFilePresent
             hasLookedForFile = true
 
-            let filePath = alias?.path(allowingUI: false)
+            let filePath = alias?.path(allowingMountingUI: false)
             if let extantFilePath = filePath {
                 privateIsFilePresent = FileManager.default.fileExists(atPath: extantFilePath)
                 if privateIsFilePresent {
