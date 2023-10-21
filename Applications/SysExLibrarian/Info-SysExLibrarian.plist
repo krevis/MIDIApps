@@ -85,7 +85,7 @@
 	<key>CFBundleExecutable</key>
 	<string>SysEx Librarian</string>
 	<key>CFBundleGetInfoString</key>
-	<string>1.5, Copyright 2002-2021 Kurt Revis</string>
+	<string>1.5.2, Copyright 2002-2023 Kurt Revis</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -105,7 +105,7 @@
 	<key>NSDocumentsFolderUsageDescription</key>
 	<string>SysEx Librarian stores recorded sysex files in your Documents folder, by default. (The location can be changed in the preferences.)</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2002-2021 Kurt Revis</string>
+	<string>Copyright © 2002-2023 Kurt Revis</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
