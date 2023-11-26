@@ -361,24 +361,20 @@ extension MonitorWindowController {
         // Second-level filter checkboxes are NSCells in an NSMatrix. Their tags have only a single bit set, and they are either on or off, never mixed state.
         for checkbox in filterCheckboxes {
             let buttonMask = checkbox.tag   // multiple bits
-            checkbox.state = {
-                switch currentMask & buttonMask {
-                case buttonMask: return .on     // all on
-                case 0:          return .off    // all off
-                default:         return .mixed  // some but not all on
-                }
-            }()
+            checkbox.state = switch currentMask & buttonMask {
+            case buttonMask: .on     // all on
+            case 0:          .off    // all off
+            default:         .mixed  // some but not all on
+            }
         }
 
         for checkbox in filterMatrixCells {
             let buttonMask = checkbox.tag   // only a single bit
-            checkbox.state = {
-                switch currentMask & buttonMask {
-                case buttonMask: return .on     // on
-                case 0:          return .off    // off
-                default:         fatalError()   // shouldn't happen, something is wrong with the tag
-                }
-            }()
+            checkbox.state = switch currentMask & buttonMask {
+            case buttonMask: .on            // on
+            case 0:          .off           // off
+            default:         fatalError()   // shouldn't happen, something is wrong with the tag
+            }
         }
 
         if midiDocument.isShowingAllChannels {
@@ -401,12 +397,9 @@ extension MonitorWindowController {
     private func changeFilter(tag: Int, state: NSControl.StateValue) {
         guard let midiDocument else { return }
 
-        let turnBitsOn: Bool
-        switch state {
-        case .on, .mixed:
-            turnBitsOn = true
-        default:
-            turnBitsOn = false
+        let turnBitsOn = switch state {
+        case .on, .mixed: true
+        default: false
         }
 
         midiDocument.changeFilterMask(Message.TypeMask(rawValue: tag), turnBitsOn: turnBitsOn)
