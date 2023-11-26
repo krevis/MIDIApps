@@ -14,14 +14,13 @@ class DisclosableView: NSView {
     //
 
     var shown = true {
-        willSet {
-            if newValue != shown {
-                if newValue {
-                    show()
-                }
-                else {
-                    hide()
-                }
+        didSet {
+            guard oldValue != shown else { return }
+            if shown {
+                show()
+            }
+            else {
+                hide()
             }
         }
     }
