@@ -67,6 +67,8 @@ class MonitorWindowController: NSWindowController {
     private var messagesNeedScrollToBottom: Bool = false
     private var nextMessagesRefreshDate: NSDate?
     private var nextMessagesRefreshTimer: Timer?
+    private var isRestoringWindowSettings = false
+    private var doneSettingDocument = false
 
     // Constants
     private let minimumMessagesRefreshDelay: TimeInterval = 0.10
@@ -122,6 +124,8 @@ extension MonitorWindowController {
             updateFilterControls()
 
             restoreWindowSettings(smmDocument.windowSettings ?? [:])
+
+            doneSettingDocument = true
         }
     }
 
@@ -637,6 +641,9 @@ extension MonitorWindowController {
     private static let messagesScrollPointX = "messagesScrollPointX"
     private static let messagesScrollPointY = "messagesScrollPointY"
 
+    private static let draftSourcesShownKey = "SMMDraftAreSourcesShown"
+    private static let draftFilterShownKey = "SMMDraftIsFilterShown"
+
     static var windowSettingsKeys: [String] {
         return [sourcesShownKey, filterShownKey, windowFrameKey, messagesScrollPointX, messagesScrollPointY]
     }
@@ -669,19 +676,30 @@ extension MonitorWindowController {
     }
 
     private func restoreWindowSettings(_ windowSettings: [String: Any]) {
+        guard let window else { return }
+
+        isRestoringWindowSettings = true
+        defer { isRestoringWindowSettings = false }
+
+        // Remember the original window frame in case we need it later. This is
+        // - its size and position in the xib
+        // - or the previously autosaved frame, if present
+        // - plus any AppKit adjustments like cascading
+        let originalFrameDescriptor = window.frameDescriptor
+
         // Restore visibility of disclosable sections
-        let sourcesShown = (windowSettings[Self.sourcesShownKey] as? NSNumber)?.boolValue ?? false
+        let sourcesShown = (windowSettings[Self.sourcesShownKey] as? NSNumber)?.boolValue ?? UserDefaults.standard.bool(forKey: Self.draftSourcesShownKey)
         sourcesDisclosureButton.intValue = sourcesShown ? 1 : 0
         sourcesDisclosableView.shown = sourcesShown
 
-        let filterShown = (windowSettings[Self.filterShownKey] as? NSNumber)?.boolValue ?? false
+        let filterShown = (windowSettings[Self.filterShownKey] as? NSNumber)?.boolValue ?? UserDefaults.standard.bool(forKey: Self.draftFilterShownKey)
         filterDisclosureButton.intValue = filterShown ? 1 : 0
         filterDisclosableView.shown = filterShown
 
         // Then, since those may have resized the window, set the frame back to what we expect.
-        if let windowFrame = windowSettings[Self.windowFrameKey] as? NSWindow.PersistableFrameDescriptor {
-            window?.setFrame(from: windowFrame)
-        }
+        // (If we don't have a frame in the document, use the original frame.)
+        let windowFrame = windowSettings[Self.windowFrameKey] as? NSWindow.PersistableFrameDescriptor ?? originalFrameDescriptor
+        window.setFrame(from: windowFrame)
 
         if let scrollX = windowSettings[Self.messagesScrollPointX] as? NSNumber,
            let scrollY = windowSettings[Self.messagesScrollPointY] as? NSNumber {
@@ -720,6 +738,30 @@ extension MonitorWindowController: NSWindowDelegate {
     func window(_ window: NSWindow, didDecodeRestorableState state: NSCoder) {
         if let decodedWindowSettings = state.decodeObject(of: [NSDictionary.self, NSNumber.self, NSString.self], forKey: "windowSettings") as? [String: Any] {
             restoreWindowSettings(decodedWindowSettings)
+        }
+    }
+
+}
+
+extension MonitorWindowController: FastAnimatingWindowDelegate {
+
+    func windowDidSaveFrame(window: FastAnimatingWindow, usingName name: NSWindow.FrameAutosaveName) {
+        // TODO we should only save the frame if this is an untitled and unsaved document
+
+        if isRestoringWindowSettings {
+            NSLog("windowDidSaveFrame BUT in the middle of restoring, using name '\(name)'")
+        }
+        else if !doneSettingDocument {
+            NSLog("windowDidSaveFrame BUT not done setting document, using name '\(name)'")
+        }
+        else {
+            NSLog("windowDidSaveFrame using name '\(name)'")
+
+            // Also save whether each disclosable section is shown, since we want to
+            // restore them all together in a new document in order to be coherent
+            let defaults = UserDefaults.standard
+            defaults.setValue(sourcesDisclosableView.shown, forKey: Self.draftSourcesShownKey)
+            defaults.setValue(filterDisclosableView.shown, forKey: Self.draftFilterShownKey)
         }
     }
 
