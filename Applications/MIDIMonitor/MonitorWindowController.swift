@@ -118,6 +118,10 @@ extension MonitorWindowController {
 
             _ = window // Make sure the window and all views are loaded first
 
+            if !smmDocument.isDraft && smmDocument.fileURL != nil {
+                windowFrameAutosaveName = ""
+            }
+
             updateMessages(scrollingToBottom: false)
             updateSources()
             updateMaxMessageCount()
@@ -641,8 +645,8 @@ extension MonitorWindowController {
     private static let messagesScrollPointX = "messagesScrollPointX"
     private static let messagesScrollPointY = "messagesScrollPointY"
 
-    private static let draftSourcesShownKey = "SMMDraftAreSourcesShown"
-    private static let draftFilterShownKey = "SMMDraftIsFilterShown"
+    private static let untitledSourcesShownKey = "SMMUntitledAreSourcesShown"
+    private static let untitledFilterShownKey = "SMMUntitledIsFilterShown"
 
     static var windowSettingsKeys: [String] {
         return [sourcesShownKey, filterShownKey, windowFrameKey, messagesScrollPointX, messagesScrollPointY]
@@ -688,11 +692,11 @@ extension MonitorWindowController {
         let originalFrameDescriptor = window.frameDescriptor
 
         // Restore visibility of disclosable sections
-        let sourcesShown = (windowSettings[Self.sourcesShownKey] as? NSNumber)?.boolValue ?? UserDefaults.standard.bool(forKey: Self.draftSourcesShownKey)
+        let sourcesShown = (windowSettings[Self.sourcesShownKey] as? NSNumber)?.boolValue ?? UserDefaults.standard.bool(forKey: Self.untitledSourcesShownKey)
         sourcesDisclosureButton.intValue = sourcesShown ? 1 : 0
         sourcesDisclosableView.shown = sourcesShown
 
-        let filterShown = (windowSettings[Self.filterShownKey] as? NSNumber)?.boolValue ?? UserDefaults.standard.bool(forKey: Self.draftFilterShownKey)
+        let filterShown = (windowSettings[Self.filterShownKey] as? NSNumber)?.boolValue ?? UserDefaults.standard.bool(forKey: Self.untitledFilterShownKey)
         filterDisclosureButton.intValue = filterShown ? 1 : 0
         filterDisclosableView.shown = filterShown
 
@@ -746,22 +750,12 @@ extension MonitorWindowController: NSWindowDelegate {
 extension MonitorWindowController: FastAnimatingWindowDelegate {
 
     func windowDidSaveFrame(window: FastAnimatingWindow, usingName name: NSWindow.FrameAutosaveName) {
-        // TODO we should only save the frame if this is an untitled and unsaved document
-
-        if isRestoringWindowSettings {
-            NSLog("windowDidSaveFrame BUT in the middle of restoring, using name '\(name)'")
-        }
-        else if !doneSettingDocument {
-            NSLog("windowDidSaveFrame BUT not done setting document, using name '\(name)'")
-        }
-        else {
-            NSLog("windowDidSaveFrame using name '\(name)'")
-
+        if !isRestoringWindowSettings && doneSettingDocument {
             // Also save whether each disclosable section is shown, since we want to
             // restore them all together in a new document in order to be coherent
             let defaults = UserDefaults.standard
-            defaults.setValue(sourcesDisclosableView.shown, forKey: Self.draftSourcesShownKey)
-            defaults.setValue(filterDisclosableView.shown, forKey: Self.draftFilterShownKey)
+            defaults.setValue(sourcesDisclosableView.shown, forKey: Self.untitledSourcesShownKey)
+            defaults.setValue(filterDisclosableView.shown, forKey: Self.untitledFilterShownKey)
         }
     }
 

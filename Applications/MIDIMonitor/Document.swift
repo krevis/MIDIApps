@@ -210,7 +210,14 @@ extension Document {
 
     override var fileURL: URL? {
         didSet {
+            guard fileURL != oldValue else { return }
+
             updateVirtualEndpointName()
+
+            if !isDraft && fileURL != nil {
+                // Now that we have saved this document, stop autosaving it as the default for new documents
+                monitorWindowController?.windowFrameAutosaveName = ""
+            }
         }
     }
 
