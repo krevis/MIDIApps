@@ -33,7 +33,7 @@
 	<key>0f</key>
 	<string>Ensoniq</string>
 	<key>10</key>
-	<string>Oberheim / Gibson Labs</string>
+	<string>Oberheim</string>
 	<key>11</key>
 	<string>Apple</string>
 	<key>12</key>
@@ -45,7 +45,7 @@
 	<key>15</key>
 	<string>JLCooper Electronics</string>
 	<key>16</key>
-	<string>Lowrey Organ Company</string>
+	<string>Lowrey Organ</string>
 	<key>17</key>
 	<string>Adams-Smith</string>
 	<key>18</key>
@@ -69,7 +69,7 @@
 	<key>21</key>
 	<string>Proel Labs (SIEL)</string>
 	<key>22</key>
-	<string>Synthaxe (UK)</string>
+	<string>Synthaxe</string>
 	<key>23</key>
 	<string>Stepp</string>
 	<key>24</key>
@@ -85,7 +85,7 @@
 	<key>29</key>
 	<string>PPG</string>
 	<key>2a</key>
-	<string>JEN</string>
+	<string>CESYG</string>
 	<key>2b</key>
 	<string>Solid State Logic</string>
 	<key>2c</key>
@@ -113,7 +113,7 @@
 	<key>37</key>
 	<string>C.T.M.</string>
 	<key>38</key>
-	<string>Simmons UK</string>
+	<string>Simmons</string>
 	<key>39</key>
 	<string>Soundcraft</string>
 	<key>3a</key>
@@ -201,7 +201,7 @@
 	<key>000006</key>
 	<string>Stypher</string>
 	<key>000007</key>
-	<string>Digital Music Corporation</string>
+	<string>Digital Music</string>
 	<key>000008</key>
 	<string>IOTA Systems</string>
 	<key>000009</key>
@@ -213,7 +213,7 @@
 	<key>00000c</key>
 	<string>Southern Music Systems</string>
 	<key>00000d</key>
-	<string>Lake Butler Sound Company</string>
+	<string>Lake Butler Sound</string>
 	<key>00000e</key>
 	<string>Alesis</string>
 	<key>00000f</key>
@@ -289,7 +289,7 @@
 	<key>000033</key>
 	<string>S3</string>
 	<key>000034</key>
-	<string>Broderbund Software</string>
+	<string>Broderbund / Red Orb</string>
 	<key>000035</key>
 	<string>Allen Organ</string>
 	<key>000037</key>
@@ -455,11 +455,11 @@
 	<key>000109</key>
 	<string>Cast Lighting</string>
 	<key>00010a</key>
-	<string>Microsoft</string>
+	<string>Microsoft Consumer Division</string>
 	<key>00010b</key>
 	<string>Sonic Foundry</string>
 	<key>00010c</key>
-	<string>Line 6 (Fast Forward)</string>
+	<string>Line 6 (Fast Forward) (Yamaha)</string>
 	<key>00010d</key>
 	<string>Beatnik</string>
 	<key>00010e</key>
@@ -509,7 +509,7 @@
 	<key>000124</key>
 	<string>Boom Theory / Adinolfi</string>
 	<key>000125</key>
-	<string>Virtual DSP Corporation</string>
+	<string>Virtual DSP</string>
 	<key>000126</key>
 	<string>Antares</string>
 	<key>000127</key>
@@ -517,7 +517,7 @@
 	<key>000128</key>
 	<string>St Louis Music</string>
 	<key>000129</key>
-	<string>Passport/Lyrrus/G-VOX</string>
+	<string>Passport (Gvox)</string>
 	<key>00012a</key>
 	<string>Ashley Audio</string>
 	<key>00012b</key>
@@ -591,7 +591,7 @@
 	<key>00014d</key>
 	<string>Open Labs</string>
 	<key>00014e</key>
-	<string>Guillemot R&amp;D</string>
+	<string>Guillemot</string>
 	<key>00014f</key>
 	<string>Samson Technologies</string>
 	<key>000150</key>
@@ -759,7 +759,7 @@
 	<key>000221</key>
 	<string>Effigy Labs</string>
 	<key>000222</key>
-	<string>MK2 Audio</string>
+	<string>Amenote</string>
 	<key>000223</key>
 	<string>Red Panda</string>
 	<key>000224</key>
@@ -822,6 +822,44 @@
 	<string>Space Brain Circuits</string>
 	<key>000241</key>
 	<string>Caedence</string>
+	<key>000242</key>
+	<string>HCN Designs (The MIDI Maker)</string>
+	<key>000243</key>
+	<string>PTZOptics</string>
+	<key>000244</key>
+	<string>Noise Engineering</string>
+	<key>000245</key>
+	<string>Synthesia</string>
+	<key>000246</key>
+	<string>Jeff Whitehead Lutherie</string>
+	<key>000247</key>
+	<string>Wampler Pedals</string>
+	<key>000248</key>
+	<string>Tapis Magique</string>
+	<key>000249</key>
+	<string>Leaf Secrets</string>
+	<key>00024a</key>
+	<string>Groove Synthesis</string>
+	<key>00024b</key>
+	<string>Audiocipher Technologies</string>
+	<key>00024c</key>
+	<string>Mellotron</string>
+	<key>00024d</key>
+	<string>Hologram Electronics</string>
+	<key>00024e</key>
+	<string>iCON Americas</string>
+	<key>00024f</key>
+	<string>Singular Sound</string>
+	<key>000250</key>
+	<string>Genovation</string>
+	<key>000251</key>
+	<string>Method Red</string>
+	<key>000252</key>
+	<string>Brain Inventions</string>
+	<key>000253</key>
+	<string>Synervoz Communications</string>
+	<key>000254</key>
+	<string>Hypertriangle</string>
 	<key>002000</key>
 	<string>Dream</string>
 	<key>002001</key>
@@ -833,7 +871,7 @@
 	<key>002004</key>
 	<string>Böhm electronic</string>
 	<key>002005</key>
-	<string>Syntec</string>
+	<string>Syntec Digital Audio</string>
 	<key>002006</key>
 	<string>Trident</string>
 	<key>002007</key>
@@ -911,7 +949,7 @@
 	<key>00202b</key>
 	<string>Medeli Electronics Co</string>
 	<key>00202c</key>
-	<string>Charlie Lab SRL</string>
+	<string>Charlie Lab</string>
 	<key>00202d</key>
 	<string>Blue Chip Music Technology</string>
 	<key>00202e</key>
@@ -1306,6 +1344,18 @@
 	<string>PhotoSynth &gt; InterFACE</string>
 	<key>002172</key>
 	<string>Instruments of Things</string>
+	<key>002173</key>
+	<string>oodi</string>
+	<key>002174</key>
+	<string>Komires</string>
+	<key>002175</key>
+	<string>Lehle</string>
+	<key>002176</key>
+	<string>Joué Music Instruments</string>
+	<key>002177</key>
+	<string>Guangzhou Pearl River Amason Digital Musical Instrument</string>
+	<key>002178</key>
+	<string>Rhesus Engineering</string>
 	<key>004000</key>
 	<string>Crimson Technology</string>
 	<key>004001</key>
@@ -1334,5 +1384,9 @@
 	<string>Keshi Nomi Workshop</string>
 	<key>004806</key>
 	<string>Black Corporation</string>
+	<key>004807</key>
+	<string>G-Tone</string>
+	<key>004808</key>
+	<string>Nitroplasma</string>
 </dict>
 </plist>
