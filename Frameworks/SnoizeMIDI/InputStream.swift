@@ -11,13 +11,9 @@ open class InputStream {
 
     public init(midiContext: MIDIContext) {
         self.midiContext = midiContext
-
-        // Default to main queue for taking pending read packets
-        readQueue = DispatchQueue.main
     }
 
     public let midiContext: MIDIContext
-    public var readQueue: DispatchQueue
     public weak var delegate: InputStreamDelegate?
     public weak var messageDestination: MessageDestination?
     public var sysExTimeOut: TimeInterval = 1.0 {
@@ -196,7 +192,7 @@ extension InputStream /* Private */ {
         let data = Data(bytes: packetListPtr, count: packetListSize)
 
         // And process it on the queue
-        self.readQueue.async {
+        DispatchQueue.main.async {
             autoreleasepool {
                 data.withUnsafeBytes { (rawPtr: UnsafeRawBufferPointer) in
                     let packetListPtr = rawPtr.bindMemory(to: MIDIPacketList.self).baseAddress!
