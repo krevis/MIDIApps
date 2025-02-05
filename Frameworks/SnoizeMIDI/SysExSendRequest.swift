@@ -210,7 +210,7 @@ private func customMIDISendSysex(_ midiContext: CoreMIDIContext, _ request: Unsa
 
     let queue = DispatchQueue(label: "com.snoize.SnoizeMIDI.CustomMIDISendSysex", qos: .userInitiated)
 
-    func sendNextBuffer() {
+    func sendNextBuffer(port: MIDIPortRef) {
         let packetDataSize = min(Int(request.pointee.bytesToSend), bufferSize)
 
         packetListData.withUnsafeMutableBytes { (packetListRawBufferPtr: UnsafeMutableRawBufferPointer) in
@@ -230,7 +230,7 @@ private func customMIDISendSysex(_ midiContext: CoreMIDIContext, _ request: Unsa
 
         if !request.pointee.complete.boolValue {
             queue.asyncAfter(deadline: .now() + perBufferDelay) {
-                sendNextBuffer()
+                sendNextBuffer(port: port)
             }
         }
         else {
@@ -240,7 +240,7 @@ private func customMIDISendSysex(_ midiContext: CoreMIDIContext, _ request: Unsa
     }
 
     queue.async {
-        sendNextBuffer()
+        sendNextBuffer(port: port)
     }
 
     return OSStatus(noErr)
