@@ -23,7 +23,6 @@ class MIDIController: NSObject {
 
         inputStream.delegate = self
         inputStream.messageDestination = self
-        inputStream.selectedInputSources = Set(inputStream.inputSources)
 
         center.addObserver(self, selector: #selector(customSysexBufferSizeChanged(_:)), name: .customSysexBufferSizePreferenceChanged, object: nil)
         outputStream.delegate = self
@@ -104,8 +103,7 @@ class MIDIController: NSObject {
     }
 
     func cancelMessageListen() {
-        listeningToSysexMessages = false
-        inputStream.cancelReceivingSysExMessage()
+        finishListening()
 
         messages = []
         messageBytesRead = 0
@@ -113,8 +111,7 @@ class MIDIController: NSObject {
     }
 
     func doneWithMultipleMessageListen() {
-        listeningToSysexMessages = false
-        inputStream.cancelReceivingSysExMessage()
+        finishListening()
     }
 
     struct MessageListenStatus {
@@ -248,7 +245,7 @@ extension MIDIController: MessageDestination {
                 updateSysExReadIndicator()
 
                 if listenToMultipleSysexMessages == false {
-                    listeningToSysexMessages = false
+                    finishListening()
                     NotificationCenter.default.post(name: .readFinished, object: self)
                     break
                 }
@@ -333,11 +330,20 @@ extension MIDIController /* Private */ {
         inputStream.cancelReceivingSysExMessage()
             // In case a sysex message is currently being received
 
+        // Listen to all available sources
+        inputStream.selectedInputSources = Set(inputStream.inputSources)
+
         messages = []
         messageBytesRead = 0
         totalBytesRead = 0
 
         listeningToSysexMessages = true
+    }
+
+    private func finishListening() {
+        listeningToSysexMessages = false
+        inputStream.cancelReceivingSysExMessage()
+        inputStream.selectedInputSources = []
     }
 
     private func updateSysExReadStatus(byteCount: Int) {
@@ -401,9 +407,6 @@ extension MIDIController: InputStreamDelegate {
     }
 
     func inputStreamSourceListChanged(_ stream: SnoizeMIDI.InputStream) {
-        if stream === inputStream {
-            inputStream.selectedInputSources = Set(inputStream.inputSources)
-        }
     }
 
 }
