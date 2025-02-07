@@ -160,11 +160,26 @@ public class MessageParser {
     }
 
     private func parseMessageData(_ byte: UInt8, _ timeStamp: MIDITimeStamp, _ pendingMessage: inout PendingMessage) -> (Message?, Bool) {
-        if let data = readingSysExData {
-            readingSysExData?.append(byte)
+        // N.B. Be careful about performance here. Doing something like this will be slow,
+        //      probably N^2 with the number of sysex bytes read:
+        //
+        //     if let data = readingSysExData {
+        //         readingSysExData?.append(byte)
+        //         ...
+        //
+        // `readingSysExData` is a `Data` which is a value object, and thus `if let` or `if var` always copy
+        // that value object. (See: https://github.com/swiftlang/swift-evolution/blob/main/proposals/0345-if-let-shorthand.md
+        // which says "optional binding conditions always make a copy of the value"; the hoped-for fix in
+        // https://forums.swift.org/t/a-roadmap-for-improving-swift-performance-predictability-arc-improvements-and-ownership-control/54206/268
+        // has not yet landed.)
+        //
+        // The perf problem appears when we append the byte, because that's when COW actually needs to copy the original bytes.
+
+        if readingSysExData != nil {
+            readingSysExData!.append(byte)
 
             // Tell the delegate we're still reading, every 256 bytes
-            let sysExMessageDataCount = 1 /* for 0xF0 */ + data.count
+            let sysExMessageDataCount = 1 /* for 0xF0 */ + readingSysExData!.count
             if sysExMessageDataCount % 256 == 0 {
                 delegate?.parserIsReadingSysEx(self, length: sysExMessageDataCount)
             }
