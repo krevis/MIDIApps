@@ -10,6 +10,10 @@ import CommonCrypto
 
 extension Data {
 
+    // swiftlint:disable redundant_void_return
+    // (Yes, I can remove the four instances of `-> Void` below, but then that produces a real warning.
+    //  SwiftLint is being overly sensitive.)
+
     var md5HexHash: String {
         let digestLength = Int(CC_MD5_DIGEST_LENGTH)
         var digest = [UInt8](repeating: 0, count: digestLength)
@@ -45,5 +49,7 @@ extension Data {
 
         return result
     }
+
+    // swiftlint:enable redundant_void_return
 
 }

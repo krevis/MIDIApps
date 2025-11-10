@@ -51,7 +51,7 @@ public class Destination: Endpoint, CoreMIDIObjectListable {
 
 extension MIDIContext {
 
-    public func createVirtualDestination(name: String, uniqueID: MIDIUniqueID, midiReadBlock: @escaping(MIDIReadBlock)) -> Destination? {
+    public func createVirtualDestination(name: String, uniqueID: MIDIUniqueID, midiReadBlock: @escaping (MIDIReadBlock)) -> Destination? {
         // If uniqueID is 0, we'll use the unique ID that CoreMIDI generates for us
 
         var newEndpointRef: MIDIEndpointRef = 0
