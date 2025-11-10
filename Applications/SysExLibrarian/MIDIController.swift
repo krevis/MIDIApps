@@ -29,7 +29,7 @@ class MIDIController: NSObject {
         outputStream.ignoresTimeStamps = true
         outputStream.sendsSysExAsynchronously = true
         outputStream.customSysExBufferSize = UserDefaults.standard.integer(forKey: Self.customSysexBufferSizePreferenceKey)
-        outputStream.setVirtualDisplayName(NSLocalizedString("Act as a source for other programs", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "display name of virtual source"))
+        outputStream.setVirtualDisplayName(String(localized: "Act as a source for other programs", comment: "display name of virtual source"))
 
         sendPreferenceDidChange(nil)
         center.addObserver(self, selector: #selector(sendPreferenceDidChange(_:)), name: .sysExSendPreferenceChanged, object: nil)

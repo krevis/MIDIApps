@@ -48,7 +48,7 @@ class CombinationInputStream: NSObject {
 
         if let stream = spyingInputStream {
             if spyingGroup == nil {
-                spyingGroup = CombinationInputStreamSourceGroup(name: NSLocalizedString("Spy on output to destinations", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "name of group for spying on destinations"), expandable: true)
+                spyingGroup = CombinationInputStreamSourceGroup(name: String(localized: "Spy on output to destinations", comment: "name of group for spying on destinations"), expandable: true)
             }
 
             if let group = spyingGroup {
@@ -120,7 +120,7 @@ class CombinationInputStream: NSObject {
                 portInputStream.addSource(source)
             }
             else {
-                let missingName = sourceName ?? NSLocalizedString("Unknown", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "name of missing source if not specified in document")
+                let missingName = sourceName ?? String(localized: "Unknown", comment: "name of missing source if not specified in document")
                 missingNames.append(missingName)
             }
 
@@ -168,8 +168,8 @@ class CombinationInputStream: NSObject {
 
     private var willSendSourceListChanged = false
 
-    private lazy var portGroup = CombinationInputStreamSourceGroup(name: NSLocalizedString("MIDI sources", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "name of group for ordinary sources"), expandable: true)
-    private lazy var virtualGroup = CombinationInputStreamSourceGroup(name: NSLocalizedString("Act as a destination for other programs", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "name of source item for virtual destination"), expandable: false)
+    private lazy var portGroup = CombinationInputStreamSourceGroup(name: String(localized: "MIDI sources", comment: "name of group for ordinary sources"), expandable: true)
+    private lazy var virtualGroup = CombinationInputStreamSourceGroup(name: String(localized: "Act as a destination for other programs", comment: "name of source item for virtual destination"), expandable: false)
     private var spyingGroup: CombinationInputStreamSourceGroup?
 
 }

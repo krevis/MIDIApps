@@ -91,7 +91,7 @@ class DetailsWindowController: UtilityWindowController {
     }
 
     override func windowTitle(forDocumentDisplayName displayName: String) -> String {
-        let format = NSLocalizedString("%@ Details", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "Details window title format string")
+        let format = String(localized: "%@ Details", comment: "Details window title format string")
         return String.localizedStringWithFormat(format, displayName)
     }
 
@@ -100,7 +100,7 @@ class DetailsWindowController: UtilityWindowController {
     }
 
     private func updateDescriptionFields() {
-        let format = NSLocalizedString("%@ bytes", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "Details size format string")
+        let format = String(localized: "%@ bytes", comment: "Details size format string")
         let formattedLength = MessageFormatter.formatLength(dataForDisplay.count)
         let sizeString = String.localizedStringWithFormat(format, formattedLength)
 

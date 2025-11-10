@@ -159,13 +159,13 @@ public class SystemCommonMessage: Message {
         var typeForDisplay: String {
             switch self {
             case .timeCodeQuarterFrame:
-                return NSLocalizedString("MTC Quarter Frame", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of MTC Quarter Frame event")
+                return String(localized: "MTC Quarter Frame", comment: "displayed type of MTC Quarter Frame event")
             case .songPositionPointer:
-                return NSLocalizedString("Song Position Pointer", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Song Position Pointer event")
+                return String(localized: "Song Position Pointer", comment: "displayed type of Song Position Pointer event")
             case .songSelect:
-                return NSLocalizedString("Song Select", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Song Select event")
+                return String(localized: "Song Select", comment: "displayed type of Song Select event")
             case .tuneRequest:
-                return NSLocalizedString("Tune Request", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Tune Request event")
+                return String(localized: "Tune Request", comment: "displayed type of Tune Request event")
             }
         }
     }

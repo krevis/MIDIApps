@@ -179,9 +179,9 @@ extension PreferencesWindowController /* Private */ {
         sysExIntervalBetweenSentMessagesField.stringValue = formatMilliseconds(UserDefaults.standard.integer(forKey: MIDIController.timeBetweenSentSysExPreferenceKey))
     }
 
-    private static var millisecondsFormat = NSLocalizedString("%ld milliseconds", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format for milliseconds")
-    private static var oneSecondString = NSLocalizedString("1 second", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "string for one second exactly")
-    private static var oneSecondOrMoreFormat = NSLocalizedString("%#.3g seconds", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "one second or more (formatting of milliseconds)")
+    private static var millisecondsFormat = String(localized: "%ld milliseconds", comment: "format for milliseconds")
+    private static var oneSecondString = String(localized: "1 second", comment: "string for one second exactly")
+    private static var oneSecondOrMoreFormat = String(localized: "%#.3g seconds", comment: "one second or more (formatting of milliseconds)")
 
     private func formatMilliseconds(_ msec: Int) -> String {
         if msec > 1000 {

@@ -41,8 +41,8 @@ extension ReportFileReadErrorController /* Private */ {
     private func reportNextError() {
         if let window = mainWindowController?.window, let (_, error) = entriesAndErrors.first {
             let alert = NSAlert(error: error)
-            alert.addButton(withTitle: NSLocalizedString("Continue", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "Continue button in alert"))
-            alert.addButton(withTitle: NSLocalizedString("Cancel", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "Cancel button in alert"))
+            alert.addButton(withTitle: String(localized: "Continue", comment: "Continue button in alert"))
+            alert.addButton(withTitle: String(localized: "Cancel", comment: "Cancel button in alert"))
             alert.beginSheetModal(for: window) { response in
                 if response == .alertFirstButtonReturn /* Continue */ {
                     // Get this sheet out of the way before we open another one

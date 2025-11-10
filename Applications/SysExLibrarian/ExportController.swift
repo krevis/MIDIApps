@@ -31,7 +31,7 @@ class ExportController {
             defaultFileName = NSString(string: fileName).deletingPathExtension
         }
         else {
-            defaultFileName = NSLocalizedString("SysEx", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "default file name for exported standard MIDI file (w/o extension)")
+            defaultFileName = String(localized: "SysEx", comment: "default file name for exported standard MIDI file (w/o extension)")
         }
 
         savePanel.nameFieldStringValue = NSString(string: defaultFileName).appendingPathExtension(ext) ?? defaultFileName
@@ -51,8 +51,8 @@ class ExportController {
             }
             else {
                 let alert = NSAlert()
-                alert.messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
-                alert.informativeText = NSLocalizedString("The file could not be saved.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "message if sysex can't be exported")
+                alert.messageText = String(localized: "Error", comment: "title of error alert")
+                alert.informativeText = String(localized: "The file could not be saved.", comment: "message if sysex can't be exported")
                 _ = alert.runModal()
             }
         }

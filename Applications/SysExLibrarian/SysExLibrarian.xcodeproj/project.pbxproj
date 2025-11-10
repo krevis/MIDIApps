@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		161B721315D8EA13006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B721215D8EA13006E21D4 /* dsa_pub.pem */; };
-		1620677A2EC17F8400C42FC1 /* SysExLibrarian.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 1620676E2EC17F8400C42FC1 /* SysExLibrarian.xcstrings */; };
+		1620677A2EC17F8400C42FC1 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 1620676E2EC17F8400C42FC1 /* Localizable.xcstrings */; };
 		163849D226D37E62007C15DF /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849B926D37E62007C15DF /* MainMenu.xib */; };
 		163849E326D37E7A007C15DF /* Play.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849D326D37E79007C15DF /* Play.xib */; };
 		163849E426D37E7A007C15DF /* Details.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849D526D37E79007C15DF /* Details.xib */; };
@@ -150,7 +150,7 @@
 		16064970278D13E8005D51A3 /* HexFiend_2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = HexFiend_2.xcodeproj; path = ../../ThirdParty/HexFiend/app/HexFiend_2.xcodeproj; sourceTree = "<group>"; };
 		161B721215D8EA13006E21D4 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dsa_pub.pem; path = ../../Updates/dsa_pub.pem; sourceTree = "<group>"; };
 		161B721515D8EA7F006E21D4 /* SysExLibrarian.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = SysExLibrarian.xml; path = ../../Updates/SysExLibrarian.xml; sourceTree = "<group>"; };
-		1620676E2EC17F8400C42FC1 /* SysExLibrarian.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = SysExLibrarian.xcstrings; sourceTree = "<group>"; };
+		1620676E2EC17F8400C42FC1 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		163849BA26D37E62007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		163849D426D37E79007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Play.xib; sourceTree = "<group>"; };
 		163849D626D37E79007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Details.xib; sourceTree = "<group>"; };
@@ -333,7 +333,7 @@
 				163849DD26D37E79007C15DF /* Import.xib */,
 				16F033940984B76F006C8A44 /* Info-SysExLibrarian.plist */,
 				16F0384B0984C9D7006C8A44 /* Defaults.plist */,
-				1620676E2EC17F8400C42FC1 /* SysExLibrarian.xcstrings */,
+				1620676E2EC17F8400C42FC1 /* Localizable.xcstrings */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				F5D90FE4021630C101000164 /* docs.htmld */,
 				161B721215D8EA13006E21D4 /* dsa_pub.pem */,
@@ -577,7 +577,7 @@
 				163849E926D37E7A007C15DF /* RecordMany.xib in Resources */,
 				163849E426D37E7A007C15DF /* Details.xib in Resources */,
 				163849E526D37E7A007C15DF /* RecordOne.xib in Resources */,
-				1620677A2EC17F8400C42FC1 /* SysExLibrarian.xcstrings in Resources */,
+				1620677A2EC17F8400C42FC1 /* Localizable.xcstrings in Resources */,
 				163849EA26D37E7A007C15DF /* MainWindow.xib in Resources */,
 				16F0384C0984C9D7006C8A44 /* Defaults.plist in Resources */,
 				161B721315D8EA13006E21D4 /* dsa_pub.pem in Resources */,

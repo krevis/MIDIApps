@@ -57,7 +57,7 @@ open class InputStream {
                 newInputSources.insert(source)
             }
             else {
-                let resolvedName = name ?? NSLocalizedString("Unknown", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "name of missing endpoint if not specified in document")
+                let resolvedName = name ?? String(localized: "Unknown", comment: "name of missing endpoint if not specified in document")
                 missingNames.append(resolvedName)
             }
         }

@@ -133,10 +133,10 @@ class PreferencesWindowController: UtilityWindowController, NSWindowRestoration 
     private func updateExpertModeTextField() {
         let text: String
         if UserDefaults.standard.bool(forKey: MessageFormatter.expertModePreferenceKey) {
-            text = NSLocalizedString("EXPERT_ON", tableName: "MIDIMonitor", bundle: Bundle.main, value: "• Data formatted as raw hexadecimal\n• Note On with velocity 0 shows as Note On\n• Zero timestamp shows 0", comment: "Explanation when expert mode is on")
+            text = String(localized: "EXPERT_ON", defaultValue: "• Data formatted as raw hexadecimal\n• Note On with velocity 0 shows as Note On\n• Zero timestamp shows 0", comment: "Explanation when expert mode is on")
         }
         else {
-            text = NSLocalizedString("EXPERT_OFF", tableName: "MIDIMonitor", bundle: Bundle.main, value: "• Data formatted according to settings above\n• Note On with velocity 0 shows as Note Off\n• Zero timestamp shows time received", comment: "Explanation when expert mode is off")
+            text = String(localized: "EXPERT_OFF", defaultValue: "• Data formatted according to settings above\n• Note On with velocity 0 shows as Note Off\n• Zero timestamp shows time received", comment: "Explanation when expert mode is off")
         }
 
         expertModeTextField.stringValue = text

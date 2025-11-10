@@ -135,15 +135,15 @@ extension AppController {
         if var url = Bundle.main.url(forResource: "docs", withExtension: "htmld") {
             url.appendPathComponent("index.html")
             if !NSWorkspace.shared.open(url) {
-                message = NSLocalizedString("The help file could not be opened.", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "error message if opening the help file fails")
+                message = String(localized: "The help file could not be opened.", comment: "error message if opening the help file fails")
             }
         }
         else {
-            message = NSLocalizedString("The help file could not be found.", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "error message if help file can't be found")
+            message = String(localized: "The help file could not be found.", comment: "error message if help file can't be found")
         }
 
         if let message {
-            let title = NSLocalizedString("Error", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "title of error alert")
+            let title = String(localized: "Error", comment: "title of error alert")
 
             let alert = NSAlert()
             alert.messageText = title
@@ -156,7 +156,7 @@ extension AppController {
         var success = false
 
         let feedbackEmailAddress = "MIDIMonitor@snoize.com"    // Don't localize this
-        let feedbackEmailSubject = NSLocalizedString("MIDI Monitor Feedback", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "subject of feedback email")
+        let feedbackEmailSubject = String(localized: "MIDI Monitor Feedback", comment: "subject of feedback email")
         let mailToURLString = "mailto:\(feedbackEmailAddress)?Subject=\(feedbackEmailSubject)"
 
         // Escape the whitespace characters in the URL before opening
@@ -167,9 +167,9 @@ extension AppController {
         }
 
         if !success {
-            let message = NSLocalizedString("MIDI Monitor could not ask your email application to create a new message.\nPlease send email to:\n%@", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "message of alert when can't send feedback email")
+            let message = String(localized: "MIDI Monitor could not ask your email application to create a new message.\nPlease send email to:\n%@", comment: "message of alert when can't send feedback email")
 
-            let title = NSLocalizedString("Error", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "title of error alert")
+            let title = String(localized: "Error", comment: "title of error alert")
 
             let alert = NSAlert()
             alert.messageText = title
@@ -181,8 +181,8 @@ extension AppController {
     @IBAction func restartMIDI(_ sender: Any?) {
         let status = MIDIRestart()
         if status != noErr {
-            let message = NSLocalizedString("Rescanning the MIDI system resulted in an unexpected error (%d).", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "error message if MIDIRestart() fails")
-            let title = NSLocalizedString("MIDI Error", tableName: "MIDIMonitor", bundle: Bundle.main, comment: "title of MIDI error panel")
+            let message = String(localized: "Rescanning the MIDI system resulted in an unexpected error (%d).", comment: "error message if MIDIRestart() fails")
+            let title = String(localized: "MIDI Error", comment: "title of MIDI error panel")
 
             let alert = NSAlert()
             alert.messageText = title
@@ -198,14 +198,12 @@ extension AppController {
     // MARK: Startup failure handling
 
     private func failedToInitCoreMIDI() {
-        let bundle = Bundle.main
-
         let alert = NSAlert()
         alert.alertStyle = .critical
-        alert.messageText = NSLocalizedString("The MIDI system could not be started.", tableName: "MIDIMonitor", bundle: bundle, comment: "error message if MIDI initialization fails")
-        alert.informativeText = NSLocalizedString("This probably affects all apps that use MIDI, not just MIDI Monitor.\n\nMost likely, the cause is a bad MIDI driver. Remove any MIDI drivers that you don't recognize, then try again.", tableName: "MIDIMonitor", bundle: bundle, comment: "informative text if MIDI initialization fails")
-        alert.addButton(withTitle: NSLocalizedString("Quit", tableName: "MIDIMonitor", bundle: bundle, comment: "title of quit button"))
-        alert.addButton(withTitle: NSLocalizedString("Show MIDI Drivers", tableName: "MIDIMonitor", bundle: bundle, comment: "Show MIDI Drivers button after MIDI spy client creation fails"))
+        alert.messageText = String(localized: "The MIDI system could not be started.", comment: "error message if MIDI initialization fails")
+        alert.informativeText = String(localized: "This probably affects all apps that use MIDI, not just MIDI Monitor.\n\nMost likely, the cause is a bad MIDI driver. Remove any MIDI drivers that you don't recognize, then try again.", comment: "informative text if MIDI initialization fails")
+        alert.addButton(withTitle: String(localized: "Quit", comment: "title of quit button"))
+        alert.addButton(withTitle: String(localized: "Show MIDI Drivers", comment: "Show MIDI Drivers button after MIDI spy client creation fails"))
 
         if alert.runModal() == .alertSecondButtonReturn {
             NSWorkspace.shared.open(URL(fileURLWithPath: "/Library/Audio/MIDI Drivers"))
@@ -217,11 +215,10 @@ extension AppController {
     private func failedToInstallSpyDriver(_ error: Error) {
         // Failure to install. Customize the error before presenting it.
 
-        let bundle = Bundle.main
         let installError = error as NSError
 
         var presentedErrorUserInfo: [String: Any] = installError.userInfo
-        presentedErrorUserInfo[NSLocalizedDescriptionKey] = NSLocalizedString("MIDI Monitor could not install its driver.", tableName: "MIDIMonitor", bundle: bundle, comment: "error message if spy driver install fails")
+        presentedErrorUserInfo[NSLocalizedDescriptionKey] = String(localized: "MIDI Monitor could not install its driver.", comment: "error message if spy driver install fails")
 
         if installError.domain == MIDISpyDriverInstallationErrorDomain {
             // Errors with this domain should be very rare and indicate a problem with the app itself.
@@ -230,9 +227,9 @@ extension AppController {
                 presentedErrorUserInfo[NSLocalizedRecoverySuggestionErrorKey] =
                     reason
                     + "\n\n"
-                    + NSLocalizedString("This shouldn't happen. Try downloading MIDI Monitor again.", tableName: "MIDIMonitor", bundle: bundle, comment: "suggestion if spy driver install fails due to our own error")
+                    + String(localized: "This shouldn't happen. Try downloading MIDI Monitor again.", comment: "suggestion if spy driver install fails due to our own error")
                     + "\n\n"
-                    + NSLocalizedString("MIDI Monitor will not be able to see the output of other MIDI applications, but all other features will still work.", tableName: "MIDIMonitor", bundle: bundle, comment: "more suggestion if spy driver install fails")
+                    + String(localized: "MIDI Monitor will not be able to see the output of other MIDI applications, but all other features will still work.", comment: "more suggestion if spy driver install fails")
             }
         }
         else {
@@ -253,7 +250,7 @@ extension AppController {
                 presentedErrorUserInfo[NSLocalizedRecoverySuggestionErrorKey] =
                     fullSuggestion
                     + "\n\n"
-                    + NSLocalizedString("MIDI Monitor will not be able to see the output of other MIDI applications, but all other features will still work.", tableName: "MIDIMonitor", bundle: bundle, comment: "more suggestion if spy driver install fails")
+                    + String(localized: "MIDI Monitor will not be able to see the output of other MIDI applications, but all other features will still work.", comment: "more suggestion if spy driver install fails")
             }
 
             // To find the path involved, look for NSDestinationFilePath first (it's set for failures to copy, and is better than the source path),
@@ -269,8 +266,8 @@ extension AppController {
             if let realFilePath = filePath, realFilePath != "" {
                 presentedErrorUserInfo[NSFilePathErrorKey] = realFilePath
                 presentedErrorUserInfo[NSLocalizedRecoveryOptionsErrorKey] = [
-                    NSLocalizedString("Continue", tableName: "MIDIMonitor", bundle: bundle, comment: "Continue button if spy driver install fails"),
-                    NSLocalizedString("Show in Finder", tableName: "MIDIMonitor", bundle: bundle, comment: "Show in Finder button if spy driver install fails")
+                    String(localized: "Continue", comment: "Continue button if spy driver install fails"),
+                    String(localized: "Show in Finder", comment: "Show in Finder button if spy driver install fails")
                 ]
                 presentedErrorUserInfo[NSRecoveryAttempterErrorKey] = self
             }
@@ -296,14 +293,12 @@ extension AppController {
     }
 
     private func failedToConnectToSpyClient() {
-        let bundle = Bundle.main
-
         let alert = NSAlert()
-        alert.messageText = NSLocalizedString("MIDI Monitor could not connect to its MIDI driver", tableName: "MIDIMonitor", bundle: bundle, comment: "error message if MIDI spy client creation fails")
-        alert.informativeText = NSLocalizedString("MIDI Monitor will not be able to spy on the output of other MIDI applications. It can still receive incoming MIDI events.\n\n1. Check your MIDI drivers in /Library/Audio/MIDI Drivers. There might be old drivers that are interfering with new ones. Remove drivers for hardware that you no longer use.\n2. Restart your computer, whether or not you did anything in step 1.", tableName: "MIDIMonitor", bundle: bundle, comment: "second line of warning when MIDI spy is unavailable")
-        alert.addButton(withTitle: NSLocalizedString("Continue", tableName: "MIDIMonitor", bundle: bundle, comment: "Continue button after MIDI spy client creation fails"))
-        alert.addButton(withTitle: NSLocalizedString("Show MIDI Drivers", tableName: "MIDIMonitor", bundle: bundle, comment: "Show MIDI Drivers button after MIDI spy client creation fails"))
-        alert.addButton(withTitle: NSLocalizedString("Restart", tableName: "MIDIMonitor", bundle: bundle, comment: "Restart button after MIDI spy client creation fails"))
+        alert.messageText = String(localized: "MIDI Monitor could not connect to its MIDI driver", comment: "error message if MIDI spy client creation fails")
+        alert.informativeText = String(localized: "MIDI Monitor will not be able to spy on the output of other MIDI applications. It can still receive incoming MIDI events.\n\n1. Check your MIDI drivers in /Library/Audio/MIDI Drivers. There might be old drivers that are interfering with new ones. Remove drivers for hardware that you no longer use.\n2. Restart your computer, whether or not you did anything in step 1.", comment: "second line of warning when MIDI spy is unavailable")
+        alert.addButton(withTitle: String(localized: "Continue", comment: "Continue button after MIDI spy client creation fails"))
+        alert.addButton(withTitle: String(localized: "Show MIDI Drivers", comment: "Show MIDI Drivers button after MIDI spy client creation fails"))
+        alert.addButton(withTitle: String(localized: "Restart", comment: "Restart button after MIDI spy client creation fails"))
 
         let response = alert.runModal()
         if response == .alertSecondButtonReturn {
@@ -313,9 +308,9 @@ extension AppController {
         else if response == .alertThirdButtonReturn {
             // Restart
             let ynAlert = NSAlert()
-            ynAlert.messageText = NSLocalizedString("Are you sure you want to restart now?", tableName: "MIDIMonitor", bundle: bundle, comment: "Restart y/n?")
-            ynAlert.addButton(withTitle: NSLocalizedString("Restart", tableName: "MIDIMonitor", bundle: bundle, comment: "Restart button title"))
-            ynAlert.addButton(withTitle: NSLocalizedString("Cancel", tableName: "MIDIMonitor", bundle: bundle, comment: "Cancel button title"))
+            ynAlert.messageText = String(localized: "Are you sure you want to restart now?", comment: "Restart y/n?")
+            ynAlert.addButton(withTitle: String(localized: "Restart", comment: "Restart button title"))
+            ynAlert.addButton(withTitle: String(localized: "Cancel", comment: "Cancel button title"))
             if ynAlert.runModal() == .alertFirstButtonReturn {
                 let appleScript = NSAppleScript(source: "tell application \"Finder\" to restart")
                 appleScript?.executeAndReturnError(nil)

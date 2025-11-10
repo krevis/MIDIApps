@@ -51,17 +51,17 @@ public class SystemRealTimeMessage: Message {
     public override var typeForDisplay: String {
         switch type {
         case .clock:
-            return NSLocalizedString("Clock", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Clock event")
+            return String(localized: "Clock", comment: "displayed type of Clock event")
         case .start:
-            return NSLocalizedString("Start", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Start event")
+            return String(localized: "Start", comment: "displayed type of Start event")
         case .continue:
-            return NSLocalizedString("Continue", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Continue event")
+            return String(localized: "Continue", comment: "displayed type of Continue event")
         case .stop:
-            return NSLocalizedString("Stop", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Stop event")
+            return String(localized: "Stop", comment: "displayed type of Stop event")
         case .activeSense:
-            return NSLocalizedString("Active Sense", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Active Sense event")
+            return String(localized: "Active Sense", comment: "displayed type of Active Sense event")
         case .reset:
-            return NSLocalizedString("Reset", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of Reset event")
+            return String(localized: "Reset", comment: "displayed type of Reset event")
         }
     }
 

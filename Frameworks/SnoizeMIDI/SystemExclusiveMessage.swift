@@ -107,7 +107,7 @@ public class SystemExclusiveMessage: Message {
 
     public var sizeForDisplay: String {
         let formattedLength = MessageFormatter.formatLength(receivedDataWithStartByteLength)
-        let format = NSLocalizedString("%@ bytes", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "SysEx length format string")
+        let format = String(localized: "%@ bytes", comment: "SysEx length format string")
         return String.localizedStringWithFormat(format, formattedLength)
     }
 
@@ -128,7 +128,7 @@ public class SystemExclusiveMessage: Message {
     }
 
     public override var typeForDisplay: String {
-        NSLocalizedString("SysEx", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of System Exclusive event")
+        String(localized: "SysEx", comment: "displayed type of System Exclusive event")
     }
 
     public override var dataForDisplay: String {

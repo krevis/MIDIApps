@@ -114,7 +114,7 @@ class CombinationOutputStream: NSObject, MessageDestination {
                 }
             }
             else {
-                return NSLocalizedString("Unknown", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "name of missing endpoint if not specified in document")
+                return String(localized: "Unknown", comment: "name of missing endpoint if not specified in document")
             }
         }
         else if let number = settings["virtualEndpointUniqueID"] as? NSNumber {

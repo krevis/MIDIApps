@@ -59,7 +59,7 @@ class RecordManyController: RecordController {
     @IBOutlet private var totalProgressField: NSTextField!
     @IBOutlet private var doneButton: NSButton!
 
-    static private var totalProgressFormatString = NSLocalizedString("Total: %d message, %@", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format of progress message when receiving multiple sysex messages (one message so far)")
-    static private var totalProgressPluralFormatString = NSLocalizedString("Total: %d messages, %@", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format of progress message when receiving multiple sysex messages (more than one message so far)")
+    static private var totalProgressFormatString = String(localized: "Total: %d message, %@", comment: "format of progress message when receiving multiple sysex messages (one message so far)")
+    static private var totalProgressPluralFormatString = String(localized: "Total: %d messages, %@", comment: "format of progress message when receiving multiple sysex messages (more than one message so far)")
 
 }

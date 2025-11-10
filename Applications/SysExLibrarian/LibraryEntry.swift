@@ -102,7 +102,7 @@ class LibraryEntry: NSObject {
             newName = FileManager.default.displayName(atPath: path)
         }
 
-        name = newName ?? NSLocalizedString("Unknown", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "Unknown")
+        name = newName ?? String(localized: "Unknown", comment: "Unknown")
     }
 
     func renameFile(_ newFileName: String) -> Bool {
@@ -316,7 +316,7 @@ extension LibraryEntry /* Private */ {
             if let messageManufacturer = message.manufacturerName {
                 if let manufacturerSoFar = newManufacturer {
                     if manufacturerSoFar != messageManufacturer {
-                        newManufacturer = NSLocalizedString("Various", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "Various")
+                        newManufacturer = String(localized: "Various", comment: "Various")
                         break
                     }
                 }
@@ -326,7 +326,7 @@ extension LibraryEntry /* Private */ {
             }
         }
 
-        return newManufacturer ?? NSLocalizedString("Unknown", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "Unknown")
+        return newManufacturer ?? String(localized: "Unknown", comment: "Unknown")
     }
 
     static private func size(messages: [SystemExclusiveMessage]) -> Int {

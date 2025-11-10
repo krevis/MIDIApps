@@ -148,8 +148,8 @@ extension ImportController /* Private */ {
         }
     }
 
-    static private var scanningString = NSLocalizedString("Scanning...", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "Scanning...")
-    static private var xOfYFormatString = NSLocalizedString("%u of %u", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "importing sysex: x of y")
+    static private var scanningString = String(localized: "Scanning...", comment: "Scanning...")
+    static private var xOfYFormatString = String(localized: "%u of %u", comment: "importing sysex: x of y")
 
     private func updateImportStatusDisplay(_ filePath: String, _ fileIndex: Int, _ fileCount: Int) {
         if fileCount == 0 {
@@ -317,14 +317,14 @@ extension ImportController /* Private */ {
         var informativeText: String = ""
 
         if badFileCount == 1 {
-            informativeText = NSLocalizedString("No SysEx data could be found in this file. It has not been added to the library.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "message when no sysex data found in file")
+            informativeText = String(localized: "No SysEx data could be found in this file. It has not been added to the library.", comment: "message when no sysex data found in file")
         }
         else {
-            let format = NSLocalizedString("No SysEx data could be found in %u of the files. They have not been added to the library.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format of message when no sysex data found in files")
+            let format = String(localized: "No SysEx data could be found in %u of the files. They have not been added to the library.", comment: "format of message when no sysex data found in files")
             informativeText = String.localizedStringWithFormat(format, badFileCount)
         }
 
-        let messageText = NSLocalizedString("Could not read SysEx", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of alert when can't read a sysex file")
+        let messageText = String(localized: "Could not read SysEx", comment: "title of alert when can't read a sysex file")
 
         let alert = NSAlert()
         alert.alertStyle = .informational

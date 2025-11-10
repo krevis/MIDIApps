@@ -36,9 +36,9 @@ extension AppController: NSApplicationDelegate {
         if !context.connectedToCoreMIDI {
             let alert = NSAlert()
             alert.alertStyle = .critical
-            alert.messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
-            alert.informativeText = NSLocalizedString("There was a problem initializing the MIDI system. To try to fix this, log out and log back in, or restart the computer.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "error message if MIDI initialization fails")
-            alert.addButton(withTitle: NSLocalizedString("Quit", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of quit button"))
+            alert.messageText = String(localized: "Error", comment: "title of error alert")
+            alert.informativeText = String(localized: "There was a problem initializing the MIDI system. To try to fix this, log out and log back in, or restart the computer.", comment: "error message if MIDI initialization fails")
+            alert.addButton(withTitle: String(localized: "Quit", comment: "title of quit button"))
 
             _ = alert.runModal()
             NSApp.terminate(nil)
@@ -51,9 +51,9 @@ extension AppController: NSApplicationDelegate {
         if let preflightErrorString = Library.shared.preflightAndLoadEntries() {
             let alert = NSAlert()
             alert.alertStyle = .critical
-            alert.messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
+            alert.messageText = String(localized: "Error", comment: "title of error alert")
             alert.informativeText = preflightErrorString
-            alert.addButton(withTitle: NSLocalizedString("Quit", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of quit button"))
+            alert.addButton(withTitle: String(localized: "Quit", comment: "title of quit button"))
 
             _ = alert.runModal()
             NSApp.terminate(nil)
@@ -143,15 +143,15 @@ extension AppController /* Actions */ {
         if var url = Bundle.main.url(forResource: "docs", withExtension: "htmld") {
             url.appendPathComponent("index.html")
             if !NSWorkspace.shared.open(url) {
-                message = NSLocalizedString("The help file could not be opened.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "error message if opening the help file fails")
+                message = String(localized: "The help file could not be opened.", comment: "error message if opening the help file fails")
             }
         }
         else {
-            message = NSLocalizedString("The help file could not be found.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "error message if help file can't be found")
+            message = String(localized: "The help file could not be found.", comment: "error message if help file can't be found")
         }
 
         if let message {
-            let title = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
+            let title = String(localized: "Error", comment: "title of error alert")
 
             let alert = NSAlert()
             alert.messageText = title
@@ -164,7 +164,7 @@ extension AppController /* Actions */ {
         var success = false
 
         let feedbackEmailAddress = "SysExLibrarian@snoize.com"    // Don't localize this
-        let feedbackEmailSubject = NSLocalizedString("SysEx Librarian Feedback", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "subject of feedback email")
+        let feedbackEmailSubject = String(localized: "SysEx Librarian Feedback", comment: "subject of feedback email")
         let mailToURLString = "mailto:\(feedbackEmailAddress)?Subject=\(feedbackEmailSubject)"
 
         // Escape the whitespace characters in the URL before opening
@@ -175,9 +175,9 @@ extension AppController /* Actions */ {
         }
 
         if !success {
-            let message = NSLocalizedString("SysEx Librarian could not ask your email application to create a new message.\nPlease send email to:\n%@", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "message of alert when can't send feedback email")
+            let message = String(localized: "SysEx Librarian could not ask your email application to create a new message.\nPlease send email to:\n%@", comment: "message of alert when can't send feedback email")
 
-            let title = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
+            let title = String(localized: "Error", comment: "title of error alert")
 
             let alert = NSAlert()
             alert.messageText = title

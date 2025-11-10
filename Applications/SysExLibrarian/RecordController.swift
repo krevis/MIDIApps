@@ -84,8 +84,8 @@ class RecordController: NSObject {
     @IBOutlet var progressMessageField: NSTextField!
     @IBOutlet var progressBytesField: NSTextField!
 
-    lazy var waitingForSysexMessage = NSLocalizedString("Waiting for SysEx message…", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "message when waiting for sysex")
-    lazy var receivingSysexMessage = NSLocalizedString("Receiving SysEx message…", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "message when receiving sysex")
+    lazy var waitingForSysexMessage = String(localized: "Waiting for SysEx message…", comment: "message when waiting for sysex")
+    lazy var receivingSysexMessage = String(localized: "Receiving SysEx message…", comment: "message when receiving sysex")
 
     func updateIndicatorsImmediatelyIfScheduled() {
         if scheduledProgressUpdate {

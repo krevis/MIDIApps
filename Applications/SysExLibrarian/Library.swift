@@ -49,7 +49,7 @@ class Library: NSObject {
         // Returns an error message if something critical is wrong
         if let errorMessage = preflightLibrary() {
             // Currently, the only reason this can fail is in the unlikely event that we can't get a URL to ~/Library/
-            let header = NSLocalizedString("There is a problem accessing the SysEx Librarian preferences.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "error message on preflight library")
+            let header = String(localized: "There is a problem accessing the SysEx Librarian preferences.", comment: "error message on preflight library")
             return header + "\n" + errorMessage
         }
 
@@ -89,7 +89,7 @@ class Library: NSObject {
         // ensure the file directory exists; if not we can't write there
         try fileManager.createDirectory(atPath: fileDirectoryPath, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o755])
 
-        let newFileName = NSLocalizedString("Untitled", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "name of new sysex file")
+        let newFileName = String(localized: "Untitled", comment: "name of new sysex file")
         let newFileNameWithExtension = NSString(string: newFileName).appendingPathExtension(Self.sysExFileExtension)!
         let newFilePath = NSString(string: fileDirectoryPath).appendingPathComponent(newFileNameWithExtension)
         let uniqueNewFilePath = fileManager.uniqueFilename(from: newFilePath)
@@ -173,15 +173,15 @@ class Library: NSObject {
         catch {
             // Present the error, Can't continue saving, but can continue with the app.
             // This is not fantastic UI, but it works.  This should not happen unless the user is trying to provoke us, anyway.
-            let messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
+            let messageText = String(localized: "Error", comment: "title of error alert")
 
             let informativeTextHeader: String
             if let libraryFilePath = maybeLibraryFilePath {
-                let informativeTextFormat = NSLocalizedString("The library \"%@\" could not be saved.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format of error message if the library file can't be saved")
+                let informativeTextFormat = String(localized: "The library \"%@\" could not be saved.", comment: "format of error message if the library file can't be saved")
                 informativeTextHeader = String(format: informativeTextFormat, libraryFilePath)
             }
             else {
-                informativeTextHeader = NSLocalizedString("The path to the library file \"~/Preferences/SysEx Librarian Library.sXLb\" could not be created.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "error message if the path to the library file can't be created")
+                informativeTextHeader = String(localized: "The path to the library file \"~/Preferences/SysEx Librarian Library.sXLb\" could not be created.", comment: "error message if the path to the library file can't be created")
             }
 
             let alert = NSAlert()
@@ -480,15 +480,15 @@ extension Library /* Private */ {
 
     private func reportLoadEntriesError(_ maybeLibraryFilePath: String?, _ errorToReport: Error) {
         // Report on error, then continue with an empty library.
-        let messageText = NSLocalizedString("Error", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "title of error alert")
+        let messageText = String(localized: "Error", comment: "title of error alert")
 
         let informativeTextHeader: String
         if let libraryFilePath = maybeLibraryFilePath {
-            let informativeTextFormat = NSLocalizedString("The library file \"%@\" could not be read.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format of error message if the library file can't be read")
+            let informativeTextFormat = String(localized: "The library file \"%@\" could not be read.", comment: "format of error message if the library file can't be read")
             informativeTextHeader = String(format: informativeTextFormat, libraryFilePath)
         }
         else {
-            informativeTextHeader = NSLocalizedString("The path to the library file \"~/Preferences/SysEx Librarian Library.sXLb\" could not be created.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "error message if the path to the library file can't be created")
+            informativeTextHeader = String(localized: "The path to the library file \"~/Preferences/SysEx Librarian Library.sXLb\" could not be created.", comment: "error message if the path to the library file can't be created")
         }
 
         let alert = NSAlert()

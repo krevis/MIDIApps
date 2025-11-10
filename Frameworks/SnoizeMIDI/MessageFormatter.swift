@@ -152,7 +152,7 @@ public struct MessageFormatter {
 
     public static func nameForManufacturerIdentifier(_ manufacturerIdentifierData: Data) -> String {
         return manufacturerNamesByHexIdentifier[manufacturerIdentifierData.lowercaseHexString]
-            ?? NSLocalizedString("Unknown Manufacturer", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "unknown manufacturer name")
+        ?? String(localized: "Unknown Manufacturer", comment: "unknown manufacturer name")
     }
 
     // MARK: Internal
@@ -193,7 +193,7 @@ public struct MessageFormatter {
             controllerNamesByNumberString = plist
         }
 
-        let unknownNameFormat = NSLocalizedString("Controller %u", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "format of unknown controller")
+        let unknownNameFormat = String(localized: "Controller %u", comment: "format of unknown controller")
 
         return (0 ..< 128).map {
             controllerNamesByNumberString["\($0)"] ?? String(format: unknownNameFormat, $0)

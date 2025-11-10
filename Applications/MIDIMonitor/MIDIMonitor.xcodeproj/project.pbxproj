@@ -10,7 +10,7 @@
 		160A5E8D258822CB008C0CE1 /* SysExWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160A5E8C258822CB008C0CE1 /* SysExWindowController.swift */; };
 		160A5EA1258825B0008C0CE1 /* PreferenceKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160A5EA0258825B0008C0CE1 /* PreferenceKeys.swift */; };
 		161B71FA15D8DD83006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B71F915D8DD83006E21D4 /* dsa_pub.pem */; };
-		1620676D2EC17EEC00C42FC1 /* MIDIMonitorStrings.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 1620676C2EC17EEC00C42FC1 /* MIDIMonitorStrings.xcstrings */; };
+		1620676D2EC17EEC00C42FC1 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 1620676C2EC17EEC00C42FC1 /* Localizable.xcstrings */; };
 		162972B1097B414800158D7B /* SnoizeMIDI.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71A7097B2419001AFB58 /* SnoizeMIDI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		162972B2097B414C00158D7B /* SnoizeMIDISpy.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 169E71B1097B242A001AFB58 /* SnoizeMIDISpy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		163849B426D37AF1007C15DF /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849AA26D37AF0007C15DF /* Preferences.xib */; };
@@ -158,7 +158,7 @@
 		160A5EA0258825B0008C0CE1 /* PreferenceKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceKeys.swift; sourceTree = "<group>"; };
 		161B71F915D8DD83006E21D4 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dsa_pub.pem; path = ../../Updates/dsa_pub.pem; sourceTree = "<group>"; };
 		161B71FC15D8DFA5006E21D4 /* MIDIMonitor.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = MIDIMonitor.xml; path = ../../Updates/MIDIMonitor.xml; sourceTree = "<group>"; };
-		1620676C2EC17EEC00C42FC1 /* MIDIMonitorStrings.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = MIDIMonitorStrings.xcstrings; sourceTree = "<group>"; };
+		1620676C2EC17EEC00C42FC1 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		162A31F0254E91B5008E1F38 /* Snoize-Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Snoize-Signing.xcconfig"; path = "../../Configurations/Snoize-Signing.xcconfig"; sourceTree = "<group>"; };
 		163849AB26D37AF0007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Preferences.xib; sourceTree = "<group>"; };
 		163849AD26D37AF0007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/SysEx.xib; sourceTree = "<group>"; };
@@ -347,7 +347,7 @@
 				163849AC26D37AF0007C15DF /* SysEx.xib */,
 				167B884206ED4D650053D305 /* Info-MIDIMonitor.plist */,
 				16F20F4906EAA14A00D9C507 /* Defaults.plist */,
-				1620676C2EC17EEC00C42FC1 /* MIDIMonitorStrings.xcstrings */,
+				1620676C2EC17EEC00C42FC1 /* Localizable.xcstrings */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				F56D31A30195A90E01000164 /* docs.htmld */,
 				161B71F915D8DD83006E21D4 /* dsa_pub.pem */,
@@ -544,7 +544,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1620676D2EC17EEC00C42FC1 /* MIDIMonitorStrings.xcstrings in Resources */,
+				1620676D2EC17EEC00C42FC1 /* Localizable.xcstrings in Resources */,
 				163849B526D37AF1007C15DF /* SysEx.xib in Resources */,
 				167B881906ED4D650053D305 /* Credits.rtf in Resources */,
 				163849B826D37AF1007C15DF /* Details.xib in Resources */,

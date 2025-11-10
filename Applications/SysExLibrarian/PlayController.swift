@@ -139,7 +139,7 @@ extension PlayController /* Private */ {
         }
 
         if !success {
-            progressMessageField.stringValue = NSLocalizedString("Cancelled.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "Cancelled.")
+            progressMessageField.stringValue = String(localized: "Cancelled.", comment: "Cancelled.")
         }
 
         stopObservingMIDIController()
@@ -185,9 +185,9 @@ extension PlayController /* Private */ {
         scheduledProgressUpdate = true
     }
 
-    static private var sendingFormatString = NSLocalizedString("Sending message %u of %u…", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format for progress message when sending multiple sysex messages")
-    static private var sendingString = NSLocalizedString("Sending message…", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "format for progress message when sending multiple sysex messages")
-    static private var doneString = NSLocalizedString("Done.", tableName: "SysExLibrarian", bundle: Bundle.main, comment: "Done.")
+    static private var sendingFormatString = String(localized: "Sending message %u of %u…", comment: "format for progress message when sending multiple sysex messages")
+    static private var sendingString = String(localized: "Sending message…", comment: "format for progress message when sending multiple sysex messages")
+    static private var doneString = String(localized: "Done.", comment: "Done.")
 
     private func updateProgress() {
         guard let sendStatus = midiController?.messageSendStatus else { return }

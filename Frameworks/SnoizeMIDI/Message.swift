@@ -204,7 +204,7 @@ public class Message: NSObject, NSCoding {
 
     public var typeForDisplay: String {
         // Subclasses may override
-        let typeName = NSLocalizedString("Unknown", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "displayed type of unknown MIDI status byte")
+        let typeName = String(localized: "Unknown", comment: "displayed type of unknown MIDI status byte")
         let status = String(format: "%02X", statusByte)
         return "\(typeName) ($\(status))"
     }
@@ -264,8 +264,8 @@ public class Message: NSObject, NSCoding {
 
     private var timeStampWasZeroWhenReceived: Bool
 
-    private static let fromString = NSLocalizedString("From", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "Prefix for endpoint name when it's a source")
-    private static let toString = NSLocalizedString("To", tableName: "SnoizeMIDI", bundle: Bundle.snoizeMIDI, comment: "Prefix for endpoint name when it's a destination")
+    private static let fromString = String(localized: "From", comment: "Prefix for endpoint name when it's a source")
+    private static let toString = String(localized: "To", comment: "Prefix for endpoint name when it's a destination")
 
     private static var timeStampDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
