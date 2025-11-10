@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		161B721315D8EA13006E21D4 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 161B721215D8EA13006E21D4 /* dsa_pub.pem */; };
+		1620677A2EC17F8400C42FC1 /* SysExLibrarian.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 1620676E2EC17F8400C42FC1 /* SysExLibrarian.xcstrings */; };
 		163849D226D37E62007C15DF /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849B926D37E62007C15DF /* MainMenu.xib */; };
 		163849E326D37E7A007C15DF /* Play.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849D326D37E79007C15DF /* Play.xib */; };
 		163849E426D37E7A007C15DF /* Details.xib in Resources */ = {isa = PBXBuildFile; fileRef = 163849D526D37E79007C15DF /* Details.xib */; };
@@ -53,7 +54,6 @@
 		16DE09DD25CB4934004F62F7 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16DE09DC25CB4934004F62F7 /* PreferencesWindowController.swift */; };
 		16F033600984B76F006C8A44 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		16F033630984B76F006C8A44 /* docs.htmld in Resources */ = {isa = PBXBuildFile; fileRef = F5D90FE4021630C101000164 /* docs.htmld */; };
-		16F0336B0984B76F006C8A44 /* SysExLibrarian.strings in Resources */ = {isa = PBXBuildFile; fileRef = F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */; };
 		16F034250984BA49006C8A44 /* SnoizeMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16F0332F0984B74B006C8A44 /* SnoizeMIDI.framework */; };
 		16F034320984BABA006C8A44 /* SnoizeMIDI.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 16F0332F0984B74B006C8A44 /* SnoizeMIDI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		16F0384C0984C9D7006C8A44 /* Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 16F0384B0984C9D7006C8A44 /* Defaults.plist */; };
@@ -143,6 +143,7 @@
 		16064970278D13E8005D51A3 /* HexFiend_2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = HexFiend_2.xcodeproj; path = ../../ThirdParty/HexFiend/app/HexFiend_2.xcodeproj; sourceTree = "<group>"; };
 		161B721215D8EA13006E21D4 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dsa_pub.pem; path = ../../Updates/dsa_pub.pem; sourceTree = "<group>"; };
 		161B721515D8EA7F006E21D4 /* SysExLibrarian.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = SysExLibrarian.xml; path = ../../Updates/SysExLibrarian.xml; sourceTree = "<group>"; };
+		1620676E2EC17F8400C42FC1 /* SysExLibrarian.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = SysExLibrarian.xcstrings; sourceTree = "<group>"; };
 		163849BA26D37E62007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		163849D426D37E79007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Play.xib; sourceTree = "<group>"; };
 		163849D626D37E79007C15DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Details.xib; sourceTree = "<group>"; };
@@ -168,7 +169,6 @@
 		1686427B25CFC35A00A8B292 /* RecordController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordController.swift; sourceTree = "<group>"; };
 		1686427D25D1195600A8B292 /* PlayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayController.swift; sourceTree = "<group>"; };
 		169225EF25C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		169225F125C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SysExLibrarian.strings; sourceTree = "<group>"; };
 		169225F225C2B04800771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.htmld; name = en; path = en.lproj/docs.htmld; sourceTree = "<group>"; };
 		169B7A1F25CA729900C9BB81 /* SysExSpeedController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SysExSpeedController.swift; sourceTree = "<group>"; };
 		16A7F90626D1E917007587B7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -325,7 +325,7 @@
 				163849DD26D37E79007C15DF /* Import.xib */,
 				16F033940984B76F006C8A44 /* Info-SysExLibrarian.plist */,
 				16F0384B0984C9D7006C8A44 /* Defaults.plist */,
-				F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */,
+				1620676E2EC17F8400C42FC1 /* SysExLibrarian.xcstrings */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				F5D90FE4021630C101000164 /* docs.htmld */,
 				161B721215D8EA13006E21D4 /* dsa_pub.pem */,
@@ -561,8 +561,8 @@
 				163849D226D37E62007C15DF /* MainMenu.xib in Resources */,
 				163849E926D37E7A007C15DF /* RecordMany.xib in Resources */,
 				163849E426D37E7A007C15DF /* Details.xib in Resources */,
-				16F0336B0984B76F006C8A44 /* SysExLibrarian.strings in Resources */,
 				163849E526D37E7A007C15DF /* RecordOne.xib in Resources */,
+				1620677A2EC17F8400C42FC1 /* SysExLibrarian.xcstrings in Resources */,
 				163849EA26D37E7A007C15DF /* MainWindow.xib in Resources */,
 				16F0384C0984C9D7006C8A44 /* Defaults.plist in Resources */,
 				161B721315D8EA13006E21D4 /* dsa_pub.pem in Resources */,
@@ -753,14 +753,6 @@
 				169225EF25C2B04800771B4F /* en */,
 			);
 			name = Credits.rtf;
-			sourceTree = "<group>";
-		};
-		F5C54B9B030C6F9D01000164 /* SysExLibrarian.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				169225F125C2B04800771B4F /* en */,
-			);
-			name = SysExLibrarian.strings;
 			sourceTree = "<group>";
 		};
 		F5D90FE4021630C101000164 /* docs.htmld */ = {

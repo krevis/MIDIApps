@@ -1,0 +1,170 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%#.3g seconds" : {
+      "comment" : "one second or more (formatting of milliseconds)"
+    },
+    "%ld milliseconds" : {
+      "comment" : "format for milliseconds"
+    },
+    "%u of %u" : {
+      "comment" : "importing sysex: x of y",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$u of %2$u"
+          }
+        }
+      }
+    },
+    "1 second" : {
+      "comment" : "string for one second exactly"
+    },
+    "Act as a source for other programs" : {
+      "comment" : "display name of virtual source"
+    },
+    "Cancel" : {
+      "comment" : "Cancel button in alert"
+    },
+    "Cancelled." : {
+      "comment" : "Cancelled."
+    },
+    "Continue" : {
+      "comment" : "Continue button in alert"
+    },
+    "Could not read SysEx" : {
+      "comment" : "title of alert when can't read a sysex file"
+    },
+    "Destination" : {
+      "comment" : "title of destination toolbar item"
+    },
+    "Done." : {
+      "comment" : "Done."
+    },
+    "Error" : {
+      "comment" : "title of error alert"
+    },
+    "In Use" : {
+      "comment" : "title of alert for file already in library"
+    },
+    "Missing File" : {
+      "comment" : "title of alert for missing file"
+    },
+    "No SysEx data could be found in %u of the files. They have not been added to the library." : {
+      "comment" : "format of message when no sysex data found in files"
+    },
+    "No SysEx data could be found in this file. It has not been added to the library." : {
+      "comment" : "message when no sysex data found in file"
+    },
+    "None" : {
+      "comment" : "none"
+    },
+    "Quit" : {
+      "comment" : "title of quit button"
+    },
+    "Receiving SysEx message…" : {
+      "comment" : "message when receiving sysex"
+    },
+    "Scanning..." : {
+      "comment" : "Scanning..."
+    },
+    "Sending message %u of %u…" : {
+      "comment" : "format for progress message when sending multiple sysex messages",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Sending message %1$u of %2$u…"
+          }
+        }
+      }
+    },
+    "Sending message…" : {
+      "comment" : "format for progress message when sending multiple sysex messages"
+    },
+    "SysEx" : {
+      "comment" : "default file name for exported standard MIDI file (w/o extension)"
+    },
+    "SysEx Librarian could not ask your email application to create a new message.\nPlease send email to:\n%@" : {
+      "comment" : "message of alert when can't send feedback email"
+    },
+    "SysEx Librarian Feedback" : {
+      "comment" : "subject of feedback email"
+    },
+    "That file is already in the library. Please choose another one." : {
+      "comment" : "message for file already in library"
+    },
+    "The file could not be created." : {
+      "comment" : "message of alert when recording to a new file fails"
+    },
+    "The file could not be saved." : {
+      "comment" : "message if sysex can't be exported"
+    },
+    "The file for the item \"%@\" could not be found. Would you like to locate it?" : {
+      "comment" : "format of message for missing file"
+    },
+    "The file for this item could not be renamed." : {
+      "comment" : "message of alert when renaming a file fails"
+    },
+    "The help file could not be found." : {
+      "comment" : "error message if help file can't be found"
+    },
+    "The help file could not be opened." : {
+      "comment" : "error message if opening the help file fails"
+    },
+    "The library \"%@\" could not be saved." : {
+      "comment" : "format of error message if the library file can't be saved"
+    },
+    "The library file \"%@\" could not be read." : {
+      "comment" : "format of error message if the library file can't be read"
+    },
+    "The path to the library file \"~/Preferences/SysEx Librarian Library.sXLb\" could not be created." : {
+      "comment" : "error message if the path to the library file can't be created"
+    },
+    "There is a problem accessing the SysEx Librarian preferences." : {
+      "comment" : "error message on preflight library"
+    },
+    "There was a problem initializing the MIDI system. To try to fix this, log out and log back in, or restart the computer." : {
+      "comment" : "error message if MIDI initialization fails"
+    },
+    "Total: %d message, %@" : {
+      "comment" : "format of progress message when receiving multiple sysex messages (one message so far)",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Total: %1$d message, %2$@"
+          }
+        }
+      }
+    },
+    "Total: %d messages, %@" : {
+      "comment" : "format of progress message when receiving multiple sysex messages (more than one message so far)",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Total: %1$d messages, %2$@"
+          }
+        }
+      }
+    },
+    "Unknown" : {
+      "comment" : "Unknown\nname of missing endpoint if not specified in document"
+    },
+    "Untitled" : {
+      "comment" : "name of new sysex file"
+    },
+    "Various" : {
+      "comment" : "Various"
+    },
+    "Waiting for SysEx message…" : {
+      "comment" : "message when waiting for sysex"
+    },
+    "Yes" : {
+      "comment" : "Yes button in alert"
+    }
+  },
+  "version" : "1.1"
+}

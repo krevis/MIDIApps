@@ -1,0 +1,102 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ bytes" : {
+      "comment" : "Invalid message length format string\nSysEx length format string"
+    },
+    "%0.1lf GB" : {
+      "comment" : "format for gigabytes"
+    },
+    "%0.1lf KB" : {
+      "comment" : "format for kilobytes"
+    },
+    "%0.1lf MB" : {
+      "comment" : "format for megabytes"
+    },
+    "%0.1lf PB" : {
+      "comment" : "format for petabytes"
+    },
+    "%0.1lf TB" : {
+      "comment" : "format for terabytes"
+    },
+    "%ld bytes" : {
+      "comment" : "format for < 1024 bytes"
+    },
+    "1 byte" : {
+      "comment" : "string for 1 byte"
+    },
+    "Active Sense" : {
+      "comment" : "displayed type of Active Sense event"
+    },
+    "Aftertouch" : {
+      "comment" : "displayed type of Aftertouch (poly pressure) event"
+    },
+    "Channel Pressure" : {
+      "comment" : "displayed type of Channel Pressure (aftertouch) event"
+    },
+    "Clock" : {
+      "comment" : "displayed type of Clock event"
+    },
+    "Continue" : {
+      "comment" : "displayed type of Continue event"
+    },
+    "Control" : {
+      "comment" : "displayed type of Control event"
+    },
+    "Controller %u" : {
+      "comment" : "format of unknown controller"
+    },
+    "From" : {
+      "comment" : "Prefix for endpoint name when it's a source"
+    },
+    "Invalid" : {
+      "comment" : "displayed type of Invalid event"
+    },
+    "MTC Quarter Frame" : {
+      "comment" : "displayed type of MTC Quarter Frame event"
+    },
+    "Note Off" : {
+      "comment" : "displayed type of Note Off event"
+    },
+    "Note On" : {
+      "comment" : "displayed type of Note On event"
+    },
+    "Pitch Wheel" : {
+      "comment" : "displayed type of Pitch Wheel event"
+    },
+    "Program" : {
+      "comment" : "displayed type of Program event"
+    },
+    "Reset" : {
+      "comment" : "displayed type of Reset event"
+    },
+    "Song Position Pointer" : {
+      "comment" : "displayed type of Song Position Pointer event"
+    },
+    "Song Select" : {
+      "comment" : "displayed type of Song Select event"
+    },
+    "Start" : {
+      "comment" : "displayed type of Start event"
+    },
+    "Stop" : {
+      "comment" : "displayed type of Stop event"
+    },
+    "SysEx" : {
+      "comment" : "displayed type of System Exclusive event"
+    },
+    "To" : {
+      "comment" : "Prefix for endpoint name when it's a destination"
+    },
+    "Tune Request" : {
+      "comment" : "displayed type of Tune Request event"
+    },
+    "Unknown" : {
+      "comment" : "displayed type of unknown MIDI status byte\nname of missing endpoint if not specified in document"
+    },
+    "Unknown Manufacturer" : {
+      "comment" : "unknown manufacturer name"
+    }
+  },
+  "version" : "1.1"
+}

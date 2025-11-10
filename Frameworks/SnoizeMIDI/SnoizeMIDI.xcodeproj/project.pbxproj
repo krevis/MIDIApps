@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1620677C2EC17FE500C42FC1 /* SnoizeMIDI.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 1620677B2EC17FE500C42FC1 /* SnoizeMIDI.xcstrings */; };
 		1691F95325B90AA500B9CE06 /* MessageDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F95225B90AA500B9CE06 /* MessageDestination.swift */; };
 		1691F98D25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F98C25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift */; };
 		1691F99725BD621A00B9CE06 /* MIDIObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1691F99625BD621A00B9CE06 /* MIDIObject.swift */; };
@@ -47,7 +48,6 @@
 		16B11BCE0971D40100DB1DB5 /* SnoizeMIDI.h in Headers */ = {isa = PBXBuildFile; fileRef = 16B11B910971D40100DB1DB5 /* SnoizeMIDI.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		16B11BF20971D77600DB1DB5 /* ControllerNames.plist in Resources */ = {isa = PBXBuildFile; fileRef = 16B11BEE0971D77600DB1DB5 /* ControllerNames.plist */; };
 		16B11BF30971D77600DB1DB5 /* ManufacturerNames.plist in Resources */ = {isa = PBXBuildFile; fileRef = 16B11BF00971D77600DB1DB5 /* ManufacturerNames.plist */; };
-		16B11BF60971D78500DB1DB5 /* SnoizeMIDI.strings in Resources */ = {isa = PBXBuildFile; fileRef = 16B11BF40971D78500DB1DB5 /* SnoizeMIDI.strings */; };
 		16B11DF20971D80F00DB1DB5 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B11DF00971D80F00DB1DB5 /* CoreMIDI.framework */; };
 		16B11DF30971D81400DB1DB5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D69BFE84028FC02AAC07 /* Foundation.framework */; };
 		16B736E125D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B736E025D9E5E9000DAC58 /* Bundle+SnoizeMIDI.swift */; };
@@ -64,6 +64,7 @@
 		161D6C940972111A00CA5276 /* Snoize-Project-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Debug.xcconfig"; path = "../../Configurations/Snoize-Project-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		161D6C9C097211EC00CA5276 /* Snoize-Project-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Release.xcconfig"; path = "../../Configurations/Snoize-Project-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
 		161D6CA10972127700CA5276 /* Snoize-Project-Global.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Snoize-Project-Global.xcconfig"; path = "../../Configurations/Snoize-Project-Global.xcconfig"; sourceTree = SOURCE_ROOT; };
+		1620677B2EC17FE500C42FC1 /* SnoizeMIDI.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = SnoizeMIDI.xcstrings; sourceTree = "<group>"; };
 		162A31F1254E9595008E1F38 /* Snoize-Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Snoize-Signing.xcconfig"; path = "../../Configurations/Snoize-Signing.xcconfig"; sourceTree = "<group>"; };
 		1691F95225B90AA500B9CE06 /* MessageDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDestination.swift; sourceTree = "<group>"; };
 		1691F98C25BD61E200B9CE06 /* CoreMIDIObjectWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMIDIObjectWrapper.swift; sourceTree = "<group>"; };
@@ -82,7 +83,6 @@
 		169225B725C2AEC400771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/ControllerNames.plist; sourceTree = "<group>"; };
 		169225B825C2AEC400771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		169225B925C2AEC400771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/ManufacturerNames.plist; sourceTree = "<group>"; };
-		169225BA25C2AEC400771B4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SnoizeMIDI.strings; sourceTree = "<group>"; };
 		169669F225A8E49300D5BE2A /* VirtualInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualInputStream.swift; sourceTree = "<group>"; };
 		16966A3D25A91B5F00D5BE2A /* PortInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortInputStream.swift; sourceTree = "<group>"; };
 		16966A4D25A9399600D5BE2A /* SingleInputStreamSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleInputStreamSource.swift; sourceTree = "<group>"; };
@@ -169,7 +169,7 @@
 			children = (
 				8DC2EF5A0486A6940098B216 /* Info.plist */,
 				089C1666FE841158C02AAC07 /* InfoPlist.strings */,
-				16B11BF40971D78500DB1DB5 /* SnoizeMIDI.strings */,
+				1620677B2EC17FE500C42FC1 /* SnoizeMIDI.xcstrings */,
 				16B11BEE0971D77600DB1DB5 /* ControllerNames.plist */,
 				16B11BF00971D77600DB1DB5 /* ManufacturerNames.plist */,
 			);
@@ -394,7 +394,7 @@
 				8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */,
 				16B11BF20971D77600DB1DB5 /* ControllerNames.plist in Resources */,
 				16B11BF30971D77600DB1DB5 /* ManufacturerNames.plist in Resources */,
-				16B11BF60971D78500DB1DB5 /* SnoizeMIDI.strings in Resources */,
+				1620677C2EC17FE500C42FC1 /* SnoizeMIDI.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -496,14 +496,6 @@
 				169225B925C2AEC400771B4F /* en */,
 			);
 			name = ManufacturerNames.plist;
-			sourceTree = "<group>";
-		};
-		16B11BF40971D78500DB1DB5 /* SnoizeMIDI.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				169225BA25C2AEC400771B4F /* en */,
-			);
-			name = SnoizeMIDI.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

@@ -1,0 +1,426 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ bytes" : {
+      "comment" : "Details size format string",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ bytes"
+          }
+        }
+      }
+    },
+    "%@ Details" : {
+      "comment" : "Details window title format string",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Details"
+          }
+        }
+      }
+    },
+    "Act as a destination for other programs" : {
+      "comment" : "name of source item for virtual destination",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Act as a destination for other programs"
+          }
+        }
+      }
+    },
+    "Are you sure you want to restart now?" : {
+      "comment" : "Restart y/n?",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure you want to restart now?"
+          }
+        }
+      }
+    },
+    "Can't read the contents of the file." : {
+      "comment" : "error reason for unknown file contents",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Can't read the contents of the file."
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "comment" : "Cancel button title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "Change Channel" : {
+      "comment" : "change channel undo action",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change Channel"
+          }
+        }
+      }
+    },
+    "Change Filter" : {
+      "comment" : "change filter undo action",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change Filter"
+          }
+        }
+      }
+    },
+    "Change Remembered Events" : {
+      "comment" : "change history limit undo action",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change Remembered Events"
+          }
+        }
+      }
+    },
+    "Change Selected Sources" : {
+      "comment" : "change source undo action",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change Selected Sources"
+          }
+        }
+      }
+    },
+    "Continue" : {
+      "comment" : "Continue button after MIDI spy client creation fails\n   Continue button if spy driver install fails",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue"
+          }
+        }
+      }
+    },
+    "Error" : {
+      "comment" : "title of error alert",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error"
+          }
+        }
+      }
+    },
+    "EXPERT_OFF" : {
+      "comment" : "Explanation when expert mode is off",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Data formatted according to settings above\n• Note On with velocity 0 shows as Note Off\n• Zero timestamp shows time received"
+          }
+        }
+      }
+    },
+    "EXPERT_ON" : {
+      "comment" : "Explanation when expert mode is on",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Data formatted as raw hexadecimal\n• Note On with velocity 0 shows as Note On\n• Zero timestamp shows 0"
+          }
+        }
+      }
+    },
+    "MIDI Error" : {
+      "comment" : "title of MIDI error panel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MIDI Error"
+          }
+        }
+      }
+    },
+    "MIDI Monitor could not ask your email application to create a new message.\nPlease send email to:\n%@" : {
+      "comment" : "message of alert when can't send feedback email",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MIDI Monitor could not ask your email application to create a new message.\nPlease send email to:\n%@"
+          }
+        }
+      }
+    },
+    "MIDI Monitor could not connect to its MIDI driver" : {
+      "comment" : "error message if MIDI spy client creation fails",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MIDI Monitor could not connect to its MIDI driver"
+          }
+        }
+      }
+    },
+    "MIDI Monitor could not install its driver." : {
+      "comment" : "error message if spy driver install fails",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MIDI Monitor could not install its driver."
+          }
+        }
+      }
+    },
+    "MIDI Monitor Feedback" : {
+      "comment" : "subject of feedback email",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MIDI Monitor Feedback"
+          }
+        }
+      }
+    },
+    "MIDI Monitor will not be able to see the output of other MIDI applications, but all other features will still work." : {
+      "comment" : "more suggestion if spy driver install fails",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MIDI Monitor will not be able to see the output of other MIDI applications, but all other features will still work."
+          }
+        }
+      }
+    },
+    "MIDI Monitor will not be able to spy on the output of other MIDI applications. It can still receive incoming MIDI events.\n\n1. Check your MIDI drivers in /Library/Audio/MIDI Drivers. There might be old drivers that are interfering with new ones. Remove drivers for hardware that you no longer use.\n2. Restart your computer, whether or not you did anything in step 1." : {
+      "comment" : "second line of warning when MIDI spy is unavailable",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MIDI Monitor will not be able to spy on the output of other MIDI applications. It can still receive incoming MIDI events.\n\n1. Check your MIDI drivers in /Library/Audio/MIDI Drivers. There might be old drivers that are interfering with new ones. Remove drivers for hardware that you no longer use.\n2. Restart your computer, whether or not you did anything in step 1."
+          }
+        }
+      }
+    },
+    "MIDI sources" : {
+      "comment" : "name of group for ordinary sources",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MIDI sources"
+          }
+        }
+      }
+    },
+    "Quit" : {
+      "comment" : "title of quit button",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit"
+          }
+        }
+      }
+    },
+    "Rescanning the MIDI system resulted in an unexpected error (%d)." : {
+      "comment" : "error message if MIDIRestart() fails",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rescanning the MIDI system resulted in an unexpected error (%d)."
+          }
+        }
+      }
+    },
+    "Restart" : {
+      "comment" : "Restart button after MIDI spy client creation fails\n   Restart button title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart"
+          }
+        }
+      }
+    },
+    "Show in Finder" : {
+      "comment" : "Show in Finder button if spy driver install fails",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show in Finder"
+          }
+        }
+      }
+    },
+    "Show MIDI Drivers" : {
+      "comment" : "Show MIDI Drivers button after MIDI spy client creation fails",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show MIDI Drivers"
+          }
+        }
+      }
+    },
+    "Spy on output to destinations" : {
+      "comment" : "name of group for spying on destinations",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spy on output to destinations"
+          }
+        }
+      }
+    },
+    "The help file could not be found." : {
+      "comment" : "error message if help file can't be found",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The help file could not be found."
+          }
+        }
+      }
+    },
+    "The help file could not be opened." : {
+      "comment" : "error message if opening the help file fails",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The help file could not be opened."
+          }
+        }
+      }
+    },
+    "The MIDI system could not be started." : {
+      "comment" : "error message if MIDI initialization fails",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The MIDI system could not be started."
+          }
+        }
+      }
+    },
+    "This probably affects all apps that use MIDI, not just MIDI Monitor.\n\nMost likely, the cause is a bad MIDI driver. Remove any MIDI drivers that you don't recognize, then try again." : {
+      "comment" : "informative text if MIDI initialization fails",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This probably affects all apps that use MIDI, not just MIDI Monitor.\n\nMost likely, the cause is a bad MIDI driver. Remove any MIDI drivers that you don't recognize, then try again."
+          }
+        }
+      }
+    },
+    "This shouldn't happen. Try downloading MIDI Monitor again." : {
+      "comment" : "suggestion if spy driver install fails due to our own error",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This shouldn't happen. Try downloading MIDI Monitor again."
+          }
+        }
+      }
+    },
+    "Unknown" : {
+      "comment" : "name of missing source if not specified in document",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown"
+          }
+        }
+      }
+    },
+    "Unknown file type." : {
+      "comment" : "error reason for unknown file type read or write",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown file type."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.1"
+}
