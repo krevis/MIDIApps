@@ -109,6 +109,13 @@
 			remoteGlobalIDString = A550A7161F7877F8001C79C7;
 			remoteInfo = hexf;
 		};
+		162067782EC17F8400C42FC1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16064970278D13E8005D51A3 /* HexFiend_2.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A50859A72B204C8100325B36;
+			remoteInfo = "Hex Fiend Tests";
+		};
 		16F0332E0984B74B006C8A44 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */;
@@ -223,6 +230,7 @@
 				16064984278D13E8005D51A3 /* HexFiendling.app */,
 				16064986278D13E8005D51A3 /* HexFiend_Framework Tests.xctest */,
 				16064988278D13E8005D51A3 /* hexf */,
+				162067792EC17F8400C42FC1 /* Hex Fiend Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -536,6 +544,13 @@
 			fileType = "compiled.mach-o.executable";
 			path = hexf;
 			remoteRef = 16064987278D13E8005D51A3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		162067792EC17F8400C42FC1 /* Hex Fiend Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Hex Fiend Tests.xctest";
+			remoteRef = 162067782EC17F8400C42FC1 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		16F0332F0984B74B006C8A44 /* SnoizeMIDI.framework */ = {
