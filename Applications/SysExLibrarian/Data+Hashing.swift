@@ -20,6 +20,10 @@ extension Data {
 
         withUnsafeBytes { (selfBufferPtr: UnsafeRawBufferPointer) -> Void in
             digest.withUnsafeMutableBufferPointer { ( digestBufferPtr: inout UnsafeMutableBufferPointer<UInt8>) -> Void in
+                // Note: This generates a warning about MD5 being deprecated because it's cryptographically broken.
+                // We aren't using it for cryptography, though.
+                // Sadly, there is STILL no way to silence deprecation warnings in Swift:
+                // https://forums.swift.org/t/swift-should-allow-for-suppression-of-warnings-especially-those-that-come-from-objective-c/19216/72
                 CC_MD5(selfBufferPtr.baseAddress, CC_LONG(self.count), digestBufferPtr.baseAddress)
             }
         }

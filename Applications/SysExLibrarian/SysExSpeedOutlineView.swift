@@ -29,7 +29,7 @@ class NonHighlightingTextFieldCell: NSTextFieldCell {
     }
 
     override var interiorBackgroundStyle: NSView.BackgroundStyle {
-        return .light
+        return .normal
         // == the background is a light color, and content drawn over it (the text) should be dark
     }
 

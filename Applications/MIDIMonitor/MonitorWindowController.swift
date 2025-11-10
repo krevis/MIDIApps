@@ -316,7 +316,7 @@ extension MonitorWindowController: NSOutlineViewDataSource, NSOutlineViewDelegat
     func outlineView(_ outlineView: NSOutlineView, willDisplayOutlineCell cell: Any, for tableColumn: NSTableColumn?, item: Any) {
         // cause the button cell to always use a "dark" triangle
         if let cell = cell as? NSCell {
-            cell.backgroundStyle = .light
+            cell.backgroundStyle = .normal
         }
     }
 

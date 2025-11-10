@@ -890,9 +890,6 @@ extension MainWindowController: NSToolbarDelegate {
             destinationToolbarItem = toolbarItem
 
             toolbarItem.view = destinationPopUpButton
-            let height = destinationPopUpButton.frame.size.height
-            toolbarItem.minSize = NSSize(width: 150, height: height)
-            toolbarItem.maxSize = NSSize(width: 1000, height: height)
 
             let menuTitle = String(localized: "Destination", comment: "title of destination toolbar item")
             let menuItem = NSMenuItem(title: menuTitle, action: nil, keyEquivalent: "")

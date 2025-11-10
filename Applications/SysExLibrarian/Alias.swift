@@ -14,6 +14,12 @@ struct Alias {
     }
 
     init?(aliasRecordData: Data) {
+        // Note: This now generates a warning:
+        //     'CFURLCreateBookmarkDataFromAliasRecord' was deprecated in macOS 11.0: The Carbon Alias Manager is deprecated. This function should only be used to convert Carbon AliasRecords to bookmark data.
+        // That is exactly what the function does, and why we are calling it!
+        // Sadly, there is STILL no way to silence deprecation warnings in Swift:
+        // https://forums.swift.org/t/swift-should-allow-for-suppression-of-warnings-especially-those-that-come-from-objective-c/19216/72
+
         if let cfBookmarkData = CFURLCreateBookmarkDataFromAliasRecord(kCFAllocatorDefault, aliasRecordData as CFData) {
             self.init(data: cfBookmarkData.takeRetainedValue() as Data)
         }
