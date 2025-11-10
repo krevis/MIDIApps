@@ -821,6 +821,7 @@
 			baseConfigurationReference = 16F033330984B760006C8A44 /* Snoize-Project-Debug.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				DEVELOPMENT_TEAM = YDJAW5GX9U;
 				ENABLE_TESTABILITY = YES;
 			};
 			name = Debug;
@@ -830,6 +831,7 @@
 			baseConfigurationReference = 16F033350984B760006C8A44 /* Snoize-Project-Release.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				DEVELOPMENT_TEAM = YDJAW5GX9U;
 			};
 			name = Release;
 		};
