@@ -183,7 +183,7 @@ public struct MessageFormatter {
     // MARK: Private
 
     private static var controllerNames: [String] = {
-        // It's lame that property lists must have keys which are strings. We would prefer an integer, in this case.
+        // It's unfortunate that property lists must have keys which are strings. We would prefer an integer, in this case.
         // We could create a new string for the controllerNumber and look that up in the dictionary, but that gets expensive to do all the time.
         // Instead, we just scan through the dictionary once, and build an array, which is quicker to index into.
 
