@@ -180,7 +180,7 @@
 		169E71A1097B2419001AFB58 /* SnoizeMIDI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDI.xcodeproj; path = ../../Frameworks/SnoizeMIDI/SnoizeMIDI.xcodeproj; sourceTree = SOURCE_ROOT; };
 		169E71A8097B242A001AFB58 /* SnoizeMIDISpy.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDISpy.xcodeproj; path = ../../Frameworks/SnoizeMIDISpy/SnoizeMIDISpy.xcodeproj; sourceTree = SOURCE_ROOT; };
 		16A3C27025E5CBC6001F01A3 /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
-		16A3C2E425E715D8001F01A3 /* HexFiend_2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = HexFiend_2.xcodeproj; path = ../../ThirdParty/HexFiend/HexFiend_2.xcodeproj; sourceTree = "<group>"; };
+		16A3C2E425E715D8001F01A3 /* HexFiend_2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = HexFiend_2.xcodeproj; path = ../../ThirdParty/HexFiend/app/HexFiend_2.xcodeproj; sourceTree = "<group>"; };
 		16A4169526D1CABC00DD5F9E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		16F20F4906EAA14A00D9C507 /* Defaults.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = Defaults.plist; sourceTree = "<group>"; };
 		16F9FA2A2586DFE300169621 /* MIDIMonitor-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MIDIMonitor-Bridging-Header.h"; sourceTree = "<group>"; };
