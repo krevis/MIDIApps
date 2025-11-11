@@ -7,6 +7,7 @@
 
 import Cocoa
 import SnoizeMIDI
+import UniformTypeIdentifiers
 
 class ExportController {
 
@@ -22,7 +23,9 @@ class ExportController {
         // Pick a file name to export to.
         let ext = asSMF ? "mid" : "syx"
         let savePanel = NSSavePanel()
-        savePanel.allowedFileTypes = [ext]
+        if let type = UTType(filenameExtension: ext) {
+            savePanel.allowedContentTypes = [type]
+        }
         savePanel.allowsOtherFileTypes = true
         savePanel.canSelectHiddenExtension = true
 

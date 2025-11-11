@@ -7,6 +7,7 @@
 
 import Cocoa
 import SnoizeMIDI
+import UniformTypeIdentifiers
 
 class SysExWindowController: DetailsWindowController {
 
@@ -43,7 +44,9 @@ class SysExWindowController: DetailsWindowController {
         guard let window else { return }
 
         let savePanel = NSSavePanel()
-        savePanel.allowedFileTypes = ["syx"]
+        if let type = UTType(filenameExtension: "syx") {
+            savePanel.allowedContentTypes = [type]
+        }
         savePanel.allowsOtherFileTypes = true
         savePanel.beginSheetModal(for: window) { _ in
             savePanel.orderOut(nil)
