@@ -7,79 +7,58 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>syx</string>
-				<string>SYX</string>
-				<string>Syx</string>
-			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>SysExDocument</string>
 			<key>CFBundleTypeIconSystemGenerated</key>
 			<integer>1</integer>
 			<key>CFBundleTypeName</key>
 			<string>SysEx Librarian Document</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>sysX</string>
-			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
 			<string>Default</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.snoize.midi-sysex</string>
+			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 		</dict>
 		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>mid</string>
-				<string>MID</string>
-				<string>midi</string>
-				<string>MIDI</string>
-				<string>Midi</string>
-			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>MIDIDocument</string>
 			<key>CFBundleTypeIconSystemGenerated</key>
 			<integer>1</integer>
 			<key>CFBundleTypeName</key>
 			<string>MIDI file</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>Midi</string>
-				<string>.WAV</string>
-			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
 			<string>Default</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.midi-audio</string>
+			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 		</dict>
 		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>sXLb</string>
-			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>LibraryDocument</string>
 			<key>CFBundleTypeIconSystemGenerated</key>
 			<integer>1</integer>
 			<key>CFBundleTypeName</key>
 			<string>SysEx Librarian Library</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>sXLb</string>
-			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
 			<string>Default</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.snoize.sysexlibrarian-library</string>
+			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
-			<key>NSPersistentStoreTypeKey</key>
-			<string>XML</string>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
@@ -116,5 +95,60 @@
 	<string>dsa_pub.pem</string>
 	<key>SUPublicEDKey</key>
 	<string>Zk/6WD45ECvo30iL+yu+RDMtyUtdf0eT1YDu0psPZQQ=</string>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+				<string>public.content</string>
+				<string>public.item</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>MIDI System Exclusive Data</string>
+			<key>UTTypeIconFile</key>
+			<string>SysExDocument</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.snoize.midi-sysex</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>com.apple.ostype</key>
+				<array>
+					<string>sysX</string>
+				</array>
+				<key>public.filename-extension</key>
+				<array>
+					<string>syx</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+				<string>public.content</string>
+				<string>public.item</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>SysEx Librarian Library</string>
+			<key>UTTypeIconFile</key>
+			<string>LibraryDocument</string>
+			<key>UTTypeIcons</key>
+			<dict/>
+			<key>UTTypeIdentifier</key>
+			<string>com.snoize.sysexlibrarian-library</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>com.apple.ostype</key>
+				<array>
+					<string>sXLb</string>
+				</array>
+				<key>public.filename-extension</key>
+				<array>
+					<string>sXLb</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
 </dict>
 </plist>

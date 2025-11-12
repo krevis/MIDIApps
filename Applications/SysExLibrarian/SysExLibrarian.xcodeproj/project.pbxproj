@@ -51,6 +51,7 @@
 		16D0EF2525C947F800399C74 /* SysExSpeedOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D0EF2425C947F800399C74 /* SysExSpeedOutlineView.swift */; };
 		16D0EF2725C94D0400399C74 /* ValidatingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D0EF2625C94D0400399C74 /* ValidatingButton.swift */; };
 		16D0EF2B25CA16DF00399C74 /* NSPopUpButton+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D0EF2A25CA16DF00399C74 /* NSPopUpButton+Extensions.swift */; };
+		16D6C6EF2EC40CD50074AE7F /* UTType+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D6C6EE2EC40CCF0074AE7F /* UTType+Extensions.swift */; };
 		16DE09DD25CB4934004F62F7 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16DE09DC25CB4934004F62F7 /* PreferencesWindowController.swift */; };
 		16F033600984B76F006C8A44 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		16F033630984B76F006C8A44 /* docs.htmld in Resources */ = {isa = PBXBuildFile; fileRef = F5D90FE4021630C101000164 /* docs.htmld */; };
@@ -193,6 +194,7 @@
 		16D0EF2425C947F800399C74 /* SysExSpeedOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SysExSpeedOutlineView.swift; sourceTree = "<group>"; };
 		16D0EF2625C94D0400399C74 /* ValidatingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatingButton.swift; sourceTree = "<group>"; };
 		16D0EF2A25CA16DF00399C74 /* NSPopUpButton+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPopUpButton+Extensions.swift"; sourceTree = "<group>"; };
+		16D6C6EE2EC40CCF0074AE7F /* UTType+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UTType+Extensions.swift"; sourceTree = "<group>"; };
 		16DE09DC25CB4934004F62F7 /* PreferencesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesWindowController.swift; sourceTree = "<group>"; };
 		16F0332A0984B74B006C8A44 /* SnoizeMIDI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnoizeMIDI.xcodeproj; path = ../../Frameworks/SnoizeMIDI/SnoizeMIDI.xcodeproj; sourceTree = SOURCE_ROOT; };
 		16F033300984B760006C8A44 /* Snoize-Application-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; name = "Snoize-Application-Debug.xcconfig"; path = "../../Configurations/Snoize-Application-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
@@ -399,6 +401,7 @@
 		F565B6ED01E1567501000164 /* Cocoa Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				16D6C6EE2EC40CCF0074AE7F /* UTType+Extensions.swift */,
 				16517B9225D4A2E900D0CAC4 /* NSFileManager+UniqueName.swift */,
 				16D0EF2A25CA16DF00399C74 /* NSPopUpButton+Extensions.swift */,
 				16517BAE25D5154F00D0CAC4 /* GeneralWindowController.swift */,
@@ -650,6 +653,7 @@
 				16D0EF2725C94D0400399C74 /* ValidatingButton.swift in Sources */,
 				1686427425CDEFF900A8B292 /* DeleteController.swift in Sources */,
 				16B736C225D66C07000DAC58 /* Alias.swift in Sources */,
+				16D6C6EF2EC40CD50074AE7F /* UTType+Extensions.swift in Sources */,
 				1686426E25CB869500A8B292 /* AppController.swift in Sources */,
 				16517BAF25D5154F00D0CAC4 /* GeneralWindowController.swift in Sources */,
 				16C43BBA25C4F637007A3A48 /* Data+Hashing.swift in Sources */,

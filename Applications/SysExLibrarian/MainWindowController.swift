@@ -98,7 +98,7 @@ class MainWindowController: GeneralWindowController {
 
         let openPanel = NSOpenPanel()
         openPanel.allowsMultipleSelection = true
-        openPanel.allowedFileTypes = library.allowedFileTypes
+        openPanel.allowedContentTypes = library.allowedContentTypes
         openPanel.beginSheetModal(for: window) { response in
             if response == .OK {
                 let filenames = openPanel.urls.compactMap { $0.path }

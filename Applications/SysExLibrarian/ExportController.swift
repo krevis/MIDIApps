@@ -20,12 +20,15 @@ class ExportController {
     func exportMessages(_ messages: [SystemExclusiveMessage], fromFileName: String?, asSMF: Bool) {
         guard let window = mainWindowController?.window else { return }
 
+        let contentType = asSMF ? UTType.midi : UTType.rawSysEx
+
         // Pick a file name to export to.
+        // To find an extension, ideally we would use contentType.preferredFilenameExtension, but that gives us "midi"
+        // which is less commonly understood than good old "mid". So force it.
         let ext = asSMF ? "mid" : "syx"
+
         let savePanel = NSSavePanel()
-        if let type = UTType(filenameExtension: ext) {
-            savePanel.allowedContentTypes = [type]
-        }
+        savePanel.allowedContentTypes = [contentType]
         savePanel.allowsOtherFileTypes = true
         savePanel.canSelectHiddenExtension = true
 

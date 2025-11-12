@@ -7,23 +7,11 @@
 
 import Cocoa
 import SnoizeMIDI
+import UniformTypeIdentifiers
 
 class Library: NSObject {
 
     static var shared = Library()
-
-    override init() {
-        guard let documentTypes = Bundle.main.infoDictionary?["CFBundleDocumentTypes"] as? [[String: Any]] else { fatalError() }
-        guard documentTypes.count > 1 else { fatalError() }
-
-        rawSysExFileTypes = Self.fileTypes(fromDocumentTypeDictionary: documentTypes[0])
-        standardMIDIFileTypes = Self.fileTypes(fromDocumentTypeDictionary: documentTypes[1])
-        allowedFileTypes = rawSysExFileTypes + standardMIDIFileTypes
-
-        entries = []
-
-        super.init()
-    }
 
     var fileDirectoryPath: String {
         get {
@@ -58,7 +46,7 @@ class Library: NSObject {
         return nil
     }
 
-    private(set) var entries: [LibraryEntry]
+    private(set) var entries: [LibraryEntry] = []
 
     func addEntry(forFile filePath: String) -> LibraryEntry? {
         // NOTE: This will return nil, and add no entry, if no messages are in the file
@@ -90,7 +78,7 @@ class Library: NSObject {
         try fileManager.createDirectory(atPath: fileDirectoryPath, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o755])
 
         let newFileName = String(localized: "Untitled", comment: "name of new sysex file")
-        let newFileNameWithExtension = NSString(string: newFileName).appendingPathExtension(Self.sysExFileExtension)!
+        let newFileNameWithExtension = NSString(string: newFileName).appendingPathExtension(rawSysExContentType.preferredFilenameExtension ?? "syx")!
         let newFilePath = NSString(string: fileDirectoryPath).appendingPathComponent(newFileNameWithExtension)
         let uniqueNewFilePath = fileManager.uniqueFilename(from: newFilePath)
 
@@ -192,8 +180,7 @@ class Library: NSObject {
         }
     }
 
-    let allowedFileTypes: [String]
-        // FUTURE: Should be [UTType], when we can require macOS 11.0
+    var allowedContentTypes: [UTType] { [rawSysExContentType, standardMIDIContentType] }
 
     enum FileType {
         case raw
@@ -203,16 +190,22 @@ class Library: NSObject {
 
     func typeOfFile(atPath path: String) -> FileType {
         guard !path.isEmpty else { return .unknown }
-
-        var fileType = NSString(string: path).pathExtension
-        if fileType.isEmpty {
-            fileType = NSHFSTypeOfFile(path)
+        guard let url: URL =
+        if #available(macOS 13.0, *) {
+            URL(filePath: path, directoryHint: .notDirectory)
         }
+        else {
+            // Fallback on earlier versions
+            URL(fileURLWithPath: path)
+        }
+        else { return .unknown }
 
-        if rawSysExFileTypes.contains(fileType) {
+        guard let contentType = try? url.resourceValues(forKeys: [.contentTypeKey]).contentType else { return .unknown }
+
+        if contentType.conforms(to: rawSysExContentType) {
             return .raw
         }
-        else if standardMIDIFileTypes.contains(fileType) {
+        else if contentType.conforms(to: standardMIDIContentType) {
             return .standardMIDI
         }
         else {
@@ -264,8 +257,8 @@ class Library: NSObject {
     private var isDirty = false
     private var willPostLibraryDidChangeNotification = false
 
-    private let rawSysExFileTypes: [String]
-    private let standardMIDIFileTypes: [String]
+    private let rawSysExContentType = UTType.rawSysEx
+    private let standardMIDIContentType = UTType.midi
 
 }
 
@@ -293,21 +286,6 @@ extension Library /* Private */ {
     static let applicationCreatorCode = NSHFSTypeCodeFromFileType("'SnSX'")
     static let libraryFileTypeCode = NSHFSTypeCodeFromFileType("'sXLb'")
     static let sysExFileTypeCode = NSHFSTypeCodeFromFileType("'sysX'")
-
-    private static func fileTypes(fromDocumentTypeDictionary dict: [String: Any]) -> [String] {
-        var fileTypes: [String] = []
-
-        if let extensions = dict["CFBundleTypeExtensions"] as? [String] {
-            fileTypes.append(contentsOf: extensions)
-        }
-
-        if let osTypes = dict["CFBundleTypeOSTypes"] as? [String] {
-            let osTypesAsFileTypes = osTypes.map { "'\($0)'" }
-            fileTypes.append(contentsOf: osTypesAsFileTypes)
-        }
-
-        return fileTypes
-    }
 
     private var rememberedFileDirectoryPath: String? {
         if let bookmarkData = UserDefaults.standard.data(forKey: Self.libraryFileDirectoryBookmarkDefaultsKey) {

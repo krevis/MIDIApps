@@ -68,7 +68,7 @@ extension FindMissingController /* Private */ {
         guard let window = mainWindowController?.window, let library else { return }
 
         let openPanel = NSOpenPanel()
-        openPanel.allowedFileTypes = library.allowedFileTypes
+        openPanel.allowedContentTypes = library.allowedContentTypes
         openPanel.beginSheetModal(for: window) { response in
             if response == .OK && openPanel.urls.count > 0 {
                 let filePath = openPanel.urls.first!.path
