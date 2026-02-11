@@ -23,7 +23,8 @@ class Document: NSDocument {
         messageFilter.filterMask = Message.TypeMask.all
         messageFilter.channelMask = VoiceMessage.ChannelMask.all
 
-        messageFilter.messageDestination = history
+        messageMult.addDestination(history)
+        messageFilter.messageDestination = messageMult
         history.delegate = self
 
         // If the user changed the value of this old obsolete preference, bring its value forward to our new preference
@@ -39,6 +40,10 @@ class Document: NSDocument {
         updateChangeCount(.changeCleared)
     }
 
+    deinit {
+        fileLogger.stopLogging()
+    }
+
     // MARK: Private
 
     private let midiMonitorFileType = "com.snoize.midimonitor"
@@ -50,6 +55,11 @@ class Document: NSDocument {
     private let stream: CombinationInputStream
     private let messageFilter = MessageFilter()
     private let history = MessageHistory()
+    private let messageMult = MessageMult()
+    private let fileLogger = MessageFileLogger()
+
+    private var logToFileEnabledStorage = false
+    private var logFileNameStorage = "MIDI Monitor Log.txt"
 
     // Transient data
     private var isSysExUpdateQueued = false
@@ -356,6 +366,43 @@ extension Document {
         // Note: The remembered messages are saved with the document, and changes to the messages
         // do dirty the document, but changes are not undoable -- it wouldn't make much sense.
         return history.savedMessages
+    }
+
+    var isLoggingToFile: Bool {
+        return logToFileEnabledStorage
+    }
+
+    var logFileName: String {
+        get {
+            return logFileNameStorage
+        }
+        set {
+            let trimmed = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            logFileNameStorage = trimmed.isEmpty ? "MIDI Monitor Log.txt" : trimmed
+        }
+    }
+
+    func setLoggingToFile(_ enabled: Bool) {
+        guard enabled != logToFileEnabledStorage else { return }
+        logToFileEnabledStorage = enabled
+        if enabled {
+            fileLogger.startLogging(toFileNamed: logFileNameStorage)
+            messageMult.addDestination(fileLogger)
+        }
+        else {
+            messageMult.removeDestination(fileLogger)
+            fileLogger.stopLogging()
+        }
+        monitorWindowController?.updateLoggingControls()
+    }
+
+    func updateLogFileName(_ name: String) {
+        let previousName = logFileNameStorage
+        logFileName = name
+        if logToFileEnabledStorage && logFileNameStorage != previousName {
+            fileLogger.startLogging(toFileNamed: logFileNameStorage)
+        }
+        monitorWindowController?.updateLoggingControls()
     }
 
 }

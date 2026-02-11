@@ -13,6 +13,8 @@
                 <outlet property="filterDisclosableView" destination="383" id="424"/>
                 <outlet property="filterDisclosureButton" destination="384" id="423"/>
                 <outlet property="invalidCheckBox" destination="487" id="491"/>
+                <outlet property="logFileNameField" destination="k46-0s-M4S" id="8pV-0j-6W5"/>
+                <outlet property="logToFileCheckBox" destination="xw8-3y-3dR" id="D1m-LN-1Pv"/>
                 <outlet property="maxMessageCountField" destination="41" id="69"/>
                 <outlet property="messagesTableView" destination="39" id="235"/>
                 <outlet property="oneChannelField" destination="395" id="430"/>
@@ -355,14 +357,14 @@
                                     </connections>
                                 </button>
                                 <scrollView fixedFrame="YES" borderType="none" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="29">
-                                    <rect key="frame" x="2" y="0.0" width="600" height="148"/>
+                                    <rect key="frame" x="2" y="0.0" width="600" height="128"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="bCI-3e-JXC">
-                                        <rect key="frame" x="0.0" y="0.0" width="600" height="148"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="128"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" autosaveColumns="NO" rowHeight="14" headerView="519" id="39">
-                                                <rect key="frame" x="0.0" y="0.0" width="600" height="131"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="600" height="111"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -449,6 +451,43 @@
                                         <autoresizingMask key="autoresizingMask"/>
                                     </tableHeaderView>
                                 </scrollView>
+                                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xw8-3y-3dR">
+                                    <rect key="frame" x="19" y="130" width="92" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Log to file" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="yq7-8u-2xG">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="toggleLogToFile:" target="-2" id="g8L-yk-1lB"/>
+                                        <outlet property="nextKeyView" destination="k46-0s-M4S" id="c2h-9A-3e2"/>
+                                    </connections>
+                                </button>
+                                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="k46-0s-M4S">
+                                    <rect key="frame" x="120" y="127" width="230" height="22"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="5f1-7N-1D6">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                    <connections>
+                                        <action selector="setLogFileName:" target="-2" id="9xP-47-C2u"/>
+                                        <outlet property="nextKeyView" destination="1zH-wu-8E0" id="xY9-Mr-b0b"/>
+                                    </connections>
+                                </textField>
+                                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1zH-wu-8E0">
+                                    <rect key="frame" x="360" y="124" width="90" height="26"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="push" title="Choose…" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="q1U-3Q-DJQ">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="browseLogFileLocation:" target="-2" id="CMT-1F-o0I"/>
+                                        <outlet property="nextKeyView" destination="41" id="2t8-PK-5nh"/>
+                                    </connections>
+                                </button>
                                 <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="40">
                                     <rect key="frame" x="19" y="157" width="110" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
