@@ -860,6 +860,78 @@
 	<string>Synervoz Communications</string>
 	<key>000254</key>
 	<string>Hypertriangle</string>
+	<key>000255</key>
+	<string>DigiBrass</string>
+	<key>000256</key>
+	<string>MIDI2 Marketing</string>
+	<key>000257</key>
+	<string>TAQS.IM</string>
+	<key>000258</key>
+	<string>CSS Designs</string>
+	<key>000259</key>
+	<string>Mozaic Beats</string>
+	<key>00025A</key>
+	<string>PianoDisc</string>
+	<key>00025B</key>
+	<string>Uwyn</string>
+	<key>00025C</key>
+	<string>FSK Audio</string>
+	<key>00025D</key>
+	<string>Eternal Research</string>
+	<key>00025E</key>
+	<string>Azoteq</string>
+	<key>00025F</key>
+	<string>Hy Music</string>
+	<key>000260</key>
+	<string>Sound Magic</string>
+	<key>000261</key>
+	<string>Dirtywave</string>
+	<key>000262</key>
+	<string>Kinotone</string>
+	<key>000263</key>
+	<string>Yoder Precision Instruments</string>
+	<key>000264</key>
+	<string>McLaren Labs</string>
+	<key>000265</key>
+	<string>Gigperfomer</string>
+	<key>000266</key>
+	<string>Groove Synthesis</string>
+	<key>000268</key>
+	<string>Stellr Audio</string>
+	<key>000269</key>
+	<string>Essential Technology</string>
+	<key>00026A</key>
+	<string>Lookc Music</string>
+	<key>00026B</key>
+	<string>Homey Music</string>
+	<key>00026C</key>
+	<string>Lorre Mill</string>
+	<key>00026D</key>
+	<string>Playtime Engineering</string>
+	<key>00026E</key>
+	<string>pipeorgan.tech</string>
+	<key>00026F</key>
+	<string>Seer Systems</string>
+	<key>000270</key>
+	<string>AM Components</string>
+	<key>000271</key>
+	<string>Music Technologies Group</string>
+	<key>000272</key>
+	<string>GLX Audio</string>
+	<key>000273</key>
+	<string>Free Software Foundation</string>
+	<key>000274</key>
+	<string>JDS Labs</string>
+	<key>000275</key>
+	<string>Koda</string>
+	<key>000276</key>
+	<string>THD-Labs</string>
+	<key>000277</key>
+	<string>BandM8</string>
+	<key>000278</key>
+	<string>DDV Studios</string>
+	<key>000279</key>
+	<string>Gray Instruments</string>
 	<key>002000</key>
 	<string>Dream</string>
 	<key>002001</key>
@@ -1356,62 +1428,112 @@
 	<string>Guangzhou Pearl River Amason Digital Musical Instrument</string>
 	<key>002178</key>
 	<string>Rhesus Engineering</string>
-    <key>002179</key>
-    <string>Bremmers Audio Design</string>
-    <key>00217a</key>
-    <string>Cherub Technology</string>
-    <key>00217b</key>
-    <string>Synthstrom Audible</string>
-    <key>00217c</key>
-    <string>Neural DSP Technologies</string>
-    <key>00217d</key>
-    <string>2box</string>
-    <key>00217e</key>
-    <string>Intuitive Instruments</string>
-    <key>00217f</key>
-    <string>Twisted-electrons</string>
-    <key>002200</key>
-    <string>Wildcard Engineering</string>
-    <key>002201</key>
-    <string>Dato Musical Instruments</string>
-    <key>002202</key>
-    <string>JTJ Audio</string>
-    <key>002203</key>
-    <string>Melbourne Instruments</string>
-    <key>002204</key>
-    <string>AZMINO</string>
-    <key>002205</key>
-    <string>TELEMIDI</string>
-    <key>002206</key>
-    <string>Tylium</string>
-    <key>002207</key>
-    <string>Engineering Lab</string>
-    <key>002208</key>
-    <string>Archaea Modular Synthesis</string>
-    <key>002209</key>
-    <string>Tentacle Sync</string>
-    <key>00220a</key>
-    <string>Misa Digital</string>
-    <key>00220b</key>
-    <string>Heavy Procrastination Industries</string>
-    <key>00220c</key>
-    <string>Telepathic</string>
-    <key>00220d</key>
-    <string>Neoharp</string>
-    <key>00220e</key>
-    <string>Rhodes Music Group</string>
-    <key>00220f</key>
-    <string>Halbestunde</string>
-    <key>002211</key>
-    <string>FluQe</string>
-    <key>002212</key>
-    <string>Blackmagic Design</string>
-    <key>002213</key>
-    <string>Tangible Waves</string>
-    <key>002214</key>
-    <string>Huebner Informationselektronik</string>
-    <key>002215</key>
-    <string>Addictive Instruments</string>
+	<key>002179</key>
+	<string>Bremmers Audio Design</string>
+	<key>00217a</key>
+	<string>Cherub Technology</string>
+	<key>00217b</key>
+	<string>Synthstrom Audible</string>
+	<key>00217c</key>
+	<string>Neural DSP Technologies</string>
+	<key>00217d</key>
+	<string>2box</string>
+	<key>00217e</key>
+	<string>Intuitive Instruments</string>
+	<key>00217f</key>
+	<string>Twisted-electrons</string>
+	<key>002200</key>
+	<string>Wildcard Engineering</string>
+	<key>002201</key>
+	<string>Dato Musical Instruments</string>
+	<key>002202</key>
+	<string>JTJ Audio</string>
+	<key>002203</key>
+	<string>Melbourne Instruments</string>
+	<key>002204</key>
+	<string>AZMINO</string>
+	<key>002205</key>
+	<string>TELEMIDI</string>
+	<key>002206</key>
+	<string>Tylium</string>
+	<key>002207</key>
+	<string>Engineering Lab</string>
+	<key>002208</key>
+	<string>Archaea Modular Synthesis</string>
+	<key>002209</key>
+	<string>Tentacle Sync</string>
+	<key>00220a</key>
+	<string>Misa Digital</string>
+	<key>00220b</key>
+	<string>Heavy Procrastination Industries</string>
+	<key>00220c</key>
+	<string>Telepathic</string>
+	<key>00220d</key>
+	<string>Neoharp</string>
+	<key>00220e</key>
+	<string>Rhodes Music Group</string>
+	<key>00220f</key>
+	<string>Halbestunde</string>
+	<key>002211</key>
+	<string>FluQe</string>
+	<key>002212</key>
+	<string>Blackmagic Design</string>
+	<key>002213</key>
+	<string>Tangible Waves</string>
+	<key>002214</key>
+	<string>Huebner Informationselektronik</string>
+	<key>002215</key>
+	<string>Addictive Instruments</string>
+	<key>002216</key>
+	<string>Lightreft KK</string>
+	<key>002217</key>
+	<string>Morphor</string>
+	<key>002218</key>
+	<string>Filisia Interfaces</string>
+	<key>002219</key>
+	<string>Neuzeit Instruments</string>
+	<key>00221A</key>
+	<string>KOMA Elektronik</string>
+	<key>00221B</key>
+	<string>Freshwater Instruments</string>
+	<key>00221C</key>
+	<string>Full Fat</string>
+	<key>00221D</key>
+	<string>Gooroo Controllers</string>
+	<key>00221E</key>
+	<string>JK</string>
+	<key>00221F</key>
+	<string>Shenzhen Dale Sensor Tech</string>
+	<key>002220</key>
+	<string>Antescofo</string>
+	<key>002221</key>
+	<string>Nanjing Qinheng Microelectronics</string>
+	<key>002222</key>
+	<string>PopuMusic</string>
+	<key>002223</key>
+	<string>SynthHead</string>
+	<key>002224</key>
+	<string>Joël Krähemann</string>
+	<key>002225</key>
+	<string>Thomas Neumann Licht und Ton</string>
+	<key>002226</key>
+	<string>Apaeron</string>
+	<key>002227</key>
+	<string>Logic des Audio</string>
+	<key>002228</key>
+	<string>Viktor Wallner Software Engineering</string>
+	<key>002229</key>
+	<string>Soundventure</string>
+	<key>00222A</key>
+	<string>ChamSys</string>
+	<key>00222B</key>
+	<string>GlassworksAudio</string>
+	<key>00222C</key>
+	<string>Dubreq</string>
+	<key>00222D</key>
+	<string>Beyerdynamic</string>
+	<key>00222E</key>
+	<string>Digit Music</string>
 	<key>004000</key>
 	<string>Crimson Technology</string>
 	<key>004001</key>
@@ -1421,23 +1543,25 @@
 	<key>004004</key>
 	<string>Xing</string>
 	<key>004005</key>
-	<string>AlphaTheta (Pioneer DJ)</string>
+	<string>AlphaTheta</string>
 	<key>004006</key>
 	<string>Pioneer</string>
 	<key>004007</key>
 	<string>Slik</string>
+	<key>004008</key>
+	<string>TFab Works</string>
 	<key>004800</key>
 	<string>sigboost</string>
 	<key>004801</key>
 	<string>Lost Technology</string>
 	<key>004802</key>
-	<string>Uchiwa Fuujinn</string>
+	<string>Fan Wind God</string>
 	<key>004803</key>
-	<string>Tsukuba Science</string>
+	<string>Tsukuba Scientific </string>
 	<key>004804</key>
 	<string>Sonicware</string>
 	<key>004805</key>
-	<string>Keshi Nomi Workshop</string>
+	<string>Poppy Seed Studio</string>
 	<key>004806</key>
 	<string>Black Corporation</string>
 	<key>004807</key>
