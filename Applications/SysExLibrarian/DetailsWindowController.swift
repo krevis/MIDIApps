@@ -149,6 +149,19 @@ class DetailsWindowController: GeneralWindowController {
         synchronizeTitle()
     }
 
+  
+  @IBAction func copy(_: Any) {
+    
+    let selectedRows = messagesTableView.selectedRowIndexes
+    guard selectedRows.count > 0 else { return }
+    
+    let selectedData = selectedRows.map { cachedMessages[$0].receivedDataWithStartByte.map { String(format: "%02hhx", $0) }.joined() }.joined(separator: "")
+
+    let pasteboard = NSPasteboard.general
+    pasteboard.clearContents()
+    pasteboard.setString(selectedData, forType: .string)
+  }
+  
 }
 
 extension DetailsWindowController /* NSWindowDelegate */ {
