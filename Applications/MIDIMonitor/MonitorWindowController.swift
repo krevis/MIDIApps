@@ -57,6 +57,8 @@ class MonitorWindowController: NSWindowController {
     @IBOutlet private var messagesTableView: NSTableView!
     @IBOutlet private var clearButton: NSButton!
     @IBOutlet private var maxMessageCountField: NSTextField!
+    @IBOutlet private var logToFileCheckBox: NSButton!
+    @IBOutlet private var logFileNameField: NSTextField!
     @IBOutlet private var sysExProgressIndicator: NSProgressIndicator!
     @IBOutlet private var sysExProgressField: NSTextField!
 
@@ -126,6 +128,7 @@ extension MonitorWindowController {
             updateSources()
             updateMaxMessageCount()
             updateFilterControls()
+            updateLoggingControls()
 
             restoreWindowSettings(smmDocument.windowSettings ?? [:])
 
@@ -460,6 +463,14 @@ extension MonitorWindowController: NSTableViewDataSource {
         maxMessageCountField.objectValue = NSNumber(value: midiDocument.maxMessageCount)
     }
 
+    func updateLoggingControls() {
+        guard let midiDocument else { return }
+
+        logToFileCheckBox.state = midiDocument.isLoggingToFile ? .on : .off
+        logFileNameField.stringValue = midiDocument.logFileName
+        maxMessageCountField.isEnabled = !midiDocument.isLoggingToFile
+    }
+
     func updateVisibleMessages() {
         // Traditionally this was just messagesTableView.reloadData(), but as of macOS 10.15 (and perhaps earlier)
         // that sometimes, the first time after the window is shown, has a side-effect of changing the scroll position
@@ -537,6 +548,34 @@ extension MonitorWindowController: NSTableViewDataSource {
         }
         else {
             updateMaxMessageCount()
+        }
+    }
+
+    @IBAction func toggleLogToFile(_ sender: Any?) {
+        guard let midiDocument else { return }
+        guard let checkbox = sender as? NSButton else { return }
+
+        midiDocument.setLoggingToFile(checkbox.state == .on)
+    }
+
+    @IBAction func setLogFileName(_ sender: Any?) {
+        guard let midiDocument else { return }
+        guard let field = sender as? NSTextField else { return }
+
+        midiDocument.updateLogFileName(field.stringValue)
+    }
+
+    @IBAction func browseLogFileLocation(_ sender: Any?) {
+        guard let midiDocument else { return }
+
+        let panel = NSSavePanel()
+        panel.title = String(localized: "Choose Log File", comment: "title for log file save panel")
+        panel.nameFieldStringValue = midiDocument.logFileName
+        panel.canCreateDirectories = true
+        panel.showsTagField = false
+
+        if panel.runModal() == .OK, let url = panel.url {
+            midiDocument.updateLogFileName(url.path)
         }
     }
 

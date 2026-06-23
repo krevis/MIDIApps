@@ -25,6 +25,7 @@
 		1692D71225899A8C0092D6E7 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D71125899A8C0092D6E7 /* PreferencesWindowController.swift */; };
 		1692D7192589E83D0092D6E7 /* UtilityWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D7182589E83D0092D6E7 /* UtilityWindowController.swift */; };
 		1692D72D2589E91D0092D6E7 /* MonitorWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D72C2589E91D0092D6E7 /* MonitorWindowController.swift */; };
+		16F3B1A12F3C4D5E6A7B8C9D /* MessageFileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F3B1A02F3C4D5E6A7B8C9D /* MessageFileLogger.swift */; };
 		1692D72F258B31370092D6E7 /* AppController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D72E258B31370092D6E7 /* AppController.swift */; };
 		1692D74D258C3EC10092D6E7 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D74C258C3EC10092D6E7 /* Document.swift */; };
 		1692D764258D75EE0092D6E7 /* CombinationInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692D763258D75EE0092D6E7 /* CombinationInputStream.swift */; };
@@ -172,6 +173,7 @@
 		1692D71125899A8C0092D6E7 /* PreferencesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesWindowController.swift; sourceTree = "<group>"; };
 		1692D7182589E83D0092D6E7 /* UtilityWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityWindowController.swift; sourceTree = "<group>"; };
 		1692D72C2589E91D0092D6E7 /* MonitorWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorWindowController.swift; sourceTree = "<group>"; };
+		16F3B1A02F3C4D5E6A7B8C9D /* MessageFileLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageFileLogger.swift; sourceTree = "<group>"; };
 		1692D72E258B31370092D6E7 /* AppController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppController.swift; sourceTree = "<group>"; };
 		1692D744258C01FA0092D6E7 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		1692D74C258C3EC10092D6E7 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
@@ -318,6 +320,7 @@
 			children = (
 				1692D72E258B31370092D6E7 /* AppController.swift */,
 				1692D74C258C3EC10092D6E7 /* Document.swift */,
+				16F3B1A02F3C4D5E6A7B8C9D /* MessageFileLogger.swift */,
 				160A5EA0258825B0008C0CE1 /* PreferenceKeys.swift */,
 				16A3C27025E5CBC6001F01A3 /* Box.swift */,
 				1692D777258DE9740092D6E7 /* Window Controllers */,
@@ -604,6 +607,7 @@
 			files = (
 				1692D764258D75EE0092D6E7 /* CombinationInputStream.swift in Sources */,
 				1692D72D2589E91D0092D6E7 /* MonitorWindowController.swift in Sources */,
+				16F3B1A12F3C4D5E6A7B8C9D /* MessageFileLogger.swift in Sources */,
 				1692D74D258C3EC10092D6E7 /* Document.swift in Sources */,
 				16F9FA572586F0A700169621 /* SourcesOutlineView.swift in Sources */,
 				16F9FA312586EC0800169621 /* FastAnimatingWindow.swift in Sources */,
